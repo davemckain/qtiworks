@@ -45,12 +45,12 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
+import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
+import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
@@ -75,10 +75,10 @@ public final class AssessmentObjectValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectValidator.class);
 
-    private final RootObjectProvider rootObjectProvider;
+    private final RootNodeProvider rootNodeProvider;
 
-    public AssessmentObjectValidator(final RootObjectProvider resourceProvider) {
-        this.rootObjectProvider = resourceProvider;
+    public AssessmentObjectValidator(final RootNodeProvider resourceProvider) {
+        this.rootNodeProvider = resourceProvider;
     }
 
     public ItemValidationResult validateItem(final ResolvedAssessmentItem resolvedAssessmentItem) {
@@ -90,7 +90,7 @@ public final class AssessmentObjectValidator {
         final ItemValidationResult result = new ItemValidationResult(resolvedAssessmentItem);
         final AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
         if (item!=null) {
-            final RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplate = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
+            final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplate = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplate!=null && !resolvedResponseProcessingTemplate.wasSuccessful()) {
                 result.add(new ValidationError(item.getResponseProcessing(), "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
@@ -162,7 +162,7 @@ public final class AssessmentObjectValidator {
         AbstractValidationContextImpl(final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
             this.validationResult = validationResult;
             this.resolvedAssessmentObject = resolvedAssessmentObject;
-            this.subject = resolvedAssessmentObject.getRootObjectLookup().extractAssumingSuccessful();
+            this.subject = resolvedAssessmentObject.getRootNodeLookup().extractAssumingSuccessful();
         }
 
         @Override
@@ -289,7 +289,7 @@ public final class AssessmentObjectValidator {
 
         @Override
         public JqtiExtensionManager getJqtiExtensionManager() {
-            return rootObjectProvider.getJqtiExtensionManager();
+            return rootNodeProvider.getJqtiExtensionManager();
         }
 
         @Override
@@ -337,7 +337,7 @@ public final class AssessmentObjectValidator {
 
         @Override
         public JqtiExtensionManager getJqtiExtensionManager() {
-            return rootObjectProvider.getJqtiExtensionManager();
+            return rootNodeProvider.getJqtiExtensionManager();
         }
 
         @Override
@@ -381,7 +381,7 @@ public final class AssessmentObjectValidator {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(resourceProvider=" + rootObjectProvider
+                + "(resourceProvider=" + rootNodeProvider
                 + ")";
     }
 }

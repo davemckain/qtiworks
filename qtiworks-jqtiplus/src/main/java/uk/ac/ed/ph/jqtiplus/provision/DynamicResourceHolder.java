@@ -34,39 +34,39 @@
 
 package uk.ac.ed.ph.jqtiplus.provision;
 
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 /**
- * Implementation of {@link RootObjectHolder} for a resource object model that has been build
+ * Implementation of {@link RootNodeHolder} for a resource object model that has been build
  * programmatically.
  *
  * @author David McKain
  */
-public class DynamicResourceHolder<E extends RootObject> implements RootObjectHolder<E> {
+public class DynamicResourceHolder<E extends RootNode> implements RootNodeHolder<E> {
     
     private static final long serialVersionUID = 4290353525740628687L;
     
-    private final E rootObject;
+    private final E rootNode;
     
-    public DynamicResourceHolder(E rootObject) {
-        this.rootObject = rootObject;
+    public DynamicResourceHolder(E rootNode) {
+        this.rootNode = rootNode;
     }
 
     @Override
-    public E getRootObject() {
-        return rootObject;
+    public E getRootNode() {
+        return rootNode;
     }
     
     @SuppressWarnings("unchecked")
     @Override
-    public Class<E> getRequestedRootObjectClass() {
-        return (Class<E>) rootObject.getClass();
+    public Class<E> getRequestedRootNodeClass() {
+        return (Class<E>) rootNode.getClass();
     }
     
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(rootObject=" + rootObject
+                + "(rootNode=" + rootNode
                 + ")";
     }
 

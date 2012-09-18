@@ -35,45 +35,45 @@ package uk.ac.ed.ph.jqtiplus.reading;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
-import uk.ac.ed.ph.jqtiplus.provision.RootObjectHolder;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.provision.RootNodeHolder;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 
 /**
- * Encapsulates the result of instantiating a QTI {@link RootObject} from XML, as returned
- * by {@link QtiXmlObjectReader}.
+ * Encapsulates the result of instantiating a QTI {@link RootNode} from XML, as returned
+ * by {@link QtiObjectReader}.
  *
- * @see QtiXmlObjectReader
+ * @see QtiObjectReader
  *
  * @author David McKain
  */
-public final class QtiXmlObjectReadResult<E extends RootObject> implements RootObjectHolder<E> {
+public final class QtiObjectReadResult<E extends RootNode> implements RootNodeHolder<E> {
 
     private static final long serialVersionUID = -6470500039269477402L;
 
-    private final Class<E> requestedRootObjectClass;
-    private final E rootObject;
+    private final Class<E> requestedRootNodeClass;
+    private final E rootNode;
     private final XmlParseResult xmlParseResult;
 
     /** This will be either the QTI 2.1 or QTI 2.0 namespace */
     private final String qtiNamespaceUri;
 
-    QtiXmlObjectReadResult(final Class<E> requestedRootObjectClass, final XmlParseResult xmlParseResult,
-            final String qtiNamespace, final E rootObject) {
-        this.requestedRootObjectClass = requestedRootObjectClass;
-        this.rootObject = rootObject;
+    QtiObjectReadResult(final Class<E> requestedRootNodeClass, final XmlParseResult xmlParseResult,
+            final String qtiNamespace, final E rootNode) {
+        this.requestedRootNodeClass = requestedRootNodeClass;
+        this.rootNode = rootNode;
         this.xmlParseResult = xmlParseResult;
         this.qtiNamespaceUri = qtiNamespace;
     }
 
     @Override
-    public Class<E> getRequestedRootObjectClass() {
-        return requestedRootObjectClass;
+    public Class<E> getRequestedRootNodeClass() {
+        return requestedRootNodeClass;
     }
 
     @Override
-    public E getRootObject() {
-        return rootObject;
+    public E getRootNode() {
+        return rootNode;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
@@ -88,10 +88,10 @@ public final class QtiXmlObjectReadResult<E extends RootObject> implements RootO
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(rootObjectClass=" + requestedRootObjectClass
+                + "(rootNodeClass=" + requestedRootNodeClass
                 + ",xmlParseResult=" + xmlParseResult
                 + ",qtiNamespaceUri=" + qtiNamespaceUri
-                + ",rootObject=" + rootObject
+                + ",rootNode=" + rootNode
                 + ")";
     }
 }

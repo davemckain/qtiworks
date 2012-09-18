@@ -33,32 +33,30 @@
  */
 package uk.ac.ed.ph.jqtiplus.provision;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 
-import java.io.Serializable;
 import java.net.URI;
 
 /**
- * Encapsulates the result of requesting a JQTI {@link RootObject} from {@link RootObjectProvider}.
+ * Interface defining how JQTI+ instantiates QTI {@link RootNode}s via a System ID (URI).
  * <p>
- * Implementations of {@link RootObjectProvider} should implement this and add any more information
- * that may prove useful. (E.g. {@link QtiXmlObjectReader} adds in XML parsing information.)
- * 
- * @see QtiXmlObjectReader
- * 
+ * The usual implementation of this is {@link QtiObjectReader}, which reads and parses
+ * QTI XML and builds the appropriate {@link RootNode} from the result.
+ * <p>
+ * Developers may want to create their own implementation of this if creating QTI
+ * Object dynamically.
+ *
  * @author David McKain
  */
-public interface RootObjectHolder<E extends RootObject> extends Serializable {
-    
-    Class<E> getRequestedRootObjectClass();
-    
-    /** 
-     * Resulting {@link RootObject}, which will not be null. It will have had its
-     * {@link RootObject#setModelRichness(ModelRichness)} and
-     * {@link RootObject#setSystemId(URI)} called appropriately.
-     */
-    E getRootObject();
+public interface RootNodeProvider {
+
+    JqtiExtensionManager getJqtiExtensionManager();
+
+    <E extends RootNode> RootNodeHolder<E> lookupRootNode(URI systemId,
+            ModelRichness requiredModelRichness, Class<E> requiredResultClass)
+        throws ResourceNotFoundException, BadResourceException;
 
 }

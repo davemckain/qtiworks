@@ -34,12 +34,12 @@
 package uk.ac.ed.ph.jqtiplus.resolution;
 
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
+import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
@@ -76,9 +76,9 @@ public final class AssessmentObjectManager {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectManager.class);
 
-    private final RootObjectProvider resourceProvider;
+    private final RootNodeProvider resourceProvider;
     
-    public AssessmentObjectManager(final RootObjectProvider resourceProvider) {
+    public AssessmentObjectManager(final RootNodeProvider resourceProvider) {
         this.resourceProvider = resourceProvider;
     }
 
@@ -90,17 +90,17 @@ public final class AssessmentObjectManager {
     }
     
     private ResolvedAssessmentItem resolveAssessmentItem(URI systemId, ModelRichness modelRichness, CachedResourceProvider cachedResourceProvider) {
-        RootObjectLookup<AssessmentItem> itemLookup = cachedResourceProvider.getLookup(systemId, AssessmentItem.class);
+        RootNodeLookup<AssessmentItem> itemLookup = cachedResourceProvider.getLookup(systemId, AssessmentItem.class);
         return initResolvedAssessmentItem(itemLookup, modelRichness, cachedResourceProvider);
     }
     
     public ResolvedAssessmentItem resolveAssessmentItem(AssessmentItem assessmentItem, ModelRichness modelRichness) {
-        RootObjectLookup<AssessmentItem> itemWrapper = new RootObjectLookup<AssessmentItem>(assessmentItem);
+        RootNodeLookup<AssessmentItem> itemWrapper = new RootNodeLookup<AssessmentItem>(assessmentItem);
         return initResolvedAssessmentItem(itemWrapper, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
     }
     
-    private ResolvedAssessmentItem initResolvedAssessmentItem(RootObjectLookup<AssessmentItem> itemLookup, ModelRichness modelRichness, CachedResourceProvider cachedResourceProvider) {
-        RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = null;
+    private ResolvedAssessmentItem initResolvedAssessmentItem(RootNodeLookup<AssessmentItem> itemLookup, ModelRichness modelRichness, CachedResourceProvider cachedResourceProvider) {
+        RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = null;
         AssessmentItem item = itemLookup.extractIfSuccessful();
         if (item!=null) {
             resolvedResponseProcessingTemplateLookup = resolveResponseProcessingTemplate(item, cachedResourceProvider);
@@ -108,9 +108,9 @@ public final class AssessmentObjectManager {
         return new ResolvedAssessmentItem(modelRichness, itemLookup, resolvedResponseProcessingTemplateLookup);
     }
      
-    private RootObjectLookup<ResponseProcessing> resolveResponseProcessingTemplate(AssessmentItem item, CachedResourceProvider cachedResourceProvider) {
+    private RootNodeLookup<ResponseProcessing> resolveResponseProcessingTemplate(AssessmentItem item, CachedResourceProvider cachedResourceProvider) {
         ResponseProcessing responseProcessing = item.getResponseProcessing();
-        RootObjectLookup<ResponseProcessing> result = null;
+        RootNodeLookup<ResponseProcessing> result = null;
         if (responseProcessing!=null) {
             if (responseProcessing.getResponseRules().isEmpty()) {
                 /* ResponseProcessing present but no rules, so should be a template. First make sure there's a URI specified */
@@ -155,16 +155,16 @@ public final class AssessmentObjectManager {
     }
     
     private ResolvedAssessmentTest resolveAssessmentTest(URI systemId, ModelRichness modelRichness, CachedResourceProvider cachedResourceProvider) {
-        RootObjectLookup<AssessmentTest> testLookup = cachedResourceProvider.getLookup(systemId, AssessmentTest.class);
+        RootNodeLookup<AssessmentTest> testLookup = cachedResourceProvider.getLookup(systemId, AssessmentTest.class);
         return initResolvedAssessmentTest(testLookup, modelRichness, cachedResourceProvider);
     }
     
     public ResolvedAssessmentTest resolveAssessmentTest(AssessmentTest assessmentTest, ModelRichness modelRichness) {
-        RootObjectLookup<AssessmentTest> testWrapper = new RootObjectLookup<AssessmentTest>(assessmentTest);
+        RootNodeLookup<AssessmentTest> testWrapper = new RootNodeLookup<AssessmentTest>(assessmentTest);
         return initResolvedAssessmentTest(testWrapper, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
     }
     
-    private ResolvedAssessmentTest initResolvedAssessmentTest(RootObjectLookup<AssessmentTest> testLookup, ModelRichness modelRichness, CachedResourceProvider cachedResourceProvider) {
+    private ResolvedAssessmentTest initResolvedAssessmentTest(RootNodeLookup<AssessmentTest> testLookup, ModelRichness modelRichness, CachedResourceProvider cachedResourceProvider) {
         Map<AssessmentItemRef, URI> systemIdByItemRefMap = new HashMap<AssessmentItemRef, URI>();
         Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap = new HashMap<Identifier, List<AssessmentItemRef>>();
         Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new HashMap<URI, List<AssessmentItemRef>>();
@@ -212,7 +212,7 @@ public final class AssessmentObjectManager {
     
     //-------------------------------------------------------------------
     
-    private URI resolveUri(RootObject baseObject, URI href) {
+    private URI resolveUri(RootNode baseObject, URI href) {
         URI baseUri = baseObject.getSystemId();
         if (baseUri==null) {
             throw new IllegalStateException("baseObject " + baseObject + " does not have a systemId set, so cannot resolve references against it");

@@ -35,10 +35,10 @@ package uk.ac.ed.ph.jqtiplus.testutils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReadResult;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReadResult;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -67,21 +67,21 @@ public final class UnitTestHelper {
         return new QtiXmlReader(createJqtiExtensionManager());
     }
 
-    public static QtiXmlObjectReader createUnitTestXmlObjectReader() {
+    public static QtiObjectReader createUnitTestXmlObjectReader() {
         final ResourceLocator testFileResourceLocator = new FileResourceLocator();
         return createUnitTestXmlReader().createQtiXmlObjectReader(testFileResourceLocator);
     }
 
     public static AssessmentObjectManager createUnitTestAssessmentObjectManager() {
-        final QtiXmlObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
+        final QtiObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
         return new AssessmentObjectManager(qtiXmlObjectReader);
     }
 
-    public static <E extends RootObject> E loadUnitTestRootObject(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness, final Class<E> requiredResultClass)
+    public static <E extends RootNode> E loadUnitTestRootNode(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness, final Class<E> requiredResultClass)
             throws XmlResourceNotFoundException, QtiXmlInterpretationException {
         final URI fileUri = createTestFileUri(baseClass, fileName);
-        final QtiXmlObjectReadResult<E> rootObjectLookup = createUnitTestXmlObjectReader().lookupRootObject(fileUri, modelRichness, requiredResultClass);
-        return rootObjectLookup.getRootObject();
+        final QtiObjectReadResult<E> rootNodeLookup = createUnitTestXmlObjectReader().lookupRootNode(fileUri, modelRichness, requiredResultClass);
+        return rootNodeLookup.getRootNode();
     }
 
     public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness) {
@@ -91,7 +91,7 @@ public final class UnitTestHelper {
     }
 
     public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness) {
-        final QtiXmlObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
+        final QtiObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlObjectReader);
         final URI fileUri = createTestFileUri(baseClass, fileName);
         return objectManager.resolveAssessmentTest(fileUri, modelRichness);

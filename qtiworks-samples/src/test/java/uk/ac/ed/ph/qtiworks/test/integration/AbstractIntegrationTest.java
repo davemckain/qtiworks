@@ -38,7 +38,7 @@ import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -102,12 +102,12 @@ public abstract class AbstractIntegrationTest {
         return sampleXmlReader.read(sampleResourceUri, sampleResourceLocator, true);
     }
     
-    protected QtiXmlObjectReader createSampleObjectReader() {
+    protected QtiObjectReader createSampleObjectReader() {
         return sampleXmlReader.createQtiXmlObjectReader(sampleResourceLocator);
     }
     
     protected AssessmentObjectManager createAssessmentObjectManager() {
-        final QtiXmlObjectReader objectReader = createSampleObjectReader();
+        final QtiObjectReader objectReader = createSampleObjectReader();
         return new AssessmentObjectManager(objectReader);
     }
     

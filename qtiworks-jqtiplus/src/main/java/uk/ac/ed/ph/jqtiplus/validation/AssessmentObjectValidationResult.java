@@ -60,7 +60,7 @@ public abstract class AssessmentObjectValidationResult<E extends AssessmentObjec
     }
 
     public boolean isValid() {
-        return resolvedAssessmentObject.getRootObjectLookup().getRootObjectHolder()!=null
+        return resolvedAssessmentObject.getRootNodeLookup().getRootNodeHolder()!=null
                 && getErrors().isEmpty()
                 && getWarnings().isEmpty();
     }

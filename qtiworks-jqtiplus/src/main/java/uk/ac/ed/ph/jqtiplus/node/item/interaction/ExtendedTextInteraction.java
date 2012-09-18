@@ -277,7 +277,7 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         if (getStringIdentifier() == null) {
             return null;
         }
-        return getRootObject(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
+        return getRootNode(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
     }
 
     @Override

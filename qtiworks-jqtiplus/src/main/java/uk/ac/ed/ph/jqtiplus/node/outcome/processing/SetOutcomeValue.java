@@ -70,7 +70,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootObject(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
+            final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
                 return new Cardinality[] { declaration.getCardinality() };
             }

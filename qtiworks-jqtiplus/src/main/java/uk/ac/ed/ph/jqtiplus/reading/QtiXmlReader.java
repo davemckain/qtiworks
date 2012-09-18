@@ -138,11 +138,11 @@ public final class QtiXmlReader {
     }
 
     /**
-     * Creates a new {@link QtiXmlObjectReader} from this reader and the given
+     * Creates a new {@link QtiObjectReader} from this reader and the given
      * input {@link ResourceLocator}.
      */
-    public QtiXmlObjectReader createQtiXmlObjectReader(final ResourceLocator inputResourceLocator) {
-        return new QtiXmlObjectReader(this, inputResourceLocator);
+    public QtiObjectReader createQtiXmlObjectReader(final ResourceLocator inputResourceLocator) {
+        return new QtiObjectReader(this, inputResourceLocator);
     }
 
     //--------------------------------------------------

@@ -31,97 +31,96 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.resolution;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
 import uk.ac.ed.ph.jqtiplus.provision.DynamicResourceHolder;
 import uk.ac.ed.ph.jqtiplus.provision.ResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.provision.RootObjectHolder;
-import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
+import uk.ac.ed.ph.jqtiplus.provision.RootNodeHolder;
+import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 
 import java.io.Serializable;
 import java.net.URI;
 
 /**
- * Memoises the result of a call to {@link RootObjectProvider#lookupRootObject(URI, uk.ac.ed.ph.jqtiplus.node.ModelRichness, Class)}
+ * Memoises the result of a call to {@link RootNodeProvider#lookupRootNode(URI, uk.ac.ed.ph.jqtiplus.node.ModelRichness, Class)}
  * (This wraps up the resulting {@link ResourceNotFoundException} and {@link BadResourceException}s.)
  *
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class RootObjectLookup<E extends RootObject> implements Serializable {
-    
+public final class RootNodeLookup<E extends RootNode> implements Serializable {
+
     private static final long serialVersionUID = -6339477418787798594L;
-    
+
     private final URI systemId;
-    private final Class<E> requestedRootObjectClass;
-    private final RootObjectHolder<E> rootObjectHolder;
+    private final Class<E> requestedRootNodeClass;
+    private final RootNodeHolder<E> rootNodeHolder;
     private final ResourceNotFoundException notFoundException;
     private final BadResourceException badResourceException;
-    
-    RootObjectLookup(final E rootNode) {
+
+    RootNodeLookup(final E rootNode) {
         this(rootNode.getSystemId(), new DynamicResourceHolder<E>(rootNode));
     }
-    
-    RootObjectLookup(URI systemId, RootObjectHolder<E> rootObjectHolder) {
-        this(systemId, rootObjectHolder.getRequestedRootObjectClass(), rootObjectHolder, null, null);
+
+    RootNodeLookup(final URI systemId, final RootNodeHolder<E> rootNodeHolder) {
+        this(systemId, rootNodeHolder.getRequestedRootNodeClass(), rootNodeHolder, null, null);
     }
-    
-    RootObjectLookup(URI systemId, Class<E> requestedRootObjectClass, ResourceNotFoundException notFoundException) {
-        this(systemId, requestedRootObjectClass, null, notFoundException, null);
+
+    RootNodeLookup(final URI systemId, final Class<E> requestedRootNodeClass, final ResourceNotFoundException notFoundException) {
+        this(systemId, requestedRootNodeClass, null, notFoundException, null);
     }
-    
-    RootObjectLookup(URI systemId, Class<E> requestedRootObjectClass, BadResourceException badResourceException) {
-        this(systemId, requestedRootObjectClass, null, null, badResourceException);
+
+    RootNodeLookup(final URI systemId, final Class<E> requestedRootNodeClass, final BadResourceException badResourceException) {
+        this(systemId, requestedRootNodeClass, null, null, badResourceException);
     }
-    
-    private RootObjectLookup(URI systemId, Class<E> rootObjectClass,
-            RootObjectHolder<E> resourceProvideResult,
-            ResourceNotFoundException notFoundException, BadResourceException badResourceException) {
+
+    private RootNodeLookup(final URI systemId, final Class<E> rootNodeClass,
+            final RootNodeHolder<E> resourceProvideResult,
+            final ResourceNotFoundException notFoundException, final BadResourceException badResourceException) {
         this.systemId = systemId;
-        this.requestedRootObjectClass = rootObjectClass;
-        this.rootObjectHolder = resourceProvideResult;
+        this.requestedRootNodeClass = rootNodeClass;
+        this.rootNodeHolder = resourceProvideResult;
         this.notFoundException = notFoundException;
         this.badResourceException = badResourceException;
     }
-    
+
     public URI getSystemId() {
         return systemId;
     }
-    
-    public Class<E> getRequestedRootObjectClass() {
-        return requestedRootObjectClass;
+
+    public Class<E> getRequestedRootNodeClass() {
+        return requestedRootNodeClass;
     }
-    
+
     @ObjectDumperOptions(DumpMode.DEEP)
-    public RootObjectHolder<E> getRootObjectHolder() {
-        return rootObjectHolder;
+    public RootNodeHolder<E> getRootNodeHolder() {
+        return rootNodeHolder;
     }
-    
+
     @ObjectDumperOptions(DumpMode.DEEP)
     public BadResourceException getBadResourceException() {
         return badResourceException;
     }
-    
+
     @ObjectDumperOptions(DumpMode.DEEP)
     public ResourceNotFoundException getNotFoundException() {
         return notFoundException;
     }
-    
+
     /**
-     * "Evaluates" this lookup, which behaves similarly to {@link RootObjectProvider}.
-     * 
+     * "Evaluates" this lookup, which behaves similarly to {@link RootNodeProvider}.
+     *
      * @throws ResourceNotFoundException
      * @throws BadResourceException
      */
-    public RootObjectHolder<E> evaluate() throws ResourceNotFoundException, BadResourceException {
-        if (rootObjectHolder!=null) {
-            return rootObjectHolder;
+    public RootNodeHolder<E> evaluate() throws ResourceNotFoundException, BadResourceException {
+        if (rootNodeHolder!=null) {
+            return rootNodeHolder;
         }
         else if (notFoundException!=null) {
             throw notFoundException;
@@ -133,30 +132,30 @@ public final class RootObjectLookup<E extends RootObject> implements Serializabl
             throw new QtiLogicException("Unexpected logic branch");
         }
     }
-    
+
     public boolean wasSuccessful() {
-        return rootObjectHolder!=null;
+        return rootNodeHolder!=null;
     }
-    
+
     public E extractIfSuccessful() {
-        return rootObjectHolder!=null ? rootObjectHolder.getRootObject() : null;
+        return rootNodeHolder!=null ? rootNodeHolder.getRootNode() : null;
     }
-    
+
     public E extractAssumingSuccessful() {
-        if (rootObjectHolder==null) {
+        if (rootNodeHolder==null) {
             throw new IllegalStateException("Lookup " + this + " was expected to have been successful");
         }
-        return rootObjectHolder.getRootObject();
+        return rootNodeHolder.getRootNode();
     }
-    
+
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder(getClass().getSimpleName())
+        final StringBuilder stringBuilder = new StringBuilder(getClass().getSimpleName())
             .append('@').append(hashCode())
             .append("(systemId=").append(systemId)
             .append(',');
-        if (rootObjectHolder!=null) {
-            stringBuilder.append("resourceProvideResult=").append(rootObjectHolder);
+        if (rootNodeHolder!=null) {
+            stringBuilder.append("resourceProvideResult=").append(rootNodeHolder);
         }
         else if (notFoundException!=null) {
             stringBuilder.append("notFoundException=").append(notFoundException);

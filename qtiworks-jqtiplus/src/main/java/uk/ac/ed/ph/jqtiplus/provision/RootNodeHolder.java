@@ -31,36 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node;
+package uk.ac.ed.ph.jqtiplus.provision;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
-import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 
+import java.io.Serializable;
 import java.net.URI;
 
 /**
- * Marker interface for a "root" QTI Node.
+ * Encapsulates the result of requesting a JQTI {@link RootNode} from {@link RootNodeProvider}.
+ * <p>
+ * Implementations of {@link RootNodeProvider} should implement this and add any more information
+ * that may prove useful. (E.g. {@link QtiObjectReader} adds in XML parsing information.)
  * 
- * @see RootObjectTypes
- * @see AssessmentItem
- * @see AssessmentTest
- * @see AssessmentResult
- * @see ResponseProcessing
+ * @see QtiObjectReader
  * 
  * @author David McKain
  */
-public interface RootObject extends QtiNode {
-
-    /** Returns the systemId of this tree, if loaded from a URI, null otherwise */
-    URI getSystemId();
-
-    /** Sets the systemId for this tree */
-    void setSystemId(URI systemId);
+public interface RootNodeHolder<E extends RootNode> extends Serializable {
     
-    ModelRichness getModelRichness();
+    Class<E> getRequestedRootNodeClass();
     
-    void setModelRichness(ModelRichness modelRichness);
+    /** 
+     * Resulting {@link RootNode}, which will not be null. It will have had its
+     * {@link RootNode#setModelRichness(ModelRichness)} and
+     * {@link RootNode#setSystemId(URI)} called appropriately.
+     */
+    E getRootNode();
 
 }

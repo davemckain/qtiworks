@@ -61,7 +61,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     private static final long serialVersionUID = -8302050952592265206L;
 
     /** {@link AssessmentTest} lookup */
-    private final RootObjectLookup<AssessmentTest> testLookup;
+    private final RootNodeLookup<AssessmentTest> testLookup;
 
     /**
      * Lookup map for {@link AssessmentItemRef} by identifier. Valid tests should have one
@@ -79,7 +79,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     private final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap;
 
     public ResolvedAssessmentTest(final ModelRichness modelRichness,
-            final RootObjectLookup<AssessmentTest> testLookup,
+            final RootNodeLookup<AssessmentTest> testLookup,
             final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap,
             final Map<AssessmentItemRef, URI> systemIdByItemRefMap,
             final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap,
@@ -97,7 +97,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         return AssessmentObjectType.ASSESSMENT_TEST;
     }
 
-    public RootObjectLookup<AssessmentTest> getTestLookup() {
+    public RootNodeLookup<AssessmentTest> getTestLookup() {
         return testLookup;
     }
 
@@ -160,7 +160,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         else {
             final AssessmentItemRef itemRef = itemRefs.get(0);
             final ResolvedAssessmentItem resolvedItem = getResolvedAssessmentItem(itemRef);
-            final RootObjectLookup<AssessmentItem> itemLookup = resolvedItem.getItemLookup();
+            final RootNodeLookup<AssessmentItem> itemLookup = resolvedItem.getItemLookup();
             if (!itemLookup.wasSuccessful()) {
                 throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.TEST_ITEM_LOOKUP_FAILURE);
             }

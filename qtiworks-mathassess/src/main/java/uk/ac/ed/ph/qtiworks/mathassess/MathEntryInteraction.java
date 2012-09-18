@@ -140,7 +140,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
         if (getPrintIdentifier() == null) {
             return null;
         }
-        return getRootObject(AssessmentItem.class).getResponseDeclaration(getPrintIdentifier());
+        return getRootNode(AssessmentItem.class).getResponseDeclaration(getPrintIdentifier());
     }
 
     @Override

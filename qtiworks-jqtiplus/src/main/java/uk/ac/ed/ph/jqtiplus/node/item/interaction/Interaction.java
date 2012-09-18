@@ -112,7 +112,7 @@ public abstract class Interaction extends BodyElement {
      * @return the responseDeclaration for this interactions responseIdentifier
      */
     public ResponseDeclaration getResponseDeclaration() {
-        return getRootObject(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
+        return getRootNode(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
     }
 
     @Override

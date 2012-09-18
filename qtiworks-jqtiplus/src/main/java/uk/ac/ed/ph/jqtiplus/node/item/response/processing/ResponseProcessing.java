@@ -40,10 +40,10 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
+import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
@@ -60,7 +60,7 @@ import java.util.List;
  * 
  * @author Jonathon Hare
  */
-public class ResponseProcessing extends AbstractNode implements RootObject {
+public class ResponseProcessing extends AbstractNode implements RootNode {
 
     private static final long serialVersionUID = -4551768580135824154L;
 
@@ -147,7 +147,7 @@ public class ResponseProcessing extends AbstractNode implements RootObject {
         else {
             /* No ResponseRules, so we'll use any template that will have been resolved for us by caller */
             ResolvedAssessmentItem resolvedAssessmentItem = context.getResolvedAssessmentItem();
-            RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
+            RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplateLookup!=null && resolvedResponseProcessingTemplateLookup.wasSuccessful()) {
                 resolvedResponseProcessingTemplateLookup.extractIfSuccessful().validate(context);
             }

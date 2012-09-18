@@ -65,7 +65,7 @@ public class SetDefaultValue extends ProcessTemplateValue {
     @Override
     public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final ResponseDeclaration declaration = getRootObject(AssessmentItem.class).getResponseDeclaration(getIdentifier());
+            final ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
                 return new Cardinality[] { declaration.getCardinality() };
             }
@@ -77,7 +77,7 @@ public class SetDefaultValue extends ProcessTemplateValue {
     @Override
     public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
         if (getIdentifier() != null) {
-            final ResponseDeclaration declaration = getRootObject(AssessmentItem.class).getResponseDeclaration(getIdentifier());
+            final ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
                 return new BaseType[] { declaration.getBaseType() };
             }
@@ -113,7 +113,7 @@ public class SetDefaultValue extends ProcessTemplateValue {
 
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
-            final AssessmentItem item = getRootObject(AssessmentItem.class);
+            final AssessmentItem item = getRootNode(AssessmentItem.class);
             if (item.getResponseDeclaration(identifier) == null && item.getOutcomeDeclaration(identifier) == null) {
                 context.add(new ValidationError(this, "Cannot find response or outcome declaration " + getIdentifier()));
             }

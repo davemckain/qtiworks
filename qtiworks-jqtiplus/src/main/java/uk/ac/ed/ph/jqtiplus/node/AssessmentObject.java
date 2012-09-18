@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author David McKain
  */
-public interface AssessmentObject extends RootObject, IdentifiableNode<String> {
+public interface AssessmentObject extends RootNode, IdentifiableNode<String> {
     
     AssessmentObjectType getType();
     

@@ -60,20 +60,20 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
     private static final long serialVersionUID = 7287850555177299535L;
 
     /** {@link AssessmentObject} lookup */
-    protected final RootObjectLookup<E> rootObjectLookup;
+    protected final RootNodeLookup<E> rootNodeLookup;
     
     protected final ModelRichness modelRichness;
 
-    public ResolvedAssessmentObject(final ModelRichness modelRichness, final RootObjectLookup<E> rootObjectLookup) {
-        this.rootObjectLookup = rootObjectLookup;
+    public ResolvedAssessmentObject(final ModelRichness modelRichness, final RootNodeLookup<E> rootNodeLookup) {
+        this.rootNodeLookup = rootNodeLookup;
         this.modelRichness = modelRichness;
     }
     
     public abstract AssessmentObjectType getType();
     
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public RootObjectLookup<E> getRootObjectLookup() {
-        return rootObjectLookup;
+    public RootNodeLookup<E> getRootNodeLookup() {
+        return rootNodeLookup;
     }
     
     public ModelRichness getModelRichness() {

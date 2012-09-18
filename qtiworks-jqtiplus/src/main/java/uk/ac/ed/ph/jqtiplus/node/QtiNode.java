@@ -51,21 +51,21 @@ import org.xml.sax.SAXException;
 public interface QtiNode extends Validatable, Iterable<QtiNode> {
 
     /**
-     * Gets parent of this node, or null if this is a {@link RootObject}
+     * Gets parent of this node, or null if this is a {@link RootNode}
      */
     QtiNode getParent();
 
     /**
      * Gets root of this node, returning the node itself if it is already
-     * a {@link RootObject}
+     * a {@link RootNode}
      */
-    RootObject getRootObject();
+    RootNode getRootNode();
 
     /**
-     * Gets root of this node, expecting it to be the given subclass of {@link RootObject},
+     * Gets root of this node, expecting it to be the given subclass of {@link RootNode},
      * or null if the root of this node is not of the requested type.
      */
-    <E extends RootObject> E getRootObject(Class<E> rootClass);
+    <E extends RootNode> E getRootNode(Class<E> rootClass);
 
     /**
      * Gets list (container) of all attributes.

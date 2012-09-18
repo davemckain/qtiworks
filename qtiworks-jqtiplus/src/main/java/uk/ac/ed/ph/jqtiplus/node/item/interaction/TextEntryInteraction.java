@@ -143,7 +143,7 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
         if (getStringIdentifier() == null) {
             return null;
         }
-        return getRootObject(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
+        return getRootNode(AssessmentItem.class).getResponseDeclaration(getStringIdentifier());
     }
 
     @Override

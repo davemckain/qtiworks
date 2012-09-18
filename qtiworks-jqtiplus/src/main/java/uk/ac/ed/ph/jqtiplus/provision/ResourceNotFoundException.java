@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.provision;
 import uk.ac.ed.ph.jqtiplus.exception.QtiException;
 
 /**
- * Thrown by {@link RootObjectProvider} when no resource "exists" at the given System ID.
+ * Thrown by {@link RootNodeProvider} when no resource "exists" at the given System ID.
  * Use {@link BadResourceException} to indicate that a resource did exist but wasn't the
  * type of Object requested.
  * 

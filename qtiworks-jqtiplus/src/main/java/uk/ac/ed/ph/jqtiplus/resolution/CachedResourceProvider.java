@@ -36,11 +36,11 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
+import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
 import uk.ac.ed.ph.jqtiplus.provision.ResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.provision.RootObjectHolder;
-import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
+import uk.ac.ed.ph.jqtiplus.provision.RootNodeHolder;
+import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Helper class that caches the results of calls to {@link RootObjectProvider} during
+ * Helper class that caches the results of calls to {@link RootNodeProvider} during
  * resolution so that we only need to build once.
  *
  * @author David McKain
@@ -59,18 +59,18 @@ final class CachedResourceProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(CachedResourceProvider.class);
 
-    private final RootObjectProvider rootObjectProvider;
+    private final RootNodeProvider rootNodeProvider;
     private final ModelRichness modelRichness;
-    private final Map<URI, RootObjectLookup<?>> cacheData;
+    private final Map<URI, RootNodeLookup<?>> cacheData;
 
-    public CachedResourceProvider(final RootObjectProvider rootObjectProvider, final ModelRichness modelRichness) {
-        this.rootObjectProvider = rootObjectProvider;
+    public CachedResourceProvider(final RootNodeProvider rootNodeProvider, final ModelRichness modelRichness) {
+        this.rootNodeProvider = rootNodeProvider;
         this.modelRichness = modelRichness;
-        this.cacheData = new HashMap<URI, RootObjectLookup<?>>();
+        this.cacheData = new HashMap<URI, RootNodeLookup<?>>();
     }
 
-    public RootObjectProvider getRootObjectProvider() {
-        return rootObjectProvider;
+    public RootNodeProvider getRootNodeProvider() {
+        return rootNodeProvider;
     }
 
     public ModelRichness getModelRichness() {
@@ -78,13 +78,13 @@ final class CachedResourceProvider {
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
-    public Map<URI, RootObjectLookup<?>> getCacheData() {
+    public Map<URI, RootNodeLookup<?>> getCacheData() {
         return cacheData;
     }
 
     @SuppressWarnings("unchecked")
-    public <E extends RootObject> RootObjectLookup<E> getLookup(final URI systemId, final Class<E> resultClass) {
-        RootObjectLookup<E> frozenResult = (RootObjectLookup<E>) cacheData.get(systemId);
+    public <E extends RootNode> RootNodeLookup<E> getLookup(final URI systemId, final Class<E> resultClass) {
+        RootNodeLookup<E> frozenResult = (RootNodeLookup<E>) cacheData.get(systemId);
         if (frozenResult!=null) {
             /* Cache hit */
             logger.debug("Resource cache hit for key {} yielded {}", systemId, frozenResult);
@@ -92,14 +92,14 @@ final class CachedResourceProvider {
         else {
             /* Cache miss */
             try {
-                final RootObjectHolder<E> result = rootObjectProvider.lookupRootObject(systemId, modelRichness, resultClass);
-                frozenResult = new RootObjectLookup<E>(systemId, result);
+                final RootNodeHolder<E> result = rootNodeProvider.lookupRootNode(systemId, modelRichness, resultClass);
+                frozenResult = new RootNodeLookup<E>(systemId, result);
             }
             catch (final BadResourceException e) {
-                frozenResult = new RootObjectLookup<E>(systemId, resultClass, e);
+                frozenResult = new RootNodeLookup<E>(systemId, resultClass, e);
             }
             catch (final ResourceNotFoundException e) {
-                frozenResult = new RootObjectLookup<E>(systemId, resultClass, e);
+                frozenResult = new RootNodeLookup<E>(systemId, resultClass, e);
             }
             cacheData.put(systemId, frozenResult);
             logger.debug("Resource cache miss for key {} stored {}", systemId, frozenResult);
@@ -110,7 +110,7 @@ final class CachedResourceProvider {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(rootObjectProvider=" + rootObjectProvider
+                + "(rootNodeProvider=" + rootNodeProvider
                 + ",modelRichness=" + modelRichness
                 + ",cacheData=" + cacheData
                 + ")";

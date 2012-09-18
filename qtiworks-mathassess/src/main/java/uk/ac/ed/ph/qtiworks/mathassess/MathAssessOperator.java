@@ -147,8 +147,8 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
     private List<VariableDeclaration> getAllReadableVariableDeclarations() {
         final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
 
-        final AssessmentItem item = getRootObject(AssessmentItem.class);
-        final AssessmentTest test = getRootObject(AssessmentTest.class);
+        final AssessmentItem item = getRootNode(AssessmentItem.class);
+        final AssessmentTest test = getRootNode(AssessmentTest.class);
         if (item != null) {
             declarations.addAll(item.getResponseDeclarations());
             declarations.addAll(item.getTemplateDeclarations());
@@ -180,8 +180,8 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
     private List<VariableDeclaration> getAllWriteableVariableDeclarations() {
         final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
 
-        final AssessmentItem item = getRootObject(AssessmentItem.class);
-        final AssessmentTest test = getRootObject(AssessmentTest.class);
+        final AssessmentItem item = getRootNode(AssessmentItem.class);
+        final AssessmentTest test = getRootNode(AssessmentTest.class);
         if (item != null) {
             declarations.addAll(item.getTemplateDeclarations());
             declarations.addAll(item.getOutcomeDeclarations());

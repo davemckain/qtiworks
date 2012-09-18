@@ -31,32 +31,36 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.provision;
+package uk.ac.ed.ph.jqtiplus.node;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootObject;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.net.URI;
 
 /**
- * Interface defining how JQTI+ instantiates QTI {@link RootObject}s via a System ID (URI).
- * <p>
- * The usual implementation of this is {@link QtiXmlObjectReader}, which reads and parses
- * QTI XML and builds the appropriate {@link RootObject} from the result.
- * <p>
- * Developers may want to create their own implementation of this if creating QTI
- * Object dynamically.
- *
+ * Marker interface for a "root" QTI Node.
+ * 
+ * @see RootNodeTypes
+ * @see AssessmentItem
+ * @see AssessmentTest
+ * @see AssessmentResult
+ * @see ResponseProcessing
+ * 
  * @author David McKain
  */
-public interface RootObjectProvider {
+public interface RootNode extends QtiNode {
 
-    JqtiExtensionManager getJqtiExtensionManager();
+    /** Returns the systemId of this tree, if loaded from a URI, null otherwise */
+    URI getSystemId();
 
-    <E extends RootObject> RootObjectHolder<E> lookupRootObject(URI systemId,
-            ModelRichness requiredModelRichness, Class<E> requiredResultClass)
-        throws ResourceNotFoundException, BadResourceException;
+    /** Sets the systemId for this tree */
+    void setSystemId(URI systemId);
+    
+    ModelRichness getModelRichness();
+    
+    void setModelRichness(ModelRichness modelRichness);
 
 }

@@ -113,17 +113,17 @@ public abstract class AbstractNode implements QtiNode {
 
 
     @Override
-    public RootObject getRootObject() {
+    public RootNode getRootNode() {
         QtiNode node = this;
         while (node.getParent() != null) {
             node = node.getParent();
         }
-        return (RootObject) node;
+        return (RootNode) node;
     }
 
     @Override
-    public <E extends RootObject> E getRootObject(final Class<E> rootClass) {
-        final QtiNode root = getRootObject();
+    public <E extends RootNode> E getRootNode(final Class<E> rootClass) {
+        final QtiNode root = getRootNode();
         E result = null;
         if (rootClass.isInstance(root)) {
             result = rootClass.cast(root);
@@ -272,10 +272,10 @@ public abstract class AbstractNode implements QtiNode {
     /** Helper method to validate a unique identifier (definition) attribute */
     protected void validateUniqueIdentifier(final AbstractValidationResult result, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
         if (identifier != null) {
-            if (getRootObject(AssessmentTest.class) != null && BranchRule.isSpecial(identifier)) {
+            if (getRootNode(AssessmentTest.class) != null && BranchRule.isSpecial(identifier)) {
                 result.add(new AttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute));
             }
-            if (!validateUniqueIdentifier(getRootObject(), identifier)) {
+            if (!validateUniqueIdentifier(getRootNode(), identifier)) {
                 result.add(new AttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute));
             }
         }

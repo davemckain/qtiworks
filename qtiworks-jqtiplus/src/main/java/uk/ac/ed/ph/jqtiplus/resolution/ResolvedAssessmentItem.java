@@ -53,12 +53,12 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
     private static final long serialVersionUID = -8302050952592265206L;
 
     /** {@link AssessmentItem} lookup */
-    private final RootObjectLookup<AssessmentItem> itemLookup;
+    private final RootNodeLookup<AssessmentItem> itemLookup;
     
     /** Resolved {@link ResponseProcessing} template, if specified, otherwise null */
-    private final RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup;
+    private final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup;
     
-    public ResolvedAssessmentItem(final ModelRichness modelRichness, final RootObjectLookup<AssessmentItem> itemLookup, final RootObjectLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup) {
+    public ResolvedAssessmentItem(final ModelRichness modelRichness, final RootNodeLookup<AssessmentItem> itemLookup, final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup) {
         super(modelRichness, itemLookup);
         this.itemLookup = itemLookup;
         this.resolvedResponseProcessingTemplateLookup = resolvedResponseProcessingTemplateLookup;
@@ -69,11 +69,11 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
         return AssessmentObjectType.ASSESSMENT_ITEM;
     }
     
-    public RootObjectLookup<AssessmentItem> getItemLookup() {
+    public RootNodeLookup<AssessmentItem> getItemLookup() {
         return itemLookup;
     }
     
-    public RootObjectLookup<ResponseProcessing> getResolvedResponseProcessingTemplateLookup() {
+    public RootNodeLookup<ResponseProcessing> getResolvedResponseProcessingTemplateLookup() {
         return resolvedResponseProcessingTemplateLookup;
     }
 

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
-import uk.ac.ed.ph.jqtiplus.provision.RootObjectProvider;
+import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 
 /**
  * Defines the amount of "richness" that is provided in a JQTI Object Model.
@@ -64,7 +64,7 @@ public enum ModelRichness {
     
     /**
      * Indicates that the resource is going to be fully validated. Implementors of
-     * {@link RootObjectProvider} should do anything else that supports this, such as
+     * {@link RootNodeProvider} should do anything else that supports this, such as
      * schema validation of XML resources. Failure of this lower-level validation should
      * cause Object provision to fail, with lower level errors reported via 
      * {@link BadResourceException}.

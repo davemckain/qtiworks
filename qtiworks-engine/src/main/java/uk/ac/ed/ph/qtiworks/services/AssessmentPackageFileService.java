@@ -40,7 +40,7 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
@@ -112,7 +112,7 @@ public class AssessmentPackageFileService {
      * Creates a {@link ResourceLocator} for the given {@link AssessmentPackage} that is capable
      * only of reading in files within the package.
      * <p>
-     * Do NOT use this for parsing (e.g. via {@link QtiXmlObjectReader}), as it won't be able
+     * Do NOT use this for parsing (e.g. via {@link QtiObjectReader}), as it won't be able
      * to resolve references.
      */
     public ResourceLocator createPackageFileResourceLocator(final AssessmentPackage assessmentPackage) {
@@ -132,7 +132,7 @@ public class AssessmentPackageFileService {
 
     /**
      * Creates a {@link ResourceLocator} for reading in and resolving the resources associated with
-     * the given {@link AssessmentPackage} using a {@link QtiXmlObjectReader}.
+     * the given {@link AssessmentPackage} using a {@link QtiObjectReader}.
      * <p>
      * For an {@link AssessmentPackage} uploaded by a user, the resulting {@link ResourceLocator} will
      * be restricted to the package's sandbox, plus bundled parser resources and external HTTP locations.

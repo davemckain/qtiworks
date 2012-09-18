@@ -47,13 +47,13 @@ import java.util.Map;
 import org.w3c.dom.Element;
 
 /**
- * This enumeration instantiates all supported {@link RootObject}, which correspond to QTI
+ * This enumeration instantiates all supported {@link RootNode}, which correspond to QTI
  * root element names.
  *
  * @author David McKain
  * @author Jiri Kajaba
  */
-public enum RootObjectTypes {
+public enum RootNodeTypes {
 
     /**
      * Creates assessmentTest root node.
@@ -85,35 +85,35 @@ public enum RootObjectTypes {
 
     ;
 
-    private static Map<String, RootObjectTypes> rootObjectTypesMap;
+    private static Map<String, RootNodeTypes> rootNodeTypesMap;
 
     static {
-        rootObjectTypesMap = new HashMap<String, RootObjectTypes>();
+        rootNodeTypesMap = new HashMap<String, RootNodeTypes>();
 
-        for (final RootObjectTypes rootObjectType : RootObjectTypes.values()) {
-            rootObjectTypesMap.put(rootObjectType.rootObjectName, rootObjectType);
+        for (final RootNodeTypes rootNodeType : RootNodeTypes.values()) {
+            rootNodeTypesMap.put(rootNodeType.rootNodeName, rootNodeType);
         }
     }
 
-    private final String rootObjectName;
-    private final Class<? extends RootObject> rootObjectClass;
+    private final String rootNodeName;
+    private final Class<? extends RootNode> rootNodeClass;
 
-    private RootObjectTypes(final String rootObjectType, final Class<? extends RootObject> rootObjectClass) {
-        this.rootObjectName = rootObjectType;
-        this.rootObjectClass = rootObjectClass;
+    private RootNodeTypes(final String rootNodeType, final Class<? extends RootNode> rootNodeClass) {
+        this.rootNodeName = rootNodeType;
+        this.rootNodeClass = rootNodeClass;
     }
 
     public String getRootName() {
-        return rootObjectName;
+        return rootNodeName;
     }
 
-    public Class<? extends RootObject> getRootObjectClass() {
-        return rootObjectClass;
+    public Class<? extends RootNode> getRootNodeClass() {
+        return rootNodeClass;
     }
 
     @Override
     public String toString() {
-        return rootObjectName;
+        return rootNodeName;
     }
 
     /**
@@ -122,16 +122,16 @@ public enum RootObjectTypes {
      * @param qtiClassName QTI_CLASS_NAME of created root node
      * @return created root node
      * @throws IllegalArgumentException if the given qtiClassName does not correspond to a QTI root Node
-     * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
+     * @throws QtiLogicException if the resulting {@link RootNode} could not be instantiated
      */
-    public static RootObject getInstance(final String qtiClassName, final URI systemId, final ModelRichness modelRichness) {
-        final RootObjectTypes rootObjectType = rootObjectTypesMap.get(qtiClassName);
-        RootObject result = null;
-        if (rootObjectType == null) {
+    public static RootNode getInstance(final String qtiClassName, final URI systemId, final ModelRichness modelRichness) {
+        final RootNodeTypes rootNodeType = rootNodeTypesMap.get(qtiClassName);
+        RootNode result = null;
+        if (rootNodeType == null) {
             throw new IllegalArgumentException("Class Tag " + qtiClassName + " does not correspond to a QTI Root Node");
         }
         try {
-            result = rootObjectType.getRootObjectClass().newInstance();
+            result = rootNodeType.getRootNodeClass().newInstance();
         }
         catch (final Exception e) {
             throw new QtiLogicException("Could not instantiate root node Class " + qtiClassName, e);
@@ -147,10 +147,10 @@ public enum RootObjectTypes {
      * @param sourceElement source node
      * @return loaded root node
      * @throws IllegalArgumentException if the given qtiClassName does not correspond to a root Node
-     * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
+     * @throws QtiLogicException if the resulting {@link RootNode} could not be instantiated
      */
-    public static RootObject load(final Element sourceElement, final URI systemId, final ModelRichness modelRichness, final LoadingContext context) {
-        final RootObject root = getInstance(sourceElement.getLocalName(), systemId, modelRichness);
+    public static RootNode load(final Element sourceElement, final URI systemId, final ModelRichness modelRichness, final LoadingContext context) {
+        final RootNode root = getInstance(sourceElement.getLocalName(), systemId, modelRichness);
 
         /* Check namespaces */
         final String namespaceUri = sourceElement.getNamespaceURI();

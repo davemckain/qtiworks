@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup;
+import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -131,7 +131,7 @@ public final class QueryUtils {
 
     public static Set<JqtiExtensionPackage<?>> findExtensionsUsed(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedItem) {
         final Set<JqtiExtensionPackage<?>> resultSet = findExtensionsWithin(jqtiExtensionManager, resolvedItem.getItemLookup().extractAssumingSuccessful());
-        final RootObjectLookup<ResponseProcessing> rpTemplateLookup = resolvedItem.getResolvedResponseProcessingTemplateLookup();
+        final RootNodeLookup<ResponseProcessing> rpTemplateLookup = resolvedItem.getResolvedResponseProcessingTemplateLookup();
         if (rpTemplateLookup!=null) {
             resultSet.addAll(findExtensionsWithin(jqtiExtensionManager, rpTemplateLookup.extractAssumingSuccessful()));
         }
