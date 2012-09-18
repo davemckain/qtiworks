@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
@@ -47,15 +47,15 @@ public final class IntegerAttribute extends SingleAttribute<Integer> {
 
     private static final long serialVersionUID = 6169314176032331265L;
 
-    public IntegerAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public IntegerAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public IntegerAttribute(final XmlNode parent, final String localName, final int defaultValue, final boolean required) {
+    public IntegerAttribute(final QtiNode parent, final String localName, final int defaultValue, final boolean required) {
         super(parent, localName, Integer.valueOf(defaultValue), required);
     }
 
-    public IntegerAttribute(final XmlNode parent, final String localName, final String namespaceUri, final boolean required) {
+    public IntegerAttribute(final QtiNode parent, final String localName, final String namespaceUri, final boolean required) {
         super(parent, localName, namespaceUri, null, required);
     }
 

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class BaseTypeValidationError extends ValidationError {
      * @param expected expected baseTypes
      * @param found found baseTypes
      */
-    public BaseTypeValidationError(XmlNode source, BaseType[] expected, BaseType[] found) {
+    public BaseTypeValidationError(QtiNode source, BaseType[] expected, BaseType[] found) {
         super(source, createMessage(expected, found));
     }
 

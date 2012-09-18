@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.test.flow;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.io.Serializable;
 
@@ -56,7 +56,7 @@ public abstract class Node implements Serializable {
 
     private Node next;
 
-    private final XmlNode object;
+    private final QtiNode object;
 
     /**
      * Constructs node.
@@ -65,7 +65,7 @@ public abstract class Node implements Serializable {
      * @param object assessment object (test, test part, section, item
      *            reference, precondition or branch rule)
      */
-    protected Node(Node prev, XmlNode object) {
+    protected Node(Node prev, QtiNode object) {
         if (prev != null) {
             index = prev.index + 1;
             this.prev = prev;
@@ -201,7 +201,7 @@ public abstract class Node implements Serializable {
      * @return assessment object (test, test part, section, item reference,
      *         precondition or branch rule) of this node
      */
-    public XmlNode getObject() {
+    public QtiNode getObject() {
         return object;
     }
 

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.serialization;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.content.mathml.Math;
@@ -210,7 +210,7 @@ public class QtiSerializerTest {
 
     //---------------------------------------------------------------------------
 
-    private void serializeAndCompare(final XmlNode node, final String expectedXml, final SaxFiringOptions saxFiringOptions)
+    private void serializeAndCompare(final QtiNode node, final String expectedXml, final SaxFiringOptions saxFiringOptions)
             throws SAXException, IOException {
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
         final QtiSerializer qtiSerializer = new QtiSerializer(jqtiExtensionManager);

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
 
 /**
@@ -46,7 +46,7 @@ public final class FloatOrVariableRefMultipleAttribute extends MultipleAttribute
 
     private static final long serialVersionUID = 1429666396177699288L;
 
-    public FloatOrVariableRefMultipleAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public FloatOrVariableRefMultipleAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 

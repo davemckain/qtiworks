@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Validation item of warning type.
@@ -51,7 +51,7 @@ public class ValidationWarning extends AbstractValidationItem {
      * @param node source node of constructed item
      * @param message message of constructed item
      */
-    public ValidationWarning(XmlNode node, String message) {
+    public ValidationWarning(QtiNode node, String message) {
         super(node, node, message);
     }
 

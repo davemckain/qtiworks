@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.content;
 
 import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 
@@ -45,11 +45,11 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class BlockGroup extends ComplexNodeGroup<XmlNode,Block> {
+public final class BlockGroup extends ComplexNodeGroup<QtiNode,Block> {
 
     private static final long serialVersionUID = 4196445027200459122L;
 
-    public BlockGroup(final XmlNode parent) {
+    public BlockGroup(final QtiNode parent) {
         super(parent, Block.DISPLAY_NAME, ContentType.getBlockQtiClassNames());
     }
 

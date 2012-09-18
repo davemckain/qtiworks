@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -60,7 +60,7 @@ public class DrawingInteraction extends BlockInteraction {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "drawingInteraction";
 
-    public DrawingInteraction(final XmlNode parent) {
+    public DrawingInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ObjectGroup(this, true));

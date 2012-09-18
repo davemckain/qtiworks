@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
@@ -48,7 +48,7 @@ public abstract class GraphicInteraction extends BlockInteraction {
 
     private static final long serialVersionUID = -7825949310026749791L;
 
-    public GraphicInteraction(final XmlNode parent, final String qtiClassName) {
+    public GraphicInteraction(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new ObjectGroup(this, true));

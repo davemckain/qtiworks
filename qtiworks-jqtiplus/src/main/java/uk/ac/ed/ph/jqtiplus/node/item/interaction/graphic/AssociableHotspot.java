@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ShapeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.AssociableChoice;
 
@@ -77,7 +77,7 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
      *
      * @param parent Parent node
      */
-    public AssociableHotspot(final XmlNode parent) {
+    public AssociableHotspot(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME, true));

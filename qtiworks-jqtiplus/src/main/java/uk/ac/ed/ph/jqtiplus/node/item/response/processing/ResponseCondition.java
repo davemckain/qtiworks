@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseIfGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class ResponseCondition extends ResponseRule {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "responseCondition";
 
-    public ResponseCondition(XmlNode parent) {
+    public ResponseCondition(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ResponseIfGroup(this));

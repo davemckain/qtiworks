@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 /**
@@ -55,7 +55,7 @@ public class Col extends BodyElement {
     /** Default value of span attribute. */
     public static final int ATTR_SPAN_DEFAULT_VALUE = 1;
 
-    public Col(final XmlNode parent) {
+    public Col(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SPAN_NAME, ATTR_SPAN_DEFAULT_VALUE, false));

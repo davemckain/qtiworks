@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +58,7 @@ public enum OutcomeRuleType {
     LOOKUP_OUTCOME_VALUE(LookupOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(final XmlNode parent) {
+        public OutcomeRule create(final QtiNode parent) {
             return new LookupOutcomeValue(parent);
         }
     },
@@ -71,7 +71,7 @@ public enum OutcomeRuleType {
     OUTCOME_CONDITION(OutcomeCondition.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(final XmlNode parent) {
+        public OutcomeRule create(final QtiNode parent) {
             return new OutcomeCondition(parent);
         }
     },
@@ -84,7 +84,7 @@ public enum OutcomeRuleType {
     OUTCOME_PROCESSING_FRAGMENT(OutcomeProcessingFragment.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(final XmlNode parent) {
+        public OutcomeRule create(final QtiNode parent) {
             return new OutcomeProcessingFragment(parent);
         }
     },
@@ -97,7 +97,7 @@ public enum OutcomeRuleType {
     SET_OUTCOME_VALUE(SetOutcomeValue.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(final XmlNode parent) {
+        public OutcomeRule create(final QtiNode parent) {
             return new SetOutcomeValue(parent);
         }
     },
@@ -109,7 +109,7 @@ public enum OutcomeRuleType {
     EXIT_TEST(ExitTest.QTI_CLASS_NAME) {
 
         @Override
-        public OutcomeRule create(final XmlNode parent) {
+        public OutcomeRule create(final QtiNode parent) {
             return new ExitTest(parent);
         }
     };
@@ -136,7 +136,7 @@ public enum OutcomeRuleType {
      * @param parent parent of created outcome rule
      * @return created outcome rule
      */
-    public abstract OutcomeRule create(XmlNode parent);
+    public abstract OutcomeRule create(QtiNode parent);
 
     @Override
     public String toString() {
@@ -150,7 +150,7 @@ public enum OutcomeRuleType {
      * @param qtiClassName QTI_CLASS_NAME of created outcome rule
      * @return created outcome rule
      */
-    public static OutcomeRule getInstance(final XmlNode parent, final String qtiClassName) {
+    public static OutcomeRule getInstance(final QtiNode parent, final String qtiClassName) {
         final OutcomeRuleType outcomeRuleType = outcomeRuleTypes.get(qtiClassName);
 
         if (outcomeRuleType == null) {

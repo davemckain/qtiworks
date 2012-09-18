@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -59,11 +59,11 @@ public final class DateAttribute extends SingleAttribute<Date> {
         return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     }
 
-    public DateAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public DateAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public DateAttribute(final XmlNode parent, final String localName, final Date defaultValue, final boolean required) {
+    public DateAttribute(final QtiNode parent, final String localName, final Date defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 

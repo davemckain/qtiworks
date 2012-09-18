@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
@@ -52,7 +52,7 @@ public class FeedbackInline extends FeedbackElement implements SimpleInline {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "feedbackInline";
 
-    public FeedbackInline(final XmlNode parent) {
+    public FeedbackInline(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineGroup(this));

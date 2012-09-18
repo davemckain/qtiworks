@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.template;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 
@@ -52,7 +52,7 @@ public final class TemplateInline extends TemplateElement implements FlowStatic,
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateInline";
 
-    public TemplateInline(final XmlNode parent) {
+    public TemplateInline(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new InlineStaticGroup(this));
     }

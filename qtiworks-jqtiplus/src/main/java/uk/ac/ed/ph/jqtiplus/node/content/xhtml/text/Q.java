@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
@@ -55,7 +55,7 @@ public class Q extends AbstractSimpleInline implements SimpleInline {
     /** Name of label attribute in xml schema. */
     public static final String ATTR_CITE_NAME = "cite";
 
-    public Q(XmlNode parent) {
+    public Q(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, false));

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.GapImgGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.graphic.AssociableHotspotGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapImg;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.AssociableHotspot;
@@ -101,7 +101,7 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "graphicGapMatchInteraction";
 
-    public GraphicGapMatchInteraction(final XmlNode parent) {
+    public GraphicGapMatchInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new GapImgGroup(this, 1));

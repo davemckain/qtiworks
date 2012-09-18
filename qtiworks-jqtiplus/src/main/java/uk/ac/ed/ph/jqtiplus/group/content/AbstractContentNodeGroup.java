@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.group.content;
 
 import uk.ac.ed.ph.jqtiplus.group.AbstractNodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 
 import java.util.Set;
@@ -49,11 +49,11 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public abstract class AbstractContentNodeGroup<C extends Content> extends ComplexNodeGroup<XmlNode,C> {
+public abstract class AbstractContentNodeGroup<C extends Content> extends ComplexNodeGroup<QtiNode,C> {
 
     private static final long serialVersionUID = -630489519873000102L;
 
-    public AbstractContentNodeGroup(final XmlNode parent, final String name, final Set<String> qtiClassNames, final int minimum, final Integer maximum) {
+    public AbstractContentNodeGroup(final QtiNode parent, final String name, final Set<String> qtiClassNames, final int minimum, final Integer maximum) {
         super(parent, name, qtiClassNames, minimum, maximum);
     }
 }

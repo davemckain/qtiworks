@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -56,7 +56,7 @@ public class ResponseProcessingFragment extends ResponseRule {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "responseProcessingFragment";
 
-    public ResponseProcessingFragment(XmlNode parent) {
+    public ResponseProcessingFragment(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ResponseRuleGroup(this));

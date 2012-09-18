@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -61,7 +61,7 @@ public class LookupOutcomeValue extends ProcessResponseValue {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "lookupOutcomeValue";
 
-    public LookupOutcomeValue(XmlNode parent) {
+    public LookupOutcomeValue(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

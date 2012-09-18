@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.InlineChoiceGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.InlineChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -88,7 +88,7 @@ public final class InlineChoiceInteraction extends InlineInteraction implements 
     /** Default value of required attribute. */
     public static final boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
 
-    public InlineChoiceInteraction(final XmlNode parent) {
+    public InlineChoiceInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));

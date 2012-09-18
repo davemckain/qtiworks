@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.io.Serializable;
 
@@ -50,7 +50,7 @@ public abstract class AbstractValidationItem implements ValidationItem, Serializ
     private final Validatable source;
 
     /** Source node of this item. */
-    private final XmlNode node;
+    private final QtiNode node;
 
     /** Message of this item. */
     private final String message;
@@ -64,11 +64,11 @@ public abstract class AbstractValidationItem implements ValidationItem, Serializ
      * @param node source node of constructed item
      * @param message message of constructed item
      */
-    public AbstractValidationItem(final Validatable source, final XmlNode node, final String message) {
+    public AbstractValidationItem(final Validatable source, final QtiNode node, final String message) {
         this(source, node, message, null);
     }
 
-    public AbstractValidationItem(final Validatable source, final XmlNode node, final String message, final Throwable cause) {
+    public AbstractValidationItem(final Validatable source, final QtiNode node, final String message, final Throwable cause) {
         this.source = source;
         this.node = node;
         this.message = message;
@@ -81,7 +81,7 @@ public abstract class AbstractValidationItem implements ValidationItem, Serializ
     }
 
     @Override
-    public XmlNode getNode() {
+    public QtiNode getNode() {
         return node;
     }
 

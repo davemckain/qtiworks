@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.net.URI;
@@ -48,11 +48,11 @@ public final class UriAttribute extends SingleAttribute<URI> {
 
     private static final long serialVersionUID = -4951687349594320740L;
 
-    public UriAttribute(XmlNode parent, String localName, boolean required) {
+    public UriAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 
-    public UriAttribute(XmlNode parent, String localName, URI defaultValue, boolean required) {
+    public UriAttribute(QtiNode parent, String localName, URI defaultValue, boolean required) {
         super(parent, localName, defaultValue, required);
     }
 

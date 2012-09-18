@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
@@ -46,11 +46,11 @@ public final class DurationAttribute extends SingleAttribute<Double> {
 
     private static final long serialVersionUID = -2706570073349757182L;
 
-    public DurationAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public DurationAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public DurationAttribute(final XmlNode parent, final String localName, final Double defaultValue, final boolean required) {
+    public DurationAttribute(final QtiNode parent, final String localName, final Double defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 

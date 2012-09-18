@@ -34,7 +34,7 @@
 package org.qtitools.qti.node.test.flow;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -430,7 +430,7 @@ public class DefaultItemFlow implements ItemFlow {
         Node node = start;
         while (node != null) {
             builder.append(node.toString());
-            builder.append(XmlNode.NEW_LINE);
+            builder.append(QtiNode.NEW_LINE);
 
             node = node.getNext();
         }

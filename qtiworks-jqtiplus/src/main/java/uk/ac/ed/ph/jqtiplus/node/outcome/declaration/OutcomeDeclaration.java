@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.LookupTableGroup;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ContainerBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.PrintedVariable;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.LookupExpression;
@@ -305,7 +305,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
      * @param xmlNode node
      * @return true if this outcomeDeclaration is read by given node or its children; false otherwise
      */
-    private boolean isRead(final ValidationContext context, final XmlNode xmlNode) {
+    private boolean isRead(final ValidationContext context, final QtiNode xmlNode) {
         if (xmlNode instanceof PrintedVariable) {
             final PrintedVariable printedVariable = (PrintedVariable) xmlNode;
             if (printedVariable.getIdentifier() != null && printedVariable.getIdentifier().equals(getIdentifier())) {
@@ -333,7 +333,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
         }
         if (xmlNode instanceof ContainerBlock) {
             final ContainerBlock container = (ContainerBlock) xmlNode;
-            for (final XmlNode block : container.getChildren()) {
+            for (final QtiNode block : container.getChildren()) {
                 if (isRead(context, block)) {
                     return true;
                 }
@@ -343,7 +343,7 @@ public class OutcomeDeclaration extends VariableDeclaration {
         final NodeGroupList groups = xmlNode.getNodeGroups();
         for (int i = 0; i < groups.size(); i++) {
             final NodeGroup<?,?> group = groups.get(i);
-            for (final XmlNode child : group.getChildren()) {
+            for (final QtiNode child : group.getChildren()) {
                 if (isRead(context, child)) {
                     return true;
                 }

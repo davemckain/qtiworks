@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 
@@ -54,7 +54,7 @@ public class Address extends AbstractAtomicBlock implements AtomicBlock {
      * 
      * @param parent parent of constructed object
      */
-    public Address(XmlNode parent) {
+    public Address(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

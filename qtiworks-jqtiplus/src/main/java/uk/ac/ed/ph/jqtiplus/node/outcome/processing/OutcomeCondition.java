@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeIfGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class OutcomeCondition extends OutcomeRule {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeCondition";
 
-    public OutcomeCondition(XmlNode parent) {
+    public OutcomeCondition(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new OutcomeIfGroup(this));

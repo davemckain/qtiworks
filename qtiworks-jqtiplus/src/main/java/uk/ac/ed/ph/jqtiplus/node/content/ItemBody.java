@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.template.TemplateElement;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
@@ -84,7 +84,7 @@ public class ItemBody extends BodyElement {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "itemBody";
 
-    public ItemBody(final XmlNode parent) {
+    public ItemBody(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new BlockGroup(this));

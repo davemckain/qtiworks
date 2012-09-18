@@ -69,7 +69,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
@@ -92,7 +92,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
     private static final long serialVersionUID = 4537124098886951888L;
 
     /** Owner (node) of these attributes. */
-    private final XmlNode owner;
+    private final QtiNode owner;
 
     /** Children (attributes) of this container. */
     private final List<Attribute<?>> attributes;
@@ -102,7 +102,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      *
      * @param owner parent of constructed container
      */
-    public AttributeList(final XmlNode owner) {
+    public AttributeList(final QtiNode owner) {
         Assert.ensureNotNull(owner);
         this.owner = owner;
         this.attributes = new ArrayList<Attribute<?>>();
@@ -113,7 +113,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      *
      * @return parent of this container
      */
-    public XmlNode getOwner() {
+    public QtiNode getOwner() {
         return owner;
     }
 

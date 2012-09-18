@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +49,7 @@ public final class StatsOperatorNameAttribute extends SingleEnumerateAttribute<S
 
     private static final long serialVersionUID = -2367561162140765443L;
 
-    public StatsOperatorNameAttribute(XmlNode parent, String name, boolean required) {
+    public StatsOperatorNameAttribute(QtiNode parent, String name, boolean required) {
         super(parent, name, required);
     }
 

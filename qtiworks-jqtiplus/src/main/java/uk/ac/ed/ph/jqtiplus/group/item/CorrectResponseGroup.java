@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.item;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 
 /**
@@ -42,11 +42,11 @@ import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
  *
  * @author Jonathon Hare
  */
-public final class CorrectResponseGroup extends SimpleSingleNodeGroup<XmlNode, CorrectResponse> {
+public final class CorrectResponseGroup extends SimpleSingleNodeGroup<QtiNode, CorrectResponse> {
 
     private static final long serialVersionUID = -5509006540419433030L;
 
-    public CorrectResponseGroup(final XmlNode parent) {
+    public CorrectResponseGroup(final QtiNode parent) {
         super(parent, CorrectResponse.QTI_CLASS_NAME, false);
     }
 

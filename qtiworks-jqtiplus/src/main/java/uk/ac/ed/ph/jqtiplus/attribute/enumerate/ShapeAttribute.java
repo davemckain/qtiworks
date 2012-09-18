@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Shape;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class ShapeAttribute extends SingleEnumerateAttribute<Shape> {
 
     private static final long serialVersionUID = -5369017290814290862L;
 
-    public ShapeAttribute(XmlNode parent, String localName, boolean required) {
+    public ShapeAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 

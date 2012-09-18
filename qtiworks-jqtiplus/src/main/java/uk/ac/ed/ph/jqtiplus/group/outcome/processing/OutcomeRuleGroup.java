@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRuleType;
 
@@ -45,11 +45,11 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class OutcomeRuleGroup extends ComplexNodeGroup<XmlNode,OutcomeRule> {
+public final class OutcomeRuleGroup extends ComplexNodeGroup<QtiNode,OutcomeRule> {
 
     private static final long serialVersionUID = -2078014326662762459L;
 
-    public OutcomeRuleGroup(final XmlNode parent) {
+    public OutcomeRuleGroup(final QtiNode parent) {
         super(parent, OutcomeRule.DISPLAY_NAME, OutcomeRuleType.getQtiClassNames());
     }
 

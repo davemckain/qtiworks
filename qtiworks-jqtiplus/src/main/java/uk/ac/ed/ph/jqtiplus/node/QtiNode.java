@@ -43,35 +43,28 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * Base class for all QTI XML Nodes
+ * Base class for all QTI Nodes
  *
  * @author Jiri Kajaba
  * @author David McKain
  */
-public interface XmlNode extends Validatable, Iterable<XmlNode> {
-
-    XmlSourceLocationInformation getSourceLocation();
+public interface QtiNode extends Validatable, Iterable<QtiNode> {
 
     /**
-     * Gets parent of this node or null (if node is root; for example AssessmentTest).
-     * <p>
-     * While testing some nodes (for example expressions) don't have properly set parent, but it is usable only for testing. (Some nodes cannot exists without
-     * parent even for testing).
-     *
-     * @return parent of this node or null (if node is root; for example AssessmentTest)
+     * Gets parent of this node, or null if this is a {@link RootObject}
      */
-    XmlNode getParent();
+    QtiNode getParent();
 
     /**
-     * Gets root of this node or node itself (if node is root; for example AssessmentTest).
-     * <p>
-     * While testing some nodes (for example expressions) don't have properly set parent, but it is usable only for testing. (Some nodes cannot exists without
-     * parent even for testing).
-     *
-     * @return root of this node or node itself (if node is root; for example AssessmentTest)
+     * Gets root of this node, returning the node itself if it is already
+     * a {@link RootObject}
      */
     RootObject getRootObject();
 
+    /**
+     * Gets root of this node, expecting it to be the given subclass of {@link RootObject},
+     * or null if the root of this node is not of the requested type.
+     */
     <E extends RootObject> E getRootObject(Class<E> rootClass);
 
     /**
@@ -96,6 +89,12 @@ public interface XmlNode extends Validatable, Iterable<XmlNode> {
      * Gets QTI class name of this node (as used in the specification).
      */
     String getQtiClassName();
+
+    /**
+     * Provides contextual information about the Node when it has been loaded from XML,
+     * otherwise returns null.
+     */
+    XmlSourceLocationInformation getSourceLocation();
 
     /**
      * Returns a partial XPath expression representing "this" Node. Normally, this would just be: <tt>qtiClassName[position]</tt> but subclasses can override this

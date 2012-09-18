@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleMultipleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapImg;
 
 import java.util.List;
@@ -44,11 +44,11 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class GapImgGroup extends SimpleMultipleNodeGroup<XmlNode,GapImg> {
+public final class GapImgGroup extends SimpleMultipleNodeGroup<QtiNode,GapImg> {
 
     private static final long serialVersionUID = -2058016255519477530L;
 
-    public GapImgGroup(final XmlNode parent, final int minimum) {
+    public GapImgGroup(final QtiNode parent, final int minimum) {
         super(parent, GapImg.QTI_CLASS_NAME, minimum, null);
     }
 

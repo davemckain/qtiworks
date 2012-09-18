@@ -33,14 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.group;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Base class for {@link NodeGroup}s that contain (ZERO or) ONE child of a particular type.
  *
  * @author David McKain
  */
-public abstract class SimpleSingleNodeGroup<P extends XmlNode, C extends XmlNode> extends AbstractNodeGroup<P,C> {
+public abstract class SimpleSingleNodeGroup<P extends QtiNode, C extends QtiNode> extends AbstractNodeGroup<P,C> {
 
     private static final long serialVersionUID = 3006947671579885917L;
 

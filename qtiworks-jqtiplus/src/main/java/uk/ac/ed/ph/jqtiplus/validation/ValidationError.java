@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Validation item of error type.
@@ -50,11 +50,11 @@ public class ValidationError extends AbstractValidationItem {
      * @param node source node of constructed item
      * @param message message of constructed item
      */
-    public ValidationError(XmlNode node, String message) {
+    public ValidationError(QtiNode node, String message) {
         this(node, node, message);
     }
 
-    public ValidationError(XmlNode node, String message, Throwable cause) {
+    public ValidationError(QtiNode node, String message, Throwable cause) {
         this(node, node, message, cause);
     }
 
@@ -65,11 +65,11 @@ public class ValidationError extends AbstractValidationItem {
      * @param node source node of constructed item
      * @param message message of constructed item
      */
-    public ValidationError(Validatable source, XmlNode node, String message) {
+    public ValidationError(Validatable source, QtiNode node, String message) {
         super(source, node, message);
     }
 
-    public ValidationError(Validatable source, XmlNode node, String message, Throwable cause) {
+    public ValidationError(Validatable source, QtiNode node, String message, Throwable cause) {
         super(source, node, message, cause);
     }
 

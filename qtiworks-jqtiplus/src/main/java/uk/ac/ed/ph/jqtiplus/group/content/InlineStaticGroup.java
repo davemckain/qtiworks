@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 
@@ -48,7 +48,7 @@ public final class InlineStaticGroup extends AbstractContentNodeGroup<InlineStat
 
     private static final long serialVersionUID = -3625988403289280882L;
 
-    public InlineStaticGroup(final XmlNode parent) {
+    public InlineStaticGroup(final QtiNode parent) {
         super(parent, InlineStatic.DISPLAY_NAME, ContentType.getInlineStaticQtiClassNames(), 0, null);
     }
 

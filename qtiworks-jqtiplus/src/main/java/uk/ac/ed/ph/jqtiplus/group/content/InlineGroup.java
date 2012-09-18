@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 
@@ -48,7 +48,7 @@ public final class InlineGroup extends AbstractContentNodeGroup<Inline> {
 
     private static final long serialVersionUID = -7476394697568540470L;
 
-    public InlineGroup(final XmlNode parent) {
+    public InlineGroup(final QtiNode parent) {
         super(parent, Inline.DISPLAY_NAME, ContentType.getInlineQtiClassNames(), 0, null);
     }
 

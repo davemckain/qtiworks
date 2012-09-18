@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 
@@ -48,11 +48,11 @@ public final class BlockStaticGroup extends AbstractContentNodeGroup<BlockStatic
 
     private static final long serialVersionUID = 5763029606930975982L;
 
-    public BlockStaticGroup(final XmlNode parent) {
+    public BlockStaticGroup(final QtiNode parent) {
         this(parent, 0);
     }
 
-    public BlockStaticGroup(final XmlNode parent, final int minimum) {
+    public BlockStaticGroup(final QtiNode parent, final int minimum) {
         super(parent, BlockStatic.DISPLAY_NAME, ContentType.getBlockQtiClassNames(), minimum, null);
     }
 

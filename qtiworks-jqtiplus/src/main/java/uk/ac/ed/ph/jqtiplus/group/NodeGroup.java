@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 
 import java.io.Serializable;
@@ -46,17 +46,17 @@ import java.util.List;
 import org.w3c.dom.Node;
 
 /**
- * Container a particular class of {@link XmlNode}s.
+ * Container a particular class of {@link QtiNode}s.
  * <p>
  * For example: {@link TestPartGroup} (group for testParts), {@link ExpressionGroup} (group for expressions).
  *
- * @param <P> type of parent {@link XmlNode}
- * @param <C> type of child {@link XmlNode}
+ * @param <P> type of parent {@link QtiNode}
+ * @param <C> type of child {@link QtiNode}
  *
  * @author Jiri Kajaba (original)
  * @author David McKain (refactored)
  */
-public interface NodeGroup<P extends XmlNode, C extends XmlNode> extends Validatable, Serializable, Iterable<C> {
+public interface NodeGroup<P extends QtiNode, C extends QtiNode> extends Validatable, Serializable, Iterable<C> {
 
     /**
      * Gets parent node of group.
@@ -96,12 +96,12 @@ public interface NodeGroup<P extends XmlNode, C extends XmlNode> extends Validat
     boolean isComplexContent();
 
     /**
-     * Returns whether this NodeGroup supports (i.e. contains) {@link XmlNode}s of the given
+     * Returns whether this NodeGroup supports (i.e. contains) {@link QtiNode}s of the given
      * QTI Class Names.
      *
      * For example: SectionPartNodegroups supports assessmentSection and assessmentItemRef.
      *
-     * @return true if this group contains {@link XmlNode}s of the given class name, false
+     * @return true if this group contains {@link QtiNode}s of the given class name, false
      *   otherwise
      */
     boolean supportsQtiClass(String qtiClassName);
@@ -132,7 +132,7 @@ public interface NodeGroup<P extends XmlNode, C extends XmlNode> extends Validat
      * supports it. Returns true if the Node is supported, false otherwise.
      * <p>
      * (Each DOM Node should be supported by 1 {@link NodeGroup} owned by
-     * a given parent {@link XmlNode}).
+     * a given parent {@link QtiNode}).
      *
      * @param childNode
      * @param context

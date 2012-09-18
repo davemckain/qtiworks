@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
@@ -48,7 +48,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     private static final long serialVersionUID = -3172377961902212482L;
 
     /** Owner of this attribute. Must not be null. */
-    protected final XmlNode owner;
+    protected final QtiNode owner;
 
     /** XML local name of this attribute. Must not be null. */
     protected final String localName;
@@ -65,11 +65,11 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     /** Attribute default value (may be null) */
     protected V defaultValue;
 
-    public AbstractAttribute(final XmlNode owner, final String localName, final V defaultValue, final boolean required) {
+    public AbstractAttribute(final QtiNode owner, final String localName, final V defaultValue, final boolean required) {
         this(owner, localName, "", defaultValue, required);
     }
 
-    public AbstractAttribute(final XmlNode owner, final String localName, final String namespaceUri, final V defaultValue, final boolean required) {
+    public AbstractAttribute(final QtiNode owner, final String localName, final String namespaceUri, final V defaultValue, final boolean required) {
         Assert.ensureNotNull(owner, "owner");
         Assert.ensureNotNull(localName, "localName");
         Assert.ensureNotNull(namespaceUri, "namespaceUri");
@@ -81,7 +81,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     }
 
     @Override
-    public final XmlNode getOwner() {
+    public final QtiNode getOwner() {
         return owner;
     }
 

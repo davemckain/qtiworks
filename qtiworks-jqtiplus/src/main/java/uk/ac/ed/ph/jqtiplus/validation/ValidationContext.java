@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.validation;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
@@ -50,7 +50,7 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
- * Callback interface used when {@link XmlNode}s validate themselves.
+ * Callback interface used when {@link QtiNode}s validate themselves.
  *
  * @author David McKain
  */
@@ -108,7 +108,7 @@ public interface ValidationContext {
      * <p>
      * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.
      */
-    VariableDeclaration checkVariableReference(XmlNode owner, Identifier variableDeclarationIdentifier);
+    VariableDeclaration checkVariableReference(QtiNode owner, Identifier variableDeclarationIdentifier);
 
     /**
      * Checks that the given {@link VariableReferenceIdentifier} can be correctly dereferenced.
@@ -116,7 +116,7 @@ public interface ValidationContext {
      * <p>
      * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.
      */
-    VariableDeclaration checkVariableReference(XmlNode owner, VariableReferenceIdentifier variableReferenceIdentifier);
+    VariableDeclaration checkVariableReference(QtiNode owner, VariableReferenceIdentifier variableReferenceIdentifier);
 
     /**
      * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s, returning
@@ -124,7 +124,7 @@ public interface ValidationContext {
      *
      * A {@link ValidationError} is recorded and false is returned if unsuccessful.
      */
-    boolean checkVariableType(XmlNode owner, VariableDeclaration variableDeclaration, VariableType... requiredTypes);
+    boolean checkVariableType(QtiNode owner, VariableDeclaration variableDeclaration, VariableType... requiredTypes);
 
     /**
      * Checks that the given {@link VariableDeclaration} is of the given {@link BaseType}s, returning true
@@ -132,7 +132,7 @@ public interface ValidationContext {
      *
      * A {@link ValidationError} is recorded and false is returned if unsuccessful.
      */
-    boolean checkBaseType(XmlNode owner, VariableDeclaration variableDeclaration, BaseType... requiedBaseTypes);
+    boolean checkBaseType(QtiNode owner, VariableDeclaration variableDeclaration, BaseType... requiedBaseTypes);
 
     /**
      * Checks that the given {@link VariableDeclaration} is of one of the stated items in the given
@@ -140,6 +140,6 @@ public interface ValidationContext {
      * re
      * A {@link ValidationError} is recorded and false is returned if unsuccessful.
      */
-    boolean checkCardinality(XmlNode owner, VariableDeclaration variableDeclaration, Cardinality... requiredCardinalities);
+    boolean checkCardinality(QtiNode owner, VariableDeclaration variableDeclaration, Cardinality... requiredCardinalities);
 
 }

@@ -51,7 +51,7 @@ import java.net.URI;
  * 
  * @author David McKain
  */
-public interface RootObject extends XmlNode {
+public interface RootObject extends QtiNode {
 
     /** Returns the systemId of this tree, if loaded from a URI, null otherwise */
     URI getSystemId();

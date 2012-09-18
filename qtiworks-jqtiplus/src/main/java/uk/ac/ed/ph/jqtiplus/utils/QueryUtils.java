@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.ForeignAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
@@ -56,28 +56,28 @@ import java.util.Set;
 
 /**
  * This class will provide some utility methods to perform deep queries or searches
- * of a {@link XmlNode} tree.
+ * of a {@link QtiNode} tree.
  *
  * @author David McKain
  */
 public final class QueryUtils {
 
     /**
-     * Performs a deep search starting at the given {@link XmlNode}(s) for instances of
+     * Performs a deep search starting at the given {@link QtiNode}(s) for instances of
      * the given target type.
      * <p>
      * (This used to be part of the {@link BodyElement} interface in JQTI, but didn't work
      * correctly!)
      *
      * @param searchClass type of descendant to search for
-     * @param nodes {@link XmlNode}(s) to start searching from
+     * @param nodes {@link QtiNode}(s) to start searching from
      * @return List of all Nodes found
      */
-    public static <E extends XmlNode> List<E> search(final Class<E> searchClass, final Iterable<? extends XmlNode> nodes) {
+    public static <E extends QtiNode> List<E> search(final Class<E> searchClass, final Iterable<? extends QtiNode> nodes) {
         final List<E> results = new ArrayList<E>();
         walkTree(new TreeWalkNodeHandler() {
             @Override
-            public boolean handleNode(final XmlNode node) {
+            public boolean handleNode(final QtiNode node) {
                 if (searchClass.isInstance(node)) {
                     results.add(searchClass.cast(node));
                 }
@@ -89,7 +89,7 @@ public final class QueryUtils {
     }
 
     /**
-     * Performs a deep search starting at the children of given {@link XmlNode}(s) for the
+     * Performs a deep search starting at the children of given {@link QtiNode}(s) for the
      * first instance of a node of the given searchType.
      * <p>
      * Returns true if such a Node is found, false otherwise.
@@ -98,13 +98,13 @@ public final class QueryUtils {
      * @param nodes
      * @return true if such a Node is found, false otherwise.
      */
-    public static <E extends XmlNode> boolean hasDescendant(final Class<E> searchClass, final Iterable<? extends XmlNode> nodes) {
+    public static <E extends QtiNode> boolean hasDescendant(final Class<E> searchClass, final Iterable<? extends QtiNode> nodes) {
         final DescendentSearchHandler<E> handler = new DescendentSearchHandler<E>(searchClass);
         walkChildNodes(handler, nodes);
         return handler.wasSuccessful();
     }
 
-    private static final class DescendentSearchHandler<E extends XmlNode> implements TreeWalkNodeHandler {
+    private static final class DescendentSearchHandler<E extends QtiNode> implements TreeWalkNodeHandler {
 
         public DescendentSearchHandler(final Class<E> searchClass) {
             this.searchClass = searchClass;
@@ -114,7 +114,7 @@ public final class QueryUtils {
         private boolean found = false;
 
         @Override
-        public boolean handleNode(final XmlNode node) {
+        public boolean handleNode(final QtiNode node) {
             if (found || searchClass.isInstance(node)) {
                 /* Found, so stop searching */
                 found = true;
@@ -139,16 +139,16 @@ public final class QueryUtils {
     }
 
     /**
-     * Finds all {@link JqtiExtensionPackage}s used by the given {@link XmlNode}s and their
+     * Finds all {@link JqtiExtensionPackage}s used by the given {@link QtiNode}s and their
      * child Nodes.
      *
      * @param node
      */
-    public static Set<JqtiExtensionPackage<?>> findExtensionsWithin(final JqtiExtensionManager jqtiExtensionManager, final Iterable<? extends XmlNode> nodes) {
+    public static Set<JqtiExtensionPackage<?>> findExtensionsWithin(final JqtiExtensionManager jqtiExtensionManager, final Iterable<? extends QtiNode> nodes) {
         final Set<JqtiExtensionPackage<?>> resultSet = new HashSet<JqtiExtensionPackage<?>>();
         walkTree(new TreeWalkNodeHandler() {
             @Override
-            public boolean handleNode(final XmlNode node) {
+            public boolean handleNode(final QtiNode node) {
                 if (node instanceof CustomOperator) {
                     final JqtiExtensionPackage<?> jqtiExtensionPackage = jqtiExtensionManager.getJqtiExtensionPackageImplementingOperator((CustomOperator<?>) node);
                     if (jqtiExtensionPackage!=null) {
@@ -168,12 +168,12 @@ public final class QueryUtils {
         return resultSet;
     }
 
-    public static ForeignNamespaceSummary findForeignNamespaces(final Iterable<? extends XmlNode> nodes) {
+    public static ForeignNamespaceSummary findForeignNamespaces(final Iterable<? extends QtiNode> nodes) {
         final Set<String> elementNamespaceUris = new HashSet<String>();
         final Set<String> attributeNamespaceUris = new HashSet<String>();
         walkTree(new TreeWalkNodeHandler() {
             @Override
-            public boolean handleNode(final XmlNode node) {
+            public boolean handleNode(final QtiNode node) {
                 /* Consider node itself */
                 if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
                     elementNamespaceUris.add(QtiConstants.MATHML_NAMESPACE_URI);
@@ -195,31 +195,31 @@ public final class QueryUtils {
         return new ForeignNamespaceSummary(elementNamespaceUris, attributeNamespaceUris);
     }
 
-    public static void walkTree(final TreeWalkNodeHandler handler, final Iterable<? extends XmlNode> startNodes) {
+    public static void walkTree(final TreeWalkNodeHandler handler, final Iterable<? extends QtiNode> startNodes) {
         Assert.ensureNotNull(startNodes);
         Assert.ensureNotNull(handler);
-        for (final XmlNode startNode : startNodes) {
+        for (final QtiNode startNode : startNodes) {
             doWalkTree(handler, startNode);
         }
     }
 
-    public static void walkChildNodes(final TreeWalkNodeHandler handler, final Iterable<? extends XmlNode> startNodes) {
+    public static void walkChildNodes(final TreeWalkNodeHandler handler, final Iterable<? extends QtiNode> startNodes) {
         Assert.ensureNotNull(startNodes);
         Assert.ensureNotNull(handler);
-        for (final XmlNode startNode : startNodes) {
+        for (final QtiNode startNode : startNodes) {
             for (final NodeGroup<?,?> nodeGroup : startNode.getNodeGroups()) {
-                for (final XmlNode childNode : nodeGroup.getChildren()) {
+                for (final QtiNode childNode : nodeGroup.getChildren()) {
                     doWalkTree(handler, childNode);
                 }
             }
         }
     }
 
-    private static void doWalkTree(final TreeWalkNodeHandler handler, final XmlNode currentNode) {
+    private static void doWalkTree(final TreeWalkNodeHandler handler, final QtiNode currentNode) {
         final boolean descend = handler.handleNode(currentNode);
         if (descend) {
             for (final NodeGroup<?,?> nodeGroup : currentNode.getNodeGroups()) {
-                for (final XmlNode childNode : nodeGroup.getChildren()) {
+                for (final QtiNode childNode : nodeGroup.getChildren()) {
                     doWalkTree(handler, childNode);
                 }
             }

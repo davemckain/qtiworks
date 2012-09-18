@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
@@ -47,11 +47,11 @@ public final class FloatAttribute extends SingleAttribute<Double> {
 
     private static final long serialVersionUID = -8445977254402390812L;
 
-    public FloatAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public FloatAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public FloatAttribute(final XmlNode parent, final String localName, final double defaultValue, final boolean required) {
+    public FloatAttribute(final QtiNode parent, final String localName, final double defaultValue, final boolean required) {
         super(parent, localName, Double.valueOf(defaultValue), required);
     }
 

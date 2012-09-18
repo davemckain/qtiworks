@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
@@ -89,6 +89,6 @@ public interface JqtiExtensionPackage<E extends JqtiExtensionPackage<E>> extends
      * Instantiate and return a new {@link CustomInteraction} corresponding to the given class name,
      * returning null if this package does not support the stated class.
      */
-    CustomInteraction<E> createCustomInteraction(XmlNode parentObject, String interactionClassName);
+    CustomInteraction<E> createCustomInteraction(QtiNode parentObject, String interactionClassName);
 
 }

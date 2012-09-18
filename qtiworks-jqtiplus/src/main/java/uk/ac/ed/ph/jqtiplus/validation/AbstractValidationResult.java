@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.validation;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * Do not add errors directly getErrors().add(ERROR), use add(ERROR) method instead of it!
      * 
      * @return all errors of this container
-     * @see #getErrors(XmlNode)
+     * @see #getErrors(QtiNode)
      */
     public List<ValidationError> getErrors() {
         return errors;
@@ -101,7 +101,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * @return all errors of this container for given source node
      * @see #getErrors()
      */
-    public List<ValidationError> getErrors(XmlNode source) {
+    public List<ValidationError> getErrors(QtiNode source) {
         return get(errors, source);
     }
     
@@ -115,7 +115,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * Do not add warnings directly getWarnings().add(WARNING), use add(WARNING) method instead of it!
      * 
      * @return all warnings of this container
-     * @see #getWarnings(XmlNode)
+     * @see #getWarnings(QtiNode)
      */
     public List<ValidationWarning> getWarnings() {
         return warnings;
@@ -131,7 +131,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * @see #getWarnings()
      */
     @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ValidationWarning> getWarnings(XmlNode source) {
+    public List<ValidationWarning> getWarnings(QtiNode source) {
         return get(warnings, source);
     }
 
@@ -141,7 +141,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * Do not add validation items directly getAllItems().add(ITEM), use add(ITEM) method instead of it!
      * 
      * @return all validation items (error, warning, info) of this container
-     * @see #getAllItems(XmlNode)
+     * @see #getAllItems(QtiNode)
      */
     @ObjectDumperOptions(DumpMode.IGNORE)
     public List<ValidationItem> getAllItems() {
@@ -157,7 +157,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * @return all validation items (error, warning, info) of this container for given source node
      * @see #getAllItems()
      */
-    public List<ValidationItem> getAllItems(XmlNode source) {
+    public List<ValidationItem> getAllItems(QtiNode source) {
         return get(allItems, source);
     }
 
@@ -168,7 +168,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * @param source given source node
      * @return all validation items from given source list of validation items for given source node
      */
-    private static <E extends ValidationItem> List<E> get(List<E> items, XmlNode source) {
+    private static <E extends ValidationItem> List<E> get(List<E> items, QtiNode source) {
         final List<E> result = new ArrayList<E>();
         for (final E item : items) {
             if (item.getNode() == source) {

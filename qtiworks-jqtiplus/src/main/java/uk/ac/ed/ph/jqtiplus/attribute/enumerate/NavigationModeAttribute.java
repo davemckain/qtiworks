@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class NavigationModeAttribute extends SingleEnumerateAttribute<Navi
 
     private static final long serialVersionUID = -8896482192798423143L;
 
-    public NavigationModeAttribute(XmlNode parent, String localName, boolean required) {
+    public NavigationModeAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 

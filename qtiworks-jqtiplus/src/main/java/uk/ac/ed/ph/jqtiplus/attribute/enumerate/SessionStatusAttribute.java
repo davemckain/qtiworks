@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class SessionStatusAttribute extends SingleEnumerateAttribute<Sessi
 
     private static final long serialVersionUID = 8759133738524182291L;
 
-    public SessionStatusAttribute(XmlNode parent, String localName, boolean required) {
+    public SessionStatusAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 

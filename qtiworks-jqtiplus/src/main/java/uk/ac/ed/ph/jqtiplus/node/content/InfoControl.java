@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
@@ -56,7 +56,7 @@ public final class InfoControl extends BodyElement implements Block {
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
 
-    public InfoControl(final XmlNode parent) {
+    public InfoControl(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
         getNodeGroups().add(new FlowGroup(this));

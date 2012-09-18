@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public final class SimpleChoice extends Choice {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "simpleChoice";
 
-    public SimpleChoice(final XmlNode parent) {
+    public SimpleChoice(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowStaticGroup(this));

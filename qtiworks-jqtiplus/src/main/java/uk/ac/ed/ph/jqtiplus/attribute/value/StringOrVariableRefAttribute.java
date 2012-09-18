@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.StringOrVariableRef;
@@ -52,7 +52,7 @@ public final class StringOrVariableRefAttribute extends SingleAttribute<StringOr
 
     private static final long serialVersionUID = -2290502264287066199L;
 
-    public StringOrVariableRefAttribute(final XmlNode owner, final String localName, final boolean required) {
+    public StringOrVariableRefAttribute(final QtiNode owner, final String localName, final boolean required) {
         super(owner, localName, required);
     }
 

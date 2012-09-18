@@ -36,7 +36,7 @@ package org.qtitools.qti.node.expression;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
@@ -104,7 +104,7 @@ public abstract class ExpressionTest {
         return document.getDocumentElement();
     }
     
-    public static void loadQtiModel(Element element, XmlNode targetNode) {
+    public static void loadQtiModel(Element element, QtiNode targetNode) {
         targetNode.load(element, new TestLoadingContext());
     }
     

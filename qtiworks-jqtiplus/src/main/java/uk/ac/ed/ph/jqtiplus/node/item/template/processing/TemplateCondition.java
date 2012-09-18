@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseIfGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateIfGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class TemplateCondition extends TemplateRule {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateCondition";
 
-    public TemplateCondition(XmlNode parent) {
+    public TemplateCondition(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TemplateIfGroup(this));

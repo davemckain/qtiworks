@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.UnsupportedCustomOperator;
@@ -181,7 +181,7 @@ public final class JqtiExtensionManager {
         return null;
     }
 
-    public CustomInteraction<?> createCustomInteraction(final XmlNode parentObject, final String interactionClassName) {
+    public CustomInteraction<?> createCustomInteraction(final QtiNode parentObject, final String interactionClassName) {
         CustomInteraction<?> result = null;
         final JqtiExtensionPackage<?> extensionPackage = getJqtiExtensionPackageImplementingInteraction(interactionClassName);
         if (extensionPackage!=null) {
@@ -284,7 +284,7 @@ public final class JqtiExtensionManager {
         }
 
         @Override
-        public CustomInteraction<FallbackExtensionPackage> createCustomInteraction(final XmlNode parentObject, final String interactionClassName) {
+        public CustomInteraction<FallbackExtensionPackage> createCustomInteraction(final QtiNode parentObject, final String interactionClassName) {
             return new UnsupportedCustomInteraction(parentObject);
         }
 

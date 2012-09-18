@@ -36,7 +36,7 @@ package uk.ac.ed.ph.qtiworks.mathassess.attribute;
 import uk.ac.ed.ph.qtiworks.mathassess.value.ActionType;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public final class ActionAttribute extends SingleEnumerateAttribute<ActionType> 
 
     private static final long serialVersionUID = 2096278682370848167L;
 
-    public ActionAttribute(final XmlNode parent, final String localName, final String namespaceUri, final boolean required) {
+    public ActionAttribute(final QtiNode parent, final String localName, final String namespaceUri, final boolean required) {
         super(parent, localName, namespaceUri, required);
     }
 

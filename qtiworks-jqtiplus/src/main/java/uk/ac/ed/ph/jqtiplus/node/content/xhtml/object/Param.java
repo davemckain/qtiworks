@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.object;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ParamTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.ObjectFlow;
 import uk.ac.ed.ph.jqtiplus.value.ParamType;
 
@@ -87,7 +87,7 @@ public class Param extends AbstractNode implements ObjectFlow {
     /** Name of type attribute in xml schema. */
     public static final String ATTR_TYPE_NAME = "type";
 
-    public Param(XmlNode parent) {
+    public Param(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_NAME_NAME, true));

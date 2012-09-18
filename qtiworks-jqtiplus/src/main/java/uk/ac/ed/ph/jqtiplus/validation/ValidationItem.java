@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * One item of validation (the smallest piece of indivisible information).
@@ -67,7 +67,7 @@ public interface ValidationItem {
      * 
      * @return source node of this item
      */
-    XmlNode getNode();
+    QtiNode getNode();
 
     /**
      * Gets message of this item.

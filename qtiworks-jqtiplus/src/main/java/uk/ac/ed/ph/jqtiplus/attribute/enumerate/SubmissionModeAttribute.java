@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class SubmissionModeAttribute extends SingleEnumerateAttribute<Subm
 
     private static final long serialVersionUID = -1875382709228264679L;
 
-    public SubmissionModeAttribute(XmlNode parent, String localName, boolean required) {
+    public SubmissionModeAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 

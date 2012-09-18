@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
@@ -52,11 +52,11 @@ public final class FloatOrVariableRefAttribute extends SingleAttribute<FloatOrVa
 
     private static final long serialVersionUID = -2290502264287066199L;
 
-    public FloatOrVariableRefAttribute(final XmlNode owner, final String localName, final boolean required) {
+    public FloatOrVariableRefAttribute(final QtiNode owner, final String localName, final boolean required) {
         super(owner, localName, required);
     }
 
-    public FloatOrVariableRefAttribute(final XmlNode owner, final String localName, final FloatOrVariableRef defaultValue, final boolean required) {
+    public FloatOrVariableRefAttribute(final QtiNode owner, final String localName, final FloatOrVariableRef defaultValue, final boolean required) {
         super(owner, localName, defaultValue, required);
     }
 

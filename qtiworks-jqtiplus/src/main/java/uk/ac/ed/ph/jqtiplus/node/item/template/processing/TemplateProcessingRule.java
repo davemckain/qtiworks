@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
@@ -56,7 +56,7 @@ public abstract class TemplateProcessingRule extends AbstractNode {
      * 
      * @param parent parent of this rule
      */
-    public TemplateProcessingRule(XmlNode parent, String qtiClassName) {
+    public TemplateProcessingRule(QtiNode parent, String qtiClassName) {
         super(parent, qtiClassName);
     }
 

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 
 import static org.junit.Assert.assertEquals;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackInline;
@@ -234,7 +234,7 @@ public class ContentTest {
     public void test() {
         for (final Object[] clz : contentClasses) {
             final String name = (String) clz[0];
-            final XmlNode node = (XmlNode) clz[1];
+            final QtiNode node = (QtiNode) clz[1];
 
             assertEquals(name, node.getQtiClassName());
 

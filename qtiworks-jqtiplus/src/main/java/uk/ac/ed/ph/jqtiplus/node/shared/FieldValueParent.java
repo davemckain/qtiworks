@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.shared;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  * 
  * @author Jiri Kajaba
  */
-public interface FieldValueParent extends XmlNode {
+public interface FieldValueParent extends QtiNode {
 
     /**
      * Gets required cardinality of result value (when all FieldValues are put together).

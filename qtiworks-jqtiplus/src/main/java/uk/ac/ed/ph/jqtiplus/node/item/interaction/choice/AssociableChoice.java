@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public abstract class AssociableChoice extends Choice {
     /** Name of matchGroup attribute in xml schema. */
     public static final String ATTR_MATCH_GROUP_NAME = "matchGroup";
 
-    public AssociableChoice(XmlNode parent, String qtiClassName) {
+    public AssociableChoice(QtiNode parent, String qtiClassName) {
         super(parent, qtiClassName);
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_MATCH_GROUP_NAME, null, false));
     }

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public class Dt extends DlElement {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "dt";
 
-    public Dt(final XmlNode parent) {
+    public Dt(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineGroup(this));

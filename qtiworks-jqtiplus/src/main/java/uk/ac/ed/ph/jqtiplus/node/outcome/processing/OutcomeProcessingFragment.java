@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
@@ -56,7 +56,7 @@ public class OutcomeProcessingFragment extends OutcomeRule {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeProcessingFragment";
 
-    public OutcomeProcessingFragment(XmlNode parent) {
+    public OutcomeProcessingFragment(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new OutcomeRuleGroup(this));

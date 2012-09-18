@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 
 /**
@@ -46,7 +46,7 @@ public final class ForeignAttribute extends SingleAttribute<String> {
 
     private static final long serialVersionUID = -2789631230857582434L;
 
-    public ForeignAttribute(XmlNode parent, String localName, String namespaceUri) {
+    public ForeignAttribute(QtiNode parent, String localName, String namespaceUri) {
         super(parent, localName, namespaceUri, null, false);
     }
 

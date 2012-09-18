@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.content.TextOrVariableGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.PrintedVariable;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
@@ -58,7 +58,7 @@ public final class InlineChoice extends Choice {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "inlineChoice";
 
-    public InlineChoice(final XmlNode parent) {
+    public InlineChoice(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TextOrVariableGroup(this));

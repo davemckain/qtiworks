@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
@@ -71,7 +71,7 @@ public final class SimpleAssociableChoice extends AssociableChoice {
     /** Default value of matchMin attribute. */
     public static final int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
 
-    public SimpleAssociableChoice(final XmlNode parent) {
+    public SimpleAssociableChoice(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME, true));

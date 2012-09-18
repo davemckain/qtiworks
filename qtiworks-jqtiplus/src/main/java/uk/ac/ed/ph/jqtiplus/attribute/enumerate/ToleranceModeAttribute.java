@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.ToleranceMode;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class ToleranceModeAttribute extends SingleEnumerateAttribute<Toler
 
     private static final long serialVersionUID = 1737056425484603310L;
 
-    public ToleranceModeAttribute(XmlNode parent, String localName, boolean required) {
+    public ToleranceModeAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 

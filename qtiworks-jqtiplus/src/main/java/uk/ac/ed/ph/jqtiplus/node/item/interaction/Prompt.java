@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 
@@ -52,7 +52,7 @@ public final class Prompt extends BodyElement {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "prompt";
 
-    public Prompt(final XmlNode parent) {
+    public Prompt(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineStaticGroup(this));

@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -100,7 +100,7 @@ public class PositionObjectInteraction extends BlockInteraction {
     /** Name of minChoices attribute in xml schema. */
     public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
-    public PositionObjectInteraction(XmlNode parent) {
+    public PositionObjectInteraction(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new CoordsAttribute(this, ATTR_CENTER_POINT_NAME, false));

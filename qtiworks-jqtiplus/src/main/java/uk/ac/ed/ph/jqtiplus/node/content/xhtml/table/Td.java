@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * td
@@ -47,7 +47,7 @@ public class Td extends TableCell {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "td";
 
-    public Td(XmlNode parent) {
+    public Td(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

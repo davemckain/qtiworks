@@ -36,7 +36,7 @@ package uk.ac.ed.ph.qtiworks.mathassess.attribute;
 import uk.ac.ed.ph.qtiworks.mathassess.value.ReturnTypeType;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class ReturnTypeAttribute extends SingleEnumerateAttribute<ReturnTypeType
 
     private static final long serialVersionUID = -1032549489931459690L;
 
-    public ReturnTypeAttribute(final XmlNode parent, final String localName, final String namespaceUri) {
+    public ReturnTypeAttribute(final QtiNode parent, final String localName, final String namespaceUri) {
         super(parent, localName, namespaceUri, true);
     }
 

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
 import uk.ac.ed.ph.jqtiplus.group.content.AbstractContentNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Marker interface used by {@link AbstractContentNodeGroup}
@@ -43,6 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
  *
  * @author David McKain
  */
-public interface Content extends XmlNode {
+public interface Content extends QtiNode {
 
 }

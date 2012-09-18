@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 
@@ -48,7 +48,7 @@ public class TextOrVariableGroup extends AbstractContentNodeGroup<TextOrVariable
 
     private static final long serialVersionUID = -4777558280555802758L;
 
-    public TextOrVariableGroup(final XmlNode parent) {
+    public TextOrVariableGroup(final QtiNode parent) {
         super(parent, TextOrVariable.DISPLAY_NAME, ContentType.getTextOrVariableQtiClassNames(), 0, null);
     }
 

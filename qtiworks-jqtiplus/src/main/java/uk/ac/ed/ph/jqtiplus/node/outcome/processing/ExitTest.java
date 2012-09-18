@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 /**
@@ -49,7 +49,7 @@ public class ExitTest extends OutcomeRule {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "exitTest";
 
-    public ExitTest(XmlNode parent) {
+    public ExitTest(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

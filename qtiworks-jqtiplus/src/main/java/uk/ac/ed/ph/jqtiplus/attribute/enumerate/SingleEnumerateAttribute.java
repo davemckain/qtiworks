@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
 import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
 
 /**
@@ -48,15 +48,15 @@ public abstract class SingleEnumerateAttribute<V extends Enum<V> & Stringifiable
 
     private static final long serialVersionUID = -3379931153392373791L;
     
-    public SingleEnumerateAttribute(XmlNode parent, String localName, boolean required) {
+    public SingleEnumerateAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
     
-    public SingleEnumerateAttribute(XmlNode parent, String localName, V defaultValue, boolean required) {
+    public SingleEnumerateAttribute(QtiNode parent, String localName, V defaultValue, boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
-    public SingleEnumerateAttribute(XmlNode parent, String localName, String namespaceUri, boolean required) {
+    public SingleEnumerateAttribute(QtiNode parent, String localName, String namespaceUri, boolean required) {
         super(parent, localName, namespaceUri, null, required);
     }
 

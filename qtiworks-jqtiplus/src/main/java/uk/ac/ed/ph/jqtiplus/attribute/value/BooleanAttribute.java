@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 import uk.ac.ed.ph.jqtiplus.attribute.EnumerateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 import java.util.Arrays;
@@ -55,15 +55,15 @@ public final class BooleanAttribute extends SingleAttribute<Boolean> implements 
     /** Read-only view of all allowed values */
     private static final List<Boolean> valuesView = Collections.unmodifiableList(Arrays.asList(Boolean.TRUE, Boolean.FALSE));
 
-    public BooleanAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public BooleanAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public BooleanAttribute(final XmlNode parent, final String localName, final boolean defaultValue, final boolean required) {
+    public BooleanAttribute(final QtiNode parent, final String localName, final boolean defaultValue, final boolean required) {
         super(parent, localName, Boolean.valueOf(defaultValue), required);
     }
 
-    public BooleanAttribute(final XmlNode parent, final String localName, final String namespaceUri, final boolean defaultValue, final boolean required) {
+    public BooleanAttribute(final QtiNode parent, final String localName, final String namespaceUri, final boolean defaultValue, final boolean required) {
         super(parent, localName, namespaceUri, Boolean.valueOf(defaultValue), required);
     }
 

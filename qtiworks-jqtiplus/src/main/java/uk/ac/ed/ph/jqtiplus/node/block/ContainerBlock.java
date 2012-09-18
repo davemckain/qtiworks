@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.block;
 
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -61,12 +61,12 @@ public abstract class ContainerBlock extends AbstractNode {
     private static final long serialVersionUID = -577148022486574797L;
 
     /** Children of this block. */
-    private final List<XmlNode> children;
+    private final List<QtiNode> children;
 
-    public ContainerBlock(final XmlNode parent, final String qtiClassName) {
+    public ContainerBlock(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
-        children = new ArrayList<XmlNode>();
+        children = new ArrayList<QtiNode>();
     }
 
     /**
@@ -74,7 +74,7 @@ public abstract class ContainerBlock extends AbstractNode {
      *
      * @return children of this block
      */
-    public List<XmlNode> getChildren() {
+    public List<QtiNode> getChildren() {
         return children;
     }
 
@@ -109,7 +109,7 @@ public abstract class ContainerBlock extends AbstractNode {
 
     @Override
     protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-        for (final XmlNode childNode : children) {
+        for (final QtiNode childNode : children) {
             childNode.fireSaxEvents(qtiSaxDocumentFirer);
         }
     }
@@ -118,7 +118,7 @@ public abstract class ContainerBlock extends AbstractNode {
     protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
-        for (final XmlNode child : children) {
+        for (final QtiNode child : children) {
             child.validate(context);
         }
     }

@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.ForeignAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
@@ -61,7 +61,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Fires a QTI {@link XmlNode} as a standalone SAX Document
+ * Fires a QTI {@link QtiNode} as a standalone SAX Document
  *
  * TODO-LATER: Would be nice to be able to specify how to output MathML elements, i.e. using a
  * prefix instead of changing the default namespace. Need to do the same for apip:accessibility, if we
@@ -92,7 +92,7 @@ public final class QtiSaxDocumentFirer {
     /**
      * Tracks changes in the default namespace.
      *
-     * Key is {@link Object} (usually a {@link XmlNode}) where the default namespace change occurs
+     * Key is {@link Object} (usually a {@link QtiNode}) where the default namespace change occurs
      * Value is the *previous* namespace URI (which is null before the first element is fired)
      */
     private final Map<Object, String> defaultNamespaceChangeMap;
@@ -132,7 +132,7 @@ public final class QtiSaxDocumentFirer {
         requirePrefixMapping(namespaceUri, "ns");
     }
 
-    public void prepareFor(final XmlNode node) {
+    public void prepareFor(final QtiNode node) {
         final NamespacePrefixMappings preferredPrefixMappings = saxFiringOptions.getPreferredPrefixMappings();
         final boolean omitSchemaLocation = saxFiringOptions.isOmitSchemaLocation();
 
@@ -193,7 +193,7 @@ public final class QtiSaxDocumentFirer {
 
     //-----------------------------------------------
 
-    public void fireSaxDocument(final XmlNode node) throws SAXException {
+    public void fireSaxDocument(final QtiNode node) throws SAXException {
         /* Prepare for this Node */
         prepareFor(node);
 
@@ -336,7 +336,7 @@ public final class QtiSaxDocumentFirer {
 
     //-----------------------------------------------
 
-    private String getNodeNamespaceUri(final XmlNode node) {
+    private String getNodeNamespaceUri(final QtiNode node) {
         String namespaceUri = "";
         if (node instanceof ForeignElement) {
             namespaceUri = ((ForeignElement) node).getNamespaceUri();
@@ -357,7 +357,7 @@ public final class QtiSaxDocumentFirer {
         return namespaceUri;
     }
 
-    private String getSchemaLocation(final XmlNode node) {
+    private String getSchemaLocation(final QtiNode node) {
         final String schemaLocation;
         if (node instanceof ForeignElement) {
             schemaLocation = null; /* Can't do anything here? */
@@ -391,7 +391,7 @@ public final class QtiSaxDocumentFirer {
         private final Set<String> attributeNamespaceUris = new HashSet<String>();
 
         @Override
-        public boolean handleNode(final XmlNode node) {
+        public boolean handleNode(final QtiNode node) {
             /* If Node is an extension element, then note which package that element belongs to */
             if (node instanceof CustomOperator) {
                 final JqtiExtensionPackage<?> jqtiExtensionPackage = jqtiExtensionManager.getJqtiExtensionPackageImplementingOperator((CustomOperator<?>) node);

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
@@ -77,7 +77,7 @@ public abstract class FeedbackElement extends BodyElement {
      *
      * @param parent parent of this element
      */
-    public FeedbackElement(final XmlNode parent, final String qtiClassName) {
+    public FeedbackElement(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(

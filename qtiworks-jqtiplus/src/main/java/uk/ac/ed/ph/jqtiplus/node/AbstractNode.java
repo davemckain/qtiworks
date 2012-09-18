@@ -61,12 +61,12 @@ import org.xml.sax.SAXException;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public abstract class AbstractNode implements XmlNode {
+public abstract class AbstractNode implements QtiNode {
 
     private static final long serialVersionUID = -1930032796629418277L;
 
     /** Parent of this node. */
-    private final XmlNode parent;
+    private final QtiNode parent;
 
     private final String qtiClassName;
 
@@ -79,7 +79,7 @@ public abstract class AbstractNode implements XmlNode {
     /** Information about the location of this Node in the original source XML, if loaded that way */
     private XmlSourceLocationInformation sourceLocation;
 
-    public AbstractNode(final XmlNode parent, final String qtiClassName) {
+    public AbstractNode(final QtiNode parent, final String qtiClassName) {
         this.parent = parent;
         this.qtiClassName = qtiClassName;
         this.attributes = new AttributeList(this);
@@ -88,7 +88,7 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public XmlNode getParent() {
+    public QtiNode getParent() {
         return parent;
     }
 
@@ -114,7 +114,7 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public RootObject getRootObject() {
-        XmlNode node = this;
+        QtiNode node = this;
         while (node.getParent() != null) {
             node = node.getParent();
         }
@@ -123,7 +123,7 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public <E extends RootObject> E getRootObject(final Class<E> rootClass) {
-        final XmlNode root = getRootObject();
+        final QtiNode root = getRootObject();
         E result = null;
         if (rootClass.isInstance(root)) {
             result = rootClass.cast(root);
@@ -155,7 +155,7 @@ public abstract class AbstractNode implements XmlNode {
      * provide enough coverage of the model.
      */
     @Override
-    public Iterator<XmlNode> iterator() {
+    public Iterator<QtiNode> iterator() {
         return new ChildNodeIterator();
     }
 
@@ -200,7 +200,7 @@ public abstract class AbstractNode implements XmlNode {
 
     protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
         for (final NodeGroup<?,?> nodeGroup : nodeGroups) {
-            for (final XmlNode childNode : nodeGroup.getChildren()) {
+            for (final QtiNode childNode : nodeGroup.getChildren()) {
                 childNode.fireSaxEvents(qtiSaxDocumentFirer);
             }
         }
@@ -208,12 +208,12 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public String computeXPathComponent() {
-        final XmlNode parentNode = getParent();
+        final QtiNode parentNode = getParent();
         int position = 1;
         if (parentNode != null) {
             SEARCH: for (final NodeGroup<?,?> nodeGroup : parentNode.getNodeGroups()) {
                 position = 1;
-                for (final XmlNode child : nodeGroup.getChildren()) {
+                for (final QtiNode child : nodeGroup.getChildren()) {
                     if (child == this) {
                         break SEARCH;
                     }
@@ -234,7 +234,7 @@ public abstract class AbstractNode implements XmlNode {
         return pathBuilder.toString();
     }
 
-    private void buildXPath(final StringBuilder pathBuilder, final XmlNode node) {
+    private void buildXPath(final StringBuilder pathBuilder, final QtiNode node) {
         if (pathBuilder.length() > 0) {
             pathBuilder.insert(0, "/");
         }
@@ -263,7 +263,7 @@ public abstract class AbstractNode implements XmlNode {
     protected void validateChildren(final ValidationContext context) {
         for (int i = 0; i < nodeGroups.size(); i++) {
             final NodeGroup<?,?> node = nodeGroups.get(i);
-            for (final XmlNode child : node.getChildren()) {
+            for (final QtiNode child : node.getChildren()) {
                 child.validate(context);
             }
         }
@@ -281,7 +281,7 @@ public abstract class AbstractNode implements XmlNode {
         }
     }
 
-    private boolean validateUniqueIdentifier(final XmlNode parent, final Object identifier) {
+    private boolean validateUniqueIdentifier(final QtiNode parent, final Object identifier) {
         if (parent != this && parent instanceof UniqueNode) {
             final Object parentIdentifier = ((UniqueNode<?>) parent).getIdentifier();
             if (identifier.equals(parentIdentifier)) {
@@ -292,7 +292,7 @@ public abstract class AbstractNode implements XmlNode {
         final NodeGroupList groups = parent.getNodeGroups();
         for (int i = 0; i < groups.size(); i++) {
             final NodeGroup<?,?> group = groups.get(i);
-            for (final XmlNode child : group.getChildren()) {
+            for (final QtiNode child : group.getChildren()) {
                 if (!validateUniqueIdentifier(child, identifier)) {
                     return false;
                 }
@@ -313,7 +313,7 @@ public abstract class AbstractNode implements XmlNode {
     /**
      * Read-only iterator over all children of the current Node.
      */
-    protected class ChildNodeIterator implements Iterator<XmlNode> {
+    protected class ChildNodeIterator implements Iterator<QtiNode> {
 
         private int currentGroupIndex;
         private int currentChildIndexInGroup;
@@ -330,7 +330,7 @@ public abstract class AbstractNode implements XmlNode {
             }
             boolean hasNext;
             final NodeGroup<?,?> currentGroup = nodeGroups.get(currentGroupIndex);
-            final List<? extends XmlNode> currentGroupChildren = currentGroup.getChildren();
+            final List<? extends QtiNode> currentGroupChildren = currentGroup.getChildren();
             if (currentChildIndexInGroup < currentGroupChildren.size()) {
                 /* Children left within current group */
                 hasNext = true;
@@ -343,13 +343,13 @@ public abstract class AbstractNode implements XmlNode {
         }
 
         @Override
-        public XmlNode next() {
-            XmlNode result;
+        public QtiNode next() {
+            QtiNode result;
             if (currentGroupIndex==-1) {
                 throw new NoSuchElementException();
             }
             NodeGroup<?,?> currentGroup = nodeGroups.get(currentGroupIndex);
-            List<? extends XmlNode> currentGroupChildren = currentGroup.getChildren();
+            List<? extends QtiNode> currentGroupChildren = currentGroup.getChildren();
             if (currentChildIndexInGroup < currentGroupChildren.size()) {
                 /* Children left within current group */
                 result = currentGroupChildren.get(currentChildIndexInGroup);

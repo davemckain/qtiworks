@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
@@ -159,7 +159,7 @@ public enum ContentType {
     ASSOCIATE_INTERACTION(AssociateInteraction.QTI_CLASS_NAME, AssociateInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new AssociateInteraction(parent);
         }
     },
@@ -169,7 +169,7 @@ public enum ContentType {
     CHOICE_INTERACTION(ChoiceInteraction.QTI_CLASS_NAME, ChoiceInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new ChoiceInteraction(parent);
         }
     },
@@ -179,7 +179,7 @@ public enum ContentType {
     DRAWING_INTERACTION(DrawingInteraction.QTI_CLASS_NAME, DrawingInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new DrawingInteraction(parent);
         }
     },
@@ -189,7 +189,7 @@ public enum ContentType {
     EXTENDED_TEXT_INTERACTION(ExtendedTextInteraction.QTI_CLASS_NAME, ExtendedTextInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new ExtendedTextInteraction(parent);
         }
     },
@@ -199,7 +199,7 @@ public enum ContentType {
     GAP_MATCH_INTERACTION(GapMatchInteraction.QTI_CLASS_NAME, GapMatchInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new GapMatchInteraction(parent);
         }
     },
@@ -209,7 +209,7 @@ public enum ContentType {
     GRAPHIC_ASSOCIATE_INTERACTION(GraphicAssociateInteraction.QTI_CLASS_NAME, GraphicAssociateInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new GraphicAssociateInteraction(parent);
         }
     },
@@ -219,7 +219,7 @@ public enum ContentType {
     GRAPHIC_GAP_MATCH_INTERACTION(GraphicGapMatchInteraction.QTI_CLASS_NAME, GraphicGapMatchInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new GraphicGapMatchInteraction(parent);
         }
     },
@@ -229,7 +229,7 @@ public enum ContentType {
     GRAPHIC_ORDER_INTERACTION(GraphicOrderInteraction.QTI_CLASS_NAME, GraphicOrderInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new GraphicOrderInteraction(parent);
         }
     },
@@ -239,7 +239,7 @@ public enum ContentType {
     HOTSPOT_INTERACTION(HotspotInteraction.QTI_CLASS_NAME, HotspotInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new HotspotInteraction(parent);
         }
     },
@@ -249,7 +249,7 @@ public enum ContentType {
     SELECT_POINT_INTERACTION(SelectPointInteraction.QTI_CLASS_NAME, SelectPointInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new SelectPointInteraction(parent);
         }
     },
@@ -259,7 +259,7 @@ public enum ContentType {
     HOTTEXT_INTERACTION(HottextInteraction.QTI_CLASS_NAME, HottextInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new HottextInteraction(parent);
         }
     },
@@ -269,7 +269,7 @@ public enum ContentType {
     MATCH_INTERACTION(MatchInteraction.QTI_CLASS_NAME, MatchInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new MatchInteraction(parent);
         }
     },
@@ -279,7 +279,7 @@ public enum ContentType {
     MEDIA_INTERACTION(MediaInteraction.QTI_CLASS_NAME, MediaInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new MediaInteraction(parent);
         }
     },
@@ -289,7 +289,7 @@ public enum ContentType {
     ORDER_INTERACTION(OrderInteraction.QTI_CLASS_NAME, OrderInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new OrderInteraction(parent);
         }
     },
@@ -299,7 +299,7 @@ public enum ContentType {
     SLIDER_INTERACTION(SliderInteraction.QTI_CLASS_NAME, SliderInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new SliderInteraction(parent);
         }
     },
@@ -309,7 +309,7 @@ public enum ContentType {
     UPLOAD_INTERACTION(UploadInteraction.QTI_CLASS_NAME, UploadInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new UploadInteraction(parent);
         }
     },
@@ -320,7 +320,7 @@ public enum ContentType {
     ADDRESS(Address.QTI_CLASS_NAME, Address.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Address(parent);
         }
     },
@@ -330,7 +330,7 @@ public enum ContentType {
     H1(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H1.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H1.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new H1(parent);
         }
     },
@@ -340,7 +340,7 @@ public enum ContentType {
     H2(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H2.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H2.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new H2(parent);
         }
     },
@@ -350,7 +350,7 @@ public enum ContentType {
     H3(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H3.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H3.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new H3(parent);
         }
     },
@@ -360,7 +360,7 @@ public enum ContentType {
     H4(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H4.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H4.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new H4(parent);
         }
     },
@@ -370,7 +370,7 @@ public enum ContentType {
     H5(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H5.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H5.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new H5(parent);
         }
     },
@@ -380,7 +380,7 @@ public enum ContentType {
     H6(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H6.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.H6.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new H6(parent);
         }
     },
@@ -390,7 +390,7 @@ public enum ContentType {
     P(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new P(parent);
         }
     },
@@ -400,7 +400,7 @@ public enum ContentType {
     PRE(Pre.QTI_CLASS_NAME, Pre.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Pre(parent);
         }
     },
@@ -410,7 +410,7 @@ public enum ContentType {
     DIV(Div.QTI_CLASS_NAME, Div.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Div(parent);
         }
     },
@@ -418,7 +418,7 @@ public enum ContentType {
     INFOCONTROL(InfoControl.QTI_CLASS_NAME, InfoControl.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new InfoControl(parent);
         }
     },
@@ -429,7 +429,7 @@ public enum ContentType {
     DL(Dl.QTI_CLASS_NAME, Dl.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Dl(parent);
         }
     },
@@ -439,7 +439,7 @@ public enum ContentType {
     HR(Hr.QTI_CLASS_NAME, Hr.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Hr(parent);
         }
     },
@@ -449,7 +449,7 @@ public enum ContentType {
     MATH(Math.QTI_CLASS_NAME, Math.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Math(parent);
         }
     },
@@ -459,7 +459,7 @@ public enum ContentType {
     OL(Ol.QTI_CLASS_NAME, Ol.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Ol(parent);
         }
     },
@@ -469,7 +469,7 @@ public enum ContentType {
     BLOCKQUOTE(Blockquote.QTI_CLASS_NAME, Blockquote.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Blockquote(parent);
         }
     },
@@ -479,7 +479,7 @@ public enum ContentType {
     FEEDBACK_BLOCK(FeedbackBlock.QTI_CLASS_NAME, FeedbackBlock.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new FeedbackBlock(parent);
         }
     },
@@ -489,7 +489,7 @@ public enum ContentType {
     RUBRIC_BLOCK(RubricBlock.QTI_CLASS_NAME, RubricBlock.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new RubricBlock(parent);
         }
     },
@@ -499,7 +499,7 @@ public enum ContentType {
     TABLE(Table.QTI_CLASS_NAME, Table.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Table(parent);
         }
     },
@@ -509,7 +509,7 @@ public enum ContentType {
     UL(Ul.QTI_CLASS_NAME, Ul.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Ul(parent);
         }
     },
@@ -519,7 +519,7 @@ public enum ContentType {
     CUSTOM_INTERACTION(CustomInteraction.QTI_CLASS_NAME, CustomInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             throw new QtiLogicException("customInteractions should have been intercepted before this method got called");
         }
     },
@@ -529,7 +529,7 @@ public enum ContentType {
     POSITION_OBJECT_STAGE(PositionObjectStage.QTI_CLASS_NAME, PositionObjectStage.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new PositionObjectStage(parent);
         }
     },
@@ -539,7 +539,7 @@ public enum ContentType {
     POSITION_OBJECT_INTERACTION(PositionObjectInteraction.QTI_CLASS_NAME, PositionObjectInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new PositionObjectInteraction(parent);
         }
     },
@@ -549,7 +549,7 @@ public enum ContentType {
     END_ATTEMPT_INTERACTION(EndAttemptInteraction.QTI_CLASS_NAME, EndAttemptInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new EndAttemptInteraction(parent);
         }
     },
@@ -559,7 +559,7 @@ public enum ContentType {
     INLINE_CHOICE_INTERACTION(InlineChoiceInteraction.QTI_CLASS_NAME, InlineChoiceInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new InlineChoiceInteraction(parent);
         }
     },
@@ -569,7 +569,7 @@ public enum ContentType {
     TEXT_ENTRY_INTERACTION(TextEntryInteraction.QTI_CLASS_NAME, TextEntryInteraction.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new TextEntryInteraction(parent);
         }
     },
@@ -580,7 +580,7 @@ public enum ContentType {
     BR(Br.QTI_CLASS_NAME, Br.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Br(parent);
         }
     },
@@ -590,7 +590,7 @@ public enum ContentType {
     IMG(Img.QTI_CLASS_NAME, Img.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Img(parent);
         }
     },
@@ -600,7 +600,7 @@ public enum ContentType {
     GAP(Gap.QTI_CLASS_NAME, Gap.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Gap(parent);
         }
     },
@@ -610,7 +610,7 @@ public enum ContentType {
     HOTTEXT(Hottext.QTI_CLASS_NAME, Hottext.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Hottext(parent);
         }
     },
@@ -620,7 +620,7 @@ public enum ContentType {
     OBJECT(uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object(parent);
         }
     },
@@ -630,7 +630,7 @@ public enum ContentType {
     PRINTED_VARIABLE(PrintedVariable.QTI_CLASS_NAME, PrintedVariable.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new PrintedVariable(parent);
         }
     },
@@ -640,7 +640,7 @@ public enum ContentType {
     A(uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext.A.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.hypertext.A.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new A(parent);
         }
     },
@@ -650,7 +650,7 @@ public enum ContentType {
     ABBR(Abbr.QTI_CLASS_NAME, Abbr.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Abbr(parent);
         }
     },
@@ -660,7 +660,7 @@ public enum ContentType {
     ACRONYM(Acronym.QTI_CLASS_NAME, Acronym.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Acronym(parent);
         }
     },
@@ -670,7 +670,7 @@ public enum ContentType {
     B(uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.B.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.B.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new B(parent);
         }
     },
@@ -680,7 +680,7 @@ public enum ContentType {
     BIG(Big.QTI_CLASS_NAME, Big.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Big(parent);
         }
     },
@@ -690,7 +690,7 @@ public enum ContentType {
     CITE(Cite.QTI_CLASS_NAME, Cite.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Cite(parent);
         }
     },
@@ -700,7 +700,7 @@ public enum ContentType {
     CODE(Code.QTI_CLASS_NAME, Code.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Code(parent);
         }
     },
@@ -710,7 +710,7 @@ public enum ContentType {
     DFN(Dfn.QTI_CLASS_NAME, Dfn.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Dfn(parent);
         }
     },
@@ -720,7 +720,7 @@ public enum ContentType {
     EM(Em.QTI_CLASS_NAME, Em.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Em(parent);
         }
     },
@@ -730,7 +730,7 @@ public enum ContentType {
     FEEDBACK_INLINE(FeedbackInline.QTI_CLASS_NAME, FeedbackInline.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new FeedbackInline(parent);
         }
     },
@@ -740,7 +740,7 @@ public enum ContentType {
     I(uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.I.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.I.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new I(parent);
         }
     },
@@ -750,7 +750,7 @@ public enum ContentType {
     KBD(Kbd.QTI_CLASS_NAME, Kbd.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Kbd(parent);
         }
     },
@@ -760,7 +760,7 @@ public enum ContentType {
     Q(uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.Q.QTI_CLASS_NAME, uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.Q.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Q(parent);
         }
     },
@@ -770,7 +770,7 @@ public enum ContentType {
     SAMP(Samp.QTI_CLASS_NAME, Samp.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Samp(parent);
         }
     },
@@ -780,7 +780,7 @@ public enum ContentType {
     SMALL(Small.QTI_CLASS_NAME, Small.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Small(parent);
         }
     },
@@ -790,7 +790,7 @@ public enum ContentType {
     SPAN(Span.QTI_CLASS_NAME, Span.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Span(parent);
         }
     },
@@ -800,7 +800,7 @@ public enum ContentType {
     STRONG(Strong.QTI_CLASS_NAME, Strong.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Strong(parent);
         }
     },
@@ -810,7 +810,7 @@ public enum ContentType {
     SUB(Sub.QTI_CLASS_NAME, Sub.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Sub(parent);
         }
     },
@@ -820,7 +820,7 @@ public enum ContentType {
     SUP(Sup.QTI_CLASS_NAME, Sup.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Sup(parent);
         }
     },
@@ -830,7 +830,7 @@ public enum ContentType {
     TT(Tt.QTI_CLASS_NAME, Tt.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Tt(parent);
         }
     },
@@ -840,7 +840,7 @@ public enum ContentType {
     VAR(Var.QTI_CLASS_NAME, Var.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Var(parent);
         }
     },
@@ -850,7 +850,7 @@ public enum ContentType {
     TEMPLATE_INLINE(TemplateInline.QTI_CLASS_NAME, TemplateInline.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new TemplateInline(parent);
         }
     },
@@ -860,7 +860,7 @@ public enum ContentType {
     TEXT_RUN(TextRun.DISPLAY_NAME, TextRun.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new TextRun(parent, "");
         }
     },
@@ -870,7 +870,7 @@ public enum ContentType {
     PARAM(Param.QTI_CLASS_NAME, Param.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Param(parent);
         }
     },
@@ -880,7 +880,7 @@ public enum ContentType {
     CAPTION(Caption.QTI_CLASS_NAME, Caption.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Caption(parent);
         }
     },
@@ -890,7 +890,7 @@ public enum ContentType {
     SIMPLE_CHOICE(SimpleChoice.QTI_CLASS_NAME, SimpleChoice.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new SimpleChoice(parent);
         }
     },
@@ -900,7 +900,7 @@ public enum ContentType {
     SIMPLE_ASSOCIABLE_CHOICE(SimpleAssociableChoice.QTI_CLASS_NAME, SimpleAssociableChoice.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new SimpleAssociableChoice(parent);
         }
     },
@@ -910,7 +910,7 @@ public enum ContentType {
     SIMPLE_MATCH_SET(SimpleMatchSet.QTI_CLASS_NAME, SimpleMatchSet.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new SimpleMatchSet(parent);
         }
     },
@@ -920,7 +920,7 @@ public enum ContentType {
     GAP_IMG(GapImg.QTI_CLASS_NAME, GapImg.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new GapImg(parent);
         }
     },
@@ -930,7 +930,7 @@ public enum ContentType {
     GAP_TEXT(GapText.QTI_CLASS_NAME, GapText.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new GapText(parent);
         }
     },
@@ -940,7 +940,7 @@ public enum ContentType {
     ASSOCIABLE_HOTSPOT(AssociableHotspot.QTI_CLASS_NAME, AssociableHotspot.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new AssociableHotspot(parent);
         }
     },
@@ -950,7 +950,7 @@ public enum ContentType {
     HOTSPOT_CHOICE(HotspotChoice.QTI_CLASS_NAME, HotspotChoice.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new HotspotChoice(parent);
         }
     },
@@ -960,7 +960,7 @@ public enum ContentType {
     INLINE_CHOICE(InlineChoice.QTI_CLASS_NAME, InlineChoice.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new InlineChoice(parent);
         }
     },
@@ -970,7 +970,7 @@ public enum ContentType {
     COL(Col.QTI_CLASS_NAME, Col.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Col(parent);
         }
     },
@@ -980,7 +980,7 @@ public enum ContentType {
     COLGROUP(Colgroup.QTI_CLASS_NAME, Colgroup.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Colgroup(parent);
         }
     },
@@ -990,7 +990,7 @@ public enum ContentType {
     DD(Dd.QTI_CLASS_NAME, Dd.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Dd(parent);
         }
     },
@@ -1000,7 +1000,7 @@ public enum ContentType {
     DT(Dt.QTI_CLASS_NAME, Dt.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Dt(parent);
         }
     },
@@ -1010,7 +1010,7 @@ public enum ContentType {
     ITEM_BODY(ItemBody.QTI_CLASS_NAME, ItemBody.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new ItemBody(parent);
         }
     },
@@ -1020,7 +1020,7 @@ public enum ContentType {
     LI(Li.QTI_CLASS_NAME, Li.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Li(parent);
         }
     },
@@ -1030,7 +1030,7 @@ public enum ContentType {
     PROMPT(Prompt.QTI_CLASS_NAME, Prompt.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Prompt(parent);
         }
     },
@@ -1040,7 +1040,7 @@ public enum ContentType {
     TD(Td.QTI_CLASS_NAME, Td.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Td(parent);
         }
     },
@@ -1050,7 +1050,7 @@ public enum ContentType {
     TH(Th.QTI_CLASS_NAME, Th.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Th(parent);
         }
     },
@@ -1060,7 +1060,7 @@ public enum ContentType {
     TBODY(Tbody.QTI_CLASS_NAME, Tbody.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Tbody(parent);
         }
     },
@@ -1070,7 +1070,7 @@ public enum ContentType {
     TFOOT(Tfoot.QTI_CLASS_NAME, Tfoot.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Tfoot(parent);
         }
     },
@@ -1080,7 +1080,7 @@ public enum ContentType {
     THEAD(Thead.QTI_CLASS_NAME, Thead.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Thead(parent);
         }
     },
@@ -1090,7 +1090,7 @@ public enum ContentType {
     TR(Tr.QTI_CLASS_NAME, Tr.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new Tr(parent);
         }
     },
@@ -1100,7 +1100,7 @@ public enum ContentType {
     TEMPLATE_BLOCK(TemplateBlock.QTI_CLASS_NAME, TemplateBlock.class) {
 
         @Override
-        public XmlNode create(final XmlNode parent) {
+        public QtiNode create(final QtiNode parent) {
             return new TemplateBlock(parent);
         }
     };
@@ -1327,7 +1327,7 @@ public enum ContentType {
      * @param parent parent of created block
      * @return created block
      */
-    public abstract XmlNode create(XmlNode parent);
+    public abstract QtiNode create(QtiNode parent);
 
     @Override
     public String toString() {
@@ -1395,7 +1395,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created content
      * @return created content
      */
-    public static XmlNode getInstance(final XmlNode parent, final String qtiClassName) {
+    public static QtiNode getInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType contentType = contentTypes.get(qtiClassName);
 
         if (contentType == null) {
@@ -1412,7 +1412,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created block
      * @return created block
      */
-    public static Block getBlockInstance(final XmlNode parent, final String qtiClassName) {
+    public static Block getBlockInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType blockType = blockTypes.get(qtiClassName);
 
         if (blockType == null) {
@@ -1429,7 +1429,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created inline
      * @return created inline
      */
-    public static Inline getInlineInstance(final XmlNode parent, final String qtiClassName) {
+    public static Inline getInlineInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType inlineType = inlineTypes.get(qtiClassName);
 
         if (inlineType == null) {
@@ -1446,7 +1446,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created flow
      * @return created flow
      */
-    public static Flow getFlowInstance(final XmlNode parent, final String qtiClassName) {
+    public static Flow getFlowInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType flowType = flowTypes.get(qtiClassName);
 
         if (flowType == null) {
@@ -1463,7 +1463,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created objectFlow
      * @return created objectFlow
      */
-    public static ObjectFlow getObjectFlowInstance(final XmlNode parent, final String qtiClassName) {
+    public static ObjectFlow getObjectFlowInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType flowType = objectFlowTypes.get(qtiClassName);
 
         if (flowType == null) {
@@ -1480,7 +1480,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created inlineStatic
      * @return created inlineStatic
      */
-    public static InlineStatic getInlineStaticInstance(final XmlNode parent, final String qtiClassName) {
+    public static InlineStatic getInlineStaticInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType inlineType = inlineStaticTypes.get(qtiClassName);
 
         if (inlineType == null) {
@@ -1497,7 +1497,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created flowStatic
      * @return created flowStatic
      */
-    public static FlowStatic getFlowStaticInstance(final XmlNode parent, final String qtiClassName) {
+    public static FlowStatic getFlowStaticInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType flowStaticType = flowStaticTypes.get(qtiClassName);
 
         if (flowStaticType == null) {
@@ -1514,7 +1514,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created textOrVariable
      * @return created textOrVariable
      */
-    public static TextOrVariable getTextOrVariableInstance(final XmlNode parent, final String qtiClassName) {
+    public static TextOrVariable getTextOrVariableInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType textOrVariable = textOrVariableTypes.get(qtiClassName);
 
         if (textOrVariable == null) {
@@ -1531,7 +1531,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created blockStatic
      * @return created blockStatic
      */
-    public static BlockStatic getBlockStaticInstance(final XmlNode parent, final String qtiClassName) {
+    public static BlockStatic getBlockStaticInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType blockStatic = blockStaticTypes.get(qtiClassName);
 
         if (blockStatic == null) {
@@ -1548,7 +1548,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created gapChoice
      * @return created gapChoice
      */
-    public static GapChoice getGapChoiceInstance(final XmlNode parent, final String qtiClassName) {
+    public static GapChoice getGapChoiceInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType gapChoice = gapChoiceTypes.get(qtiClassName);
 
         if (gapChoice == null) {
@@ -1565,7 +1565,7 @@ public enum ContentType {
      * @param qtiClassName QTI_CLASS_NAME of created interaction
      * @return created interaction
      */
-    public static Interaction getInteractionInstance(final XmlNode parent, final String qtiClassName) {
+    public static Interaction getInteractionInstance(final QtiNode parent, final String qtiClassName) {
         final ContentType interaction = interactionTypes.get(qtiClassName);
 
         if (interaction == null) {

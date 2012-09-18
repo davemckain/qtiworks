@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
@@ -170,7 +170,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
     }
 
     @Override
-    public CustomInteraction<MathAssessExtensionPackage> createCustomInteraction(final XmlNode parentObject, final String interactionClassName) {
+    public CustomInteraction<MathAssessExtensionPackage> createCustomInteraction(final QtiNode parentObject, final String interactionClassName) {
         if (MathAssessConstants.MATH_ENTRY_INTERACTION_CLASS.equals(interactionClassName)) {
             return new MathEntryInteraction(parentObject);
         }

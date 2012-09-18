@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -84,7 +84,7 @@ public abstract class TableCell extends BodyElement {
     /** Name of colspan attribute in xml schema. */
     public static final String ATTR_COLSPAN_NAME = "colspan";
 
-    public TableCell(final XmlNode parent, final String qtiClassName) {
+    public TableCell(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_HEADERS_NAME, false));

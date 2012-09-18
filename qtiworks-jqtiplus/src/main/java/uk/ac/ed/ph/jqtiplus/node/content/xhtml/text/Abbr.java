@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
@@ -54,7 +54,7 @@ public class Abbr extends AbstractSimpleInline implements SimpleInline {
      * 
      * @param parent parent of constructed object
      */
-    public Abbr(XmlNode parent) {
+    public Abbr(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

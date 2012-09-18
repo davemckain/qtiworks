@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedbackAccess;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class TestFeedbackAccessAttribute extends SingleEnumerateAttribute<
 
     private static final long serialVersionUID = 3074149624431788342L;
 
-    public TestFeedbackAccessAttribute(XmlNode parent, String localName, boolean required) {
+    public TestFeedbackAccessAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 

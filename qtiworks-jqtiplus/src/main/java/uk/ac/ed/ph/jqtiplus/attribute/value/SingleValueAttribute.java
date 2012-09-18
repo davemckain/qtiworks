@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -52,11 +52,11 @@ public final class SingleValueAttribute extends SingleAttribute<SingleValue> {
     /** BaseType of attribute. */
     private BaseType baseType;
 
-    public SingleValueAttribute(XmlNode parent, String localName, BaseType baseType, boolean required) {
+    public SingleValueAttribute(QtiNode parent, String localName, BaseType baseType, boolean required) {
         this(parent, localName, baseType, null, required);
     }
 
-    public SingleValueAttribute(XmlNode parent, String localName, BaseType baseType, SingleValue defaultValue, boolean required) {
+    public SingleValueAttribute(QtiNode parent, String localName, BaseType baseType, SingleValue defaultValue, boolean required) {
         super(parent, localName, defaultValue, required);
         this.baseType = baseType;
     }

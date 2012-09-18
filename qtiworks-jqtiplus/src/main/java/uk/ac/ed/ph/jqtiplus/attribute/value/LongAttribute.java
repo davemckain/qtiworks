@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
 
 /**
@@ -46,7 +46,7 @@ public final class LongAttribute extends SingleAttribute<Long> {
 
     private static final long serialVersionUID = 1138880928751132617L;
 
-    public LongAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public LongAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 

@@ -34,13 +34,13 @@
 package uk.ac.ed.ph.jqtiplus.utils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.io.Serializable;
 import java.util.Set;
 
 /**
- * Result Object for {@link QueryUtils#findForeignNamespaces(XmlNode)}
+ * Result Object for {@link QueryUtils#findForeignNamespaces(QtiNode)}
  *
  * @author David McKain
  */

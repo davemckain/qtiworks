@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 
@@ -56,7 +56,7 @@ public class TextRun extends AbstractNode implements Content, FlowStatic, Inline
     /** Text content of this block. */
     private String textContent;
 
-    public TextRun(final XmlNode parent, final String textContent) {
+    public TextRun(final QtiNode parent, final String textContent) {
         super(parent, DISPLAY_NAME);
 
         this.textContent = textContent;

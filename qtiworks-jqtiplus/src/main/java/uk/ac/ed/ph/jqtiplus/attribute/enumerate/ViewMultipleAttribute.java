@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
 
 import java.util.List;
@@ -48,11 +48,11 @@ public final class ViewMultipleAttribute extends MultipleAttribute<View> {
 
     private static final long serialVersionUID = -2076945522660615196L;
 
-    public ViewMultipleAttribute(XmlNode parent, String localName, boolean required) {
+    public ViewMultipleAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 
-    public ViewMultipleAttribute(XmlNode parent, String localName, List<View> defaultValue, boolean required) {
+    public ViewMultipleAttribute(QtiNode parent, String localName, List<View> defaultValue, boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, required);
     }
 

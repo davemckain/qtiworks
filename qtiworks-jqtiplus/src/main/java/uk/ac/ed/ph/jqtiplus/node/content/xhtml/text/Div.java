@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
@@ -54,7 +54,7 @@ public class Div extends BodyElement implements BlockStatic, FlowStatic {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "div";
 
-    public Div(final XmlNode parent) {
+    public Div(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));

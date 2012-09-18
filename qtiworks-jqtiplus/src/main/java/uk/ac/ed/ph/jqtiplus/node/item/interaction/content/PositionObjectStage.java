@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.content;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.PositionObjectInteractionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.PositionObjectInteraction;
@@ -55,7 +55,7 @@ public class PositionObjectStage extends AbstractNode implements Block {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "positionObjectStage";
 
-    public PositionObjectStage(XmlNode parent) {
+    public PositionObjectStage(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ObjectGroup(this, true));

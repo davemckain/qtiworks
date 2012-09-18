@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.serialization;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.QtiSerializationException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
@@ -65,30 +65,30 @@ public final class QtiSerializer {
 
     //----------------------------------------------------
 
-    public String serializeJqtiObject(final XmlNode jqtiObject) {
+    public String serializeJqtiObject(final QtiNode jqtiObject) {
         final StringWriter resultWriter = new StringWriter();
         serializeJqtiObject(jqtiObject, new StreamResult(resultWriter));
         return resultWriter.toString();
     }
 
-    public String serializeJqtiObject(final XmlNode jqtiObject, final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
+    public String serializeJqtiObject(final QtiNode jqtiObject, final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
         final StringWriter resultWriter = new StringWriter();
         serializeJqtiObject(jqtiObject, new StreamResult(resultWriter), saxFiringOptions, xsltSerializationOptions);
         return resultWriter.toString();
     }
 
-    public void serializeJqtiObject(final XmlNode jqtiObject, final OutputStream outputStream) {
+    public void serializeJqtiObject(final QtiNode jqtiObject, final OutputStream outputStream) {
         serializeJqtiObject(jqtiObject, new StreamResult(outputStream));
     }
 
-    public void serializeJqtiObject(final XmlNode jqtiObject, final StreamResult result) {
+    public void serializeJqtiObject(final QtiNode jqtiObject, final StreamResult result) {
         final XsltSerializationOptions xsltSerializationOptions = new XsltSerializationOptions();
         xsltSerializationOptions.setIndenting(true);
 
         serializeJqtiObject(jqtiObject, result, new SaxFiringOptions(), xsltSerializationOptions);
     }
 
-    public void serializeJqtiObject(final XmlNode jqtiObject, final StreamResult result,
+    public void serializeJqtiObject(final QtiNode jqtiObject, final StreamResult result,
             final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
         final TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(xsltSerializationOptions);
         serializerHandler.setResult(result);

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class CardinalityValidationError extends ValidationError {
      * @param expected expected cardinalities
      * @param found found cardinalities
      */
-    public CardinalityValidationError(XmlNode source, Cardinality[] expected, Cardinality[] found) {
+    public CardinalityValidationError(QtiNode source, Cardinality[] expected, Cardinality[] found) {
         super(source, createMessage(expected, found));
     }
 

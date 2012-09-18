@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.content;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
@@ -48,7 +48,7 @@ public class FlowStaticGroup extends AbstractContentNodeGroup<FlowStatic> {
 
     private static final long serialVersionUID = 252407139619211538L;
 
-    public FlowStaticGroup(final XmlNode parent) {
+    public FlowStaticGroup(final QtiNode parent) {
         super(parent, FlowStatic.DISPLAY_NAME, ContentType.getFlowStaticQtiClassNames(), 0, null);
     }
 

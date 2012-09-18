@@ -43,7 +43,7 @@ package uk.ac.ed.ph.jqtiplus.node;
  * @param <E> the type of identifier used
  * @author David McKain
  */
-public interface IdentifiableNode<E> extends XmlNode {
+public interface IdentifiableNode<E> extends QtiNode {
 
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";

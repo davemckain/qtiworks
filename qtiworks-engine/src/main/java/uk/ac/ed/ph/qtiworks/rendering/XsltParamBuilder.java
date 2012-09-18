@@ -38,7 +38,7 @@ import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
@@ -140,7 +140,7 @@ public final class XsltParamBuilder {
         return new XsltParamDocumentBuilder(jqtiExtensionManager, new SaxFirerCallback() {
 
             @Override
-            public List<? extends XmlNode> getQtiNodes() {
+            public List<? extends QtiNode> getQtiNodes() {
                 final List<RubricBlock> allBlocks = new ArrayList<RubricBlock>();
                 for (final List<RubricBlock> section : values) {
                     allBlocks.addAll(section);
@@ -169,16 +169,16 @@ public final class XsltParamBuilder {
         return buildNodeList(values);
     }
 
-    private NodeList buildNodeList(final List<? extends XmlNode> values) {
+    private NodeList buildNodeList(final List<? extends QtiNode> values) {
         return new XsltParamDocumentBuilder(jqtiExtensionManager, new SaxFirerCallback() {
             @Override
-            public List<? extends XmlNode> getQtiNodes() {
+            public List<? extends QtiNode> getQtiNodes() {
                 return values;
             }
 
             @Override
             public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-                for (final XmlNode node : values) {
+                for (final QtiNode node : values) {
                     node.fireSaxEvents(qtiSaxDocumentFirer);
                 }
             }

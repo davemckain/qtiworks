@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 
@@ -49,7 +49,7 @@ public class Br extends BodyElement implements AtomicInline {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "br";
 
-    public Br(final XmlNode parent) {
+    public Br(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

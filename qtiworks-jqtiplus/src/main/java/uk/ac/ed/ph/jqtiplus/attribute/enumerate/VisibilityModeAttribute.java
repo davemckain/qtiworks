@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 
 import java.util.Arrays;
@@ -49,11 +49,11 @@ public final class VisibilityModeAttribute extends SingleEnumerateAttribute<Visi
 
     private static final long serialVersionUID = 6524337813805169272L;
 
-    public VisibilityModeAttribute(XmlNode parent, String localName, boolean required) {
+    public VisibilityModeAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 
-    public VisibilityModeAttribute(XmlNode parent, String localName, VisibilityMode defaultValue, boolean required) {
+    public VisibilityModeAttribute(QtiNode parent, String localName, VisibilityMode defaultValue, boolean required) {
         super(parent, localName, defaultValue, required);
     }
 

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.image;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 
@@ -72,7 +72,7 @@ public final class Img extends BodyElement implements AtomicInline {
     /** Name of width attribute in xml schema. */
     public static final String ATTR_WIDTH_NAME = "width";
 
-    public Img(final XmlNode parent) {
+    public Img(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_SRC_NAME, true));

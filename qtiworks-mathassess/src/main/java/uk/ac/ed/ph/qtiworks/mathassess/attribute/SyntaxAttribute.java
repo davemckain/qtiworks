@@ -36,7 +36,7 @@ package uk.ac.ed.ph.qtiworks.mathassess.attribute;
 import uk.ac.ed.ph.qtiworks.mathassess.value.SyntaxType;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SingleEnumerateAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class SyntaxAttribute extends SingleEnumerateAttribute<SyntaxType> {
 
     private static final long serialVersionUID = 8834496656714809174L;
 
-    public SyntaxAttribute(final XmlNode parent, final String localName, final String namespaceUri) {
+    public SyntaxAttribute(final QtiNode parent, final String localName, final String namespaceUri) {
         super(parent, localName, namespaceUri, true);
     }
 

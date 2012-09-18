@@ -33,13 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Interface for marking classes that contain choices
  * 
  * @author Jonathon Hare
  */
-public interface ChoiceContainer extends XmlNode {
+public interface ChoiceContainer extends QtiNode {
 
 }

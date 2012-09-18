@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
 
@@ -52,7 +52,7 @@ public class FeedbackBlock extends FeedbackElement implements SimpleBlock {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "feedbackBlock";
 
-    public FeedbackBlock(final XmlNode parent) {
+    public FeedbackBlock(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new BlockGroup(this));

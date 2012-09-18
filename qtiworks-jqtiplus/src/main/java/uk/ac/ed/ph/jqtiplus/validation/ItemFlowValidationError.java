@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Error validation item for item flow problems.
@@ -50,7 +50,7 @@ public class ItemFlowValidationError extends ValidationError {
      * @param source source node of constructed item
      * @param message message of constructed item
      */
-    public ItemFlowValidationError(XmlNode source, String message) {
+    public ItemFlowValidationError(QtiNode source, String message) {
         super(source, message);
     }
 }

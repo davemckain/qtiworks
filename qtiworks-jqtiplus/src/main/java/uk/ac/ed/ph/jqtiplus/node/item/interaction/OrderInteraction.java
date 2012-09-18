@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.OrientationAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.SimpleChoiceGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -114,7 +114,7 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
     /** Name of orientation attribute in xml schema. */
     public static final String ATTR_ORIENTATION_NAME = "orientation";
 
-    public OrderInteraction(final XmlNode parent) {
+    public OrderInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, ATTR_SHUFFLE_DEFAULT_VALUE, true));

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -47,11 +47,11 @@ public final class StringMultipleAttribute extends MultipleAttribute<String> {
 
     private static final long serialVersionUID = -867950733254443208L;
 
-    public StringMultipleAttribute(XmlNode parent, String localName, boolean required) {
+    public StringMultipleAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 
-    public StringMultipleAttribute(XmlNode parent, String localName, List<String> defaultValue, boolean required) {
+    public StringMultipleAttribute(QtiNode parent, String localName, List<String> defaultValue, boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, required);
     }
 

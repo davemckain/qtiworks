@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Abstract parent of all template rules.
@@ -47,7 +47,7 @@ public abstract class TemplateRule extends TemplateProcessingRule {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "templateRule";
 
-    public TemplateRule(XmlNode parent, String qtiClassName) {
+    public TemplateRule(QtiNode parent, String qtiClassName) {
         super(parent, qtiClassName);
     }
 }

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -63,7 +63,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "setOutcomeValue";
 
-    public SetOutcomeValue(XmlNode parent) {
+    public SetOutcomeValue(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

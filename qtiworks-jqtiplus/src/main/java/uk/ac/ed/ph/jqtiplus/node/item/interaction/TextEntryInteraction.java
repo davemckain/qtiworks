@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -77,7 +77,7 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "textEntryInteraction";
 
-    public TextEntryInteraction(final XmlNode parent) {
+    public TextEntryInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         //for StringInteraction...

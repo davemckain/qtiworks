@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.template;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
@@ -52,7 +52,7 @@ public final class TemplateBlock extends TemplateElement implements FlowStatic, 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateBlock";
 
-    public TemplateBlock(final XmlNode parent) {
+    public TemplateBlock(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new BlockStaticGroup(this));
     }

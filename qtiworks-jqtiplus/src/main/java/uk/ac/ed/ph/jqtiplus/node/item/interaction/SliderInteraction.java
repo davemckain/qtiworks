@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.OrientationAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -108,7 +108,7 @@ public class SliderInteraction extends BlockInteraction {
     /** Name of reverse attribute in xml schema. */
     public static final String ATTR_REVERSE_NAME = "reverse";
 
-    public SliderInteraction(final XmlNode parent) {
+    public SliderInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new FloatAttribute(this, ATTR_LOWER_BOUND_NAME, true));

@@ -46,7 +46,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.value.SyntaxType;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -82,7 +82,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
 
     private static final Logger logger = LoggerFactory.getLogger(MathEntryInteraction.class);
 
-    public MathEntryInteraction(final XmlNode parent) {
+    public MathEntryInteraction(final QtiNode parent) {
         super(parent);
 
         getAttributes().add(new SyntaxAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));

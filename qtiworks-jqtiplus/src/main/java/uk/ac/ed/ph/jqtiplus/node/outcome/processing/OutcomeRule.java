@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 /**
@@ -51,7 +51,7 @@ public abstract class OutcomeRule extends AbstractNode {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "outcomeRule";
 
-    public OutcomeRule(XmlNode parent, String qtiClassName) {
+    public OutcomeRule(QtiNode parent, String qtiClassName) {
         super(parent, qtiClassName);
     }
 

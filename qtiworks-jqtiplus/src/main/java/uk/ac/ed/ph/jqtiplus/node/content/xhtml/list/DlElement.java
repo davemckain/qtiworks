@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 /**
@@ -45,7 +45,7 @@ public abstract class DlElement extends BodyElement {
 
     private static final long serialVersionUID = -1037128914556395698L;
 
-    public DlElement(XmlNode parent, String qtiClassName) {
+    public DlElement(QtiNode parent, String qtiClassName) {
         super(parent, qtiClassName);
     }
 }

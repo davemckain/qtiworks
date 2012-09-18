@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * This exception is used for propagating errors during item flow.
@@ -50,7 +50,7 @@ public class QtiItemFlowException extends QtiRuntimeException {
      * @param source source of this exception
      * @param message the detail message
      */
-    public QtiItemFlowException(XmlNode source, String message) {
+    public QtiItemFlowException(QtiNode source, String message) {
         super(message + " (" + source.computeXPath() + ")");
     }
 

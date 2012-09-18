@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class CardinalityAttribute extends SingleEnumerateAttribute<Cardina
 
     private static final long serialVersionUID = -9072772349022529567L;
 
-    public CardinalityAttribute(final XmlNode parent, final String localName) {
+    public CardinalityAttribute(final QtiNode parent, final String localName) {
         super(parent, localName, true);
     }
 

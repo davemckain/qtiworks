@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.content.AbstractContentNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ContentType;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoice;
 
@@ -49,11 +49,11 @@ public final class GapChoiceGroup extends AbstractContentNodeGroup<GapChoice> {
 
     private static final long serialVersionUID = 3797738603491602458L;
 
-    public GapChoiceGroup(final XmlNode parent) {
+    public GapChoiceGroup(final QtiNode parent) {
         this(parent, 1);
     }
 
-    public GapChoiceGroup(final XmlNode parent, final int minimum) {
+    public GapChoiceGroup(final QtiNode parent, final int minimum) {
         super(parent, GapChoice.DISPLAY_NAME, ContentType.getGapChoiceQtiClassNames(), minimum, null);
     }
 

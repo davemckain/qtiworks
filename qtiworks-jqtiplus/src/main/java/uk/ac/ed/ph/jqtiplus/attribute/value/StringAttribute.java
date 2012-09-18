@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * Attribute with string value.
@@ -45,15 +45,15 @@ public final class StringAttribute extends SingleAttribute<String> {
 
     private static final long serialVersionUID = 3119455031436453049L;
 
-    public StringAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public StringAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public StringAttribute(final XmlNode parent, final String localName, final String defaultValue, final boolean required) {
+    public StringAttribute(final QtiNode parent, final String localName, final String defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
-    public StringAttribute(final XmlNode parent, final String localName, final String namespaceUri, final String defaultValue, final boolean required) {
+    public StringAttribute(final QtiNode parent, final String localName, final String namespaceUri, final String defaultValue, final boolean required) {
         super(parent, localName, namespaceUri, defaultValue, required);
     }
 

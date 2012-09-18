@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.object;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectFlowGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
@@ -72,7 +72,7 @@ public final class Object extends BodyElement implements InlineStatic, FlowStati
     /** Name of height attribute in xml schema. */
     public static final String ATTR_HEIGHT_NAME = "height";
 
-    public Object(final XmlNode parent) {
+    public Object(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_DATA_NAME, true));

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.table;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 
@@ -52,7 +52,7 @@ public class Caption extends BodyElement {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "caption";
 
-    public Caption(final XmlNode parent) {
+    public Caption(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineGroup(this));

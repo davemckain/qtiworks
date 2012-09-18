@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 
 import org.w3c.dom.Element;
@@ -50,13 +50,13 @@ import org.w3c.dom.Node;
 public interface Attribute<V> extends Validatable {
 
     /**
-     * Gets the {@link XmlNode} owning this attribute.
+     * Gets the {@link QtiNode} owning this attribute.
      *
      * NB: This was previously called getParent()
      *
      * @return parent node of attribute
      */
-    XmlNode getOwner();
+    QtiNode getOwner();
 
     /**
      * Gets XML local name of attribute.

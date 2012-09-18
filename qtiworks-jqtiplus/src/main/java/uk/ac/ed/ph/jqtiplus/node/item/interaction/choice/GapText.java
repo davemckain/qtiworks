@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.content.TextOrVariableGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public final class GapText extends GapChoice {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "gapText";
 
-    public GapText(final XmlNode parent) {
+    public GapText(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TextOrVariableGroup(this));

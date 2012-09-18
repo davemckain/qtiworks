@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt.InterruptType;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
@@ -50,7 +50,7 @@ public class ExitTemplate extends TemplateRule {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "exitTemplate";
 
-    public ExitTemplate(XmlNode parent) {
+    public ExitTemplate(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

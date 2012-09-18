@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * The choices that are used to fill the gaps in a gapMatchInteraction
@@ -67,7 +67,7 @@ public abstract class GapChoice extends AssociableChoice {
     /** Default value of matchMin attribute. */
     public static final int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
 
-    public GapChoice(final XmlNode parent, final String qtiClassName) {
+    public GapChoice(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME, true));

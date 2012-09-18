@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.block;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * This block can contain arbitrary XML, including the contents of MathML islands.
@@ -46,7 +46,7 @@ public final class ForeignElement extends ContainerBlock {
     
     private final String namespaceUri;
 
-    public ForeignElement(XmlNode parent, String qtiClassName, String namespaceUri) {
+    public ForeignElement(QtiNode parent, String qtiClassName, String namespaceUri) {
         super(parent, qtiClassName);
         this.namespaceUri = namespaceUri;
     }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.TableCellScope;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class TableCellScopeAttribute extends SingleEnumerateAttribute<Tabl
 
     private static final long serialVersionUID = -5619179078436198190L;
 
-    public TableCellScopeAttribute(XmlNode parent, String localName, boolean required) {
+    public TableCellScopeAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 

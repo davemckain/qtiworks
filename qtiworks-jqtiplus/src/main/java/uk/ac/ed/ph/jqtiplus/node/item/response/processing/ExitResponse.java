@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
@@ -49,7 +49,7 @@ public class ExitResponse extends ResponseRule {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "exitResponse";
 
-    public ExitResponse(XmlNode parent) {
+    public ExitResponse(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

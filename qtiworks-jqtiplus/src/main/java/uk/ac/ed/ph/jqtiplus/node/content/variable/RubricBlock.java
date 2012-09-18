@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
@@ -59,7 +59,7 @@ public final class RubricBlock extends BodyElement implements SimpleBlock {
     /** Name of view attribute in xml schema. */
     public static final String ATTR_VIEWS_NAME = View.QTI_CLASS_NAME;
 
-    public RubricBlock(final XmlNode parent) {
+    public RubricBlock(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, true));

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -46,15 +46,15 @@ public final class IdentifierAttribute extends SingleAttribute<Identifier> {
 
     private static final long serialVersionUID = -2194882443131770832L;
 
-    public IdentifierAttribute(XmlNode parent, String localName, boolean required) {
+    public IdentifierAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 
-    public IdentifierAttribute(XmlNode parent, String localName, Identifier defaultValue, boolean required) {
+    public IdentifierAttribute(QtiNode parent, String localName, Identifier defaultValue, boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
-    public IdentifierAttribute(XmlNode parent, String localName, String namespaceUri, Identifier defaultValue, boolean required) {
+    public IdentifierAttribute(QtiNode parent, String localName, String namespaceUri, Identifier defaultValue, boolean required) {
         super(parent, localName, namespaceUri, defaultValue, required);
     }
 

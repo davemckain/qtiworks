@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -186,7 +186,7 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public final VariableDeclaration checkVariableReference(final XmlNode owner, final Identifier variableDeclarationIdentifier) {
+        public final VariableDeclaration checkVariableReference(final QtiNode owner, final Identifier variableDeclarationIdentifier) {
             try {
                 return resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
             }
@@ -197,7 +197,7 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public final VariableDeclaration checkVariableReference(final XmlNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
+        public final VariableDeclaration checkVariableReference(final QtiNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
             try {
                 return resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
             }
@@ -208,7 +208,7 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public boolean checkVariableType(final XmlNode owner, final VariableDeclaration variableDeclaration, final VariableType... requiredTypes) {
+        public boolean checkVariableType(final QtiNode owner, final VariableDeclaration variableDeclaration, final VariableType... requiredTypes) {
             Assert.ensureNotNull(variableDeclaration);
             boolean result;
             if (variableDeclaration.isType(requiredTypes)) {
@@ -232,7 +232,7 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public boolean checkBaseType(final XmlNode owner, final VariableDeclaration variableDeclaration, final BaseType... requiredTypes) {
+        public boolean checkBaseType(final QtiNode owner, final VariableDeclaration variableDeclaration, final BaseType... requiredTypes) {
             Assert.ensureNotNull(variableDeclaration);
             boolean result;
             final BaseType baseType = variableDeclaration.getBaseType();
@@ -258,7 +258,7 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public boolean checkCardinality(final XmlNode owner, final VariableDeclaration variableDeclaration, final Cardinality... requiredTypes) {
+        public boolean checkCardinality(final QtiNode owner, final VariableDeclaration variableDeclaration, final Cardinality... requiredTypes) {
             Assert.ensureNotNull(variableDeclaration);
             boolean result;
             if (variableDeclaration.getCardinality().isOneOf(requiredTypes)) {

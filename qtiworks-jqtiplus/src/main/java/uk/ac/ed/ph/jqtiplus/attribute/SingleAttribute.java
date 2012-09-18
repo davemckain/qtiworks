@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -49,15 +49,15 @@ public abstract class SingleAttribute<V> extends AbstractAttribute<V> {
 
     private static final long serialVersionUID = 7394997591576564116L;
 
-    public SingleAttribute(XmlNode owner, String localName, boolean required) {
+    public SingleAttribute(QtiNode owner, String localName, boolean required) {
         super(owner, localName, null, required);
     }
 
-    public SingleAttribute(XmlNode owner, String localName, V defaultValue, boolean required) {
+    public SingleAttribute(QtiNode owner, String localName, V defaultValue, boolean required) {
         super(owner, localName, defaultValue, required);
     }
 
-    public SingleAttribute(XmlNode owner, String localName, String namespaceUri, V defaultValue,  boolean required) {
+    public SingleAttribute(QtiNode owner, String localName, String namespaceUri, V defaultValue,  boolean required) {
         super(owner, localName, namespaceUri, defaultValue, required);
     }
     

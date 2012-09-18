@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager.FallbackExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -54,7 +54,7 @@ public final class UnsupportedCustomInteraction extends CustomInteraction<JqtiEx
 
     private static final long serialVersionUID = -2114615308065207715L;
 
-    public UnsupportedCustomInteraction(final XmlNode parent) {
+    public UnsupportedCustomInteraction(final QtiNode parent) {
         super(parent);
     }
 

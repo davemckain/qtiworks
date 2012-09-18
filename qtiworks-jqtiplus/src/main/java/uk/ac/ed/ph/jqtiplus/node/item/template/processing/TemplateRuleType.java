@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,7 @@ public enum TemplateRuleType {
     TEMPLATE_CONDITION(TemplateCondition.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(final XmlNode parent) {
+        public TemplateRule create(final QtiNode parent) {
             return new TemplateCondition(parent);
         }
     },
@@ -69,7 +69,7 @@ public enum TemplateRuleType {
     SET_TEMPLATE_VALUE(SetTemplateValue.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(final XmlNode parent) {
+        public TemplateRule create(final QtiNode parent) {
             return new SetTemplateValue(parent);
         }
     },
@@ -82,7 +82,7 @@ public enum TemplateRuleType {
     EXIT_TEMPLATE(ExitTemplate.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(final XmlNode parent) {
+        public TemplateRule create(final QtiNode parent) {
             return new ExitTemplate(parent);
         }
     },
@@ -95,7 +95,7 @@ public enum TemplateRuleType {
     SET_CORRECT_RESPONSE(SetCorrectResponse.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(final XmlNode parent) {
+        public TemplateRule create(final QtiNode parent) {
             return new SetCorrectResponse(parent);
         }
     },
@@ -108,7 +108,7 @@ public enum TemplateRuleType {
     SET_DEFAULT_VALUE(SetDefaultValue.QTI_CLASS_NAME) {
 
         @Override
-        public TemplateRule create(final XmlNode parent) {
+        public TemplateRule create(final QtiNode parent) {
             return new SetDefaultValue(parent);
         }
     };
@@ -135,7 +135,7 @@ public enum TemplateRuleType {
      * @param parent parent of created template rule
      * @return created template rule
      */
-    public abstract TemplateRule create(XmlNode parent);
+    public abstract TemplateRule create(QtiNode parent);
 
     @Override
     public String toString() {
@@ -149,7 +149,7 @@ public enum TemplateRuleType {
      * @param qtiClassName QTI_CLASS_NAME of created template rule
      * @return created template rule
      */
-    public static TemplateRule getInstance(final XmlNode parent, final String qtiClassName) {
+    public static TemplateRule getInstance(final QtiNode parent, final String qtiClassName) {
         final TemplateRuleType templateRuleType = templateRuleTypes.get(qtiClassName);
 
         if (templateRuleType == null) {

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractSimpleInline;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
@@ -49,7 +49,7 @@ public class B extends AbstractSimpleInline implements SimpleInline {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "b";
 
-    public B(XmlNode parent) {
+    public B(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

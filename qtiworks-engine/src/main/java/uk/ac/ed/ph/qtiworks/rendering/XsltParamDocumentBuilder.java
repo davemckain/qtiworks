@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDomBuilderHandler;
@@ -57,7 +57,7 @@ public final class XsltParamDocumentBuilder {
 
     public interface SaxFirerCallback {
 
-        List<? extends XmlNode> getQtiNodes();
+        List<? extends QtiNode> getQtiNodes();
 
         void fireSaxEvents(QtiSaxDocumentFirer qtiSaxDocumentFirer)
                 throws SAXException;
@@ -88,8 +88,8 @@ public final class XsltParamDocumentBuilder {
             qtiSaxDocumentFirer.requirePrefixMapping(XsltParamBuilder.QTIWORKS_NAMESPACE, XsltParamBuilder.QTIWORKS_NAMESPACE_PREFIX);
 
             /* Next let each extension package that has been used have a shot */
-            final List<? extends XmlNode> qtiNodes = saxFirerCallback.getQtiNodes();
-            for (final XmlNode qtiNode : qtiNodes) {
+            final List<? extends QtiNode> qtiNodes = saxFirerCallback.getQtiNodes();
+            for (final QtiNode qtiNode : qtiNodes) {
                 qtiSaxDocumentFirer.prepareFor(qtiNode);
             }
 

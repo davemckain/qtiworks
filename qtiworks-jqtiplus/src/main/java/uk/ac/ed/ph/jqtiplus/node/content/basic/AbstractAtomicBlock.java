@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public abstract class AbstractAtomicBlock extends BodyElement implements AtomicB
      *
      * @param parent parent of constructed object
      */
-    public AbstractAtomicBlock(final XmlNode parent, final String qtiClassName) {
+    public AbstractAtomicBlock(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new InlineGroup(this));

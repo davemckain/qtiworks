@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.image.Img;
@@ -59,7 +59,7 @@ public class Pre extends AbstractAtomicBlock implements AtomicBlock {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "pre";
 
-    public Pre(XmlNode parent) {
+    public Pre(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

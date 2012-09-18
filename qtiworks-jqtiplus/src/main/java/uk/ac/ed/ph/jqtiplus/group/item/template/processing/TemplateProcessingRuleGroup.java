@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRuleType;
@@ -46,11 +46,11 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class TemplateProcessingRuleGroup extends ComplexNodeGroup<XmlNode,TemplateProcessingRule> {
+public final class TemplateProcessingRuleGroup extends ComplexNodeGroup<QtiNode,TemplateProcessingRule> {
 
     private static final long serialVersionUID = -510565066058403275L;
 
-    public TemplateProcessingRuleGroup(final XmlNode parent) {
+    public TemplateProcessingRuleGroup(final QtiNode parent) {
         super(parent, TemplateProcessingRule.DISPLAY_NAME, TemplateProcessingRuleType.getQtiClassNames());
     }
 

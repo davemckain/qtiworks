@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 
@@ -49,7 +49,7 @@ public class H6 extends AbstractAtomicBlock implements AtomicBlock {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "h6";
 
-    public H6(XmlNode parent) {
+    public H6(QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.ColgroupGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TbodyGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TfootGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TheadGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -72,7 +72,7 @@ public final class Table extends BodyElement implements BlockStatic, FlowStatic 
     /** Name of summary attribute in xml schema. */
     public static final String ATTR_SUMMARY_NAME = "summary";
 
-    public Table(final XmlNode parent) {
+    public Table(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_SUMMARY_NAME, false));

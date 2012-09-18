@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.TextFormat;
 
 import java.util.Arrays;
@@ -49,11 +49,11 @@ public final class TextFormatAttribute extends SingleEnumerateAttribute<TextForm
 
     private static final long serialVersionUID = -4365578230488574089L;
 
-    public TextFormatAttribute(XmlNode parent, String localName, boolean required) {
+    public TextFormatAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 
-    public TextFormatAttribute(XmlNode parent, String localName, TextFormat defaultValue, boolean required) {
+    public TextFormatAttribute(QtiNode parent, String localName, TextFormat defaultValue, boolean required) {
         super(parent, localName, defaultValue, required);
     }
 

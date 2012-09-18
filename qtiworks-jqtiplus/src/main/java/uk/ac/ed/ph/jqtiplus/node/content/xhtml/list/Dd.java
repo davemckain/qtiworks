@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class Dd extends DlElement {
      *
      * @param parent parent of constructed object
      */
-    public Dd(final XmlNode parent) {
+    public Dd(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));

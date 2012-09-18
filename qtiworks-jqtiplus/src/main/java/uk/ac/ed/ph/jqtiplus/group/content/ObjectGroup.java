@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.group.content;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 
 /**
@@ -42,15 +42,15 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
  *
  * @author Jonathon Hare
  */
-public final class ObjectGroup extends SimpleSingleNodeGroup<XmlNode,Object> {
+public final class ObjectGroup extends SimpleSingleNodeGroup<QtiNode,Object> {
 
     private static final long serialVersionUID = 8768771986890876537L;
 
-    public ObjectGroup(final XmlNode parent) {
+    public ObjectGroup(final QtiNode parent) {
         super(parent, Object.QTI_CLASS_NAME, false);
     }
 
-    public ObjectGroup(final XmlNode parent, final boolean required) {
+    public ObjectGroup(final QtiNode parent, final boolean required) {
         super(parent, Object.QTI_CLASS_NAME, required);
     }
 

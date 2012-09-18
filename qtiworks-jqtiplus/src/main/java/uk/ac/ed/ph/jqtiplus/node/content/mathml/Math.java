@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
@@ -69,7 +69,7 @@ public final class Math extends BodyElement implements BlockStatic, FlowStatic, 
     /** Children of this block. */
     private final List<ForeignElement> children;
 
-    public Math(final XmlNode parent) {
+    public Math(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
         children = new ArrayList<ForeignElement>();
     }

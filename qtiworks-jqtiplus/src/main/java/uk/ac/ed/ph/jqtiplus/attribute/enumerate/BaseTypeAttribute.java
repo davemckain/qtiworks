@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class BaseTypeAttribute extends SingleEnumerateAttribute<BaseType> 
 
     private static final long serialVersionUID = 5731708928910577525L;
 
-    public BaseTypeAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public BaseTypeAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -47,11 +47,11 @@ public final class CoordsAttribute extends MultipleAttribute<Integer> {
 
     private static final long serialVersionUID = -3499455085135083349L;
 
-    public CoordsAttribute(final XmlNode parent, final String localName, final boolean required) {
+    public CoordsAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR, required);
     }
 
-    public CoordsAttribute(final XmlNode parent, final String localName, final List<Integer> defaultValue, final boolean required) {
+    public CoordsAttribute(final QtiNode parent, final String localName, final List<Integer> defaultValue, final boolean required) {
         super(parent, localName, MultipleAttribute.COMMA_FIELDS_SEPARATOR, defaultValue, required);
     }
 

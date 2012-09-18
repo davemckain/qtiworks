@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
@@ -88,7 +88,7 @@ public abstract class BodyElement extends AbstractNode implements Content {
     /** Name of label attribute in xml schema. */
     public static final String ATTR_LABEL_NAME = "label";
 
-    public BodyElement(final XmlNode parent, final String qtiClassName) {
+    public BodyElement(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
         getAttributes().add(new IdentifierAttribute(this, ATTR_ID_NAME, false));
         getAttributes().add(new StringMultipleAttribute(this, ATTR_CLASS_NAME, false));

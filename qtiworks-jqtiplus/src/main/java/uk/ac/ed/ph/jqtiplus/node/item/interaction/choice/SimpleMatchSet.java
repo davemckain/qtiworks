@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.SimpleAssociableChoiceGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class SimpleMatchSet extends AbstractNode implements SimpleAssociableChoi
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "simpleMatchSet";
 
-    public SimpleMatchSet(final XmlNode parent) {
+    public SimpleMatchSet(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new SimpleAssociableChoiceGroup(this, 0));

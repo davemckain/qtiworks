@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +57,11 @@ public abstract class MultipleAttribute<E> extends AbstractAttribute<List<E>> {
     
     private final String fieldSeparator;
 
-    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, boolean required) {
+    public MultipleAttribute(QtiNode parent, String localName, String fieldSeparator, boolean required) {
         this(parent, localName, fieldSeparator, null, required);
     }
 
-    public MultipleAttribute(XmlNode parent, String localName, String fieldSeparator, List<E> defaultValue, boolean required) {
+    public MultipleAttribute(QtiNode parent, String localName, String fieldSeparator, List<E> defaultValue, boolean required) {
         super(parent, localName, defaultValue, required);
         this.fieldSeparator = fieldSeparator;
     }

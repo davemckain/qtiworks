@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -54,7 +54,7 @@ public class SetCorrectResponse extends ProcessTemplateValue {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "setCorrectResponse";
 
-    public SetCorrectResponse(final XmlNode parent) {
+    public SetCorrectResponse(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 

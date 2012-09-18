@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -55,13 +55,13 @@ import org.w3c.dom.Text;
 /**
  * Partial implementation of {@link NodeGroup}
  *
- * @param <P> type of parent {@link XmlNode}
- * @param <C> type of child {@link XmlNode}
+ * @param <P> type of parent {@link QtiNode}
+ * @param <C> type of child {@link QtiNode}
  *
  * @author Jiri Kajaba (original)
  * @author David McKain (refactored)
  */
-public abstract class AbstractNodeGroup<P extends XmlNode, C extends XmlNode> implements NodeGroup<P,C> {
+public abstract class AbstractNodeGroup<P extends QtiNode, C extends QtiNode> implements NodeGroup<P,C> {
 
     private static final long serialVersionUID = 903238011893494959L;
 

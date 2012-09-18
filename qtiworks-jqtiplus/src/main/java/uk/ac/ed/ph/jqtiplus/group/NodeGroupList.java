@@ -121,7 +121,7 @@ import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.VariableMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
@@ -228,7 +228,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
     private static final long serialVersionUID = 4649998181277985510L;
 
     /** Parent (node) of this container. */
-    private final XmlNode parent;
+    private final QtiNode parent;
 
     /** Children (groups) of this container. */
     private final List<NodeGroup<?,?>> groups;
@@ -238,7 +238,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
      *
      * @param parent parent of constructed container
      */
-    public NodeGroupList(final XmlNode parent) {
+    public NodeGroupList(final QtiNode parent) {
         this.parent = parent;
         this.groups = new ArrayList<NodeGroup<?,?>>();
     }
@@ -248,7 +248,7 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
      *
      * @return parent of this container
      */
-    public XmlNode getParent() {
+    public QtiNode getParent() {
         return parent;
     }
 

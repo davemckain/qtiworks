@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.enumerate;
 
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
 
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public final class OrientationAttribute extends SingleEnumerateAttribute<Orienta
 
     private static final long serialVersionUID = 5170134258927740739L;
 
-    public OrientationAttribute(XmlNode parent, String localName, boolean required) {
+    public OrientationAttribute(QtiNode parent, String localName, boolean required) {
         super(parent, localName, required);
     }
 
