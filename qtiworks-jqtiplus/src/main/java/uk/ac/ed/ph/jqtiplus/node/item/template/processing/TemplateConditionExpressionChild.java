@@ -54,8 +54,8 @@ public abstract class TemplateConditionExpressionChild extends TemplateCondition
 
     private static final long serialVersionUID = 5394096779088948497L;
 
-    public TemplateConditionExpressionChild(TemplateCondition parent, String localName) {
-        super(parent, localName);
+    public TemplateConditionExpressionChild(TemplateCondition parent, String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
     }

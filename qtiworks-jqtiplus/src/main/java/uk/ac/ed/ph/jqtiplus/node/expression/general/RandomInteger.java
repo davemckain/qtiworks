@@ -77,8 +77,8 @@ public class RandomInteger extends RandomExpression {
         this(parent, QTI_CLASS_NAME);
     }
 
-    protected RandomInteger(final ExpressionParent parent, final String localName) {
-        super(parent, localName);
+    protected RandomInteger(final ExpressionParent parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_MIN_NAME, true));
         getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_MAX_NAME, true));

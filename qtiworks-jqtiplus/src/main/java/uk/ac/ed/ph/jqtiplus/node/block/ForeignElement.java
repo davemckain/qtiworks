@@ -46,8 +46,8 @@ public final class ForeignElement extends ContainerBlock {
     
     private final String namespaceUri;
 
-    public ForeignElement(XmlNode parent, String localName, String namespaceUri) {
-        super(parent, localName);
+    public ForeignElement(XmlNode parent, String qtiClassName, String namespaceUri) {
+        super(parent, qtiClassName);
         this.namespaceUri = namespaceUri;
     }
     

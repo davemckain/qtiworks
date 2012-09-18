@@ -51,8 +51,8 @@ public abstract class ResponseRule extends AbstractNode {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "responseRule";
 
-    public ResponseRule(XmlNode parent, String localName) {
-        super(parent, localName);
+    public ResponseRule(XmlNode parent, String qtiClassName) {
+        super(parent, qtiClassName);
     }
 
     /**

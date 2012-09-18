@@ -53,8 +53,8 @@ public abstract class AbstractAtomicBlock extends BodyElement implements AtomicB
      *
      * @param parent parent of constructed object
      */
-    public AbstractAtomicBlock(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public AbstractAtomicBlock(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(new InlineGroup(this));
     }

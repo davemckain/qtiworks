@@ -68,7 +68,7 @@ public abstract class AbstractNode implements XmlNode {
     /** Parent of this node. */
     private final XmlNode parent;
 
-    private final String localName;
+    private final String qtiClassName;
 
     /** Attributes of this node. */
     private final AttributeList attributes;
@@ -79,9 +79,9 @@ public abstract class AbstractNode implements XmlNode {
     /** Information about the location of this Node in the original source XML, if loaded that way */
     private XmlSourceLocationInformation sourceLocation;
 
-    public AbstractNode(final XmlNode parent, final String localName) {
+    public AbstractNode(final XmlNode parent, final String qtiClassName) {
         this.parent = parent;
-        this.localName = localName;
+        this.qtiClassName = qtiClassName;
         this.attributes = new AttributeList(this);
         this.nodeGroups = new NodeGroupList(this);
         this.sourceLocation = null;
@@ -93,13 +93,8 @@ public abstract class AbstractNode implements XmlNode {
     }
 
     @Override
-    public final String getLocalName() {
-        return localName;
-    }
-
-    @Override
     public final String getQtiClassName() {
-        return localName;
+        return qtiClassName;
     }
 
     @Override
@@ -222,14 +217,14 @@ public abstract class AbstractNode implements XmlNode {
                     if (child == this) {
                         break SEARCH;
                     }
-                    if (getQtiClassName().equals(child.getQtiClassName())) {
+                    if (qtiClassName.equals(child.getQtiClassName())) {
                         position++;
                     }
                 }
             }
-            return getQtiClassName() + "[" + position + "]";
+            return qtiClassName + "[" + position + "]";
         }
-        return getQtiClassName();
+        return qtiClassName;
     }
 
     @Override
@@ -309,7 +304,7 @@ public abstract class AbstractNode implements XmlNode {
 
     @Override
     public String toString() {
-        return "<" + getQtiClassName() + ">@" + hashCode()
+        return "<" + qtiClassName + ">@" + hashCode()
                 + "(xPath=" + computeXPath()
                 + ",location=" + sourceLocation
                 + ")";

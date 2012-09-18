@@ -54,8 +54,8 @@ public abstract class MathMapExpression extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 5311729106818194456L;
 
-    public MathMapExpression(final ExpressionParent parent, final String localName) {
-        super(parent, localName);
+    public MathMapExpression(final ExpressionParent parent, final String qtiClassName) {
+        super(parent, qtiClassName);
     }
 
     @Override

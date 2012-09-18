@@ -72,8 +72,8 @@ public abstract class ItemSubset extends AbstractExpression {
      * 
      * @param parent parent of this expression
      */
-    public ItemSubset(ExpressionParent parent, String localName) {
-        super(parent, localName);
+    public ItemSubset(ExpressionParent parent, String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, false));
         getAttributes().add(new StringMultipleAttribute(this, ATTR_INCLUDE_CATEGORIES_NAME, false));

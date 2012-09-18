@@ -80,8 +80,8 @@ public abstract class Interaction extends BodyElement {
     /** Name of responseIdentifier attribute in xml schema. */
     public static final String ATTR_RESPONSE_IDENTIFIER_NAME = "responseIdentifier";
 
-    public Interaction(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public Interaction(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_RESPONSE_IDENTIFIER_NAME, true));
     }

@@ -72,8 +72,8 @@ public class RandomFloat extends RandomExpression {
         this(parent, QTI_CLASS_NAME);
     }
 
-    protected RandomFloat(final ExpressionParent parent, final String localName) {
-        super(parent, localName);
+    protected RandomFloat(final ExpressionParent parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new FloatOrVariableRefAttribute(this, ATTR_MIN_NAME, true));
         getAttributes().add(new FloatOrVariableRefAttribute(this, ATTR_MAX_NAME, true));

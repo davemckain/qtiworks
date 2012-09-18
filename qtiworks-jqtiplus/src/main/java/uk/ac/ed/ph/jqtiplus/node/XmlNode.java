@@ -93,22 +93,7 @@ public interface XmlNode extends Validatable, Iterable<XmlNode> {
     NodeGroupList getNodeGroups();
 
     /**
-     * Loads this node from given DOM source {@link Element}.
-     */
-    void load(Element sourceElement, LoadingContext context);
-
-    /** Callback used to serialize this Nodes. Do not call directly. */
-    void fireSaxEvents(QtiSaxDocumentFirer qtiSaxDocumentFirer)
-            throws SAXException;
-
-    /**
-     * Gets the XML local name of this node.
-     */
-    String getLocalName();
-
-    /**
      * Gets QTI class name of this node (as used in the specification).
-     * This always returns the same as {@link #getLocalName()}.
      */
     String getQtiClassName();
 
@@ -124,7 +109,7 @@ public interface XmlNode extends Validatable, Iterable<XmlNode> {
      * Computes and returns a pseudo XPath expression that can be used to navigate to this Node.
      * (The expression will probably be over-verbose!)
      *
-     * NOTE: This uses the form {nsURI}localName for non-QTI elements, so is not
+     * NOTE: This uses the form {nsURI}qtiClassName for non-QTI elements, so is not
      * a "proper" XPath.
      */
     String computeXPath();
@@ -135,5 +120,14 @@ public interface XmlNode extends Validatable, Iterable<XmlNode> {
      * @return true if the node has any children, false if the node has no children.
      */
     boolean hasChildNodes();
+
+    /**
+     * Loads this node from given DOM source {@link Element}.
+     */
+    void load(Element sourceElement, LoadingContext context);
+
+    /** Callback used to serialize this Nodes. Do not call directly. */
+    void fireSaxEvents(QtiSaxDocumentFirer qtiSaxDocumentFirer)
+            throws SAXException;
 
 }

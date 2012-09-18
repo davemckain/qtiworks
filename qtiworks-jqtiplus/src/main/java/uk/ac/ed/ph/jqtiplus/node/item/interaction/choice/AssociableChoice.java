@@ -56,8 +56,8 @@ public abstract class AssociableChoice extends Choice {
     /** Name of matchGroup attribute in xml schema. */
     public static final String ATTR_MATCH_GROUP_NAME = "matchGroup";
 
-    public AssociableChoice(XmlNode parent, String localName) {
-        super(parent, localName);
+    public AssociableChoice(XmlNode parent, String qtiClassName) {
+        super(parent, qtiClassName);
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_MATCH_GROUP_NAME, null, false));
     }
 

@@ -250,7 +250,7 @@ public final class QtiSaxDocumentFirer {
         final String elementNamespaceUri = getNodeNamespaceUri(node);
 
         /* Fire element */
-        fireStartElement(node, node.getLocalName(), elementNamespaceUri, xmlAttributes);
+        fireStartElement(node, node.getQtiClassName(), elementNamespaceUri, xmlAttributes);
     }
 
     public void fireStartElement(final Object object, final String localName, final String namespaceUri, final AttributesImpl attributes) throws SAXException {
@@ -327,7 +327,7 @@ public final class QtiSaxDocumentFirer {
     }
 
     public void fireEndQtiElement(final AbstractNode node) throws SAXException {
-        fireEndElement(node, node.getLocalName(), getNodeNamespaceUri(node));
+        fireEndElement(node, node.getQtiClassName(), getNodeNamespaceUri(node));
     }
 
     public void fireText(final String string) throws SAXException {

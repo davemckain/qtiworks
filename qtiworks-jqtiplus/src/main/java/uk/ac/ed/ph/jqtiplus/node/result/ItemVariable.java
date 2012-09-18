@@ -62,8 +62,8 @@ public abstract class ItemVariable extends AbstractNode {
     /** Name of baseType attribute in xml schema. */
     public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
 
-    public ItemVariable(final AbstractResult parent, final String localName) {
-        super(parent, localName);
+    public ItemVariable(final AbstractResult parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new VariableReferenceIdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
         getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME));

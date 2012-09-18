@@ -54,8 +54,8 @@ public abstract class BlockInteraction extends Interaction implements Block, Flo
      *
      * @param parent Parent node
      */
-    public BlockInteraction(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public BlockInteraction(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(new PromptGroup(this));
     }

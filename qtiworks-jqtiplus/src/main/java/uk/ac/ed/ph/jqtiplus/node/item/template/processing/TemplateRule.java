@@ -47,7 +47,7 @@ public abstract class TemplateRule extends TemplateProcessingRule {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "templateRule";
 
-    public TemplateRule(XmlNode parent, String localName) {
-        super(parent, localName);
+    public TemplateRule(XmlNode parent, String qtiClassName) {
+        super(parent, qtiClassName);
     }
 }

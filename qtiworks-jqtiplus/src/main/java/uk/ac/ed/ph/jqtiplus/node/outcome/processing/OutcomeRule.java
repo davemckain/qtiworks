@@ -51,8 +51,8 @@ public abstract class OutcomeRule extends AbstractNode {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "outcomeRule";
 
-    public OutcomeRule(XmlNode parent, String localName) {
-        super(parent, localName);
+    public OutcomeRule(XmlNode parent, String qtiClassName) {
+        super(parent, qtiClassName);
     }
 
     /**

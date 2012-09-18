@@ -71,8 +71,8 @@ public abstract class TemplateElement extends BodyElement {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public TemplateElement(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public TemplateElement(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));
         getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME, true));

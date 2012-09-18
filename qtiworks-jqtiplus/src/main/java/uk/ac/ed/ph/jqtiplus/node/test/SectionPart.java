@@ -64,8 +64,8 @@ public abstract class SectionPart extends AbstractPart {
      *
      * @param parent parent of constructed part.
      */
-    public SectionPart(final AbstractPart parent, final String localName) {
-        super(parent, localName);
+    public SectionPart(final AbstractPart parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_REQUIRED_NAME, ATTR_REQUIRED_DEFAULT_VALUE, false));
         getAttributes().add(new BooleanAttribute(this, ATTR_FIXED_NAME, ATTR_FIXED_DEFAULT_VALUE, false));

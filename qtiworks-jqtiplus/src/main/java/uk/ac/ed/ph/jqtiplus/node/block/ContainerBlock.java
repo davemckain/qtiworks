@@ -63,8 +63,8 @@ public abstract class ContainerBlock extends AbstractNode {
     /** Children of this block. */
     private final List<XmlNode> children;
 
-    public ContainerBlock(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public ContainerBlock(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         children = new ArrayList<XmlNode>();
     }

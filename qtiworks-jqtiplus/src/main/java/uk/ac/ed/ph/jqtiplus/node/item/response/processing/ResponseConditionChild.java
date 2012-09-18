@@ -52,8 +52,8 @@ public abstract class ResponseConditionChild extends AbstractNode {
 
     private static final long serialVersionUID = 8746091136302901859L;
 
-    public ResponseConditionChild(ResponseCondition parent, String localName) {
-        super(parent, localName);
+    public ResponseConditionChild(ResponseCondition parent, String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(new ResponseRuleGroup(this));
     }

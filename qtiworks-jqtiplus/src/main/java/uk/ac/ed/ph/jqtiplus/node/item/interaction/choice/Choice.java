@@ -96,8 +96,8 @@ public abstract class Choice extends BodyElement {
     /** Name of showHide attribute in xml schema. */
     public static final String ATTR_VISIBILITY_MODE_NAME = "showHide";
 
-    public Choice(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public Choice(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
         getAttributes().add(new BooleanAttribute(this, ATTR_FIXED_NAME, ATTR_FIXED_DEFAULT_VALUE, false));
         getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME, false));

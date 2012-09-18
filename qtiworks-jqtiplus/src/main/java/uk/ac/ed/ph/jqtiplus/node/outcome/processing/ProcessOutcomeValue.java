@@ -60,8 +60,8 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
      * 
      * @param parent parent of this rule.
      */
-    public ProcessOutcomeValue(XmlNode parent, String localName) {
-        super(parent, localName);
+    public ProcessOutcomeValue(XmlNode parent, String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
 

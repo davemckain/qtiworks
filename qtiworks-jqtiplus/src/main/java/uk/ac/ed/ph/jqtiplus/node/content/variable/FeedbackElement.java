@@ -77,8 +77,8 @@ public abstract class FeedbackElement extends BodyElement {
      *
      * @param parent parent of this element
      */
-    public FeedbackElement(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public FeedbackElement(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(
                 new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, ATTR_VISIBILITY_MODE_DEFAULT_VALUE, true));

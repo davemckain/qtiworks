@@ -67,8 +67,8 @@ public abstract class LookupTable extends AbstractNode {
     /** Name of defaultValue attribute in xml schema. */
     public static final String ATTR_DEFAULT_VALUE_NAME = "defaultValue";
 
-    public LookupTable(final OutcomeDeclaration parent, final String localName) {
-        super(parent, localName);
+    public LookupTable(final OutcomeDeclaration parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new SingleValueAttribute(this, ATTR_DEFAULT_VALUE_NAME, getTargetValueBaseType(), false));
     }

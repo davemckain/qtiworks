@@ -68,8 +68,8 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     /** Expression logger. Used with all expressions. */
     private static Logger logger = LoggerFactory.getLogger(AbstractExpression.class);
 
-    public AbstractExpression(final ExpressionParent parent, final String localName) {
-        super(parent, localName);
+    public AbstractExpression(final ExpressionParent parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(new ExpressionGroup(this, getType().getMinimum(), getType().getMaximum()));
     }

@@ -48,8 +48,8 @@ public abstract class GraphicInteraction extends BlockInteraction {
 
     private static final long serialVersionUID = -7825949310026749791L;
 
-    public GraphicInteraction(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public GraphicInteraction(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(new ObjectGroup(this, true));
     }

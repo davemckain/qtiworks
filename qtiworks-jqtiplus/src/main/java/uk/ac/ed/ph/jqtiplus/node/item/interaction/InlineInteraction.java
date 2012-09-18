@@ -46,7 +46,7 @@ public abstract class InlineInteraction extends Interaction implements Inline, F
 
     private static final long serialVersionUID = -6106812031050904729L;
 
-    public InlineInteraction(XmlNode parent, String localName) {
-        super(parent, localName);
+    public InlineInteraction(XmlNode parent, String qtiClassName) {
+        super(parent, qtiClassName);
     }
 }

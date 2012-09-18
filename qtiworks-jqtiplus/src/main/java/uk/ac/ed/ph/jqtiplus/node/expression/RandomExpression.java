@@ -51,8 +51,8 @@ public abstract class RandomExpression extends AbstractExpression {
 
     private static Random randomGenerator = new Random();
 
-    public RandomExpression(final ExpressionParent parent, final String localName) {
-        super(parent, localName);
+    public RandomExpression(final ExpressionParent parent, final String qtiClassName) {
+        super(parent, qtiClassName);
     }
 
     /**

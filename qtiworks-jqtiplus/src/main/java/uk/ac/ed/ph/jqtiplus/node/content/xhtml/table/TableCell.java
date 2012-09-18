@@ -84,8 +84,8 @@ public abstract class TableCell extends BodyElement {
     /** Name of colspan attribute in xml schema. */
     public static final String ATTR_COLSPAN_NAME = "colspan";
 
-    public TableCell(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public TableCell(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_HEADERS_NAME, false));
         getAttributes().add(new TableCellScopeAttribute(this, ATTR_SCOPE_NAME, false));

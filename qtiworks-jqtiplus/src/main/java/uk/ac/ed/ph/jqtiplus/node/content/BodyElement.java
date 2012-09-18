@@ -88,8 +88,8 @@ public abstract class BodyElement extends AbstractNode implements Content {
     /** Name of label attribute in xml schema. */
     public static final String ATTR_LABEL_NAME = "label";
 
-    public BodyElement(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public BodyElement(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
         getAttributes().add(new IdentifierAttribute(this, ATTR_ID_NAME, false));
         getAttributes().add(new StringMultipleAttribute(this, ATTR_CLASS_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, false));

@@ -48,8 +48,8 @@ public abstract class AbstractFunctionalExpression extends AbstractExpression {
 
     private static final long serialVersionUID = 2619103475550131247L;
 
-    public AbstractFunctionalExpression(ExpressionParent parent, String localName) {
-        super(parent, localName);
+    public AbstractFunctionalExpression(ExpressionParent parent, String qtiClassName) {
+        super(parent, qtiClassName);
     }
 
     @Override

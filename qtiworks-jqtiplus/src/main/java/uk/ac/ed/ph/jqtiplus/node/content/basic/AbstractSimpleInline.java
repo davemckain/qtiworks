@@ -53,8 +53,8 @@ public abstract class AbstractSimpleInline extends BodyElement implements Simple
      *
      * @param parent parent of constructed object
      */
-    public AbstractSimpleInline(final XmlNode parent, final String localName) {
-        super(parent, localName);
+    public AbstractSimpleInline(final XmlNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(new InlineGroup(this));
     }

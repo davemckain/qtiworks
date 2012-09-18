@@ -57,8 +57,8 @@ public abstract class OutcomeConditionChild extends AbstractNode {
      * 
      * @param parent parent of this condition rule child
      */
-    public OutcomeConditionChild(OutcomeCondition parent, String localName) {
-        super(parent, localName);
+    public OutcomeConditionChild(OutcomeCondition parent, String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(new OutcomeRuleGroup(this));
     }

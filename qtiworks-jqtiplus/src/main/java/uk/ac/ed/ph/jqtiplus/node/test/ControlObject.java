@@ -59,8 +59,8 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     protected boolean finished;
 
-    public ControlObject(ControlObject<?> parent, String localName) {
-        super(parent, localName);
+    public ControlObject(ControlObject<?> parent, String qtiClassName) {
+        super(parent, qtiClassName);
 
         getNodeGroups().add(new TimeLimitGroup(this));
     }

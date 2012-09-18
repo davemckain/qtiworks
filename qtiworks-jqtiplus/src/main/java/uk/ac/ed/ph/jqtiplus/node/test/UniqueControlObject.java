@@ -56,8 +56,8 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
      * 
      * @param parent parent of constructed object
      */
-    public UniqueControlObject(ControlObject<?> parent, String localName) {
-        super(parent, localName);
+    public UniqueControlObject(ControlObject<?> parent, String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
     }

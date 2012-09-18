@@ -63,8 +63,8 @@ public class Random extends RandomExpression {
         super(parent, QTI_CLASS_NAME);
     }
 
-    protected Random(ExpressionParent parent, String localName) {
-        super(parent, localName);
+    protected Random(ExpressionParent parent, String qtiClassName) {
+        super(parent, qtiClassName);
     }
 
     @Override

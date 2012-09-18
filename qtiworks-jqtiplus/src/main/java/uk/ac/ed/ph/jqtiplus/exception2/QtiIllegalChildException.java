@@ -45,19 +45,19 @@ public final class QtiIllegalChildException extends QtiModelException {
     private static final long serialVersionUID = 8810282210478664633L;
 
     private final XmlNode parent;
-    private final String childLocalName;
+    private final String childQtiClassName;
 
-    public QtiIllegalChildException(XmlNode parent, String childLocalName) {
-        super("Illegal child with local name " + childLocalName + " for parent " + parent.getLocalName());
+    public QtiIllegalChildException(final XmlNode parent, final String childQtiClassName) {
+        super("Illegal child with QTI class name " + childQtiClassName + " for parent " + parent.getQtiClassName());
         this.parent = parent;
-        this.childLocalName = childLocalName;
+        this.childQtiClassName = childQtiClassName;
     }
 
     public XmlNode getParent() {
         return parent;
     }
 
-    public String getChildLocalName() {
-        return childLocalName;
+    public String getChildQtiClassName() {
+        return childQtiClassName;
     }
 }

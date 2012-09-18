@@ -53,8 +53,8 @@ public abstract class ProcessResponseValue extends ResponseRule implements Expre
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public ProcessResponseValue(XmlNode parent, String localName) {
-        super(parent, localName);
+    public ProcessResponseValue(XmlNode parent, String qtiClassName) {
+        super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
 
