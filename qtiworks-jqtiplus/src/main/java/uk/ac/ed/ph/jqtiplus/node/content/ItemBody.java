@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.template.TemplateElement;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.FeedbackElement;
@@ -219,6 +220,10 @@ public class ItemBody extends BodyElement {
         }
 
         return Collections.unmodifiableList(templates);
+    }
+
+    public List<Block> getBlocks() {
+        return getNodeGroups().getBlockGroup().getBlocks();
     }
 
     @Override
