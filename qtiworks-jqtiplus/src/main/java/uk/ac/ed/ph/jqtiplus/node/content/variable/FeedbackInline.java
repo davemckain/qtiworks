@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Inline feedback
- * 
+ *
  * @author Jonathon Hare
  */
 public class FeedbackInline extends FeedbackElement implements SimpleInline {
@@ -52,13 +52,12 @@ public class FeedbackInline extends FeedbackElement implements SimpleInline {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "feedbackInline";
 
-    public FeedbackInline(XmlNode parent) {
+    public FeedbackInline(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineGroup(this));
     }
 
-    @Override
     public List<Inline> getChildren() {
         return getNodeGroups().getInlineGroup().getInlines();
     }

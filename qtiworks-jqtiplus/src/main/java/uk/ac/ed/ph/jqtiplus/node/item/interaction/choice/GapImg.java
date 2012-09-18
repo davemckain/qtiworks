@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class GapImg extends GapChoice {
+public final class GapImg extends GapChoice {
 
     private static final long serialVersionUID = 5559510721926679180L;
 
@@ -58,7 +58,7 @@ public class GapImg extends GapChoice {
     /** Name of objectLabel attribute in xml schema. */
     public static final String ATTR_OBJECT_LABEL_NAME = "objectLabel";
 
-    public GapImg(XmlNode parent) {
+    public GapImg(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_OBJECT_LABEL_NAME, false));
@@ -82,12 +82,11 @@ public class GapImg extends GapChoice {
      * @param objectLabel new value of objectLabel attribute
      * @see #getObjectLabel
      */
-    public void setObjectLabel(String objectLabel) {
+    public void setObjectLabel(final String objectLabel) {
         getAttributes().getStringAttribute(ATTR_OBJECT_LABEL_NAME).setValue(objectLabel);
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Object> getChildren() {
         return getNodeGroups().getObjectGroup().getChildren();
     }
 
@@ -107,7 +106,7 @@ public class GapImg extends GapChoice {
      * @param object new object child
      * @see #getObject
      */
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }
 }

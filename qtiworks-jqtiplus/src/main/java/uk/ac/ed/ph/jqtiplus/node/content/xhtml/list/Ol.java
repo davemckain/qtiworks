@@ -43,24 +43,23 @@ import java.util.List;
 
 /**
  * ol
- * 
+ *
  * @author Jonathon Hare
  */
-public class Ol extends BodyElement implements BlockStatic, FlowStatic {
+public final class Ol extends BodyElement implements BlockStatic, FlowStatic {
 
     private static final long serialVersionUID = 755033578152552941L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "ol";
 
-    public Ol(XmlNode parent) {
+    public Ol(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new LiGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Li> getChildren() {
         return getNodeGroups().getLiGroup().getLis();
     }
 }

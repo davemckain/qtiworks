@@ -53,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Abstract parent of feedback elements
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class FeedbackElement extends BodyElement {
@@ -74,10 +74,10 @@ public abstract class FeedbackElement extends BodyElement {
 
     /**
      * Constructs feedback element.
-     * 
+     *
      * @param parent parent of this element
      */
-    public FeedbackElement(XmlNode parent, String localName) {
+    public FeedbackElement(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(
@@ -88,7 +88,7 @@ public abstract class FeedbackElement extends BodyElement {
 
     /**
      * Gets value of showHide attribute.
-     * 
+     *
      * @return value of showHide attribute
      * @see #setVisibilityMode
      */
@@ -98,17 +98,17 @@ public abstract class FeedbackElement extends BodyElement {
 
     /**
      * Sets new value of showHide attribute.
-     * 
+     *
      * @param visibilityMode new value of showHide attribute
      * @see #getVisibilityMode
      */
-    public void setVisibilityMode(VisibilityMode visibilityMode) {
+    public void setVisibilityMode(final VisibilityMode visibilityMode) {
         getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).setValue(visibilityMode);
     }
 
     /**
      * Gets value of outcomeIdentifier attribute.
-     * 
+     *
      * @return value of outcomeIdentifier attribute
      * @see #setOutcomeIdentifier
      */
@@ -118,17 +118,17 @@ public abstract class FeedbackElement extends BodyElement {
 
     /**
      * Sets new value of outcomeIdentifier attribute.
-     * 
+     *
      * @param outcomeIdentifier new value of outcomeIdentifier attribute
      * @see #getOutcomeIdentifier
      */
-    public void setOutcomeIdentifier(Identifier outcomeIdentifier) {
+    public void setOutcomeIdentifier(final Identifier outcomeIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).setValue(outcomeIdentifier);
     }
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      */
     public Identifier getIdentifier() {
@@ -137,15 +137,15 @@ public abstract class FeedbackElement extends BodyElement {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     @Override
-    public void validateAttributes(ValidationContext context) {
+    public void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getOutcomeIdentifier() != null) {
@@ -171,20 +171,20 @@ public abstract class FeedbackElement extends BodyElement {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
-        if (getChildren().size() == 0) {
+        if (!hasChildNodes()) {
             context.add(new ValidationWarning(this, "Feedback should contain something."));
         }
     }
 
     /**
      * Returns true if this feedback can be displayed.
-     * 
+     *
      * @return true if this feedback can be displayed; false otherwise
      */
-    public boolean isVisible(ItemProcessingContext itemContext) {
+    public boolean isVisible(final ItemProcessingContext itemContext) {
         final Value outcomeValue = itemContext.lookupVariableValue(getOutcomeIdentifier(), VariableType.OUTCOME);
         final IdentifierValue identifierValue = new IdentifierValue(getIdentifier());
 

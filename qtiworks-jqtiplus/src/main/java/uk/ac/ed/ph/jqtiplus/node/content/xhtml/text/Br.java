@@ -37,11 +37,9 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 
-import java.util.List;
-
 /**
  * br
- * 
+ *
  * @author Jonathon Hare
  */
 public class Br extends BodyElement implements AtomicInline {
@@ -51,12 +49,7 @@ public class Br extends BodyElement implements AtomicInline {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "br";
 
-    public Br(XmlNode parent) {
+    public Br(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
-    }
-
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        return null;
     }
 }

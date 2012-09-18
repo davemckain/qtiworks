@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class SimpleAssociableChoice extends AssociableChoice {
+public final class SimpleAssociableChoice extends AssociableChoice {
 
     private static final long serialVersionUID = 3376688582142515352L;
 
@@ -70,7 +71,7 @@ public class SimpleAssociableChoice extends AssociableChoice {
     /** Default value of matchMin attribute. */
     public static final int ATTR_MATCH_MIN_DEFAULT_VALUE = 0;
 
-    public SimpleAssociableChoice(XmlNode parent) {
+    public SimpleAssociableChoice(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MAX_NAME, true));
@@ -95,7 +96,7 @@ public class SimpleAssociableChoice extends AssociableChoice {
      * @param matchMax new value of matchMax attribute
      * @see #getMatchMax
      */
-    public void setMatchMax(Integer matchMax) {
+    public void setMatchMax(final Integer matchMax) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).setValue(matchMax);
     }
 
@@ -115,12 +116,11 @@ public class SimpleAssociableChoice extends AssociableChoice {
      * @param matchMin new value of matchMin attribute
      * @see #getMatchMin
      */
-    public void setMatchMin(Integer matchMin) {
+    public void setMatchMin(final Integer matchMin) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).setValue(matchMin);
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<FlowStatic> getChildren() {
         return getNodeGroups().getFlowStaticGroup().getFlowStatics();
     }
 }

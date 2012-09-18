@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * Abstract class for simpleBlocks
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class AbstractSimpleBlock extends BodyElement implements SimpleBlock {
@@ -50,16 +50,15 @@ public abstract class AbstractSimpleBlock extends BodyElement implements SimpleB
 
     /**
      * Constructs object.
-     * 
+     *
      * @param parent parent of constructed object
      */
-    public AbstractSimpleBlock(XmlNode parent, String localName) {
+    public AbstractSimpleBlock(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getNodeGroups().add(new BlockGroup(this));
     }
 
-    @Override
     public List<Block> getChildren() {
         return getNodeGroups().getBlockGroup().getBlocks();
     }

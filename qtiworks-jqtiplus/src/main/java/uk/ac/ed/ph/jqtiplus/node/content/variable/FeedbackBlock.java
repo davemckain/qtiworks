@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Block-level feedback
- * 
+ *
  * @author Jonathon Hare
  */
 public class FeedbackBlock extends FeedbackElement implements SimpleBlock {
@@ -52,13 +52,12 @@ public class FeedbackBlock extends FeedbackElement implements SimpleBlock {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "feedbackBlock";
 
-    public FeedbackBlock(XmlNode parent) {
+    public FeedbackBlock(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new BlockGroup(this));
     }
 
-    @Override
     public List<Block> getChildren() {
         return getNodeGroups().getBlockGroup().getBlocks();
     }

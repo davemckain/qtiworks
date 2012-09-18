@@ -39,66 +39,31 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * GraphicInteraction abstract class
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class GraphicInteraction extends BlockInteraction {
 
     private static final long serialVersionUID = -7825949310026749791L;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
-    public GraphicInteraction(XmlNode parent, String localName) {
+    public GraphicInteraction(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getNodeGroups().add(new ObjectGroup(this, true));
     }
 
-    /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on GraphicInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-
-        children.addAll(super.getChildren());
-        children.add(getNodeGroups().getObjectGroup().getObject());
-
-        return Collections.unmodifiableList(children);
-    }
-
-    /**
-     * Gets object child.
-     * 
-     * @return object child
-     * @see #setObject
-     */
     public Object getObject() {
         return getNodeGroups().getObjectGroup().getObject();
     }
 
-    /**
-     * Sets new object child.
-     * 
-     * @param object new object child
-     * @see #getObject
-     */
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getObject() != null && getObject().getType() != null && !getObject().getType().startsWith("image/")) {

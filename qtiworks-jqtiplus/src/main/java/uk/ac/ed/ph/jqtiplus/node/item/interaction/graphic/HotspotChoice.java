@@ -44,17 +44,17 @@ import java.util.List;
 
 /**
  * hotspotChoice
- * 
+ *
  * @author Jonathon Hare
  */
-public class HotspotChoice extends Choice implements Hotspot {
+public final class HotspotChoice extends Choice implements Hotspot {
 
     private static final long serialVersionUID = 462353986705124436L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "hotspotChoice";
 
-    public HotspotChoice(XmlNode parent) {
+    public HotspotChoice(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ShapeAttribute(this, ATTR_SHAPE_NAME, true));
@@ -63,17 +63,12 @@ public class HotspotChoice extends Choice implements Hotspot {
     }
 
     @Override
-    public List<? extends XmlNode> getChildren() {
-        return null;
-    }
-
-    @Override
     public List<Integer> getCoords() {
         return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getComputedValue();
     }
-    
+
     @Override
-    public void setCoords(List<Integer> value) {
+    public void setCoords(final List<Integer> value) {
         getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).setValue(value);
     }
 
@@ -83,7 +78,7 @@ public class HotspotChoice extends Choice implements Hotspot {
     }
 
     @Override
-    public void setHotspotLabel(String hotspotLabel) {
+    public void setHotspotLabel(final String hotspotLabel) {
         getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).setValue(hotspotLabel);
     }
 
@@ -91,9 +86,9 @@ public class HotspotChoice extends Choice implements Hotspot {
     public Shape getShape() {
         return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
     }
-    
+
     @Override
-    public void setShape(Shape shape) {
+    public void setShape(final Shape shape) {
         getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).setValue(shape);
     }
 }

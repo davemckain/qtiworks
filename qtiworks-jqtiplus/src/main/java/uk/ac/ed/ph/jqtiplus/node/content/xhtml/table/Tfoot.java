@@ -41,24 +41,23 @@ import java.util.List;
 
 /**
  * tfoot
- * 
+ *
  * @author Jonathon Hare
  */
-public class Tfoot extends BodyElement {
+public final class Tfoot extends BodyElement {
 
     private static final long serialVersionUID = -7296081488924803711L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "tfoot";
 
-    public Tfoot(XmlNode parent) {
+    public Tfoot(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TrGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Tr> getChildren() {
         return getNodeGroups().getTrGroup().getChildren();
     }
 }

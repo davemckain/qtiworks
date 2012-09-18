@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.ObjectFlow;
 
 import java.util.List;
 
@@ -49,10 +50,10 @@ import java.util.List;
  * Attribute : type [1]: mimeType
  * Attribute : width [0..1]: length
  * Attribute : height [0..1]: length
- * 
+ *
  * @author Jonathon Hare
  */
-public class Object extends BodyElement implements InlineStatic, FlowStatic {
+public final class Object extends BodyElement implements InlineStatic, FlowStatic {
 
     private static final long serialVersionUID = -6905074851539593411L;
 
@@ -71,7 +72,7 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
     /** Name of height attribute in xml schema. */
     public static final String ATTR_HEIGHT_NAME = "height";
 
-    public Object(XmlNode parent) {
+    public Object(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_DATA_NAME, true));
@@ -82,14 +83,13 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
         getNodeGroups().add(new ObjectFlowGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<ObjectFlow> getChildren() {
         return getNodeGroups().getObjectFlowGroup().getObjectFlows();
     }
 
     /**
      * Gets value of data attribute.
-     * 
+     *
      * @return value of data attribute
      * @see #setData
      */
@@ -99,17 +99,17 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
 
     /**
      * Sets new value of data attribute.
-     * 
+     *
      * @param data new value of data attribute
      * @see #getData
      */
-    public void setData(String data) {
+    public void setData(final String data) {
         getAttributes().getStringAttribute(ATTR_DATA_NAME).setValue(data);
     }
 
     /**
      * Gets value of type attribute.
-     * 
+     *
      * @return value of type attribute
      * @see #setType
      */
@@ -119,17 +119,17 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
 
     /**
      * Sets new value of type attribute.
-     * 
+     *
      * @param type new value of type attribute
      * @see #getType
      */
-    public void setType(String type) {
+    public void setType(final String type) {
         getAttributes().getStringAttribute(ATTR_TYPE_NAME).setValue(type);
     }
 
     /**
      * Gets value of width attribute.
-     * 
+     *
      * @return value of width attribute
      * @see #setWidth
      */
@@ -139,17 +139,17 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
 
     /**
      * Sets new value of width attribute.
-     * 
+     *
      * @param width new value of width attribute
      * @see #getWidth
      */
-    public void setWidth(String width) {
+    public void setWidth(final String width) {
         getAttributes().getStringAttribute(ATTR_WIDTH_NAME).setValue(width);
     }
 
     /**
      * Gets value of height attribute.
-     * 
+     *
      * @return value of height attribute
      * @see #setHeight
      */
@@ -159,11 +159,11 @@ public class Object extends BodyElement implements InlineStatic, FlowStatic {
 
     /**
      * Sets new value of width attribute.
-     * 
+     *
      * @param height new value of height attribute
      * @see #getHeight
      */
-    public void setHeight(String height) {
+    public void setHeight(final String height) {
         getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).setValue(height);
     }
 }

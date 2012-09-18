@@ -132,7 +132,7 @@ public class ItemBody extends BodyElement {
      * @return list of feedbackInline elements in the itemBody.
      */
     private List<FeedbackInline> getFeedbackInline() {
-        return QueryUtils.search(FeedbackInline.class, getChildren());
+        return QueryUtils.search(FeedbackInline.class, getBlocks());
     }
 
     /**
@@ -143,7 +143,7 @@ public class ItemBody extends BodyElement {
      * @return list of feedbackBlock elements in the itemBody.
      */
     private List<FeedbackBlock> getFeedbackBlock() {
-        return QueryUtils.search(FeedbackBlock.class, getChildren());
+        return QueryUtils.search(FeedbackBlock.class, getBlocks());
     }
 
     /**
@@ -154,7 +154,7 @@ public class ItemBody extends BodyElement {
      * @return list of interactions in the itemBody.
      */
     public List<Interaction> getInteractions() {
-        return QueryUtils.search(Interaction.class, getChildren());
+        return QueryUtils.search(Interaction.class, getBlocks());
     }
 
 
@@ -202,7 +202,7 @@ public class ItemBody extends BodyElement {
      * @return unmodifiable list of interactions in the itemBody.
      */
     public List<TemplateElement> getTemplates() {
-        return QueryUtils.search(TemplateElement.class, getChildren());
+        return QueryUtils.search(TemplateElement.class, getBlocks());
     }
 
     /**
@@ -223,11 +223,6 @@ public class ItemBody extends BodyElement {
     }
 
     public List<Block> getBlocks() {
-        return getNodeGroups().getBlockGroup().getBlocks();
-    }
-
-    @Override
-    public List<? extends XmlNode> getChildren() {
         return getNodeGroups().getBlockGroup().getBlocks();
     }
 }

@@ -42,10 +42,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * The drawing interaction allows the candidate to use a common set of drawing
  * tools to modify a given graphical image (the canvas). It must be bound to a
@@ -54,7 +50,7 @@ import java.util.List;
  * Contains : object [1]
  * The image that acts as the canvas on which the drawing takes place is given
  * as an object which must be of an image type, as specified by the type attribute.
- * 
+ *
  * @author Jonathon Hare
  */
 public class DrawingInteraction extends BlockInteraction {
@@ -64,29 +60,15 @@ public class DrawingInteraction extends BlockInteraction {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "drawingInteraction";
 
-    public DrawingInteraction(XmlNode parent) {
+    public DrawingInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ObjectGroup(this, true));
     }
 
     /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on DrawingInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-
-        children.addAll(super.getChildren());
-        children.add(getNodeGroups().getObjectGroup().getObject());
-
-        return Collections.unmodifiableList(children);
-    }
-
-    /**
      * Gets object child.
-     * 
+     *
      * @return object child
      * @see #setObject
      */
@@ -96,16 +78,16 @@ public class DrawingInteraction extends BlockInteraction {
 
     /**
      * Sets new object child.
-     * 
+     *
      * @param object new object child
      * @see #getObject
      */
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -125,7 +107,7 @@ public class DrawingInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* We assume anything is valid here */
         return true;
     }

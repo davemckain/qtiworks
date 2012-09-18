@@ -35,12 +35,13 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 
 import java.util.List;
 
 /**
  * dt
- * 
+ *
  * @author Jonathon Hare
  */
 public class Dt extends DlElement {
@@ -50,14 +51,13 @@ public class Dt extends DlElement {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "dt";
 
-    public Dt(XmlNode parent) {
+    public Dt(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Inline> getChildren() {
         return getNodeGroups().getInlineGroup().getChildren();
     }
 }

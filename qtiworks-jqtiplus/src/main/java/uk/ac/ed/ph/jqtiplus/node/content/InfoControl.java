@@ -37,15 +37,16 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
 import java.util.List;
 
 /**
  * infoControl
- * 
+ *
  * @author David McKain
  */
-public class InfoControl extends BodyElement implements Block {
+public final class InfoControl extends BodyElement implements Block {
 
     private static final long serialVersionUID = -2306839345848098435L;
 
@@ -55,7 +56,7 @@ public class InfoControl extends BodyElement implements Block {
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
 
-    public InfoControl(XmlNode parent) {
+    public InfoControl(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
         getAttributes().add(new StringAttribute(this, ATTR_TITLE_NAME, true));
         getNodeGroups().add(new FlowGroup(this));
@@ -65,12 +66,11 @@ public class InfoControl extends BodyElement implements Block {
         return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Flow> getChildren() {
         return getNodeGroups().getFlowGroup().getFlows();
     }
 }

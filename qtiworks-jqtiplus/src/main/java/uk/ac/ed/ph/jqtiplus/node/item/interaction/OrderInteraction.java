@@ -51,8 +51,6 @@ import uk.ac.ed.ph.jqtiplus.value.Orientation;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -125,19 +123,6 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
         getAttributes().add(new OrientationAttribute(this, ATTR_ORIENTATION_NAME, false));
 
         getNodeGroups().add(new SimpleChoiceGroup(this, 1));
-    }
-
-    /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on OrderInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getSimpleChoiceGroup().getSimpleChoices());
-
-        return Collections.unmodifiableList(children);
     }
 
     /**

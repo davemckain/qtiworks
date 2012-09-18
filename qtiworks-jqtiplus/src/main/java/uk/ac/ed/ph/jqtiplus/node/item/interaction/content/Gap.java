@@ -38,8 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.AssociableChoice;
 
-import java.util.List;
-
 /**
  * gap is an inlineStatic element that must only appear within a
  * gapMatchInteraction.
@@ -91,10 +89,5 @@ public class Gap extends AssociableChoice implements InlineStatic {
      */
     public boolean getRequired() {
         return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedNonNullValue();
-    }
-
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        return null;
     }
 }

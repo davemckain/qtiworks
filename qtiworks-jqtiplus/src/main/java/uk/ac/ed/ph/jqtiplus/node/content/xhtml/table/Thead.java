@@ -41,24 +41,23 @@ import java.util.List;
 
 /**
  * thead
- * 
+ *
  * @author Jonathon Hare
  */
-public class Thead extends BodyElement {
+public final class Thead extends BodyElement {
 
     private static final long serialVersionUID = 8964640245554999284L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "thead";
 
-    public Thead(XmlNode parent) {
+    public Thead(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TrGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Tr> getChildren() {
         return getNodeGroups().getTrGroup().getChildren();
     }
 }

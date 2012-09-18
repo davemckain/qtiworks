@@ -37,13 +37,14 @@ import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
 
 /**
  * div
- * 
+ *
  * @author Jonathon Hare
  */
 public class Div extends BodyElement implements BlockStatic, FlowStatic {
@@ -53,14 +54,13 @@ public class Div extends BodyElement implements BlockStatic, FlowStatic {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "div";
 
-    public Div(XmlNode parent) {
+    public Div(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Flow> getChildren() {
         return getNodeGroups().getFlowGroup().getFlows();
     }
 }

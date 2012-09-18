@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * colgroup
- * 
+ *
  * @author Jonathon Hare
  */
 public class Colgroup extends BodyElement {
@@ -58,7 +58,7 @@ public class Colgroup extends BodyElement {
     /** Default value of span attribute. */
     public static final int ATTR_SPAN_DEFAULT_VALUE = 1;
 
-    public Colgroup(XmlNode parent) {
+    public Colgroup(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SPAN_NAME, ATTR_SPAN_DEFAULT_VALUE, false));
@@ -66,14 +66,13 @@ public class Colgroup extends BodyElement {
         getNodeGroups().add(new ColGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Col> getChildren() {
         return getNodeGroups().getColGroup().getCols();
     }
 
     /**
      * Gets value of span attribute.
-     * 
+     *
      * @return value of span attribute
      * @see #setSpan
      */
@@ -83,11 +82,11 @@ public class Colgroup extends BodyElement {
 
     /**
      * Sets new value of span attribute.
-     * 
+     *
      * @param span new value of span attribute
      * @see #getSpan
      */
-    public void setSpan(Integer span) {
+    public void setSpan(final Integer span) {
         getAttributes().getIntegerAttribute(ATTR_SPAN_NAME).setValue(span);
     }
 }

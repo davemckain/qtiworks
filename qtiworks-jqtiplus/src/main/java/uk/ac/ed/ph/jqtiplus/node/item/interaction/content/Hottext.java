@@ -51,24 +51,23 @@ import java.util.List;
  * case of hottext, the effect of hiding the choice is simply to make the
  * run of text unselectable by the candidate.
  * Contains : inlineStatic [*]
- * 
+ *
  * @author Jonathon Hare
  */
-public class Hottext extends Choice implements InlineStatic, FlowStatic {
+public final class Hottext extends Choice implements InlineStatic, FlowStatic {
 
     private static final long serialVersionUID = 1456204540250149804L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "hottext";
 
-    public Hottext(XmlNode parent) {
+    public Hottext(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new InlineStaticGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<InlineStatic> getChildren() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();
     }
 }

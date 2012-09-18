@@ -47,8 +47,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,10 +59,10 @@ import java.util.List;
  * Contains : thead [0..1]
  * Contains : tfoot [0..1]
  * Contains : tbody [1..*]
- * 
+ *
  * @author Jonathon Hare
  */
-public class Table extends BodyElement implements BlockStatic, FlowStatic {
+public final class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     private static final long serialVersionUID = -13930375270014305L;
 
@@ -74,7 +72,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
     /** Name of summary attribute in xml schema. */
     public static final String ATTR_SUMMARY_NAME = "summary";
 
-    public Table(XmlNode parent) {
+    public Table(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_SUMMARY_NAME, false));
@@ -89,7 +87,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     /**
      * Gets col children.
-     * 
+     *
      * @return col children
      */
     public List<Col> getCols() {
@@ -98,7 +96,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     /**
      * Gets colgroup children.
-     * 
+     *
      * @return colgroup children
      */
     public List<Colgroup> getColgroups() {
@@ -107,7 +105,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     /**
      * Gets tbody children.
-     * 
+     *
      * @return tbody children
      */
     public List<Tbody> getTbodys() {
@@ -116,7 +114,7 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     /**
      * Gets caption child.
-     * 
+     *
      * @return caption child
      */
     public Caption getCaption() {
@@ -125,16 +123,16 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     /**
      * Sets caption child.
-     * 
+     *
      * @param caption Caption to set
      */
-    public void setCaption(Caption caption) {
+    public void setCaption(final Caption caption) {
         getNodeGroups().getCaptionGroup().setCaption(caption);
     }
 
     /**
      * Gets thead child.
-     * 
+     *
      * @return thead child
      */
     public Thead getThead() {
@@ -143,16 +141,16 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     /**
      * Sets Thead child.
-     * 
+     *
      * @param thead Thead to set
      */
-    public void setThead(Thead thead) {
+    public void setThead(final Thead thead) {
         getNodeGroups().getTheadGroup().setThead(thead);
     }
 
     /**
      * Gets tfoot child.
-     * 
+     *
      * @return tfoot child
      */
     public Tfoot getTfoot() {
@@ -161,34 +159,16 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     /**
      * Sets Tfoot child.
-     * 
+     *
      * @param tfoot Tfoot to set
      */
-    public void setTfoot(Tfoot tfoot) {
+    public void setTfoot(final Tfoot tfoot) {
         getNodeGroups().getTfootGroup().setTfoot(tfoot);
     }
 
     /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on Table to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<BodyElement> children = new ArrayList<BodyElement>();
-
-        children.add(getNodeGroups().getCaptionGroup().getCaption());
-        children.addAll(getNodeGroups().getColGroup().getCols());
-        children.addAll(getNodeGroups().getColgroupGroup().getColgroups());
-        children.add(getNodeGroups().getTheadGroup().getThead());
-        children.add(getNodeGroups().getTfootGroup().getTfoot());
-        children.addAll(getNodeGroups().getTbodyGroup().getTbodys());
-
-        return Collections.unmodifiableList(children);
-    }
-
-    /**
      * Gets value of summary attribute.
-     * 
+     *
      * @return value of summary attribute
      * @see #setSummary
      */
@@ -198,16 +178,16 @@ public class Table extends BodyElement implements BlockStatic, FlowStatic {
 
     /**
      * Sets new value of summary attribute.
-     * 
+     *
      * @param summary new value of summary attribute
      * @see #getSummary
      */
-    public void setSummary(String summary) {
+    public void setSummary(final String summary) {
         getAttributes().getStringAttribute(ATTR_SUMMARY_NAME).setValue(summary);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getColgroups().size() > 0 && getCols().size() > 0) {

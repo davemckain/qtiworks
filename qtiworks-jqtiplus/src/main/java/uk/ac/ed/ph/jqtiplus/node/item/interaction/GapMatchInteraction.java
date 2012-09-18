@@ -53,7 +53,6 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -110,20 +109,6 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
 
         getNodeGroups().add(new GapChoiceGroup(this, 1));
         getNodeGroups().add(new BlockStaticGroup(this, 1));
-    }
-
-    /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on ChoiceInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getGapChoiceGroup().getGapChoices());
-        children.addAll(getNodeGroups().getBlockStaticGroup().getBlockStatics());
-
-        return Collections.unmodifiableList(children);
     }
 
     /**

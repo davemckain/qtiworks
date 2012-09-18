@@ -41,24 +41,23 @@ import java.util.List;
 
 /**
  * tr
- * 
+ *
  * @author Jonathon Hare
  */
-public class Tr extends BodyElement {
+public final class Tr extends BodyElement {
 
     private static final long serialVersionUID = 309306649093335733L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "tr";
 
-    public Tr(XmlNode parent) {
+    public Tr(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TableCellGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<TableCell> getChildren() {
         return getNodeGroups().getTableCellGroup().getChildren();
     }
 }

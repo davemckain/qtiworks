@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.TableCellScope;
 
@@ -83,7 +84,7 @@ public abstract class TableCell extends BodyElement {
     /** Name of colspan attribute in xml schema. */
     public static final String ATTR_COLSPAN_NAME = "colspan";
 
-    public TableCell(XmlNode parent, String localName) {
+    public TableCell(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_HEADERS_NAME, false));
@@ -96,8 +97,7 @@ public abstract class TableCell extends BodyElement {
         getNodeGroups().add(new FlowGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public final List<Flow> getChildren() {
         return getNodeGroups().getFlowGroup().getFlows();
     }
 
@@ -106,11 +106,11 @@ public abstract class TableCell extends BodyElement {
      *
      * @return value of headers attribute
      */
-    public List<Identifier> getHeaders() {
+    public final List<Identifier> getHeaders() {
         return getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).getComputedValue();
     }
 
-    public void setHeaders(List<Identifier> value) {
+    public final void setHeaders(final List<Identifier> value) {
         getAttributes().getIdentifierMultipleAttribute(ATTR_HEADERS_NAME).setValue(value);
     }
 
@@ -120,7 +120,7 @@ public abstract class TableCell extends BodyElement {
      * @return value of scope attribute
      * @see #setScope
      */
-    public TableCellScope getScope() {
+    public final TableCellScope getScope() {
         return getAttributes().getTableCellScopeAttribute(ATTR_SCOPE_NAME).getComputedValue();
     }
 
@@ -130,7 +130,7 @@ public abstract class TableCell extends BodyElement {
      * @param scope new value of scope attribute
      * @see #getScope
      */
-    public void setScope(TableCellScope scope) {
+    public final void setScope(final TableCellScope scope) {
         getAttributes().getTableCellScopeAttribute(ATTR_SCOPE_NAME).setValue(scope);
     }
 
@@ -140,7 +140,7 @@ public abstract class TableCell extends BodyElement {
      * @return value of abbr attribute
      * @see #setAbbr
      */
-    public String getAbbr() {
+    public final String getAbbr() {
         return getAttributes().getStringAttribute(ATTR_ABBR_NAME).getComputedValue();
     }
 
@@ -150,7 +150,7 @@ public abstract class TableCell extends BodyElement {
      * @param abbr new value of abbr attribute
      * @see #getAbbr
      */
-    public void setAbbr(String abbr) {
+    public final void setAbbr(final String abbr) {
         getAttributes().getStringAttribute(ATTR_ABBR_NAME).setValue(abbr);
     }
 
@@ -160,7 +160,7 @@ public abstract class TableCell extends BodyElement {
      * @return value of axis attribute
      * @see #setAxis
      */
-    public String getAxis() {
+    public final String getAxis() {
         return getAttributes().getStringAttribute(ATTR_AXIS_NAME).getComputedValue();
     }
 
@@ -170,7 +170,7 @@ public abstract class TableCell extends BodyElement {
      * @param axis new value of axis attribute
      * @see #getAxis
      */
-    public void setAxis(String axis) {
+    public final void setAxis(final String axis) {
         getAttributes().getStringAttribute(ATTR_AXIS_NAME).setValue(axis);
     }
 
@@ -180,7 +180,7 @@ public abstract class TableCell extends BodyElement {
      * @return value of rowspan attribute
      * @see #setRowspan
      */
-    public int getRowspan() {
+    public final int getRowspan() {
         return getAttributes().getIntegerAttribute(ATTR_ROWSPAN_NAME).getComputedNonNullValue();
     }
 
@@ -190,7 +190,7 @@ public abstract class TableCell extends BodyElement {
      * @param rowspan new value of rowspan attribute
      * @see #getRowspan
      */
-    public void setRowspan(Integer rowspan) {
+    public final void setRowspan(final Integer rowspan) {
         getAttributes().getIntegerAttribute(ATTR_ROWSPAN_NAME).setValue(rowspan);
     }
 
@@ -200,7 +200,7 @@ public abstract class TableCell extends BodyElement {
      * @return value of colspan attribute
      * @see #setColspan
      */
-    public int getColspan() {
+    public final int getColspan() {
         return getAttributes().getIntegerAttribute(ATTR_COLSPAN_NAME).getComputedNonNullValue();
     }
 
@@ -210,7 +210,7 @@ public abstract class TableCell extends BodyElement {
      * @param colspan new value of colspan attribute
      * @see #getColspan
      */
-    public void setColspan(Integer colspan) {
+    public final void setColspan(final Integer colspan) {
         getAttributes().getIntegerAttribute(ATTR_COLSPAN_NAME).setValue(colspan);
     }
 

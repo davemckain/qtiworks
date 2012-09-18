@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.content.TextOrVariableGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 
 import java.util.List;
 
@@ -42,24 +43,23 @@ import java.util.List;
  * A simple run of text to be inserted into a gap by the user,
  * may be subject to variable value substitution with printedVariable.
  * Contains : textOrVariable [*]
- * 
+ *
  * @author Jonathon Hare
  */
-public class GapText extends GapChoice {
+public final class GapText extends GapChoice {
 
     private static final long serialVersionUID = -1368834690176977960L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "gapText";
 
-    public GapText(XmlNode parent) {
+    public GapText(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TextOrVariableGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<TextOrVariable> getChildren() {
         return getNodeGroups().getTextOrVariableGroup().getTextOrVariables();
     }
 }

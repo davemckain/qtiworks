@@ -42,23 +42,22 @@ import java.util.List;
 
 /**
  * templateBlock
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateBlock extends TemplateElement implements FlowStatic, BlockStatic {
+public final class TemplateBlock extends TemplateElement implements FlowStatic, BlockStatic {
 
     private static final long serialVersionUID = -7030953780473751904L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateBlock";
 
-    public TemplateBlock(XmlNode parent) {
+    public TemplateBlock(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new BlockStaticGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<BlockStatic> getChildren() {
         return getNodeGroups().getBlockStaticGroup().getBlockStatics();
     }
 }

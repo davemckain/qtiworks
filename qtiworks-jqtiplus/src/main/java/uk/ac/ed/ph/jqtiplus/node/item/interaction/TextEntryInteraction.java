@@ -70,7 +70,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class TextEntryInteraction extends InlineInteraction implements StringInteraction {
+public final class TextEntryInteraction extends InlineInteraction implements StringInteraction {
 
     private static final long serialVersionUID = 1113644056576463196L;
 
@@ -86,11 +86,6 @@ public class TextEntryInteraction extends InlineInteraction implements StringInt
         getAttributes().add(new IntegerAttribute(this, ATTR_EXPECTED_LENGTH_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_PATTERN_MASK_NAME, false));
         getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, false));
-    }
-
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        return null;
     }
 
     @Override

@@ -48,8 +48,6 @@ import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -107,7 +105,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
     /** Default value of minChoices attribute. */
     public static final int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
-    public HotspotInteraction(XmlNode parent) {
+    public HotspotInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
@@ -117,25 +115,12 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
     }
 
     /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on GraphicOrderInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getHotspotChoiceGroup().getHotspotChoices());
-
-        return Collections.unmodifiableList(children);
-    }
-
-    /**
      * Sets new value of maxChoices attribute.
      *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
-    public void setMaxChoices(Integer maxChoices) {
+    public void setMaxChoices(final Integer maxChoices) {
         getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
     }
 
@@ -155,7 +140,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
-    public void setMinChoices(Integer minChoices) {
+    public void setMinChoices(final Integer minChoices) {
         getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
     }
 
@@ -184,7 +169,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
      * @param identifier given identifier
      * @return hotspotChoice with given identifier or null
      */
-    public HotspotChoice getHotspotChoice(Identifier identifier) {
+    public HotspotChoice getHotspotChoice(final Identifier identifier) {
         for (final HotspotChoice choice : getHotspotChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
@@ -195,10 +180,10 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
-        int minChoices = getMinChoices();
-        int maxChoices = getMaxChoices();
+        final int minChoices = getMinChoices();
+        final int maxChoices = getMaxChoices();
 
         if (maxChoices < minChoices) {
             context.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
@@ -224,7 +209,7 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
 
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

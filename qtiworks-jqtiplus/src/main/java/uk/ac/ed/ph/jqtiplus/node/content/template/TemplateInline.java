@@ -42,23 +42,22 @@ import java.util.List;
 
 /**
  * templateInline
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateInline extends TemplateElement implements FlowStatic, InlineStatic {
+public final class TemplateInline extends TemplateElement implements FlowStatic, InlineStatic {
 
     private static final long serialVersionUID = 1126170727488675506L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateInline";
 
-    public TemplateInline(XmlNode parent) {
+    public TemplateInline(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new InlineStaticGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<InlineStatic> getChildren() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();
     }
 }

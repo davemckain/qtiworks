@@ -49,8 +49,6 @@ import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -100,7 +98,7 @@ public class HottextInteraction extends BlockInteraction {
     /** Default value of minChoices attribute . */
     public static final int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
-    public HottextInteraction(XmlNode parent) {
+    public HottextInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
@@ -110,25 +108,12 @@ public class HottextInteraction extends BlockInteraction {
     }
 
     /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on ChoiceInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getBlockStaticGroup().getBlockStatics());
-
-        return Collections.unmodifiableList(children);
-    }
-
-    /**
      * Sets new value of maxChoices attribute.
      *
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
-    public void setMaxChoices(Integer maxChoices) {
+    public void setMaxChoices(final Integer maxChoices) {
         getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
     }
 
@@ -148,7 +133,7 @@ public class HottextInteraction extends BlockInteraction {
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
-    public void setMinChoices(Integer minChoices) {
+    public void setMinChoices(final Integer minChoices) {
         getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
     }
 
@@ -172,7 +157,7 @@ public class HottextInteraction extends BlockInteraction {
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
         final int maxChoices = getMaxChoices();
         final int minChoices = getMinChoices();
@@ -200,7 +185,7 @@ public class HottextInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseHottextIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

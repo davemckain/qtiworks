@@ -36,29 +36,29 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
 import java.util.List;
 
 /**
  * li
- * 
+ *
  * @author Jonathon Hare
  */
-public class Li extends BodyElement {
+public final class Li extends BodyElement {
 
     private static final long serialVersionUID = -7210506194879969407L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "li";
 
-    public Li(XmlNode parent) {
+    public Li(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Flow> getChildren() {
         return getNodeGroups().getFlowGroup().getChildren();
     }
 }

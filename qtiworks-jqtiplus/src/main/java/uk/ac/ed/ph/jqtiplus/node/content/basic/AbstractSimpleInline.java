@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * abstract class for simpleInlines
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class AbstractSimpleInline extends BodyElement implements SimpleInline {
@@ -50,16 +50,15 @@ public abstract class AbstractSimpleInline extends BodyElement implements Simple
 
     /**
      * Constructs object.
-     * 
+     *
      * @param parent parent of constructed object
      */
-    public AbstractSimpleInline(XmlNode parent, String localName) {
+    public AbstractSimpleInline(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getNodeGroups().add(new InlineGroup(this));
     }
 
-    @Override
     public List<Inline> getChildren() {
         return getNodeGroups().getInlineGroup().getInlines();
     }

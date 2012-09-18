@@ -59,7 +59,7 @@ import org.xml.sax.SAXException;
  *
  * @author Jonathon Hare
  */
-public class Math extends BodyElement implements BlockStatic, FlowStatic, InlineStatic {
+public final class Math extends BodyElement implements BlockStatic, FlowStatic, InlineStatic {
 
     private static final long serialVersionUID = 8090241210739302355L;
 
@@ -75,11 +75,6 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     }
 
     public List<ForeignElement> getContent() {
-        return children;
-    }
-
-    @Override
-    public List<? extends XmlNode> getChildren() {
         return children;
     }
 

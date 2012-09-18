@@ -49,8 +49,6 @@ import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -101,7 +99,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     /** Default value of minChoices attribute . */
     public static final int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
-    public ChoiceInteraction(XmlNode parent) {
+    public ChoiceInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, true));
@@ -112,26 +110,13 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     }
 
     /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on ChoiceInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getSimpleChoiceGroup().getSimpleChoices());
-
-        return Collections.unmodifiableList(children);
-    }
-
-    /**
      * Sets new value of shuffle attribute.
      *
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
     @Override
-    public void setShuffle(boolean shuffle) {
+    public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
@@ -152,7 +137,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      * @param maxChoices new value of maxChoices attribute
      * @see #getMaxChoices
      */
-    public void setMaxChoices(Integer maxChoices) {
+    public void setMaxChoices(final Integer maxChoices) {
         getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
     }
 
@@ -172,7 +157,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      * @param minChoices new value of minChoices attribute
      * @see #getMinChoices
      */
-    public void setMinChoices(Integer minChoices) {
+    public void setMinChoices(final Integer minChoices) {
         getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
     }
 
@@ -201,7 +186,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
      * @param identifier given identifier
      * @return simpleChoice with given identifier or null
      */
-    public SimpleChoice getSimpleChoice(Identifier identifier) {
+    public SimpleChoice getSimpleChoice(final Identifier identifier) {
         for (final SimpleChoice choice : getSimpleChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
@@ -211,7 +196,7 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getMaxChoices() != 0 && getMinChoices() > getMaxChoices()) {
@@ -237,13 +222,13 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
     }
 
     @Override
-    public void initialize(ItemSessionController itemSessionController) {
+    public void initialize(final ItemSessionController itemSessionController) {
         super.initialize(itemSessionController);
         itemSessionController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

@@ -44,10 +44,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * The media interaction allows more control over the way the
  * candidate interacts with a time-based media object and allows
@@ -197,20 +193,6 @@ public class MediaInteraction extends BlockInteraction {
      */
     public void setLoop(final Boolean loop) {
         getAttributes().getBooleanAttribute(ATTR_LOOP_NAME).setValue(loop);
-    }
-
-    /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on DrawingInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-
-        children.addAll(super.getChildren());
-        children.add(getNodeGroups().getObjectGroup().getObject());
-
-        return Collections.unmodifiableList(children);
     }
 
     /**

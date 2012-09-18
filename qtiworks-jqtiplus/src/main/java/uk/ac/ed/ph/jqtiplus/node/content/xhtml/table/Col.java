@@ -37,11 +37,9 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
-import java.util.List;
-
 /**
  * col
- * 
+ *
  * @author Jonathon Hare
  */
 public class Col extends BodyElement {
@@ -57,20 +55,15 @@ public class Col extends BodyElement {
     /** Default value of span attribute. */
     public static final int ATTR_SPAN_DEFAULT_VALUE = 1;
 
-    public Col(XmlNode parent) {
+    public Col(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SPAN_NAME, ATTR_SPAN_DEFAULT_VALUE, false));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        return null;
-    }
-
     /**
      * Gets value of span attribute.
-     * 
+     *
      * @return value of span attribute
      * @see #setSpan
      */
@@ -80,11 +73,11 @@ public class Col extends BodyElement {
 
     /**
      * Sets new value of span attribute.
-     * 
+     *
      * @param span new value of span attribute
      * @see #getSpan
      */
-    public void setSpan(Integer span) {
+    public void setSpan(final Integer span) {
         getAttributes().getIntegerAttribute(ATTR_SPAN_NAME).setValue(span);
     }
 }

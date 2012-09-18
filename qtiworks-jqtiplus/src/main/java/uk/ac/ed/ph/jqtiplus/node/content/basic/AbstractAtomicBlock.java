@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * abstract class for atomicBlocks
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class AbstractAtomicBlock extends BodyElement implements AtomicBlock {
@@ -50,16 +50,15 @@ public abstract class AbstractAtomicBlock extends BodyElement implements AtomicB
 
     /**
      * Constructs object.
-     * 
+     *
      * @param parent parent of constructed object
      */
-    public AbstractAtomicBlock(XmlNode parent, String localName) {
+    public AbstractAtomicBlock(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getNodeGroups().add(new InlineGroup(this));
     }
 
-    @Override
     public List<Inline> getChildren() {
         return getNodeGroups().getInlineGroup().getInlines();
     }

@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.template;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
@@ -160,7 +159,7 @@ public abstract class TemplateElement extends BodyElement {
     protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
-        if (getChildren().size() == 0) {
+        if (!hasChildNodes()) {
             context.add(new ValidationWarning(this, "Feedback should contain something."));
         }
     }

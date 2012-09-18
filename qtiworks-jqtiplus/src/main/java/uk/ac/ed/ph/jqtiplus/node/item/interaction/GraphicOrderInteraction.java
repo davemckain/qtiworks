@@ -48,8 +48,6 @@ import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,19 +102,6 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, false));
 
         getNodeGroups().add(new HotspotChoiceGroup(this, 1));
-    }
-
-    /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on GraphicOrderInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getHotspotChoiceGroup().getHotspotChoices());
-
-        return Collections.unmodifiableList(children);
     }
 
     /**

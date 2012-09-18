@@ -41,24 +41,23 @@ import java.util.List;
 
 /**
  * colgroup
- * 
+ *
  * @author Jonathon Hare
  */
-public class Tbody extends BodyElement {
+public final class Tbody extends BodyElement {
 
     private static final long serialVersionUID = 3729259231245328140L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "tbody";
 
-    public Tbody(XmlNode parent) {
+    public Tbody(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TrGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Tr> getChildren() {
         return getNodeGroups().getTrGroup().getChildren();
     }
 }

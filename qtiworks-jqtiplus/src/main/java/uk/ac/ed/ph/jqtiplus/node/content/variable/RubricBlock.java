@@ -45,11 +45,11 @@ import java.util.List;
 
 /**
  * A rubric block contains instructions to one or more of the actors.
- * 
+ *
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
-public class RubricBlock extends BodyElement implements SimpleBlock {
+public final class RubricBlock extends BodyElement implements SimpleBlock {
 
     private static final long serialVersionUID = -531414949035924206L;
 
@@ -59,7 +59,7 @@ public class RubricBlock extends BodyElement implements SimpleBlock {
     /** Name of view attribute in xml schema. */
     public static final String ATTR_VIEWS_NAME = View.QTI_CLASS_NAME;
 
-    public RubricBlock(XmlNode parent) {
+    public RubricBlock(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new ViewMultipleAttribute(this, ATTR_VIEWS_NAME, true));
@@ -67,21 +67,20 @@ public class RubricBlock extends BodyElement implements SimpleBlock {
         getNodeGroups().add(new BlockGroup(this));
     }
 
-    @Override
     public List<Block> getChildren() {
         return getNodeGroups().getBlockGroup().getBlocks();
     }
 
     /**
      * Gets value of view attribute.
-     * 
+     *
      * @return value of view attribute
      */
     public List<View> getViews() {
         return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getComputedValue();
     }
-    
-    public void setViews(List<View> value) {
+
+    public void setViews(final List<View> value) {
         getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).setValue(value);
     }
 }

@@ -97,11 +97,6 @@ public final class EndAttemptInteraction extends InlineInteraction {
         getAttributes().add(new BooleanAttribute(this, ATTR_COUNT_ATTEMPT_NAME, ATTR_COUNT_ATTEMPT_DEFAULT_VALUE, false));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        return null;
-    }
-
     /**
      * Sets new value of title attribute.
      *

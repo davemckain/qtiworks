@@ -38,26 +38,19 @@ import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
-import java.util.List;
-
 /**
  * hr
- * 
+ *
  * @author Jonathon Hare
  */
-public class Hr extends BodyElement implements BlockStatic, FlowStatic {
+public final class Hr extends BodyElement implements BlockStatic, FlowStatic {
 
     private static final long serialVersionUID = 6658237844126900030L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "hr";
 
-    public Hr(XmlNode parent) {
+    public Hr(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
-    }
-
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        return null;
     }
 }

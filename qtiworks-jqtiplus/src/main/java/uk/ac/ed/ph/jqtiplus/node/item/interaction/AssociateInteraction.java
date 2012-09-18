@@ -50,7 +50,6 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +97,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     /** Default value of minAssociations attribute. */
     public static final int ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE = 0;
 
-    public AssociateInteraction(XmlNode parent) {
+    public AssociateInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, true));
@@ -109,26 +108,13 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     }
 
     /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on AssociateInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getSimpleAssociableChoiceGroup().getSimpleAssociableChoices());
-
-        return Collections.unmodifiableList(children);
-    }
-
-    /**
      * Sets new value of shuffle attribute.
      *
      * @param shuffle new value of shuffle attribute
      * @see #getShuffle
      */
     @Override
-    public void setShuffle(boolean shuffle) {
+    public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
@@ -149,7 +135,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @param maxAssociations new value of maxAssociations attribute
      * @see #getMaxAssociations
      */
-    public void setMaxAssociations(Integer maxAssociations) {
+    public void setMaxAssociations(final Integer maxAssociations) {
         getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).setValue(maxAssociations);
     }
 
@@ -169,7 +155,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
      * @param minAssociations new value of minAssociations attribute
      * @see #getMinAssociations
      */
-    public void setMinAssociations(Integer minAssociations) {
+    public void setMinAssociations(final Integer minAssociations) {
         getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).setValue(minAssociations);
     }
 
@@ -208,7 +194,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getMinAssociations() > getMaxAssociations()) {
@@ -233,13 +219,13 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
     }
 
     @Override
-    public void initialize(ItemSessionController itemSessionController) {
+    public void initialize(final ItemSessionController itemSessionController) {
         super.initialize(itemSessionController);
         itemSessionController.shuffleInteractionChoiceOrder(this, getSimpleAssociableChoices());
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final List<PairValue> responseAssociations = new ArrayList<PairValue>();
         if (responseValue.isNull()) {
@@ -293,7 +279,7 @@ public class AssociateInteraction extends BlockInteraction implements SimpleAsso
         return true;
     }
 
-    private boolean validateChoice(SimpleAssociableChoice choice, int responseCountCount) {
+    private boolean validateChoice(final SimpleAssociableChoice choice, final int responseCountCount) {
         final int matchMin = choice.getMatchMin();
         final int matchMax = choice.getMatchMax();
         if (responseCountCount < matchMin) {

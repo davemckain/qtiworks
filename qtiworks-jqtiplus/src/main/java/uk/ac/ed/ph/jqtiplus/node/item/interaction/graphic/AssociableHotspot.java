@@ -128,11 +128,6 @@ public class AssociableHotspot extends AssociableChoice implements Hotspot {
     }
 
     @Override
-    public List<? extends XmlNode> getChildren() {
-        return null;
-    }
-
-    @Override
     public List<Integer> getCoords() {
         return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getComputedValue();
     }

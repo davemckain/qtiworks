@@ -43,7 +43,7 @@ import java.util.List;
 
 /**
  * dl
- * 
+ *
  * @author Jonathon Hare
  */
 public class Dl extends BodyElement implements BlockStatic, FlowStatic {
@@ -53,14 +53,13 @@ public class Dl extends BodyElement implements BlockStatic, FlowStatic {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "dl";
 
-    public Dl(XmlNode parent) {
+    public Dl(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new DlElementGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<DlElement> getChildren() {
         return getNodeGroups().getDlElementGroup().getChildren();
     }
 }

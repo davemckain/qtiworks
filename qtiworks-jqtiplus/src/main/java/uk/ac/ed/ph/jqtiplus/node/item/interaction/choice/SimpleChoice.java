@@ -35,30 +35,30 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
 import java.util.List;
 
 /**
  * simpleChoice is A choice that contains flowStatic objects.
  * A simpleChoice must not contain any nested interactions.
- * 
+ *
  * @author Jonathon Hare
  */
-public class SimpleChoice extends Choice {
+public final class SimpleChoice extends Choice {
 
     private static final long serialVersionUID = 5742864616479376297L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "simpleChoice";
 
-    public SimpleChoice(XmlNode parent) {
+    public SimpleChoice(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowStaticGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<FlowStatic> getChildren() {
         return getNodeGroups().getFlowStaticGroup().getFlowStatics();
     }
 }

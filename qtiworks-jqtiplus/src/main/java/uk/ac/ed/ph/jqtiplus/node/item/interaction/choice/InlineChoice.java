@@ -51,21 +51,21 @@ import java.util.List;
  * @see PrintedVariable
  * @author Jonathon Hare
  */
-public class InlineChoice extends Choice {
+public final class InlineChoice extends Choice {
 
     private static final long serialVersionUID = 2530302190076210162L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "inlineChoice";
 
-    public InlineChoice(XmlNode parent) {
+    public InlineChoice(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TextOrVariableGroup(this));
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (QueryUtils.hasDescendant(Interaction.class, this)) {
@@ -73,7 +73,6 @@ public class InlineChoice extends Choice {
         }
     }
 
-    @Override
     public List<TextOrVariable> getChildren() {
         return getNodeGroups().getTextOrVariableGroup().getTextOrVariables();
     }

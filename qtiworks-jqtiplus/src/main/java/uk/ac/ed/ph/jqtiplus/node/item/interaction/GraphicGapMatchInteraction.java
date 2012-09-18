@@ -51,7 +51,6 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -92,7 +91,7 @@ import java.util.Set;
  * in which they are offered to the candidate for selection. For example,
  * the 'tab order' in simple keyboard navigation. The default hotspot
  * must not be defined.
- * 
+ *
  * @author Jonathon Hare
  */
 public class GraphicGapMatchInteraction extends GraphicInteraction implements AssociableHotspotContainer {
@@ -102,7 +101,7 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "graphicGapMatchInteraction";
 
-    public GraphicGapMatchInteraction(XmlNode parent) {
+    public GraphicGapMatchInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new GapImgGroup(this, 1));
@@ -110,23 +109,8 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
     }
 
     /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on ChoiceInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getGapImgGroup().getGapImgs());
-        children.addAll(getNodeGroups().getAssociableHotspotGroup().getAssociableHotspots());
-
-        return Collections.unmodifiableList(children);
-    }
-
-    /**
      * Gets gapImg children.
-     * 
+     *
      * @return gapImg children
      */
     public List<GapImg> getGapImgs() {
@@ -135,7 +119,7 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
 
     /**
      * Gets associableHotspot children.
-     * 
+     *
      * @return associableHotspot children
      */
     public List<AssociableHotspot> getAssociableHotspots() {
@@ -143,7 +127,7 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -159,7 +143,7 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {
@@ -226,7 +210,7 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
         return true;
     }
 
-    private boolean validateChoice(GapChoice choice, int responseAssociateCount) {
+    private boolean validateChoice(final GapChoice choice, final int responseAssociateCount) {
         final int matchMin = choice.getMatchMin();
         final int matchMax = choice.getMatchMax();
         if (responseAssociateCount < matchMin) {
@@ -238,7 +222,7 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
         return true;
     }
 
-    private boolean validateChoice(AssociableHotspot hotspot, int associateCount) {
+    private boolean validateChoice(final AssociableHotspot hotspot, final int associateCount) {
         final int matchMin = hotspot.getMatchMin();
         final int matchMax = hotspot.getMatchMax();
         if (associateCount < matchMin) {

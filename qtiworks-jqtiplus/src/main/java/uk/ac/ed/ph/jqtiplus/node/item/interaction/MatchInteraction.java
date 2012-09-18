@@ -51,7 +51,6 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -118,19 +117,6 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_ASSOCIATIONS_NAME, ATTR_MIN_ASSOCIATIONS_DEFAULT_VALUE, false));
 
         getNodeGroups().add(new SimpleMatchSetGroup(this, 2, 2));
-    }
-
-    /**
-     * Gets an unmodifiable list of the child elements. Use the other
-     * methods on ChoiceInteraction to add children to the correct group.
-     */
-    @Override
-    public List<? extends XmlNode> getChildren() {
-        final List<XmlNode> children = new ArrayList<XmlNode>();
-        children.addAll(super.getChildren());
-        children.addAll(getNodeGroups().getSimpleMatchSetGroup().getSimpleMatchSets());
-
-        return Collections.unmodifiableList(children);
     }
 
     /**

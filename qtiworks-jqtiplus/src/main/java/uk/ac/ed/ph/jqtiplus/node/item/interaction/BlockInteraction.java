@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
-
 import uk.ac.ed.ph.jqtiplus.group.item.interaction.PromptGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
@@ -43,7 +42,7 @@ import java.util.List;
 
 /**
  * abstract block interaction
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class BlockInteraction extends Interaction implements Block, Flow {
@@ -52,23 +51,22 @@ public abstract class BlockInteraction extends Interaction implements Block, Flo
 
     /**
      * Construct new interaction.
-     * 
+     *
      * @param parent Parent node
      */
-    public BlockInteraction(XmlNode parent, String localName) {
+    public BlockInteraction(final XmlNode parent, final String localName) {
         super(parent, localName);
 
         getNodeGroups().add(new PromptGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Prompt> getPrompts() {
         return getNodeGroups().getPromptGroup().getChildren();
     }
 
     /**
      * Gets prompt child.
-     * 
+     *
      * @return prompt child
      * @see #setPrompt
      */
@@ -78,11 +76,11 @@ public abstract class BlockInteraction extends Interaction implements Block, Flo
 
     /**
      * Sets new prompt child.
-     * 
+     *
      * @param prompt new prompt child
      * @see #getPrompt
      */
-    public void setPrompt(Prompt prompt) {
+    public void setPrompt(final Prompt prompt) {
         getNodeGroups().getPromptGroup().setPrompt(prompt);
     }
 }

@@ -69,7 +69,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public class InlineChoiceInteraction extends InlineInteraction implements Shuffleable {
+public final class InlineChoiceInteraction extends InlineInteraction implements Shuffleable {
 
     private static final long serialVersionUID = 1331855266262194665L;
 
@@ -97,8 +97,7 @@ public class InlineChoiceInteraction extends InlineInteraction implements Shuffl
         getNodeGroups().add(new InlineChoiceGroup(this, 1));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<InlineChoice> getChildren() {
         return getNodeGroups().getInlineChoiceGroup().getInlineChoices();
     }
 

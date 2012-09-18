@@ -36,29 +36,29 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 
 import java.util.List;
 
 /**
  * Prompt for interaction
- * 
+ *
  * @author Jonathon Hare
  */
-public class Prompt extends BodyElement {
+public final class Prompt extends BodyElement {
 
     private static final long serialVersionUID = 7037795246303226401L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "prompt";
 
-    public Prompt(XmlNode parent) {
+    public Prompt(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
-        
+
         getNodeGroups().add(new InlineStaticGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<InlineStatic> getChildren() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();
     }
 }

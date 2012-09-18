@@ -36,12 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node.content;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Content;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
 
@@ -97,21 +95,6 @@ public abstract class BodyElement extends AbstractNode implements Content {
         getAttributes().add(new StringAttribute(this, ATTR_LANG_NAME, XMLConstants.XML_NS_URI, null, false));
         getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, false));
     }
-
-    /**
-     * Get a modifiable list of the content child nodes of this element.
-     * <p>
-     * This works at this level because there is only ever a single {@link NodeGroupList}
-     * within these elements.
-     *
-     * FIXME: This is a legacy method and I'm not sure how sensible it is.
-     * FIXME: If we do keep this, we should create an interface that subsumes all the types
-     * of things we can return and change the generified return type as appropriate.
-     *
-     * @return List of child nodes
-     */
-    @ToRefactor
-    public abstract List<? extends XmlNode> getChildren();
 
     /**
      * Gets value of id attribute.

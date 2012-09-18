@@ -35,12 +35,13 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 
 import java.util.List;
 
 /**
  * dd
- * 
+ *
  * @author Jonathon Hare
  */
 public class Dd extends DlElement {
@@ -52,17 +53,16 @@ public class Dd extends DlElement {
 
     /**
      * Constructs object.
-     * 
+     *
      * @param parent parent of constructed object
      */
-    public Dd(XmlNode parent) {
+    public Dd(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new FlowGroup(this));
     }
 
-    @Override
-    public List<? extends XmlNode> getChildren() {
+    public List<Flow> getChildren() {
         return getNodeGroups().getFlowGroup().getChildren();
     }
 }

@@ -47,8 +47,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,11 +72,6 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
 
     public CustomInteraction(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
-    }
-
-    @Override
-    public final List<? extends XmlNode> getChildren() {
-        return null;
     }
 
     @Override
