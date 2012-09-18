@@ -39,11 +39,11 @@ import uk.ac.ed.ph.jqtiplus.group.result.CandidateCommentGroup;
 
 /**
  * Result of one selected assessmentItem.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class ItemResult extends AbstractResult {
+public final class ItemResult extends AbstractResult implements ResultNode {
 
     private static final long serialVersionUID = -8853021160737704001L;
 
@@ -56,7 +56,7 @@ public class ItemResult extends AbstractResult {
     /** Name of sessionStatus attribute in xml schema. */
     public static final String ATTR_SESSION_STATUS_NAME = "sessionStatus";
 
-    public ItemResult(AssessmentResult parent) {
+    public ItemResult(final AssessmentResult parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_SEQUENCE_INDEX_NAME, false));
@@ -67,7 +67,7 @@ public class ItemResult extends AbstractResult {
 
     /**
      * Gets value of sequenceIndex attribute.
-     * 
+     *
      * @return value of sequenceIndex attribute
      * @see #setSequenceIndex
      */
@@ -77,17 +77,17 @@ public class ItemResult extends AbstractResult {
 
     /**
      * Sets new value of sequenceIndex attribute.
-     * 
+     *
      * @param sequenceIndex new value of sequenceIndex attribute
      * @see #getSequenceIndex
      */
-    public void setSequenceIndex(Integer sequenceIndex) {
+    public void setSequenceIndex(final Integer sequenceIndex) {
         getAttributes().getIntegerAttribute(ATTR_SEQUENCE_INDEX_NAME).setValue(sequenceIndex);
     }
 
     /**
      * Gets value of sessionStatus attribute.
-     * 
+     *
      * @return value of sessionStatus attribute
      * @see #setSessionStatus
      */
@@ -97,17 +97,17 @@ public class ItemResult extends AbstractResult {
 
     /**
      * Sets new value of sessionStatus attribute.
-     * 
+     *
      * @param sessionStatus new value of sesssionStatus attribute
      * @see #getSessionStatus
      */
-    public void setSessionStatus(SessionStatus sessionStatus) {
+    public void setSessionStatus(final SessionStatus sessionStatus) {
         getAttributes().getSessionStatusAttribute(ATTR_SESSION_STATUS_NAME).setValue(sessionStatus);
     }
 
     /**
      * Gets candidateComment child.
-     * 
+     *
      * @return candidateComment child
      * @see #setCandidateComment
      */
@@ -117,11 +117,11 @@ public class ItemResult extends AbstractResult {
 
     /**
      * Sets new candidateComment child.
-     * 
+     *
      * @param candidateComment new candidateComment child
      * @see #getCandidateComment
      */
-    public void setCandidateComment(CandidateComment candidateComment) {
+    public void setCandidateComment(final CandidateComment candidateComment) {
         getNodeGroups().getCandidateCommentGroup().setCandidateComment(candidateComment);
     }
 }

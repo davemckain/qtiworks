@@ -41,17 +41,17 @@ import java.util.List;
 
 /**
  * Context of assessmentResult.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class Context extends AbstractNode {
+public final class Context extends AbstractNode implements ResultNode {
 
     private static final long serialVersionUID = 127609712848444904L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "context";
 
-    public Context(AssessmentResult parent) {
+    public Context(final AssessmentResult parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new SessionIdentifierGroup(this));
@@ -60,7 +60,7 @@ public class Context extends AbstractNode {
 
     /**
      * Gets sessionIdentifier children.
-     * 
+     *
      * @return sessionIdentifier children
      */
     public List<SessionIdentifier> getSessionIdentifiers() {
@@ -69,7 +69,7 @@ public class Context extends AbstractNode {
 
     /**
      * Gets identification child.
-     * 
+     *
      * @return identification child
      * @see #setIdentification
      */
@@ -79,11 +79,11 @@ public class Context extends AbstractNode {
 
     /**
      * Sets new identification child.
-     * 
+     *
      * @param identification new identification child
      * @see #getIdentification
      */
-    public void setIdentification(Identification identification) {
+    public void setIdentification(final Identification identification) {
         getNodeGroups().getIdentificationGroup().setIdentification(identification);
     }
 }

@@ -35,17 +35,17 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 
 /**
  * Result of assessmentTest (excluding items).
- * 
+ *
  * @author Jiri Kajaba
  */
-public class TestResult extends AbstractResult {
+public final class TestResult extends AbstractResult implements ResultNode {
 
     private static final long serialVersionUID = -8429518408087759547L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "testResult";
 
-    public TestResult(AssessmentResult parent) {
+    public TestResult(final AssessmentResult parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

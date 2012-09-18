@@ -38,19 +38,19 @@ import uk.ac.ed.ph.jqtiplus.node.block.ContainerBlock;
 /**
  * Information used to identify the candidate.
  * The format is defined by the <A href="http://www.imsglobal.org/profiles/index.html">IMS LIP</A>.
- * 
+ *
  * FIXME: This is currently out of sync with the final QTI 2.1 spec!
- * 
+ *
  * @author Jiri Kajaba
  */
-public class Identification extends ContainerBlock {
+public final class Identification extends ContainerBlock implements ResultNode {
 
     private static final long serialVersionUID = -8659230051787654613L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "identification";
 
-    public Identification(Context parent) {
+    public Identification(final Context parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

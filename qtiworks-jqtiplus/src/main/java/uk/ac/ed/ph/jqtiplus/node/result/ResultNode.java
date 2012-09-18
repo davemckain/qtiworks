@@ -27,56 +27,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.node.result;
 
-import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
-import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-
-import java.util.List;
-
 /**
- * candidateResponse
+ * Marker interface for nodes in the <tt>assessmentResult</tt> information model.
  *
- * @author Jonathon Hare
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public final class CandidateResponse extends AbstractNode implements FieldValueParent, ResultNode {
+public interface ResultNode {
 
-    private static final long serialVersionUID = -4218274532355049504L;
-
-    /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "candidateResponse";
-
-    public CandidateResponse(final ResponseVariable parent) {
-        super(parent, QTI_CLASS_NAME);
-
-        getNodeGroups().add(new FieldValueGroup(this, 0, null));
-    }
-
-    @Override
-    public BaseType getBaseType() {
-        return ((ResponseVariable) getParent()).getBaseType();
-    }
-
-    @Override
-    public Cardinality getCardinality() {
-        return ((ResponseVariable) getParent()).getCardinality();
-    }
-
-    /**
-     * Gets fieldValue children.
-     *
-     * @return fieldValue children
-     */
-    public List<FieldValue> getFieldValues() {
-        return getNodeGroups().getFieldValueGroup().getFieldValues();
-    }
 }

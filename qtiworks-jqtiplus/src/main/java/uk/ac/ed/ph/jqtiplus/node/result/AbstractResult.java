@@ -44,7 +44,7 @@ import java.util.List;
 
 /**
  * Parent of testResult and itemResult.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class AbstractResult extends AbstractNode implements IdentifiableNode<String> {
@@ -59,10 +59,10 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
 
     /**
      * Constructs object.
-     * 
+     *
      * @param parent parent of constructed object
      */
-    public AbstractResult(AssessmentResult parent, String localName) {
+    public AbstractResult(final AssessmentResult parent, final String localName) {
         super(parent, localName);
 
         getAttributes().add(new StringAttribute(this, ATTR_IDENTIFIER_NAME, true));
@@ -73,7 +73,7 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -84,18 +84,18 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
     @Override
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     /**
      * Gets value of datestamp attribute.
-     * 
+     *
      * @return value of datestamp attribute
      * @see #setDateStamp
      */
@@ -105,23 +105,23 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
 
     /**
      * Sets new value of datestamp attribute.
-     * 
+     *
      * @param dateStamp new value of datestamp attribute
      * @see #getDateStamp
      */
-    public void setDateStamp(Date dateStamp) {
+    public void setDateStamp(final Date dateStamp) {
         getAttributes().getDateAttribute(ATTR_DATE_STAMP_NAME).setValue(dateStamp);
     }
 
     /**
      * Gets itemVariable children.
-     * 
+     *
      * @return itemVariable children
      */
     public List<ItemVariable> getItemVariables() {
         return getNodeGroups().getItemVariableGroup().getItemVariables();
     }
-    
+
     @Override
     public final String computeXPathComponent() {
         final String identifier = getIdentifier();

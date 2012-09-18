@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class ResponseVariable extends ItemVariable {
+public final class ResponseVariable extends ItemVariable implements ResultNode {
 
     private static final long serialVersionUID = 6478318320056351297L;
 
@@ -60,7 +60,7 @@ public class ResponseVariable extends ItemVariable {
     /** Name of choiceSequence attribute in xml schema. */
     public static final String ATTR_CHOICE_SEQUENCE_NAME = "choiceSequence";
 
-    public ResponseVariable(AbstractResult parent) {
+    public ResponseVariable(final AbstractResult parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_CHOICE_SEQUENCE_NAME, false));
@@ -69,7 +69,7 @@ public class ResponseVariable extends ItemVariable {
         getNodeGroups().add(new CandidateResponseGroup(this));
     }
 
-    public ResponseVariable(AbstractResult parent, ResponseDeclaration declaration, Value value, List<Identifier> shuffledInteractionChoiceIdentifiers) {
+    public ResponseVariable(final AbstractResult parent, final ResponseDeclaration declaration, final Value value, final List<Identifier> shuffledInteractionChoiceIdentifiers) {
         this(parent);
         if (declaration != null) {
             setIdentifier(declaration.getIdentifier().toVariableReferenceIdentifier());
@@ -104,7 +104,7 @@ public class ResponseVariable extends ItemVariable {
         return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getComputedValue();
     }
 
-    public void setChoiceSequence(List<Identifier> value) {
+    public void setChoiceSequence(final List<Identifier> value) {
         getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).setValue(value);
     }
 
@@ -124,7 +124,7 @@ public class ResponseVariable extends ItemVariable {
      * @param correctResponse new correctResponse child
      * @see #getCorrectResponse
      */
-    public void setCorrectResponse(CorrectResponse correctResponse) {
+    public void setCorrectResponse(final CorrectResponse correctResponse) {
         getNodeGroups().getCorrectResponseGroup().setCorrectResponse(correctResponse);
     }
 
@@ -144,7 +144,7 @@ public class ResponseVariable extends ItemVariable {
      * @param candidateResponse new candidateResponse child
      * @see #getCandidateResponse
      */
-    public void setCandidateResponse(CandidateResponse candidateResponse) {
+    public void setCandidateResponse(final CandidateResponse candidateResponse) {
         getNodeGroups().getCandidateResponseGroup().setCandidateResponse(candidateResponse);
     }
 

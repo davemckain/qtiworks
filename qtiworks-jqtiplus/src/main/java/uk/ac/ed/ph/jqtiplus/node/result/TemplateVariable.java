@@ -46,7 +46,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class TemplateVariable extends ItemVariable implements FieldValueParent {
+public final class TemplateVariable extends ItemVariable implements FieldValueParent, ResultNode {
 
     private static final long serialVersionUID = 1551667865654592820L;
 

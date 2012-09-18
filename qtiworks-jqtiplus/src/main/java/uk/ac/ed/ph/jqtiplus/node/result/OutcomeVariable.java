@@ -54,7 +54,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class OutcomeVariable extends ItemVariable implements FieldValueParent {
+public final class OutcomeVariable extends ItemVariable implements FieldValueParent, ResultNode {
 
     private static final long serialVersionUID = -8458195126681286797L;
 

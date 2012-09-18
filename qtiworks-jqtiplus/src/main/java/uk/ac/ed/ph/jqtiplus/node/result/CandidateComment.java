@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
  *
  * @author Jiri Kajaba
  */
-public class CandidateComment extends AbstractNode {
+public final class CandidateComment extends AbstractNode implements ResultNode {
 
     private static final long serialVersionUID = 3338529928447111381L;
 

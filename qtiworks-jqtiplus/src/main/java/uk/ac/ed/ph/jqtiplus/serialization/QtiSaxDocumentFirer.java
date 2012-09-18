@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
+import uk.ac.ed.ph.jqtiplus.node.result.ResultNode;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.utils.TreeWalkNodeHandler;
 
@@ -343,8 +344,11 @@ public final class QtiSaxDocumentFirer {
         else if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
             namespaceUri = QtiConstants.MATHML_NAMESPACE_URI;
         }
+        else if (node instanceof ResultNode) {
+            /* (These Nodes are now serialized in a different namespace) */
+            namespaceUri = QtiConstants.QTI_RESULT_21_NAMESPACE_URI;
+        }
         else {
-            /* FIXME: Need to change for results and stuff */
             /* TODO: If we choose to support APIP or later versions of QTI, we'll
              * need to change output namespace, so this will have to change.
              */
@@ -361,9 +365,12 @@ public final class QtiSaxDocumentFirer {
         else if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
             schemaLocation = QtiConstants.MATHML_SCHEMA_LOCATION;
         }
+        else if (node instanceof ResultNode) {
+            /* (These Nodes have a different schema) */
+            schemaLocation = QtiConstants.QTI_RESULT_21_SCHEMA_LOCATION;
+        }
         else {
-            /* NB: We are *always* writing out QTI 2.1 */
-            /* FIXME: Need to change for results and stuff */
+            /* (NB: We are *always* writing out QTI 2.1) */
             schemaLocation = QtiConstants.QTI_21_SCHEMA_LOCATION;
         }
         return schemaLocation;

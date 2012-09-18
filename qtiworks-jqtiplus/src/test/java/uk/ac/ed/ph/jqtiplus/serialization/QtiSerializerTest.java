@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.content.mathml.Math;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 
 import java.io.IOException;
@@ -194,6 +195,17 @@ public class QtiSerializerTest {
                 + "</assessmentItem>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
+    }
+
+    @Test
+    public void testEmptyResultSerialization() throws SAXException, IOException {
+        final AssessmentResult result = new AssessmentResult();
+        final String expectedXml = "<assessmentResult xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                + " xmlns='http://www.imsglobal.org/xsd/imsqti_result_v2p1'"
+                + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_result_v2p1 http://www.imsglobal.org/xsd/imsqti_result_v2p1.xsd'"
+                + "/>";
+
+        serializeAndCompare(result, expectedXml, new SaxFiringOptions());
     }
 
     //---------------------------------------------------------------------------

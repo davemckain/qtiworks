@@ -43,10 +43,10 @@ import java.net.URI;
  * The system that creates the result (for example, the test delivery system) should assign A session identifier that it
  * can use to identify the session. Subsequent systems that process the result might assign their own identifier to the
  * session which should be added to the context if the result is modified and exported for transport again.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class SessionIdentifier extends AbstractNode {
+public final class SessionIdentifier extends AbstractNode implements ResultNode {
 
     private static final long serialVersionUID = 29615834277891621L;
 
@@ -59,7 +59,7 @@ public class SessionIdentifier extends AbstractNode {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public SessionIdentifier(Context parent) {
+    public SessionIdentifier(final Context parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_SOURCE_ID_NAME, true));
@@ -68,7 +68,7 @@ public class SessionIdentifier extends AbstractNode {
 
     /**
      * Gets value of sourceID attribute.
-     * 
+     *
      * @return value of sourceID attribute
      * @see #setSourceId
      */
@@ -78,17 +78,17 @@ public class SessionIdentifier extends AbstractNode {
 
     /**
      * Sets new value of sourceID attribute.
-     * 
+     *
      * @param sourceId new value of sourceID attribute
      * @see #getSourceId
      */
-    public void setSourceId(URI sourceId) {
+    public void setSourceId(final URI sourceId) {
         getAttributes().getUriAttribute(ATTR_SOURCE_ID_NAME).setValue(sourceId);
     }
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -98,11 +98,11 @@ public class SessionIdentifier extends AbstractNode {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 }

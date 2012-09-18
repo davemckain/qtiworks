@@ -48,10 +48,10 @@ import java.util.List;
  * attempted. Information about the test is optional, in some systems it may be possible to interact with items that are
  * not organized into A test at all. For example, items that are organized with learning resources and presented
  * individually in A formative context.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class AssessmentResult extends AbstractNode implements RootObject {
+public final class AssessmentResult extends AbstractNode implements RootObject, ResultNode {
 
     private static final long serialVersionUID = 7910600704491621036L;
 
@@ -78,24 +78,24 @@ public class AssessmentResult extends AbstractNode implements RootObject {
     }
 
     @Override
-    public void setSystemId(URI systemId) {
+    public void setSystemId(final URI systemId) {
         this.systemId = systemId;
     }
-    
-    
+
+
     @Override
     public ModelRichness getModelRichness() {
         return modelRichness;
     }
-    
+
     @Override
-    public void setModelRichness(ModelRichness modelRichness) {
+    public void setModelRichness(final ModelRichness modelRichness) {
         this.modelRichness = modelRichness;
     }
 
     /**
      * Gets context child.
-     * 
+     *
      * @return context child
      * @see #setContext
      */
@@ -105,17 +105,17 @@ public class AssessmentResult extends AbstractNode implements RootObject {
 
     /**
      * Sets new context child.
-     * 
+     *
      * @param context new context child
      * @see #getContext
      */
-    public void setContext(Context context) {
+    public void setContext(final Context context) {
         getNodeGroups().getContextGroup().setContext(context);
     }
 
     /**
      * Gets testResult child.
-     * 
+     *
      * @return testResult child
      * @see #setTestResult
      */
@@ -125,17 +125,17 @@ public class AssessmentResult extends AbstractNode implements RootObject {
 
     /**
      * Sets new testResult child.
-     * 
+     *
      * @param testResult new testResult child
      * @see #getTestResult
      */
-    public void setTestResult(TestResult testResult) {
+    public void setTestResult(final TestResult testResult) {
         getNodeGroups().getTestResultGroup().setTestResult(testResult);
     }
 
     /**
      * Gets itemResult children.
-     * 
+     *
      * @return itemResult children
      */
     public List<ItemResult> getItemResults() {
@@ -144,11 +144,11 @@ public class AssessmentResult extends AbstractNode implements RootObject {
 
     /**
      * Gets itemResult for given item.
-     * 
+     *
      * @param identifier identifier of requested itemResult
      * @return itemResult for given item
      */
-    public ItemResult getItemResult(String identifier) {
+    public ItemResult getItemResult(final String identifier) {
         for (final ItemResult itemResult : getItemResults()) {
             if (itemResult.getIdentifier() != null && itemResult.getIdentifier().equals(identifier)) {
                 return itemResult;
