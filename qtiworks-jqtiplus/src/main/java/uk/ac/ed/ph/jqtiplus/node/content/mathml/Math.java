@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.mathml;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
@@ -40,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
@@ -67,11 +67,15 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
     public static final String QTI_CLASS_NAME = "math";
 
     /** Children of this block. */
-    private final List<XmlNode> children;
+    private final List<ForeignElement> children;
 
     public Math(final XmlNode parent) {
         super(parent, QTI_CLASS_NAME);
-        children = new ArrayList<XmlNode>();
+        children = new ArrayList<ForeignElement>();
+    }
+
+    public List<ForeignElement> getContent() {
+        return children;
     }
 
     @Override
@@ -90,7 +94,6 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
                 readChildNode(node, context);
             }
         }
-
     }
 
     private void readChildNode(final Node node, final LoadingContext context) {
@@ -102,15 +105,14 @@ public class Math extends BodyElement implements BlockStatic, FlowStatic, Inline
         else if (node.getNodeType() == Node.TEXT_NODE) {
             final String textContent = node.getTextContent().trim();
             if (textContent.length() > 0) {
-                final TextRun textRun = new TextRun(this, textContent);
-                children.add(textRun);
+                context.modelBuildingError(new QtiIllegalChildException(this, "<text>"), node);
             }
         }
     }
 
     @Override
     protected void fireBodySaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-        for (final XmlNode childNode : children) {
+        for (final ForeignElement childNode : children) {
             childNode.fireSaxEvents(qtiSaxDocumentFirer);
         }
     }
