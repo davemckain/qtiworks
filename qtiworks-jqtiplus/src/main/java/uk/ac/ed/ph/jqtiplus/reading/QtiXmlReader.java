@@ -108,7 +108,7 @@ public final class QtiXmlReader {
             resultingSchemaMapTemplate.put(entry.getKey(), entry.getValue().getSchemaUri());
         }
         resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
-        resultingSchemaMapTemplate.put(QtiConstants.QTI_RESULT_21_NAMESPACE_URI, QtiConstants.QTI_RESULT_21_NAMESPACE_URI);
+        resultingSchemaMapTemplate.put(QtiConstants.QTI_RESULT_21_NAMESPACE_URI, QtiConstants.QTI_RESULT_21_SCHEMA_LOCATION);
         resultingSchemaMapTemplate.put(QtiConstants.QTI_20_NAMESPACE_URI, QtiConstants.QTI_20_SCHEMA_LOCATION);
 
         this.jqtiExtensionManager = jqtiExtensionManager;
