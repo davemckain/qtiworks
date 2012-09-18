@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
-import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;

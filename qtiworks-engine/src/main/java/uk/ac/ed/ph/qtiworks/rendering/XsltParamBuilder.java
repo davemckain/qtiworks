@@ -137,7 +137,7 @@ public final class XsltParamBuilder {
     }
 
     public NodeList rubricsToNodeList(final List<List<RubricBlock>> values) {
-        return new XsltParamDocumentBuilder(jqtiExtensionManager,new SaxFirerCallback() {
+        return new XsltParamDocumentBuilder(jqtiExtensionManager, new SaxFirerCallback() {
 
             @Override
             public List<? extends XmlNode> getQtiNodes() {
@@ -153,7 +153,7 @@ public final class XsltParamBuilder {
                 for (final List<RubricBlock> section : values) {
                     qtiSaxDocumentFirer.fireStartElement(section, "section", QTIWORKS_NAMESPACE, new AttributesImpl());
                     for (final RubricBlock block : section) {
-                        block.fireSaxEvents(qtiSaxFiringContext);
+                        block.fireSaxEvents(qtiSaxDocumentFirer);
                     }
                     qtiSaxDocumentFirer.fireEndElement(section, "section", QTIWORKS_NAMESPACE);
                 }
@@ -179,7 +179,7 @@ public final class XsltParamBuilder {
             @Override
             public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
                 for (final XmlNode node : values) {
-                    node.fireSaxEvents(qtiSaxFiringContext);
+                    node.fireSaxEvents(qtiSaxDocumentFirer);
                 }
             }
         }).buildDocument().getDocumentElement().getChildNodes();

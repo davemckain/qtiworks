@@ -71,6 +71,12 @@ public final class QtiSerializer {
         return resultWriter.toString();
     }
 
+    public String serializeJqtiObject(final XmlNode jqtiObject, final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
+        final StringWriter resultWriter = new StringWriter();
+        serializeJqtiObject(jqtiObject, new StreamResult(resultWriter), saxFiringOptions, xsltSerializationOptions);
+        return resultWriter.toString();
+    }
+
     public void serializeJqtiObject(final XmlNode jqtiObject, final OutputStream outputStream) {
         serializeJqtiObject(jqtiObject, new StreamResult(outputStream));
     }
@@ -79,18 +85,16 @@ public final class QtiSerializer {
         final XsltSerializationOptions xsltSerializationOptions = new XsltSerializationOptions();
         xsltSerializationOptions.setIndenting(true);
 
-        final SaxFiringOptions saxFiringOptions = new SaxFiringOptions();
-
-        serializeJqtiObject(jqtiObject, result, xsltSerializationOptions, saxFiringOptions);
+        serializeJqtiObject(jqtiObject, result, new SaxFiringOptions(), xsltSerializationOptions);
     }
 
     public void serializeJqtiObject(final XmlNode jqtiObject, final StreamResult result,
-            final XsltSerializationOptions xsltSerializationOptions, final SaxFiringOptions saxFiringOptions) {
+            final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
         final TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(xsltSerializationOptions);
         serializerHandler.setResult(result);
-        final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, serializerHandler, saxFiringOptions);
+        final QtiSaxDocumentFirer qtiSaxDocumentFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, serializerHandler, saxFiringOptions);
         try {
-            saxEventFirer.fireSaxDocument(jqtiObject);
+            qtiSaxDocumentFirer.fireSaxDocument(jqtiObject);
         }
         catch (final SAXException e) {
             throw new QtiSerializationException("Unexpected Exception firing QTI Object SAX events at serializer stylesheet", e);

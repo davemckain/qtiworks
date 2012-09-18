@@ -33,13 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.serialization;
 
-import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.utils.ForeignNamespaceSummary;
-import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,19 +42,11 @@ import java.util.Set;
 import javax.xml.XMLConstants;
 
 /**
- * Keeps track of the namespace prefix mappings for attributes.
- * <p>
- * For simplicity, the current SAX firing API requires unique prefixes
- * for unique namespaces, even though XML can easily cope with non-uniqueness.
- * Mad people who really want such a thing can always add their own filters and/or
- * stylesheets to change these things.
+ * Keeps track of the namespace prefix mappings
  *
  * @author David McKain
  */
 public final class NamespacePrefixMappings implements Serializable {
-
-    /** Default XML schema instance NS prefix */
-    public static final String DEFAULT_XSI_PREFIX = "xsi";
 
     private static final long serialVersionUID = -1652757838448828206L;
 
@@ -71,6 +56,14 @@ public final class NamespacePrefixMappings implements Serializable {
     public NamespacePrefixMappings() {
         this.namespaceUriToPrefixMap = new HashMap<String, String>();
         this.prefixToNamespaceUriMap = new HashMap<String, String>();
+    }
+
+    public NamespacePrefixMappings(final NamespacePrefixMappings template) {
+        this();
+        if (template!=null) {
+            this.namespaceUriToPrefixMap.putAll(template.namespaceUriToPrefixMap);
+            this.prefixToNamespaceUriMap.putAll(template.prefixToNamespaceUriMap);
+        }
     }
 
     public Set<Entry<String, String>> entrySet() {
@@ -93,7 +86,7 @@ public final class NamespacePrefixMappings implements Serializable {
         return namespaceUriToPrefixMap.get(prefix);
     }
 
-    public void register(final String namespaceUri, final String prefix) {
+    public void registerStrict(final String namespaceUri, final String prefix) {
         if (namespaceUriToPrefixMap.containsKey(namespaceUri)) {
             throw new IllegalArgumentException("Namespace URI " + namespaceUri + " has already been registered");
         }
@@ -104,48 +97,8 @@ public final class NamespacePrefixMappings implements Serializable {
         prefixToNamespaceUriMap.put(prefix, namespaceUri);
     }
 
-    /**
-     * Convenience method to register the XML schema location, bound to the default 'xsi:' prefix
-     */
-    public void registerSchemaInstanceMapping() {
-        register(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, DEFAULT_XSI_PREFIX);
-    }
-
-    /**
-     * Registers prefix mappings for all of the extensions used by the given {@link XmlNode}s
-     * and their descendants.
-     */
-    public void registerExtensionPrefixMappings(final JqtiExtensionManager jqtiExtensionManager, final Iterable<? extends XmlNode> nodes) {
-        final Set<JqtiExtensionPackage<?>> usedExtensionPackages = QueryUtils.findExtensionsWithin(jqtiExtensionManager, nodes);
-        registerExtensionPrefixMappings(usedExtensionPackages);
-    }
-
-    /**
-     * Registers prefix mappings for all of the given extensions
-     */
-    public void registerExtensionPrefixMappings(final Set<JqtiExtensionPackage<?>> qtiExtensionPackages) {
-        for (final JqtiExtensionPackage<?> jqtiExtensionPackage : qtiExtensionPackages) {
-            for (final Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionPackage.getNamespaceInfoMap().entrySet()) {
-                final String namespaceUri = entry.getKey();
-                final ExtensionNamespaceInfo extensionNamespaceInfo = entry.getValue();
-                final String defaultPrefix = extensionNamespaceInfo.getDefaultPrefix();
-                final String actualPrefix = makeUniquePrefix(defaultPrefix);
-                register(namespaceUri, actualPrefix);
-            }
-        }
-    }
-
-    /**
-     * Registers prefix mappings for all namespaced foreign attributes used by the given
-     * {@link XmlNode}s and their descendents.
-     */
-    public void registerForeignAttributeNamespaces(final Iterable<? extends XmlNode> nodes) {
-        final ForeignNamespaceSummary foreignNamespaces = QueryUtils.findForeignNamespaces(nodes);
-        for (final String attributeNamespaceUri : foreignNamespaces.getAttributeNamespaceUris()) {
-            /* TODO-LATER: Maybe allow some more control over this choice of prefix? */
-            final String resultingPrefix = makeUniquePrefix("ns");
-            register(attributeNamespaceUri, resultingPrefix);
-        }
+    public void registerLax(final String namespaceUri, final String prefix) {
+        registerStrict(namespaceUri, makeUniquePrefix(prefix));
     }
 
     public String makeUniquePrefix(final String requestedPrefix) {

@@ -34,18 +34,12 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.XmlNode;
-import uk.ac.ed.ph.jqtiplus.serialization.NamespacePrefixMappings;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxFiringContext;
-import uk.ac.ed.ph.jqtiplus.serialization.SaxEventFirer;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
-import uk.ac.ed.ph.jqtiplus.serialization2.QtiSaxDocumentFirer;
-import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleDomBuilderHandler;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -85,39 +79,28 @@ public final class XsltParamDocumentBuilder {
             final Document document = documentBuilder.newDocument();
             final SimpleDomBuilderHandler domBuilderHandler = new SimpleDomBuilderHandler(document);
 
+            /* Create QTI SAX firer with suitable options */
             final SaxFiringOptions saxFiringOptions = new SaxFiringOptions();
-            saxFiringOptions.setOmitSchemaLocations(true);
-
-            /* First, we'll reserve 'xsi' for schema instances */
-            final NamespacePrefixMappings attrNamespacePrefixMappings = new NamespacePrefixMappings();
-            attrNamespacePrefixMappings.registerSchemaInstanceMapping();
+            saxFiringOptions.setOmitSchemaLocation(true);
+            final QtiSaxDocumentFirer qtiSaxDocumentFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, domBuilderHandler, saxFiringOptions);
 
             /* Register namespace for parameter XML */
-            attrNamespacePrefixMappings.register(XsltParamBuilder.QTIWORKS_NAMESPACE, XsltParamBuilder.QTIWORKS_NAMESPACE_PREFIX);
+            qtiSaxDocumentFirer.requirePrefixMapping(XsltParamBuilder.QTIWORKS_NAMESPACE, XsltParamBuilder.QTIWORKS_NAMESPACE_PREFIX);
 
             /* Next let each extension package that has been used have a shot */
             final List<? extends XmlNode> qtiNodes = saxFirerCallback.getQtiNodes();
-            final Set<JqtiExtensionPackage<?>> usedExtensionPackages = QueryUtils.findExtensionsWithin(jqtiExtensionManager, qtiNodes);
-            attrNamespacePrefixMappings.registerExtensionPrefixMappings(usedExtensionPackages);
+            for (final XmlNode qtiNode : qtiNodes) {
+                qtiSaxDocumentFirer.prepareFor(qtiNode);
+            }
 
-            /* Register prefixes for each foreign attribute in non-default namespace */
-            attrNamespacePrefixMappings.registerForeignAttributeNamespaces(qtiNodes);
+            /* Start document and put prefixes in scope */
+            qtiSaxDocumentFirer.fireStartDocumentAndPrefixMappings();
 
-            final SaxEventFirer saxEventFirer = new SaxEventFirer(attrNamespacePrefixMappings,
-                    QtiSaxDocumentFirer.createSchemaLocationMap(usedExtensionPackages),
-                    domBuilderHandler, saxFiringOptions);
+            /* Get callback to do its stuff */
+            saxFirerCallback.fireSaxEvents(qtiSaxDocumentFirer);
 
-            /* Put namespace prefixes in scope */
-            saxEventFirer.fireStartDocumentAndPrefixMappings();
-
-            /* Create callback for nodes */
-            final QtiSaxFiringContext saxFiringContext = new QtiSaxFiringContext(saxEventFirer, attrNamespacePrefixMappings);
-
-            /* Now build stuff */
-            saxFirerCallback.fireSaxEvents(saxEventFirer);
-
-            /* Remove namespace prefixes from scope */
-            saxEventFirer.fireEndDocumentAndPrefixMappings();
+            /* Remove namespace prefixes from scope and end document */
+            qtiSaxDocumentFirer.fireEndDocumentAndPrefixMappings();
 
             return document;
         }

@@ -42,25 +42,32 @@ import java.io.Serializable;
  *
  * @author David McKain
  */
-public class SaxFiringOptions implements Serializable {
+public final class SaxFiringOptions implements Serializable {
 
-    private static final long serialVersionUID = -8150907872183994652L;
-    
-    private boolean omitSchemaLocations;
-    
+    private static final long serialVersionUID = -7438651199833877599L;
+
+    private final NamespacePrefixMappings preferredPrefixMappings;
+    private boolean omitSchemaLocation;
+
     public SaxFiringOptions() {
-        this.omitSchemaLocations = false;
+        this.preferredPrefixMappings = new NamespacePrefixMappings();
+        this.omitSchemaLocation = false;
     }
 
-    
-    public boolean isOmitSchemaLocations() {
-        return omitSchemaLocations;
+
+    public NamespacePrefixMappings getPreferredPrefixMappings() {
+        return preferredPrefixMappings;
     }
-    
-    public void setOmitSchemaLocations(boolean omitSchemaLocations) {
-        this.omitSchemaLocations = omitSchemaLocations;
+
+
+    public boolean isOmitSchemaLocation() {
+        return omitSchemaLocation;
     }
-    
+
+    public void setOmitSchemaLocation(final boolean omitSchemaLocation) {
+        this.omitSchemaLocation = omitSchemaLocation;
+    }
+
 
     @Override
     public String toString() {
