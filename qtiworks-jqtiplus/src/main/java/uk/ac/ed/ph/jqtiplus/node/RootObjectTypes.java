@@ -142,7 +142,7 @@ public enum RootObjectTypes {
     }
 
     /**
-     * Loads root node from given source node.
+     * Loads root node from given source node, checking namespaces
      *
      * @param sourceElement source node
      * @return loaded root node
@@ -150,13 +150,25 @@ public enum RootObjectTypes {
      * @throws QtiLogicException if the resulting {@link RootObject} could not be instantiated
      */
     public static RootObject load(final Element sourceElement, final URI systemId, final ModelRichness modelRichness, final LoadingContext context) {
-        final String namespaceUri = sourceElement.getNamespaceURI();
-        if (!QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri) && !QtiConstants.QTI_20_NAMESPACE_URI.equals(namespaceUri)) {
-            throw new IllegalArgumentException("Element {" + namespaceUri
-                    + "}" + sourceElement.getLocalName()
-                    + " is not in either the QTI 2.1 or 2.0 namespaces");
-        }
         final RootObject root = getInstance(sourceElement.getLocalName(), systemId, modelRichness);
+
+        /* Check namespaces */
+        final String namespaceUri = sourceElement.getNamespaceURI();
+        if (root instanceof AssessmentResult) {
+            if (!QtiConstants.QTI_RESULT_21_NAMESPACE_URI.equals(namespaceUri)) {
+                throw new IllegalArgumentException("Element {" + namespaceUri
+                        + "}" + sourceElement.getLocalName()
+                        + " is not in the correct namespace " + QtiConstants.QTI_RESULT_21_NAMESPACE_URI);
+            }
+        }
+        else {
+            if (!QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri) && !QtiConstants.QTI_20_NAMESPACE_URI.equals(namespaceUri)) {
+                throw new IllegalArgumentException("Element {" + namespaceUri
+                        + "}" + sourceElement.getLocalName()
+                        + " is not in either the QTI 2.1 or 2.0 namespaces");
+            }
+        }
+
         root.load(sourceElement, context);
         return root;
     }
