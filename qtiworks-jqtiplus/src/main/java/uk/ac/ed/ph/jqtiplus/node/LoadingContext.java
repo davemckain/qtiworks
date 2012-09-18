@@ -50,6 +50,6 @@ public interface LoadingContext {
 
     JqtiExtensionManager getJqtiExtensionManager();
 
-    void modelBuildingError(QtiModelException exception, Node Node);
+    void modelBuildingError(QtiModelException exception, Node badNode);
 
 }
