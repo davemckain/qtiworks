@@ -606,6 +606,10 @@ rendering.
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:param name="value" as="element()"/>
     <xsl:choose>
+      <xsl:when test="qw:is-null-value($value)">
+        <!-- We shall represent null as an empty mrow -->
+        <xsl:element name="mn" namespace="http://www.w3.org/1998/Math/MathML"/>
+      </xsl:when>
       <xsl:when test="qw:is-single-cardinality-value($value)">
         <!-- Single cardinality template variables are substituted according to Section 6.3.1 of the
         spec. Note that it does not define what should be done with multiple and ordered
@@ -633,11 +637,13 @@ rendering.
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:message terminate="yes">
+        <!-- Unsupported substitution -->
+        <xsl:message>
           Substituting the variable <xsl:value-of select="$identifier"/> with value
           <xsl:copy-of select="$value"/>
           within MathML is not currently supported.
         </xsl:message>
+        <xsl:element name="mtext" namespace="http://www.w3.org/1998/Math/MathML">(Unsupported variable substitution)</xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
