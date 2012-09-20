@@ -40,6 +40,8 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 
 /**
  * Exception thrown when a response cannot be bound to an interaction
+ *
+ * @author David McKain
  */
 public final class ResponseBindingException extends QtiException {
 

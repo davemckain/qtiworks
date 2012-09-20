@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.exception2;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
- * Exception thrown when trying to add an inappropriate child to a Node.
+ * Exception thrown when trying to add an inappropriate child to a {@link QtiNode}.
  *
  * @author David McKain
  */

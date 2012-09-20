@@ -107,7 +107,7 @@ public interface NodeGroup<P extends QtiNode, C extends QtiNode> extends Validat
     boolean supportsQtiClass(String qtiClassName);
 
     /**
-     * Gets list of all children.
+     * Gets mutable list of all children.
      *
      * @return list of all children
      */

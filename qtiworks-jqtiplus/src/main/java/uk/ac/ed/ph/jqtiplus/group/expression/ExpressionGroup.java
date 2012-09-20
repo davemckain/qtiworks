@@ -80,7 +80,7 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
      * @see #setExpression
      */
     public Expression getExpression() {
-        return getChildren().size() != 0 ? (Expression) getChildren().get(0) : null;
+        return children.isEmpty() ? null : children.get(0);
     }
 
     /**
@@ -90,12 +90,12 @@ public final class ExpressionGroup extends ComplexNodeGroup<ExpressionParent, Ex
      * @see #getExpression
      */
     public void setExpression(final Expression expression) {
-        getChildren().clear();
-        getChildren().add(expression);
+        children.clear();
+        children.add(expression);
     }
 
     public List<Expression> getExpressions() {
-        return getChildren();
+        return children;
     }
 
     @Override
