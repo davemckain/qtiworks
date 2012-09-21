@@ -75,12 +75,12 @@ public final class Hottext extends Choice implements InlineStatic, FlowStatic {
 
     @Override
     public URI getBaseUri() {
-        return getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME).getComputedValue();
+        return getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME, XMLConstants.XML_NS_URI).getComputedValue();
     }
 
     @Override
     public void setBaseUri(final URI base) {
-        getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME).setValue(base);
+        getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME, XMLConstants.XML_NS_URI).setValue(base);
     }
 
 

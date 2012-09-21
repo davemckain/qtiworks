@@ -401,6 +401,10 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
         return (UriAttribute) get(name);
     }
 
+    public UriAttribute getUriAttribute(final String localName, final String namespaceUri) {
+        return (UriAttribute) get(localName, namespaceUri);
+    }
+
     public ViewMultipleAttribute getViewMultipleAttribute(final String name) {
         return (ViewMultipleAttribute) get(name);
     }

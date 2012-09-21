@@ -39,11 +39,13 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.content.mathml.Math;
+import uk.ac.ed.ph.jqtiplus.node.content.xhtml.text.P;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 
 import java.io.IOException;
+import java.net.URI;
 
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -94,6 +96,29 @@ public class QtiSerializerTest {
                 + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
                 + " identifier='' title='' adaptive='' timeDependent=''/>";
 
+
+        serializeAndCompare(item, expectedXml, saxFiringOptions);
+    }
+
+    @Test
+    public void testItemWithBase() throws SAXException, IOException {
+        final AssessmentItem item = new AssessmentItem();
+        final ItemBody itemBody = new ItemBody(item);
+        item.setItemBody(itemBody);
+        final P paragraph = new P(itemBody);
+        paragraph.setBaseUri(URI.create("urn:test"));
+        itemBody.getBlocks().add(paragraph);
+
+        final SaxFiringOptions saxFiringOptions = new SaxFiringOptions();
+
+        final String expectedXml = "<assessmentItem xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'"
+                + " xmlns='http://www.imsglobal.org/xsd/imsqti_v2p1'"
+                + " xsi:schemaLocation='http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd'"
+                + " identifier='' title='' adaptive='' timeDependent=''>"
+                + "<itemBody>"
+                + "<p xml:base='urn:test'/>"
+                + "</itemBody>"
+                + "</assessmentItem>";
 
         serializeAndCompare(item, expectedXml, saxFiringOptions);
     }
