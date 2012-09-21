@@ -65,10 +65,10 @@ import uk.ac.ed.ph.jqtiplus.value.ParamType;
  * This specification supports the use of DATA and REF but not OBJECT.
  * Attribute : type [0..1]: mimeType
  * Used to provide A type for values valuetype REF.
- * 
+ *
  * @author Jonathon Hare
  */
-public class Param extends AbstractNode implements ObjectFlow {
+public final class Param extends AbstractNode implements ObjectFlow {
 
     private static final long serialVersionUID = 2765069194418566232L;
 
@@ -87,7 +87,7 @@ public class Param extends AbstractNode implements ObjectFlow {
     /** Name of type attribute in xml schema. */
     public static final String ATTR_TYPE_NAME = "type";
 
-    public Param(QtiNode parent) {
+    public Param(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_NAME_NAME, true));
@@ -96,83 +96,38 @@ public class Param extends AbstractNode implements ObjectFlow {
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, false));
     }
 
-    /**
-     * Gets value of name attribute.
-     * 
-     * @return value of name attribute
-     * @see #setName
-     */
     public String getName() {
         return getAttributes().getStringAttribute(ATTR_NAME_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of name attribute.
-     * 
-     * @param name new value of name attribute
-     * @see #getName
-     */
-    public void setName(String name) {
+    public void setName(final String name) {
         getAttributes().getStringAttribute(ATTR_NAME_NAME).setValue(name);
     }
 
-    /**
-     * Gets value of value attribute.
-     * 
-     * @return value of value attribute
-     * @see #setValue
-     */
+
     public String getValue() {
         return getAttributes().getStringAttribute(ATTR_VALUE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of value attribute.
-     * 
-     * @param value new value of value attribute
-     * @see #getValue
-     */
-    public void setValue(String value) {
+    public void setValue(final String value) {
         getAttributes().getStringAttribute(ATTR_VALUE_NAME).setValue(value);
     }
 
-    /**
-     * Gets value of valuetype attribute.
-     * 
-     * @return value of valuetype attribute
-     * @see #setValuetype
-     */
+
     public ParamType getValuetype() {
         return getAttributes().getParamTypeAttribute(ATTR_VALUETYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of valuetype attribute.
-     * 
-     * @param valuetype new value of valuetype attribute
-     * @see #getValuetype
-     */
-    public void setValuetype(ParamType valuetype) {
+    public void setValuetype(final ParamType valuetype) {
         getAttributes().getParamTypeAttribute(ATTR_VALUETYPE_NAME).setValue(valuetype);
     }
 
-    /**
-     * Gets value of type attribute.
-     * 
-     * @return value of type attribute
-     * @see #setType
-     */
+
     public String getType() {
         return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of type attribute.
-     * 
-     * @param type new value of type attribute
-     * @see #getType
-     */
-    public void setType(String type) {
+    public void setType(final String type) {
         getAttributes().getStringAttribute(ATTR_TYPE_NAME).setValue(type);
     }
 }

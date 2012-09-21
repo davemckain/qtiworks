@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleBlock;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
-public final class RubricBlock extends BodyElement implements SimpleBlock {
+public final class RubricBlock extends AbstractFlowBodyElement implements SimpleBlock {
 
     private static final long serialVersionUID = -531414949035924206L;
 
@@ -67,15 +67,6 @@ public final class RubricBlock extends BodyElement implements SimpleBlock {
         getNodeGroups().add(new BlockGroup(this));
     }
 
-    public List<Block> getChildren() {
-        return getNodeGroups().getBlockGroup().getBlocks();
-    }
-
-    /**
-     * Gets value of view attribute.
-     *
-     * @return value of view attribute
-     */
     public List<View> getViews() {
         return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getComputedValue();
     }
@@ -83,4 +74,10 @@ public final class RubricBlock extends BodyElement implements SimpleBlock {
     public void setViews(final List<View> value) {
         getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).setValue(value);
     }
+
+    @Override
+    public List<Block> getBlocks() {
+        return getNodeGroups().getBlockGroup().getBlocks();
+    }
+
 }

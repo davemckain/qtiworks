@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class Caption extends BodyElement {
+public final class Caption extends BodyElement {
 
     private static final long serialVersionUID = -3804663980903972490L;
 
@@ -58,7 +58,7 @@ public class Caption extends BodyElement {
         getNodeGroups().add(new InlineGroup(this));
     }
 
-    public List<Inline> getChildren() {
+    public List<Inline> getInlines() {
         return getNodeGroups().getInlineGroup().getChildren();
     }
 }

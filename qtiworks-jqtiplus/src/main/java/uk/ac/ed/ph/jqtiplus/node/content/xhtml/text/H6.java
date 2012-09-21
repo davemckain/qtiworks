@@ -39,17 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 
 /**
  * h6
- * 
+ *
  * @author Jonathon Hare
  */
-public class H6 extends AbstractAtomicBlock implements AtomicBlock {
+public final class H6 extends AbstractAtomicBlock implements AtomicBlock {
 
     private static final long serialVersionUID = -6063797300288904138L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "h6";
 
-    public H6(QtiNode parent) {
+    public H6(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

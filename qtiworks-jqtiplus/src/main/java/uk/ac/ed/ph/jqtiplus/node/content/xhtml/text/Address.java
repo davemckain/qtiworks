@@ -39,22 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
 
 /**
  * address
- * 
+ *
  * @author Jonathon Hare
  */
-public class Address extends AbstractAtomicBlock implements AtomicBlock {
+public final class Address extends AbstractAtomicBlock implements AtomicBlock {
 
     private static final long serialVersionUID = -8796823739089840465L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "address";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
-    public Address(QtiNode parent) {
+    public Address(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

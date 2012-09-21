@@ -57,7 +57,7 @@ public final class Tbody extends BodyElement {
         getNodeGroups().add(new TrGroup(this));
     }
 
-    public List<Tr> getChildren() {
+    public List<Tr> getTrs() {
         return getNodeGroups().getTrGroup().getChildren();
     }
 }

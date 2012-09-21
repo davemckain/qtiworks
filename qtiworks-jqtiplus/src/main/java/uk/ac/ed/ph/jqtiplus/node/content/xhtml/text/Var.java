@@ -39,17 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * var
- * 
+ *
  * @author Jonathon Hare
  */
-public class Var extends AbstractSimpleInline implements SimpleInline {
+public final class Var extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = 9045153485959986131L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "var";
 
-    public Var(QtiNode parent) {
+    public Var(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
  *
  * @author Jonathon Hare
  */
-public final class Hr extends BodyElement implements BlockStatic, FlowStatic {
+public final class Hr extends AbstractFlowBodyElement implements BlockStatic, FlowStatic {
 
     private static final long serialVersionUID = 6658237844126900030L;
 

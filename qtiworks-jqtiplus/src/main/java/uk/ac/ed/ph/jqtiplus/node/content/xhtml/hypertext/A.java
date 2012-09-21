@@ -50,7 +50,7 @@ import java.net.URI;
  *
  * @author Jonathon Hare
  */
-public class A extends AbstractSimpleInline {
+public final class A extends AbstractSimpleInline {
 
     private static final long serialVersionUID = -838798085866010380L;
 
@@ -63,65 +63,38 @@ public class A extends AbstractSimpleInline {
     /** Name of type attribute in xml schema. */
     public static final String ATTR_TYPE_NAME = "type";
 
-    /**
-     * Constructs object.
-     *
-     * @param parent parent of constructed object
-     */
-    public A(QtiNode parent) {
+    public A(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME, true));
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, false));
     }
 
+    public URI getHref() {
+        return getAttributes().getUriAttribute(ATTR_HREF_NAME).getComputedValue();
+    }
+
+    public void setHref(final URI href) {
+        getAttributes().getUriAttribute(ATTR_HREF_NAME).setValue(href);
+    }
+
+
+    public String getType() {
+        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
+    }
+
+    public void setType(final String type) {
+        getAttributes().getStringAttribute(ATTR_TYPE_NAME).setValue(type);
+    }
+
+
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         //Although a inherits from simpleInline it must not contain, either directly or indirectly, another a.
         if (QueryUtils.hasDescendant(A.class, this)) {
             context.getValidationResult().add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + QTI_CLASS_NAME + " children"));
         }
-    }
-
-    /**
-     * Gets value of href attribute.
-     *
-     * @return value of href attribute
-     * @see #setHref
-     */
-    public URI getHref() {
-        return getAttributes().getUriAttribute(ATTR_HREF_NAME).getComputedValue();
-    }
-
-    /**
-     * Sets new value of href attribute.
-     *
-     * @param href new value of href attribute
-     * @see #getHref
-     */
-    public void setHref(URI href) {
-        getAttributes().getUriAttribute(ATTR_HREF_NAME).setValue(href);
-    }
-
-    /**
-     * Gets value of type attribute.
-     *
-     * @return value of type attribute
-     * @see #setType
-     */
-    public String getType() {
-        return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
-    }
-
-    /**
-     * Sets new value of type attribute.
-     *
-     * @param type new value of type attribute
-     * @see #getType
-     */
-    public void setType(String type) {
-        getAttributes().getStringAttribute(ATTR_TYPE_NAME).setValue(type);
     }
 }

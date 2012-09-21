@@ -39,22 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * abbr
- * 
+ *
  * @author Jonathon Hare
  */
-public class Abbr extends AbstractSimpleInline implements SimpleInline {
+public final class Abbr extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = -4473224789901730303L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "abbr";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
-    public Abbr(QtiNode parent) {
+    public Abbr(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

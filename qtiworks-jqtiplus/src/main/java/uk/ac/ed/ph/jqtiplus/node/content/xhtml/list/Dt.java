@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class Dt extends DlElement {
+public final class Dt extends DlElement {
 
     private static final long serialVersionUID = 1260530915777087249L;
 
@@ -57,7 +57,7 @@ public class Dt extends DlElement {
         getNodeGroups().add(new InlineGroup(this));
     }
 
-    public List<Inline> getChildren() {
+    public List<Inline> getInlines() {
         return getNodeGroups().getInlineGroup().getChildren();
     }
 }

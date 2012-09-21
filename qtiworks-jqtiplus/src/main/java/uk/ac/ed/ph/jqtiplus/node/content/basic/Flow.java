@@ -33,13 +33,23 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
+import java.net.URI;
+
 /**
  * flow marker interface
- * 
+ *
  * @author Jonathon Hare
  */
 public interface Flow extends ObjectFlow {
 
     /** Display name of this interface. */
     public static String DISPLAY_NAME = "flow";
+
+    /** Name of base attribute */
+    public static final String ATTR_BASE_URI_NAME = "base";
+
+    URI getBaseUri();
+
+    void setBaseUri(URI base);
+
 }

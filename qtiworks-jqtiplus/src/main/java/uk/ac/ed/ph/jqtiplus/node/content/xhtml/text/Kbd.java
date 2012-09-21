@@ -39,17 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * kbd
- * 
+ *
  * @author Jonathon Hare
  */
-public class Kbd extends AbstractSimpleInline implements SimpleInline {
+public final class Kbd extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = -3716696049202913365L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "kbd";
 
-    public Kbd(QtiNode parent) {
+    public Kbd(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

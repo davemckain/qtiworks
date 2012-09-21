@@ -58,7 +58,8 @@ public class FeedbackBlock extends FeedbackElement implements SimpleBlock {
         getNodeGroups().add(new BlockGroup(this));
     }
 
-    public List<Block> getChildren() {
+    @Override
+    public List<Block> getBlocks() {
         return getNodeGroups().getBlockGroup().getBlocks();
     }
 }

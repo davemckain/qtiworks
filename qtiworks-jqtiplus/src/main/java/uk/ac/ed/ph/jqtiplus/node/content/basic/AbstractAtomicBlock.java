@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
 import uk.ac.ed.ph.jqtiplus.group.content.InlineGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
 
@@ -44,22 +43,18 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public abstract class AbstractAtomicBlock extends BodyElement implements AtomicBlock {
+public abstract class AbstractAtomicBlock extends AbstractFlowBodyElement implements AtomicBlock {
 
     private static final long serialVersionUID = -8972839326990869838L;
 
-    /**
-     * Constructs object.
-     *
-     * @param parent parent of constructed object
-     */
     public AbstractAtomicBlock(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new InlineGroup(this));
     }
 
-    public List<Inline> getChildren() {
+    @Override
+    public List<Inline> getInlines() {
         return getNodeGroups().getInlineGroup().getInlines();
     }
 }

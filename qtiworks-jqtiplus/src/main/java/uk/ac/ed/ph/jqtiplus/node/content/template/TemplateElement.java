@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.template;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
@@ -51,11 +51,11 @@ import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * Abstract parent of feedback elements
+ * Abstract parent of template elements
  *
  * @author Jonathon Hare
  */
-public abstract class TemplateElement extends BodyElement {
+public abstract class TemplateElement extends AbstractFlowBodyElement {
 
     private static final long serialVersionUID = 8626613658424084195L;
 
@@ -79,62 +79,28 @@ public abstract class TemplateElement extends BodyElement {
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
-    /**
-     * Gets value of showHide attribute.
-     *
-     * @return value of showHide attribute
-     * @see #setVisibilityMode
-     */
     public VisibilityMode getVisibilityMode() {
         return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of showHide attribute.
-     *
-     * @param visibilityMode new value of showHide attribute
-     * @see #getVisibilityMode
-     */
     public void setVisibilityMode(final VisibilityMode visibilityMode) {
         getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).setValue(visibilityMode);
     }
 
-    /**
-     * Gets value of templateIdentifier attribute.
-     *
-     * @return value of templateIdentifier attribute
-     * @see #setTemplateIdentifier
-     */
+
     public Identifier getTemplateIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of templateIdentifier attribute.
-     *
-     * @param templateIdentifier new value of templateIdentifier attribute
-     * @see #getTemplateIdentifier
-     */
     public void setTemplateIdentifier(final Identifier templateIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).setValue(templateIdentifier);
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setIdentifier(Identifier)
-     */
+
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier()
-     */
     public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }

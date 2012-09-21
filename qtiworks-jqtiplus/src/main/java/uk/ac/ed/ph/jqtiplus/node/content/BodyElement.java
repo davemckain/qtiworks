@@ -96,31 +96,15 @@ public abstract class BodyElement extends AbstractNode implements Content {
         getAttributes().add(new StringAttribute(this, ATTR_LABEL_NAME, false));
     }
 
-    /**
-     * Gets value of id attribute.
-     *
-     * @return value of id attribute
-     * @see #setId
-     */
     public Identifier getId() {
         return getAttributes().getIdentifierAttribute(ATTR_ID_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of id attribute.
-     *
-     * @param id new value of id attribute
-     * @see #getId
-     */
     public void setId(final Identifier id) {
         getAttributes().getIdentifierAttribute(ATTR_ID_NAME).setValue(id);
     }
 
-    /**
-     * Gets value of class attribute.
-     *
-     * @return value of class attribute
-     */
+
     public List<String> getClassAttr() {
         return getAttributes().getStringMultipleAttribute(ATTR_CLASS_NAME).getComputedValue();
     }
@@ -129,42 +113,20 @@ public abstract class BodyElement extends AbstractNode implements Content {
         getAttributes().getStringMultipleAttribute(ATTR_CLASS_NAME).setValue(value);
     }
 
-    /**
-     * Gets value of lang attribute.
-     *
-     * @return value of lang attribute
-     * @see #setLang
-     */
+
     public String getLang() {
         return getAttributes().getStringAttribute(ATTR_LANG_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of lang attribute.
-     *
-     * @param lang new value of lang attribute
-     * @see #getLang
-     */
     public void setLang(final String lang) {
         getAttributes().getStringAttribute(ATTR_LANG_NAME).setValue(lang);
     }
 
-    /**
-     * Gets value of label attribute.
-     *
-     * @return value of label attribute
-     * @see #setLabel
-     */
+
     public String getLabel() {
         return getAttributes().getStringAttribute(ATTR_LANG_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of label attribute.
-     *
-     * @param label new value of label attribute
-     * @see #getLabel
-     */
     public void setLabel(final String label) {
         getAttributes().getStringAttribute(ATTR_LANG_NAME).setValue(label);
     }

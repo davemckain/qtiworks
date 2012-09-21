@@ -42,10 +42,10 @@ import java.net.URI;
 
 /**
  * blockquote
- * 
+ *
  * @author Jonathon Hare
  */
-public class Blockquote extends AbstractSimpleBlock implements SimpleBlock {
+public final class Blockquote extends AbstractSimpleBlock implements SimpleBlock {
 
     private static final long serialVersionUID = -5825718968041113996L;
 
@@ -55,29 +55,17 @@ public class Blockquote extends AbstractSimpleBlock implements SimpleBlock {
     /** Name of label attribute in xml schema. */
     public static final String ATTR_CITE_NAME = "cite";
 
-    public Blockquote(QtiNode parent) {
+    public Blockquote(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, false));
     }
 
-    /**
-     * Gets value of cite attribute.
-     * 
-     * @return value of cite attribute
-     * @see #setCite
-     */
     public URI getCite() {
         return getAttributes().getUriAttribute(ATTR_CITE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of cite attribute.
-     * 
-     * @param cite new value of cite attribute
-     * @see #getCite
-     */
-    public void setCite(URI cite) {
+    public void setCite(final URI cite) {
         getAttributes().getUriAttribute(ATTR_CITE_NAME).setValue(cite);
     }
 }

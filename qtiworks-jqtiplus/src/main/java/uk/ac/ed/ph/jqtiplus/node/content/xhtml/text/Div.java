@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.group.content.FlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
@@ -47,7 +47,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class Div extends BodyElement implements BlockStatic, FlowStatic {
+public final class Div extends AbstractFlowBodyElement implements BlockStatic, FlowStatic {
 
     private static final long serialVersionUID = -3635119989161671687L;
 
@@ -60,7 +60,7 @@ public class Div extends BodyElement implements BlockStatic, FlowStatic {
         getNodeGroups().add(new FlowGroup(this));
     }
 
-    public List<Flow> getChildren() {
+    public List<Flow> getFlows() {
         return getNodeGroups().getFlowGroup().getFlows();
     }
 }

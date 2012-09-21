@@ -31,35 +31,38 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
+package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
-import uk.ac.ed.ph.jqtiplus.group.content.xhtml.list.DlElementGroup;
+import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
-import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
+import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
-import java.util.List;
+import java.net.URI;
+
+import javax.xml.XMLConstants;
 
 /**
- * dl
+ * Abstract base class for {@link BodyElement} and {@link Flow}
  *
- * @author Jonathon Hare
+ * @author David McKain
  */
-public final class Dl extends AbstractFlowBodyElement implements BlockStatic, FlowStatic {
+public abstract class AbstractFlowBodyElement extends BodyElement implements Flow {
 
-    private static final long serialVersionUID = -4443987270132457444L;
+    private static final long serialVersionUID = -8445660295538903053L;
 
-    /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "dl";
+    public AbstractFlowBodyElement(final QtiNode parent, final String qtiClassName) {
+        super(parent, qtiClassName);
 
-    public Dl(final QtiNode parent) {
-        super(parent, QTI_CLASS_NAME);
-
-        getNodeGroups().add(new DlElementGroup(this));
+        getAttributes().add(new UriAttribute(this, Flow.ATTR_BASE_URI_NAME, XMLConstants.XML_NS_URI, false));
     }
 
-    public List<DlElement> getDlElements() {
-        return getNodeGroups().getDlElementGroup().getChildren();
+    @Override
+    public URI getBaseUri() {
+        return getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME).getComputedValue();
+    }
+
+    @Override
+    public void setBaseUri(final URI base) {
+        getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME).setValue(base);
     }
 }

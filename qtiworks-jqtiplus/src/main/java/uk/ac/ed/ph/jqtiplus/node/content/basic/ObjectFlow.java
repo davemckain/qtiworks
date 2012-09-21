@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
-
 /**
  * objectFlow marker interface
  *

@@ -136,7 +136,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      */
     public void add(final Attribute<?> attribute) {
         for (final Attribute<?> child : attributes) {
-            if (child.getLocalName().equals(attribute.getLocalName())) {
+            if (child.getLocalName().equals(attribute.getLocalName()) && child.getNamespaceUri().equals(attribute.getNamespaceUri())) {
                 throw new QtiAttributeException("Duplicate attribute name: " + attribute.computeXPath());
             }
         }

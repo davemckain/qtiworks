@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
  *
  * @author Jonathon Hare
  */
-public class Col extends BodyElement {
+public final class Col extends BodyElement {
 
     private static final long serialVersionUID = -3421263709139263344L;
 
@@ -61,22 +61,10 @@ public class Col extends BodyElement {
         getAttributes().add(new IntegerAttribute(this, ATTR_SPAN_NAME, ATTR_SPAN_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Gets value of span attribute.
-     *
-     * @return value of span attribute
-     * @see #setSpan
-     */
     public int getSpan() {
         return getAttributes().getIntegerAttribute(ATTR_SPAN_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of span attribute.
-     *
-     * @param span new value of span attribute
-     * @see #getSpan
-     */
     public void setSpan(final Integer span) {
         getAttributes().getIntegerAttribute(ATTR_SPAN_NAME).setValue(span);
     }

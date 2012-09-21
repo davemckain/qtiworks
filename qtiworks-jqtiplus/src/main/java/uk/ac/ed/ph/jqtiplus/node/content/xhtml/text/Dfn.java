@@ -39,17 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * dfn
- * 
+ *
  * @author Jonathon Hare
  */
-public class Dfn extends AbstractSimpleInline implements SimpleInline {
+public final class Dfn extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = -5353372986321253076L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "dfn";
 
-    public Dfn(QtiNode parent) {
+    public Dfn(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

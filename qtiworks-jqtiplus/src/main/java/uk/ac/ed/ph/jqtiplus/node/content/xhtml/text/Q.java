@@ -42,10 +42,10 @@ import java.net.URI;
 
 /**
  * q
- * 
+ *
  * @author Jonathon Hare
  */
-public class Q extends AbstractSimpleInline implements SimpleInline {
+public final class Q extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = -4273454055675294757L;
 
@@ -55,29 +55,17 @@ public class Q extends AbstractSimpleInline implements SimpleInline {
     /** Name of label attribute in xml schema. */
     public static final String ATTR_CITE_NAME = "cite";
 
-    public Q(QtiNode parent) {
+    public Q(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_CITE_NAME, false));
     }
 
-    /**
-     * Gets value of cite attribute.
-     * 
-     * @return value of cite attribute
-     * @see #setCite
-     */
     public URI getCite() {
         return getAttributes().getUriAttribute(ATTR_CITE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of cite attribute.
-     * 
-     * @param cite new value of cite attribute
-     * @see #getCite
-     */
-    public void setCite(URI cite) {
+    public void setCite(final URI cite) {
         getAttributes().getUriAttribute(ATTR_CITE_NAME).setValue(cite);
     }
 }

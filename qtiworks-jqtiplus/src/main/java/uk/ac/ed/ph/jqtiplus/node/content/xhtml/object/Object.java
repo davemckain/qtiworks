@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.object;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectFlowGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.ObjectFlow;
@@ -53,7 +53,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class Object extends BodyElement implements InlineStatic, FlowStatic {
+public final class Object extends AbstractFlowBodyElement implements InlineStatic, FlowStatic {
 
     private static final long serialVersionUID = -6905074851539593411L;
 
@@ -87,82 +87,37 @@ public final class Object extends BodyElement implements InlineStatic, FlowStati
         return getNodeGroups().getObjectFlowGroup().getObjectFlows();
     }
 
-    /**
-     * Gets value of data attribute.
-     *
-     * @return value of data attribute
-     * @see #setData
-     */
     public String getData() {
         return getAttributes().getStringAttribute(ATTR_DATA_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of data attribute.
-     *
-     * @param data new value of data attribute
-     * @see #getData
-     */
     public void setData(final String data) {
         getAttributes().getStringAttribute(ATTR_DATA_NAME).setValue(data);
     }
 
-    /**
-     * Gets value of type attribute.
-     *
-     * @return value of type attribute
-     * @see #setType
-     */
+
     public String getType() {
         return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of type attribute.
-     *
-     * @param type new value of type attribute
-     * @see #getType
-     */
     public void setType(final String type) {
         getAttributes().getStringAttribute(ATTR_TYPE_NAME).setValue(type);
     }
 
-    /**
-     * Gets value of width attribute.
-     *
-     * @return value of width attribute
-     * @see #setWidth
-     */
+
     public String getWidth() {
         return getAttributes().getStringAttribute(ATTR_WIDTH_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of width attribute.
-     *
-     * @param width new value of width attribute
-     * @see #getWidth
-     */
     public void setWidth(final String width) {
         getAttributes().getStringAttribute(ATTR_WIDTH_NAME).setValue(width);
     }
 
-    /**
-     * Gets value of height attribute.
-     *
-     * @return value of height attribute
-     * @see #setHeight
-     */
+
     public String getHeight() {
         return getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of width attribute.
-     *
-     * @param height new value of height attribute
-     * @see #getHeight
-     */
     public void setHeight(final String height) {
         getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).setValue(height);
     }

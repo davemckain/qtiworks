@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.list.LiGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 
@@ -46,7 +46,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class Ul extends BodyElement implements BlockStatic, FlowStatic {
+public final class Ul extends AbstractFlowBodyElement implements BlockStatic, FlowStatic {
 
     private static final long serialVersionUID = 7641186229829346349L;
 
@@ -59,7 +59,7 @@ public final class Ul extends BodyElement implements BlockStatic, FlowStatic {
         getNodeGroups().add(new LiGroup(this));
     }
 
-    public List<Li> getChildren() {
+    public List<Li> getLis() {
         return getNodeGroups().getLiGroup().getLis();
     }
 }

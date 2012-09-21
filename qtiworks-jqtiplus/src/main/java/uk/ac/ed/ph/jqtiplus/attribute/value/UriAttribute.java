@@ -41,28 +41,32 @@ import java.net.URI;
 
 /**
  * Attribute with uri value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class UriAttribute extends SingleAttribute<URI> {
 
     private static final long serialVersionUID = -4951687349594320740L;
 
-    public UriAttribute(QtiNode parent, String localName, boolean required) {
+    public UriAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public UriAttribute(QtiNode parent, String localName, URI defaultValue, boolean required) {
+    public UriAttribute(final QtiNode parent, final String localName, final String namespaceUri, final boolean required) {
+        super(parent, localName, namespaceUri, null, required);
+    }
+
+    public UriAttribute(final QtiNode parent, final String localName, final URI defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
     @Override
-    protected URI parseQtiString(String value) {
+    protected URI parseQtiString(final String value) {
         return DataTypeBinder.parseUri(value);
     }
-    
+
     @Override
-    protected String toQtiString(URI value) {
+    protected String toQtiString(final URI value) {
         return value.toString();
     }
 }

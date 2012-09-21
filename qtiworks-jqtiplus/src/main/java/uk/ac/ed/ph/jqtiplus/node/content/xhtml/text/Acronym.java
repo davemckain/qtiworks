@@ -39,22 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * abbr
- * 
+ *
  * @author Jonathon Hare
  */
-public class Acronym extends AbstractSimpleInline implements SimpleInline {
+public final class Acronym extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = 2710087373517650589L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "acronym";
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of constructed object
-     */
-    public Acronym(QtiNode parent) {
+    public Acronym(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

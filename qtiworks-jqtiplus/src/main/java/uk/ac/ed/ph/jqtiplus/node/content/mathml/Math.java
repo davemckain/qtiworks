@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.block.ForeignElement;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
@@ -59,7 +59,7 @@ import org.xml.sax.SAXException;
  *
  * @author Jonathon Hare
  */
-public final class Math extends BodyElement implements BlockStatic, FlowStatic, InlineStatic {
+public final class Math extends AbstractFlowBodyElement implements BlockStatic, FlowStatic, InlineStatic {
 
     private static final long serialVersionUID = 8090241210739302355L;
 

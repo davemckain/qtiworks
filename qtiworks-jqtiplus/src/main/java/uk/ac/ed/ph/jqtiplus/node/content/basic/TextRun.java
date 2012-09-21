@@ -38,6 +38,8 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 
+import java.net.URI;
+
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
@@ -62,13 +64,22 @@ public class TextRun extends AbstractNode implements Content, FlowStatic, Inline
         this.textContent = textContent;
     }
 
-    /**
-     * Gets text content of this block.
-     *
-     * @return text content of this block
-     */
+    @Override
+    public URI getBaseUri() {
+        return null;
+    }
+
+    @Override
+    public void setBaseUri(final URI base) {
+        /* Makes no sense here */
+    }
+
     public String getTextContent() {
         return textContent;
+    }
+
+    public void setTextContent(final String textContent) {
+        this.textContent = textContent;
     }
 
     @Override

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 
 /**
@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
  *
  * @author Jonathon Hare
  */
-public class Br extends BodyElement implements AtomicInline {
+public final class Br extends AbstractFlowBodyElement implements AtomicInline {
 
     private static final long serialVersionUID = 5514344847268031135L;
 

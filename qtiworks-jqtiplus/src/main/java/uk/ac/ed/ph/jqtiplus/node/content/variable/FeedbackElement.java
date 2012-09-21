@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.variable;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
@@ -56,7 +56,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author Jonathon Hare
  */
-public abstract class FeedbackElement extends BodyElement {
+public abstract class FeedbackElement extends AbstractFlowBodyElement {
 
     private static final long serialVersionUID = 7827490258811186864L;
 

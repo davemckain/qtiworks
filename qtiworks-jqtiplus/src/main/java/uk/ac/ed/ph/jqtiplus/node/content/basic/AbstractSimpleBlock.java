@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.List;
 
@@ -44,22 +43,18 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public abstract class AbstractSimpleBlock extends BodyElement implements SimpleBlock {
+public abstract class AbstractSimpleBlock extends AbstractFlowBodyElement implements SimpleBlock {
 
     private static final long serialVersionUID = -6259508381357996193L;
 
-    /**
-     * Constructs object.
-     *
-     * @param parent parent of constructed object
-     */
     public AbstractSimpleBlock(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new BlockGroup(this));
     }
 
-    public List<Block> getChildren() {
+    @Override
+    public List<Block> getBlocks() {
         return getNodeGroups().getBlockGroup().getBlocks();
     }
 }

@@ -45,41 +45,25 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public abstract class BlockInteraction extends Interaction implements Block, Flow {
+public abstract class BlockInteraction extends FlowInteraction implements Block, Flow {
 
     private static final long serialVersionUID = 5487665806009713981L;
 
-    /**
-     * Construct new interaction.
-     *
-     * @param parent Parent node
-     */
     public BlockInteraction(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new PromptGroup(this));
     }
 
+
     public List<Prompt> getPrompts() {
         return getNodeGroups().getPromptGroup().getChildren();
     }
 
-    /**
-     * Gets prompt child.
-     *
-     * @return prompt child
-     * @see #setPrompt
-     */
     public Prompt getPrompt() {
         return getNodeGroups().getPromptGroup().getPrompt();
     }
 
-    /**
-     * Sets new prompt child.
-     *
-     * @param prompt new prompt child
-     * @see #getPrompt
-     */
     public void setPrompt(final Prompt prompt) {
         getNodeGroups().getPromptGroup().setPrompt(prompt);
     }

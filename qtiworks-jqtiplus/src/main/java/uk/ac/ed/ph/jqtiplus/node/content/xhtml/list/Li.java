@@ -58,7 +58,7 @@ public final class Li extends BodyElement {
         getNodeGroups().add(new FlowGroup(this));
     }
 
-    public List<Flow> getChildren() {
+    public List<Flow> getFlows() {
         return getNodeGroups().getFlowGroup().getChildren();
     }
 }

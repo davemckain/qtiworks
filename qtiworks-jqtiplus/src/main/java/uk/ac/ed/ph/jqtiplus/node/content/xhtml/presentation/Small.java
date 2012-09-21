@@ -39,17 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * small
- * 
+ *
  * @author Jonathon Hare
  */
-public class Small extends AbstractSimpleInline implements SimpleInline {
+public final class Small extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = -2040187836620701422L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "small";
 
-    public Small(QtiNode parent) {
+    public Small(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

@@ -44,7 +44,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class Dd extends DlElement {
+public final class Dd extends DlElement {
 
     private static final long serialVersionUID = -7552284695766277971L;
 
@@ -62,7 +62,7 @@ public class Dd extends DlElement {
         getNodeGroups().add(new FlowGroup(this));
     }
 
-    public List<Flow> getChildren() {
+    public List<Flow> getFlows() {
         return getNodeGroups().getFlowGroup().getChildren();
     }
 }

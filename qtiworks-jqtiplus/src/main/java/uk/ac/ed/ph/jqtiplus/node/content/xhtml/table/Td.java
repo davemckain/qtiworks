@@ -37,17 +37,17 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * td
- * 
+ *
  * @author Jonathon Hare
  */
-public class Td extends TableCell {
+public final class Td extends TableCell {
 
     private static final long serialVersionUID = -1927071799608200763L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "td";
 
-    public Td(QtiNode parent) {
+    public Td(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

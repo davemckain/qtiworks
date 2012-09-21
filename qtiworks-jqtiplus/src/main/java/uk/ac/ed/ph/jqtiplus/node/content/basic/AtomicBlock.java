@@ -33,13 +33,17 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.basic;
 
+import java.util.List;
+
 /**
  * atomicBlock marker interface
- * 
+ *
  * @author Jonathon Hare
  */
 public interface AtomicBlock extends FlowStatic, BlockStatic {
 
     /** Display name of this interface. */
     public static String DISPLAY_NAME = "atomicBlock";
+
+    List<Inline> getInlines();
 }

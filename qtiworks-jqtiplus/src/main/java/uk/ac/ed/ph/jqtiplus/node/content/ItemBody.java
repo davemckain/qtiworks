@@ -77,7 +77,7 @@ import java.util.Map;
  * @author Jonathon Hare
  * @author Jiri Kajaba
  */
-public class ItemBody extends BodyElement {
+public final class ItemBody extends BodyElement {
 
     private static final long serialVersionUID = 5141415636417548133L;
 

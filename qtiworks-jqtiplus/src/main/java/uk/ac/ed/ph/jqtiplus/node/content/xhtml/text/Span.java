@@ -39,17 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * span
- * 
+ *
  * @author Jonathon Hare
  */
-public class Span extends AbstractSimpleInline implements SimpleInline {
+public final class Span extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = 2093398480095329880L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "span";
 
-    public Span(QtiNode parent) {
+    public Span(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

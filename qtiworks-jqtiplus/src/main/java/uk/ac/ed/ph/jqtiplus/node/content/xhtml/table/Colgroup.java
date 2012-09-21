@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class Colgroup extends BodyElement {
+public final class Colgroup extends BodyElement {
 
     private static final long serialVersionUID = -6478683798347489536L;
 
@@ -66,27 +66,16 @@ public class Colgroup extends BodyElement {
         getNodeGroups().add(new ColGroup(this));
     }
 
-    public List<Col> getChildren() {
-        return getNodeGroups().getColGroup().getCols();
-    }
-
-    /**
-     * Gets value of span attribute.
-     *
-     * @return value of span attribute
-     * @see #setSpan
-     */
     public int getSpan() {
         return getAttributes().getIntegerAttribute(ATTR_SPAN_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of span attribute.
-     *
-     * @param span new value of span attribute
-     * @see #getSpan
-     */
     public void setSpan(final Integer span) {
         getAttributes().getIntegerAttribute(ATTR_SPAN_NAME).setValue(span);
     }
+
+    public List<Col> getCols() {
+        return getNodeGroups().getColGroup().getCols();
+    }
+
 }

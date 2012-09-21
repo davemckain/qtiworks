@@ -58,7 +58,8 @@ public class FeedbackInline extends FeedbackElement implements SimpleInline {
         getNodeGroups().add(new InlineGroup(this));
     }
 
-    public List<Inline> getChildren() {
+    @Override
+    public List<Inline> getInlines() {
         return getNodeGroups().getInlineGroup().getInlines();
     }
 }

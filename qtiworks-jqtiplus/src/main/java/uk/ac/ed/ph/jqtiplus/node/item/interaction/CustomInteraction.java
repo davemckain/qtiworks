@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  * @author David McKain (new API)
  * @author Jonathon Hare (original)
  */
-public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> extends Interaction implements Block, Flow {
+public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> extends FlowInteraction implements Block, Flow {
 
     private static final Logger logger = LoggerFactory.getLogger(CustomInteraction.class);
 

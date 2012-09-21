@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -54,7 +54,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  *
  * @author Jonathon Hare
  */
-public final class PrintedVariable extends BodyElement implements FlowStatic, InlineStatic, TextOrVariable {
+public final class PrintedVariable extends AbstractFlowBodyElement implements FlowStatic, InlineStatic, TextOrVariable {
 
     private static final long serialVersionUID = 1096970249266471727L;
 

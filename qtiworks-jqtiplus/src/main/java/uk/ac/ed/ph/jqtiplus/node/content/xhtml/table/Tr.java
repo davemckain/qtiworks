@@ -57,7 +57,7 @@ public final class Tr extends BodyElement {
         getNodeGroups().add(new TableCellGroup(this));
     }
 
-    public List<TableCell> getChildren() {
+    public List<TableCell> getTableCells() {
         return getNodeGroups().getTableCellGroup().getChildren();
     }
 }

@@ -33,13 +33,18 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.content;
 
+import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.InlineStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.InlineStatic;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 
+import java.net.URI;
 import java.util.List;
+
+import javax.xml.XMLConstants;
 
 /**
  * A hottext area is used within the content of an hottextInteraction to
@@ -64,8 +69,20 @@ public final class Hottext extends Choice implements InlineStatic, FlowStatic {
     public Hottext(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
+        getAttributes().add(new UriAttribute(this, Flow.ATTR_BASE_URI_NAME, XMLConstants.XML_NS_URI, false));
         getNodeGroups().add(new InlineStaticGroup(this));
     }
+
+    @Override
+    public URI getBaseUri() {
+        return getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME).getComputedValue();
+    }
+
+    @Override
+    public void setBaseUri(final URI base) {
+        getAttributes().getUriAttribute(Flow.ATTR_BASE_URI_NAME).setValue(base);
+    }
+
 
     public List<InlineStatic> getChildren() {
         return getNodeGroups().getInlineStaticGroup().getInlineStatics();

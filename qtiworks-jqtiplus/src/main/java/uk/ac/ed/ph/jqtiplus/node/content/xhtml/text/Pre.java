@@ -52,19 +52,19 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
  *
  * @author Jonathon Hare
  */
-public class Pre extends AbstractAtomicBlock implements AtomicBlock {
+public final class Pre extends AbstractAtomicBlock implements AtomicBlock {
 
     private static final long serialVersionUID = 6314971744269416971L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "pre";
 
-    public Pre(QtiNode parent) {
+    public Pre(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         //Although pre inherits from atomicBlock it must not contain, either directly

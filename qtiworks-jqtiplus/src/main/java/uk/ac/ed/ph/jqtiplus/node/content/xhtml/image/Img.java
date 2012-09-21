@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.content.xhtml.image;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicInline;
 
 import java.net.URI;
@@ -50,7 +50,7 @@ import java.net.URI;
  *
  * @author Jonathon Hare
  */
-public final class Img extends BodyElement implements AtomicInline {
+public final class Img extends AbstractFlowBodyElement implements AtomicInline {
 
     private static final long serialVersionUID = 5705344980101577516L;
 
@@ -82,102 +82,46 @@ public final class Img extends BodyElement implements AtomicInline {
         getAttributes().add(new StringAttribute(this, ATTR_WIDTH_NAME, false));
     }
 
-    /**
-     * Gets value of src attribute.
-     *
-     * @return value of src attribute
-     * @see #setSrc
-     */
     public URI getSrc() {
         return getAttributes().getUriAttribute(ATTR_SRC_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of src attribute.
-     *
-     * @param src new value of src attribute
-     * @see #getSrc
-     */
     public void setSrc(final URI src) {
         getAttributes().getUriAttribute(ATTR_SRC_NAME).setValue(src);
     }
 
-    /**
-     * Gets value of alt attribute.
-     *
-     * @return value of alt attribute
-     * @see #setAlt
-     */
+
     public String getAlt() {
         return getAttributes().getStringAttribute(ATTR_ALT_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of alt attribute.
-     *
-     * @param alt new value of alt attribute
-     * @see #getAlt
-     */
     public void setAlt(final String alt) {
         getAttributes().getStringAttribute(ATTR_ALT_NAME).setValue(alt);
     }
 
-    /**
-     * Gets value of longdesc attribute.
-     *
-     * @return value of longdesc attribute
-     * @see #setLongdesc
-     */
+
     public URI getLongdesc() {
         return getAttributes().getUriAttribute(ATTR_LONGDESC_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of longdesc attribute.
-     *
-     * @param longdesc new value of longdesc attribute
-     * @see #getLongdesc
-     */
     public void setLongdesc(final URI longdesc) {
         getAttributes().getUriAttribute(ATTR_LONGDESC_NAME).setValue(longdesc);
     }
 
-    /**
-     * Gets value of height attribute.
-     *
-     * @return value of height attribute
-     * @see #setHeight
-     */
+
     public String getHeight() {
         return getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of height attribute.
-     *
-     * @param height new value of height attribute
-     * @see #getHeight
-     */
     public void setHeight(final String height) {
         getAttributes().getStringAttribute(ATTR_HEIGHT_NAME).setValue(height);
     }
 
-    /**
-     * Gets value of width attribute.
-     *
-     * @return value of width attribute
-     * @see #setWidth
-     */
+
     public String getWidth() {
         return getAttributes().getStringAttribute(ATTR_WIDTH_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of width attribute.
-     *
-     * @param width new value of width attribute
-     * @see #getWidth
-     */
     public void setWidth(final String width) {
         getAttributes().getStringAttribute(ATTR_WIDTH_NAME).setValue(width);
     }

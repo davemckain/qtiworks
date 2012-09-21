@@ -39,14 +39,14 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.Inline;
 
 /**
  * An interaction that appears inline.
- * 
+ *
  * @author Jonathon Hare
  */
-public abstract class InlineInteraction extends Interaction implements Inline, Flow {
+public abstract class InlineInteraction extends FlowInteraction implements Inline, Flow {
 
     private static final long serialVersionUID = -6106812031050904729L;
 
-    public InlineInteraction(QtiNode parent, String qtiClassName) {
+    public InlineInteraction(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
     }
 }

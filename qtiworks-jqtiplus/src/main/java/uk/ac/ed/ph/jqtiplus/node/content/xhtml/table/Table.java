@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TbodyGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TfootGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.xhtml.table.TheadGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
+import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -62,7 +62,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public final class Table extends BodyElement implements BlockStatic, FlowStatic {
+public final class Table extends AbstractFlowBodyElement implements BlockStatic, FlowStatic {
 
     private static final long serialVersionUID = -13930375270014305L;
 
@@ -85,106 +85,54 @@ public final class Table extends BodyElement implements BlockStatic, FlowStatic 
         getNodeGroups().add(new TbodyGroup(this));
     }
 
-    /**
-     * Gets col children.
-     *
-     * @return col children
-     */
     public List<Col> getCols() {
         return getNodeGroups().getColGroup().getCols();
     }
 
-    /**
-     * Gets colgroup children.
-     *
-     * @return colgroup children
-     */
     public List<Colgroup> getColgroups() {
         return getNodeGroups().getColgroupGroup().getColgroups();
     }
 
-    /**
-     * Gets tbody children.
-     *
-     * @return tbody children
-     */
     public List<Tbody> getTbodys() {
         return getNodeGroups().getTbodyGroup().getTbodys();
     }
 
-    /**
-     * Gets caption child.
-     *
-     * @return caption child
-     */
+
     public Caption getCaption() {
         return getNodeGroups().getCaptionGroup().getCaption();
     }
 
-    /**
-     * Sets caption child.
-     *
-     * @param caption Caption to set
-     */
     public void setCaption(final Caption caption) {
         getNodeGroups().getCaptionGroup().setCaption(caption);
     }
 
-    /**
-     * Gets thead child.
-     *
-     * @return thead child
-     */
+
     public Thead getThead() {
         return getNodeGroups().getTheadGroup().getThead();
     }
 
-    /**
-     * Sets Thead child.
-     *
-     * @param thead Thead to set
-     */
     public void setThead(final Thead thead) {
         getNodeGroups().getTheadGroup().setThead(thead);
     }
 
-    /**
-     * Gets tfoot child.
-     *
-     * @return tfoot child
-     */
+
     public Tfoot getTfoot() {
         return getNodeGroups().getTfootGroup().getTfoot();
     }
 
-    /**
-     * Sets Tfoot child.
-     *
-     * @param tfoot Tfoot to set
-     */
     public void setTfoot(final Tfoot tfoot) {
         getNodeGroups().getTfootGroup().setTfoot(tfoot);
     }
 
-    /**
-     * Gets value of summary attribute.
-     *
-     * @return value of summary attribute
-     * @see #setSummary
-     */
+
     public String getSummary() {
         return getAttributes().getStringAttribute(ATTR_SUMMARY_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of summary attribute.
-     *
-     * @param summary new value of summary attribute
-     * @see #getSummary
-     */
     public void setSummary(final String summary) {
         getAttributes().getStringAttribute(ATTR_SUMMARY_NAME).setValue(summary);
     }
+
 
     @Override
     public void validate(final ValidationContext context) {

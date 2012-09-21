@@ -84,134 +84,62 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 public interface StringInteraction {
 
     /** Name of base attribute in xml schema. */
-    public static String ATTR_BASE_NAME = "base";
+    static String ATTR_BASE_NAME = "base";
 
     /** Default value of base attribute. */
-    public static final int ATTR_BASE_DEFAULT_VALUE = 10;
+    static final int ATTR_BASE_DEFAULT_VALUE = 10;
 
     /** Name of stringIdentifier attribute in xml schema. */
-    public static final String ATTR_STRING_IDENTIFIER_NAME = "stringIdentifier";
+    static final String ATTR_STRING_IDENTIFIER_NAME = "stringIdentifier";
 
     /** Name of expectedLength attribute in xml schema. */
-    public static final String ATTR_EXPECTED_LENGTH_NAME = "expectedLength";
+    static final String ATTR_EXPECTED_LENGTH_NAME = "expectedLength";
 
     /** Name of patternMask attribute in xml schema. */
-    public static final String ATTR_PATTERN_MASK_NAME = "patternMask";
+    static final String ATTR_PATTERN_MASK_NAME = "patternMask";
 
     /** Name of placeholderText attribute in xml schema. */
-    public static final String ATTR_PLACEHOLDER_TEXT_NAME = "placeholderText";
+    static final String ATTR_PLACEHOLDER_TEXT_NAME = "placeholderText";
 
     /** Name of stringValue key if response is bound to A record container. */
-    public static final Identifier KEY_STRING_VALUE_NAME = new Identifier("stringValue", false);
+    static final Identifier KEY_STRING_VALUE_NAME = new Identifier("stringValue", false);
 
     /** Name of floatValue key if response is bound to A record container. */
-    public static final Identifier KEY_FLOAT_VALUE_NAME = new Identifier("floatValue", false);
+    static final Identifier KEY_FLOAT_VALUE_NAME = new Identifier("floatValue", false);
 
     /** Name of integerValue key if response is bound to A record container. */
-    public static final Identifier KEY_INTEGER_VALUE_NAME = new Identifier("integerValue", false);
+    static final Identifier KEY_INTEGER_VALUE_NAME = new Identifier("integerValue", false);
 
     /** Name of leftDigits key if response is bound to A record container. */
-    public static final Identifier KEY_LEFT_DIGITS_NAME = new Identifier("leftDigits", false);
+    static final Identifier KEY_LEFT_DIGITS_NAME = new Identifier("leftDigits", false);
 
     /** Name of rightDigits key if response is bound to A record container. */
-    public static final Identifier KEY_RIGHT_DIGITS_NAME = new Identifier("rightDigits", false);
+    static final Identifier KEY_RIGHT_DIGITS_NAME = new Identifier("rightDigits", false);
 
     /** Name of ndp key if response is bound to A record container. */
-    public static final Identifier KEY_NDP_NAME = new Identifier("ndp", false);
+    static final Identifier KEY_NDP_NAME = new Identifier("ndp", false);
 
     /** Name of nsf key if response is bound to A record container. */
-    public static final Identifier KEY_NSF_NAME = new Identifier("nsf", false);
+    static final Identifier KEY_NSF_NAME = new Identifier("nsf", false);
 
     /** Name of exponent key if response is bound to A record container. */
-    public static final Identifier KEY_EXPONENT_NAME = new Identifier("exponent", false);
+    static final Identifier KEY_EXPONENT_NAME = new Identifier("exponent", false);
 
-    /**
-     * Gets value of base attribute.
-     *
-     * @return value of base attribute
-     * @see #setBase
-     */
-    public int getBase();
+    int getBase();
+    void setBase(Integer base);
 
-    /**
-     * Sets new value of base attribute.
-     *
-     * @param base new value of base attribute
-     * @see #getBase
-     */
-    public void setBase(Integer base);
+    Identifier getStringIdentifier();
+    void setStringIdentifier(Identifier stringIdentifier);
 
-    /**
-     * Sets new value of stringIdentifier attribute.
-     *
-     * @param stringIdentifier new value of stringIdentifier attribute
-     * @see #getStringIdentifier
-     */
-    public void setStringIdentifier(Identifier stringIdentifier);
+    Integer getExpectedLength();
+    void setExpectedLength(Integer expectedLength);
 
-    /**
-     * Gets value of stringIdentifier attribute.
-     *
-     * @return value of stringIdentifier attribute
-     * @see #setStringIdentifier
-     */
-    public Identifier getStringIdentifier();
+    String getPatternMask();
+    void setPatternMask(String patternMask);
 
+    void setPlaceholderText(String placeholderText);
+    String getPlaceholderText();
 
-    /**
-     * Sets new value of expectedLength attribute.
-     *
-     * @param expectedLength new value of expectedLength attribute
-     * @see #getExpectedLength
-     */
-    public void setExpectedLength(Integer expectedLength);
+    ResponseDeclaration getStringIdentifierResponseDeclaration();
 
-    /**
-     * Gets value of expectedLength attribute.
-     *
-     * @return value of expectedLength attribute
-     * @see #setExpectedLength
-     */
-    public Integer getExpectedLength();
-
-
-    /**
-     * Sets new value of patternMask attribute.
-     *
-     * @param patternMask new value of patternMask attribute
-     * @see #getPatternMask
-     */
-    public void setPatternMask(String patternMask);
-
-    /**
-     * Gets value of patternMask attribute.
-     *
-     * @return value of patternMask attribute
-     * @see #setPatternMask
-     */
-    public String getPatternMask();
-
-
-    /**
-     * Sets new value of placeholderText attribute.
-     *
-     * @param placeholderText new value of placeholderText attribute
-     * @see #getPlaceholderText
-     */
-    public void setPlaceholderText(String placeholderText);
-
-    /**
-     * Gets value of placeholderText attribute.
-     *
-     * @return value of placeholderText attribute
-     * @see #setPlaceholderText
-     */
-    public String getPlaceholderText();
-
-    /**
-     * Gets ResponseDeclaration corresponding to the stringIdentifier attribute
-     *
-     * @return ResponseDeclaration identified by interactions stringIdentifier
-     */
-    public ResponseDeclaration getStringIdentifierResponseDeclaration();
 }

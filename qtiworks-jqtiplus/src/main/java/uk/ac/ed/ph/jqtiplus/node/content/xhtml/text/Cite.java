@@ -39,17 +39,17 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.SimpleInline;
 
 /**
  * cite
- * 
+ *
  * @author Jonathon Hare
  */
-public class Cite extends AbstractSimpleInline implements SimpleInline {
+public final class Cite extends AbstractSimpleInline implements SimpleInline {
 
     private static final long serialVersionUID = -5483443862036413672L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "cite";
 
-    public Cite(QtiNode parent) {
+    public Cite(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }
