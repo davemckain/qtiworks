@@ -51,7 +51,12 @@
 
     <stylesheet type="text/css" href="ststyle.css"/>
     <itemBody>
-    <div><p class="heading"><b>Numeric precision</b></p><p class="instruct">
+      <rubricBlock view="tutor"><p>This information is visible only in 'tutor' view:
+         <br/>a) = <printedVariable identifier="val1" format="%0.4f"/>,&#xa0;&#xa0;&#xa0;
+         b) = <printedVariable identifier="val2" format="%0.3r"/>,&#xa0;&#xa0;&#xa0;
+         c) = <printedVariable identifier="val3" format="%0.2r"/>.</p>
+       </rubricBlock>
+      <div><p class="heading"><b>Numeric precision</b></p><p class="instruct">
            Integers or floating point values can be initialised to literal or randomised values.
            <br/>They can be used in expression to create further values (e.g. answers).
            <br/>The values of student responses can be checked for absolute or relative accuracy.
@@ -64,11 +69,6 @@
           <br/>c) Enter the value <printedVariable identifier="val3" format="%0.1f"/> to two significant figures:
          <textEntryInteraction responseIdentifier="RESPC" expectedLength="7"/>
        </div>
-        <rubricBlock view="tutor"><p>This information is visible only in 'tutor' view:
-           <br/>a) = <printedVariable identifier="val1" format="%0.4f"/>,&#xa0;&#xa0;&#xa0;
-           b) = <printedVariable identifier="val2" format="%0.3r"/>,&#xa0;&#xa0;&#xa0;
-           c) = <printedVariable identifier="val3" format="%0.2r"/>.</p>
-         </rubricBlock>
         [ 24 marks ]
       </div>
     </itemBody>
@@ -99,7 +99,7 @@
               </setOutcomeValue>
           </responseIf>
           <responseElseIf>
-              <equalRounded roundingMode="decimalPlaces" figures="{NDPA}">
+              <equalRounded roundingMode="decimalPlaces" figures="NDPA">
                   <fieldValue fieldIdentifier="floatValue">
                       <variable identifier="RESPA"/>
                   </fieldValue>
@@ -182,7 +182,7 @@
               </setOutcomeValue>
           </responseIf>
           <responseElseIf>
-              <equalRounded roundingMode="significantFigures" figures="{NSFB}">
+              <equalRounded roundingMode="significantFigures" figures="NSFB">
                   <fieldValue fieldIdentifier="floatValue">
                       <variable identifier="RESPB"/>
                   </fieldValue>
@@ -265,7 +265,7 @@
               </setOutcomeValue>
           </responseIf>
           <responseElseIf>
-              <equalRounded roundingMode="significantFigures" figures="{NSFC}">
+              <equalRounded roundingMode="significantFigures" figures="NSFC">
                   <fieldValue fieldIdentifier="floatValue">
                       <variable identifier="RESPC"/>
                   </fieldValue>
