@@ -61,7 +61,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.Substring
  * @author Jiri Kajaba
  */
-public class StringMatch extends AbstractFunctionalExpression {
+public final class StringMatch extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 8495415247770053078L;
 
@@ -84,45 +84,24 @@ public class StringMatch extends AbstractFunctionalExpression {
         getAttributes().add(new BooleanAttribute(this, ATTR_SUBSTRING_NAME, ATTR_SUBSTRING_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Gets value of caseSensitive attribute.
-     *
-     * @return value of caseSensitive attribute
-     * @see #setCaseSensitive
-     */
+
     public boolean getCaseSensitive() {
         return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of caseSensitive attribute.
-     *
-     * @param caseSensitive new value of caseSensitive attribute
-     * @see #getCaseSensitive
-     */
     public void setCaseSensitive(final Boolean caseSensitive) {
         getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).setValue(caseSensitive);
     }
 
-    /**
-     * Gets value of substring attribute.
-     *
-     * @return value of substring attribute
-     * @see #setSubString
-     */
+
     public boolean getSubString() {
         return getAttributes().getBooleanAttribute(ATTR_SUBSTRING_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of substring attribute.
-     *
-     * @param subString new value of substring attribute
-     * @see #getSubString
-     */
     public void setSubString(final Boolean subString) {
         getAttributes().getBooleanAttribute(ATTR_SUBSTRING_NAME).setValue(subString);
     }
+
 
     @Override
     protected Value evaluateSelf(final Value[] childValues) {

@@ -58,11 +58,11 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * If A container contains multiple instances of the same value then that value is counted once only. To continue the example above {B,B,C} would still map to
  * 1.5 and not 2.5.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class MapResponse extends AbstractExpression {
+public final class MapResponse extends AbstractExpression {
 
     private static final long serialVersionUID = -45151156141657308L;
 
@@ -72,34 +72,24 @@ public class MapResponse extends AbstractExpression {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public MapResponse(ExpressionParent parent) {
+    public MapResponse(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
-    /**
-     * Gets value of identifier attribute.
-     * 
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
+
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     * 
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
+
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         final AssessmentItem item = context.getSubjectItem();
@@ -114,7 +104,7 @@ public class MapResponse extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
         final ResponseDeclaration responseDeclaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
         final Value responseValue = itemContext.lookupVariableValue(getIdentifier(), VariableType.RESPONSE);

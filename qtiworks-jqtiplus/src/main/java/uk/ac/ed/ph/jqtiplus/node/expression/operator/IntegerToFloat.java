@@ -44,24 +44,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The integer to float conversion operator takes A single sub-expression which must have single cardinality
  * and base-type integer. The result is A value of base type float with the same numeric value.
  * If the sub-expression is NULL then the operator results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class IntegerToFloat extends AbstractFunctionalExpression {
+public final class IntegerToFloat extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 6659030261226674545L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "integerToFloat";
 
-    public IntegerToFloat(ExpressionParent parent) {
+    public IntegerToFloat(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

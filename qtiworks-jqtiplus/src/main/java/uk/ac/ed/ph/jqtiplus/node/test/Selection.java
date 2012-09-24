@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
  *
  * @author Jiri Kajaba
  */
-public class Selection extends AbstractNode {
+public final class Selection extends AbstractNode {
 
     private static final long serialVersionUID = 1716825756388015143L;
 
@@ -73,45 +73,24 @@ public class Selection extends AbstractNode {
         return (AssessmentSection) super.getParent();
     }
 
-    /**
-     * Gets value of select attribute.
-     *
-     * @return value of select attribute
-     * @see #setSelect
-     */
+
     public int getSelect() {
         return getAttributes().getIntegerAttribute(ATTR_SELECT_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of select attribute.
-     *
-     * @param select new value of select attribute
-     * @see #getSelect
-     */
     public void setSelect(final Integer select) {
         getAttributes().getIntegerAttribute(ATTR_SELECT_NAME).setValue(select);
     }
 
-    /**
-     * Gets value of withReplacement attribute.
-     *
-     * @return value of withReplacement attribute
-     * @see #setWithReplacement
-     */
+
     public boolean getWithReplacement() {
         return getAttributes().getBooleanAttribute(ATTR_WITH_REPLACEMENT_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of withReplacement attribute.
-     *
-     * @param withReplacement new value of withReplacement attribute
-     * @see #getWithReplacement
-     */
     public void setWithReplacement(final Boolean withReplacement) {
         getAttributes().getBooleanAttribute(ATTR_WITH_REPLACEMENT_NAME).setValue(withReplacement);
     }
+
 
     @Override
     protected void validateAttributes(final ValidationContext context) {

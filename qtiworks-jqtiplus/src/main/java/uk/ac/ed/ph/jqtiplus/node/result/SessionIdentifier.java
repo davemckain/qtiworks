@@ -66,42 +66,20 @@ public final class SessionIdentifier extends AbstractNode implements ResultNode 
         getAttributes().add(new StringAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
-    /**
-     * Gets value of sourceID attribute.
-     *
-     * @return value of sourceID attribute
-     * @see #setSourceId
-     */
+
     public URI getSourceId() {
         return getAttributes().getUriAttribute(ATTR_SOURCE_ID_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of sourceID attribute.
-     *
-     * @param sourceId new value of sourceID attribute
-     * @see #getSourceId
-     */
     public void setSourceId(final URI sourceId) {
         getAttributes().getUriAttribute(ATTR_SOURCE_ID_NAME).setValue(sourceId);
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
+
     public String getIdentifier() {
         return getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
     public void setIdentifier(final String identifier) {
         getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }

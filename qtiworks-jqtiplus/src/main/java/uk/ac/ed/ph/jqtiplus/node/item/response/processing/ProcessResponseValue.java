@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
  * Abstract parent for setResponseValue and lookupResponseValue classes.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class ProcessResponseValue extends ResponseRule implements ExpressionParent {
@@ -53,7 +53,7 @@ public abstract class ProcessResponseValue extends ResponseRule implements Expre
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public ProcessResponseValue(QtiNode parent, String qtiClassName) {
+    public ProcessResponseValue(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
@@ -70,43 +70,21 @@ public abstract class ProcessResponseValue extends ResponseRule implements Expre
         return super.computeXPathComponent();
     }
 
-    /**
-     * Gets value of identifier attribute.
-     * 
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
+
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     * 
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets expression child.
-     * 
-     * @return expression child
-     * @see #setExpression
-     */
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
 
-    /**
-     * Sets new expression child.
-     * 
-     * @param expression new expression child
-     * @see #getExpression
-     */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 }

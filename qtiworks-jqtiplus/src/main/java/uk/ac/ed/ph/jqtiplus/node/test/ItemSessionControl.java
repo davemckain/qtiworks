@@ -41,21 +41,21 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 /**
  * FIXME: The old "XML to string" methods did something tortuous when writing out attributes, so check
  * the logic in here to make sure it's not doing something odd!
- * 
+ *
  * FIXME: The logic in this class does too much with merging defaults together. It needs a lot of refactoring
  * before it can be used properly.
- * 
+ *
  * When items are referenced as part of A test, the test may impose constraints on how many attempts
  * and which states are allowed. These constraints can be specified for individual items, for whole
  * sections, or for an entire testPart. By default, A setting at testPart level affects all items in
  * that part unless the setting is overridden at the assessmentSection level or ultimately at the
  * individual assessmentItemRef. The defaults given below are used only in the absence of any
  * applicable constraint.
- * 
+ *
  * @author Jiri Kajaba
  */
 @ToRefactor
-public class ItemSessionControl extends AbstractNode {
+public final class ItemSessionControl extends AbstractNode {
 
     private static final long serialVersionUID = 4320465731424106788L;
 
@@ -110,7 +110,7 @@ public class ItemSessionControl extends AbstractNode {
     @ToRefactor
     public static final boolean VALIDATE_RESPONSES_DEFAULT_VALUE = false;
 
-    public ItemSessionControl(AbstractPart parent) {
+    public ItemSessionControl(final AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_ATTEMPTS_NAME, false));
@@ -129,7 +129,7 @@ public class ItemSessionControl extends AbstractNode {
 
     /**
      * Gets value of maxAttempts attribute.
-     * 
+     *
      * @return value of maxAttempts attribute
      * @see #setMaxAttemptsAttrValue
      */
@@ -139,17 +139,17 @@ public class ItemSessionControl extends AbstractNode {
 
     /**
      * Sets new value of maxAttempts attribute.
-     * 
+     *
      * @param maxAttempts new value of maxAttempts attribute
      * @see #getMaxAttemptsAttrValue
      */
-    public void setMaxAttemptsAttrValue(Integer maxAttempts) {
+    public void setMaxAttemptsAttrValue(final Integer maxAttempts) {
         getAttributes().getIntegerAttribute(ATTR_MAX_ATTEMPTS_NAME).setValue(maxAttempts);
     }
 
     /**
      * Gets value of showFeedback attribute.
-     * 
+     *
      * @return value of showFeedback attribute
      * @see #setShowFeedbackAttrValue
      */
@@ -159,17 +159,17 @@ public class ItemSessionControl extends AbstractNode {
 
     /**
      * Sets new value of showFeedback attribute.
-     * 
+     *
      * @param showFeedback new value of showFeedback attribute
      * @see #getShowFeedbackAttrValue
      */
-    public void setShowFeedbackAttrValue(Boolean showFeedback) {
+    public void setShowFeedbackAttrValue(final Boolean showFeedback) {
         getAttributes().getBooleanAttribute(ATTR_SHOW_FEEDBACK_NAME).setValue(showFeedback);
     }
 
     /**
      * Gets value of allowReview attribute.
-     * 
+     *
      * @return value of allowReview attribute
      * @see #setAllowReviewAttrValue
      */
@@ -179,17 +179,17 @@ public class ItemSessionControl extends AbstractNode {
 
     /**
      * Sets new value of allowReview attribute.
-     * 
+     *
      * @param allowReview new value of allowReview attribute
      * @see #getAllowReviewAttrValue
      */
-    public void setAllowReviewAttrValue(Boolean allowReview) {
+    public void setAllowReviewAttrValue(final Boolean allowReview) {
         getAttributes().getBooleanAttribute(ATTR_ALLOW_REVIEW_NAME).setValue(allowReview);
     }
 
     /**
      * Gets value of showSolution attribute.
-     * 
+     *
      * @return value of showSolution attribute
      * @see #setShowSolutionAttrValue
      */
@@ -199,17 +199,17 @@ public class ItemSessionControl extends AbstractNode {
 
     /**
      * Sets new value of showSolution attribute.
-     * 
+     *
      * @param showSolution new value of showSolution attribute
      * @see #getShowSolutionAttrValue
      */
-    public void setShowSolutionAttrValue(Boolean showSolution) {
+    public void setShowSolutionAttrValue(final Boolean showSolution) {
         getAttributes().getBooleanAttribute(ATTR_SHOW_SOLUTION_NAME).setValue(showSolution);
     }
 
     /**
      * Gets value of allowComment attribute.
-     * 
+     *
      * @return value of allowComment attribute
      * @see #setAllowCommentAttrValue
      */
@@ -219,17 +219,17 @@ public class ItemSessionControl extends AbstractNode {
 
     /**
      * Sets new value of allowComment attribute.
-     * 
+     *
      * @param allowComment new value of allowComment attribute
      * @see #getAllowCommentAttrValue
      */
-    public void setAllowCommentAttrValue(Boolean allowComment) {
+    public void setAllowCommentAttrValue(final Boolean allowComment) {
         getAttributes().getBooleanAttribute(ATTR_ALLOW_COMMENT_NAME).setValue(allowComment);
     }
 
     /**
      * Gets value of allowSkipping attribute.
-     * 
+     *
      * @return value of allowSkipping attribute
      * @see #setAllowSkippingAttrValue
      */
@@ -239,17 +239,17 @@ public class ItemSessionControl extends AbstractNode {
 
     /**
      * Sets new value of allowSkipping attribute.
-     * 
+     *
      * @param allowSkipping new value of allowSkipping attribute
      * @see #getAllowSkippingAttrValue
      */
-    public void setAllowSkippingAttrValue(Boolean allowSkipping) {
+    public void setAllowSkippingAttrValue(final Boolean allowSkipping) {
         getAttributes().getBooleanAttribute(ATTR_ALLOW_SKIPPING_NAME).setValue(allowSkipping);
     }
 
     /**
      * Gets value of validateResponses attribute.
-     * 
+     *
      * @return value of validateResponses attribute
      * @see #setValidateResponsesAttrValue
      */
@@ -259,11 +259,11 @@ public class ItemSessionControl extends AbstractNode {
 
     /**
      * Sets new value of validateResponses attribute.
-     * 
+     *
      * @param validateResponses new value of validateResponses attribute
      * @see #getValidateResponsesAttrValue
      */
-    public void setValidateResponsesAttrValue(Boolean validateResponses) {
+    public void setValidateResponsesAttrValue(final Boolean validateResponses) {
         getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).setValue(validateResponses);
     }
 
@@ -274,7 +274,7 @@ public class ItemSessionControl extends AbstractNode {
      * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
      * <li>returns parent's final maxAttempts value (parent must be <code>SectionPart</code>)
      * </ol>
-     * 
+     *
      * @return final maxAttempts value
      */
     public int getMaxAttempts() {
@@ -289,7 +289,7 @@ public class ItemSessionControl extends AbstractNode {
     /**
      * Gets parent's (parent of parent of this itemSessionControl) final maxAttempts value or default
      * value if parent of this itemSessionControl is TestPart.
-     * 
+     *
      * @return parent's final maxAttempts value or default value
      */
     protected Integer getParentsMaxAttempts() {
@@ -315,7 +315,7 @@ public class ItemSessionControl extends AbstractNode {
      * Attribute should be printed if and only if it holds some additional information.
      * <p>
      * This method returns opposite value what everybody would expect.
-     * 
+     *
      * @return default value of maxAttempts attribute
      */
     private Integer getMaxAttemptsDefaultValue() {
@@ -337,7 +337,7 @@ public class ItemSessionControl extends AbstractNode {
      * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
      * <li>returns parent's final showFeedback value (parent must be <code>SectionPart</code>)
      * </ol>
-     * 
+     *
      * @return final showFeedback value
      */
     public boolean getShowFeedback() {
@@ -352,7 +352,7 @@ public class ItemSessionControl extends AbstractNode {
     /**
      * Gets parent's (parent of parent of this itemSessionControl) final showFeedback value or default
      * value if parent of this itemSessionControl is TestPart.
-     * 
+     *
      * @return parent's final showFeedback value or default value
      */
     protected boolean getParentsShowFeedback() {
@@ -378,7 +378,7 @@ public class ItemSessionControl extends AbstractNode {
      * Attribute should be printed if and only if it holds some additional information.
      * <p>
      * This method returns opposite value what everybody would expect.
-     * 
+     *
      * @return default value of showFeedback attribute
      */
     private Boolean getShowFeedbackDefaultValue() {
@@ -397,7 +397,7 @@ public class ItemSessionControl extends AbstractNode {
      * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
      * <li>returns parent's final allowReview value (parent must be <code>SectionPart</code>)
      * </ol>
-     * 
+     *
      * @return final allowReview value
      */
     public boolean getAllowReview() {
@@ -412,7 +412,7 @@ public class ItemSessionControl extends AbstractNode {
     /**
      * Gets parent's (parent of parent of this itemSessionControl) final allowReview value or default
      * value if parent of this itemSessionControl is TestPart.
-     * 
+     *
      * @return parent's final allowReview value or default value
      */
     protected boolean getParentsAllowReview() {
@@ -438,7 +438,7 @@ public class ItemSessionControl extends AbstractNode {
      * Attribute should be printed if and only if it holds some additional information.
      * <p>
      * This method returns opposite value what everybody would expect.
-     * 
+     *
      * @return default value of allowReview attribute
      */
     private Boolean getAllowReviewDefaultValue() {
@@ -457,7 +457,7 @@ public class ItemSessionControl extends AbstractNode {
      * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
      * <li>returns parent's final showSolution value (parent must be <code>SectionPart</code>)
      * </ol>
-     * 
+     *
      * @return final showSolution value
      */
     public boolean getShowSolution() {
@@ -472,7 +472,7 @@ public class ItemSessionControl extends AbstractNode {
     /**
      * Gets parent's (parent of parent of this itemSessionControl) final showSolution value or default
      * value if parent of this itemSessionControl is TestPart.
-     * 
+     *
      * @return parent's final showSolution value or default value
      */
     protected boolean getParentsShowSolution() {
@@ -498,7 +498,7 @@ public class ItemSessionControl extends AbstractNode {
      * Attribute should be printed if and only if it holds some additional information.
      * <p>
      * This method returns opposite value what everybody would expect.
-     * 
+     *
      * @return default value of showSolution attribute
      */
     private Boolean getShowSolutionDefaultValue() {
@@ -517,7 +517,7 @@ public class ItemSessionControl extends AbstractNode {
      * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
      * <li>returns parent's final allowComment value (parent must be <code>SectionPart</code>)
      * </ol>
-     * 
+     *
      * @return final allowComment value
      */
     public boolean getAllowComment() {
@@ -532,7 +532,7 @@ public class ItemSessionControl extends AbstractNode {
     /**
      * Gets parent's (parent of parent of this itemSessionControl) final allowComment value or default
      * value if parent of this itemSessionControl is TestPart.
-     * 
+     *
      * @return parent's final allowComment value or default value
      */
     protected boolean getParentsAllowComment() {
@@ -558,7 +558,7 @@ public class ItemSessionControl extends AbstractNode {
      * Attribute should be printed if and only if it holds some additional information.
      * <p>
      * This method returns opposite value what everybody would expect.
-     * 
+     *
      * @return default value of allowComment attribute
      */
     private Boolean getAllowCommentDefaultValue() {
@@ -577,7 +577,7 @@ public class ItemSessionControl extends AbstractNode {
      * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
      * <li>returns parent's final allowSkipping value (parent must be <code>SectionPart</code>)
      * </ol>
-     * 
+     *
      * @return final allowSkipping value
      */
     public boolean getAllowSkipping() {
@@ -592,7 +592,7 @@ public class ItemSessionControl extends AbstractNode {
     /**
      * Gets parent's (parent of parent of this itemSessionControl) final allowSkipping value or default
      * value if parent of this itemSessionControl is TestPart.
-     * 
+     *
      * @return parent's final allowSkipping value or default value
      */
     protected boolean getParentsAllowSkipping() {
@@ -618,7 +618,7 @@ public class ItemSessionControl extends AbstractNode {
      * Attribute should be printed if and only if it holds some additional information.
      * <p>
      * This method returns opposite value what everybody would expect.
-     * 
+     *
      * @return default value of allowSkipping attribute
      */
     private Boolean getAllowSkippingDefaultValue() {
@@ -637,7 +637,7 @@ public class ItemSessionControl extends AbstractNode {
      * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
      * <li>returns parent's final validateResponse value (parent must be <code>SectionPart</code>)
      * </ol>
-     * 
+     *
      * @return final validateResponses value
      */
     public boolean getValidateResponses() {
@@ -652,7 +652,7 @@ public class ItemSessionControl extends AbstractNode {
     /**
      * Gets parent's (parent of parent of this itemSessionControl) final validateResponses value or default
      * value if parent of this itemSessionControl is TestPart.
-     * 
+     *
      * @return parent's final validateResponses value or default value
      */
     protected boolean getParentsValidateResponses() {
@@ -678,7 +678,7 @@ public class ItemSessionControl extends AbstractNode {
      * Attribute should be printed if and only if it holds some additional information.
      * <p>
      * This method returns opposite value what everybody would expect.
-     * 
+     *
      * @return default value of validateResponses attribute
      */
     private Boolean getValidateResponsesDefaultValue() {

@@ -46,33 +46,28 @@ import java.util.List;
 /**
  * An responseProcessingFragment is A simple group of responseRules which are grouped together in order to allow them
  * to be managed as A separate resource. It should not be used for any other purpose.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseProcessingFragment extends ResponseRule {
+public final class ResponseProcessingFragment extends ResponseRule {
 
     private static final long serialVersionUID = 3713907544750395437L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "responseProcessingFragment";
 
-    public ResponseProcessingFragment(QtiNode parent) {
+    public ResponseProcessingFragment(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ResponseRuleGroup(this));
     }
 
-    /**
-     * Gets responseRule children.
-     * 
-     * @return responseRule children
-     */
     public List<ResponseRule> getResponseRules() {
         return getNodeGroups().getResponseRuleGroup().getResponseRules();
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getResponseRules().size() == 0) {
@@ -81,7 +76,7 @@ public class ResponseProcessingFragment extends ResponseRule {
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final ResponseRule responseRule : getResponseRules()) {
             responseRule.evaluate(context);
         }

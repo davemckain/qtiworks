@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ShapeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
@@ -47,7 +46,7 @@ import java.util.List;
  * @see AreaMapping
  * @author Jonathon Hare
  */
-public class AreaMapEntry extends AbstractNode {
+public final class AreaMapEntry extends AbstractNode {
 
     private static final long serialVersionUID = -8158849868275249200L;
 
@@ -63,11 +62,6 @@ public class AreaMapEntry extends AbstractNode {
     /** Name of mappedValue attribute in xml schema. */
     public static final String ATTR_MAPPED_VALUE_NAME = "mappedValue";
 
-    /**
-     * Construct A new AreaMapEntry.
-     *
-     * @param parent AreaMapEntry parent
-     */
     public AreaMapEntry(final AreaMapping parent) {
         super(parent, QTI_CLASS_NAME);
 
@@ -85,31 +79,16 @@ public class AreaMapEntry extends AbstractNode {
     }
 
 
-    /**
-     * Gets value of shape attribute.
-     *
-     * @return value of shape attribute
-     * @see #setShape
-     */
+
     public Shape getShape() {
         return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of shape attribute.
-     *
-     * @param shape new value of shape attribute
-     * @see #getShape
-     */
     public void setShape(final Shape shape) {
         getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).setValue(shape);
     }
 
-    /**
-     * Gets value of coords attribute.
-     *
-     * @return value of coords attribute
-     */
+
     public List<Integer> getCoordinates() {
         return getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).getComputedValue();
     }
@@ -118,25 +97,15 @@ public class AreaMapEntry extends AbstractNode {
         getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).setValue(value);
     }
 
-    /**
-     * Gets value of mappedValue attribute.
-     *
-     * @return value of mappedValue attribute
-     * @see #setMappedValue
-     */
+
     public double getMappedValue() {
         return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of mappedValue attribute.
-     *
-     * @param mappedValue new value of mappedValue attribute
-     * @see #getMappedValue
-     */
     public void setMappedValue(final Double mappedValue) {
         getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).setValue(mappedValue);
     }
+
 
     /**
      * Converts list of coordinates to array of coordinates.

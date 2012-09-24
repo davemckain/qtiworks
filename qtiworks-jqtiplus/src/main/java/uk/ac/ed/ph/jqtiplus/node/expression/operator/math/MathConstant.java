@@ -43,10 +43,10 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Implementation of the <tt>mathConstant</tt> operator.
- * 
+ *
  * @author David McKain
  */
-public class MathConstant extends AbstractExpression {
+public final class MathConstant extends AbstractExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
@@ -56,7 +56,7 @@ public class MathConstant extends AbstractExpression {
     /** Name of 'name' attribute */
     public static final String ATTR_NAME_NAME = "name";
 
-    public MathConstant(ExpressionParent parent) {
+    public MathConstant(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new MathConstantNameAttribute(this, "name", true));
@@ -71,12 +71,12 @@ public class MathConstant extends AbstractExpression {
         return ((MathConstantNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getComputedValue();
     }
 
-    public void setConstant(MathConstantTarget roundingMode) {
+    public void setConstant(final MathConstantTarget roundingMode) {
         ((MathConstantNameAttribute) getAttributes().get(ATTR_NAME_NAME)).setValue(roundingMode);
     }
 
     @Override
-    public final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    public final Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final MathConstantTarget constant = getConstant();
         return constant != null ? new FloatValue(getConstant().getValue()) : NullValue.INSTANCE;
     }

@@ -145,102 +145,47 @@ public final class OutcomeVariable extends ItemVariable implements FieldValuePar
         getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).setValue(value);
     }
 
-    /**
-     * Gets value of interpretation attribute.
-     *
-     * @return value of interpretation attribute
-     * @see #setInterpretation
-     */
+
     public String getInterpretation() {
         return getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of interpretation attribute.
-     *
-     * @param interpretation new value of interpretation attribute
-     * @see #getInterpretation
-     */
     public void setInterpretation(final String interpretation) {
         getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).setValue(interpretation);
     }
 
-    /**
-     * Gets value of longInterpretation attribute.
-     *
-     * @return value of longInterpretation attribute
-     * @see #setLongInterpretation
-     */
+
     public URI getLongInterpretation() {
         return getAttributes().getUriAttribute(ATTR_LONG_INTERPRETATION).getComputedValue();
     }
 
-    /**
-     * Sets new value of longInterpretation attribute.
-     *
-     * @param longInterpretation new value of longInterpretation attribute
-     * @see #getLongInterpretation
-     */
     public void setLongInterpretation(final URI longInterpretation) {
         getAttributes().getUriAttribute(ATTR_LONG_INTERPRETATION).setValue(longInterpretation);
     }
 
-    /**
-     * Gets value of normalMaximum attribute.
-     *
-     * @return value of normalMaximum attribute
-     * @see #setNormalMaximum
-     */
+
     public Double getNormalMaximum() {
         return getAttributes().getFloatAttribute(ATTR_NORMAL_MAXIMUM_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of normalMaximum attribute.
-     *
-     * @param normalMaximum new value of normalMaximum attribute
-     * @see #getNormalMaximum
-     */
     public void setNormalMaximum(final Double normalMaximum) {
         getAttributes().getFloatAttribute(ATTR_NORMAL_MAXIMUM_NAME).setValue(normalMaximum);
     }
 
-    /**
-     * Gets value of normalMinimum attribute.
-     *
-     * @return value of normalMinimum attribute
-     * @see #setNormalMinimum
-     */
+
     public Double getNormalMinimum() {
         return getAttributes().getFloatAttribute(ATTR_NORMAL_MINIMUM_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of normalMinimum attribute.
-     *
-     * @param normalMinimum new value of normalMinimum attribute
-     * @see #getNormalMinimum()
-     */
     public void setNormalMinimum(final Double normalMinimum) {
         getAttributes().getFloatAttribute(ATTR_NORMAL_MINIMUM_NAME).setValue(normalMinimum);
     }
 
-    /**
-     * Gets value of masteryValue attribute.
-     *
-     * @return value of masteryValue attribute
-     * @see #setMasteryValue
-     */
+
     public Double getMasteryValue() {
         return getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of masteryValue attribute.
-     *
-     * @param masteryValue new value of masteryValue attribute
-     * @see #getMasteryValue
-     */
     public void setMasteryValue(final Double masteryValue) {
         getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).setValue(masteryValue);
     }

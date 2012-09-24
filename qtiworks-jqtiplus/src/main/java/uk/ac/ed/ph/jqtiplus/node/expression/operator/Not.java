@@ -43,24 +43,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The not operator takes A single sub-expression with A base-type of boolean and single cardinality.
  * The result is A single boolean with A value obtained by the logical negation of the sub-expression's
  * value. If the sub-expression is NULL then the not operator also results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Not extends AbstractFunctionalExpression {
+public final class Not extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -7772967854466117906L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "not";
 
-    public Not(ExpressionParent parent) {
+    public Not(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

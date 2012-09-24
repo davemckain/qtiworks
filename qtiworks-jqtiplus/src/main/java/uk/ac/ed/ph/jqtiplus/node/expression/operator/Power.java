@@ -46,24 +46,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * If either or the sub-expressions is NULL then the operator results in NULL.
  * <p>
  * If the resulting value is outside the value set defined by float (not including positive and negative infinity) then the operator shall result in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Power extends AbstractFunctionalExpression {
+public final class Power extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 3939643652476701791L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "power";
 
-    public Power(ExpressionParent parent) {
+    public Power(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

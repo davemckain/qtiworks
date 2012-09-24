@@ -46,33 +46,28 @@ import java.util.List;
 /**
  * An outcomeProcessingFragment is A simple group of outcomeRules which are grouped together in order to allow them
  * to be managed as A separate resource. It should not be used for any other purpose.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class OutcomeProcessingFragment extends OutcomeRule {
+public final class OutcomeProcessingFragment extends OutcomeRule {
 
     private static final long serialVersionUID = 4189180798268332071L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeProcessingFragment";
 
-    public OutcomeProcessingFragment(QtiNode parent) {
+    public OutcomeProcessingFragment(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new OutcomeRuleGroup(this));
     }
 
-    /**
-     * Gets outcomeRule children.
-     * 
-     * @return outcomeRule children
-     */
     public List<OutcomeRule> getOutcomeRules() {
         return getNodeGroups().getOutcomeRuleGroup().getOutcomeRules();
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getOutcomeRules().size() == 0) {
@@ -81,7 +76,7 @@ public class OutcomeProcessingFragment extends OutcomeRule {
     }
 
     @Override
-    public void evaluate(TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final OutcomeRule outcomeRule : getOutcomeRules()) {
             outcomeRule.evaluate(context);
         }

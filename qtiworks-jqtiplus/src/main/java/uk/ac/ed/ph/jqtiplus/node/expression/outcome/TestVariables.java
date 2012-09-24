@@ -59,12 +59,12 @@ import java.util.List;
  * of an itemVariable in A sub-set of the items referred to in A test. Only variables with single
  * cardinality are considered, all NULL values are ignored. The result has cardinality multiple and
  * base-type as specified below.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class TestVariables extends ItemSubset {
+public final class TestVariables extends ItemSubset {
 
     private static final long serialVersionUID = 9071109513721979269L;
 
@@ -80,7 +80,7 @@ public class TestVariables extends ItemSubset {
     /** Name of weightIdentifier attribute in xml schema. */
     public static final String ATTR_WEIGHT_IDENTIFIER_NAME = "weightIdentifier";
 
-    public TestVariables(ExpressionParent parent) {
+    public TestVariables(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_VARIABLE_IDENTIFIER_NAME, true));
@@ -88,68 +88,35 @@ public class TestVariables extends ItemSubset {
         getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, false));
     }
 
-    /**
-     * Gets value of variableIdentifier attribute.
-     * 
-     * @return value of variableIdentifier attribute
-     * @see #setVariableIdentifier
-     */
+
     public Identifier getVariableIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_VARIABLE_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of variableIdentifier attribute.
-     * 
-     * @param variableIdentifier new value of variableIdentifier attribute
-     * @see #getVariableIdentifier
-     */
-    public void setVariableIdentifier(Identifier variableIdentifier) {
+    public void setVariableIdentifier(final Identifier variableIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_VARIABLE_IDENTIFIER_NAME).setValue(variableIdentifier);
     }
 
-    /**
-     * Gets value of baseType attribute.
-     * 
-     * @return value of baseType attribute
-     * @see #setBaseTypeAttrValue
-     */
+
     public BaseType getBaseTypeAttrValue() {
         return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of baseType attribute.
-     * 
-     * @param baseType new value of baseType attribute
-     * @see #getBaseTypeAttrValue
-     */
-    public void setBaseTypeAttrValue(BaseType baseType) {
+    public void setBaseTypeAttrValue(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
 
-    /**
-     * Gets value of weightIdentifier attribute.
-     * 
-     * @return value of weightIdentifier attribute
-     * @see #setWeightIdentifier
-     */
+
     public Identifier getWeightIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of weightIdentifier attribute.
-     * 
-     * @param weightIdentifier new value of weightIdentifier attribute
-     * @see #getWeightIdentifier
-     */
-    public void setWeightIdentifier(Identifier weightIdentifier) {
+    public void setWeightIdentifier(final Identifier weightIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).setValue(weightIdentifier);
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         if (getBaseTypeAttrValue() != null) {
             return new BaseType[] { getBaseTypeAttrValue() };
         }
@@ -159,7 +126,7 @@ public class TestVariables extends ItemSubset {
 
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 

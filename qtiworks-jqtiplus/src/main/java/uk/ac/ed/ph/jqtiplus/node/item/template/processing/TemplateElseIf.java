@@ -35,17 +35,17 @@ package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 /**
  * Implementation of ELSE-IF templateCondition child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateElseIf extends TemplateConditionExpressionChild {
+public final class TemplateElseIf extends TemplateConditionExpressionChild {
 
     private static final long serialVersionUID = -897584194555151863L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateElseIf";
 
-    public TemplateElseIf(TemplateCondition parent) {
+    public TemplateElseIf(final TemplateCondition parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

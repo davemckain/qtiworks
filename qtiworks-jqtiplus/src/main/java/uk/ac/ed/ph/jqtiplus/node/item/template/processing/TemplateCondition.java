@@ -52,17 +52,17 @@ import java.util.List;
  * <p>
  * If the expression given in the templateIf or templateElseIf does not evaluate to true then consideration passes to the next templateElseIf or, if there are
  * no more templateElseIf parts then the sub-rules of the templateElse are followed (if specified).
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateCondition extends TemplateRule {
+public final class TemplateCondition extends TemplateRule {
 
     private static final long serialVersionUID = 5066193969135526272L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateCondition";
 
-    public TemplateCondition(QtiNode parent) {
+    public TemplateCondition(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new TemplateIfGroup(this));
@@ -72,7 +72,7 @@ public class TemplateCondition extends TemplateRule {
 
     /**
      * Gets IF child.
-     * 
+     *
      * @return IF child
      * @see #setTemplateIf
      */
@@ -82,17 +82,17 @@ public class TemplateCondition extends TemplateRule {
 
     /**
      * Sets new IF child.
-     * 
+     *
      * @param templateIf new IF child
      * @see #getTemplateIf
      */
-    public void setTemplateIf(TemplateIf templateIf) {
+    public void setTemplateIf(final TemplateIf templateIf) {
         getNodeGroups().getTemplateIfGroup().setTemplateIf(templateIf);
     }
 
     /**
      * Gets ELSE-IF children.
-     * 
+     *
      * @return ELSE-IF children
      */
     public List<TemplateElseIf> getTemplateElseIfs() {
@@ -101,7 +101,7 @@ public class TemplateCondition extends TemplateRule {
 
     /**
      * Gets ELSE child.
-     * 
+     *
      * @return ELSE child
      * @see #setTemplateElse
      */
@@ -111,17 +111,17 @@ public class TemplateCondition extends TemplateRule {
 
     /**
      * Sets new ELSE child.
-     * 
+     *
      * @param templateElse new ELSE child
      * @see #getTemplateElse
      */
-    public void setTemplateElse(TemplateElse templateElse) {
+    public void setTemplateElse(final TemplateElse templateElse) {
         getNodeGroups().getTemplateElseGroup().setTemplateElse(templateElse);
     }
 
     /**
      * Gets all children (IF, ELSE-IF, ELSE) in one ordered list.
-     * 
+     *
      * @return all children (IF, ELSE-IF, ELSE) in one ordered list
      */
     private List<TemplateConditionChild> getConditionChildren() {
@@ -137,7 +137,7 @@ public class TemplateCondition extends TemplateRule {
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
         for (final TemplateConditionChild child : getConditionChildren()) {
             if (child.evaluate(context)) {
                 return;

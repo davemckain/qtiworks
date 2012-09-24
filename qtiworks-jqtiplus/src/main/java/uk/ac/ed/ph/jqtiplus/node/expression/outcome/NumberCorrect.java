@@ -54,7 +54,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class NumberCorrect extends ItemSubset {
+public final class NumberCorrect extends ItemSubset {
 
     private static final long serialVersionUID = 6849376958348641996L;
 

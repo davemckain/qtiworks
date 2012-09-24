@@ -45,24 +45,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * duration. The result is A single boolean with A value of true if the first duration is shorter than
  * the second and false if it is longer than (or equal) to the second.
  * If either sub-expression is NULL then the operator results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class DurationLt extends AbstractFunctionalExpression {
+public final class DurationLt extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 4163382539527919528L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "durationLT";
 
-    public DurationLt(ExpressionParent parent) {
+    public DurationLt(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

@@ -47,56 +47,41 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Abstract parent for all outcomeCondition children with condition (IF, ELSE-IF).
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class OutcomeConditionExpressionChild extends OutcomeConditionChild implements ExpressionParent {
 
     private static final long serialVersionUID = -3203987096888772050L;
 
-    /**
-     * Construct condition rule child.
-     * 
-     * @param parent parent of this condition rule child
-     */
-    public OutcomeConditionExpressionChild(OutcomeCondition parent, String qtiClassName) {
+    public OutcomeConditionExpressionChild(final OutcomeCondition parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
     }
 
-    /**
-     * Gets expression child (condition).
-     * 
-     * @return expression child (condition)
-     * @see #setExpression
-     */
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
 
-    /**
-     * Sets new expression child (condition).
-     * 
-     * @param expression new expression child (condition)
-     * @see #getExpression
-     */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 
+
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
     @Override
-    public boolean evaluate(TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
         if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {

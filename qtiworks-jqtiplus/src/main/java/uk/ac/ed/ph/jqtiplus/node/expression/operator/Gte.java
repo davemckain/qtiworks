@@ -47,24 +47,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * If either sub-expression is NULL then the operator results in NULL.
  * <p>
  * Error in specification. Implementation is correct.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Gte extends AbstractFunctionalExpression {
+public final class Gte extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 4211189479866044968L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "gte";
 
-    public Gte(ExpressionParent parent) {
+    public Gte(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

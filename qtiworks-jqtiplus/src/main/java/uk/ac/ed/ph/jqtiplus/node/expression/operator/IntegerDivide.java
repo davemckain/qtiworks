@@ -44,24 +44,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The result is the single integer that corresponds to the first expression (x) divided by the second
  * expression (y) rounded down to the greatest integer (i) such that i<=(x/y).
  * If y is 0, or if either of the sub-expressions is NULL then the operator results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class IntegerDivide extends AbstractFunctionalExpression {
+public final class IntegerDivide extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -411466437425460752L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "integerDivide";
 
-    public IntegerDivide(ExpressionParent parent) {
+    public IntegerDivide(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

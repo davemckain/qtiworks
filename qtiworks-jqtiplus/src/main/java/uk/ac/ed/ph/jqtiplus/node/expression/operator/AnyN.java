@@ -59,7 +59,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class AnyN extends AbstractExpression {
+public final class AnyN extends AbstractExpression {
 
     private static final long serialVersionUID = -2513872740143850055L;
 
@@ -79,42 +79,19 @@ public class AnyN extends AbstractExpression {
         getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_MAXIMUM_NAME, true));
     }
 
-    /**
-     * Gets value of min attribute.
-     *
-     * @return value of min attribute
-     * @see #setMinimum
-     */
     public IntegerOrVariableRef getMin() {
         return getAttributes().getIntegerOrVariableRefAttribute(ATTR_MINIMUM_NAME).getValue();
     }
 
-    /**
-     * Sets new value of min attribute.
-     *
-     * @param minimum new value of min attribute
-     * @see #getMinimum
-     */
     public void setMin(final IntegerOrVariableRef minimum) {
         getAttributes().getIntegerOrVariableRefAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
     }
 
-    /**
-     * Gets value of max attribute.
-     *
-     * @return value of max attribute
-     * @see #setMaximum
-     */
+
     public IntegerOrVariableRef getMax() {
         return getAttributes().getIntegerOrVariableRefAttribute(ATTR_MAXIMUM_NAME).getValue();
     }
 
-    /**
-     * Sets new value of max attribute.
-     *
-     * @param maximum new value of max attribute
-     * @see #getMaximum
-     */
     public void setMax(final IntegerOrVariableRef maximum) {
         getAttributes().getIntegerOrVariableRefAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
     }

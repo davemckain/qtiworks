@@ -49,7 +49,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class AssessmentSection extends SectionPart {
+public final class AssessmentSection extends SectionPart {
 
     private static final long serialVersionUID = 371468215845203409L;
 
@@ -68,11 +68,6 @@ public class AssessmentSection extends SectionPart {
     /** Default value of keepTogether attribute. */
     public static final boolean ATTR_KEEP_TOGETHER_DEFAULT_VALUE = true;
 
-    /**
-     * Constructs section.
-     *
-     * @param parent parent of constructed section
-     */
     public AssessmentSection(final AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
 
@@ -91,120 +86,55 @@ public class AssessmentSection extends SectionPart {
         return getSectionParts();
     }
 
-    /**
-     * Gets value of title attribute.
-     *
-     * @return value of title attribute
-     * @see #setTitle
-     */
     public String getTitle() {
         return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of title attribute.
-     *
-     * @param title new value of title attribute
-     * @see #getTitle
-     */
     public void setTitle(final String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
 
-    /**
-     * Gets value of visible attribute.
-     *
-     * @return value of visible attribute
-     * @see #setVisible
-     */
+
     public boolean getVisible() {
         return getAttributes().getBooleanAttribute(ATTR_VISIBLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of visible attribute.
-     *
-     * @param visible new value of visible attribute
-     * @see #getVisible
-     */
     public void setVisible(final Boolean visible) {
         getAttributes().getBooleanAttribute(ATTR_VISIBLE_NAME).setValue(visible);
     }
 
-    /**
-     * Gets value of keepTogether attribute.
-     *
-     * @return value of keepTogether attribute
-     * @see #setKeepTogether
-     */
+
     public boolean getKeepTogether() {
         return getAttributes().getBooleanAttribute(ATTR_KEEP_TOGETHER_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of keepTogether attribute.
-     *
-     * @param keepTogether new value of keepTogether attribute
-     * @see #getKeepTogether
-     */
     public void setKeepTogether(final Boolean keepTogether) {
         getAttributes().getBooleanAttribute(ATTR_KEEP_TOGETHER_NAME).setValue(keepTogether);
     }
 
-    /**
-     * Gets selection child.
-     *
-     * @return selection child
-     * @see #setSelection
-     */
+
     public Selection getSelection() {
         return getNodeGroups().getSelectionGroup().getSelection();
     }
 
-    /**
-     * Sets new selection child.
-     *
-     * @param selection new selection child
-     * @see #getSelection
-     */
     public void setSelection(final Selection selection) {
         getNodeGroups().getSelectionGroup().setSelection(selection);
     }
 
-    /**
-     * Gets ordering child.
-     *
-     * @return ordering child
-     * @see #setOrdering
-     */
+
     public Ordering getOrdering() {
         return getNodeGroups().getOrderingGroup().getOrdering();
     }
 
-    /**
-     * Sets new ordering child.
-     *
-     * @param ordering new ordering child
-     * @see #getOrdering
-     */
     public void setOrdering(final Ordering ordering) {
         getNodeGroups().getOrderingGroup().setOrdering(ordering);
     }
 
-    /**
-     * Gets rubricBlock children.
-     *
-     * @return rubricBlock children
-     */
+
     public List<RubricBlock> getRubricBlocks() {
         return getNodeGroups().getRubricBlockGroup().getRubricBlocks();
     }
 
-    /**
-     * Gets sectionPart children.
-     *
-     * @return sectionPart children
-     */
     public List<SectionPart> getSectionParts() {
         return getNodeGroups().getSectionPartGroup().getSectionParts();
     }

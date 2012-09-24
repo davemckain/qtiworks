@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiNotImplementedException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.AreaMapEntryGroup;
@@ -61,7 +60,7 @@ import java.util.List;
  * @see MapResponsePoint for details.
  * @author Jonathon Hare
  */
-public class AreaMapping extends AbstractNode {
+public final class AreaMapping extends AbstractNode {
 
     private static final long serialVersionUID = 6134649478484970261L;
 
@@ -80,11 +79,6 @@ public class AreaMapping extends AbstractNode {
     /** Default value of the defaultValue attribute */
     public static final double ATTR_DEFAULT_VALUE_DEFAULT_VALUE = 0.0;
 
-    /**
-     * Creates object.
-     *
-     * @param parent parent of this object
-     */
     public AreaMapping(final ResponseDeclaration parent) {
         super(parent, QTI_CLASS_NAME);
 
@@ -100,74 +94,38 @@ public class AreaMapping extends AbstractNode {
         return (ResponseDeclaration) super.getParent();
     }
 
-    /**
-     * Gets value of defaultValue attribute.
-     *
-     * @return value of defaultValue attribute
-     * @see #setDefaultValue
-     */
+
     public double getDefaultValue() {
         return getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of defaultValue attribute.
-     *
-     * @param defaultValue new value of defaultValue attribute
-     * @see #getDefaultValue
-     */
     public void setDefaultValue(final Double defaultValue) {
         getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).setValue(defaultValue);
     }
 
-    /**
-     * Gets value of lowerBound attribute.
-     *
-     * @return value of lowerBound attribute
-     * @see #setLowerBound
-     */
+
     public Double getLowerBound() {
         return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of lowerBound attribute.
-     *
-     * @param lowerBound new value of lowerBound attribute
-     * @see #getLowerBound
-     */
     public void setLowerBound(final Double lowerBound) {
         getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).setValue(lowerBound);
     }
 
-    /**
-     * Gets value of upperBound attribute.
-     *
-     * @return value of upperBound attribute
-     * @see #setUpperBound
-     */
+
     public Double getUpperBound() {
         return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of upperBound attribute.
-     *
-     * @param upperBound new value of upperBound attribute
-     * @see #getUpperBound
-     */
     public void setUpperBound(final Double upperBound) {
         getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).setValue(upperBound);
     }
 
-    /**
-     * Gets areaMapEntry children.
-     *
-     * @return areaMapEntry children
-     */
+
     public List<AreaMapEntry> getAreaMapEntries() {
         return getNodeGroups().getAreaMapEntryGroup().getAreaMapEntries();
     }
+
 
     @Override
     public void validate(final ValidationContext context) {

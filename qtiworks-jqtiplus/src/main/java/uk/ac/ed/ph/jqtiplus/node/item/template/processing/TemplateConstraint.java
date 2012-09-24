@@ -48,52 +48,40 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Implements <tt>templateConstraint</tt>
- * 
+ *
  * @author David McKain
  */
-public class TemplateConstraint extends TemplateProcessingRule implements ExpressionParent {
+public final class TemplateConstraint extends TemplateProcessingRule implements ExpressionParent {
 
     private static final long serialVersionUID = -8911245073155354573L;
 
     public static final String QTI_CLASS_NAME = "templateConstraint";
 
-    public TemplateConstraint(TemplateProcessing parent) {
+    public TemplateConstraint(final TemplateProcessing parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
     }
 
-    /**
-     * Gets expression child (condition).
-     * 
-     * @return expression child (condition)
-     * @see #setExpression
-     */
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
 
-    /**
-     * Sets new expression child (condition).
-     * 
-     * @param expression new expression child (condition)
-     * @see #getExpression
-     */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
         if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {
             throw new TemplateProcessingInterrupt(InterruptType.TEMPLATE_CONSTRAINT_FAILURE);

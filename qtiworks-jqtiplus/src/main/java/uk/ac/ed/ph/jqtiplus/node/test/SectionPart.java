@@ -59,11 +59,6 @@ public abstract class SectionPart extends AbstractPart {
     /** Default value of fixed attribute. */
     public static final boolean ATTR_FIXED_DEFAULT_VALUE = false;
 
-    /**
-     * Constructs part.
-     *
-     * @param parent parent of constructed part.
-     */
     public SectionPart(final AbstractPart parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
@@ -85,45 +80,24 @@ public abstract class SectionPart extends AbstractPart {
         return getParent() instanceof AssessmentSection ? (AssessmentSection) getParent() : null;
     }
 
-    /**
-     * Gets value of required attribute.
-     *
-     * @return value of required attribute
-     * @see #setRequired
-     */
+
     public boolean getRequired() {
         return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of required attribute.
-     *
-     * @param required new value of required attribute
-     * @see #getRequired
-     */
     public void setRequired(final Boolean required) {
         getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).setValue(required);
     }
 
-    /**
-     * Gets value of fixed attribute.
-     *
-     * @return value of fixed attribute
-     * @see #setFixed
-     */
+
     public boolean getFixed() {
         return getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of fixed attribute.
-     *
-     * @param fixed new value of fixed attribute
-     * @see #getFixed
-     */
     public void setFixed(final Boolean fixed) {
         getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).setValue(fixed);
     }
+
 
     @Override
     public ItemSessionControl getItemSessionControl() {

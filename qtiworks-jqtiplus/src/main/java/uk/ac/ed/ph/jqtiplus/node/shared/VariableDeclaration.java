@@ -92,87 +92,43 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
         return false;
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
     @Override
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
     @Override
     public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets value of cardinality attribute.
-     *
-     * @return value of cardinality attribute
-     * @see #setCardinality
-     */
+
     public Cardinality getCardinality() {
         return getAttributes().getCardinalityAttribute(ATTR_CARDINALITY_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of cardinality attribute.
-     *
-     * @param cardinality new value of cardinality attribute
-     * @see #getCardinality
-     */
     public void setCardinality(final Cardinality cardinality) {
         getAttributes().getCardinalityAttribute(ATTR_CARDINALITY_NAME).setValue(cardinality);
     }
 
-    /**
-     * Gets value of baseType attribute.
-     *
-     * @return value of baseType attribute
-     * @see #setBaseType
-     */
+
     public BaseType getBaseType() {
         return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of baseType attribute.
-     *
-     * @param baseType new value of baseType attribute
-     * @see #getBaseType
-     */
     public void setBaseType(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
 
-    /**
-     * Gets defaultValue child.
-     *
-     * @return defaultValue child
-     * @see #setDefaultValue
-     */
+
     public DefaultValue getDefaultValue() {
         return getNodeGroups().getDefaultValueGroup().getDefaultValue();
     }
 
-    /**
-     * Sets new defaultValue child.
-     *
-     * @param defaultValue new defaultValue child
-     * @see #getDefaultValue
-     */
     public void setDefaultValue(final DefaultValue defaultValue) {
         getNodeGroups().getDefaultValueGroup().setDefaultValue(defaultValue);
     }
+
 
     @Override
     protected void validateAttributes(final ValidationContext context) {

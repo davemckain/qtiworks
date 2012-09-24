@@ -40,19 +40,19 @@ package uk.ac.ed.ph.jqtiplus.node.test;
  * If the expression evaluates to false or has A NULL value, the associated part, section or item will be skipped.
  * <p>
  * PreCondition is not real expression (doesn't implement Expression interface).
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class PreCondition extends AbstractJump {
+public final class PreCondition extends AbstractJump {
 
     private static final long serialVersionUID = -2772457788311121437L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "preCondition";
 
-    public PreCondition(AbstractPart parent) {
+    public PreCondition(final AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

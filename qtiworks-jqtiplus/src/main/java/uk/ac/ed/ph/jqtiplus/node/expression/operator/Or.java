@@ -46,25 +46,25 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * the operator also results in NULL.
  * <p>
  * Current implementation: If one or more sub-expressions are NULL the operator also results in NULL
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Or extends AbstractFunctionalExpression {
+public final class Or extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 3449219551145948857L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "or";
 
-    public Or(ExpressionParent parent) {
+    public Or(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
-        for (Value childValue : childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
+        for (final Value childValue : childValues) {
             if (childValue.isNull()) {
                 return NullValue.INSTANCE;
             }

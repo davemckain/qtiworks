@@ -47,17 +47,16 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 /**
  * The default value of A template variable in an item can be overridden based on the test context in which the template
  * is instantiated. The value is obtained by evaluating an expression defined within the reference to the item at test
  * level and which may therefore depend on the values of variables taken from other items in the test or from outcomes
  * defined at test level itself.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class TemplateDefault extends AbstractNode implements ExpressionParent {
+public final class TemplateDefault extends AbstractNode implements ExpressionParent {
 
     private static final long serialVersionUID = 8370382226052240583L;
 
@@ -67,7 +66,7 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
     /** Name of templateIdentifier attribute in xml schema. */
     public static final String ATTR_TEMPLATE_IDENTIFIER_NAME = "templateIdentifier";
 
-    public TemplateDefault(AssessmentItemRef parent) {
+    public TemplateDefault(final AssessmentItemRef parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_TEMPLATE_IDENTIFIER_NAME, true));
@@ -80,48 +79,27 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
         return (AssessmentItemRef) super.getParent();
     }
 
-    /**
-     * Gets value of templateIdentifier attribute.
-     * 
-     * @return value of templateIdentifier attribute
-     * @see #setTemplateIdentifier
-     */
+
     public Identifier getTemplateIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of templateIdentifier attribute.
-     * 
-     * @param templateIdentifier new value of templateIdentifier attribute
-     * @see #getTemplateIdentifier
-     */
-    public void setTemplateIdentifier(Identifier templateIdentifier) {
+    public void setTemplateIdentifier(final Identifier templateIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_TEMPLATE_IDENTIFIER_NAME).setValue(templateIdentifier);
     }
 
-    /**
-     * Gets expression child.
-     * 
-     * @return expression child
-     * @see #setExpression
-     */
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
 
-    /**
-     * Sets new expression child.
-     * 
-     * @param expression new expression child
-     * @see #getExpression
-     */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 
+
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         if (getTemplateIdentifier() != null) {
             final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getTemplateIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
@@ -132,7 +110,7 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         if (getTemplateIdentifier() != null) {
             final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getTemplateIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
@@ -144,11 +122,11 @@ public class TemplateDefault extends AbstractNode implements ExpressionParent {
 
     /**
      * Evaluates this object.
-     * 
+     *
      * @return result of evaluation
      * @throws RuntimeValidationException
      */
-    public Value evaluate(ProcessingContext context) throws RuntimeValidationException {
+    public Value evaluate(final ProcessingContext context) throws RuntimeValidationException {
         return getExpression().evaluate(context);
     }
 }

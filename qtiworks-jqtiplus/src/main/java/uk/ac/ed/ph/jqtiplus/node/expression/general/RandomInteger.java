@@ -93,6 +93,7 @@ public class RandomInteger extends RandomExpression {
         getAttributes().getIntegerOrVariableRefAttribute(ATTR_MIN_NAME).setValue(minimum);
     }
 
+
     public IntegerOrVariableRef getMax() {
         return getAttributes().getIntegerOrVariableRefAttribute(ATTR_MAX_NAME).getValue();
     }
@@ -101,6 +102,7 @@ public class RandomInteger extends RandomExpression {
         getAttributes().getIntegerOrVariableRefAttribute(ATTR_MAX_NAME).setValue(maximum);
     }
 
+
     public IntegerOrVariableRef getStep() {
         return getAttributes().getIntegerOrVariableRefAttribute(ATTR_STEP_NAME).getComputedValue();
     }
@@ -108,6 +110,7 @@ public class RandomInteger extends RandomExpression {
     public void setStep(final IntegerOrVariableRef step) {
         getAttributes().getIntegerOrVariableRefAttribute(ATTR_STEP_NAME).setValue(step);
     }
+
 
     @Override
     protected Long getSeedAttributeValue() {

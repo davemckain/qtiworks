@@ -43,19 +43,19 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
  * sub-expressions.
  * <p>
  * If any of the sub-expressions are NULL then the operator results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Sum extends MathMapExpression {
+public final class Sum extends MathMapExpression {
 
     private static final long serialVersionUID = 4124840598554147954L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "sum";
 
-    public Sum(ExpressionParent parent) {
+    public Sum(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
@@ -65,7 +65,7 @@ public class Sum extends MathMapExpression {
     }
 
     @Override
-    protected double foldr(double running, double value) {
+    protected double foldr(final double running, final double value) {
         return running + value;
     }
 }

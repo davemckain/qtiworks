@@ -39,22 +39,22 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
  * The exit response rule terminates response processing immediately (for this invocation).
- * 
+ *
  * @author Jonathon Hare
  */
-public class ExitResponse extends ResponseRule {
+public final class ExitResponse extends ResponseRule {
 
     private static final long serialVersionUID = -778593205773785128L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "exitResponse";
 
-    public ExitResponse(QtiNode parent) {
+    public ExitResponse(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws QtiProcessingInterrupt {
+    public void evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt {
         throw new QtiProcessingInterrupt();
     }
 }

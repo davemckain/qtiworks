@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  *
  * @author Jiri Kajaba
  */
-public class FieldValue extends AbstractNode {
+public final class FieldValue extends AbstractNode {
 
     private static final long serialVersionUID = -3645062478164419548L;
 
@@ -77,7 +77,7 @@ public class FieldValue extends AbstractNode {
     public static final String QTI_CLASS_NAME = "value";
 
     /** Name of fieldIdentifier attribute in xml schema. */
-    public static final String ATTR_IDENTIFIER_NAME = "fieldIdentifier";
+    public static final String ATTR_FIELD_IDENTIFIER_NAME = "fieldIdentifier";
 
     /** Name of baseType attribute in xml schema. */
     public static final String ATTR_BASE_TYPE_NAME = BaseType.QTI_CLASS_NAME;
@@ -88,7 +88,7 @@ public class FieldValue extends AbstractNode {
     public FieldValue(final FieldValueParent parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, false));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_FIELD_IDENTIFIER_NAME, false));
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
     }
 
@@ -105,42 +105,20 @@ public class FieldValue extends AbstractNode {
         return super.computeXPathComponent();
     }
 
-    /**
-     * Gets value of fieldIdentifier attribute.
-     *
-     * @return value of fieldIdentifier attribute
-     * @see #setIdentifier
-     */
-    public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
+
+    public Identifier getFieldIdentifier() {
+        return getAttributes().getIdentifierAttribute(ATTR_FIELD_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of fieldIdentifier attribute.
-     *
-     * @param identifier new value of fieldIdentifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(final Identifier identifier) {
-        getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
+    public void setFieldIdentifier(final Identifier identifier) {
+        getAttributes().getIdentifierAttribute(ATTR_FIELD_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets value of baseType attribute.
-     *
-     * @return value of baseType attribute
-     * @see #setBaseTypeAttrValue
-     */
+
     public BaseType getBaseTypeAttrValue() {
         return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of baseType attribute.
-     *
-     * @param baseType new value of baseType attribute
-     * @see #getBaseTypeAttrValue
-     */
     public void setBaseTypeAttrValue(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
@@ -209,16 +187,16 @@ public class FieldValue extends AbstractNode {
 
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
-            if (cardinality.isRecord() && getIdentifier() == null) {
-                context.add(new ValidationError(this, "Attribute (" + ATTR_IDENTIFIER_NAME + ") is not defined."));
+            if (cardinality.isRecord() && getFieldIdentifier() == null) {
+                context.add(new ValidationError(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") is not defined."));
             }
 
             if (cardinality.isRecord() && getBaseTypeAttrValue() == null) {
                 context.add(new ValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined."));
             }
 
-            if (!cardinality.isRecord() && getIdentifier() != null) {
-                context.add(new ValidationWarning(this, "Attribute (" + ATTR_IDENTIFIER_NAME + ") should not be defined."));
+            if (!cardinality.isRecord() && getFieldIdentifier() != null) {
+                context.add(new ValidationWarning(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") should not be defined."));
             }
 
             if (!cardinality.isRecord() && getBaseTypeAttrValue() != null) {
@@ -280,7 +258,7 @@ public class FieldValue extends AbstractNode {
                 final RecordValue value = new RecordValue();
 
                 for (final FieldValue fieldValue : values) {
-                    value.add(fieldValue.getIdentifier(), fieldValue.getSingleValue());
+                    value.add(fieldValue.getFieldIdentifier(), fieldValue.getSingleValue());
                 }
 
                 return value;
@@ -333,7 +311,7 @@ public class FieldValue extends AbstractNode {
                     final SingleValue singleValue = record.get(identifier);
 
                     final FieldValue fieldValue = new FieldValue(parent);
-                    fieldValue.setIdentifier(identifier);
+                    fieldValue.setFieldIdentifier(identifier);
                     fieldValue.setBaseTypeAttrValue(singleValue.getBaseType());
                     fieldValue.setSingleValue(singleValue);
 

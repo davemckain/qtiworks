@@ -57,7 +57,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class PatternMatch extends AbstractExpression {
+public final class PatternMatch extends AbstractExpression {
 
     private static final long serialVersionUID = 2422777906725885061L;
 
@@ -73,25 +73,14 @@ public class PatternMatch extends AbstractExpression {
         getAttributes().add(new StringOrVariableRefAttribute(this, ATTR_PATTERN_NAME, true));
     }
 
-    /**
-     * Gets value of pattern attribute.
-     *
-     * @return value of pattern attribute
-     * @see #setPattern
-     */
     public StringOrVariableRef getPattern() {
         return getAttributes().getStringOrVariableRefAttribute(ATTR_PATTERN_NAME).getValue();
     }
 
-    /**
-     * Sets new value of pattern attribute.
-     *
-     * @param pattern new value of pattern attribute
-     * @see #getPattern
-     */
     public void setPattern(final StringOrVariableRef pattern) {
         getAttributes().getStringOrVariableRefAttribute(ATTR_PATTERN_NAME).setValue(pattern);
     }
+
 
     @Override
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {

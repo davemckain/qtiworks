@@ -60,7 +60,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Inside extends AbstractFunctionalExpression {
+public final class Inside extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 4926097648005221931L;
 
@@ -80,31 +80,15 @@ public class Inside extends AbstractFunctionalExpression {
         getAttributes().add(new CoordsAttribute(this, ATTR_COORDINATES_NAME, false));
     }
 
-    /**
-     * Gets value of shape attribute.
-     *
-     * @return value of shape attribute
-     * @see #setShape
-     */
     public Shape getShape() {
         return getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of shape attribute.
-     *
-     * @param shape new value of shape attribute
-     * @see #getShape
-     */
     public void setShape(final Shape shape) {
         getAttributes().getShapeAttribute(ATTR_SHAPE_NAME).setValue(shape);
     }
 
-    /**
-     * Gets value of coords attribute.
-     *
-     * @return value of coords attribute
-     */
+
     public List<Integer> getCoordinates() {
         return getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).getComputedValue();
     }
@@ -112,6 +96,7 @@ public class Inside extends AbstractFunctionalExpression {
     public void setCoordinates(final List<Integer> value) {
         getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME).setValue(value);
     }
+
 
     @Override
     protected void validateAttributes(final ValidationContext context) {

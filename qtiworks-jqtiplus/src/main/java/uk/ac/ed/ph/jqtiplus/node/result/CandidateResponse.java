@@ -71,11 +71,6 @@ public final class CandidateResponse extends AbstractNode implements FieldValueP
         return ((ResponseVariable) getParent()).getCardinality();
     }
 
-    /**
-     * Gets fieldValue children.
-     *
-     * @return fieldValue children
-     */
     public List<FieldValue> getFieldValues() {
         return getNodeGroups().getFieldValueGroup().getFieldValues();
     }

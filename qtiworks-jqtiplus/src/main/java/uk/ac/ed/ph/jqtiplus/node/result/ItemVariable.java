@@ -70,65 +70,32 @@ public abstract class ItemVariable extends AbstractNode {
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
     public VariableReferenceIdentifier getIdentifier() {
         return getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
     public void setIdentifier(final VariableReferenceIdentifier identifier) {
         getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets value of cardinality attribute.
-     *
-     * @return value of cardinality attribute
-     * @see #setCardinality
-     */
+
     public Cardinality getCardinality() {
         return getAttributes().getCardinalityAttribute(ATTR_CARDINALITY_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of cardinality attribute.
-     *
-     * @param cardinality new value of cardinality attribute
-     * @see #getCardinality
-     */
     public void setCardinality(final Cardinality cardinality) {
         getAttributes().getCardinalityAttribute(ATTR_CARDINALITY_NAME).setValue(cardinality);
     }
 
-    /**
-     * Gets value of baseType attribute.
-     *
-     * @return value of baseType attribute
-     * @see #setBaseType
-     */
+
     public BaseType getBaseType() {
         return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of baseType attribute.
-     *
-     * @param baseType new value of baseType attribute
-     * @see #getBaseType
-     */
     public void setBaseType(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
+
 
     @Override
     public final String computeXPathComponent() {

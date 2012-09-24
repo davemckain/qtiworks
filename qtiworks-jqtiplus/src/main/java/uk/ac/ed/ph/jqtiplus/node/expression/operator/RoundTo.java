@@ -52,7 +52,7 @@ import java.math.BigDecimal;
  *
  * @author David McKain
  */
-public class RoundTo extends AbstractExpression {
+public final class RoundTo extends AbstractExpression {
 
     private static final long serialVersionUID = 7637604241884891345L;
 
@@ -72,42 +72,19 @@ public class RoundTo extends AbstractExpression {
         getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_FIGURES_NAME, true));
     }
 
-    /**
-     * Gets value of roundingMode attribute.
-     *
-     * @return value of roundingMode attribute
-     * @see #setRoundingMode
-     */
     public RoundingMode getRoundingMode() {
         return getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of roundingMode attribute.
-     *
-     * @param roundingMode new value of roundingMode attribute
-     * @see #getRoundingMode
-     */
     public void setRoundingMode(final RoundingMode roundingMode) {
         getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).setValue(roundingMode);
     }
 
-    /**
-     * Gets value of figures attribute.
-     *
-     * @return value of figures attribute
-     * @see #setFigures
-     */
+
     public IntegerOrVariableRef getFigures() {
         return getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME).getValue();
     }
 
-    /**
-     * Sets new value of figures attribute.
-     *
-     * @param figures new value of figures attribute
-     * @see #getFigures
-     */
     public void setFigures(final IntegerOrVariableRef figures) {
         getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME).setValue(figures);
     }

@@ -41,10 +41,10 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * Variable mappings allow outcome variables declared with the name sourceIdentifier in the corresponding item to be
  * treated as if they were declared with the name targetIdentifier during outcomeProcessing. Use of variable mappings
  * allows more control over the way outcomes are aggregated when using testVariables.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class VariableMapping extends AbstractNode {
+public final class VariableMapping extends AbstractNode {
 
     private static final long serialVersionUID = -7050008243126365490L;
 
@@ -57,50 +57,28 @@ public class VariableMapping extends AbstractNode {
     /** Name of targetIdentifier attribute in xml schema. */
     public static final String ATTR_TARGET_IDENTIFIER_NAME = "targetIdentifier";
 
-    public VariableMapping(AssessmentItemRef parent) {
+    public VariableMapping(final AssessmentItemRef parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_SOURCE_IDENTIFIER_NAME, true));
         getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_IDENTIFIER_NAME, true));
     }
 
-    /**
-     * Gets value of sourceIdentifier attribute.
-     * 
-     * @return value of sourceIdentifier attribute
-     * @see #setSourceIdentifier
-     */
+
     public Identifier getSourceIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_SOURCE_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of sourceIdentifier attribute.
-     * 
-     * @param sourceIdentifier new value of sourceIdentifier attribute
-     * @see #getSourceIdentifier
-     */
-    public void setSourceIdentifier(Identifier sourceIdentifier) {
+    public void setSourceIdentifier(final Identifier sourceIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_SOURCE_IDENTIFIER_NAME).setValue(sourceIdentifier);
     }
 
-    /**
-     * Gets value of targetIdentifier attribute.
-     * 
-     * @return value of targetIdentifier attribute
-     * @see #setTargetIdentifier
-     */
+
     public Identifier getTargetIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_TARGET_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of targetIdentifier attribute.
-     * 
-     * @param targetIdentifier new value of targetIdentifier attribute
-     * @see #getTargetIdentifier
-     */
-    public void setTargetIdentifier(Identifier targetIdentifier) {
+    public void setTargetIdentifier(final Identifier targetIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_TARGET_IDENTIFIER_NAME).setValue(targetIdentifier);
     }
 }

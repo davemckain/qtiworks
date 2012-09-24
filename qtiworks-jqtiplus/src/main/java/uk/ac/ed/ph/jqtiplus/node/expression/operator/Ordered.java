@@ -57,29 +57,29 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * Note that the ordered operator never results in an empty container. All sub-expressions with NULL values are ignored. If no sub-expressions are given (or all
  * are NULL) then the result is NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Ordered extends AbstractFunctionalExpression {
+public final class Ordered extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -1785588795962181470L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "ordered";
 
-    public Ordered(ExpressionParent parent) {
+    public Ordered(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getRequiredSameBaseTypes(context, index, true);
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         BaseType[] produced = super.getProducedBaseTypes(context);
 
         for (final Expression child : getChildren()) {
@@ -90,7 +90,7 @@ public class Ordered extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getChildren().size() == 0) {
@@ -99,9 +99,9 @@ public class Ordered extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         final OrderedValue container = new OrderedValue();
-        
+
         for (int i=0; i<childValues.length; i++) {
             final Value value = childValues[i];
             if (!value.isNull()) {

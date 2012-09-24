@@ -45,24 +45,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * base-type. The result is A single boolean with A value of true if the first expression is numerically
  * greater than the second and false if it is less than or equal to the second.
  * If either sub-expression is NULL then the operator results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Gt extends AbstractFunctionalExpression {
+public final class Gt extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -5408253885508181187L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "gt";
 
-    public Gt(ExpressionParent parent) {
+    public Gt(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

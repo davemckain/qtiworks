@@ -46,13 +46,13 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * and single cardinality. The result is A single boolean with A value of true if the first expression
  * is A substring of the second expression and false if it isn't. If either sub-expression is NULL then
  * the result of the operator is NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @see uk.ac.ed.ph.jqtiplus.node.expression.operator.StringMatch
  * @author Jiri Kajaba
  */
-public class Substring extends AbstractFunctionalExpression {
+public final class Substring extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 389530305199141690L;
 
@@ -62,34 +62,24 @@ public class Substring extends AbstractFunctionalExpression {
     /** Name of caseSensitive attribute in xml schema. */
     public static final String ATTR_CASE_SENSITIVE_NAME = "caseSensitive";
 
-    public Substring(ExpressionParent parent) {
+    public Substring(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_NAME, true));
     }
 
-    /**
-     * Gets value of caseSensitive attribute.
-     * 
-     * @return value of caseSensitive attribute
-     * @see #setCaseSensitive
-     */
+
     public boolean getCaseSensitive() {
         return getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of caseSensitive attribute.
-     * 
-     * @param caseSensitive new value of caseSensitive attribute
-     * @see #getCaseSensitive
-     */
-    public void setCaseSensitive(Boolean caseSensitive) {
+    public void setCaseSensitive(final Boolean caseSensitive) {
         getAttributes().getBooleanAttribute(ATTR_CASE_SENSITIVE_NAME).setValue(caseSensitive);
     }
 
+
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

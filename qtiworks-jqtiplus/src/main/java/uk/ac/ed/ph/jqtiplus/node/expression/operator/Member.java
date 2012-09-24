@@ -52,29 +52,29 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * The member operator should not be used on sub-expressions with A base-type of float because of the poorly defined comparison of values. It must not be used
  * on sub-expressions with A base-type of duration.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Member extends AbstractFunctionalExpression {
+public final class Member extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -6317462846920017136L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "member";
 
-    public Member(ExpressionParent parent) {
+    public Member(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getRequiredSameBaseTypes(context, index, false);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

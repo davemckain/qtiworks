@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
@@ -57,10 +56,10 @@ import java.util.List;
  * instructions described by the outcomeRules. Because outcome processing happens each time the candidate submits responses the
  * resulting values of the test-level outcomes may be used to activate test-level feedback during the test or to control the behaviour
  * of subsequent parts through the use of preConditions and branchRules.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseProcessing extends AbstractNode implements RootNode {
+public final class ResponseProcessing extends AbstractNode implements RootNode {
 
     private static final long serialVersionUID = -4551768580135824154L;
 
@@ -80,7 +79,7 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
         this(null);
     }
 
-    public ResponseProcessing(AssessmentItem parent) {
+    public ResponseProcessing(final AssessmentItem parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_TEMPLATE_NAME, false));
@@ -95,59 +94,55 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
     }
 
     @Override
-    public void setSystemId(URI systemId) {
+    public void setSystemId(final URI systemId) {
         this.systemId = systemId;
     }
-    
+
 
     @Override
     public ModelRichness getModelRichness() {
         return modelRichness;
     }
-    
+
     @Override
-    public void setModelRichness(ModelRichness modelRichness) {
+    public void setModelRichness(final ModelRichness modelRichness) {
         this.modelRichness = modelRichness;
     }
 
-    /**
-     * Gets responseRule children.
-     * 
-     * @return responseRule children
-     */
+
     public List<ResponseRule> getResponseRules() {
         return getNodeGroups().getResponseRuleGroup().getResponseRules();
     }
 
-    /**
-     * Gets the value of the template attribute.
-     * 
-     * @return Value of the template attribute
-     */
     public URI getTemplate() {
         return getAttributes().getUriAttribute(ATTR_TEMPLATE_NAME).getComputedValue();
     }
 
-    /**
-     * Gets the value of the templateLocation attribute.
-     * 
-     * @return Value of the templateLocation attribute
-     */
+    public void setTemplate(final URI value) {
+        getAttributes().getUriAttribute(ATTR_TEMPLATE_NAME).setValue(value);
+    }
+
+
     public URI getTemplateLocation() {
         return getAttributes().getUriAttribute(ATTR_TEMPLATE_LOCATION_NAME).getComputedValue();
     }
 
+    public void setTemplateLocation(final URI value) {
+        getAttributes().getUriAttribute(ATTR_TEMPLATE_LOCATION_NAME).setValue(value);
+    }
+
+
     @Override
-    protected void validateChildren(ValidationContext context) {
-        List<ResponseRule> responseRules = getResponseRules();
+    protected void validateChildren(final ValidationContext context) {
+        final List<ResponseRule> responseRules = getResponseRules();
         if (!responseRules.isEmpty()) {
             /* ResponseRules exist, so we'll validate these */
             super.validateChildren(context);
         }
         else {
             /* No ResponseRules, so we'll use any template that will have been resolved for us by caller */
-            ResolvedAssessmentItem resolvedAssessmentItem = context.getResolvedAssessmentItem();
-            RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
+            final ResolvedAssessmentItem resolvedAssessmentItem = context.getResolvedAssessmentItem();
+            final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplateLookup!=null && resolvedResponseProcessingTemplateLookup.wasSuccessful()) {
                 resolvedResponseProcessingTemplateLookup.extractIfSuccessful().validate(context);
             }
@@ -156,10 +151,10 @@ public class ResponseProcessing extends AbstractNode implements RootNode {
 
     /**
      * Evaluates all child outcomeRules.
-     * 
+     *
      * @throws RuntimeValidationException
      */
-    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
         try {
             for (final ResponseRule responseRule : getResponseRules()) {
                 responseRule.evaluate(context);

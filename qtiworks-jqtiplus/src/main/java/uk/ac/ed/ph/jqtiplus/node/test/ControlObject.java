@@ -59,7 +59,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     protected boolean finished;
 
-    public ControlObject(ControlObject<?> parent, String qtiClassName) {
+    public ControlObject(final ControlObject<?> parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new TimeLimitGroup(this));
@@ -70,23 +70,12 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
         return (ControlObject<?>) super.getParent();
     }
 
-    /**
-     * Gets timeLimit child.
-     *
-     * @return timeLimit child
-     * @see #setTimeLimit
-     */
+
     public TimeLimit getTimeLimit() {
         return getNodeGroups().getTimeLimitGroup().getTimeLimit();
     }
 
-    /**
-     * Sets new timeLimit child.
-     *
-     * @param timeLimit new timeLimit child
-     * @see #getTimeLimit
-     */
-    public void setTimeLimit(TimeLimit timeLimit) {
+    public void setTimeLimit(final TimeLimit timeLimit) {
         getNodeGroups().getTimeLimitGroup().setTimeLimit(timeLimit);
     }
 
@@ -181,7 +170,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param parent given parameter
      * @return true if given parameter is direct or indirect parent of this object; false otherwise
      */
-    public boolean isChildOf(ControlObject<?> parent) {
+    public boolean isChildOf(final ControlObject<?> parent) {
         if (getParent() == null) {
             return false;
         }
@@ -197,7 +186,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public AbstractPart getChildPart(Identifier identifier) {
+    public AbstractPart getChildPart(final Identifier identifier) {
         for (final AbstractPart child : getChildren()) {
             if (identifier.equals(child.getIdentifier())) {
                 return child;
@@ -215,7 +204,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public AbstractPart lookupDescendentOrSelf(Identifier identifier) {
+    public AbstractPart lookupDescendentOrSelf(final Identifier identifier) {
         if (getIdentifier() != null && getIdentifier().equals(identifier)) {
             return (AbstractPart) this;
         }
@@ -229,7 +218,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public AbstractPart lookupDescendent(Identifier identifier) {
+    public AbstractPart lookupDescendent(final Identifier identifier) {
         AbstractPart result;
         for (final AbstractPart child : getChildren()) {
             result = child.lookupDescendentOrSelf(identifier);
@@ -247,7 +236,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @return item reference with given identifier or null if identifier is not found or doesn't correspond
      *         to an {@link AssessmentItemRef}
      */
-    public AssessmentItemRef lookupItemRef(Identifier identifier) {
+    public AssessmentItemRef lookupItemRef(final Identifier identifier) {
         final AbstractPart descendent = lookupDescendent(identifier);
         if (descendent instanceof AssessmentItemRef) {
             return (AssessmentItemRef) descendent;
@@ -267,7 +256,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
         return resultBuilder;
     }
 
-    private static void searchItemRefs(ControlObject<?> start, Collection<AssessmentItemRef> resultBuilder) {
+    private static void searchItemRefs(final ControlObject<?> start, final Collection<AssessmentItemRef> resultBuilder) {
         if (start instanceof AssessmentItemRef) {
             resultBuilder.add((AssessmentItemRef) start);
         }
@@ -333,7 +322,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @return true if given identifier is identifier of one of built-in variables; false otherwise
      */
     @ToRefactor
-    public boolean isBuiltInVariable(Identifier identifier) {
+    public boolean isBuiltInVariable(final Identifier identifier) {
         if (identifier != null && identifier.equals(AssessmentTest.VARIABLE_DURATION_IDENTIFIER)) {
             return true;
         }

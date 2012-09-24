@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Variable extends LookupExpression {
+public final class Variable extends LookupExpression {
 
     private static final long serialVersionUID = -6019493794571357535L;
 
@@ -91,22 +91,10 @@ public class Variable extends LookupExpression {
         getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, false));
     }
 
-    /**
-     * Gets value of weightIdentifier attribute.
-     *
-     * @return value of weightIdentifier attribute
-     * @see #setWeightIdentifier
-     */
     public Identifier getWeightIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of weightIdentifier attribute.
-     *
-     * @param weightIdentifier new value of weightIdentifier attribute
-     * @see #getWeightIdentifier
-     */
     public void setWeightIdentifier(final Identifier weightIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).setValue(weightIdentifier);
     }

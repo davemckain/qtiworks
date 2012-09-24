@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiNotImplementedException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.MapEntryGroup;
@@ -60,7 +59,7 @@ import java.util.List;
  * @see MapResponse for details.
  * @author Jonathon Hare
  */
-public class Mapping extends AbstractNode {
+public final class Mapping extends AbstractNode {
 
     private static final long serialVersionUID = 6513135215422316146L;
 
@@ -94,74 +93,37 @@ public class Mapping extends AbstractNode {
         return (ResponseDeclaration) super.getParent();
     }
 
-    /**
-     * Gets value of defaultValue attribute.
-     *
-     * @return value of defaultValue attribute
-     * @see #setDefaultValue
-     */
     public double getDefaultValue() {
         return getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of defaultValue attribute.
-     *
-     * @param defaultValue new value of defaultValue attribute
-     * @see #getDefaultValue
-     */
     public void setDefaultValue(final Double defaultValue) {
         getAttributes().getFloatAttribute(ATTR_DEFAULT_VALUE_NAME).setValue(defaultValue);
     }
 
-    /**
-     * Gets value of lowerBound attribute.
-     *
-     * @return value of lowerBound attribute
-     * @see #setLowerBound
-     */
+
     public Double getLowerBound() {
         return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of lowerBound attribute.
-     *
-     * @param lowerBound new value of lowerBound attribute
-     * @see #getLowerBound
-     */
     public void setLowerBound(final Double lowerBound) {
         getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).setValue(lowerBound);
     }
 
-    /**
-     * Gets value of upperBound attribute.
-     *
-     * @return value of upperBound attribute
-     * @see #setUpperBound
-     */
+
     public Double getUpperBound() {
         return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of upperBound attribute.
-     *
-     * @param upperBound new value of upperBound attribute
-     * @see #getUpperBound
-     */
     public void setUpperBound(final Double upperBound) {
         getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).setValue(upperBound);
     }
 
-    /**
-     * Gets mapEntry children.
-     *
-     * @return mapEntry children
-     */
+
     public List<MapEntry> getMapEntries() {
         return getNodeGroups().getMapEntryGroup().getMapEntries();
     }
+
 
     @Override
     public void validate(final ValidationContext context) {

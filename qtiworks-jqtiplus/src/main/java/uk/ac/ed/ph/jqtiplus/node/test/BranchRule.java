@@ -53,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class BranchRule extends AbstractJump {
+public final class BranchRule extends AbstractJump {
 
     private static final long serialVersionUID = -6025143798114714329L;
 
@@ -72,7 +72,7 @@ public class BranchRule extends AbstractJump {
     /** Special target for exiting assessmentSection. */
     public static final Identifier EXIT_SECTION = new Identifier("EXIT_SECTION", false);
 
-    public BranchRule(AbstractPart parent) {
+    public BranchRule(final AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_TARGET_NAME, true));
@@ -87,14 +87,12 @@ public class BranchRule extends AbstractJump {
         return super.computeXPathComponent();
     }
 
-    /**
-     * Gets value of target attribute.
-     *
-     * @return value of target attribute
-     * @see #setTarget
-     */
     public Identifier getTarget() {
         return getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).getComputedValue();
+    }
+
+    public void setTarget(final Identifier target) {
+        getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).setValue(target);
     }
 
     /**
@@ -135,15 +133,6 @@ public class BranchRule extends AbstractJump {
         return result;
     }
 
-    /**
-     * Sets new value of target attribute.
-     *
-     * @param target new value of target attribute
-     * @see #getTarget
-     */
-    public void setTarget(Identifier target) {
-        getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).setValue(target);
-    }
 
     /**
      * Returns true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise.
@@ -182,7 +171,7 @@ public class BranchRule extends AbstractJump {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         final Identifier target = getTarget();
@@ -239,7 +228,7 @@ public class BranchRule extends AbstractJump {
      * @param target given target
      * @return true if given target is special (EXIT_TEST, EXIT_TESTPART, EXIT_SECTION); false otherwise
      */
-    public static boolean isSpecial(Identifier target) {
+    public static boolean isSpecial(final Identifier target) {
         return target != null && (target.equals(EXIT_TEST) || target.equals(EXIT_TEST_PART) || target.equals(EXIT_SECTION));
     }
 }

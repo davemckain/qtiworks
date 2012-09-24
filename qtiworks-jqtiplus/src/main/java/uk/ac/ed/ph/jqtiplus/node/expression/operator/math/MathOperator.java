@@ -44,10 +44,10 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Implementation of <tt>mathOperator</tt>
- * 
+ *
  * @author David McKain
  */
-public class MathOperator extends AbstractFunctionalExpression {
+public final class MathOperator extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
@@ -57,7 +57,7 @@ public class MathOperator extends AbstractFunctionalExpression {
     /** Name of 'name' attribute */
     public static final String ATTR_NAME_NAME = "name";
 
-    public MathOperator(ExpressionParent parent) {
+    public MathOperator(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new MathOperatorNameAttribute(this, "name", true));
@@ -72,12 +72,12 @@ public class MathOperator extends AbstractFunctionalExpression {
         return ((MathOperatorNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getComputedValue();
     }
 
-    public void setTarget(MathOperatorTarget target) {
+    public void setTarget(final MathOperatorTarget target) {
         ((MathOperatorNameAttribute) getAttributes().get(ATTR_NAME_NAME)).setValue(target);
     }
 
     @Override
-    public final Value evaluateSelf(Value[] childValues) {
+    public final Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
@@ -98,7 +98,7 @@ public class MathOperator extends AbstractFunctionalExpression {
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         /* Make sure number of children is correct */

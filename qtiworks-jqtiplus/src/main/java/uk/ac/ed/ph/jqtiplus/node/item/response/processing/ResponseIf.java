@@ -35,17 +35,17 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 /**
  * Implementation of IF responseCondition child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseIf extends ResponseConditionExpressionChild {
+public final class ResponseIf extends ResponseConditionExpressionChild {
 
     private static final long serialVersionUID = -1201227015207925136L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "responseIf";
 
-    public ResponseIf(ResponseCondition parent) {
+    public ResponseIf(final ResponseCondition parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

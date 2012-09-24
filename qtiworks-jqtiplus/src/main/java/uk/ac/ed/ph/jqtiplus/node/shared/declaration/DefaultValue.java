@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.shared.declaration;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -52,10 +51,10 @@ import java.util.List;
  * Default value of variableDeclaration.
  * Specification of defaultValue is not good. Instead of [1..*] fieldValues, defaultValue should contain 1 baseValue
  * or multiple or ordered or record expression. It would be much more powerful and consistent.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class DefaultValue extends AbstractNode implements FieldValueParent {
+public final class DefaultValue extends AbstractNode implements FieldValueParent {
 
     private static final long serialVersionUID = -3631226504088317341L;
 
@@ -65,7 +64,7 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
     /** Name of interpretation attribute in xml schema. */
     public static final String ATTR_INTERPRETATION_NAME = "interpretation";
 
-    public DefaultValue(VariableDeclaration parent) {
+    public DefaultValue(final VariableDeclaration parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, false));
@@ -73,13 +72,7 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
         getNodeGroups().add(new FieldValueGroup(this, 1, null));
     }
 
-    /**
-     * Creates object with a given value.
-     * 
-     * @param parent parent of this object
-     * @param value value to use
-     */
-    public DefaultValue(VariableDeclaration parent, Value value) {
+    public DefaultValue(final VariableDeclaration parent, final Value value) {
         this(parent);
 
         getFieldValues().addAll(FieldValue.computeValues(this, value));
@@ -92,34 +85,20 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
         return (VariableDeclaration) super.getParent();
     }
 
-    /**
-     * Gets value of interpretation attribute.
-     * 
-     * @return value of interpretation attribute
-     * @see #setInterpretation
-     */
+
     public String getInterpretation() {
         return getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of interpretation attribute.
-     * 
-     * @param interpretation new value of interpretation attribute
-     * @see #getInterpretation
-     */
-    public void setInterpretation(String interpretation) {
+    public void setInterpretation(final String interpretation) {
         getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).setValue(interpretation);
     }
 
-    /**
-     * Gets fieldValue children.
-     * 
-     * @return fieldValue children
-     */
+
     public List<FieldValue> getFieldValues() {
         return getNodeGroups().getFieldValueGroup().getFieldValues();
     }
+
 
     @Override
     public Cardinality getCardinality() {
@@ -132,7 +111,7 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         final Cardinality cardinality = getParent().getCardinality();
@@ -145,7 +124,7 @@ public class DefaultValue extends AbstractNode implements FieldValueParent {
 
     /**
      * Evaluates value of this defaultValue.
-     * 
+     *
      * @return evaluated value of this defaultValue
      */
     public Value evaluate() {

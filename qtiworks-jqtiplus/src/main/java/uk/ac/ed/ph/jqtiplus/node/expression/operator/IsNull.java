@@ -42,24 +42,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The isNull operator takes A sub-expression with any base-type and cardinality.
  * The result is A single boolean with A value of true if the sub-expression is NULL and false otherwise.
  * Note that empty containers and empty strings are both treated as NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class IsNull extends AbstractFunctionalExpression {
+public final class IsNull extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 2510627886708118311L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "isNull";
 
-    public IsNull(ExpressionParent parent) {
+    public IsNull(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected BooleanValue evaluateSelf(Value[] childValues) {
+    protected BooleanValue evaluateSelf(final Value[] childValues) {
         return BooleanValue.valueOf(childValues[0].isNull());
     }
 }

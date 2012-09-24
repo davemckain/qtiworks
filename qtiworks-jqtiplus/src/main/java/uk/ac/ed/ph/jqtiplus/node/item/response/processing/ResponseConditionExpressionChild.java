@@ -47,56 +47,40 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Abstract parent for all responseCondition children with condition (IF, ELSE-IF).
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class ResponseConditionExpressionChild extends ResponseConditionChild implements ExpressionParent {
 
     private static final long serialVersionUID = 9198806507019667025L;
 
-    /**
-     * Construct condition rule child.
-     * 
-     * @param parent parent of this condition rule child
-     */
-    public ResponseConditionExpressionChild(ResponseCondition parent, String qtiClassName) {
+    public ResponseConditionExpressionChild(final ResponseCondition parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
     }
 
-    /**
-     * Gets expression child (condition).
-     * 
-     * @return expression child (condition)
-     * @see #setExpression
-     */
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
 
-    /**
-     * Sets new expression child (condition).
-     * 
-     * @param expression new expression child (condition)
-     * @see #getExpression
-     */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 
+
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
     @Override
-    public boolean evaluate(ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
         if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {

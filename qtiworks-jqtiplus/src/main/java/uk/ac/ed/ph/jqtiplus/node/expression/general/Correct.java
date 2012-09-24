@@ -50,11 +50,11 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * This expression looks up the declaration of A response variable and returns the associated correctResponse or NULL
  * if no correct value was declared. When used in outcomes processing item identifier prefixing (see variable) may be
  * used to obtain the correct response from an individual item.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class Correct extends LookupExpression {
+public final class Correct extends LookupExpression {
 
     private static final long serialVersionUID = -280130278009155973L;
 
@@ -63,18 +63,18 @@ public class Correct extends LookupExpression {
 
     /**
      * Constructs expression.
-     * 
+     *
      * @param parent parent of this expression
      */
-    public Correct(ExpressionParent parent) {
+    public Correct(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     //----------------------------------------------------------------------
-    
+
     @Override
-    protected void validateResolvedVariableReference(ValidationContext context, VariableReferenceIdentifier variableReferenceIdentifier,
-            VariableDeclaration resolvedDeclaration) {
+    protected void validateResolvedVariableReference(final ValidationContext context, final VariableReferenceIdentifier variableReferenceIdentifier,
+            final VariableDeclaration resolvedDeclaration) {
         /* Ensure that the referenced variable is a response variable. */
         if (resolvedDeclaration.getVariableType() != VariableType.RESPONSE) {
             context.getValidationResult().add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME),
@@ -85,18 +85,18 @@ public class Correct extends LookupExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected Value evaluateInThisItem(ItemProcessingContext itemContext, Identifier itemVariableIdentifier) {
+    protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
         return itemContext.computeCorrectResponse(itemVariableIdentifier);
     }
 
     @Override
-    protected Value evaluateInThisTest(TestProcessingContext testContext, Identifier testVariableIdentifier) {
+    protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
         /* Tests do not contain response variables, so the result here is always null */
         return NullValue.INSTANCE;
     }
 
     @Override
-    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier) {
+    protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
         return itemRefController.getItemController().computeCorrectResponse(itemVariableIdentifier);
     }
 }

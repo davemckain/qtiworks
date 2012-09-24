@@ -57,7 +57,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Index extends AbstractExpression {
+public final class Index extends AbstractExpression {
 
     private static final long serialVersionUID = 909169733159523992L;
 
@@ -73,22 +73,10 @@ public class Index extends AbstractExpression {
         getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_INDEX_NAME, true));
     }
 
-    /**
-     * Gets value of n attribute.
-     *
-     * @return value of n attribute
-     * @see #setIndex
-     */
     public IntegerOrVariableRef getIndex() {
         return getAttributes().getIntegerOrVariableRefAttribute(ATTR_INDEX_NAME).getValue();
     }
 
-    /**
-     * Sets new value of n attribute.
-     *
-     * @param index new value of n attribute
-     * @see #getIndex
-     */
     public void setIndex(final IntegerOrVariableRef index) {
         getAttributes().getIntegerOrVariableRefAttribute(ATTR_INDEX_NAME).setValue(index);
     }

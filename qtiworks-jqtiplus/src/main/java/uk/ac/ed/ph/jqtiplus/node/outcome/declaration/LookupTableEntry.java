@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -41,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 
 /**
  * Abstract entry for lookupTable.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class LookupTableEntry extends AbstractNode {
@@ -51,12 +50,7 @@ public abstract class LookupTableEntry extends AbstractNode {
     /** Name of targetValue attribute in xml schema. */
     public static final String ATTR_TARGET_VALUE_NAME = "targetValue";
 
-    /**
-     * Creates object.
-     * 
-     * @param parent parent of this object
-     */
-    public LookupTableEntry(LookupTable parent, String qtiClassName) {
+    public LookupTableEntry(final LookupTable parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new SingleValueAttribute(this, ATTR_TARGET_VALUE_NAME, getParent().getTargetValueBaseType(), true));
@@ -69,33 +63,22 @@ public abstract class LookupTableEntry extends AbstractNode {
 
     /**
      * Gets numeric value of sourceValue attribute.
-     * 
+     *
      * @return numeric value of sourceValue attribute
      */
     public abstract Number getSourceValue();
 
-    /**
-     * Gets value of targetValue attribute.
-     * 
-     * @return value of targetValue attribute
-     * @see #setTargetValue
-     */
     public SingleValue getTargetValue() {
         return getAttributes().getSingleValueAttribute(ATTR_TARGET_VALUE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of targetValue attribute.
-     * 
-     * @param targetValue new value of targetValue attribute
-     * @see #getTargetValue
-     */
-    public void setTargetValue(SingleValue targetValue) {
+    public void setTargetValue(final SingleValue targetValue) {
         getAttributes().getSingleValueAttribute(ATTR_TARGET_VALUE_NAME).setValue(targetValue);
     }
 
+
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getParent().getParent().getBaseType() != null) {

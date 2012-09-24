@@ -45,35 +45,25 @@ import java.util.List;
 
 /**
  * Abstract parent for all outcomeCondition children (IF, ELSE-IF, ELSE).
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class OutcomeConditionChild extends AbstractNode {
 
     private static final long serialVersionUID = 8228195924310740729L;
 
-    /**
-     * Constructs condition rule child.
-     * 
-     * @param parent parent of this condition rule child
-     */
-    public OutcomeConditionChild(OutcomeCondition parent, String qtiClassName) {
+    public OutcomeConditionChild(final OutcomeCondition parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new OutcomeRuleGroup(this));
     }
 
-    /**
-     * Gets outcomeRule children.
-     * 
-     * @return outcomeRule children
-     */
     public List<OutcomeRule> getOutcomeRules() {
         return getNodeGroups().getOutcomeRuleGroup().getOutcomeRules();
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getOutcomeRules().size() == 0) {
@@ -83,12 +73,12 @@ public abstract class OutcomeConditionChild extends AbstractNode {
 
     /**
      * Evaluates all child outcomeRules and returns true.
-     * 
+     *
      * @return true
      * @throws QtiProcessingInterrupt
      * @throws RuntimeValidationException
      */
-    public boolean evaluate(TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final OutcomeRule outcomeRule : getOutcomeRules()) {
             outcomeRule.evaluate(context);
         }

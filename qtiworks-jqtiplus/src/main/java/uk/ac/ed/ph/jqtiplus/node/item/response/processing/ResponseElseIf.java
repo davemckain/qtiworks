@@ -35,17 +35,17 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 /**
  * Implementation of ELSE-IF responseCondition child.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseElseIf extends ResponseConditionExpressionChild {
+public final class ResponseElseIf extends ResponseConditionExpressionChild {
 
     private static final long serialVersionUID = 7010486231735678259L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "responseElseIf";
 
-    public ResponseElseIf(ResponseCondition parent) {
+    public ResponseElseIf(final ResponseCondition parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

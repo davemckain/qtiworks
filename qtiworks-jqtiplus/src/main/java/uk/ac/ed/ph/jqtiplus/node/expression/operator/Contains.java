@@ -62,34 +62,34 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * Like the member operator, the contains operator should not be used on sub-expressions with A base-type of float and must not be used on sub-expressions with
  * A base-type of duration.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Contains extends AbstractFunctionalExpression {
+public final class Contains extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 3829603738168267516L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "contains";
 
-    public Contains(ExpressionParent parent) {
+    public Contains(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return getRequiredSameCardinalities(context, index, false);
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getRequiredSameBaseTypes(context, index, false);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

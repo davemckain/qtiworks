@@ -50,7 +50,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class ContainerSize extends AbstractFunctionalExpression {
+public final class ContainerSize extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -874213914129154217L;
 
