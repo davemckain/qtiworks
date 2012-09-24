@@ -91,7 +91,7 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
     @Override
     public final void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
             throws ResponseBindingException {
-        Assert.ensureNotNull(responseData, "responseData");
+        Assert.notNull(responseData, "responseData");
         final E jqtiExtensionPackage = getOwningExtensionPackage(itemSessionController);
         if (jqtiExtensionPackage!=null) {
             bindResponse(jqtiExtensionPackage, itemSessionController, responseData);

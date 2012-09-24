@@ -64,7 +64,7 @@ public final class UriValue extends SingleValue {
     private final URI uriValue;
 
     public UriValue(final URI value) {
-        Assert.ensureNotNull(value);
+        Assert.notNull(value);
         this.uriValue = value;
     }
 

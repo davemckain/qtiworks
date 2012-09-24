@@ -211,7 +211,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
 
     @Override
     public OutcomeDeclaration getOutcomeDeclaration(final Identifier identifier) {
-        Assert.ensureNotNull(identifier);
+        Assert.notNull(identifier);
         for (final OutcomeDeclaration declaration : getOutcomeDeclarations()) {
             if (declaration.getIdentifier() != null && declaration.getIdentifier().equals(identifier)) {
                 return declaration;
@@ -222,7 +222,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
 
     @Override
     public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
-        Assert.ensureNotNull(identifier);
+        Assert.notNull(identifier);
         return getOutcomeDeclaration(identifier);
     }
 

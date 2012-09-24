@@ -137,7 +137,7 @@ public abstract class Interaction extends BodyElement {
      */
     public void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
             throws ResponseBindingException {
-        Assert.ensureNotNull(responseData, "responseData");
+        Assert.notNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(responseDeclaration, responseData);
         itemSessionController.getItemSessionState().setResponseValue(this, value);

@@ -70,9 +70,9 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     }
 
     public AbstractAttribute(final QtiNode owner, final String localName, final String namespaceUri, final V defaultValue, final boolean required) {
-        Assert.ensureNotNull(owner, "owner");
-        Assert.ensureNotNull(localName, "localName");
-        Assert.ensureNotNull(namespaceUri, "namespaceUri");
+        Assert.notNull(owner, "owner");
+        Assert.notNull(localName, "localName");
+        Assert.notNull(namespaceUri, "namespaceUri");
         this.owner = owner;
         this.localName = localName;
         this.namespaceUri = namespaceUri;

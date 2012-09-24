@@ -162,7 +162,7 @@ public class CandidateItemDeliveryService {
      */
     public CandidateItemSession lookupCandidateItemSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        Assert.ensureNotNull(sessionToken, "sessionToken");
+        Assert.notNull(sessionToken, "sessionToken");
         final CandidateItemSession candidateItemSession = candidateItemSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateItemSession.getSessionToken())) {
             logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
@@ -195,9 +195,9 @@ public class CandidateItemDeliveryService {
     public void renderCurrentState(final CandidateItemSession candidateItemSession,
             final RenderingOptions renderingOptions,
             final OutputStreamer outputStreamer) throws IOException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
-        Assert.ensureNotNull(renderingOptions, "renderingOptions");
-        Assert.ensureNotNull(outputStreamer, "outputStreamer");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(renderingOptions, "renderingOptions");
+        Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
         final CandidateItemEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateItemSession);
@@ -555,7 +555,7 @@ public class CandidateItemDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws RuntimeValidationException, CandidateForbiddenException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
 
         /* Make sure an attempt is allowed */
@@ -682,7 +682,7 @@ public class CandidateItemDeliveryService {
 
     public CandidateItemSession closeCandidateSession(final CandidateItemSession candidateItemSession)
             throws CandidateForbiddenException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Check this is allowed in current state */
         ensureSessionNotTerminated(candidateItemSession);
@@ -722,7 +722,7 @@ public class CandidateItemDeliveryService {
 
     public CandidateItemSession reinitCandidateSession(final CandidateItemSession candidateItemSession)
             throws RuntimeValidationException, CandidateForbiddenException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may reinit the session */
         ensureSessionNotTerminated(candidateItemSession);
@@ -773,7 +773,7 @@ public class CandidateItemDeliveryService {
 
     public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateItemSession)
             throws CandidateForbiddenException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may reset the session */
         ensureSessionNotTerminated(candidateItemSession);
@@ -829,7 +829,7 @@ public class CandidateItemDeliveryService {
 
     public CandidateItemSession transitionCandidateSessionToSolutionState(final CandidateItemSession candidateItemSession)
             throws CandidateForbiddenException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateItemSession);
@@ -871,7 +871,7 @@ public class CandidateItemDeliveryService {
 
     public CandidateItemSession setPlaybackState(final CandidateItemSession candidateItemSession, final long xeid)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateItemSession);
@@ -924,7 +924,7 @@ public class CandidateItemDeliveryService {
 
     public CandidateItemSession terminateCandidateSession(final CandidateItemSession candidateItemSession)
             throws CandidateForbiddenException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Check session has not already been terminated */
         ensureSessionNotTerminated(candidateItemSession);
@@ -946,9 +946,9 @@ public class CandidateItemDeliveryService {
     public void streamAssessmentFile(final CandidateItemSession candidateItemSession, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
-        Assert.ensureNotNull(fileSystemIdString, "fileSystemIdString");
-        Assert.ensureNotNull(outputStreamer, "outputStreamer");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(fileSystemIdString, "fileSystemIdString");
+        Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Make sure requested file is whitelisted for access */
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
@@ -974,15 +974,15 @@ public class CandidateItemDeliveryService {
 
     public void streamAssessmentSource(final long xid, final String sessionToken, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(outputStreamer, "outputStreamer");
+        Assert.notNull(outputStreamer, "outputStreamer");
         final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         streamAssessmentSource(candidateItemSession, outputStreamer);
     }
 
     public void streamAssessmentSource(final CandidateItemSession candidateItemSession, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
-        Assert.ensureNotNull(outputStreamer, "outputStreamer");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(outputStreamer, "outputStreamer");
         ensureCallerMayViewSource(candidateItemSession);
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
@@ -1004,15 +1004,15 @@ public class CandidateItemDeliveryService {
 
     public void streamItemResult(final long xid, final String sessionToken, final OutputStream outputStream)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(outputStream, "outputStream");
+        Assert.notNull(outputStream, "outputStream");
         final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         streamItemResult(candidateItemSession, outputStream);
     }
 
     public void streamItemResult(final CandidateItemSession candidateItemSession, final OutputStream outputStream)
             throws CandidateForbiddenException {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
-        Assert.ensureNotNull(outputStream, "outputStream");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(outputStream, "outputStream");
 
         /* Forbid results if the candidate session is closed */
         ensureSessionNotTerminated(candidateItemSession);

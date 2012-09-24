@@ -43,8 +43,16 @@ package uk.ac.ed.ph.jqtiplus.internal.util;
  */
 public final class Assert {
 
-    public static void ensureNotNull(final Object value) {
-        ensureNotNull(value, "Object");
+    /**
+     * Checks that the given object is non-null, throwing an
+     * IllegalArgumentException if the check fails. If the check succeeds then
+     * nothing happens.
+     *
+     * @param value object to test
+     * @throws IllegalArgumentException if an error occurs.
+     */
+    public static void notNull(final Object value) {
+        notNull(value, "Object");
     }
 
     /**
@@ -56,7 +64,7 @@ public final class Assert {
      * @param objectName name to give to supplied Object when constructing Exception message.
      * @throws IllegalArgumentException if an error occurs.
      */
-    public static void ensureNotNull(final Object value, final String objectName) {
+    public static void notNull(final Object value, final String objectName) {
         if (value == null) {
             throw new IllegalArgumentException(objectName + " must not be null");
         }

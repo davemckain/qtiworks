@@ -94,7 +94,7 @@ public abstract class GenericDao<E extends BaseEntity> {
     }
 
     public E requireFindById(final Long id) throws DomainEntityNotFoundException {
-        Assert.ensureNotNull(id, "Entity ID");
+        Assert.notNull(id, "Entity ID");
         final E result = findById(id);
         ensureFindSuccess(result, id);
         return result;

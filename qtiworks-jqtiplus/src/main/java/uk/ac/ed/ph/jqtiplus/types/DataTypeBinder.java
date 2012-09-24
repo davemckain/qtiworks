@@ -48,7 +48,7 @@ import java.net.URISyntaxException;
 public final class DataTypeBinder {
 
     public static boolean parseBoolean(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         if (string.equals("true") || string.equals("1")) {
             return true;
@@ -72,7 +72,7 @@ public final class DataTypeBinder {
     }
 
     public static int parseInteger(final String string, final int radix) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         // Removes + sign because of Integer.parseInt cannot handle it.
         String s = string;
@@ -98,7 +98,7 @@ public final class DataTypeBinder {
     //--------------------------------------------
 
     public static long parseLong(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         String s = string;
         if (string.startsWith("+")) {
@@ -122,7 +122,7 @@ public final class DataTypeBinder {
     //--------------------------------------------
 
     public static double parseFloat(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         double result;
         if (string.equals("INF")) {
@@ -152,7 +152,7 @@ public final class DataTypeBinder {
     //--------------------------------------------
 
     public static Pair<Identifier, Identifier> parsePair(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         final String[] parts = string.split(" ", 3);
         if (parts.length != 2) {
@@ -176,7 +176,7 @@ public final class DataTypeBinder {
     //--------------------------------------------
 
     public static int[] parsePoint(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         final String[] parts = string.split(" ", 3);
         if (parts.length != 2) {
@@ -200,7 +200,7 @@ public final class DataTypeBinder {
     //--------------------------------------------
 
     public static URI parseUri(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         if (string.isEmpty()) {
             throw new QtiParseException("uri must not be empty");

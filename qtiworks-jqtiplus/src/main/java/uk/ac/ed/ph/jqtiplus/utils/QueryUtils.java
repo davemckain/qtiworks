@@ -196,16 +196,16 @@ public final class QueryUtils {
     }
 
     public static void walkTree(final TreeWalkNodeHandler handler, final Iterable<? extends QtiNode> startNodes) {
-        Assert.ensureNotNull(startNodes);
-        Assert.ensureNotNull(handler);
+        Assert.notNull(startNodes);
+        Assert.notNull(handler);
         for (final QtiNode startNode : startNodes) {
             doWalkTree(handler, startNode);
         }
     }
 
     public static void walkChildNodes(final TreeWalkNodeHandler handler, final Iterable<? extends QtiNode> startNodes) {
-        Assert.ensureNotNull(startNodes);
-        Assert.ensureNotNull(handler);
+        Assert.notNull(startNodes);
+        Assert.notNull(handler);
         for (final QtiNode startNode : startNodes) {
             for (final NodeGroup<?,?> nodeGroup : startNode.getNodeGroups()) {
                 for (final QtiNode childNode : nodeGroup.getChildren()) {

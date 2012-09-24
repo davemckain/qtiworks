@@ -99,7 +99,7 @@ public final class FilespaceManager {
     }
 
     public File createAssessmentPackageSandbox(final User owner) {
-        Assert.ensureNotNull(owner, "owner");
+        Assert.notNull(owner, "owner");
         final String filespaceUri = filesystemBaseDirectory.toURI().toString()
                 + "/uploads/assessment_packages/"
                 + owner.getBusinessKey()
@@ -108,8 +108,8 @@ public final class FilespaceManager {
     }
 
     public File createCandidateUploadFile(final CandidateItemSession candidateItemSession, final User candidate) {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
-        Assert.ensureNotNull(candidate, "candidate");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidate, "candidate");
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         final Assessment assessment = assessmentPackage.getAssessment();
@@ -125,7 +125,7 @@ public final class FilespaceManager {
     }
 
     public void deleteSandbox(final File sandboxDirectory) {
-        Assert.ensureNotNull(sandboxDirectory, "sandboxDirectory");
+        Assert.notNull(sandboxDirectory, "sandboxDirectory");
         try {
             IoUtilities.recursivelyDelete(sandboxDirectory);
         }

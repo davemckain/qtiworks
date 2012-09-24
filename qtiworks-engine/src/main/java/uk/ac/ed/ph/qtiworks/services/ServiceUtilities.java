@@ -58,7 +58,7 @@ public final class ServiceUtilities {
     public static final String ellipses = "...";
 
     public static String trimString(final String string, final int maxLength) {
-        Assert.ensureNotNull(string, "string");
+        Assert.notNull(string, "string");
         if (maxLength < 0) {
             throw new IllegalArgumentException("maxLength must not be negative");
         }
@@ -73,7 +73,7 @@ public final class ServiceUtilities {
      * size, without rejecting user input.
      */
     public static String trimSentence(final String sentence, final int maxLength) {
-        Assert.ensureNotNull(sentence, "sentence");
+        Assert.notNull(sentence, "sentence");
         if (maxLength < ellipses.length()) {
             throw new IllegalArgumentException("maxLength is clearly too short for a sentence!");
         }

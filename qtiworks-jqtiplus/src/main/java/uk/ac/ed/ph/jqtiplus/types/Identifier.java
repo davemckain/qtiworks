@@ -104,7 +104,7 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
      * @throws QtiParseException if <code>String</code> representation of <code>identifier</code> is not valid
      */
     private static void verifyIdentifier(final String value) {
-        Assert.ensureNotNull(value);
+        Assert.notNull(value);
 
         if (value.isEmpty()) {
             throw new QtiParseException("Invalid identifier '" + value + "': Must not be empty");

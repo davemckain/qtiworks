@@ -69,8 +69,8 @@ public class FileSandboxResourceLocator implements ResourceLocator {
     private final File sandboxBaseDirectory;
 
     public FileSandboxResourceLocator(final CustomUriScheme uriScheme, final File sandboxBaseDirectory) {
-        Assert.ensureNotNull(uriScheme, "uriScheme");
-        Assert.ensureNotNull(sandboxBaseDirectory, "sandboxBaseDirectory");
+        Assert.notNull(uriScheme, "uriScheme");
+        Assert.notNull(sandboxBaseDirectory, "sandboxBaseDirectory");
         this.uriScheme = uriScheme;
         this.sandboxBaseDirectory = sandboxBaseDirectory;
     }

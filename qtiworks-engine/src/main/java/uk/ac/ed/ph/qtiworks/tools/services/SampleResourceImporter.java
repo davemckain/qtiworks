@@ -337,7 +337,7 @@ public class SampleResourceImporter {
     private Assessment importSampleAssessment(final InstructorUser owner,
             final QtiSampleAssessment qtiSampleAssessment, final SampleCategory sampleCategory,
             final Map<DeliveryStyle, ItemDeliverySettings> itemDeliverySettingsMap) {
-        Assert.ensureNotNull(qtiSampleAssessment, "qtiSampleAssessment");
+        Assert.notNull(qtiSampleAssessment, "qtiSampleAssessment");
         logger.info("Importing QTI sample {}", qtiSampleAssessment);
 
         /* Create AssessmentPackage entity */

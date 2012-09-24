@@ -146,30 +146,30 @@ public final class AssessmentTestState extends ControlObjectState<String> {
     //---------------------------------------------------------------
 
     public Value getOutcomeValue(Identifier identifier) {
-        Assert.ensureNotNull(identifier);
+        Assert.notNull(identifier);
         return outcomeValues.get(identifier);
     }
 
     public Value getOutcomeValue(OutcomeDeclaration outcomeDeclaration) {
-        Assert.ensureNotNull(outcomeDeclaration);
+        Assert.notNull(outcomeDeclaration);
         return getOutcomeValue(outcomeDeclaration.getIdentifier());
     }
 
     public void setOutcomeValue(Identifier identifier, Value value) {
-        Assert.ensureNotNull(identifier);
-        Assert.ensureNotNull(value);
+        Assert.notNull(identifier);
+        Assert.notNull(value);
         outcomeValues.put(identifier, value);
     }
 
     public void setOutcomeValue(OutcomeDeclaration outcomeDeclaration, Value value) {
-        Assert.ensureNotNull(outcomeDeclaration);
-        Assert.ensureNotNull(value);
+        Assert.notNull(outcomeDeclaration);
+        Assert.notNull(value);
         setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
     }
 
     public void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value) {
-        Assert.ensureNotNull(outcomeDeclaration);
-        Assert.ensureNotNull(value);
+        Assert.notNull(outcomeDeclaration);
+        Assert.notNull(value);
         Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value);
         if (targetValue == null) {
             targetValue = NullValue.INSTANCE;

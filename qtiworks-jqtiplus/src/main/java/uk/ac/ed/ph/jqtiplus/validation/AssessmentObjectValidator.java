@@ -82,7 +82,7 @@ public final class AssessmentObjectValidator {
     }
 
     public ItemValidationResult validateItem(final ResolvedAssessmentItem resolvedAssessmentItem) {
-        Assert.ensureNotNull(resolvedAssessmentItem);
+        Assert.notNull(resolvedAssessmentItem);
         if (resolvedAssessmentItem.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentItem must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
@@ -103,7 +103,7 @@ public final class AssessmentObjectValidator {
     }
 
     public TestValidationResult validateTest(final ResolvedAssessmentTest resolvedAssessmentTest) {
-        Assert.ensureNotNull(resolvedAssessmentTest);
+        Assert.notNull(resolvedAssessmentTest);
         if (resolvedAssessmentTest.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
             throw new IllegalArgumentException("ReeolvedAssessmentTest must have modelRichness " + ModelRichness.FOR_VALIDATION);
         }
@@ -209,7 +209,7 @@ public final class AssessmentObjectValidator {
 
         @Override
         public boolean checkVariableType(final QtiNode owner, final VariableDeclaration variableDeclaration, final VariableType... requiredTypes) {
-            Assert.ensureNotNull(variableDeclaration);
+            Assert.notNull(variableDeclaration);
             boolean result;
             if (variableDeclaration.isType(requiredTypes)) {
                 result = true;
@@ -233,7 +233,7 @@ public final class AssessmentObjectValidator {
 
         @Override
         public boolean checkBaseType(final QtiNode owner, final VariableDeclaration variableDeclaration, final BaseType... requiredTypes) {
-            Assert.ensureNotNull(variableDeclaration);
+            Assert.notNull(variableDeclaration);
             boolean result;
             final BaseType baseType = variableDeclaration.getBaseType();
             if (baseType!=null && baseType.isOneOf(requiredTypes)) {
@@ -259,7 +259,7 @@ public final class AssessmentObjectValidator {
 
         @Override
         public boolean checkCardinality(final QtiNode owner, final VariableDeclaration variableDeclaration, final Cardinality... requiredTypes) {
-            Assert.ensureNotNull(variableDeclaration);
+            Assert.notNull(variableDeclaration);
             boolean result;
             if (variableDeclaration.getCardinality().isOneOf(requiredTypes)) {
                 result = true;
