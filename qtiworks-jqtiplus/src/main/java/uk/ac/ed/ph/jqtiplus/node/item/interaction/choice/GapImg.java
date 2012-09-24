@@ -38,8 +38,6 @@ import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 
-import java.util.List;
-
 /**
  * A gap image contains a single image object to be inserted into a gap by the candidate.
  * Attribute : objectLabel [0..1]: string
@@ -66,46 +64,19 @@ public final class GapImg extends GapChoice {
         getNodeGroups().add(new ObjectGroup(this, true));
     }
 
-    /**
-     * Gets value of objectLabel attribute.
-     *
-     * @return value of objectLabel attribute
-     * @see #setObjectLabel
-     */
     public String getObjectLabel() {
         return getAttributes().getStringAttribute(ATTR_OBJECT_LABEL_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of objectLabel attribute.
-     *
-     * @param objectLabel new value of objectLabel attribute
-     * @see #getObjectLabel
-     */
     public void setObjectLabel(final String objectLabel) {
         getAttributes().getStringAttribute(ATTR_OBJECT_LABEL_NAME).setValue(objectLabel);
     }
 
-    public List<Object> getChildren() {
-        return getNodeGroups().getObjectGroup().getChildren();
-    }
 
-    /**
-     * Gets object child.
-     *
-     * @return object child
-     * @see #setObject
-     */
     public Object getObject() {
         return getNodeGroups().getObjectGroup().getObject();
     }
 
-    /**
-     * Sets new object child.
-     *
-     * @param object new object child
-     * @see #getObject
-     */
     public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }

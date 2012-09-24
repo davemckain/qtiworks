@@ -84,7 +84,7 @@ import java.util.Map;
  *
  * @author Jonathon Hare
  */
-public class MatchInteraction extends BlockInteraction implements SimpleMatchSetContainer, Shuffleable {
+public final class MatchInteraction extends BlockInteraction implements SimpleMatchSetContainer, Shuffleable {
 
     private static final long serialVersionUID = 8556474552543752269L;
 
@@ -119,73 +119,36 @@ public class MatchInteraction extends BlockInteraction implements SimpleMatchSet
         getNodeGroups().add(new SimpleMatchSetGroup(this, 2, 2));
     }
 
-    /**
-     * Sets new value of shuffle attribute.
-     *
-     * @param shuffle new value of shuffle attribute
-     * @see #getShuffle
-     */
-    @Override
-    public void setShuffle(final boolean shuffle) {
-        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
-    }
 
-    /**
-     * Gets value of shuffle attribute.
-     *
-     * @return value of shuffle attribute
-     * @see #setShuffle
-     */
     @Override
     public boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of maxAssociations attribute.
-     *
-     * @param maxAssociations new value of maxAssociations attribute
-     * @see #getMaxAssociations
-     */
-    public void setMaxAssociations(final Integer maxAssociations) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).setValue(maxAssociations);
+    @Override
+    public void setShuffle(final boolean shuffle) {
+        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
-    /**
-     * Gets value of maxAssociations attribute.
-     *
-     * @return value of maxAssociations attribute
-     * @see #setMaxAssociations
-     */
+
     public int getMaxAssociations() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of minAssociations attribute.
-     *
-     * @param minAssociations new value of minAssociations attribute
-     * @see #getMinAssociations
-     */
-    public void setMinAssociations(final Integer minAssociations) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).setValue(minAssociations);
+    public void setMaxAssociations(final int maxAssociations) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).setValue(Integer.valueOf(maxAssociations));
     }
 
-    /**
-     * Gets value of minAssociations attribute.
-     *
-     * @return value of minAssociations attribute
-     * @see #setMinAssociations
-     */
+
     public int getMinAssociations() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Gets simpleMatchSet children.
-     *
-     * @return simpleMatchSet children
-     */
+    public void setMinAssociations(final Integer minAssociations) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_ASSOCIATIONS_NAME).setValue(minAssociations);
+    }
+
+
     public List<SimpleMatchSet> getSimpleMatchSets() {
         return getNodeGroups().getSimpleMatchSetGroup().getSimpleMatchSets();
     }

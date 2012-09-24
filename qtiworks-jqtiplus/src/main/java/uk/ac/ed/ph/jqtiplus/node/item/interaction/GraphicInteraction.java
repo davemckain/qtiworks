@@ -62,6 +62,7 @@ public abstract class GraphicInteraction extends BlockInteraction {
         getNodeGroups().getObjectGroup().setObject(object);
     }
 
+
     @Override
     public void validate(final ValidationContext context) {
         super.validate(context);

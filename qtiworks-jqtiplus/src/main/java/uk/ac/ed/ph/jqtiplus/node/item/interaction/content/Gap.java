@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.AssociableChoice;
  *
  * @author Jonathon Hare
  */
-public class Gap extends AssociableChoice implements InlineStatic {
+public final class Gap extends AssociableChoice implements InlineStatic {
 
     private static final long serialVersionUID = 8587068031186931243L;
 
@@ -60,11 +60,6 @@ public class Gap extends AssociableChoice implements InlineStatic {
     /** Default value of required attribute. */
     public static final boolean ATTR_REQUIRED_DEFAULT_VALUE = false;
 
-    /**
-     * Constructs object.
-     *
-     * @param parent parent of constructed object
-     */
     public Gap(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 

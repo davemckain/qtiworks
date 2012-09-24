@@ -70,7 +70,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class SelectPointInteraction extends GraphicInteraction implements HotspotChoiceContainer {
+public final class SelectPointInteraction extends GraphicInteraction implements HotspotChoiceContainer {
 
     private static final long serialVersionUID = -8629020921488399059L;
 
@@ -89,55 +89,33 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
     /** Default value of minChoices attribute. */
     public static final int ATTR_MIN_CHOICES_DEFAULT_VALUE = 0;
 
-    public SelectPointInteraction(QtiNode parent) {
+    public SelectPointInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_CHOICES_NAME, ATTR_MAX_CHOICES_DEFAULT_VALUE, true));
         getAttributes().add(new IntegerAttribute(this, ATTR_MIN_CHOICES_NAME, ATTR_MIN_CHOICES_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Sets new value of maxChoices attribute.
-     *
-     * @param maxChoices new value of maxChoices attribute
-     * @see #getMaxChoices
-     */
-    public void setMaxChoices(Integer maxChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
-    }
-
-    /**
-     * Gets value of maxChoices attribute.
-     *
-     * @return value of maxChoices attribute
-     * @see #setMaxChoices
-     */
     public int getMaxChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of minChoices attribute.
-     *
-     * @param minChoices new value of minChoices attribute
-     * @see #getMinChoices
-     */
-    public void setMinChoices(Integer minChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    public void setMaxChoices(final int maxChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(Integer.valueOf(maxChoices));
     }
 
-    /**
-     * Gets value of minChoices attribute.
-     *
-     * @return value of minChoices attribute
-     * @see #setMinChoices
-     */
+
     public int getMinChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedNonNullValue();
     }
 
+    public void setMinChoices(final Integer minChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    }
+
+
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
         final int maxChoices = getMaxChoices();
         final int minChoices = getMinChoices();
@@ -165,7 +143,7 @@ public class SelectPointInteraction extends GraphicInteraction implements Hotspo
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         final List<PointValue> responsePoints = new ArrayList<PointValue>();
         if (responseValue.isNull()) {
             /* (Empty response) */

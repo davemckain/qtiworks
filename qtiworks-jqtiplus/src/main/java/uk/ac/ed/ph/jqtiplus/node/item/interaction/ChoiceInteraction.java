@@ -77,7 +77,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
+public final class ChoiceInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
 
     private static final long serialVersionUID = 7280640816320200269L;
 
@@ -109,73 +109,37 @@ public class ChoiceInteraction extends BlockInteraction implements SimpleChoiceC
         getNodeGroups().add(new SimpleChoiceGroup(this, 1));
     }
 
-    /**
-     * Sets new value of shuffle attribute.
-     *
-     * @param shuffle new value of shuffle attribute
-     * @see #getShuffle
-     */
+
     @Override
     public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
-    /**
-     * Gets value of shuffle attribute.
-     *
-     * @return value of shuffle attribute
-     * @see #setShuffle
-     */
     @Override
     public boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of maxChoices attribute.
-     *
-     * @param maxChoices new value of maxChoices attribute
-     * @see #getMaxChoices
-     */
-    public void setMaxChoices(final Integer maxChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
-    }
 
-    /**
-     * Gets value of maxChoices attribute.
-     *
-     * @return value of maxChoices attribute
-     * @see #setMaxChoices
-     */
     public int getMaxChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of minChoices attribute.
-     *
-     * @param minChoices new value of minChoices attribute
-     * @see #getMinChoices
-     */
-    public void setMinChoices(final Integer minChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    public void setMaxChoices(final int maxChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(Integer.valueOf(maxChoices));
     }
 
-    /**
-     * Gets value of minChoices attribute.
-     *
-     * @return value of minChoices attribute
-     * @see #setMinChoices
-     */
+
     public int getMinChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Gets simpleChoice children.
-     *
-     * @return simpleChoice children
-     */
+
+    public void setMinChoices(final Integer minChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    }
+
+
     public List<SimpleChoice> getSimpleChoices() {
         return getNodeGroups().getSimpleChoiceGroup().getSimpleChoices();
     }

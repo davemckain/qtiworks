@@ -46,4 +46,5 @@ public interface AtomicBlock extends FlowStatic, BlockStatic {
     public static String DISPLAY_NAME = "atomicBlock";
 
     List<Inline> getInlines();
+
 }

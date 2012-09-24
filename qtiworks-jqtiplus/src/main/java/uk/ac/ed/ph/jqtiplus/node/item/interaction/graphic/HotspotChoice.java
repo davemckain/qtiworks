@@ -72,6 +72,7 @@ public final class HotspotChoice extends Choice implements Hotspot {
         getAttributes().getCoordsAttribute(ATTR_COORDS_NAME).setValue(value);
     }
 
+
     @Override
     public String getHotspotLabel() {
         return getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).getComputedValue();
@@ -81,6 +82,7 @@ public final class HotspotChoice extends Choice implements Hotspot {
     public void setHotspotLabel(final String hotspotLabel) {
         getAttributes().getStringAttribute(ATTR_HOTSPOT_LABEL_NAME).setValue(hotspotLabel);
     }
+
 
     @Override
     public Shape getShape() {

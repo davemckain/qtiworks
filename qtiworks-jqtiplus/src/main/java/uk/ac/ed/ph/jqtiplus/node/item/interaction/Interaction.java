@@ -86,34 +86,20 @@ public abstract class Interaction extends BodyElement {
         getAttributes().add(new IdentifierAttribute(this, ATTR_RESPONSE_IDENTIFIER_NAME, true));
     }
 
-    /**
-     * Gets value of responseIdentifier attribute.
-     *
-     * @return value of responseIdentifier attribute
-     * @see #setResponseIdentifier
-     */
+
     public Identifier getResponseIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_RESPONSE_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of responseIdentifier attribute.
-     *
-     * @param responseIdentifier new value of responseIdentifier attribute
-     * @see #getResponseIdentifier
-     */
     public void setResponseIdentifier(final Identifier responseIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_RESPONSE_IDENTIFIER_NAME).setValue(responseIdentifier);
     }
 
-    /**
-     * Gets the responseDeclaration for this interaction.
-     *
-     * @return the responseDeclaration for this interactions responseIdentifier
-     */
+
     public ResponseDeclaration getResponseDeclaration() {
         return getRootNode(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
     }
+
 
     @Override
     public void validate(final ValidationContext context) {

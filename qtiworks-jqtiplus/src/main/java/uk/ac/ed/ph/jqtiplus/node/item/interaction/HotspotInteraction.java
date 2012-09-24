@@ -86,7 +86,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public class HotspotInteraction extends GraphicInteraction implements HotspotChoiceContainer {
+public final class HotspotInteraction extends GraphicInteraction implements HotspotChoiceContainer {
 
     private static final long serialVersionUID = 7817305977968014345L;
 
@@ -114,61 +114,30 @@ public class HotspotInteraction extends GraphicInteraction implements HotspotCho
         getNodeGroups().add(new HotspotChoiceGroup(this, 1));
     }
 
-    /**
-     * Sets new value of maxChoices attribute.
-     *
-     * @param maxChoices new value of maxChoices attribute
-     * @see #getMaxChoices
-     */
-    public void setMaxChoices(final Integer maxChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
-    }
-
-    /**
-     * Gets value of maxChoices attribute.
-     *
-     * @return value of maxChoices attribute
-     * @see #setMaxChoices
-     */
     public int getMaxChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of minChoices attribute.
-     *
-     * @param minChoices new value of minChoices attribute
-     * @see #getMinChoices
-     */
-    public void setMinChoices(final Integer minChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    public void setMaxChoices(final int maxChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(Integer.valueOf(maxChoices));
     }
 
-    /**
-     * Gets value of minChoices attribute.
-     *
-     * @return value of minChoices attribute
-     * @see #setMinChoices
-     */
+
     public int getMinChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Gets hotspotChoice children.
-     *
-     * @return hotspotChoice children
-     */
+    public void setMinChoices(final Integer minChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    }
+
+
+
     public List<HotspotChoice> getHotspotChoices() {
         return getNodeGroups().getHotspotChoiceGroup().getHotspotChoices();
     }
 
-    /**
-     * Gets hotspotChoice child with given identifier or null.
-     *
-     * @param identifier given identifier
-     * @return hotspotChoice with given identifier or null
-     */
+
     public HotspotChoice getHotspotChoice(final Identifier identifier) {
         for (final HotspotChoice choice : getHotspotChoices()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {

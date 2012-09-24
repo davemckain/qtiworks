@@ -92,7 +92,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public class OrderInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
+public final class OrderInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
 
     private static final long serialVersionUID = 4283024380579062066L;
 
@@ -125,93 +125,45 @@ public class OrderInteraction extends BlockInteraction implements SimpleChoiceCo
         getNodeGroups().add(new SimpleChoiceGroup(this, 1));
     }
 
-    /**
-     * Sets new value of shuffle attribute.
-     *
-     * @param shuffle new value of shuffle attribute
-     * @see #getShuffle
-     */
-    @Override
-    public void setShuffle(final boolean shuffle) {
-        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
-    }
 
-    /**
-     * Gets value of shuffle attribute.
-     *
-     * @return value of shuffle attribute
-     * @see #setShuffle
-     */
     @Override
     public boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of maxChoices attribute.
-     *
-     * @param maxChoices new value of maxChoices attribute
-     * @see #getMaxChoices
-     */
-    public void setMaxChoices(final Integer maxChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
+    @Override
+    public void setShuffle(final boolean shuffle) {
+        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
-    /**
-     * Gets value of maxChoices attribute.
-     *
-     * @return value of maxChoices attribute
-     * @see #setMaxChoices
-     */
+
     public Integer getMaxChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of minChoices attribute.
-     *
-     * @param minChoices new value of minChoices attribute
-     * @see #getMinChoices
-     */
-    public void setMinChoices(final Integer minChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    public void setMaxChoices(final Integer maxChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
     }
 
-    /**
-     * Gets value of minChoices attribute.
-     *
-     * @return value of minChoices attribute
-     * @see #setMinChoices
-     */
+
     public Integer getMinChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of orientation attribute.
-     *
-     * @param orientation new value of orientation attribute
-     * @see #getOrientation
-     */
-    public void setOrientation(final Orientation orientation) {
-        getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).setValue(orientation);
+    public void setMinChoices(final Integer minChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
     }
 
-    /**
-     * Gets value of orientation attribute.
-     *
-     * @return value of orientation attribute
-     * @see #setOrientation
-     */
+
     public Orientation getOrientation() {
         return getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).getComputedValue();
     }
 
-    /**
-     * Gets simpleChoice children.
-     *
-     * @return simpleChoice children
-     */
+    public void setOrientation(final Orientation orientation) {
+        getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).setValue(orientation);
+    }
+
+
     public List<SimpleChoice> getSimpleChoices() {
         return getNodeGroups().getSimpleChoiceGroup().getSimpleChoices();
     }

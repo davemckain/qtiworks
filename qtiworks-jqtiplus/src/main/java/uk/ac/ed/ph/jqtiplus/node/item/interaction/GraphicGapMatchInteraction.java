@@ -94,7 +94,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public class GraphicGapMatchInteraction extends GraphicInteraction implements AssociableHotspotContainer {
+public final class GraphicGapMatchInteraction extends GraphicInteraction implements AssociableHotspotContainer {
 
     private static final long serialVersionUID = 3722218691380560119L;
 
@@ -108,20 +108,10 @@ public class GraphicGapMatchInteraction extends GraphicInteraction implements As
         getNodeGroups().add(new AssociableHotspotGroup(this, 1));
     }
 
-    /**
-     * Gets gapImg children.
-     *
-     * @return gapImg children
-     */
     public List<GapImg> getGapImgs() {
         return getNodeGroups().getGapImgGroup().getGapImgs();
     }
 
-    /**
-     * Gets associableHotspot children.
-     *
-     * @return associableHotspot children
-     */
     public List<AssociableHotspot> getAssociableHotspots() {
         return getNodeGroups().getAssociableHotspotGroup().getAssociableHotspots();
     }

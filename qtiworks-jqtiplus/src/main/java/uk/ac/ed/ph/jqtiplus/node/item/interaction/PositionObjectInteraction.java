@@ -81,7 +81,7 @@ import java.util.List;
  *
  * @author Jonathon Hare
  */
-public class PositionObjectInteraction extends BlockInteraction {
+public final class PositionObjectInteraction extends BlockInteraction {
 
     private static final long serialVersionUID = 6496712889271262175L;
 
@@ -100,7 +100,7 @@ public class PositionObjectInteraction extends BlockInteraction {
     /** Name of minChoices attribute in xml schema. */
     public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
 
-    public PositionObjectInteraction(QtiNode parent) {
+    public PositionObjectInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new CoordsAttribute(this, ATTR_CENTER_POINT_NAME, false));
@@ -110,84 +110,46 @@ public class PositionObjectInteraction extends BlockInteraction {
         getNodeGroups().add(new ObjectGroup(this, true));
     }
 
-    /**
-     * Gets value of centerPoint attribute.
-     *
-     * @return value of centerPoint attribute
-     */
     public List<Integer> getCenterPoint() {
         return getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).getComputedValue();
     }
 
-    public void setCenterPoint(List<Integer> value) {
+    public void setCenterPoint(final List<Integer> value) {
         getAttributes().getCoordsAttribute(ATTR_CENTER_POINT_NAME).setValue(value);
     }
 
-    /**
-     * Sets new value of maxChoices attribute.
-     *
-     * @param maxChoices new value of maxChoices attribute
-     * @see #getMaxChoices
-     */
-    public void setMaxChoices(Integer maxChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
-    }
 
-    /**
-     * Gets value of maxChoices attribute.
-     *
-     * @return value of maxChoices attribute
-     * @see #setMaxChoices
-     */
     public int getMaxChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of minChoices attribute.
-     *
-     * @param minChoices new value of minChoices attribute
-     * @see #getMinChoices
-     */
-    public void setMinChoices(Integer minChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    public void setMaxChoices(final int maxChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(Integer.valueOf(maxChoices));
     }
 
-    /**
-     * Gets value of minChoices attribute.
-     *
-     * @return value of minChoices attribute
-     * @see #setMinChoices
-     */
+
     public Integer getMinChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
     }
 
-    /**
-     * Gets object child.
-     *
-     * @return object child
-     * @see #setObject
-     */
+    public void setMinChoices(final Integer minChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
+    }
+
+
     public Object getObject() {
         return getNodeGroups().getObjectGroup().getObject();
     }
 
-    /**
-     * Sets new object child.
-     *
-     * @param object new object child
-     * @see #getObject
-     */
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
-        int maxChoices = getMaxChoices();
-        Integer minChoices = getMinChoices();
+        final int maxChoices = getMaxChoices();
+        final Integer minChoices = getMinChoices();
 
         if (minChoices != null && minChoices.intValue() > maxChoices) {
             context.add(new ValidationError(this, "Minimum number of choices can't be bigger than maximum number"));
@@ -217,7 +179,7 @@ public class PositionObjectInteraction extends BlockInteraction {
 
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final List<PointValue> responsePoints = new ArrayList<PointValue>();
         if (responseValue.isNull()) {
