@@ -50,7 +50,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
@@ -184,29 +183,34 @@ public final class OutcomeDeclaration extends VariableDeclaration {
 
         if (getNormalMaximum() != null) {
             if (getCardinality() != null && !getCardinality().isSingle()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
                         + " will be ignored for cardinality: "
                         + getCardinality()));
             }
             else if (getBaseType() != null && !getBaseType().isNumeric()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
                         + " will be ignored for baseType: "
                         + getBaseType()));
             }
             else if (getNormalMaximum().doubleValue() <= 0) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
-                        + " must be positive."));
+                context.fireAttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                        + " must be positive.");
             }
         }
 
         if (getNormalMinimum() != null) {
             if (getCardinality() != null && !getCardinality().isSingle()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME), "Attribute " + ATTR_NORMAL_MINIMUM_NAME
+                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MINIMUM_NAME
                         + " will be ignored for cardinality: "
                         + getCardinality()));
             }
             else if (getBaseType() != null && !getBaseType().isNumeric()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME), "Attribute " + ATTR_NORMAL_MINIMUM_NAME
+                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MINIMUM_NAME
                         + " will be ignored for baseType: "
                         + getBaseType()));
             }
@@ -216,10 +220,10 @@ public final class OutcomeDeclaration extends VariableDeclaration {
                 getBaseType() != null && getBaseType().isNumeric() &&
                 getNormalMaximum() != null && getNormalMinimum() != null
                 && getNormalMaximum().doubleValue() < getNormalMinimum().doubleValue()) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+            context.fireAttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
+                    "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
                     + " cannot be lower than attribute "
-                    + ATTR_NORMAL_MINIMUM_NAME
-                    + "."));
+                    + ATTR_NORMAL_MINIMUM_NAME);
         }
     }
 

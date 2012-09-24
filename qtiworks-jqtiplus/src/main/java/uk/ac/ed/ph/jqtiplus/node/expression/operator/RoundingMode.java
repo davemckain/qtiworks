@@ -37,8 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -57,8 +56,8 @@ public enum RoundingMode implements Stringifiable {
     SIGNIFICANT_FIGURES("significantFigures") {
 
         @Override
-        public void validateFigures(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
-            RoundingMode.validateFiguresAttribute(attribute, result);
+        public void validateFigures(final ValidationContext validationContext, final IntegerOrVariableRefAttribute attribute) {
+            RoundingMode.validateFiguresAttribute(validationContext, attribute);
         }
 
         @Override
@@ -102,8 +101,8 @@ public enum RoundingMode implements Stringifiable {
     DECIMAL_PLACES("decimalPlaces") {
 
         @Override
-        public void validateFigures(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
-            RoundingMode.validateFiguresAttribute(attribute, result);
+        public void validateFigures(final ValidationContext validationContext, final IntegerOrVariableRefAttribute attribute) {
+            RoundingMode.validateFiguresAttribute(validationContext, attribute);
         }
 
         @Override
@@ -135,11 +134,11 @@ public enum RoundingMode implements Stringifiable {
 
     /**
      * Validates figures attribute.
-     *
+     * @param validationContext TODO
      * @param attribute attribute to be validated
      * @param figures attribute's value to be validated
      */
-    public abstract void validateFigures(IntegerOrVariableRefAttribute attribute, AbstractValidationResult result);
+    public abstract void validateFigures(ValidationContext validationContext, IntegerOrVariableRefAttribute attribute);
 
     /**
      * Rounds given number for given number of figures.
@@ -170,12 +169,12 @@ public enum RoundingMode implements Stringifiable {
         return roundingMode;
     }
 
-    public static void validateFiguresAttribute(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
+    public static void validateFiguresAttribute(final ValidationContext validationContext, final IntegerOrVariableRefAttribute attribute) {
         final IntegerOrVariableRef integerOrVariableRef = attribute.getValue();
         if (integerOrVariableRef.isInteger()) {
             final int intValue = integerOrVariableRef.getInteger();
             if (intValue < 1) {
-                result.add(new AttributeValidationError(attribute, "Figures count (" + intValue + ") must be positive."));
+                validationContext.fireAttributeValidationError(attribute, "Figures count (" + intValue + ") must be positive.");
             }
         }
         else {

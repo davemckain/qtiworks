@@ -103,8 +103,8 @@ public final class Inside extends AbstractFunctionalExpression {
         super.validateAttributes(context);
 
         if (getShape() != null) {
-            getShape().validateCoords(getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME),
-                    context.getValidationResult(), convertCoordinates(getCoordinates()));
+            getShape().validateCoords(context, getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME),
+                   convertCoordinates(getCoordinates()));
         }
     }
 

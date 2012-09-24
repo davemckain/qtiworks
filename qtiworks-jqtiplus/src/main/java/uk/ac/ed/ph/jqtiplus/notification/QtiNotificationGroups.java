@@ -27,30 +27,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
+package uk.ac.ed.ph.jqtiplus.notification;
 
-import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import static uk.ac.ed.ph.jqtiplus.notification.NotificationType.MODEL_BUILDING_ERROR;
+
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 
 /**
- * Error validation item for attribute's problems.
- * 
- * @author Jiri Kajaba
+ * FIXME: Document this type
+ *
+ * @author David McKain
  */
-public class AttributeValidationError extends ValidationError {
+public enum QtiNotificationGroups implements NotificationGroup {
 
-    private static final long serialVersionUID = 6551918301279497855L;
+    QTI_ME(MODEL_BUILDING_ERROR, "QTI model building error"),
+    QTI_VE(NotificationType.MODEL_VALIDATION_ERROR, "QTI validation error"),
+    QTI_VW(NotificationType.MODEL_VALIDATION_WARNING, "QTI validation warning")
+    ;
 
-    /**
-     * Constructs validation item.
-     * 
-     * @param attribute source attribute of constructed item
-     * @param message message of constructed item
-     */
-    public AttributeValidationError(Attribute<?> attribute, String message) {
-        super(attribute, attribute.getOwner(), message);
+    //---------------------------------------------------------
+
+    private NotificationType notificationLevel;
+    private String name;
+
+    private QtiNotificationGroups(final NotificationType notificationLevel, final String name) {
+        this.notificationLevel = notificationLevel;
+        this.name = name;
     }
+
+    @Override
+    public NotificationType getNotificationLevel() {
+        return notificationLevel;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public <E extends JqtiExtensionPackage<E>> JqtiExtensionPackage<E> getExtensionPackage() {
+        return null;
+    }
+
+
 }

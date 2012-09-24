@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -111,9 +110,8 @@ public class RandomFloat extends RandomExpression {
             final double max = maxComputer.getDouble();
             final double min = minComputer.getDouble();
             if (max < min) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
-                        "Attribute " + ATTR_MAX_NAME + " (" + max +
-                        ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")"));
+                context.fireAttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
+                        "Attribute " + ATTR_MAX_NAME + " (" + max + ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")");
             }
 
         }

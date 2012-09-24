@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -71,7 +70,7 @@ public class RecordEx extends AbstractFunctionalExpression {
     /** Name of identifiers attribute in xml schema. */
     public static final String ATTR_IDENTIFIERS_NAME = "identifiers";
 
-    public RecordEx(ExpressionParent parent) {
+    public RecordEx(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierMultipleAttribute(this, ATTR_IDENTIFIERS_NAME, false));
@@ -86,7 +85,7 @@ public class RecordEx extends AbstractFunctionalExpression {
         return getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).getComputedValue();
     }
 
-    public void setIdentifiers(List<Identifier> value) {
+    public void setIdentifiers(final List<Identifier> value) {
         getAttributes().getIdentifierMultipleAttribute(ATTR_IDENTIFIERS_NAME).setValue(value);
     }
 
@@ -97,7 +96,7 @@ public class RecordEx extends AbstractFunctionalExpression {
      * @param identifier identifier of child
      * @return Gets child of this expression with given name or null
      */
-    public Expression getChild(Identifier identifier) {
+    public Expression getChild(final Identifier identifier) {
         final int index = getIdentifiers().indexOf(identifier);
         if (index != -1 && index < getChildren().size()) {
             return getChildren().get(index);
@@ -107,12 +106,12 @@ public class RecordEx extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getIdentifiers().size() != getChildren().size()) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME), "Invalid number of identifiers. Expected: " + getChildren()
-                    .size() + ", but found: " + getIdentifiers().size() + "."));
+            context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME),
+                    "Invalid number of identifiers. Expected: " + getChildren().size() + ", but found: " + getIdentifiers().size() + ".");
         }
 
         final List<Identifier> identifiers = new ArrayList<Identifier>();
@@ -121,13 +120,14 @@ public class RecordEx extends AbstractFunctionalExpression {
                 identifiers.add(identifier);
             }
             else {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME), "Duplicate identifier: " + identifier));
+                context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME),
+                        "Duplicate identifier: " + identifier);
             }
         }
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getChildren().size() == 0) {
@@ -136,7 +136,7 @@ public class RecordEx extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         final RecordValue container = new RecordValue();
 
         for (int i=0; i<childValues.length; i++) {

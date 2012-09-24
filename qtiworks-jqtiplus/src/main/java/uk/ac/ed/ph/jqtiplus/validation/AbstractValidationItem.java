@@ -55,8 +55,6 @@ public abstract class AbstractValidationItem implements ValidationItem, Serializ
     /** Message of this item. */
     private final String message;
 
-    private final Throwable cause;
-
     /**
      * Constructs validation item.
      *
@@ -65,14 +63,9 @@ public abstract class AbstractValidationItem implements ValidationItem, Serializ
      * @param message message of constructed item
      */
     public AbstractValidationItem(final Validatable source, final QtiNode node, final String message) {
-        this(source, node, message, null);
-    }
-
-    public AbstractValidationItem(final Validatable source, final QtiNode node, final String message, final Throwable cause) {
         this.source = source;
         this.node = node;
         this.message = message;
-        this.cause = cause;
     }
 
     @Override
@@ -91,17 +84,11 @@ public abstract class AbstractValidationItem implements ValidationItem, Serializ
     }
 
     @Override
-    public Throwable getCause() {
-        return cause;
-    }
-
-    @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(source=" + source
                 + ",node=" + node
                 + ",message=" + message
-                + ",cause=" + cause
                 + ")";
     }
 }

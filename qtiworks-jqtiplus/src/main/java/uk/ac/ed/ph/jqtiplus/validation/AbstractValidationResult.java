@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,13 +45,15 @@ import java.util.List;
 
 /**
  * Partial base class for result of validation. Container of validation items.
- * 
+ *
  * @author Jiri Kajaba
  * @authro David McKain
  */
 public abstract class AbstractValidationResult implements Serializable {
 
     private static final long serialVersionUID = 7987550924957601153L;
+
+    private final List<ModelNotification> modelNotifications;
 
     /** Container of all errors. */
     private final List<ValidationError> errors;
@@ -71,6 +74,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * Constructs validation result container.
      */
     public AbstractValidationResult() {
+        this.modelNotifications = new ArrayList<ModelNotification>();
         this.errors = new ArrayList<ValidationError>();
         this.warnings = new ArrayList<ValidationWarning>();
         this.allItems = new ArrayList<ValidationItem>();
@@ -84,7 +88,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * Gets all errors of this container.
      * <p>
      * Do not add errors directly getErrors().add(ERROR), use add(ERROR) method instead of it!
-     * 
+     *
      * @return all errors of this container
      * @see #getErrors(QtiNode)
      */
@@ -96,15 +100,15 @@ public abstract class AbstractValidationResult implements Serializable {
      * Gets all errors of this container for given source node.
      * <p>
      * Convenient method for obtaining only errors related to one node.
-     * 
+     *
      * @param source given source node
      * @return all errors of this container for given source node
      * @see #getErrors()
      */
-    public List<ValidationError> getErrors(QtiNode source) {
+    public List<ValidationError> getErrors(final QtiNode source) {
         return get(errors, source);
     }
-    
+
     public boolean hasWarnings() {
         return !warnings.isEmpty();
     }
@@ -113,7 +117,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * Gets all warnings of this container.
      * <p>
      * Do not add warnings directly getWarnings().add(WARNING), use add(WARNING) method instead of it!
-     * 
+     *
      * @return all warnings of this container
      * @see #getWarnings(QtiNode)
      */
@@ -125,13 +129,13 @@ public abstract class AbstractValidationResult implements Serializable {
      * Gets all warnings of this container for given source node.
      * <p>
      * Convenient method for obtaining only warnings related to one node.
-     * 
+     *
      * @param source given source node
      * @return all warnings of this container for given source node
      * @see #getWarnings()
      */
     @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ValidationWarning> getWarnings(QtiNode source) {
+    public List<ValidationWarning> getWarnings(final QtiNode source) {
         return get(warnings, source);
     }
 
@@ -139,7 +143,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * Gets all validation items (error, warning, info) of this container.
      * <p>
      * Do not add validation items directly getAllItems().add(ITEM), use add(ITEM) method instead of it!
-     * 
+     *
      * @return all validation items (error, warning, info) of this container
      * @see #getAllItems(QtiNode)
      */
@@ -152,23 +156,23 @@ public abstract class AbstractValidationResult implements Serializable {
      * Gets all validation items (error, warning, info) of this container for given source node.
      * <p>
      * Convenient method for obtaining only validation items (error, warning, info) related to one node.
-     * 
+     *
      * @param source given source node
      * @return all validation items (error, warning, info) of this container for given source node
      * @see #getAllItems()
      */
-    public List<ValidationItem> getAllItems(QtiNode source) {
+    public List<ValidationItem> getAllItems(final QtiNode source) {
         return get(allItems, source);
     }
 
     /**
      * Gets all validation items from given source list of validation items for given source node.
-     * 
+     *
      * @param items source list of validation items
      * @param source given source node
      * @return all validation items from given source list of validation items for given source node
      */
-    private static <E extends ValidationItem> List<E> get(List<E> items, QtiNode source) {
+    private static <E extends ValidationItem> List<E> get(final List<E> items, final QtiNode source) {
         final List<E> result = new ArrayList<E>();
         for (final E item : items) {
             if (item.getNode() == source) {
@@ -185,10 +189,10 @@ public abstract class AbstractValidationResult implements Serializable {
      * <li>adds validation item into allItems list (<code>getAllItems().add(ITEM)</code>)
      * </ol>
      * Using of this method is preferred way how to insert new item into this container.
-     * 
+     *
      * @param item item to be added
      */
-    public void add(ValidationItem item) {
+    public void add(final ValidationItem item) {
         Assert.notNull(item);
         if (item instanceof ValidationError) {
             errors.add((ValidationError) item);
@@ -202,10 +206,14 @@ public abstract class AbstractValidationResult implements Serializable {
         allItems.add(item);
     }
 
-    public void addAll(Iterable<ValidationItem> items) {
+    public void addAll(final Iterable<ValidationItem> items) {
         for (final ValidationItem item : items) {
             add(item);
         }
+    }
+
+    public void add(final ModelNotification modelNotification) {
+        modelNotifications.add(modelNotification);
     }
 
 }

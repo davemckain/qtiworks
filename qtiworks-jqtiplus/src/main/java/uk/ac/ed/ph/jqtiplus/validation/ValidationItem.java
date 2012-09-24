@@ -37,14 +37,14 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * One item of validation (the smallest piece of indivisible information).
- * 
+ *
  * @author Jiri Kajaba
  */
 public interface ValidationItem {
 
     /**
      * Gets type of this item.
-     * 
+     *
      * @return type of this item
      * @see ValidationType
      */
@@ -52,7 +52,7 @@ public interface ValidationItem {
 
     /**
      * Gets source of this item.
-     * 
+     *
      * @return source of this item
      */
     Validatable getSource();
@@ -64,20 +64,15 @@ public interface ValidationItem {
      * <li>If source of this item is node, this method returns this node.</li>
      * <li>If source of this item is not node (e.g. attribute), this method returns source's (e.g. attribute's) parent node.</li>
      * </ul>
-     * 
+     *
      * @return source node of this item
      */
     QtiNode getNode();
 
     /**
      * Gets message of this item.
-     * 
+     *
      * @return message of this item
      */
     String getMessage();
-
-    /**
-     * Gets optional "cause" associated with this item
-     */
-    Throwable getCause();
 }

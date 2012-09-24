@@ -95,8 +95,8 @@ public final class RoundTo extends AbstractExpression {
 
         final RoundingMode roundingMode = getRoundingMode();
         if (roundingMode != null) {
-            roundingMode.validateFigures(getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME),
-                    context.getValidationResult());
+            roundingMode.validateFigures(context,
+                    getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME));
         }
     }
 

@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
@@ -54,7 +55,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  *
  * @author David McKain
  */
-public interface ValidationContext {
+public interface ValidationContext extends NotificationFirer {
 
     /**
      * Provides access to the underlying {@link JqtiExtensionManager} behind this process

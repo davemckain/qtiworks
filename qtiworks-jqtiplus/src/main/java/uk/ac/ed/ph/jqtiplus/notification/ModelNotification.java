@@ -27,46 +27,52 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
+package uk.ac.ed.ph.jqtiplus.notification;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
- * Validation item of error type.
+ * FIXME: Document this type
  *
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public class ValidationError extends AbstractValidationItem {
+public final class ModelNotification implements Serializable {
 
-    private static final long serialVersionUID = 8636935313209399027L;
+    private static final long serialVersionUID = 6723715622589447687L;
 
-    /**
-     * Constructs validation item.
-     *
-     * @param node source node of constructed item
-     * @param message message of constructed item
-     */
-    public ValidationError(final QtiNode node, final String message) {
-        this(node, node, message);
+    private final QtiNode qtiNode;
+    private final NotificationCode notificationCode;
+    private final String message;
+    private final String[] arguments;
+
+    public ModelNotification(final QtiNode qtiNode, final NotificationCode notificationCode, final String message, final String[] arguments) {
+        this.qtiNode = qtiNode;
+        this.notificationCode = notificationCode;
+        this.message = message;
+        this.arguments = arguments;
     }
 
-    /**
-     * Constructs validation item.
-     *
-     * @param source source of constructed item
-     * @param node source node of constructed item
-     * @param message message of constructed item
-     */
-    public ValidationError(final Validatable source, final QtiNode node, final String message) {
-        super(source, node, message);
+    public QtiNode getQtiNode() {
+        return qtiNode;
     }
 
-    @Override
-    public ValidationType getType() {
-        return ValidationType.ERROR;
+    public NotificationCode getNotificationCode() {
+        return notificationCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public List<String> getArguments() {
+        return ObjectUtilities.createView(arguments);
     }
 }

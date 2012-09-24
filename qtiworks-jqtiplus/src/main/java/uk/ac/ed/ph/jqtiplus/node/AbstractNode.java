@@ -42,8 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
@@ -270,13 +268,13 @@ public abstract class AbstractNode implements QtiNode {
     }
 
     /** Helper method to validate a unique identifier (definition) attribute */
-    protected void validateUniqueIdentifier(final AbstractValidationResult result, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
+    protected void validateUniqueIdentifier(final ValidationContext validationContext, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
         if (identifier != null) {
             if (getRootNode(AssessmentTest.class) != null && BranchRule.isSpecial(identifier)) {
-                result.add(new AttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute));
+                validationContext.fireAttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute);
             }
             if (!validateUniqueIdentifier(getRootNode(), identifier)) {
-                result.add(new AttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute));
+                validationContext.fireAttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute);
             }
         }
     }

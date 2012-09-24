@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
+import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ToleranceModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefMultipleAttribute;
@@ -40,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -175,20 +175,19 @@ public final class Equal extends AbstractExpression {
     protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
+        final Attribute<?> tolerancesAttr = getAttributes().get(ATTR_TOLERANCES_NAME);
         final List<FloatOrVariableRef> tolerances = getTolerances();
         if (tolerances!=null && (tolerances.size()==0 || tolerances.size()>2)) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
-                    "Attribute " +
-                    ATTR_TOLERANCES_NAME + " must contain 1 or 2 floatOrVariableRefs when specified"));
+            context.fireAttributeValidationError(tolerancesAttr,
+                    "Attribute " + ATTR_TOLERANCES_NAME + " must contain 1 or 2 floatOrVariableRefs when specified");
         }
 
         final FloatOrVariableRef firstToleranceComputer = getFirstTolerance();
         if (firstToleranceComputer!=null && firstToleranceComputer.isFloat()) {
             final double firstToleranceValue = firstToleranceComputer.getDouble();
             if (firstToleranceValue < 0) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
-                        "Attribute " + ATTR_TOLERANCES_NAME + " (" +
-                        firstToleranceValue + ") cannot be negative."));
+                context.fireAttributeValidationError(tolerancesAttr,
+                        "Attribute " + ATTR_TOLERANCES_NAME + " (" + firstToleranceValue + ") cannot be negative.");
             }
         }
 
@@ -196,17 +195,14 @@ public final class Equal extends AbstractExpression {
         if (secondToleranceComputer!=null && secondToleranceComputer.isFloat()) {
             final double secondToleranceValue = secondToleranceComputer.getDouble();
             if (secondToleranceValue < 0) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
-                        "Attribute " + ATTR_TOLERANCES_NAME + " (" +
-                        getSecondTolerance() + ") cannot be negative."));
+                context.fireAttributeValidationError(tolerancesAttr,
+                        "Attribute " + ATTR_TOLERANCES_NAME + " (" + getSecondTolerance() + ") cannot be negative.");
             }
         }
 
-        if (getToleranceMode() != null && getToleranceMode() != ToleranceMode.EXACT &&
-                tolerances==null) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
-                    "Attribute " +
-                    ATTR_TOLERANCES_NAME + " must be specified when toleranceMode is absolute or relative"));
+        if (getToleranceMode() != null && getToleranceMode() != ToleranceMode.EXACT && tolerances==null) {
+            context.fireAttributeValidationError(tolerancesAttr,
+                    "Attribute " + ATTR_TOLERANCES_NAME + " must be specified when toleranceMode is absolute or relative");
         }
     }
 

@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
@@ -115,8 +114,7 @@ public final class Variable extends LookupExpression {
                 }
             }
             else if (context.isValidatingItem()) {
-                context.getValidationResult().add(new AttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME),
-                        "Weights may only be used when referencing item variables from tests"));
+                context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Weights may only be used when referencing item variables from tests");
             }
         }
     }

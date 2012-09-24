@@ -50,6 +50,13 @@ import java.util.Set;
  */
 public final class ObjectUtilities {
 
+    public static <T> List<T> createView(final T[] array) {
+        if (array==null) {
+            return Collections.emptyList();
+        }
+        return unmodifiableList(Arrays.asList(array));
+    }
+
     public static <T> Set<T> unmodifiableSet(final T... items) {
         final Set<T> result = new HashSet<T>();
         for (final T item : items) {

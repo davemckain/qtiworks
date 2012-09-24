@@ -38,9 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
@@ -102,17 +100,16 @@ public final class Index extends AbstractExpression {
         if (indexComputer.isInteger()) {
             final int index = indexComputer.getInteger();
             if (index < 1) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_INDEX_NAME),
-                        "Attribute " + ATTR_INDEX_NAME +
-                        " (" + index + ") must be positive"));
+                context.fireAttributeValidationError(getAttributes().get(ATTR_INDEX_NAME),
+                        "Attribute " + ATTR_INDEX_NAME + " (" + index + ") must be positive");
             }
 
             if (getChildren().size() != 0 && getChildren().get(0) instanceof Ordered) {
                 final Ordered ordered = (Ordered) getChildren().get(0);
                 if (ordered.getChildren().size() > 0 && index > ordered.getChildren().size()) {
-                    context.add(new ValidationWarning(getAttributes().get(ATTR_INDEX_NAME),
-                            "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: " +
-                            ordered.getChildren().size() + ", but found: " + index));
+                    context.fireAttributeValidationWarning(getAttributes().get(ATTR_INDEX_NAME),
+                        "Attribute " + ATTR_INDEX_NAME + " is too big. Expected at most: "
+                            + ordered.getChildren().size() + ", but found: " + index);
                 }
             }
         }
