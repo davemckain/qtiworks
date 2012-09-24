@@ -47,24 +47,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * Item authors should make every effort to ensure that the value of the second expression is never 0, however, if it is zero or the resulting value is outside
  * the value set defined by float (not including positive and negative infinity) then the operator should result in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Divide extends AbstractFunctionalExpression {
+public final class Divide extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 660151792830009053L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "divide";
 
-    public Divide(ExpressionParent parent) {
+    public Divide(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
@@ -75,6 +75,7 @@ public class Divide extends AbstractFunctionalExpression {
         if (secondNumber == 0) {
             return NullValue.INSTANCE;
         }
-        return new FloatValue(firstNumber / secondNumber);
+        final double divided = firstNumber / secondNumber;
+        return Double.isInfinite(divided) ? NullValue.INSTANCE : new FloatValue(divided);
     }
 }
