@@ -37,10 +37,9 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,12 +52,12 @@ public abstract class AbstractValidationResult implements Serializable {
 
     private static final long serialVersionUID = 7987550924957601153L;
 
-    private final List<ModelNotification> modelNotifications;
+    private final NotificationRecorder notificationRecorder;
     private boolean hasErrors;
     private boolean hasWarnings;
 
     public AbstractValidationResult() {
-        this.modelNotifications = new ArrayList<ModelNotification>();
+        this.notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         this.hasErrors = false;
         this.hasWarnings = false;
     }
@@ -72,32 +71,26 @@ public abstract class AbstractValidationResult implements Serializable {
     }
 
     public List<ModelNotification> getNotifications() {
-        return Collections.unmodifiableList(modelNotifications);
+        return notificationRecorder.getNotifications();
     }
 
-    public List<ModelNotification> getNotifications(final NotificationLevel requiredLevel) {
-        final List<ModelNotification> result = new ArrayList<ModelNotification>(modelNotifications.size());
-        for (final ModelNotification notification : modelNotifications) {
-            if (notification.getNotificationLevel()==requiredLevel) {
-                result.add(notification);
-            }
-        }
-        return Collections.unmodifiableList(result);
+    public List<ModelNotification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
+        return notificationRecorder.getNotificationsAtLevel(requiredLevel);
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
     public List<ModelNotification> getErrors() {
-        return getNotifications(NotificationLevel.ERROR);
+        return getNotificationsAtLevel(NotificationLevel.ERROR);
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
     public List<ModelNotification> getWarnings() {
-        return getNotifications(NotificationLevel.WARNING);
+        return getNotificationsAtLevel(NotificationLevel.WARNING);
     }
 
-    public void add(final ModelNotification modelNotification) {
-        modelNotifications.add(modelNotification);
-        final NotificationLevel notificationLevel = modelNotification.getNotificationLevel();
+    public void add(final ModelNotification notification) {
+        notificationRecorder.onNotification(notification);
+        final NotificationLevel notificationLevel = notification.getNotificationLevel();
         if (notificationLevel==NotificationLevel.ERROR) {
             hasErrors = true;
         }

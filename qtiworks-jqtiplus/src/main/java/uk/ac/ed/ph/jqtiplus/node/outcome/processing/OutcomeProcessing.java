@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -85,7 +84,7 @@ public final class OutcomeProcessing extends AbstractNode {
      *
      * @throws RuntimeValidationException
      */
-    public void evaluate(final TestProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final TestProcessingContext context) {
         try {
             for (final OutcomeRule outcomeRule : getOutcomeRules()) {
                 outcomeRule.evaluate(context);

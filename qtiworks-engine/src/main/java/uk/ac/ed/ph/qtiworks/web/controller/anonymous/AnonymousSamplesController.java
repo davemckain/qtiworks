@@ -43,8 +43,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +96,7 @@ public class AnonymousSamplesController {
      */
     @RequestMapping(value="/samples/{aid}", method=RequestMethod.POST)
     public String startItemSession(@PathVariable final long aid)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/list");
 
         final CandidateItemSession candidateItemSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);

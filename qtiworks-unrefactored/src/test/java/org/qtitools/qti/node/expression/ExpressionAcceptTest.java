@@ -35,7 +35,6 @@ package org.qtitools.qti.node.expression;
 
 import static org.junit.Assert.assertEquals;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import org.junit.Test;

@@ -62,9 +62,10 @@ import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -546,7 +547,7 @@ public class CandidateItemDeliveryService {
     public CandidateItemAttempt handleAttempt(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
-            throws RuntimeValidationException, CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateItemSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
     }
@@ -554,7 +555,7 @@ public class CandidateItemDeliveryService {
     public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateItemSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
-            throws RuntimeValidationException, CandidateForbiddenException {
+            throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
 
@@ -617,9 +618,12 @@ public class CandidateItemDeliveryService {
         }
         candidateItemAttempt.setResponses(candidateItemResponses);
 
+        /* Set up listener to record any notifications from JQTI logic */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
         /* Get current JQTI state and create JQTI controller */
         final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateItemSession);
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, notificationRecorder);
 
         /* Attempt to bind responses */
         final Set<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
@@ -652,7 +656,8 @@ public class CandidateItemDeliveryService {
         final CandidateItemEventType eventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
             : CandidateItemEventType.ATTEMPT_BAD;
-        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, eventType, itemSessionController.getItemSessionState());
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession,
+                eventType, itemSessionController.getItemSessionState(), notificationRecorder);
 
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);
@@ -715,13 +720,13 @@ public class CandidateItemDeliveryService {
      * randomised values will change as a result of this process.
      */
     public CandidateItemSession reinitCandidateSession(final long xid, final String sessionToken)
-            throws RuntimeValidationException, CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return reinitCandidateSession(candidateItemSession);
     }
 
     public CandidateItemSession reinitCandidateSession(final CandidateItemSession candidateItemSession)
-            throws RuntimeValidationException, CandidateForbiddenException {
+            throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may reinit the session */
@@ -739,14 +744,18 @@ public class CandidateItemDeliveryService {
         /* Create fresh JQTI+ state */
         final ItemSessionState itemSessionState = new ItemSessionState();
 
+        /* Set up listener to record any notifications from JQTI logic */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
         /* Get the resolved JQTI+ Object for the underlying package */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery,
+                itemSessionState, notificationRecorder);
 
         /* Initialise state */
         itemSessionController.initialize();
 
         /* Record and log event */
-        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.REINIT, itemSessionState);
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.REINIT, itemSessionState, notificationRecorder);
         logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
         /* Update state */
@@ -808,7 +817,7 @@ public class CandidateItemDeliveryService {
         logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
         /* Update state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState, null);
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
         candidateItemSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateItemSession);
@@ -1024,7 +1033,7 @@ public class CandidateItemDeliveryService {
         final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateItemSession);
 
         /* Generate result Object from state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, null);
         final ItemResult itemResult = itemSessionController.computeItemResult();
 
         /* Send result */

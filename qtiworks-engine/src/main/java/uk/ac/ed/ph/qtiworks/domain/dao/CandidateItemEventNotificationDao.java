@@ -31,29 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception2;
+package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiException;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Thrown if validation problems are detected at runtime (e.g. response processing)
+ * DAO implementation for the {@link CandidateItemEventNotification} entity.
  *
- * @author Jiri Kajaba
+ * @author David McKain
  */
-@Deprecated
-public class RuntimeValidationException extends QtiException {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class CandidateItemEventNotificationDao extends GenericDao<CandidateItemEventNotification> {
 
-    private static final long serialVersionUID = 1114808435234903326L;
+    @PersistenceContext
+    private EntityManager em;
 
-    private final AbstractValidationResult validationResult;
-
-    public RuntimeValidationException(final AbstractValidationResult result) {
-        super("Runtime validaiton errors determined");
-        this.validationResult = result;
+    public CandidateItemEventNotificationDao() {
+        super(CandidateItemEventNotification.class);
     }
 
-    public AbstractValidationResult getValidationResult() {
-        return validationResult;
+    public List<CandidateItemEventNotification> getForEvent(final CandidateItemEvent event) {
+        final TypedQuery<CandidateItemEventNotification> query = em.createNamedQuery("CandidateItemEventNotification.getForEvent", CandidateItemEventNotification.class);
+        query.setParameter("candidateItemEvent", event);
+        return query.getResultList();
     }
 }

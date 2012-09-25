@@ -31,55 +31,50 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
+package uk.ac.ed.ph.jqtiplus.notification;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Abstract parent for all outcomeCondition children (IF, ELSE-IF, ELSE).
+ * Trivial implementation of {@link NotificationListener} that simply records all
+ * events (above a certain threshold) for later inspection.
  *
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public abstract class OutcomeConditionChild extends AbstractNode {
+public final class NotificationRecorder implements NotificationListener, Serializable {
 
-    private static final long serialVersionUID = 8228195924310740729L;
+    private static final long serialVersionUID = -8782072000887987018L;
 
-    public OutcomeConditionChild(final OutcomeCondition parent, final String qtiClassName) {
-        super(parent, qtiClassName);
+    private final List<ModelNotification> modelNotifications;
+    private final NotificationLevel notificationThreshold;
 
-        getNodeGroups().add(new OutcomeRuleGroup(this));
+    public NotificationRecorder(final NotificationLevel notificationThreshold) {
+        this.modelNotifications = new ArrayList<ModelNotification>();
+        this.notificationThreshold = notificationThreshold;
     }
 
-    public List<OutcomeRule> getOutcomeRules() {
-        return getNodeGroups().getOutcomeRuleGroup().getOutcomeRules();
+    public List<ModelNotification> getNotifications() {
+        return Collections.unmodifiableList(modelNotifications);
+    }
+
+    public List<ModelNotification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
+        final List<ModelNotification> result = new ArrayList<ModelNotification>(modelNotifications.size());
+        for (final ModelNotification notification : modelNotifications) {
+            if (notification.getNotificationLevel()==requiredLevel) {
+                result.add(notification);
+            }
+        }
+        return Collections.unmodifiableList(result);
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
-        if (getOutcomeRules().size() == 0) {
-            context.fireValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules.");
+    public void onNotification(final ModelNotification notification) {
+        final NotificationLevel level = notification.getNotificationLevel();
+        if (level.compareTo(notificationThreshold) >= 0) {
+            modelNotifications.add(notification);
         }
-    }
-
-    /**
-     * Evaluates all child outcomeRules and returns true.
-     *
-     * @return true
-     * @throws QtiProcessingInterrupt
-     * @throws RuntimeValidationException
-     */
-    public boolean evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt {
-        for (final OutcomeRule outcomeRule : getOutcomeRules()) {
-            outcomeRule.evaluate(context);
-        }
-        return true;
     }
 }

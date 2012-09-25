@@ -40,8 +40,6 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,7 +61,7 @@ public class LtiController {
 
     @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
     public String ltiLaunch(final HttpServletRequest httpRequest, @PathVariable final long did)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+            throws  PrivilegeException, DomainEntityNotFoundException {
         final LtiLaunchData ltiLaunchData = LtiAuthenticationFilter.getLaunchData(httpRequest);
 
         /* FIXME: Decide what to do if this data is not passed */

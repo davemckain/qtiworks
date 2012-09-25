@@ -48,7 +48,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
@@ -107,8 +106,7 @@ public class AnonymousStandaloneItemRunner {
 
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
     public String handleUploadAndRunForm(final Model model, @Valid @ModelAttribute final StandaloneRunCommand command,
-            final BindingResult errors)
-            throws RuntimeValidationException {
+            final BindingResult errors) {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
             return "standalonerunner/uploadForm";

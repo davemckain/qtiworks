@@ -37,17 +37,24 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
@@ -60,6 +67,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -84,6 +92,9 @@ public class CandidateDataServices {
 
     @Resource
     private CandidateItemEventDao candidateItemEventDao;
+
+    @Resource
+    private CandidateItemEventNotificationDao candidateItemEventNotificationDao;
 
     @Resource
     private JqtiExtensionManager jqtiExtensionManager;
@@ -111,11 +122,26 @@ public class CandidateDataServices {
 
     public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
-        return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, null);
+        return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, null, null);
     }
 
     public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
-            final CandidateItemEventType eventType, final ItemSessionState itemSessionState, final CandidateItemEvent playbackEvent) {
+            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
+            final NotificationRecorder notificationRecorder) {
+        return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, notificationRecorder, null);
+    }
+
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
+            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
+            final CandidateItemEvent playbackEvent) {
+        return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, null, playbackEvent);
+    }
+
+    private CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
+            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
+            final NotificationRecorder notificationRecorder,
+            final CandidateItemEvent playbackEvent) {
+        /* Create event */
         final CandidateItemEvent event = new CandidateItemEvent();
         event.setCandidateItemSession(candidateItemSession);
         event.setEventType(eventType);
@@ -129,23 +155,72 @@ public class CandidateDataServices {
         /* Record serialized ItemSessionState */
         event.setItemSessionStateXml(marshalItemSessionState(itemSessionState));
 
-        /* Store */
+        /* Store event */
         candidateItemEventDao.persist(event);
+
+        /* Now store processing notifications */
+        if (notificationRecorder!=null) {
+            for (final ModelNotification notification : notificationRecorder.getNotifications()) {
+                recordNotification(event, notification);
+            }
+        }
+
         return event;
     }
 
-    public ItemSessionController createItemSessionController(final CandidateItemEvent candidateItemEvent) {
-        final ItemDelivery itemDelivery = candidateItemEvent.getCandidateItemSession().getItemDelivery();
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateItemEvent);
-        return createItemSessionController(itemDelivery, itemSessionState);
+    public CandidateItemEventNotification recordNotification(final CandidateItemEvent candidateItemEvent, final ModelNotification notification) {
+        final CandidateItemEventNotification record = new CandidateItemEventNotification();
+        record.setCandidateItemEvent(candidateItemEvent);
+
+        record.setMessage(notification.getMessage());
+        record.setNotificationLevel(notification.getNotificationLevel());
+        record.setNotificationType(notification.getNotificationType());
+
+        final QtiNode qtiNode = notification.getQtiNode();
+        if (qtiNode!=null) {
+            record.setNodeQtiClassName(qtiNode.getQtiClassName());
+            final XmlSourceLocationInformation sourceLocation = qtiNode.getSourceLocation();
+            if (sourceLocation!=null) {
+                record.setSystemId(sourceLocation.getSystemId());
+                record.setLineNumber(sourceLocation.getLineNumber());
+                record.setColumnNumber(sourceLocation.getColumnNumber());
+            }
+        }
+        final Attribute<?> attribute = notification.getAttribute();
+        if (attribute!=null) {
+            record.setAttributeLocalName(attribute.getLocalName());
+            record.setAttributeNamespaceUri(attribute.getNamespaceUri());
+        }
+
+        candidateItemEventNotificationDao.persist(record);
+        return record;
     }
 
-    public ItemSessionController createItemSessionController(final ItemDelivery itemDelivery, final ItemSessionState itemSessionState) {
+    public ItemSessionController createItemSessionController(final CandidateItemEvent candidateItemEvent,
+            final NotificationRecorder notificationRecorder) {
+        Assert.notNull(candidateItemEvent, "candidateItemEvent");
+
+        final ItemDelivery itemDelivery = candidateItemEvent.getCandidateItemSession().getItemDelivery();
+        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateItemEvent);
+        return createItemSessionController(itemDelivery, itemSessionState, notificationRecorder);
+    }
+
+    public ItemSessionController createItemSessionController(final ItemDelivery itemDelivery,
+            final ItemSessionState itemSessionState,  final NotificationRecorder notificationRecorder) {
+        Assert.notNull(itemDelivery, "itemDelivery");
+        Assert.notNull(itemSessionState, "itemSessionState");
+
         /* Get the resolved JQTI+ Object for the underlying package */
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
 
-        return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        /* Create controller and wire up notification recorder (if passed) */
+        final ItemSessionController result = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        if (notificationRecorder!=null) {
+            result.addNotificationListener(notificationRecorder);
+        }
+
+        return result;
     }
 
     public ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateItemSession)  {

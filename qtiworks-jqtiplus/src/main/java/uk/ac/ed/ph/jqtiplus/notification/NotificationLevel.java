@@ -34,15 +34,15 @@
 package uk.ac.ed.ph.jqtiplus.notification;
 
 /**
- * FIXME: Document this type
+ * NB: These should be arranged in increasing level of importance
  *
  * @author David McKain
  */
 public enum NotificationLevel {
 
-    ERROR,
-    WARNING,
     INFO,
+    WARNING,
+    ERROR,
     ;
 
 }

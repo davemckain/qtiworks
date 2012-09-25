@@ -15,7 +15,6 @@ import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
@@ -35,7 +34,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 public class RenderingTest {
 
-    public static void main(final String[] args) throws RuntimeValidationException {
+    public static void main(final String[] args) {
 //        final URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
         final URI inputUri = URI.create("classpath:/choice.xml");
 

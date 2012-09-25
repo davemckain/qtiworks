@@ -34,14 +34,13 @@
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 /**
  * Abstract parent of all outcome rules.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class OutcomeRule extends AbstractNode {
@@ -51,15 +50,14 @@ public abstract class OutcomeRule extends AbstractNode {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "outcomeRule";
 
-    public OutcomeRule(QtiNode parent, String qtiClassName) {
+    public OutcomeRule(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
     }
 
     /**
      * Evaluates this rule and all its children.
-     * 
+     *
      * @throws QtiProcessingInterrupt
-     * @throws RuntimeValidationException
      */
-    public abstract void evaluate(TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException;
+    public abstract void evaluate(TestProcessingContext context) throws QtiProcessingInterrupt;
 }

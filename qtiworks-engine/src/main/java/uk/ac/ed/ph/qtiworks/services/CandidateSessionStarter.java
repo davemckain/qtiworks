@@ -53,8 +53,11 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
@@ -153,7 +156,7 @@ public class CandidateSessionStarter {
     // Session creation and initialisation
 
     public CandidateItemSession createSystemSampleSession(final long aid, final String exitUrl)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery sampleItemDelivery = lookupSystemSampleDelivery(aid);
         return createCandidateSession(sampleItemDelivery, exitUrl);
     }
@@ -163,20 +166,21 @@ public class CandidateSessionStarter {
      * having the given ID (did).
      */
     public CandidateItemSession createCandidateSession(final long did, final String exitUrl)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery itemDelivery = lookupItemDelivery(did);
         return createCandidateSession(itemDelivery, exitUrl);
     }
 
     /**
      * Starts new {@link CandidateItemSession} for the given {@link ItemDelivery}
+     *
      * @param itemDelivery
+     *
      * @return
-     * @throws RuntimeValidationException
      * @throws PrivilegeException
      */
     public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery, final String exitUrl)
-            throws RuntimeValidationException, PrivilegeException {
+            throws PrivilegeException {
         Assert.notNull(itemDelivery, "itemDelivery");
 
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
@@ -196,9 +200,15 @@ public class CandidateSessionStarter {
         /* Create fresh JQTI+ state Object */
         final ItemSessionState itemSessionState = new ItemSessionState();
 
+        /* Set up listener to record any notifications */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
         /* Initialise state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState, notificationRecorder);
         itemSessionController.initialize();
+
+        /* TEMP! */
+        notificationRecorder.onNotification(new ModelNotification(itemSessionController.getItem(), null, NotificationType.RUNTIME, NotificationLevel.INFO, "Hello!"));
 
         /* Check whether an attempt is allowed. This is a bit pathological here,
          * but it makes sense to be consistent.
@@ -215,7 +225,7 @@ public class CandidateSessionStarter {
         candidateItemSessionDao.persist(candidateSession);
 
         /* Record initialisation event */
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
+        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
 
         auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
                 + " on ItemDelivery #" + itemDelivery.getId());
