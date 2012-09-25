@@ -20,7 +20,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -53,9 +52,7 @@ public class RenderingTest {
             final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
             final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
             final ItemSessionState itemSessionState = new ItemSessionState();
-            final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
             final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
-
 
             System.out.println("\nInitialising");
             itemSessionController.initialize();
