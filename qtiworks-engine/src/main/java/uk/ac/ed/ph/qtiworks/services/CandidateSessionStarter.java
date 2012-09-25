@@ -45,6 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
@@ -83,6 +84,9 @@ public class CandidateSessionStarter {
 
     @Resource
     private IdentityContext identityContext;
+
+    @Resource
+    private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
     private CandidateDataServices candidateDataServices;
@@ -224,8 +228,9 @@ public class CandidateSessionStarter {
         candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.persist(candidateSession);
 
-        /* Record initialisation event */
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
+        /* Record and log event */
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateItemEvent(candidateSession, candidateItemEvent);
 
         auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
                 + " on ItemDelivery #" + itemDelivery.getId());
