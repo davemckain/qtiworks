@@ -192,6 +192,7 @@ public class CandidateDataServices {
             record.setAttributeNamespaceUri(attribute.getNamespaceUri());
         }
 
+        candidateItemEvent.getNotifications().add(record);
         candidateItemEventNotificationDao.persist(record);
         return record;
     }

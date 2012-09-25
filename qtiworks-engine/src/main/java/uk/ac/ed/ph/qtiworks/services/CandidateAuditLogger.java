@@ -77,7 +77,8 @@ public class CandidateAuditLogger {
 
     public void logCandidateItemEvent(final CandidateItemSession candidateItemSession, final CandidateItemEvent candidateItemEvent) {
         logEvent(candidateItemSession, "action=CANDIDATE_ITEM_EVENT xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getEventType());
+                + " event=" + candidateItemEvent.getEventType()
+                + " notifications=" + candidateItemEvent.getNotifications().size());
     }
 
     public void logPlaybackEvent(final CandidateItemSession candidateItemSession, final CandidateItemEvent candidateItemEvent,
@@ -91,7 +92,8 @@ public class CandidateAuditLogger {
         final CandidateItemEvent candidateItemEvent = candidateItemAttempt.getEvent();
         logEvent(candidateItemSession, "action=CANDIDATE_ITEM_ATTEMPT xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getEventType()
-                + " xaid=" + candidateItemAttempt.getId());
+                + " xaid=" + candidateItemAttempt.getId()
+                + " notifications=" + candidateItemEvent.getNotifications().size());
     }
 
     public void logAndForbid(final CandidateItemSession candidateItemSession, final CandidatePrivilege privilege)

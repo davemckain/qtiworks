@@ -38,13 +38,16 @@ import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -52,7 +55,9 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -143,6 +148,10 @@ public class CandidateItemEvent implements BaseEntity {
     @OneToOne(optional=true)
     @JoinColumn(name="playback_xeid", updatable=false)
     private CandidateItemEvent playbackEvent;
+
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateItemEvent")
+    @OrderBy("id")
+    private List<CandidateItemEventNotification> notifications;
 
     //------------------------------------------------------------
 
@@ -235,6 +244,18 @@ public class CandidateItemEvent implements BaseEntity {
 
     public void setPlaybackEvent(final CandidateItemEvent playbackEvent) {
         this.playbackEvent = playbackEvent;
+    }
+
+
+    public List<CandidateItemEventNotification> getNotifications() {
+        if (notifications==null) {
+            notifications = new ArrayList<CandidateItemEventNotification>();
+        }
+        return notifications;
+    }
+
+    public void setNotifications(final List<CandidateItemEventNotification> notifications) {
+        this.notifications = notifications;
     }
 
     //------------------------------------------------------------
