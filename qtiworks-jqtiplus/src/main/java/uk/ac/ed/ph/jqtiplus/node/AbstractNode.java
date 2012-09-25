@@ -268,13 +268,13 @@ public abstract class AbstractNode implements QtiNode {
     }
 
     /** Helper method to validate a unique identifier (definition) attribute */
-    protected void validateUniqueIdentifier(final ValidationContext validationContext, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
+    protected void validateUniqueIdentifier(final ValidationContext context, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
         if (identifier != null) {
             if (getRootNode(AssessmentTest.class) != null && BranchRule.isSpecial(identifier)) {
-                validationContext.fireAttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute);
+                context.fireAttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute);
             }
             if (!validateUniqueIdentifier(getRootNode(), identifier)) {
-                validationContext.fireAttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute);
+                context.fireAttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute);
             }
         }
     }

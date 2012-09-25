@@ -56,8 +56,8 @@ public enum RoundingMode implements Stringifiable {
     SIGNIFICANT_FIGURES("significantFigures") {
 
         @Override
-        public void validateFigures(final ValidationContext validationContext, final IntegerOrVariableRefAttribute attribute) {
-            RoundingMode.validateFiguresAttribute(validationContext, attribute);
+        public void validateFigures(final ValidationContext context, final IntegerOrVariableRefAttribute attribute) {
+            RoundingMode.validateFiguresAttribute(context, attribute);
         }
 
         @Override
@@ -101,8 +101,8 @@ public enum RoundingMode implements Stringifiable {
     DECIMAL_PLACES("decimalPlaces") {
 
         @Override
-        public void validateFigures(final ValidationContext validationContext, final IntegerOrVariableRefAttribute attribute) {
-            RoundingMode.validateFiguresAttribute(validationContext, attribute);
+        public void validateFigures(final ValidationContext context, final IntegerOrVariableRefAttribute attribute) {
+            RoundingMode.validateFiguresAttribute(context, attribute);
         }
 
         @Override
@@ -134,11 +134,11 @@ public enum RoundingMode implements Stringifiable {
 
     /**
      * Validates figures attribute.
-     * @param validationContext TODO
+     * @param context TODO
      * @param attribute attribute to be validated
      * @param figures attribute's value to be validated
      */
-    public abstract void validateFigures(ValidationContext validationContext, IntegerOrVariableRefAttribute attribute);
+    public abstract void validateFigures(ValidationContext context, IntegerOrVariableRefAttribute attribute);
 
     /**
      * Rounds given number for given number of figures.
@@ -169,12 +169,12 @@ public enum RoundingMode implements Stringifiable {
         return roundingMode;
     }
 
-    public static void validateFiguresAttribute(final ValidationContext validationContext, final IntegerOrVariableRefAttribute attribute) {
+    public static void validateFiguresAttribute(final ValidationContext context, final IntegerOrVariableRefAttribute attribute) {
         final IntegerOrVariableRef integerOrVariableRef = attribute.getValue();
         if (integerOrVariableRef.isInteger()) {
             final int intValue = integerOrVariableRef.getInteger();
             if (intValue < 1) {
-                validationContext.fireAttributeValidationError(attribute, "Figures count (" + intValue + ") must be positive.");
+                context.fireAttributeValidationError(attribute, "Figures count (" + intValue + ") must be positive.");
             }
         }
         else {
