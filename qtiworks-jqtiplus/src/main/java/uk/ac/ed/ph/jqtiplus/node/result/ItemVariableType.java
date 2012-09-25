@@ -45,9 +45,7 @@ import java.util.Set;
  * @author Jonathon Hare
  */
 public enum ItemVariableType {
-    /**
-     * Creates outcomeVariable.
-     */
+
     OUTCOME_VARIABLE(OutcomeVariable.QTI_CLASS_NAME) {
 
         @Override
@@ -55,9 +53,7 @@ public enum ItemVariableType {
             return new OutcomeVariable(parent);
         }
     },
-    /**
-     * Creates responseVariable.
-     */
+
     RESPONSE_VARIABLE(ResponseVariable.QTI_CLASS_NAME) {
 
         @Override
@@ -65,9 +61,7 @@ public enum ItemVariableType {
             return new ResponseVariable(parent);
         }
     },
-    /**
-     * Creates templateVariable.
-     */
+
     TEMPLATE_VARIABLE(TemplateVariable.QTI_CLASS_NAME) {
 
         @Override

@@ -137,7 +137,7 @@ public final class XmlResourceReader {
 
     public XmlResourceReader(final ResourceLocator schemaResourceLocator, final Map<String, String> registeredSchemaMapTemplate,
             final SchemaCache schemaCache) {
-        Assert.ensureNotNull(schemaResourceLocator, "schemaResourceLocator");
+        Assert.notNull(schemaResourceLocator, "schemaResourceLocator");
         this.schemaResourceLocator = schemaResourceLocator;
         this.registeredSchemaMap = registeredSchemaMapTemplate != null ? Collections.unmodifiableMap(registeredSchemaMapTemplate) : null;
         this.schemaCache = schemaCache;
@@ -179,9 +179,9 @@ public final class XmlResourceReader {
     public XmlReadResult read(final URI systemId, final ResourceLocator inputResourceLocator,
             final ResourceLocator entityResourceLocator, final boolean schemaValidating)
             throws XmlResourceNotFoundException {
-        Assert.ensureNotNull(systemId, "systemId");
-        Assert.ensureNotNull(inputResourceLocator, "inputResourceLocator");
-        Assert.ensureNotNull(entityResourceLocator, "entityResourceLocator");
+        Assert.notNull(systemId, "systemId");
+        Assert.notNull(inputResourceLocator, "inputResourceLocator");
+        Assert.notNull(entityResourceLocator, "entityResourceLocator");
 
         try {
             logger.debug("read({}, {}, {}, {}) starting", new Object[] { systemId, inputResourceLocator, entityResourceLocator, schemaValidating });

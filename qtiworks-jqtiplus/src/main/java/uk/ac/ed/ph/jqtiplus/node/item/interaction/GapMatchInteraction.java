@@ -84,7 +84,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public class GapMatchInteraction extends BlockInteraction implements GapChoiceContainer, Shuffleable {
+public final class GapMatchInteraction extends BlockInteraction implements GapChoiceContainer, Shuffleable {
 
     private static final long serialVersionUID = 5859875788265167537L;
 
@@ -97,11 +97,6 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
     /** Default value of shuffle attribute. */
     public static final boolean ATTR_SHUFFLE_DEFAULT_VALUE = false;
 
-    /**
-     * Construct new interaction.
-     *
-     * @param parent Parent node
-     */
     public GapMatchInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
@@ -111,42 +106,22 @@ public class GapMatchInteraction extends BlockInteraction implements GapChoiceCo
         getNodeGroups().add(new BlockStaticGroup(this, 1));
     }
 
-    /**
-     * Sets new value of shuffle attribute.
-     *
-     * @param shuffle new value of shuffle attribute
-     * @see #getShuffle
-     */
-    @Override
-    public void setShuffle(final boolean shuffle) {
-        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
-    }
 
-    /**
-     * Gets value of shuffle attribute.
-     *
-     * @return value of shuffle attribute
-     * @see #setShuffle
-     */
     @Override
     public boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Gets gapChoice children.
-     *
-     * @return gapChoice children
-     */
+
+    @Override
+    public void setShuffle(final boolean shuffle) {
+        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
+    }
+
     public List<GapChoice> getGapChoices() {
         return getNodeGroups().getGapChoiceGroup().getGapChoices();
     }
 
-    /**
-     * Gets blockStatic children.
-     *
-     * @return blockStatic children
-     */
     public List<BlockStatic> getBlockStatics() {
         return getNodeGroups().getBlockStaticGroup().getBlockStatics();
     }

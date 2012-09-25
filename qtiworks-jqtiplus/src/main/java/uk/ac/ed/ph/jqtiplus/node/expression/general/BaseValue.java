@@ -58,7 +58,7 @@ import org.xml.sax.SAXException;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class BaseValue extends AbstractFunctionalExpression {
+public final class BaseValue extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -8675475225499495315L;
 
@@ -90,42 +90,19 @@ public class BaseValue extends AbstractFunctionalExpression {
         return super.computeXPathComponent();
     }
 
-    /**
-     * Gets value of baseType attribute.
-     *
-     * @return value of baseType attribute
-     * @see #setBaseTypeAttrValue
-     */
     public BaseType getBaseTypeAttrValue() {
         return getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of baseType attribute.
-     *
-     * @param baseType new value of baseType attribute.
-     * @see #getBaseTypeAttrValue
-     */
     public void setBaseTypeAttrValue(final BaseType baseType) {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
 
-    /**
-     * Gets single value of this baseValue.
-     *
-     * @return single value of this baseValue
-     * @see #setSingleValue
-     */
+
     public SingleValue getSingleValue() {
         return singleValue;
     }
 
-    /**
-     * Sets new single value of this baseValue.
-     *
-     * @param singleValue new single value of this baseValue
-     * @see #getSingleValue
-     */
     public void setSingleValue(final SingleValue singleValue) {
         this.singleValue = singleValue;
     }

@@ -56,11 +56,11 @@ import java.util.List;
  * A test is A group of assessmentItems with an associated set of rules that determine which of the items the candidate sees,
  * in what order, and in what way the candidate interacts with them. The rules describe the valid paths through the test,
  * when responses are submitted for response processing and when (if at all) feedback is to be given.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class AssessmentTest extends ControlObject<String> implements AssessmentObject {
+public final class AssessmentTest extends ControlObject<String> implements AssessmentObject {
 
     private static final long serialVersionUID = 7638099859697920203L;
 
@@ -115,11 +115,11 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     /**
      * Convenience constructor for assessmentTest.
      * Sets the JQTI toolName and toolVersion automatically
-     * 
+     *
      * @param identifier Value of identifier attribute
      * @param title Value of title attribute
      */
-    public AssessmentTest(String identifier, String title) {
+    public AssessmentTest(final String identifier, final String title) {
         this();
 
         setIdentifier(identifier);
@@ -128,7 +128,7 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
         setToolName(JqtiPlus.TOOL_NAME);
         setToolVersion(JqtiPlus.TOOL_VERSION);
     }
-    
+
     @Override
     public AssessmentObjectType getType() {
         return AssessmentObjectType.ASSESSMENT_TEST;
@@ -140,40 +140,29 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     }
 
     @Override
-    public void setSystemId(URI systemId) {
+    public void setSystemId(final URI systemId) {
         this.systemId = systemId;
     }
-    
+
 
     @Override
     public ModelRichness getModelRichness() {
         return modelRichness;
     }
-    
+
     @Override
-    public void setModelRichness(ModelRichness modelRichness) {
+    public void setModelRichness(final ModelRichness modelRichness) {
         this.modelRichness = modelRichness;
     }
-    
-    /**
-     * Gets value of identifier attribute.
-     * 
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
+
+
     @Override
     public String getIdentifier() {
         return getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     * 
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
     @Override
-    public void setIdentifier(String identifier) {
+    public void setIdentifier(final String identifier) {
         getAttributes().getStringAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
@@ -182,85 +171,47 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
         return getNodeGroups().getTestPartGroup().getTestParts();
     }
 
-    /**
-     * Gets value of title attribute.
-     * 
-     * @return value of title attribute
-     * @see #setTitle
-     */
     @Override
     public String getTitle() {
         return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of title attribute.
-     * 
-     * @param title new value of title attribute
-     * @see #getTitle
-     */
     @Override
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
 
-    /**
-     * Gets value of toolName attribute.
-     * 
-     * @return value of toolName attribute
-     * @see #setToolName
-     */
+
     @Override
     public String getToolName() {
         return getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of toolName attribute.
-     * 
-     * @param toolName new value of toolName attribute
-     * @see #getToolName
-     */
     @Override
-    public void setToolName(String toolName) {
+    public void setToolName(final String toolName) {
         getAttributes().getStringAttribute(ATTR_TOOL_NAME_NAME).setValue(toolName);
     }
 
-    /**
-     * Gets value of toolVersion attribute.
-     * 
-     * @return value of toolVersion attribute
-     * @see #setToolVersion
-     */
+
     @Override
     public String getToolVersion() {
         return getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of toolVersion attribute.
-     * 
-     * @param toolVersion new value of toolVersion attribute
-     * @see #getToolVersion
-     */
     @Override
-    public void setToolVersion(String toolVersion) {
+    public void setToolVersion(final String toolVersion) {
         getAttributes().getStringAttribute(ATTR_TOOL_VERSION_NAME).setValue(toolVersion);
     }
 
-    /**
-     * Gets outcomeDeclaration children.
-     * 
-     * @return outcomeDeclaration children
-     */
+
     @Override
     public List<OutcomeDeclaration> getOutcomeDeclarations() {
         return getNodeGroups().getOutcomeDeclarationGroup().getOutcomeDeclarations();
     }
 
     @Override
-    public OutcomeDeclaration getOutcomeDeclaration(Identifier identifier) {
-        Assert.ensureNotNull(identifier);
+    public OutcomeDeclaration getOutcomeDeclaration(final Identifier identifier) {
+        Assert.notNull(identifier);
         for (final OutcomeDeclaration declaration : getOutcomeDeclarations()) {
             if (declaration.getIdentifier() != null && declaration.getIdentifier().equals(identifier)) {
                 return declaration;
@@ -270,8 +221,8 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     }
 
     @Override
-    public VariableDeclaration getVariableDeclaration(Identifier identifier) {
-        Assert.ensureNotNull(identifier);
+    public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
+        Assert.notNull(identifier);
         return getOutcomeDeclaration(identifier);
     }
 
@@ -289,40 +240,20 @@ public class AssessmentTest extends ControlObject<String> implements AssessmentO
     //        return (declaration != null) ? declaration.getValue() : null;
     //    }
 
-    /**
-     * Gets testPart children.
-     * 
-     * @return testPart children
-     */
     public List<TestPart> getTestParts() {
         return getNodeGroups().getTestPartGroup().getTestParts();
     }
 
-    /**
-     * Gets outcomeProcessing child.
-     * 
-     * @return outcomeProcessing child
-     * @see #setOutcomeProcessing
-     */
+
     public OutcomeProcessing getOutcomeProcessing() {
         return getNodeGroups().getOutcomeProcessingGroup().getOutcomeProcessing();
     }
 
-    /**
-     * Sets new outcomeProcessing child.
-     * 
-     * @param outcomeProcessing new outcomeProcessing child
-     * @see #getOutcomeProcessing
-     */
-    public void setOutcomeProcessing(OutcomeProcessing outcomeProcessing) {
+    public void setOutcomeProcessing(final OutcomeProcessing outcomeProcessing) {
         getNodeGroups().getOutcomeProcessingGroup().setOutcomeProcessing(outcomeProcessing);
     }
 
-    /**
-     * Gets testFeedback children.
-     * 
-     * @return testFeedback children
-     */
+
     public List<TestFeedback> getTestFeedbacks() {
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }

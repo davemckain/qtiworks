@@ -60,7 +60,7 @@ import java.util.List;
  * @see VisibilityMode
  * @author Jiri Kajaba
  */
-public class TestFeedback extends AbstractNode {
+public final class TestFeedback extends AbstractNode {
 
     private static final long serialVersionUID = 6567681516055125776L;
 
@@ -82,7 +82,7 @@ public class TestFeedback extends AbstractNode {
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
 
-    public TestFeedback(ControlObject<?> parent) {
+    public TestFeedback(final ControlObject<?> parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new TestFeedbackAccessAttribute(this, ATTR_ACCESS_NAME, true));
@@ -94,108 +94,54 @@ public class TestFeedback extends AbstractNode {
         getNodeGroups().add(new FlowStaticGroup(this));
     }
 
-    /**
-     * Gets value of access attribute.
-     *
-     * @return value of access attribute
-     * @see #setTestFeedbackAccess
-     */
+
     public TestFeedbackAccess getTestFeedbackAccess() {
         return getAttributes().getTestFeedbackAttribute(ATTR_ACCESS_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of access attribute.
-     *
-     * @param testFeedbackAccess new value of access attribute
-     * @see #getTestFeedbackAccess
-     */
-    public void setTestFeedbackAccess(TestFeedbackAccess testFeedbackAccess) {
+    public void setTestFeedbackAccess(final TestFeedbackAccess testFeedbackAccess) {
         getAttributes().getTestFeedbackAttribute(ATTR_ACCESS_NAME).setValue(testFeedbackAccess);
     }
 
-    /**
-     * Gets value of showHide attribute.
-     *
-     * @return value of showHide attribute
-     * @see #setVisibilityMode
-     */
+
     public VisibilityMode getVisibilityMode() {
         return getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of showHide attribute.
-     *
-     * @param visibilityMode new value of showHide attribute
-     * @see #getVisibilityMode
-     */
-    public void setVisibilityMode(VisibilityMode visibilityMode) {
+    public void setVisibilityMode(final VisibilityMode visibilityMode) {
         getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).setValue(visibilityMode);
     }
 
-    /**
-     * Gets value of outcomeIdentifier attribute.
-     *
-     * @return value of outcomeIdentifier attribute
-     * @see #setOutcomeIdentifier
-     */
+
     public Identifier getOutcomeIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of outcomeIdentifier attribute.
-     *
-     * @param outcomeIdentifier new value of outcomeIdentifier attribute
-     * @see #getOutcomeIdentifier
-     */
-    public void setOutcomeIdentifier(Identifier outcomeIdentifier) {
+    public void setOutcomeIdentifier(final Identifier outcomeIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).setValue(outcomeIdentifier);
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setOutcomeValue
-     */
+
     public Identifier getOutcomeValue() {
         return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_VALUE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param outcomeValue new value of identifier attribute
-     * @see #getOutcomeValue
-     */
-    public void setOutcomeValue(Identifier outcomeValue) {
+    public void setOutcomeValue(final Identifier outcomeValue) {
         getAttributes().getIdentifierAttribute(ATTR_OUTCOME_VALUE_NAME).setValue(outcomeValue);
     }
 
-    /**
-     * Gets value of title attribute.
-     *
-     * @return value of title attribute
-     * @see #setTitle
-     */
+
     public String getTitle() {
         return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of title attribute.
-     *
-     * @param title new value of title attribute
-     * @see #getTitle()
-     */
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
 
+
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getOutcomeIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
@@ -204,7 +150,7 @@ public class TestFeedback extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getChildren().size() == 0) {
@@ -222,7 +168,7 @@ public class TestFeedback extends AbstractNode {
      * @param requestedAccess given requested access
      * @return true if this feedback can be displayed for given requested access; false otherwise
      */
-    public boolean isVisible(AssessmentTestState testState, TestFeedbackAccess requestedAccess) {
+    public boolean isVisible(final AssessmentTestState testState, final TestFeedbackAccess requestedAccess) {
         if (getTestFeedbackAccess() != requestedAccess) {
             return false;
         }

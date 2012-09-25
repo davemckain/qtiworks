@@ -56,9 +56,9 @@ public final class FileValue extends SingleValue {
     private String fileName;
 
     public FileValue(final File file, final String contentType, final String fileName) {
-        Assert.ensureNotNull(file);
-        Assert.ensureNotNull(contentType);
-        Assert.ensureNotNull(fileName);
+        Assert.notNull(file);
+        Assert.notNull(contentType);
+        Assert.notNull(fileName);
         this.file = file;
         this.contentType = contentType;
         this.fileName = fileName;

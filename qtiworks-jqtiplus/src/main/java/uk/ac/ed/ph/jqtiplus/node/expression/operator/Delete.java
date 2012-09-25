@@ -55,24 +55,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * The delete operator should not be used on sub-expressions with A base-type of float because of the poorly defined comparison of values. It must not be used
  * on sub-expressions with A base-type of duration.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Delete extends AbstractFunctionalExpression {
+public final class Delete extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -3347943030791068562L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "delete";
 
-    public Delete(ExpressionParent parent) {
+    public Delete(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         Cardinality[] required = super.getRequiredCardinalities(context, index);
 
         if (index == 1) {
@@ -83,12 +83,12 @@ public class Delete extends AbstractFunctionalExpression {
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getRequiredSameBaseTypes(context, index, true);
     }
 
     @Override
-    public Cardinality[] getProducedCardinalities(ValidationContext context) {
+    public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         if (getChildren().size() != 2) {
             return super.getProducedCardinalities(context);
         }
@@ -97,7 +97,7 @@ public class Delete extends AbstractFunctionalExpression {
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         if (getChildren().size() != 2) {
             return super.getProducedBaseTypes(context);
         }
@@ -106,7 +106,7 @@ public class Delete extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

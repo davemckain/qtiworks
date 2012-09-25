@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
  * @see Mapping
  * @author Jonathon Hare
  */
-public class MapEntry extends AbstractNode {
+public final class MapEntry extends AbstractNode {
 
     private static final long serialVersionUID = -5119382551204617489L;
 
@@ -70,42 +70,20 @@ public class MapEntry extends AbstractNode {
         getAttributes().add(new BooleanAttribute(this, ATTR_CASE_SENSITIVE_VALUE_NAME, ATTR_CASE_SENSITIVE_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Gets value of mapKey attribute.
-     *
-     * @return value of mapKey attribute
-     * @see #setMapKey
-     */
+
     public SingleValue getMapKey() {
         return getAttributes().getSingleValueAttribute(ATTR_MAP_KEY_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of mappedValue attribute.
-     *
-     * @param mapKey new value of mapKey attribute
-     * @see #getMapKey
-     */
     public void setMapKey(final SingleValue mapKey) {
         getAttributes().getSingleValueAttribute(ATTR_MAP_KEY_NAME).setValue(mapKey);
     }
 
-    /**
-     * Gets value of mappedValue attribute.
-     *
-     * @return value of mappedValue attribute
-     * @see #setMappedValue
-     */
+
     public double getMappedValue() {
         return getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of mappedValue attribute.
-     *
-     * @param mappedValue new value of mappedValue attribute
-     * @see #getMappedValue
-     */
     public void setMappedValue(final Double mappedValue) {
         getAttributes().getFloatAttribute(ATTR_MAPPED_VALUE_NAME).setValue(mappedValue);
     }

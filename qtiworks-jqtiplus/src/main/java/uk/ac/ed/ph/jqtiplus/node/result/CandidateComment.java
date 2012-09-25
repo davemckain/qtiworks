@@ -55,45 +55,25 @@ public final class CandidateComment extends AbstractNode implements ResultNode {
     /** Text content of this block. */
     private String textContent;
 
-    /**
-     * Constructs block.
-     *
-     * @param parent parent of constructed block
-     */
+
     public CandidateComment(final ItemResult parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
-    /**
-     * Constructs block and initialise its text content.
-     *
-     * @param parent parent of constructed block
-     * @param textContent text content of constructed block
-     */
     public CandidateComment(final ItemResult parent, final String textContent) {
         super(parent, QTI_CLASS_NAME);
         this.textContent = textContent;
     }
 
-    /**
-     * Gets text content of this block.
-     *
-     * @return text content of this block
-     * @see #setTextContent
-     */
+
     public String getTextContent() {
         return textContent;
     }
 
-    /**
-     * Sets new text content of this block.
-     *
-     * @param textContent new text content of this block
-     * @see #getTextContent
-     */
     public void setTextContent(final String textContent) {
         this.textContent = textContent;
     }
+
 
     @Override
     protected void loadChildren(final Element element, final LoadingContext context) {

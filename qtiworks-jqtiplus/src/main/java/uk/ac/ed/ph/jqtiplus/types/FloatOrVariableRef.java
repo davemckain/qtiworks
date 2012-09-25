@@ -71,7 +71,7 @@ public final class FloatOrVariableRef implements Serializable {
      * Creates a new floatOrVariableRef holding the given variable reference
      */
     public FloatOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
-        Assert.ensureNotNull(variableReferenceIdentifier, "variableReferenceIdentifier");
+        Assert.notNull(variableReferenceIdentifier, "variableReferenceIdentifier");
         this.floatValue = 0;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
@@ -83,7 +83,7 @@ public final class FloatOrVariableRef implements Serializable {
      * @throws QtiParseException
      */
     public static FloatOrVariableRef parseString(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         if (string.isEmpty()) {
             throw new QtiParseException("floatOrVariableRef must not be empty");

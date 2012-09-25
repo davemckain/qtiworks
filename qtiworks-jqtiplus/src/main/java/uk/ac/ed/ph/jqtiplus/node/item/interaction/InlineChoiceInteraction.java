@@ -97,57 +97,27 @@ public final class InlineChoiceInteraction extends InlineInteraction implements 
         getNodeGroups().add(new InlineChoiceGroup(this, 1));
     }
 
-    public List<InlineChoice> getChildren() {
-        return getNodeGroups().getInlineChoiceGroup().getInlineChoices();
-    }
 
-    /**
-     * Sets new value of shuffle attribute.
-     *
-     * @param shuffle new value of shuffle attribute
-     * @see #getShuffle
-     */
-    @Override
-    public void setShuffle(final boolean shuffle) {
-        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
-    }
-
-    /**
-     * Gets value of shuffle attribute.
-     *
-     * @return value of shuffle attribute
-     * @see #setShuffle
-     */
     @Override
     public boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of required attribute.
-     *
-     * @param required new value of required attribute
-     * @see #getRequired
-     */
-    public void setRequired(final Boolean required) {
-        getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).setValue(required);
+    @Override
+    public void setShuffle(final boolean shuffle) {
+        getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 
-    /**
-     * Gets value of required attribute.
-     *
-     * @return value of required attribute
-     * @see #setRequired
-     */
+
     public boolean getRequired() {
         return getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Gets simpleChoice children.
-     *
-     * @return simpleChoice children
-     */
+    public void setRequired(final Boolean required) {
+        getAttributes().getBooleanAttribute(ATTR_REQUIRED_NAME).setValue(required);
+    }
+
+
     public List<InlineChoice> getInlineChoices() {
         return getNodeGroups().getInlineChoiceGroup().getInlineChoices();
     }

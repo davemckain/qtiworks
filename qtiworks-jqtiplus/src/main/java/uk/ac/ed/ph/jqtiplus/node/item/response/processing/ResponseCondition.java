@@ -52,17 +52,17 @@ import java.util.List;
  * <p>
  * If the expression given in the responseIf or responseElseIf does not evaluate to true then consideration passes to the next responseElseIf or, if there are
  * no more responseElseIf parts then the sub-rules of the responseElse are followed (if specified).
- * 
+ *
  * @author Jonathon Hare
  */
-public class ResponseCondition extends ResponseRule {
+public final class ResponseCondition extends ResponseRule {
 
     private static final long serialVersionUID = -7662549073016916667L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "responseCondition";
 
-    public ResponseCondition(QtiNode parent) {
+    public ResponseCondition(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ResponseIfGroup(this));
@@ -70,60 +70,30 @@ public class ResponseCondition extends ResponseRule {
         getNodeGroups().add(new ResponseElseGroup(this));
     }
 
-    /**
-     * Gets IF child.
-     * 
-     * @return IF child
-     * @see #setResponseIf
-     */
+
     public ResponseIf getResponseIf() {
         return getNodeGroups().getResponseIfGroup().getResponseIf();
     }
 
-    /**
-     * Sets new IF child.
-     * 
-     * @param responseIf new IF child
-     * @see #getResponseIf
-     */
-    public void setResponseIf(ResponseIf responseIf) {
+    public void setResponseIf(final ResponseIf responseIf) {
         getNodeGroups().getResponseIfGroup().setResponseIf(responseIf);
     }
 
-    /**
-     * Gets ELSE-IF children.
-     * 
-     * @return ELSE-IF children
-     */
+
     public List<ResponseElseIf> getResponseElseIfs() {
         return getNodeGroups().getResponseElseIfGroup().getResponseElseIfs();
     }
 
-    /**
-     * Gets ELSE child.
-     * 
-     * @return ELSE child
-     * @see #setResponseElse
-     */
+
     public ResponseElse getResponseElse() {
         return getNodeGroups().getResponseElseGroup().getResponseElse();
     }
 
-    /**
-     * Sets new ELSE child.
-     * 
-     * @param responseElse new ELSE child
-     * @see #getResponseElse
-     */
-    public void setResponseElse(ResponseElse responseElse) {
+    public void setResponseElse(final ResponseElse responseElse) {
         getNodeGroups().getResponseElseGroup().setResponseElse(responseElse);
     }
 
-    /**
-     * Gets all children (IF, ELSE-IF, ELSE) in one ordered list.
-     * 
-     * @return all children (IF, ELSE-IF, ELSE) in one ordered list
-     */
+
     private List<ResponseConditionChild> getConditionChildren() {
         final List<ResponseConditionChild> children = new ArrayList<ResponseConditionChild>();
 
@@ -137,7 +107,7 @@ public class ResponseCondition extends ResponseRule {
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final ResponseConditionChild child : getConditionChildren()) {
             if (child.evaluate(context)) {
                 return;

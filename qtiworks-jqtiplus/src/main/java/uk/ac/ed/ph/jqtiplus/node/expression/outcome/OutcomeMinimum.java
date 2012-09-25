@@ -53,7 +53,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public class OutcomeMinimum extends OutcomeMinMax {
+public final class OutcomeMinimum extends OutcomeMinMax {
 
     private static final long serialVersionUID = 6240420428843348630L;
 

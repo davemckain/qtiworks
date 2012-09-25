@@ -42,11 +42,11 @@ import java.util.List;
 
 /**
  * Part of assessment test.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class TestPart extends AbstractPart {
+public final class TestPart extends AbstractPart {
 
     private static final long serialVersionUID = 1808165853579519400L;
 
@@ -62,7 +62,7 @@ public class TestPart extends AbstractPart {
     /** ItemSessionControl with default values. It is used if no other is provided. */
     private final ItemSessionControl defaultItemSessionControl;
 
-    public TestPart(AssessmentTest parent) {
+    public TestPart(final AssessmentTest parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new NavigationModeAttribute(this, ATTR_NAVIGATION_MODE_NAME, true));
@@ -84,49 +84,27 @@ public class TestPart extends AbstractPart {
         return getAssessmentSections();
     }
 
-    /**
-     * Gets value of navigationMode attribute.
-     * 
-     * @return value of navigationMode attribute
-     * @see #setNavigationMode
-     */
+
     public NavigationMode getNavigationMode() {
         return getAttributes().getNavigationModeAttribute(ATTR_NAVIGATION_MODE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of navigationMode attribute.
-     * 
-     * @param navigationMode new value of navigationMode attribute
-     * @see #getNavigationMode
-     */
-    public void setNavigationMode(NavigationMode navigationMode) {
+    public void setNavigationMode(final NavigationMode navigationMode) {
         getAttributes().getNavigationModeAttribute(ATTR_NAVIGATION_MODE_NAME).setValue(navigationMode);
     }
 
-    /**
-     * Gets value of submissionMode attribute.
-     * 
-     * @return value of submissionMode attribute
-     * @see #setSubmissionMode
-     */
+
     public SubmissionMode getSubmissionMode() {
         return getAttributes().getSubmissionModeAttribuye(ATTR_SUBMISSION_MODE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of submissionMode attribute.
-     * 
-     * @param submissionMode new value of submissionMode attribute
-     * @see #getSubmissionMode
-     */
-    public void setSubmissionMode(SubmissionMode submissionMode) {
+    public void setSubmissionMode(final SubmissionMode submissionMode) {
         getAttributes().getSubmissionModeAttribuye(ATTR_SUBMISSION_MODE_NAME).setValue(submissionMode);
     }
 
     /**
      * Gets itemSessionControl child if specified; defaultItemSessionControl otherwise.
-     * 
+     *
      * @return itemSessionControl child if specified; defaultItemSessionControl otherwise
      */
     @Override
@@ -136,20 +114,10 @@ public class TestPart extends AbstractPart {
         return itemSessionControl != null ? itemSessionControl : defaultItemSessionControl;
     }
 
-    /**
-     * Gets assessmentSection children.
-     * 
-     * @return assessmentSection children
-     */
     public List<AssessmentSection> getAssessmentSections() {
         return getNodeGroups().getAssessmentSectionGroup().getAssessmentSections();
     }
 
-    /**
-     * Gets testFeedback children.
-     * 
-     * @return testFeedback children
-     */
     public List<TestFeedback> getTestFeedbacks() {
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }
@@ -177,7 +145,7 @@ public class TestPart extends AbstractPart {
      * Returns true if jumps (preConditions and branchRules) are enabled; false otherwise.
      * Jumps (preConditions and branchRules) are enabled only in linear individual mode.
      * This is only convenient method for testing linear individual mode.
-     * 
+     *
      * @return true if jumps (preCondition and branchRule) are enabled; false otherwise
      */
     public boolean areJumpsEnabled() {

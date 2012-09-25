@@ -80,34 +80,20 @@ public abstract class CustomOperator<E extends JqtiExtensionPackage<E>> extends 
         getAttributes().add(new UriAttribute(this, ATTR_DEFINITION_NAME, false));
     }
 
-    /**
-     * Gets value of class attribute.
-     *
-     * @return value of class attribute
-     */
+
     public String getClassAttr() {
         return getAttributes().getStringAttribute(ATTR_CLASS_NAME).getComputedValue();
     }
 
-    /**
-     * Sets value of class attribute.
-     */
     public void setClassAttr(final String name) {
         getAttributes().getStringAttribute(ATTR_CLASS_NAME).setValue(name);
     }
 
-    /**
-     * Gets value of definition attribute.
-     *
-     * @return value of definition attribute
-     */
+
     public URI getDefinition() {
         return getAttributes().getUriAttribute(ATTR_DEFINITION_NAME).getComputedValue();
     }
 
-    /**
-     * Sets value of definition attribute.
-     */
     public void setDefinition(final URI name) {
         getAttributes().getUriAttribute(ATTR_DEFINITION_NAME).setValue(name);
     }

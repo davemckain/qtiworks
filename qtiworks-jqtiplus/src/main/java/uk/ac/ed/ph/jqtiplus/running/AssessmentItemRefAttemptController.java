@@ -59,10 +59,10 @@ public final class AssessmentItemRefAttemptController {
     AssessmentItemRefAttemptController(AssessmentTestAttemptController testAttemptController,
             ResolvedAssessmentItem resolvedAssessmentItem, AssessmentItemRef itemRef,
             AssessmentItemRefState itemRefState) {
-        Assert.ensureNotNull(testAttemptController, "testAttemptController");
-        Assert.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
-        Assert.ensureNotNull(itemRef, "itemRef");
-        Assert.ensureNotNull(itemRefState, "assessmentItemRefState");
+        Assert.notNull(testAttemptController, "testAttemptController");
+        Assert.notNull(resolvedAssessmentItem, "resolvedAssessmentItem");
+        Assert.notNull(itemRef, "itemRef");
+        Assert.notNull(itemRefState, "assessmentItemRefState");
         this.testAttemptController = testAttemptController;
         this.itemAttemptController = new ItemSessionController(testAttemptController.getJqtiExtensionManager(),
                 resolvedAssessmentItem, itemRefState.getItemState());

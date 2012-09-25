@@ -51,34 +51,29 @@ import java.util.List;
  * instructions described by the outcomeRules. Because outcome processing happens each time the candidate submits responses the
  * resulting values of the test-level outcomes may be used to activate test-level feedback during the test or to control the behaviour
  * of subsequent parts through the use of preConditions and branchRules.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class OutcomeProcessing extends AbstractNode {
+public final class OutcomeProcessing extends AbstractNode {
 
     private static final long serialVersionUID = -6656454519339347157L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeProcessing";
 
-    public OutcomeProcessing(AssessmentTest parent) {
+    public OutcomeProcessing(final AssessmentTest parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new OutcomeRuleGroup(this));
     }
 
-    /**
-     * Gets outcomeRule children.
-     * 
-     * @return outcomeRule children
-     */
     public List<OutcomeRule> getOutcomeRules() {
         return getNodeGroups().getOutcomeRuleGroup().getOutcomeRules();
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getOutcomeRules().size() == 0) {
@@ -88,10 +83,10 @@ public class OutcomeProcessing extends AbstractNode {
 
     /**
      * Evaluates all child outcomeRules.
-     * 
+     *
      * @throws RuntimeValidationException
      */
-    public void evaluate(TestProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final TestProcessingContext context) throws RuntimeValidationException {
         try {
             for (final OutcomeRule outcomeRule : getOutcomeRules()) {
                 outcomeRule.evaluate(context);

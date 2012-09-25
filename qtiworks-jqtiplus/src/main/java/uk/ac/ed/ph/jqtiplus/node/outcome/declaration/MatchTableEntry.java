@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
  *
  * @author Jiri Kajaba
  */
-public class MatchTableEntry extends LookupTableEntry {
+public final class MatchTableEntry extends LookupTableEntry {
 
     private static final long serialVersionUID = -8718983129595237072L;
 
@@ -56,23 +56,11 @@ public class MatchTableEntry extends LookupTableEntry {
         getAttributes().add(0, new IntegerAttribute(this, ATTR_SOURCE_VALUE_NAME, true));
     }
 
-    /**
-     * Gets value of sourceValue attribute.
-     *
-     * @return value of sourceValue attribute
-     * @see #setSourceValue
-     */
     @Override
     public Integer getSourceValue() {
         return getAttributes().getIntegerAttribute(ATTR_SOURCE_VALUE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of sourceValue attribute.
-     *
-     * @param sourceValue new value of sourceValue attribute
-     * @see #getSourceValue
-     */
     public void setSourceValue(final Integer sourceValue) {
         getAttributes().getIntegerAttribute(ATTR_SOURCE_VALUE_NAME).setValue(sourceValue);
     }

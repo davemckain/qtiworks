@@ -94,28 +94,14 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
     }
 
     @Override
-    public Integer getExpectedLength() {
-        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getComputedValue();
-    }
-
-    @Override
-    public String getPatternMask() {
-        return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getComputedValue();
-    }
-
-    @Override
-    public String getPlaceholderText() {
-        return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getComputedValue();
-    }
-
-    @Override
-    public Identifier getStringIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getComputedValue();
-    }
-
-    @Override
     public void setBase(final Integer base) {
         getAttributes().getIntegerAttribute(ATTR_BASE_NAME).setValue(base);
+    }
+
+
+    @Override
+    public Integer getExpectedLength() {
+        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getComputedValue();
     }
 
     @Override
@@ -123,14 +109,32 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
         getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).setValue(expectedLength);
     }
 
+
+    @Override
+    public String getPatternMask() {
+        return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getComputedValue();
+    }
+
     @Override
     public void setPatternMask(final String patternMask) {
         getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).setValue(patternMask);
     }
 
+
+    @Override
+    public String getPlaceholderText() {
+        return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getComputedValue();
+    }
+
     @Override
     public void setPlaceholderText(final String placeholderText) {
         getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).setValue(placeholderText);
+    }
+
+
+    @Override
+    public Identifier getStringIdentifier() {
+        return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getComputedValue();
     }
 
     @Override

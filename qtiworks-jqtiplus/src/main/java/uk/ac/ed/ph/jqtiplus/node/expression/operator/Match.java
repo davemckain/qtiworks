@@ -51,34 +51,34 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * The match operator must not be confused with broader notions of equality such as numerical equality. To avoid confusion, the match operator should not be
  * used to compare subexpressions with base-types of float and must not be used on sub-expressions with A base-type of duration.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Match extends AbstractFunctionalExpression {
+public final class Match extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 6569951232209204404L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "match";
 
-    public Match(ExpressionParent parent) {
+    public Match(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return getRequiredSameCardinalities(context, index, false);
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getRequiredSameBaseTypes(context, index, false);
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         for (final Expression expression : getChildren()) {
@@ -95,7 +95,7 @@ public class Match extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

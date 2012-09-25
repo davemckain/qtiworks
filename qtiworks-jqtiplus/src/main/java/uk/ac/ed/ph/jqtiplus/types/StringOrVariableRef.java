@@ -58,14 +58,14 @@ public final class StringOrVariableRef implements Serializable {
     private final String serializedValue;
 
     public StringOrVariableRef(final String stringValue) {
-        Assert.ensureNotNull(stringValue);
+        Assert.notNull(stringValue);
         this.stringValue = stringValue;
         this.variableReferenceValue = null;
         this.serializedValue = "{" + stringValue + "}";
     }
 
     public StringOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
-        Assert.ensureNotNull(variableReferenceIdentifier, "variableReferenceIdentifier");
+        Assert.notNull(variableReferenceIdentifier, "variableReferenceIdentifier");
         this.stringValue = null;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
@@ -75,7 +75,7 @@ public final class StringOrVariableRef implements Serializable {
      * @throws QtiParseException
      */
     public static StringOrVariableRef parseString(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         if (string.isEmpty()) {
             throw new QtiParseException("stringOrVariableRef must not be empty");

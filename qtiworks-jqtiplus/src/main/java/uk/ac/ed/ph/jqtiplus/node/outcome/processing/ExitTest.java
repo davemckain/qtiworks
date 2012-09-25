@@ -39,22 +39,22 @@ import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 /**
  * Force processing to stop and the text to exit
- * 
+ *
  * @author Jonathon Hare
  */
-public class ExitTest extends OutcomeRule {
+public final class ExitTest extends OutcomeRule {
 
     private static final long serialVersionUID = 1431851586138265131L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "exitTest";
 
-    public ExitTest(QtiNode parent) {
+    public ExitTest(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public void evaluate(TestProcessingContext context) throws QtiProcessingInterrupt {
+    public void evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt {
         throw new QtiProcessingInterrupt();
     }
 }

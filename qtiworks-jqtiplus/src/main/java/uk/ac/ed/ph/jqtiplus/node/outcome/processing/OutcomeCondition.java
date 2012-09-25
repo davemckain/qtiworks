@@ -52,17 +52,17 @@ import java.util.List;
  * <p>
  * If the expression given in the outcomeIf or outcomeElseIf does not evaluate to true then consideration passes to the next outcomeElseIf or, if there are no
  * more outcomeElseIf parts then the sub-rules of the outcomeElse are followed (if specified).
- * 
+ *
  * @author Jiri Kajaba
  */
-public class OutcomeCondition extends OutcomeRule {
+public final class OutcomeCondition extends OutcomeRule {
 
     private static final long serialVersionUID = -4591371291453896351L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeCondition";
 
-    public OutcomeCondition(QtiNode parent) {
+    public OutcomeCondition(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new OutcomeIfGroup(this));
@@ -70,58 +70,32 @@ public class OutcomeCondition extends OutcomeRule {
         getNodeGroups().add(new OutcomeElseGroup(this));
     }
 
-    /**
-     * Gets IF child.
-     * 
-     * @return IF child
-     * @see #setOutcomeIf
-     */
+
     public OutcomeIf getOutcomeIf() {
         return getNodeGroups().getOutcomeIfGroup().getOutcomeIf();
     }
 
-    /**
-     * Sets new IF child.
-     * 
-     * @param outcomeIf new IF child
-     * @see #getOutcomeIf
-     */
-    public void setOutcomeIf(OutcomeIf outcomeIf) {
+    public void setOutcomeIf(final OutcomeIf outcomeIf) {
         getNodeGroups().getOutcomeIfGroup().setOutcomeIf(outcomeIf);
     }
 
-    /**
-     * Gets ELSE-IF children.
-     * 
-     * @return ELSE-IF children
-     */
+
     public List<OutcomeElseIf> getOutcomeElseIfs() {
         return getNodeGroups().getOutcomeElseIfGroup().getOutcomeElseIfs();
     }
 
-    /**
-     * Gets ELSE child.
-     * 
-     * @return ELSE child
-     * @see #setOutcomeElse
-     */
+
     public OutcomeElse getOutcomeElse() {
         return getNodeGroups().getOutcomeElseGroup().getOutcomeElse();
     }
 
-    /**
-     * Sets new ELSE child.
-     * 
-     * @param outcomeElse new ELSE child
-     * @see #getOutcomeElse
-     */
-    public void setOutcomeElse(OutcomeElse outcomeElse) {
+    public void setOutcomeElse(final OutcomeElse outcomeElse) {
         getNodeGroups().getOutcomeElseGroup().setOutcomeElse(outcomeElse);
     }
 
     /**
      * Gets all children (IF, ELSE-IF, ELSE) in one ordered list.
-     * 
+     *
      * @return all children (IF, ELSE-IF, ELSE) in one ordered list
      */
     private List<OutcomeConditionChild> getConditionChildren() {
@@ -137,7 +111,7 @@ public class OutcomeCondition extends OutcomeRule {
     }
 
     @Override
-    public void evaluate(TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final OutcomeConditionChild child : getConditionChildren()) {
             if (child.evaluate(context)) {
                 return;

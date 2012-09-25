@@ -63,7 +63,7 @@ public final class StompSampleSet {
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/hottext.xml", new String[] { "stomp/ststyle.css" }),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/meanGS.xml", new String[] { "stomp/ststyle.css" }),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/nel1_1pg.xml", new String[] { "stomp/ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/precisionGS.xml", new String[] { "stomp/ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/precisionGS.xml", new String[] { "stomp/ststyle.css" }),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/slider2.xml", new String[] { "stomp/ststyle.css" }),
             new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/xchoiceS.xml", new String[] { "stomp/ststyle.css" })
     );

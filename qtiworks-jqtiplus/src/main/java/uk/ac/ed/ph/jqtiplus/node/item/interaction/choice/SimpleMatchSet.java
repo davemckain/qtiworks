@@ -58,11 +58,6 @@ public class SimpleMatchSet extends AbstractNode implements SimpleAssociableChoi
         getNodeGroups().add(new SimpleAssociableChoiceGroup(this, 0));
     }
 
-    /**
-     * Gets simpleAssociableChoice children.
-     *
-     * @return simpleAssociableChoice children
-     */
     public List<SimpleAssociableChoice> getSimpleAssociableChoices() {
         return getNodeGroups().getSimpleAssociableChoiceGroup().getSimpleAssociableChoices();
     }

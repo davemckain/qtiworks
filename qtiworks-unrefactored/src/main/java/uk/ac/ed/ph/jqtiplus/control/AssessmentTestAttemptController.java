@@ -128,10 +128,10 @@ public final class AssessmentTestAttemptController {
     private final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllerMap;
     
     public AssessmentTestAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentTest resolvedAssessmentTest, AssessmentTestState assessmentTestState, Timer timer) {
-        Assert.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
-        Assert.ensureNotNull(resolvedAssessmentTest, "resolvedAssessmentTest");
-        Assert.ensureNotNull(assessmentTestState, "assessmentTestState");
-        Assert.ensureNotNull(timer, "timer");
+        Assert.notNull(jqtiExtensionManager, "jqtiExtensionManager");
+        Assert.notNull(resolvedAssessmentTest, "resolvedAssessmentTest");
+        Assert.notNull(assessmentTestState, "assessmentTestState");
+        Assert.notNull(timer, "timer");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentTest = resolvedAssessmentTest;
         this.test = resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful();
@@ -176,7 +176,7 @@ public final class AssessmentTestAttemptController {
     }
 
     private void initValue(OutcomeDeclaration declaration) {
-        Assert.ensureNotNull(declaration);
+        Assert.notNull(declaration);
         testState.setOutcomeValue(declaration, computeInitialValue(declaration));
     }
 
@@ -207,7 +207,7 @@ public final class AssessmentTestAttemptController {
      */
     public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
             VariableReferenceIdentifier variableReferenceIdentifier) {
-        Assert.ensureNotNull(variableReferenceIdentifier);
+        Assert.notNull(variableReferenceIdentifier);
         final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
         final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
         if (itemRefIdentifier == null || itemVarIdentifier == null) {
@@ -732,18 +732,18 @@ public final class AssessmentTestAttemptController {
 
         @Override
         public Value lookupVariableValue(VariableDeclaration variableDeclaration) {
-            Assert.ensureNotNull(variableDeclaration);
+            Assert.notNull(variableDeclaration);
             return getVariableValue(variableDeclaration.getIdentifier());
         }
 
         public Value getVariableValue(Identifier identifier) {
-            Assert.ensureNotNull(identifier);
+            Assert.notNull(identifier);
             return testState.getOutcomeValue(identifier);
         }
         
         @Override
         public Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes) {
-            Assert.ensureNotNull(identifier);
+            Assert.notNull(identifier);
             Value value = null;
             for (final VariableType type : permittedTypes) {
                 switch (type) {

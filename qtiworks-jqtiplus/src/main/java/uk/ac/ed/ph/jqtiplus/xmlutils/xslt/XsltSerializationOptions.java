@@ -67,7 +67,7 @@ public final class XsltSerializationOptions implements Serializable {
      * @param serializationMethod {@link XsltSerializationMethod} to use, which must not be null.
      */
     public void setSerializationMethod(final XsltSerializationMethod serializationMethod) {
-        Assert.ensureNotNull(serializationMethod, "serializationMethod");
+        Assert.notNull(serializationMethod, "serializationMethod");
         this.serializationMethod = serializationMethod;
     }
 
@@ -90,7 +90,7 @@ public final class XsltSerializationOptions implements Serializable {
      *   {@link TransformerFactory} that will end up doing the serialization.
      */
     public void setEncoding(final String encoding) {
-        Assert.ensureNotNull(encoding, "encoding");
+        Assert.notNull(encoding, "encoding");
         this.encoding = encoding;
     }
 

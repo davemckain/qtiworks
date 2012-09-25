@@ -58,31 +58,16 @@ public final class Context extends AbstractNode implements ResultNode {
         getNodeGroups().add(new IdentificationGroup(this));
     }
 
-    /**
-     * Gets sessionIdentifier children.
-     *
-     * @return sessionIdentifier children
-     */
+
     public List<SessionIdentifier> getSessionIdentifiers() {
         return getNodeGroups().getSessionIdentifierGroup().getSessionIdentifiers();
     }
 
-    /**
-     * Gets identification child.
-     *
-     * @return identification child
-     * @see #setIdentification
-     */
+
     public Identification getIdentification() {
         return getNodeGroups().getIdentificationGroup().getIdentification();
     }
 
-    /**
-     * Sets new identification child.
-     *
-     * @param identification new identification child
-     * @see #getIdentification
-     */
     public void setIdentification(final Identification identification) {
         getNodeGroups().getIdentificationGroup().setIdentification(identification);
     }

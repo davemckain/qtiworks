@@ -53,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author Jonathon Hare
  */
-public class DrawingInteraction extends BlockInteraction {
+public final class DrawingInteraction extends BlockInteraction {
 
     private static final long serialVersionUID = 6364289440013765516L;
 
@@ -66,25 +66,15 @@ public class DrawingInteraction extends BlockInteraction {
         getNodeGroups().add(new ObjectGroup(this, true));
     }
 
-    /**
-     * Gets object child.
-     *
-     * @return object child
-     * @see #setObject
-     */
+
     public Object getObject() {
         return getNodeGroups().getObjectGroup().getObject();
     }
 
-    /**
-     * Sets new object child.
-     *
-     * @param object new object child
-     * @see #getObject
-     */
     public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }
+
 
     @Override
     public void validate(final ValidationContext context) {

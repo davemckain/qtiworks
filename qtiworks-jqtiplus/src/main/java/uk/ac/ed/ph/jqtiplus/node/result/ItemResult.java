@@ -65,62 +65,28 @@ public final class ItemResult extends AbstractResult implements ResultNode {
         getNodeGroups().add(new CandidateCommentGroup(this));
     }
 
-    /**
-     * Gets value of sequenceIndex attribute.
-     *
-     * @return value of sequenceIndex attribute
-     * @see #setSequenceIndex
-     */
     public Integer getSequenceIndex() {
         return getAttributes().getIntegerAttribute(ATTR_SEQUENCE_INDEX_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of sequenceIndex attribute.
-     *
-     * @param sequenceIndex new value of sequenceIndex attribute
-     * @see #getSequenceIndex
-     */
     public void setSequenceIndex(final Integer sequenceIndex) {
         getAttributes().getIntegerAttribute(ATTR_SEQUENCE_INDEX_NAME).setValue(sequenceIndex);
     }
 
-    /**
-     * Gets value of sessionStatus attribute.
-     *
-     * @return value of sessionStatus attribute
-     * @see #setSessionStatus
-     */
+
     public SessionStatus getSessionStatus() {
         return getAttributes().getSessionStatusAttribute(ATTR_SESSION_STATUS_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of sessionStatus attribute.
-     *
-     * @param sessionStatus new value of sesssionStatus attribute
-     * @see #getSessionStatus
-     */
     public void setSessionStatus(final SessionStatus sessionStatus) {
         getAttributes().getSessionStatusAttribute(ATTR_SESSION_STATUS_NAME).setValue(sessionStatus);
     }
 
-    /**
-     * Gets candidateComment child.
-     *
-     * @return candidateComment child
-     * @see #setCandidateComment
-     */
+
     public CandidateComment getCandidateComment() {
         return getNodeGroups().getCandidateCommentGroup().getCandidateComment();
     }
 
-    /**
-     * Sets new candidateComment child.
-     *
-     * @param candidateComment new candidateComment child
-     * @see #getCandidateComment
-     */
     public void setCandidateComment(final CandidateComment candidateComment) {
         getNodeGroups().getCandidateCommentGroup().setCandidateComment(candidateComment);
     }

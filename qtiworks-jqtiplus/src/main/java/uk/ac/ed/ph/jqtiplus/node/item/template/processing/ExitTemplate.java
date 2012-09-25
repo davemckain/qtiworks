@@ -40,22 +40,22 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
  * exitTemplate - stop template processing immediately.
- * 
+ *
  * @author Jonathon Hare
  */
-public class ExitTemplate extends TemplateRule {
+public final class ExitTemplate extends TemplateRule {
 
     private static final long serialVersionUID = -2578412242742380715L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "exitTemplate";
 
-    public ExitTemplate(QtiNode parent) {
+    public ExitTemplate(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws TemplateProcessingInterrupt {
+    public void evaluate(final ItemProcessingContext context) throws TemplateProcessingInterrupt {
         throw new TemplateProcessingInterrupt(InterruptType.EXIT_TEMPLATE);
     }
 }

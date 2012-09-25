@@ -82,7 +82,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public class GraphicOrderInteraction extends GraphicInteraction implements HotspotChoiceContainer {
+public final class GraphicOrderInteraction extends GraphicInteraction implements HotspotChoiceContainer {
 
     private static final long serialVersionUID = 1043633373106381307L;
 
@@ -104,45 +104,23 @@ public class GraphicOrderInteraction extends GraphicInteraction implements Hotsp
         getNodeGroups().add(new HotspotChoiceGroup(this, 1));
     }
 
-    /**
-     * Sets new value of maxChoices attribute.
-     *
-     * @param maxChoices new value of maxChoices attribute
-     * @see #getMaxChoices
-     */
-    public void setMaxChoices(final Integer maxChoices) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
-    }
-
-    /**
-     * Gets value of maxChoices attribute.
-     *
-     * @return value of maxChoices attribute
-     * @see #setMaxChoices
-     */
     public Integer getMaxChoices() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of minChoices attribute.
-     *
-     * @param minChoices new value of minChoices attribute
-     * @see #getMinChoices
-     */
+    public void setMaxChoices(final Integer maxChoices) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_CHOICES_NAME).setValue(maxChoices);
+    }
+
+
+    public Integer getMinChoices() {
+        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
+    }
+
     public void setMinChoices(final Integer minChoices) {
         getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).setValue(minChoices);
     }
 
-    /**
-     * Gets value of minChoices attribute.
-     *
-     * @return value of minChoices attribute
-     * @see #setMinChoices
-     */
-    public Integer getMinChoices() {
-        return getAttributes().getIntegerAttribute(ATTR_MIN_CHOICES_NAME).getComputedValue();
-    }
 
     /**
      * Gets hotspotChoice children.

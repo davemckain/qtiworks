@@ -61,7 +61,7 @@ public final class VariableReferenceIdentifier implements Serializable {
      * @throws QtiParseException if value is not a valid identifier (definition)
      */
     public VariableReferenceIdentifier(final String value) {
-        Assert.ensureNotNull(value);
+        Assert.notNull(value);
 
         if (value.isEmpty()) {
             throw new QtiParseException("Invalid identifier '" + value + "': Must not be empty");

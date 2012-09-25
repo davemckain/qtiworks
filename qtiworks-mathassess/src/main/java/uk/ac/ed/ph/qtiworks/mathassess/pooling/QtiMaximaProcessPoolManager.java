@@ -83,8 +83,8 @@ public final class QtiMaximaProcessPoolManager implements QtiMaximaProcessManage
     //---------------------------------------------------------
 
     public void init() {
-        Assert.ensureNotNull(maximaConfiguration, "maximaConfiguration");
-        Assert.ensureNotNull(stylesheetCache, "stylesheetCache");
+        Assert.notNull(maximaConfiguration, "maximaConfiguration");
+        Assert.notNull(stylesheetCache, "stylesheetCache");
         final PoolableQtiMaximaProcessFactory factory = new PoolableQtiMaximaProcessFactory();
         factory.setMaximaConfiguration(maximaConfiguration);
         factory.setStylesheetCache(stylesheetCache);

@@ -101,7 +101,7 @@ import java.util.regex.Pattern;
  *
  * @author Jonathon Hare
  */
-public class ExtendedTextInteraction extends BlockInteraction implements StringInteraction {
+public final class ExtendedTextInteraction extends BlockInteraction implements StringInteraction {
 
     private static final long serialVersionUID = 8382652026744422992L;
 
@@ -142,109 +142,43 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
         getAttributes().add(new StringAttribute(this, ATTR_PLACEHOLDER_TEXT_NAME, false));
     }
 
-    /**
-     * Sets new value of maxStrings attribute.
-     *
-     * @param maxStrings new value of maxStrings attribute
-     * @see #getMaxStrings
-     */
-    public void setMaxStrings(final Integer maxStrings) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_STRINGS_NAME).setValue(maxStrings);
-    }
-
-    /**
-     * Gets value of maxStrings attribute.
-     *
-     * @return value of maxStrings attribute
-     * @see #setMaxStrings
-     */
     public Integer getMaxStrings() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_STRINGS_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of minStrings attribute.
-     *
-     * @param minStrings new value of minStrings attribute
-     * @see #getMinStrings
-     */
-    public void setMinStrings(final Integer minStrings) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).setValue(minStrings);
+    public void setMaxStrings(final Integer maxStrings) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_STRINGS_NAME).setValue(maxStrings);
     }
 
-    /**
-     * Gets value of minStrings attribute.
-     *
-     * @return value of minStrings attribute
-     * @see #setMinStrings
-     */
     public int getMinStrings() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of expectedLines attribute.
-     *
-     * @param expectedLines new value of expectedLines attribute
-     * @see #getExpectedLines
-     */
-    public void setExpectedLines(final Integer expectedLines) {
-        getAttributes().getIntegerAttribute(ATTR_EXPECTED_LINES_NAME).setValue(expectedLines);
+    public void setMinStrings(final Integer minStrings) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_STRINGS_NAME).setValue(minStrings);
     }
 
-    /**
-     * Gets value of expectedLines attribute.
-     *
-     * @return value of expectedLines attribute
-     * @see #setExpectedLines
-     */
     public Integer getExpectedLines() {
         return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LINES_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of format attribute.
-     *
-     * @param format new value of format attribute
-     * @see #getFormat
-     */
-    public void setFormat(final TextFormat format) {
-        getAttributes().getTextFormatAttribute(ATTR_FORMAT_NAME).setValue(format);
+    public void setExpectedLines(final Integer expectedLines) {
+        getAttributes().getIntegerAttribute(ATTR_EXPECTED_LINES_NAME).setValue(expectedLines);
     }
 
-    /**
-     * Gets value of format attribute.
-     *
-     * @return value of format attribute
-     * @see #setFormat
-     */
+
     public TextFormat getFormat() {
         return getAttributes().getTextFormatAttribute(ATTR_FORMAT_NAME).getComputedValue();
     }
 
+    public void setFormat(final TextFormat format) {
+        getAttributes().getTextFormatAttribute(ATTR_FORMAT_NAME).setValue(format);
+    }
+
+
     @Override
     public int getBase() {
         return getAttributes().getIntegerAttribute(ATTR_BASE_NAME).getComputedNonNullValue();
-    }
-
-    @Override
-    public Integer getExpectedLength() {
-        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getComputedValue();
-    }
-
-    @Override
-    public String getPatternMask() {
-        return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getComputedValue();
-    }
-
-    @Override
-    public String getPlaceholderText() {
-        return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getComputedValue();
-    }
-
-    @Override
-    public Identifier getStringIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getComputedValue();
     }
 
     @Override
@@ -253,8 +187,18 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
+    public Integer getExpectedLength() {
+        return getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).getComputedValue();
+    }
+
+    @Override
     public void setExpectedLength(final Integer expectedLength) {
         getAttributes().getIntegerAttribute(ATTR_EXPECTED_LENGTH_NAME).setValue(expectedLength);
+    }
+
+    @Override
+    public String getPatternMask() {
+        return getAttributes().getStringAttribute(ATTR_PATTERN_MASK_NAME).getComputedValue();
     }
 
     @Override
@@ -263,8 +207,18 @@ public class ExtendedTextInteraction extends BlockInteraction implements StringI
     }
 
     @Override
+    public String getPlaceholderText() {
+        return getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).getComputedValue();
+    }
+
+    @Override
     public void setPlaceholderText(final String placeholderText) {
         getAttributes().getStringAttribute(ATTR_PLACEHOLDER_TEXT_NAME).setValue(placeholderText);
+    }
+
+    @Override
+    public Identifier getStringIdentifier() {
+        return getAttributes().getIdentifierAttribute(ATTR_STRING_IDENTIFIER_NAME).getComputedValue();
     }
 
     @Override

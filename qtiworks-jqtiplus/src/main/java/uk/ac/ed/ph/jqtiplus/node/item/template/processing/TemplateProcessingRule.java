@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
  * Abstract parent of all template processing rules.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class TemplateProcessingRule extends AbstractNode {
@@ -51,18 +51,13 @@ public abstract class TemplateProcessingRule extends AbstractNode {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "templateProcessingRule";
 
-    /**
-     * Creates rule.
-     * 
-     * @param parent parent of this rule
-     */
-    public TemplateProcessingRule(QtiNode parent, String qtiClassName) {
+    public TemplateProcessingRule(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
     }
 
     /**
      * Evaluates this rule and all its children.
-     * 
+     *
      * @throws RuntimeValidationException
      * @throws TemplateProcessingInterrupt
      */

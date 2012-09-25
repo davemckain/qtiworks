@@ -46,24 +46,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The result is the integer n for all input values in the range [n-0.5,n+0.5).
  * In other words, 6.8 and 6.5 both round up to 7, 6.49 rounds down to 6 and -6.5 rounds up to -6.
  * If the sub-expression is NULL then the operator results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Round extends AbstractFunctionalExpression {
+public final class Round extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -4725940996976019125L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "round";
 
-    public Round(ExpressionParent parent) {
+    public Round(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

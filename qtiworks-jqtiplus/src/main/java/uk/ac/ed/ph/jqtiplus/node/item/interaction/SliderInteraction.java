@@ -83,7 +83,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author Jonathon Hare
  */
-public class SliderInteraction extends BlockInteraction {
+public final class SliderInteraction extends BlockInteraction {
 
     private static final long serialVersionUID = -1475285258141745276L;
 
@@ -119,123 +119,56 @@ public class SliderInteraction extends BlockInteraction {
         getAttributes().add(new BooleanAttribute(this, ATTR_REVERSE_NAME, false));
     }
 
-    /**
-     * Sets new value of lowerBound attribute.
-     *
-     * @param lowerBound new value of lowerBound attribute
-     * @see #getLowerBound
-     */
-    public void setLowerBound(final Double lowerBound) {
-        getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).setValue(lowerBound);
-    }
 
-    /**
-     * Gets value of lowerBound attribute.
-     *
-     * @return value of lowerBound attribute
-     * @see #setLowerBound
-     */
     public double getLowerBound() {
         return getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of upperBound attribute.
-     *
-     * @param upperBound new value of upperBound attribute
-     * @see #getUpperBound
-     */
-    public void setUpperBound(final Double upperBound) {
-        getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).setValue(upperBound);
+    public void setLowerBound(final Double lowerBound) {
+        getAttributes().getFloatAttribute(ATTR_LOWER_BOUND_NAME).setValue(lowerBound);
     }
 
-    /**
-     * Gets value of upperBound attribute.
-     *
-     * @return value of upperBound attribute
-     * @see #setUpperBound
-     */
+
     public double getUpperBound() {
         return getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of step attribute.
-     *
-     * @param step new value of step attribute
-     * @see #getStep
-     */
-    public void setStep(final Integer step) {
-        getAttributes().getIntegerAttribute(ATTR_STEP_NAME).setValue(step);
+    public void setUpperBound(final Double upperBound) {
+        getAttributes().getFloatAttribute(ATTR_UPPER_BOUND_NAME).setValue(upperBound);
     }
 
-    /**
-     * Gets value of step attribute.
-     *
-     * @return value of step attribute
-     * @see #setStep
-     */
+
     public Integer getStep() {
         return getAttributes().getIntegerAttribute(ATTR_STEP_NAME).getComputedValue();
     }
 
-    /**
-     * Gets value of stepLabel attribute.
-     *
-     * @return value of stepLabel attribute
-     * @see #setStepLabel
-     */
+    public void setStep(final Integer step) {
+        getAttributes().getIntegerAttribute(ATTR_STEP_NAME).setValue(step);
+    }
+
     public boolean getStepLabel() {
         return getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of stepLabel attribute.
-     *
-     * @param stepLabel new value of stepLabel attribute
-     * @see #getStepLabel
-     */
     public void setStepLabel(final Boolean stepLabel) {
         getAttributes().getBooleanAttribute(ATTR_STEP_LABEL_NAME).setValue(stepLabel);
     }
 
 
-    /**
-     * Sets new value of orientation attribute.
-     *
-     * @param orientation new value of orientation attribute
-     * @see #getOrientation
-     */
-    public void setOrientation(final Orientation orientation) {
-        getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).setValue(orientation);
-    }
 
-    /**
-     * Gets value of orientation attribute.
-     *
-     * @return value of orientation attribute
-     * @see #setOrientation
-     */
     public Orientation getOrientation() {
         return getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).getComputedValue();
     }
 
-    /**
-     * Gets value of reverse attribute.
-     *
-     * @return value of reverse attribute
-     * @see #setReverse
-     */
+    public void setOrientation(final Orientation orientation) {
+        getAttributes().getOrientationAttribute(ATTR_ORIENTATION_NAME).setValue(orientation);
+    }
+
+
     public Boolean getReverse() {
         return getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).getValue();
     }
 
-    /**
-     * Sets new value of reverse attribute.
-     *
-     * @param reverse new value of reverse attribute
-     * @see #getReverse
-     */
     public void setReverse(final Boolean reverse) {
         getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).setValue(reverse);
     }

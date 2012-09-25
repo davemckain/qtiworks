@@ -56,29 +56,29 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * For example, when applied to A, B and {C,D} the multiple operator results in {A,B,C,D}.
  * <p>
  * All sub-expressions with NULL values are ignored. If no sub-expressions are given (or all are NULL) then the result is NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Multiple extends AbstractFunctionalExpression {
+public final class Multiple extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -2949615998344301483L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "multiple";
 
-    public Multiple(ExpressionParent parent) {
+    public Multiple(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getRequiredSameBaseTypes(context, index, true);
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         BaseType[] produced = super.getProducedBaseTypes(context);
 
         for (final Expression child : getChildren()) {
@@ -89,7 +89,7 @@ public class Multiple extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getChildren().size() == 0) {
@@ -98,10 +98,10 @@ public class Multiple extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         final MultipleValue container = new MultipleValue();
 
-        for (Value childValue : childValues) {
+        for (final Value childValue : childValues) {
             if (!childValue.isNull()) {
                 if (childValue.getCardinality() == Cardinality.SINGLE) {
                     container.add((SingleValue) childValue);

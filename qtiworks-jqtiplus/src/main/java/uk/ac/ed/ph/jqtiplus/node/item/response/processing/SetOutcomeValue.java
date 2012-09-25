@@ -53,22 +53,22 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * Special care is required when using the numeric base-types because floating point values can not be assigned to integer variables and vice-versa. The
  * truncate, round, or integerToFloat operators must be used to achieve numeric type conversion.
- * 
+ *
  * @author Jonathon Hare
  */
-public class SetOutcomeValue extends ProcessResponseValue {
+public final class SetOutcomeValue extends ProcessResponseValue {
 
     private static final long serialVersionUID = 2510329183906024639L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "setOutcomeValue";
 
-    public SetOutcomeValue(QtiNode parent) {
+    public SetOutcomeValue(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
@@ -80,7 +80,7 @@ public class SetOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
@@ -92,7 +92,7 @@ public class SetOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getIdentifier() != null) {
@@ -112,7 +112,7 @@ public class SetOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public void evaluate(ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
         final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());

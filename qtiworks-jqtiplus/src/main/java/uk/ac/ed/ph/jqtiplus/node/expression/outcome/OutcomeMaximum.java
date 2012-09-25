@@ -54,7 +54,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public class OutcomeMaximum extends OutcomeMinMax {
+public final class OutcomeMaximum extends OutcomeMinMax {
 
     private static final long serialVersionUID = -6706091198376504044L;
 

@@ -164,8 +164,8 @@ public class AssessmentRenderer {
      * @throws QtiRenderingException if an unexpected Exception happens during rendering
      */
     public void renderItem(final ItemRenderingRequest renderingRequest, final OutputStream resultStream) {
-        Assert.ensureNotNull(renderingRequest, "renderingRequest");
-        Assert.ensureNotNull(resultStream, "resultStream");
+        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(resultStream, "resultStream");
         logger.debug("renderItem({}, {})", renderingRequest, resultStream);
 
         /* Check request is valid */

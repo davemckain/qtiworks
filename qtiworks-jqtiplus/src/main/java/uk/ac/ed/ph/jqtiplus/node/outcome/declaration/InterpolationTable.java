@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public class InterpolationTable extends LookupTable {
+public final class InterpolationTable extends LookupTable {
 
     private static final long serialVersionUID = -7056243816798489068L;
 
@@ -68,11 +68,6 @@ public class InterpolationTable extends LookupTable {
         return getInterpolationEntries();
     }
 
-    /**
-     * Gets interpolationTableEntry children.
-     *
-     * @return interpolationTableEntry children
-     */
     public List<InterpolationTableEntry> getInterpolationEntries() {
         return getNodeGroups().getInterpolationTableEntryGroup().getEntries();
     }

@@ -97,7 +97,7 @@ public class EntityGraphService {
      * This will return a non-null result.
      */
     public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
-        Assert.ensureNotNull(assessment, "assessment");
+        Assert.notNull(assessment, "assessment");
         final AssessmentPackage result = assessmentPackageDao.getCurrentAssessmentPackage(assessment);
         if (result==null) {
             throw new QtiWorksLogicException("Expected to always find at least 1 AssessmentPackage associated with an Assessment. Check the JPA-QL query and the logic in this class");
@@ -111,7 +111,7 @@ public class EntityGraphService {
      * This will return a non-null result.
      */
     public AssessmentPackage getCurrentAssessmentPackage(final ItemDelivery delivery) {
-        Assert.ensureNotNull(delivery, "delivery");
+        Assert.notNull(delivery, "delivery");
         return getCurrentAssessmentPackage(delivery.getAssessment());
     }
 

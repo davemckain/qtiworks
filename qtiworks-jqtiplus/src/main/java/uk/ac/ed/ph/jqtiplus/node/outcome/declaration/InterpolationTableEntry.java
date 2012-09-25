@@ -64,43 +64,20 @@ public class InterpolationTableEntry extends LookupTableEntry {
         getAttributes().add(1, new BooleanAttribute(this, ATTR_INCLUDE_BOUNDARY_NAME, ATTR_INCLUDE_BOUNDARY_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Gets value of sourceValue attribute.
-     *
-     * @return value of sourceValue attribute
-     * @see #setSourceValue
-     */
     @Override
     public Double getSourceValue() {
         return getAttributes().getFloatAttribute(ATTR_SOURCE_VALUE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of sourceValue attribute.
-     *
-     * @param sourceValue new value of sourceValue attribute
-     * @see #getSourceValue
-     */
     public void setSourceValue(final Double sourceValue) {
         getAttributes().getFloatAttribute(ATTR_SOURCE_VALUE_NAME).setValue(sourceValue);
     }
 
-    /**
-     * Gets value of includeBoundary attribute.
-     *
-     * @return value of includeBoundary attribute
-     * @see #setIncludeBoundary
-     */
+
     public boolean getIncludeBoundary() {
         return getAttributes().getBooleanAttribute(ATTR_INCLUDE_BOUNDARY_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of includeBoundary attribute.
-     *
-     * @param includeBoundary new value of includeBoundary attribute
-     * @see #getIncludeBoundary
-     */
     public void setIncludeBoundary(final Boolean includeBoundary) {
         getAttributes().getBooleanAttribute(ATTR_INCLUDE_BOUNDARY_NAME).setValue(includeBoundary);
     }

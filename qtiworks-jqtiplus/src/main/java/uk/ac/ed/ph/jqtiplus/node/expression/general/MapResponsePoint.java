@@ -51,10 +51,10 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * each area in turn. When mapping containers each area can be mapped once only.
  * <p>
  * For example, if the candidate identified two points that both fall in the same area then the mappedValue is still added to the calculated total just once.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class MapResponsePoint extends AbstractExpression {
+public final class MapResponsePoint extends AbstractExpression {
 
     private static final long serialVersionUID = 584338515225138296L;
 
@@ -64,34 +64,23 @@ public class MapResponsePoint extends AbstractExpression {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public MapResponsePoint(ExpressionParent parent) {
+    public MapResponsePoint(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
-    /**
-     * Gets value of identifier attribute.
-     * 
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     * 
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
+
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         final ResponseDeclaration responseDeclaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
@@ -107,7 +96,7 @@ public class MapResponsePoint extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
         final ResponseDeclaration responseDeclaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
         final Value responseValue = itemContext.lookupVariableValue(getIdentifier(), VariableType.RESPONSE);

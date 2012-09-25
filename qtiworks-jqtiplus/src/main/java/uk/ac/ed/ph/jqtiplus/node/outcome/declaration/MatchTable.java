@@ -43,17 +43,17 @@ import java.util.List;
 
 /**
  * A matchTable transforms A source integer by finding the first matchTableEntry with an exact match to the source.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class MatchTable extends LookupTable {
+public final class MatchTable extends LookupTable {
 
     private static final long serialVersionUID = 352441541205819413L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "matchTable";
 
-    public MatchTable(OutcomeDeclaration parent) {
+    public MatchTable(final OutcomeDeclaration parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new MatchTableEntryGroup(this));
@@ -66,7 +66,7 @@ public class MatchTable extends LookupTable {
 
     /**
      * Gets matchTableEntry children.
-     * 
+     *
      * @return matchTableEntry children
      */
     public List<MatchTableEntry> getMatchEntries() {
@@ -74,7 +74,7 @@ public class MatchTable extends LookupTable {
     }
 
     @Override
-    public SingleValue getTargetValue(NumberValue sourceValue) {
+    public SingleValue getTargetValue(final NumberValue sourceValue) {
         if (sourceValue != null) {
             if (!(sourceValue instanceof IntegerValue)) {
                 throw new QtiBaseTypeException(computeXPath() + " Invalid baseType: " + sourceValue.getBaseType());

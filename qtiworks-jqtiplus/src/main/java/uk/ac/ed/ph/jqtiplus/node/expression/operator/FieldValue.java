@@ -54,7 +54,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class FieldValue extends AbstractFunctionalExpression {
+public final class FieldValue extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 5076276250973789782L;
 
@@ -64,7 +64,7 @@ public class FieldValue extends AbstractFunctionalExpression {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "fieldIdentifier";
 
-    public FieldValue(ExpressionParent parent) {
+    public FieldValue(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
@@ -72,65 +72,55 @@ public class FieldValue extends AbstractFunctionalExpression {
 
     @Override
     public final String computeXPathComponent() {
-        final Identifier identifier = getIdentifier();
+        final Identifier identifier = getFieldIdentifier();
         if (identifier != null) {
             return getQtiClassName() + "[@identifier=\"" + identifier + "\"]";
         }
         return super.computeXPathComponent();
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
-    public Identifier getIdentifier() {
+
+    public Identifier getFieldIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(Identifier identifier) {
+    public void setFieldIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
+
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
-        if (getIdentifier() == null || getChildren().size() == 0 || !(getChildren().get(0) instanceof RecordEx)) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
+        if (getFieldIdentifier() == null || getChildren().size() == 0 || !(getChildren().get(0) instanceof RecordEx)) {
             return super.getProducedBaseTypes(context);
         }
 
         final RecordEx record = (RecordEx) getChildren().get(0);
-        final Expression child = record.getChild(getIdentifier());
+        final Expression child = record.getChild(getFieldIdentifier());
 
         return child != null ? child.getProducedBaseTypes(context) : super.getProducedBaseTypes(context);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
-        if (getIdentifier() != null && getChildren().size() != 0 && getChildren().get(0) instanceof RecordEx) {
+        if (getFieldIdentifier() != null && getChildren().size() != 0 && getChildren().get(0) instanceof RecordEx) {
             final RecordEx record = (RecordEx) getChildren().get(0);
-            if (!record.getIdentifiers().contains(getIdentifier())) {
-                context.add(new ValidationWarning(this, "Cannot find field with identifier: " + getIdentifier()));
+            if (!record.getIdentifiers().contains(getFieldIdentifier())) {
+                context.add(new ValidationWarning(this, "Cannot find field with identifier: " + getFieldIdentifier()));
             }
         }
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
         final RecordValue record = (RecordValue) childValues[0];
-        final Value value = record.get(getIdentifier());
+        final Value value = record.get(getFieldIdentifier());
 
         if (value == null || value.isNull()) {
             return NullValue.INSTANCE;

@@ -41,10 +41,10 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
  * The ordering class specifies the rule used to arrange the child elements of A section following
  * selection. If no ordering rule is given we assume that the elements are to be ordered in the order
  * in which they are defined.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class Ordering extends AbstractNode implements Shuffleable {
+public final class Ordering extends AbstractNode implements Shuffleable {
 
     private static final long serialVersionUID = 8836454929046981760L;
 
@@ -54,7 +54,7 @@ public class Ordering extends AbstractNode implements Shuffleable {
     /** Name of shuffle attribute in xml schema. */
     public static final String ATTR_SHUFFLE_NAME = "shuffle";
 
-    public Ordering(AssessmentSection parent) {
+    public Ordering(final AssessmentSection parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SHUFFLE_NAME, true));
@@ -65,25 +65,13 @@ public class Ordering extends AbstractNode implements Shuffleable {
         return (AssessmentSection) super.getParent();
     }
 
-    /**
-     * Gets value of shuffle attribute.
-     * 
-     * @return value of shuffle attribute
-     * @see #setShuffle
-     */
     @Override
     public boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of shuffle attribute.
-     * 
-     * @param shuffle new value of shuffle attribute
-     * @see #getShuffle
-     */
     @Override
-    public void setShuffle(boolean shuffle) {
+    public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }
 }

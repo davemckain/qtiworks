@@ -74,42 +74,20 @@ public abstract class GapChoice extends AssociableChoice {
         getAttributes().add(new IntegerAttribute(this, ATTR_MATCH_MIN_NAME, ATTR_MATCH_MIN_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Gets value of matchMax attribute.
-     *
-     * @return value of matchMax attribute
-     * @see #setMatchMax
-     */
+
     public int getMatchMax() {
         return getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of matchMax attribute.
-     *
-     * @param matchMax new value of matchMax attribute
-     * @see #getMatchMax
-     */
-    public void setMatchMax(final Integer matchMax) {
-        getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).setValue(matchMax);
+    public void setMatchMax(final int matchMax) {
+        getAttributes().getIntegerAttribute(ATTR_MATCH_MAX_NAME).setValue(Integer.valueOf(matchMax));
     }
 
-    /**
-     * Gets value of matchMin attribute.
-     *
-     * @return value of matchMin attribute
-     * @see #setMatchMin
-     */
+
     public int getMatchMin() {
         return getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of matchMin attribute.
-     *
-     * @param matchMin new value of matchMin attribute
-     * @see #getMatchMin
-     */
     public void setMatchMin(final Integer matchMin) {
         getAttributes().getIntegerAttribute(ATTR_MATCH_MIN_NAME).setValue(matchMin);
     }

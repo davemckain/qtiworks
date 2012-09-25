@@ -76,7 +76,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author Jonathon Hare
  */
-public class MediaInteraction extends BlockInteraction {
+public final class MediaInteraction extends BlockInteraction {
 
     private static final long serialVersionUID = -1273962848944879873L;
 
@@ -115,102 +115,48 @@ public class MediaInteraction extends BlockInteraction {
         getNodeGroups().add(new ObjectGroup(this, true));
     }
 
-    /**
-     * Sets new value of autostart attribute.
-     *
-     * @param autostart new value of autostart attribute
-     * @see #getAutostart
-     */
-    public void setAutostart(final Boolean autostart) {
-        getAttributes().getBooleanAttribute(ATTR_AUTOSTART_NAME).setValue(autostart);
-    }
 
-    /**
-     * Gets value of autostart attribute.
-     *
-     * @return value of autostart attribute
-     * @see #setAutostart
-     */
     public boolean getAutostart() {
         return getAttributes().getBooleanAttribute(ATTR_AUTOSTART_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of minPlays attribute.
-     *
-     * @param minPlays new value of minPlays attribute
-     * @see #getMinPlays
-     */
-    public void setMinPlays(final Integer minPlays) {
-        getAttributes().getIntegerAttribute(ATTR_MIN_PLAYS_NAME).setValue(minPlays);
+    public void setAutostart(final Boolean autostart) {
+        getAttributes().getBooleanAttribute(ATTR_AUTOSTART_NAME).setValue(autostart);
     }
 
-    /**
-     * Gets value of minPlays attribute.
-     *
-     * @return value of minPlays attribute
-     * @see #setMinPlays
-     */
+
     public int getMinPlays() {
         return getAttributes().getIntegerAttribute(ATTR_MIN_PLAYS_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of maxPlays attribute.
-     *
-     * @param maxPlays new value of maxPlays attribute
-     * @see #getMaxPlays
-     */
-    public void setMaxPlays(final Integer maxPlays) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_PLAYS_NAME).setValue(maxPlays);
+    public void setMinPlays(final Integer minPlays) {
+        getAttributes().getIntegerAttribute(ATTR_MIN_PLAYS_NAME).setValue(minPlays);
     }
 
-    /**
-     * Gets value of maxPlays attribute.
-     *
-     * @return value of maxPlays attribute
-     * @see #setMinPlays
-     */
+
     public int getMaxPlays() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_PLAYS_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Gets value of loop attribute.
-     *
-     * @return value of loop attribute
-     * @see #setLoop
-     */
+    public void setMaxPlays(final Integer maxPlays) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_PLAYS_NAME).setValue(maxPlays);
+    }
+
+
     public boolean getLoop() {
         return getAttributes().getBooleanAttribute(ATTR_LOOP_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of loop attribute.
-     *
-     * @param loop new value of loop attribute
-     * @see #getLoop
-     */
+
     public void setLoop(final Boolean loop) {
         getAttributes().getBooleanAttribute(ATTR_LOOP_NAME).setValue(loop);
     }
 
-    /**
-     * Gets object child.
-     *
-     * @return object child
-     * @see #setObject
-     */
+
     public Object getObject() {
         return getNodeGroups().getObjectGroup().getObject();
     }
 
-    /**
-     * Sets new object child.
-     *
-     * @param object new object child
-     * @see #getObject
-     */
     public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }

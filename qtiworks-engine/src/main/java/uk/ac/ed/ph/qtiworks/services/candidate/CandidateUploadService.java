@@ -69,8 +69,8 @@ public class CandidateUploadService {
 
     public CandidateFileSubmission importFileSubmission(final CandidateItemSession candidateItemSession,
             final MultipartFile multipartFile) {
-        Assert.ensureNotNull(candidateItemSession, "candidateItemSession");
-        Assert.ensureNotNull(multipartFile, "multipartFile");
+        Assert.notNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(multipartFile, "multipartFile");
 
         /* Save file into filesystem */
         final User candidate = candidateItemSession.getCandidate();

@@ -48,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
  *
  * @author Jonathon Hare
  */
-public class ResponseDeclaration extends VariableDeclaration {
+public final class ResponseDeclaration extends VariableDeclaration {
 
     private static final long serialVersionUID = 1574002038906870724L;
 
@@ -68,65 +68,32 @@ public class ResponseDeclaration extends VariableDeclaration {
         return VariableType.RESPONSE;
     }
 
-    /**
-     * Gets correctResponse child.
-     *
-     * @return correctResponse child
-     * @see #setCorrectResponse
-     */
     public CorrectResponse getCorrectResponse() {
         return getNodeGroups().getCorrectResponseGroup().getCorrectResponse();
     }
 
-    /**
-     * Sets new correctResponse child.
-     *
-     * @param correctResponse new correctResponse child
-     * @see #getCorrectResponse
-     */
     public void setCorrectResponse(final CorrectResponse correctResponse) {
         getNodeGroups().getCorrectResponseGroup().setCorrectResponse(correctResponse);
     }
 
-    /**
-     * Gets mapping child.
-     *
-     * @return mapping child
-     * @see #setMapping
-     */
+
     public Mapping getMapping() {
         return getNodeGroups().getMappingGroup().getMapping();
     }
 
-    /**
-     * Sets new mapping child.
-     *
-     * @param mapping new mapping child
-     * @see #getMapping
-     */
     public void setMapping(final Mapping mapping) {
         getNodeGroups().getMappingGroup().setMapping(mapping);
     }
 
-    /**
-     * Gets areaMapping child.
-     *
-     * @return areaMapping child
-     * @see #setAreaMapping
-     */
+
     public AreaMapping getAreaMapping() {
         return getNodeGroups().getAreaMappingGroup().getAreaMapping();
     }
 
-    /**
-     * Sets new areaMapping child.
-     *
-     * @param areaMapping new areaMapping child
-     * @see #getAreaMapping
-     */
     public void setAreaMapping(final AreaMapping areaMapping) {
         getNodeGroups().getAreaMappingGroup().setAreaMapping(areaMapping);
     }
+
 
     @Override
     public void validate(final ValidationContext context) {

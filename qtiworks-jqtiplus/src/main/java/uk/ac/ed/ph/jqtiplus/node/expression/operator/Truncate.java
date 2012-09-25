@@ -50,7 +50,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Truncate extends AbstractFunctionalExpression {
+public final class Truncate extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 3302338197715284071L;
 

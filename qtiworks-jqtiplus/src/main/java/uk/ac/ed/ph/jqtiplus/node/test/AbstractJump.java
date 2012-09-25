@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -49,19 +48,14 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Parent for all jump objects (preCondition and branchRule).
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class AbstractJump extends AbstractNode implements ExpressionParent {
 
     private static final long serialVersionUID = -1364623115711904856L;
 
-    /**
-     * Constructs object.
-     * 
-     * @param parent parent of created object
-     */
-    public AbstractJump(AbstractPart parent, String qtiClassName) {
+    public AbstractJump(final AbstractPart parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new ExpressionGroup(this, 1, 1));
@@ -72,38 +66,28 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
         return (AbstractPart) super.getParent();
     }
 
-    /**
-     * Gets expression child.
-     * 
-     * @return expression child
-     * @see #setExpression
-     */
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
 
-    /**
-     * Sets new expression child.
-     * 
-     * @param expression new expression child
-     * @see #getExpression
-     */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 
+
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return new Cardinality[] { Cardinality.SINGLE };
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         final TestPart parentTestPart = getParent().getParentTestPart();
         if (parentTestPart.getNavigationMode() != null && parentTestPart.getSubmissionMode() != null) {
             if (getParent() != parentTestPart && !parentTestPart.areJumpsEnabled()) {
@@ -115,11 +99,11 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
 
     /**
      * Evaluates condition of this jump.
-     * 
+     *
      * @return evaluated condition of this jump
      * @throws RuntimeValidationException
      */
-    public boolean evaluate(ProcessingContext context) throws RuntimeValidationException {
+    public boolean evaluate(final ProcessingContext context) throws RuntimeValidationException {
         final Value value = getExpression().evaluate(context);
 
         if (value.isNull()) {

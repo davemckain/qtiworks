@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
  *
  * @author Jiri Kajaba
  */
-public class RandomIntegerEx extends RandomInteger {
+public final class RandomIntegerEx extends RandomInteger {
 
     private static final long serialVersionUID = 3373996193226800523L;
 

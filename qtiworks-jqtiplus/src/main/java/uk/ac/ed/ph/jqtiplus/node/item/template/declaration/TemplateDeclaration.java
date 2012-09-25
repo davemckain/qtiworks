@@ -49,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
  *
  * @author Jonathon Hare
  */
-public class TemplateDeclaration extends VariableDeclaration {
+public final class TemplateDeclaration extends VariableDeclaration {
 
     private static final long serialVersionUID = -3230507842769055868L;
 
@@ -80,42 +80,19 @@ public class TemplateDeclaration extends VariableDeclaration {
         return VariableType.TEMPLATE;
     }
 
-    /**
-     * Gets value of paramVariable attribute.
-     *
-     * @return value of paramVariable attribute
-     * @see #setParamVariable
-     */
     public boolean getParamVariable() {
         return getAttributes().getBooleanAttribute(ATTR_PARAM_VARIABLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of paramVariable attribute.
-     *
-     * @param paramVariable new value of paramVariable attribute
-     * @see #getParamVariable
-     */
     public void setParamVariable(final Boolean paramVariable) {
         getAttributes().getBooleanAttribute(ATTR_PARAM_VARIABLE_NAME).setValue(paramVariable);
     }
 
-    /**
-     * Gets value of mathVariable attribute.
-     *
-     * @return value of mathVariable attribute
-     * @see #setMathVariable
-     */
+
     public boolean getMathVariable() {
         return getAttributes().getBooleanAttribute(ATTR_MATH_VARIABLE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of mathVariable attribute.
-     *
-     * @param mathVariable new value of mathVariable attribute
-     * @see #getMathVariable
-     */
     public void setMathVariable(final Boolean mathVariable) {
         getAttributes().getBooleanAttribute(ATTR_MATH_VARIABLE_NAME).setValue(mathVariable);
     }

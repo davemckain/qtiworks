@@ -110,8 +110,8 @@ public final class ItemSessionController implements ItemProcessingContext {
     private final ItemSessionState itemSessionState;
 
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState) {
-        Assert.ensureNotNull(resolvedAssessmentItem, "resolvedAssessmentItem");
-        Assert.ensureNotNull(itemSessionState, "itemSessionState");
+        Assert.notNull(resolvedAssessmentItem, "resolvedAssessmentItem");
+        Assert.notNull(itemSessionState, "itemSessionState");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
@@ -279,7 +279,7 @@ public final class ItemSessionController implements ItemProcessingContext {
      *   any key fails to map to an interaction
      */
     public Set<Identifier> bindResponses(final Map<Identifier, ResponseData> responseMap) {
-        Assert.ensureNotNull(responseMap, "responseMap");
+        Assert.notNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
         ensureInitialized();
 
@@ -302,7 +302,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
-            Assert.ensureNotNull(responseData, "responseMap entry for key " + responseIdentifier);
+            Assert.notNull(responseData, "responseMap entry for key " + responseIdentifier);
             try {
                 final Interaction interaction = interactionMap.get(responseIdentifier);
                 if (interaction != null) {
@@ -447,7 +447,7 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     @Override
     public Value lookupVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.ensureNotNull(identifier);
+        Assert.notNull(identifier);
         Value value = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
@@ -494,23 +494,23 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     public Value lookupVariableValue(final String identifierString, final VariableType... permittedTypes) {
-        Assert.ensureNotNull(identifierString);
+        Assert.notNull(identifierString);
         return lookupVariableValue(new Identifier(identifierString), permittedTypes);
     }
 
     @Override
     public Value computeDefaultValue(final Identifier identifier) {
-        Assert.ensureNotNull(identifier);
+        Assert.notNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
     }
 
     public Value computeDefaultValue(final String identifierString) {
-        Assert.ensureNotNull(identifierString);
+        Assert.notNull(identifierString);
         return computeDefaultValue(ensureVariableDeclaration(new Identifier(identifierString)));
     }
 
     public Value computeDefaultValue(final VariableDeclaration declaration) {
-        Assert.ensureNotNull(declaration);
+        Assert.notNull(declaration);
         Value result = itemSessionState.getOverriddenDefaultValue(declaration);
         if (result == null) {
             final DefaultValue defaultValue = declaration.getDefaultValue();
@@ -525,7 +525,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     private VariableDeclaration ensureVariableDeclaration(final Identifier identifier) {
-        Assert.ensureNotNull(identifier);
+        Assert.notNull(identifier);
         final VariableDeclaration result = item.getVariableDeclaration(identifier);
         if (result == null) {
             throw new QtiEvaluationException("Item variable with identifier " + identifier + " is not defined");
@@ -534,7 +534,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     private ResponseDeclaration ensureResponseDeclaration(final Identifier responseIdentifier) {
-        Assert.ensureNotNull(responseIdentifier);
+        Assert.notNull(responseIdentifier);
         final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
         if (result == null) {
             throw new QtiEvaluationException("Response variable with identifier " + responseIdentifier + " is not defined");
@@ -544,17 +544,17 @@ public final class ItemSessionController implements ItemProcessingContext {
 
     @Override
     public Value computeCorrectResponse(final Identifier identifier) {
-        Assert.ensureNotNull(identifier);
+        Assert.notNull(identifier);
         return computeCorrectResponse(ensureResponseDeclaration(identifier));
     }
 
     public Value computeCorrectResponse(final String identifierString) {
-        Assert.ensureNotNull(identifierString);
+        Assert.notNull(identifierString);
         return computeCorrectResponse(new Identifier(identifierString));
     }
 
     public Value computeCorrectResponse(final ResponseDeclaration declaration) {
-        Assert.ensureNotNull(declaration);
+        Assert.notNull(declaration);
         Value result = itemSessionState.getOverriddenCorrectResponseValue(declaration);
         if (result == null) {
             final CorrectResponse correctResponse = declaration.getCorrectResponse();
@@ -588,7 +588,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     //-------------------------------------------------------------------
 
     private void initValue(final VariableDeclaration declaration) {
-        Assert.ensureNotNull(declaration);
+        Assert.notNull(declaration);
         itemSessionState.setVariableValue(declaration, computeInitialValue(declaration));
     }
 
@@ -597,7 +597,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     private Value computeInitialValue(final VariableDeclaration declaration) {
-        Assert.ensureNotNull(declaration);
+        Assert.notNull(declaration);
         return computeInitialValue(declaration.getIdentifier());
     }
 

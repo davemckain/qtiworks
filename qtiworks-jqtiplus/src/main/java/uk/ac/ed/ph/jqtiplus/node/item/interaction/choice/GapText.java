@@ -59,7 +59,7 @@ public final class GapText extends GapChoice {
         getNodeGroups().add(new TextOrVariableGroup(this));
     }
 
-    public List<TextOrVariable> getChildren() {
+    public List<TextOrVariable> getTextOrVariables() {
         return getNodeGroups().getTextOrVariableGroup().getTextOrVariables();
     }
 }

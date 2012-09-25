@@ -100,7 +100,7 @@ public final class QtiXmlReader {
     }
 
     public QtiXmlReader(final JqtiExtensionManager jqtiExtensionManager, final SchemaCache schemaCache) {
-        Assert.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
+        Assert.notNull(jqtiExtensionManager, "jqtiExtensionManager");
 
         /* Merge extension schemas with core QTI 2.0 and 2.1 schemas */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();

@@ -48,10 +48,10 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * cardinality.
  * Attribute : type [0..1]: mimeType
  * The expected mime-type of the uploaded file.
- * 
+ *
  * @author Jonathon Hare
  */
-public class UploadInteraction extends BlockInteraction {
+public final class UploadInteraction extends BlockInteraction {
 
     private static final long serialVersionUID = -8426318923809371089L;
 
@@ -61,34 +61,24 @@ public class UploadInteraction extends BlockInteraction {
     /** Name of type attribute in xml schema. */
     public static final String ATTR_TYPE_NAME = "type";
 
-    public UploadInteraction(QtiNode parent) {
+    public UploadInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_TYPE_NAME, false));
     }
 
-    /**
-     * Gets value of type attribute.
-     * 
-     * @return value of type attribute
-     * @see #setType
-     */
+
     public String getType() {
         return getAttributes().getStringAttribute(ATTR_TYPE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of type attribute.
-     * 
-     * @param type new value of type attribute
-     * @see #getType
-     */
-    public void setType(String type) {
+    public void setType(final String type) {
         getAttributes().getStringAttribute(ATTR_TYPE_NAME).setValue(type);
     }
 
+
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -104,7 +94,7 @@ public class UploadInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* We assume anything is valid here */
         return true;
     }

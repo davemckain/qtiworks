@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  * Super class for outcomeMaximum and outcomeMinimum expressions.
  * <p>
  * Defines all attributes, because they are same for both child expressions.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class OutcomeMinMax extends ItemSubset {
@@ -54,55 +54,28 @@ public abstract class OutcomeMinMax extends ItemSubset {
     /** Name of weightIdentifier attribute in xml schema. */
     public static final String ATTR_WEIGHT_IDENTIFIER_NAME = "weightIdentifier";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
-    public OutcomeMinMax(ExpressionParent parent, String qtiClassName) {
+    public OutcomeMinMax(final ExpressionParent parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_OUTCOME_IDENTIFIER_NAME, true));
         getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, false));
     }
 
-    /**
-     * Gets value of outcomeIdentifier attribute.
-     * 
-     * @return value of outcomeIdentifier attribute
-     * @see #setOutcomeIdentifier
-     */
+
     public Identifier getOutcomeIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of outcomeIdentifier attribute.
-     * 
-     * @param outcomeIdentifier new value of outcomeIdentifier attribute
-     * @see #getOutcomeIdentifier
-     */
-    public void setOutcomeIdentifier(Identifier outcomeIdentifier) {
+    public void setOutcomeIdentifier(final Identifier outcomeIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).setValue(outcomeIdentifier);
     }
 
-    /**
-     * Gets value of weightIdentifier attribute.
-     * 
-     * @return value of weightIdentifier attribute
-     * @see #setWeightIdentifier
-     */
+
     public Identifier getWeightIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of weightIdentifier attribute.
-     * 
-     * @param weightIdentifier new value of weightIdentifier attribute
-     * @see #getWeightIdentifier
-     */
-    public void setWeightIdentifier(Identifier weightIdentifier) {
+    public void setWeightIdentifier(final Identifier weightIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).setValue(weightIdentifier);
     }
 }

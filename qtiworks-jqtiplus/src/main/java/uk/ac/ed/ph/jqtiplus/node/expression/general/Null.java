@@ -42,24 +42,24 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * Null is A simple expression that returns the NULL value -
  * the null value is treated as if it is of
  * any desired baseType.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Null extends AbstractFunctionalExpression {
+public final class Null extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -8742970323886675294L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "null";
 
-    public Null(ExpressionParent parent) {
+    public Null(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected NullValue evaluateSelf(Value[] childValues) {
+    protected NullValue evaluateSelf(final Value[] childValues) {
         return NullValue.INSTANCE;
     }
 }

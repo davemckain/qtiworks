@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-
 /**
  * The setTemplateValue rule sets the value of A template variable to the value
  * obtained from the associated expression. A template variable can be updated
@@ -54,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author Jonathon Hare
  */
-public class SetTemplateValue extends ProcessTemplateValue {
+public final class SetTemplateValue extends ProcessTemplateValue {
 
     private static final long serialVersionUID = -2471023279990149463L;
 

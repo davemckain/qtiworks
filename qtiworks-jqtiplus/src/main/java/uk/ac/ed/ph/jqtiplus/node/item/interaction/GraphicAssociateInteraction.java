@@ -79,7 +79,7 @@ import java.util.Map;
  *
  * @author Jonathon Hare
  */
-public class GraphicAssociateInteraction extends GraphicInteraction implements AssociableHotspotContainer {
+public final class GraphicAssociateInteraction extends GraphicInteraction implements AssociableHotspotContainer {
 
     private static final long serialVersionUID = -4225511237180886978L;
 
@@ -92,12 +92,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
     /** Default value of maxAssociations attribute. */
     public static final int ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE = 1;
 
-    /**
-     * Construct new interaction.
-     *
-     * @param parent Parent node
-     */
-    public GraphicAssociateInteraction(QtiNode parent) {
+    public GraphicAssociateInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new IntegerAttribute(this, ATTR_MAX_ASSOCIATIONS_NAME, ATTR_MAX_ASSOCIATIONS_DEFAULT_VALUE, true));
@@ -105,31 +100,15 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
         getNodeGroups().add(new AssociableHotspotGroup(this, 1));
     }
 
-    /**
-     * Sets new value of maxAssociations attribute.
-     *
-     * @param maxAssociations new value of maxAssociations attribute
-     * @see #getMaxAssociations
-     */
-    public void setMaxAssociations(Integer maxAssociations) {
-        getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).setValue(maxAssociations);
-    }
-
-    /**
-     * Gets value of maxAssociations attribute.
-     *
-     * @return value of maxAssociations attribute
-     * @see #setMaxAssociations
-     */
     public int getMaxAssociations() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Gets associableHotspot children.
-     *
-     * @return associableHotspot children
-     */
+    public void setMaxAssociations(final int maxAssociations) {
+        getAttributes().getIntegerAttribute(ATTR_MAX_ASSOCIATIONS_NAME).setValue(Integer.valueOf(maxAssociations));
+    }
+
+
     public List<AssociableHotspot> getAssociableHotspots() {
         return getNodeGroups().getAssociableHotspotGroup().getAssociableHotspots();
     }
@@ -140,7 +119,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
      * @param identifier given identifier
      * @return associableHotspot with given identifier or null
      */
-    public AssociableHotspot getAssociableHotspot(Identifier identifier) {
+    public AssociableHotspot getAssociableHotspot(final Identifier identifier) {
         for (final AssociableHotspot choice : getAssociableHotspots()) {
             if (choice.getIdentifier() != null && choice.getIdentifier().equals(identifier)) {
                 return choice;
@@ -151,7 +130,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         super.validate(context);
 
         if (getResponseIdentifier() != null) {
@@ -171,9 +150,8 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
         }
     }
 
-
     @Override
-    public boolean validateResponse(ItemSessionController itemSessionController, Value responseValue) {
+    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
         /* Extract response values */
         final List<PairValue> responseAssociations = new ArrayList<PairValue>();
         if (responseValue.isNull()) {
@@ -223,7 +201,7 @@ public class GraphicAssociateInteraction extends GraphicInteraction implements A
         return true;
     }
 
-    private boolean validateChoice(AssociableHotspot choice, int responseAssociateCount) {
+    private boolean validateChoice(final AssociableHotspot choice, final int responseAssociateCount) {
         final int matchMin = choice.getMatchMin();
         final int matchMax = choice.getMatchMax();
         if (responseAssociateCount < matchMin) {

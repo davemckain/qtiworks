@@ -37,15 +37,17 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 
 /**
  * Implementation of <tt>min</tt>
+ *
+ * @author David McKain
  */
-public class Min extends MathMapExpression {
+public final class Min extends MathMapExpression {
 
     private static final long serialVersionUID = 226234156269457952L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "min";
 
-    public Min(ExpressionParent parent) {
+    public Min(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
@@ -55,7 +57,7 @@ public class Min extends MathMapExpression {
     }
 
     @Override
-    protected double foldr(double running, double value) {
+    protected double foldr(final double running, final double value) {
         return Math.min(running, value);
     }
 }

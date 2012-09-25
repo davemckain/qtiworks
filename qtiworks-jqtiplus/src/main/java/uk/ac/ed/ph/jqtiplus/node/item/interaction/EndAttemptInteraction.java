@@ -85,11 +85,6 @@ public final class EndAttemptInteraction extends InlineInteraction {
     /** Default value of countAttempt attribute in xml schema. */
     public static final boolean ATTR_COUNT_ATTEMPT_DEFAULT_VALUE = true;
 
-    /**
-     * Construct new interaction.
-     *
-     * @param parent Parent node
-     */
     public EndAttemptInteraction(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
@@ -97,33 +92,21 @@ public final class EndAttemptInteraction extends InlineInteraction {
         getAttributes().add(new BooleanAttribute(this, ATTR_COUNT_ATTEMPT_NAME, ATTR_COUNT_ATTEMPT_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Sets new value of title attribute.
-     *
-     * @param title new value of title attribute
-     * @see #getTitle
-     */
-    public void setTitle(final String title) {
-        getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
-    }
-
-    /**
-     * Gets value of title attribute.
-     *
-     * @return value of title attribute
-     * @see #setTitle
-     */
     public String getTitle() {
         return getAttributes().getStringAttribute(ATTR_TITLE_NAME).getComputedValue();
     }
 
-
-    public void setCountAttempt(final Boolean countAttempt) {
-        getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).setValue(countAttempt);
+    public void setTitle(final String title) {
+        getAttributes().getStringAttribute(ATTR_TITLE_NAME).setValue(title);
     }
+
 
     public boolean getCountAttempt() {
         return getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).getComputedNonNullValue();
+    }
+
+    public void setCountAttempt(final Boolean countAttempt) {
+        getAttributes().getBooleanAttribute(ATTR_COUNT_ATTEMPT_NAME).setValue(countAttempt);
     }
 
 

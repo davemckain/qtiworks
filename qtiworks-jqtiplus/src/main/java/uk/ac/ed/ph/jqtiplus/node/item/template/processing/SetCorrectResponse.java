@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 /**
  * @author Jonathon Hare
  */
-public class SetCorrectResponse extends ProcessTemplateValue {
+public final class SetCorrectResponse extends ProcessTemplateValue {
 
     private static final long serialVersionUID = -2721596310184612994L;
 

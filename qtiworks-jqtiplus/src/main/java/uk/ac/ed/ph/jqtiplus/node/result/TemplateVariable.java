@@ -74,21 +74,7 @@ public final class TemplateVariable extends ItemVariable implements FieldValuePa
         }
     }
 
-    /**
-     * Gets fieldValue children.
-     *
-     * @return fieldValue children
-     */
     public List<FieldValue> getFieldValues() {
         return getNodeGroups().getFieldValueGroup().getFieldValues();
-    }
-
-    /**
-     * Gets value of this variableDeclaration.
-     *
-     * @return value of this variableDeclaration
-     */
-    public Value getValue() {
-        return FieldValue.computeValue(getCardinality(), getFieldValues());
     }
 }

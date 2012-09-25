@@ -199,7 +199,7 @@ public class AssessmentManagementService {
     @Transactional(propagation=Propagation.REQUIRES_NEW)
     public Assessment importAssessment(final MultipartFile multipartFile)
             throws PrivilegeException, AssessmentPackageFileImportException {
-        Assert.ensureNotNull(multipartFile, "multipartFile");
+        Assert.notNull(multipartFile, "multipartFile");
         final User caller = ensureCallerMayCreateAssessment();
 
         /* First, upload the data into a sandbox */
@@ -248,7 +248,7 @@ public class AssessmentManagementService {
     public Assessment updateAssessment(final long aid, final UpdateAssessmentCommand command)
             throws BindException, DomainEntityNotFoundException, PrivilegeException {
         /* Validate data */
-        Assert.ensureNotNull(command, "command");
+        Assert.notNull(command, "command");
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(command, "updateAssessmentCommand");
         jsr303Validator.validate(command, errors);
         if (errors.hasErrors()) {
@@ -280,7 +280,7 @@ public class AssessmentManagementService {
             final MultipartFile multipartFile)
             throws AssessmentStateException, PrivilegeException,
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
-        Assert.ensureNotNull(multipartFile, "multipartFile");
+        Assert.notNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayChange(assessment);
 
@@ -470,7 +470,7 @@ public class AssessmentManagementService {
 
     private void validateItemDeliverySettingsTemplate(final ItemDeliverySettingsTemplate template)
             throws BindException {
-        Assert.ensureNotNull(template, "template");
+        Assert.notNull(template, "template");
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "itemDeliverySettingsTemplate");
         jsr303Validator.validate(template, errors);
         if (errors.hasErrors()) {
@@ -654,7 +654,7 @@ public class AssessmentManagementService {
 
     private void validateItemDeliveryTemplate(final ItemDeliveryTemplate template)
             throws BindException {
-        Assert.ensureNotNull(template, "itemDeliveryTemplate");
+        Assert.notNull(template, "itemDeliveryTemplate");
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "itemDeliveryTemplate");
         jsr303Validator.validate(template, errors);
         if (errors.hasErrors()) {
@@ -667,7 +667,7 @@ public class AssessmentManagementService {
 
     public ItemDelivery createDemoDelivery(final Assessment assessment)
             throws PrivilegeException {
-        Assert.ensureNotNull(assessment, "assessment");
+        Assert.notNull(assessment, "assessment");
 
         /* Select suitable delivery settings */
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
@@ -682,8 +682,8 @@ public class AssessmentManagementService {
 
     public ItemDelivery createDemoDelivery(final Assessment assessment, final ItemDeliverySettings itemDeliverySettings)
             throws PrivilegeException {
-        Assert.ensureNotNull(assessment, "assessment");
-        Assert.ensureNotNull(itemDeliverySettings, "itemDeliverySettings");
+        Assert.notNull(assessment, "assessment");
+        Assert.notNull(itemDeliverySettings, "itemDeliverySettings");
 
         /* Make sure caller is allowed to run this Assessment */
         final User caller = ensureCallerMayAccess(assessment);
@@ -795,7 +795,7 @@ public class AssessmentManagementService {
      * @return guessed title, or an empty String if nothing could be guessed.
      */
     public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
-        Assert.ensureNotNull(assessmentPackage, "assessmentPackage");
+        Assert.notNull(assessmentPackage, "assessmentPackage");
         final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
         final URI assessmentSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
         XmlReadResult xmlReadResult;

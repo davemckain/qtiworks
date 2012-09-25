@@ -44,36 +44,31 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * cardinality. The result is A single boolean which is true if all sub-expressions are true and false
  * if any of them are false. If one or more sub-expressions are NULL and all others are true then the
  * operator also results in NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class And extends AbstractFunctionalExpression {
+public final class And extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -4630697734460296251L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "and";
 
-    /**
-     * Constructs expression.
-     * 
-     * @param parent parent of this expression
-     */
-    public And(ExpressionParent parent) {
+    public And(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
-        for (Value childValue : childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
+        for (final Value childValue : childValues) {
             if (childValue.isNull()) {
                 return NullValue.INSTANCE;
             }
             else if (!((BooleanValue) childValue).booleanValue()) {
                 return BooleanValue.FALSE;
-            }            
+            }
         }
         return BooleanValue.TRUE;
     }

@@ -47,10 +47,10 @@ import java.util.List;
 
 /**
  * Implementation of <tt>statsOperator</tt>
- * 
+ *
  * @author David McKain
  */
-public class StatsOperator extends AbstractFunctionalExpression {
+public final class StatsOperator extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
@@ -60,7 +60,7 @@ public class StatsOperator extends AbstractFunctionalExpression {
     /** Name of 'name' attribute */
     public static final String ATTR_NAME_NAME = "name";
 
-    public StatsOperator(ExpressionParent parent) {
+    public StatsOperator(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new StatsOperatorNameAttribute(this, "name", true));
@@ -75,12 +75,12 @@ public class StatsOperator extends AbstractFunctionalExpression {
         return ((StatsOperatorNameAttribute) getAttributes().get(ATTR_NAME_NAME)).getComputedValue();
     }
 
-    public void setTarget(StatsOperatorTarget target) {
+    public void setTarget(final StatsOperatorTarget target) {
         ((StatsOperatorNameAttribute) getAttributes().get(ATTR_NAME_NAME)).setValue(target);
     }
 
     @Override
-    public final Value evaluateSelf(Value[] childValues) {
+    public final Value evaluateSelf(final Value[] childValues) {
         final ListValue containerValue = (ListValue) childValues[0];
         if (containerValue.isNull()) {
             return NullValue.INSTANCE;

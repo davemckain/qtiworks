@@ -48,36 +48,36 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * This expression looks up the declaration of an itemVariable and returns the associated defaultValue or NULL
  * if no default value was declared. When used in outcomes processing item identifier prefixing (see variable) may be
  * used to obtain the default value from an individual item.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class Default extends LookupExpression {
+public final class Default extends LookupExpression {
 
     private static final long serialVersionUID = -1031669571748673912L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "default";
 
-    public Default(ExpressionParent parent) {
+    public Default(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     //----------------------------------------------------------------------
-    
+
     @Override
-    protected void validateResolvedVariableReference(ValidationContext context, VariableReferenceIdentifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration) {
+    protected void validateResolvedVariableReference(final ValidationContext context, final VariableReferenceIdentifier variableReferenceIdentifier, final VariableDeclaration resolvedDeclaration) {
         /* Nothing to do */
     }
 
     //----------------------------------------------------------------------
 
     @Override
-    protected Value evaluateInThisItem(ItemProcessingContext itemContext, Identifier itemVariableIdentifier) {
+    protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
         return itemContext.computeDefaultValue(itemVariableIdentifier);
     }
 
     @Override
-    protected Value evaluateInThisTest(TestProcessingContext testContext, Identifier testVariableIdentifier) {
+    protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
         /* Default don't get overridden in tests */
         /* FIXME: Should we even be allowed to access test variables here? */
         final VariableDeclaration variableDeclaration = testContext.getSubjectTest().getVariableDeclaration(testVariableIdentifier);
@@ -85,7 +85,7 @@ public class Default extends LookupExpression {
     }
 
     @Override
-    protected Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier) {
+    protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
         return itemRefController.getItemController().computeDefaultValue(itemVariableIdentifier);
     }
 }

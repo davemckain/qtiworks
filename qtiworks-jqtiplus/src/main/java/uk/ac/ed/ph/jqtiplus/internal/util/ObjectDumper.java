@@ -122,7 +122,7 @@ public final class ObjectDumper {
      *            if {@link DumpMode#IGNORE} then nothing happens.
      */
     public void appendObject(Object object, DumpMode dumpMode) {
-        Assert.ensureNotNull(dumpMode, "dumpMode");
+        Assert.notNull(dumpMode, "dumpMode");
         appendObject(object, dumpMode, 0);
         result.append("\n");
     }

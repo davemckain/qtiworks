@@ -76,8 +76,8 @@ public abstract class AbstractNodeGroup<P extends QtiNode, C extends QtiNode> im
     }
 
     public AbstractNodeGroup(final P parent, final String name, final int minimum, final Integer maximum) {
-        Assert.ensureNotNull(parent);
-        Assert.ensureNotNull(name);
+        Assert.notNull(parent);
+        Assert.notNull(name);
         this.parent = parent;
         this.name = name;
         this.children = new ArrayList<C>();

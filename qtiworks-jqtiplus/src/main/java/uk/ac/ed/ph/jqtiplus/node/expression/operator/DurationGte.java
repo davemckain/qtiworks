@@ -45,22 +45,22 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * duration. The result is A single boolean with A value of true if the first duration is longer (or equal)
  * than the second and false if it is shorter than the second.
  * If either sub-expression is NULL then the operator results in NULL.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class DurationGte extends AbstractFunctionalExpression {
+public final class DurationGte extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 1768930756619437645L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "durationGTE";
 
-    public DurationGte(ExpressionParent parent) {
+    public DurationGte(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected Value evaluateSelf(Value[] childValues) {
+    protected Value evaluateSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

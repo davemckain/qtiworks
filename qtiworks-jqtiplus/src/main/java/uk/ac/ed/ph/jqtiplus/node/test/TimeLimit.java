@@ -50,7 +50,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
  *
  * @author Jiri Kajaba
  */
-public class TimeLimit extends AbstractNode {
+public final class TimeLimit extends AbstractNode {
 
     private static final long serialVersionUID = 2090259996374843635L;
 
@@ -70,14 +70,13 @@ public class TimeLimit extends AbstractNode {
         getAttributes().add(new DurationAttribute(this, ATTR_MAXIMUM_NAME, false));
     }
 
-    /**
-     * Gets value of minTime attribute.
-     *
-     * @return value of minTime attribute
-     * @see #setMinimum
-     */
+
     public Double getMinimum() {
         return getAttributes().getDurationAttribute(ATTR_MINIMUM_NAME).getComputedValue();
+    }
+
+    public void setMinimum(final Double minimum) {
+        getAttributes().getDurationAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
     }
 
     /**
@@ -93,24 +92,13 @@ public class TimeLimit extends AbstractNode {
         return Long.valueOf((long) (getMinimum().doubleValue() * 1000));
     }
 
-    /**
-     * Sets new value of minTime attribute.
-     *
-     * @param minimum new value of minTime attribute
-     * @see #getMinimum
-     */
-    public void setMinimum(final Double minimum) {
-        getAttributes().getDurationAttribute(ATTR_MINIMUM_NAME).setValue(minimum);
-    }
 
-    /**
-     * Gets value of maxTime attribute.
-     *
-     * @return value of maxTime attribute
-     * @see #setMaximum
-     */
     public Double getMaximum() {
         return getAttributes().getDurationAttribute(ATTR_MAXIMUM_NAME).getComputedValue();
+    }
+
+    public void setMaximum(final Double maximum) {
+        getAttributes().getDurationAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
     }
 
     /**
@@ -126,15 +114,6 @@ public class TimeLimit extends AbstractNode {
         return Long.valueOf((long) (getMaximum().doubleValue() * 1000));
     }
 
-    /**
-     * Sets new value of maxTime attribute.
-     *
-     * @param maximum new value of maxTime attribute
-     * @see #getMaximum
-     */
-    public void setMaximum(final Double maximum) {
-        getAttributes().getDurationAttribute(ATTR_MAXIMUM_NAME).setValue(maximum);
-    }
 
     @Override
     protected void validateAttributes(final ValidationContext context) {

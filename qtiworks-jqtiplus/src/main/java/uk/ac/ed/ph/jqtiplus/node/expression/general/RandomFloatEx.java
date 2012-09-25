@@ -40,10 +40,10 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
  * Extends randomFloat expression - supports seed attribute.
  * <p>
  * This expression should be used only for special purposes when you need repeatability (not for real assessments).
- * 
+ *
  * @author Jiri Kajaba
  */
-public class RandomFloatEx extends RandomFloat {
+public final class RandomFloatEx extends RandomFloat {
 
     private static final long serialVersionUID = -2184877054673297858L;
 
@@ -53,7 +53,7 @@ public class RandomFloatEx extends RandomFloat {
     /** Name of seed attribute in xml schema. */
     public static final String ATTR_SEED_NAME = "seed";
 
-    public RandomFloatEx(ExpressionParent parent) {
+    public RandomFloatEx(final ExpressionParent parent) {
         super(parent);
 
         getAttributes().add(new LongAttribute(this, ATTR_SEED_NAME, false));
@@ -66,11 +66,11 @@ public class RandomFloatEx extends RandomFloat {
 
     /**
      * Sets new value of seed attribute.
-     * 
+     *
      * @param seed new value of seed attribute
      * @see #getSeedAttributeValue
      */
-    public void setSeedAttributeValue(Long seed) {
+    public void setSeedAttributeValue(final Long seed) {
         getAttributes().getLongAttribute(ATTR_SEED_NAME).setValue(seed);
     }
 }

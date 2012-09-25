@@ -177,7 +177,7 @@ public class CandidateSessionStarter {
      */
     public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery, final String exitUrl)
             throws RuntimeValidationException, PrivilegeException {
-        Assert.ensureNotNull(itemDelivery, "itemDelivery");
+        Assert.notNull(itemDelivery, "itemDelivery");
 
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
 

@@ -45,49 +45,33 @@ import java.util.List;
 
 /**
  * positionObjectStage
- * 
+ *
  * @author Jonathon Hare
  */
-public class PositionObjectStage extends AbstractNode implements Block {
+public final class PositionObjectStage extends AbstractNode implements Block {
 
     private static final long serialVersionUID = 7818462825403440725L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "positionObjectStage";
 
-    public PositionObjectStage(QtiNode parent) {
+    public PositionObjectStage(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new ObjectGroup(this, true));
         getNodeGroups().add(new PositionObjectInteractionGroup(this, 1));
     }
 
-    /**
-     * Gets positionObjectInteraction children.
-     * 
-     * @return positionObjectInteraction children
-     */
     public List<PositionObjectInteraction> getPositionObjectInteractions() {
         return getNodeGroups().getPositionObjectInteractionGroup().getPositionObjectInteractions();
     }
 
-    /**
-     * Gets object child.
-     * 
-     * @return object child
-     * @see #setObject
-     */
+
     public Object getObject() {
         return getNodeGroups().getObjectGroup().getObject();
     }
 
-    /**
-     * Sets new object child.
-     * 
-     * @param object new object child
-     * @see #getObject
-     */
-    public void setObject(Object object) {
+    public void setObject(final Object object) {
         getNodeGroups().getObjectGroup().setObject(object);
     }
 }

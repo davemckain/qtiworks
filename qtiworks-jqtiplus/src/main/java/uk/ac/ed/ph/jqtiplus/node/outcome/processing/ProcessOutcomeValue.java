@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 /**
  * Abstract parent for setOutcomeValue and lookupOutcomeValue classes.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class ProcessOutcomeValue extends OutcomeRule implements ExpressionParent {
@@ -55,12 +55,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    /**
-     * Creates rule.
-     * 
-     * @param parent parent of this rule.
-     */
-    public ProcessOutcomeValue(QtiNode parent, String qtiClassName) {
+    public ProcessOutcomeValue(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
@@ -77,48 +72,27 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
         return super.computeXPathComponent();
     }
 
-    /**
-     * Gets value of identifier attribute.
-     * 
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
+
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     * 
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets expression child.
-     * 
-     * @return expression child
-     * @see #setExpression
-     */
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
 
-    /**
-     * Sets new expression child.
-     * 
-     * @param expression new expression child
-     * @see #getExpression
-     */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 
+
     @Override
-    protected void validateAttributes(ValidationContext context) {
+    protected void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getIdentifier()) == null) {

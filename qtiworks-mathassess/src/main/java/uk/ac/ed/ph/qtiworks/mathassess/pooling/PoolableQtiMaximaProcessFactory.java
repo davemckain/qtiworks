@@ -80,8 +80,8 @@ final class PoolableQtiMaximaProcessFactory implements PoolableObjectFactory {
     //---------------------------------------------------------
 
     public void init() {
-        Assert.ensureNotNull(maximaConfiguration, "maximaConfiguration");
-        Assert.ensureNotNull(stylesheetCache, "stylesheetCache");
+        Assert.notNull(maximaConfiguration, "maximaConfiguration");
+        Assert.notNull(stylesheetCache, "stylesheetCache");
         maximaProcessLauncher = new MaximaProcessLauncher(maximaConfiguration);
     }
 

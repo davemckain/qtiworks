@@ -85,7 +85,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Equal extends AbstractExpression {
+public final class Equal extends AbstractExpression {
 
     private static final long serialVersionUID = 2741395727993314516L;
 
@@ -119,31 +119,16 @@ public class Equal extends AbstractExpression {
         getAttributes().add(new BooleanAttribute(this, ATTR_INCLUDE_UPPER_BOUND_NAME, ATTR_INCLUDE_UPPER_BOUND_DEFAULT_VALUE, false));
     }
 
-    /**
-     * Gets value of toleranceMode attribute.
-     *
-     * @return value of toleranceMode attribute
-     * @see #setToleranceMode
-     */
+
     public ToleranceMode getToleranceMode() {
         return getAttributes().getToleranceModeAttribute(ATTR_TOLERANCE_MODE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of toleranceMode attribute.
-     *
-     * @param toleranceMode new value of toleranceMode attribute
-     * @see #getToleranceMode
-     */
     public void setToleranceMode(final ToleranceMode toleranceMode) {
         getAttributes().getToleranceModeAttribute(ATTR_TOLERANCE_MODE_NAME).setValue(toleranceMode);
     }
 
-    /**
-     * Gets value of tolerance attribute.
-     *
-     * @return value of tolerance attribute
-     */
+
     public List<FloatOrVariableRef> getTolerances() {
         return getAttributes().getFloatOrVariableRefMultipleAttribute(ATTR_TOLERANCES_NAME).getValue();
     }
@@ -168,45 +153,23 @@ public class Equal extends AbstractExpression {
         return tolerances!=null && tolerances.size()>1 ? tolerances.get(1) : getFirstTolerance();
     }
 
-    /**
-     * Gets value of includeLowerBound attribute.
-     *
-     * @return value of includeLowerBound attribute
-     * @see #setIncludeLowerBound
-     */
     public boolean getIncludeLowerBound() {
         return getAttributes().getBooleanAttribute(ATTR_INCLUDE_LOWER_BOUND_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of includeLowerBound attribute.
-     *
-     * @param includeLowerBound new value of includeLowerBound attribute
-     * @see #getIncludeLowerBound
-     */
     public void setIncludeLowerBound(final Boolean includeLowerBound) {
         getAttributes().getBooleanAttribute(ATTR_INCLUDE_LOWER_BOUND_NAME).setValue(includeLowerBound);
     }
 
-    /**
-     * Gets value of includeUpperBound attribute.
-     *
-     * @return value of includeUpperBound attribute
-     * @see #setIncludeUpperBound
-     */
+
     public boolean getIncludeUpperBound() {
         return getAttributes().getBooleanAttribute(ATTR_INCLUDE_UPPER_BOUND_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of includeUpperBound attribute.
-     *
-     * @param includeUpperBound new value of includeUpperBound attribute
-     * @see #getIncludeUpperBound
-     */
     public void setIncludeUpperBound(final Boolean includeUpperBound) {
         getAttributes().getBooleanAttribute(ATTR_INCLUDE_UPPER_BOUND_NAME).setValue(includeUpperBound);
     }
+
 
     @Override
     protected void validateAttributes(final ValidationContext context) {

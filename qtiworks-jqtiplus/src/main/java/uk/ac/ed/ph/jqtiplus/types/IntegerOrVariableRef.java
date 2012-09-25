@@ -71,7 +71,7 @@ public final class IntegerOrVariableRef implements Serializable {
      * Creates a new integerOrVariableRef holding the given variable reference
      */
     public IntegerOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
-        Assert.ensureNotNull(variableReferenceIdentifier, "variableReferenceIdentifier");
+        Assert.notNull(variableReferenceIdentifier, "variableReferenceIdentifier");
         this.integerValue = 0;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
@@ -83,7 +83,7 @@ public final class IntegerOrVariableRef implements Serializable {
      * @throws QtiParseException
      */
     public static IntegerOrVariableRef parseString(final String string) {
-        Assert.ensureNotNull(string);
+        Assert.notNull(string);
 
         if (string.isEmpty()) {
             throw new QtiParseException("integerOrVariableRef must not be empty");

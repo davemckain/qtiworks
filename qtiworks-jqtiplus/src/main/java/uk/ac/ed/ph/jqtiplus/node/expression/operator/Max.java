@@ -37,15 +37,17 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 
 /**
  * Implementation of <tt>max</tt>
+ *
+ * @author David McKain
  */
-public class Max extends MathMapExpression {
+public final class Max extends MathMapExpression {
 
     private static final long serialVersionUID = 226234156269457952L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "max";
 
-    public Max(ExpressionParent parent) {
+    public Max(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
@@ -55,7 +57,7 @@ public class Max extends MathMapExpression {
     }
 
     @Override
-    protected double foldr(double running, double value) {
+    protected double foldr(final double running, final double value) {
         return Math.max(running, value);
     }
 }

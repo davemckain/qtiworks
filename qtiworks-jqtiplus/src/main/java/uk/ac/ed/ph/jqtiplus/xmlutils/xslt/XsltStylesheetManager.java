@@ -125,7 +125,7 @@ public final class XsltStylesheetManager {
      * @return compiled XSLT stylesheet.
      */
     public Templates getCompiledStylesheet(final URI xsltUri) {
-        Assert.ensureNotNull(xsltUri, "xsltUri");
+        Assert.notNull(xsltUri, "xsltUri");
         Templates result;
         if (stylesheetCache==null) {
             result = compileStylesheet(xsltUri);
@@ -143,7 +143,7 @@ public final class XsltStylesheetManager {
     }
 
     public TransformerHandler getCompiledStylesheetHandler(final URI xsltUri) {
-        Assert.ensureNotNull(xsltUri, "xsltUri");
+        Assert.notNull(xsltUri, "xsltUri");
         TransformerHandler transformerHandler;
         try {
             transformerHandler = getSaxTransformerFactory().newTransformerHandler(getCompiledStylesheet(xsltUri));
@@ -238,7 +238,7 @@ public final class XsltStylesheetManager {
     }
 
     public Transformer getSerializer(final URI serializerUri, final XsltSerializationOptions serializationOptions) {
-        Assert.ensureNotNull(serializerUri, "serializerUri");
+        Assert.notNull(serializerUri, "serializerUri");
         /* Create serializer */
         Transformer serializer;
         try {
@@ -254,7 +254,7 @@ public final class XsltStylesheetManager {
 
 
     public TransformerHandler getSerializerHandler(final URI serializerUri, final XsltSerializationOptions serializationOptions) {
-        Assert.ensureNotNull(serializerUri, "serializerUri");
+        Assert.notNull(serializerUri, "serializerUri");
         TransformerHandler serializerHandler;
         try {
             serializerHandler = getSaxTransformerFactory().newTransformerHandler(getCompiledStylesheet(serializerUri));
@@ -268,7 +268,7 @@ public final class XsltStylesheetManager {
     }
 
     public Transformer getSerializerDriver(final List<URI> serializerUris, final XsltSerializationOptions serializationOptions) {
-        Assert.ensureNotNull(serializerUris, "serializerUris");
+        Assert.notNull(serializerUris, "serializerUris");
         Transformer serializer;
         try {
             serializer = getCompiledStylesheetDriver(serializerUris).newTransformer();
@@ -283,7 +283,7 @@ public final class XsltStylesheetManager {
 
     public TransformerHandler getSerializerDriverHandler(final List<URI> serializerUris, final XsltSerializationOptions serializationOptions) {
         /* Create serializer */
-        Assert.ensureNotNull(serializerUris, "serializerUris");
+        Assert.notNull(serializerUris, "serializerUris");
         TransformerHandler serializerHandler;
         try {
             serializerHandler = getSaxTransformerFactory().newTransformerHandler(getCompiledStylesheetDriver(serializerUris));

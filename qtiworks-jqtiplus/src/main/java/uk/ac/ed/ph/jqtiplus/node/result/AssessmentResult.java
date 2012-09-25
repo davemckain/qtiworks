@@ -93,51 +93,25 @@ public final class AssessmentResult extends AbstractNode implements RootNode, Re
         this.modelRichness = modelRichness;
     }
 
-    /**
-     * Gets context child.
-     *
-     * @return context child
-     * @see #setContext
-     */
+
     public Context getContext() {
         return getNodeGroups().getContextGroup().getContext();
     }
 
-    /**
-     * Sets new context child.
-     *
-     * @param context new context child
-     * @see #getContext
-     */
     public void setContext(final Context context) {
         getNodeGroups().getContextGroup().setContext(context);
     }
 
-    /**
-     * Gets testResult child.
-     *
-     * @return testResult child
-     * @see #setTestResult
-     */
+
     public TestResult getTestResult() {
         return getNodeGroups().getTestResultGroup().getTestResult();
     }
 
-    /**
-     * Sets new testResult child.
-     *
-     * @param testResult new testResult child
-     * @see #getTestResult
-     */
     public void setTestResult(final TestResult testResult) {
         getNodeGroups().getTestResultGroup().setTestResult(testResult);
     }
 
-    /**
-     * Gets itemResult children.
-     *
-     * @return itemResult children
-     */
+
     public List<ItemResult> getItemResults() {
         return getNodeGroups().getItemResultGroup().getItemResults();
     }

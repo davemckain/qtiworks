@@ -57,10 +57,10 @@ public class AssessmentTestAttemptController {
     private final Timer timer;
 
     public AssessmentTestAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentTest resolvedAssessmentTest, AssessmentTestState assessmentTestState, Timer timer) {
-        Assert.ensureNotNull(jqtiExtensionManager, "jqtiExtensionManager");
-        Assert.ensureNotNull(resolvedAssessmentTest, "resolvedAssessmentTest");
-        Assert.ensureNotNull(assessmentTestState, "assessmentTestState");
-        Assert.ensureNotNull(timer, "timer");
+        Assert.notNull(jqtiExtensionManager, "jqtiExtensionManager");
+        Assert.notNull(resolvedAssessmentTest, "resolvedAssessmentTest");
+        Assert.notNull(assessmentTestState, "assessmentTestState");
+        Assert.notNull(timer, "timer");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentTest = resolvedAssessmentTest;
         this.test = resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful();

@@ -78,31 +78,15 @@ public abstract class LookupTable extends AbstractNode {
         return (OutcomeDeclaration) super.getParent();
     }
 
-    /**
-     * Gets required baseType of target value.
-     *
-     * @return required baseType of target value
-     */
     public BaseType getTargetValueBaseType() {
         return getParent().getBaseType();
     }
 
-    /**
-     * Gets value of defaultValue attribute.
-     *
-     * @return value of defaultValue attribute
-     * @see #setDefaultValue
-     */
+
     public SingleValue getDefaultValue() {
         return getAttributes().getSingleValueAttribute(ATTR_DEFAULT_VALUE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of defaultValue attribute.
-     *
-     * @param defaultValue new value of defaultValue attribute
-     * @see #getDefaultValue
-     */
     public void setDefaultValue(final SingleValue defaultValue) {
         getAttributes().getSingleValueAttribute(ATTR_DEFAULT_VALUE_NAME).setValue(defaultValue);
     }

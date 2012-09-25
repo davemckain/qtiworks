@@ -62,45 +62,13 @@ public interface Hotspot {
     /** Name of hotspotLabel attribute in xml schema. */
     public static final String ATTR_HOTSPOT_LABEL_NAME = "hotspotLabel";
 
-
-    /**
-     * Sets new value of shape attribute.
-     *
-     * @param shape new value of shape attribute
-     * @see #getShape
-     */
+    Shape getShape();
     void setShape(Shape shape);
 
-    /**
-     * Gets value of shape attribute.
-     *
-     * @return value of shape attribute
-     * @see #setShape
-     */
-    Shape getShape();
-
-    /**
-     * Gets value of coords attribute.
-     *
-     * @return value of coords attribute
-     */
+    void setCoords(List<Integer> value);
     List<Integer> getCoords();
 
-    void setCoords(List<Integer> value);
-
-    /**
-     * Sets new value of hotspotLabel attribute.
-     *
-     * @param hotspotLabel new value of hotspotLabel attribute
-     * @see #getHotspotLabel
-     */
+    String getHotspotLabel();
     void setHotspotLabel(String hotspotLabel);
 
-    /**
-     * Gets value of hotspotLabel attribute.
-     *
-     * @return value of hotspotLabel attribute
-     * @see #setHotspotLabel
-     */
-    String getHotspotLabel();
 }

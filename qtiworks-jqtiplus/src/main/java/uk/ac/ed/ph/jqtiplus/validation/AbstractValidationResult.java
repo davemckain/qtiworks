@@ -189,7 +189,7 @@ public abstract class AbstractValidationResult implements Serializable {
      * @param item item to be added
      */
     public void add(ValidationItem item) {
-        Assert.ensureNotNull(item);
+        Assert.notNull(item);
         if (item instanceof ValidationError) {
             errors.add((ValidationError) item);
         }

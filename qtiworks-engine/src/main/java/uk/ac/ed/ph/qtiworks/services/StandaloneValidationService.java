@@ -72,7 +72,7 @@ public class StandaloneValidationService {
 
     public AssessmentObjectValidationResult<?> importAndValidate(final MultipartFile multipartFile)
             throws AssessmentPackageFileImportException {
-        Assert.ensureNotNull(multipartFile, "multipartFile");
+        Assert.notNull(multipartFile, "multipartFile");
         final AnonymousUser caller = (AnonymousUser) identityContext.getCurrentThreadEffectiveIdentity();
         final File sandboxDirectory = filespaceManager.createAssessmentPackageSandbox(caller);
         final AssessmentPackage importedPackage;

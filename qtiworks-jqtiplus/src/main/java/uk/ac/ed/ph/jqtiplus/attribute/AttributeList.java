@@ -103,7 +103,7 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      * @param owner parent of constructed container
      */
     public AttributeList(final QtiNode owner) {
-        Assert.ensureNotNull(owner);
+        Assert.notNull(owner);
         this.owner = owner;
         this.attributes = new ArrayList<Attribute<?>>();
     }
@@ -285,8 +285,8 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
      *             found
      */
     private Attribute<?> get(final String localName, final String namespaceUri, final boolean silent) {
-        Assert.ensureNotNull(localName, "localName");
-        Assert.ensureNotNull(namespaceUri, "namespaceUri");
+        Assert.notNull(localName, "localName");
+        Assert.notNull(namespaceUri, "namespaceUri");
         for (final Attribute<?> attribute : attributes) {
             if (attribute.getLocalName().equals(localName) && attribute.getNamespaceUri().equals(namespaceUri)) {
                 return attribute;

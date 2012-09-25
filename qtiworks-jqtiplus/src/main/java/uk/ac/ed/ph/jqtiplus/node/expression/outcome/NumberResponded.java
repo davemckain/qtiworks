@@ -49,24 +49,24 @@ import java.util.List;
  * declared default (typically NULL).
  * <p>
  * The result is an integer with single cardinality.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class NumberResponded extends ItemSubset {
+public final class NumberResponded extends ItemSubset {
 
     private static final long serialVersionUID = 5232907668517997814L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "numberResponded";
 
-    public NumberResponded(ExpressionParent parent) {
+    public NumberResponded(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    protected IntegerValue evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected IntegerValue evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 

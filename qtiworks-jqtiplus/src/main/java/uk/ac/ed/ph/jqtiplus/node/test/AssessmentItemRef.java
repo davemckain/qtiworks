@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.group.test.TemplateDefaultGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.VariableMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
@@ -45,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +57,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public class AssessmentItemRef extends SectionPart {
+public final class AssessmentItemRef extends SectionPart {
 
     private static final long serialVersionUID = 5469740022955051680L;
 
@@ -107,7 +105,7 @@ public class AssessmentItemRef extends SectionPart {
      *
      * @param parent parent of constructed item reference
      */
-    public AssessmentItemRef(AssessmentSection parent) {
+    public AssessmentItemRef(final AssessmentSection parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new UriAttribute(this, ATTR_HREF_NAME, true));
@@ -160,68 +158,29 @@ public class AssessmentItemRef extends SectionPart {
         return children;
     }
 
-    /**
-     * Gets value of href attribute.
-     *
-     * @return value of href attribute
-     * @see #setHref
-     */
     public URI getHref() {
         return getAttributes().getUriAttribute(ATTR_HREF_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of href attribute.
-     *
-     * @param href new value of href attribute
-     * @see #getHref
-     */
-    public void setHref(URI href) {
+    public void setHref(final URI href) {
         getAttributes().getUriAttribute(ATTR_HREF_NAME).setValue(href);
     }
 
-    /**
-     * Sets new value of href attribute.
-     *
-     * @param href new value of href attribute
-     * @see #getHref
-     */
-    public void setHref(String href) {
-        try {
-            setHref(new URI(href));
-        }
-        catch (final URISyntaxException ex) {
-            throw new QtiEvaluationException(ex);
-        }
-    }
 
-    /**
-     * Gets value of category attribute.
-     *
-     * @return value of category attribute
-     */
     public List<String> getCategories() {
         return getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).getComputedValue();
     }
 
-    public void setCategories(List<String> value) {
+    public void setCategories(final List<String> value) {
         getAttributes().getStringMultipleAttribute(ATTR_CATEGORIES_NAME).setValue(value);
     }
 
-    /**
-     * Gets variableMapping children.
-     *
-     * @return variableMapping children
-     */
+
     public List<VariableMapping> getVariableMappings() {
         return getNodeGroups().getVariableMappingGroup().getVariableMappings();
     }
 
-    /**
-     * Gets weight children.
-     *
-     * @return weight children
-     */
+
     public List<Weight> getWeights() {
         return getNodeGroups().getWeightGroup().getWeights();
     }
@@ -232,7 +191,7 @@ public class AssessmentItemRef extends SectionPart {
      * @param identifier identifier of requested weight
      * @return weight with given identifier or null
      */
-    public Weight getWeight(Identifier identifier) {
+    public Weight getWeight(final Identifier identifier) {
         for (final Weight weight : getWeights()) {
             if (weight.getIdentifier() != null && weight.getIdentifier().equals(identifier)) {
                 return weight;
@@ -247,7 +206,7 @@ public class AssessmentItemRef extends SectionPart {
      * @param identifier identifier of requested weight
      * @return value of weight with given identifier or default weight value (if weight was not found)
      */
-    public double lookupWeight(Identifier identifier) {
+    public double lookupWeight(final Identifier identifier) {
         for (final Weight weight : getWeights()) {
             if (weight.getIdentifier().equals(identifier)) {
                 return weight.getValue();
@@ -256,17 +215,12 @@ public class AssessmentItemRef extends SectionPart {
         return Weight.DEFAULT_WEIGHT;
     }
 
-    /**
-     * Gets templateDefault children.
-     *
-     * @return templateDefault children
-     */
     public List<TemplateDefault> getTemplateDefaults() {
         return getNodeGroups().getTemplateDefaultGroup().getTemplateDefaults();
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         /* Validation of individual items is done by the calling validator, so there's not
          * much to do here!
          */
@@ -274,7 +228,7 @@ public class AssessmentItemRef extends SectionPart {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         for (int i = 0; i < getWeights().size(); i++) {
@@ -367,7 +321,7 @@ public class AssessmentItemRef extends SectionPart {
      * Applies the declared {@link VariableMapping}s to the given "target" {@link Identifier} to give the "source" {@link Identifier} used in the corresponding
      * {@link AssessmentItem}
      */
-    public Identifier resolveVariableMapping(Identifier identifier) {
+    public Identifier resolveVariableMapping(final Identifier identifier) {
         Identifier result = identifier;
         for (final VariableMapping mapping : getVariableMappings()) {
             if (identifier.equals(mapping.getTargetIdentifier())) {
@@ -414,7 +368,7 @@ public class AssessmentItemRef extends SectionPart {
 //    }
 
     @Override
-    public boolean isBuiltInVariable(Identifier identifier) {
+    public boolean isBuiltInVariable(final Identifier identifier) {
         if (identifier != null) {
             if (identifier.toString().equals(AssessmentItem.VARIABLE_COMPLETION_STATUS)
                     || identifier.toString().equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS)) {

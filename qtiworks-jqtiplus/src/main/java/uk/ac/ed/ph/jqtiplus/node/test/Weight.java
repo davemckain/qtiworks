@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  *
  * @author Jiri Kajaba
  */
-public class Weight extends AbstractNode implements IdentifiableNode<Identifier> {
+public final class Weight extends AbstractNode implements IdentifiableNode<Identifier> {
 
     private static final long serialVersionUID = -115358594629456681L;
 
@@ -76,44 +76,22 @@ public class Weight extends AbstractNode implements IdentifiableNode<Identifier>
         return super.computeXPathComponent();
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
+
     @Override
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
     @Override
     public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets value of value attribute.
-     *
-     * @return value of value attribute
-     * @see #setValue
-     */
+
     public double getValue() {
         return getAttributes().getFloatAttribute(ATTR_VALUE_NAME).getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of value attribute.
-     *
-     * @param value new value of value attribute
-     * @see #getValue
-     */
     public void setValue(final Double value) {
         getAttributes().getFloatAttribute(ATTR_VALUE_NAME).setValue(value);
     }

@@ -35,17 +35,17 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 /**
  * Implementation of ELSE-IF outcomeCondition child.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class OutcomeElseIf extends OutcomeConditionExpressionChild {
+public final class OutcomeElseIf extends OutcomeConditionExpressionChild {
 
     private static final long serialVersionUID = 1315729870633785646L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeElseIf";
 
-    public OutcomeElseIf(OutcomeCondition parent) {
+    public OutcomeElseIf(final OutcomeCondition parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

@@ -111,9 +111,9 @@ public class AssessmentPackageFileImporter {
             final InputStream inputStream,
             final String contentType)
             throws AssessmentPackageFileImportException {
-        Assert.ensureNotNull(importSandboxDirectory, "importSandboxDirectory");
-        Assert.ensureNotNull(inputStream, "inputStream");
-        Assert.ensureNotNull(contentType, "contentType");
+        Assert.notNull(importSandboxDirectory, "importSandboxDirectory");
+        Assert.notNull(inputStream, "inputStream");
+        Assert.notNull(contentType, "contentType");
         AssessmentPackage result = null;
         if (Arrays.binarySearch(ZIP_MIME_TYPES, contentType) >= 0) {
             logger.debug("Import is ZIP. Attempting to unpack into {}", importSandboxDirectory);

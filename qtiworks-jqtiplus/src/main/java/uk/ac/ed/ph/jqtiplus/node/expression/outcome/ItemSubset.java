@@ -51,7 +51,7 @@ import java.util.List;
  * The attributes define criteria that must be matched by all members of the sub-set.
  * It is used to control A number of expressions in outcomeProcessing for returning information about
  * the test as A whole, or arbitrary subsets of it.
- * 
+ *
  * @author Jiri Kajaba
  */
 public abstract class ItemSubset extends AbstractExpression {
@@ -69,10 +69,10 @@ public abstract class ItemSubset extends AbstractExpression {
 
     /**
      * Constructs expression.
-     * 
+     *
      * @param parent parent of this expression
      */
-    public ItemSubset(ExpressionParent parent, String qtiClassName) {
+    public ItemSubset(final ExpressionParent parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, false));
@@ -80,61 +80,42 @@ public abstract class ItemSubset extends AbstractExpression {
         getAttributes().add(new StringMultipleAttribute(this, ATTR_EXCLUDE_CATEGORIES_NAME, false));
     }
 
-    /**
-     * Gets value of identifier attribute.
-     * 
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
-    public Identifier getIdentifier() {
+    public Identifier getSectionIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     * 
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(Identifier identifier) {
+    public void setSectionIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets value of includeCategory attribute.
-     * 
-     * @return value of includeCategory attribute
-     */
+
     public List<String> getIncludeCategories() {
         return getAttributes().getStringMultipleAttribute(ATTR_INCLUDE_CATEGORIES_NAME).getComputedValue();
     }
-    
-    public void setIncludeCategories(List<String> value) {
+
+    public void setIncludeCategories(final List<String> value) {
         getAttributes().getStringMultipleAttribute(ATTR_INCLUDE_CATEGORIES_NAME).setValue(value);
     }
 
-    /**
-     * Gets value of excludeCategory attribute.
-     * 
-     * @return value of excludeCategory attribute
-     */
+
     public List<String> getExcludeCategories() {
         return getAttributes().getStringMultipleAttribute(ATTR_EXCLUDE_CATEGORIES_NAME).getComputedValue();
     }
-    
-    public void setExcludeCategories(List<String> value) {
+
+    public void setExcludeCategories(final List<String> value) {
         getAttributes().getStringMultipleAttribute(ATTR_EXCLUDE_CATEGORIES_NAME).setValue(value);
     }
 
+
     @Override
-    protected void validateAttributes(ValidationContext context) {
-        if (getIdentifier() != null && context.getSubjectTest().lookupDescendentOrSelf(getIdentifier()) == null) {
-            context.add(new ValidationWarning(this, "Cannot find control object: " + getIdentifier()));
+    protected void validateAttributes(final ValidationContext context) {
+        if (getSectionIdentifier() != null && context.getSubjectTest().lookupDescendentOrSelf(getSectionIdentifier()) == null) {
+            context.add(new ValidationWarning(this, "Cannot find control object: " + getSectionIdentifier()));
         }
     }
 
     @Override
-    public void validate(ValidationContext context) {
+    public void validate(final ValidationContext context) {
         QtiNode parent = getParent();
 
         while (parent != null) {

@@ -48,32 +48,27 @@ import java.util.List;
  * instructions described by the outcomeRules. Because outcome processing happens each time the candidate submits responses the
  * resulting values of the test-level outcomes may be used to activate test-level feedback during the test or to control the behaviour
  * of subsequent parts through the use of preConditions and branchRules.
- * 
+ *
  * @author Jonathon Hare
  */
-public class TemplateProcessing extends AbstractNode {
+public final class TemplateProcessing extends AbstractNode {
 
     private static final long serialVersionUID = 4102163277727881279L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "templateProcessing";
 
-    public TemplateProcessing(AssessmentItem parent) {
+    public TemplateProcessing(final AssessmentItem parent) {
         super(parent, QTI_CLASS_NAME);
         getNodeGroups().add(new TemplateProcessingRuleGroup(this));
     }
 
-    /**
-     * Gets templateRule children.
-     * 
-     * @return templateRule children
-     */
     public List<TemplateProcessingRule> getTemplateProcessingRules() {
         return getNodeGroups().getTemplateProcessingRuleGroup().getTemplateProcessingRules();
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getTemplateProcessingRules().size() == 0) {

@@ -45,30 +45,25 @@ import java.util.List;
 
 /**
  * Abstract parent for all responseCondition children (IF, ELSE-IF, ELSE).
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class ResponseConditionChild extends AbstractNode {
 
     private static final long serialVersionUID = 8746091136302901859L;
 
-    public ResponseConditionChild(ResponseCondition parent, String qtiClassName) {
+    public ResponseConditionChild(final ResponseCondition parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new ResponseRuleGroup(this));
     }
 
-    /**
-     * Gets responseRule children.
-     * 
-     * @return responseRule children
-     */
     public List<ResponseRule> getResponseRules() {
         return getNodeGroups().getResponseRuleGroup().getResponseRules();
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getResponseRules().size() == 0) {
@@ -78,12 +73,12 @@ public abstract class ResponseConditionChild extends AbstractNode {
 
     /**
      * Evaluates all child responseRules and returns true.
-     * 
+     *
      * @return true
      * @throws QtiProcessingInterrupt
      * @throws RuntimeValidationException
      */
-    public boolean evaluate(ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
         for (final ResponseRule responseRule : getResponseRules()) {
             responseRule.evaluate(context);
         }

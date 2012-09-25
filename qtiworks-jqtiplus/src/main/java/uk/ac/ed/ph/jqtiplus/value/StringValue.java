@@ -62,7 +62,7 @@ public final class StringValue extends SingleValue {
      * @throws QtiParseException if <code>String</code> representation of <code>StringValue</code> is not valid
      */
     public StringValue(final String value) {
-        Assert.ensureNotNull(value);
+        Assert.notNull(value);
         this.stringValue = value;
     }
 

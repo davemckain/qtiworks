@@ -55,7 +55,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class EqualRounded extends AbstractExpression {
+public final class EqualRounded extends AbstractExpression {
 
     private static final long serialVersionUID = 8925002756918753453L;
 
@@ -75,45 +75,24 @@ public class EqualRounded extends AbstractExpression {
         getAttributes().add(new IntegerOrVariableRefAttribute(this, ATTR_FIGURES_NAME, true));
     }
 
-    /**
-     * Gets value of roundingMode attribute.
-     *
-     * @return value of roundingMode attribute
-     * @see #setRoundingMode
-     */
+
     public RoundingMode getRoundingMode() {
         return getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of roundingMode attribute.
-     *
-     * @param roundingMode new value of roundingMode attribute
-     * @see #getRoundingMode
-     */
     public void setRoundingMode(final RoundingMode roundingMode) {
         getAttributes().getRoundingModeAttribute(ATTR_ROUNDING_MODE_NAME).setValue(roundingMode);
     }
 
-    /**
-     * Gets value of figures attribute.
-     *
-     * @return value of figures attribute
-     * @see #setFigures
-     */
+
     public IntegerOrVariableRef getFigures() {
         return getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME).getValue();
     }
 
-    /**
-     * Sets new value of figures attribute.
-     *
-     * @param figures new value of figures attribute
-     * @see #getFigures
-     */
     public void setFigures(final IntegerOrVariableRef figures) {
         getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME).setValue(figures);
     }
+
 
     @Override
     protected void validateAttributes(final ValidationContext context) {
