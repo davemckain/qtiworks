@@ -55,10 +55,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
@@ -210,9 +208,6 @@ public class CandidateSessionStarter {
         /* Initialise state */
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState, notificationRecorder);
         itemSessionController.initialize();
-
-        /* TEMP! */
-        notificationRecorder.onNotification(new ModelNotification(itemSessionController.getItem(), null, NotificationType.RUNTIME, NotificationLevel.INFO, "Hello!"));
 
         /* Check whether an attempt is allowed. This is a bit pathological here,
          * but it makes sense to be consistent.
