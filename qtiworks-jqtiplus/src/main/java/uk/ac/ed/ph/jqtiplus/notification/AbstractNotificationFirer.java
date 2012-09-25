@@ -55,6 +55,18 @@ public abstract class AbstractNotificationFirer implements NotificationFirer {
     }
 
     @Override
+    public void fireRuntimeInfo(final QtiNode owner, final String message) {
+        final ModelNotification notification = new ModelNotification(owner, null, NotificationType.RUNTIME, NotificationLevel.INFO, message);
+        fireNotification(notification);
+    }
+
+    @Override
+    public void fireRuntimeWarning(final QtiNode owner, final String message) {
+        final ModelNotification notification = new ModelNotification(owner, null, NotificationType.RUNTIME, NotificationLevel.WARNING, message);
+        fireNotification(notification);
+    }
+
+    @Override
     public void fireRuntimeError(final QtiNode owner, final String message) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.RUNTIME, NotificationLevel.ERROR, message);
         fireNotification(notification);

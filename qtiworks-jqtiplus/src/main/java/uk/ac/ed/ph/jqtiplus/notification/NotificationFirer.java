@@ -47,18 +47,18 @@ public interface NotificationFirer {
 
     void fireNotification(ModelNotification notification);
 
+    void fireRuntimeInfo(QtiNode owner, String message);
+
+    void fireRuntimeWarning(QtiNode owner, String message);
+
     void fireRuntimeError(QtiNode owner, String message);
 
-    /** Legacy method */
     void fireValidationError(QtiNode owner, String message);
 
-    /** Legacy method */
     void fireValidationWarning(QtiNode owner, String message);
 
-    /** Legacy method */
     void fireAttributeValidationError(Attribute<?> attribute, String message);
 
-    /** Legacy method */
     void fireAttributeValidationWarning(Attribute<?> attribute, String message);
 
     void fireBaseTypeValidationError(QtiNode owner, BaseType[] requiredBaseTypes, BaseType[] actualBaseTypes);

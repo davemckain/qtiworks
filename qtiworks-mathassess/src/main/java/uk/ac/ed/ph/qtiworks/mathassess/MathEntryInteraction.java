@@ -189,7 +189,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
                 logger.debug("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);
                 throw new ResponseBindingException(responseDeclaration, responseData, "Math content is too complex for current implementation");
             }
-            responseValue = GlueValueBinder.convertToJQTI(resultWrapper);
+            responseValue = GlueValueBinder.casToJqti(resultWrapper);
         }
         else {
             /* Blank input, so easy */

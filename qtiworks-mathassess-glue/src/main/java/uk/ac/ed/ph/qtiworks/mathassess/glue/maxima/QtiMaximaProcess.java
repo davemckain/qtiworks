@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 import uk.ac.ed.ph.jacomax.MaximaInteractiveProcess;
 import uk.ac.ed.ph.jacomax.MaximaProcessTerminatedException;
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
+import uk.ac.ed.ph.jacomax.internal.Assert;
 import uk.ac.ed.ph.jacomax.utilities.MaximaOutputUtilities;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessBadCasCodeException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathsContentTooComplexException;
@@ -173,6 +174,7 @@ public final class QtiMaximaProcess {
     public void passQTIVariableToMaxima(final String variableIdentifier, final ValueWrapper valueWrapper) {
         logger.debug("passQTIVariableToMaxima: var={}, value={}", variableIdentifier, valueWrapper);
         checkVariableIdentifier(variableIdentifier);
+        Assert.notNull(valueWrapper, "valueWrapper");
         if (valueWrapper==null || valueWrapper.isNull()) {
             /* Nullify variable using kill() */
             try {
@@ -297,6 +299,8 @@ public final class QtiMaximaProcess {
     public <V extends ValueWrapper> V executeStringOutput(final String maximaExpression,
             final boolean simplify, final Class<V> resultClass)
             throws MaximaTimeoutException {
+        Assert.notNull(maximaExpression, "maximaExpression");
+        Assert.notNull(resultClass, "resultClass");
         String stringOutput = executeStringOutput(maximaExpression, simplify);
         return ensureParseStringOutput(maximaExpression, stringOutput, resultClass);
     }
@@ -319,7 +323,7 @@ public final class QtiMaximaProcess {
      */
     public String executeStringOutput(final String maximaExpression, final boolean simplify)
             throws MaximaTimeoutException {
-        ConstraintUtilities.ensureNotNull(maximaExpression, "Maxima expression");
+        Assert.notNull(maximaExpression, "Maxima expression");
         logger.trace("executeStringOutput: expr={}, simp={}", maximaExpression, simplify);
         
         /* Strip off any terminator, if provided */
@@ -381,7 +385,7 @@ public final class QtiMaximaProcess {
      */
     public MathsContentOutputValueWrapper executeMathOutput(final String maximaExpression, final boolean simplify)
             throws MaximaTimeoutException, MathsContentTooComplexException {
-        ConstraintUtilities.ensureNotNull(maximaExpression, "Maxima expression");
+        Assert.notNull(maximaExpression, "Maxima expression");
         logger.trace("executeMathOutput: expr={}, simp={}", maximaExpression, simplify);
         
         /* Do MathML output and up-convert */
@@ -434,6 +438,7 @@ public final class QtiMaximaProcess {
      */
     public void executeScriptRule(final String maximaCode, final boolean simplify)
             throws MaximaTimeoutException {
+        Assert.notNull(maximaCode, "maximaCode");
         logger.debug("executeScriptRule: code={}, simp={}", maximaCode, simplify);
         ConstraintUtilities.ensureNotNull(maximaCode, "maximaCode");
         maximaInteractiveProcess.executeCallDiscardOutput("simp:" + simplify + "$ " + maximaCode);
@@ -467,8 +472,8 @@ public final class QtiMaximaProcess {
             logger.debug("executeCasProcess: code={}, simp={}, resultClass={}",
                     new Object[] { maximaCode, simplify, resultClass });
         }
-        ConstraintUtilities.ensureNotNull(maximaCode, "maximaCode");
-        ConstraintUtilities.ensureNotNull(resultClass, "resultClass");
+        Assert.notNull(maximaCode, "maximaCode");
+        Assert.notNull(resultClass, "resultClass");
         V result;
         
         /* What we do here depends on whether we are returning a MathsContent variable or not. */
@@ -535,7 +540,7 @@ public final class QtiMaximaProcess {
     public boolean executeCasCondition(final String comparisonCode, final boolean simplify,
             final ValueOrVariableWrapper... arguments)
             throws MaximaTimeoutException {
-        ConstraintUtilities.ensureNotNull(comparisonCode, "comparisonCode");
+        Assert.notNull(comparisonCode, "comparisonCode");
         
         /* Get maxima forms of the input values and perform substitutions */
         String maximaInput = comparisonCode;
@@ -591,7 +596,7 @@ public final class QtiMaximaProcess {
      *   the allowed production rules
      */
     private void checkVariableIdentifier(final String variableIdentifier) {
-        ConstraintUtilities.ensureNotNull(variableIdentifier, "variableIdentifier");
+        Assert.notNull(variableIdentifier, "variableIdentifier");
       
         /* Ensure that the name matches NCName intersected with alphanumeric */
         if (!Pattern.matches("[a-zA-Z][a-zA-Z0-9]*", variableIdentifier)) {
@@ -613,7 +618,7 @@ public final class QtiMaximaProcess {
      */
     public void substituteVariables(Element rawMathMLElement)
             throws MaximaTimeoutException {
-        ConstraintUtilities.ensureNotNull(rawMathMLElement, "MathML Element");
+        Assert.notNull(rawMathMLElement, "MathML Element");
         /* We'll create a little hash to store variable lookups as we traverse the <math/>
          * element just in case we have the same variable more than once. This will save
          * having to make extra calls.

@@ -37,7 +37,8 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.ATTR_SYNTAX_NA
 import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.qtiworks.mathassess.attribute.SyntaxAttribute;
-import uk.ac.ed.ph.qtiworks.mathassess.glue.MathsContentTooComplexException;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.value.SyntaxType;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -51,11 +52,11 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import uk.ac.ed.ph.jacomax.MaximaProcessTerminatedException;
-import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for all MathAssess customOperators
@@ -66,6 +67,8 @@ import java.util.List;
 public abstract class MathAssessOperator extends CustomOperator<MathAssessExtensionPackage> {
 
     private static final long serialVersionUID = 1275749269462837686L;
+
+    private static final Logger logger = LoggerFactory.getLogger(MathAssessOperator.class);
 
     private static String IDENTIFIER_REGEX_VALUE = "[a-zA-Z][a-zA-Z0-9]*";
 
@@ -88,24 +91,7 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
     public final Value evaluateSelf(final MathAssessExtensionPackage mathAssessExtensionPackage, final ProcessingContext context, final Value[] childValues, final int depth) {
         switch (getSyntax()) {
             case MAXIMA:
-                try {
-                    /* FIXME: These operators are legal in test contexts too. We
-                     * need to support this eventually. */
-                    return maximaEvaluate(mathAssessExtensionPackage, (ItemProcessingContext) context, childValues);
-                }
-                catch (final MaximaProcessTerminatedException e) {
-                    context.fireRuntimeError(this, "Maxima process was terminated earlier while processing this operator - returning NULL");
-                }
-                catch (final MaximaTimeoutException e) {
-                    context.fireRuntimeError(this, "Maxima call timed out processing this operator - returning NULL");
-                }
-                catch (final MathsContentTooComplexException e) {
-                    context.fireRuntimeError(this, "Math content is too complex for current implementation - returning NULL");
-                }
-                catch (final RuntimeException e) {
-                    context.fireRuntimeError(this, "Unexpected problem communicating with Maxima - returning NULL");
-                }
-                return NullValue.INSTANCE;
+                return maximaEvaluate(mathAssessExtensionPackage, (ItemProcessingContext) context, childValues);
 
             default:
                 context.fireValidationError(this, "Unsupported syntax type: " + getSyntax() + " - returning NULL");
@@ -113,8 +99,7 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
         }
     }
 
-    protected abstract Value maximaEvaluate(MathAssessExtensionPackage mathAssessExtensionPackage, ItemProcessingContext context, Value[] childValues)
-            throws MaximaTimeoutException, MathsContentTooComplexException;
+    protected abstract Value maximaEvaluate(MathAssessExtensionPackage mathAssessExtensionPackage, ItemProcessingContext context, Value[] childValues);
 
     /**
      * Gets a list of all the variables that can be read by a cas
@@ -180,6 +165,26 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
         }
 
         return declarations;
+    }
+
+    protected void passVariablesToMaxima(final QtiMaximaProcess qtiMaximaProcess, final ItemProcessingContext context) {
+        /* Pass variables to Maxima */
+        logger.trace("Passing variables to maxima");
+        for (final VariableDeclaration declaration : getAllCASReadableVariableDeclarations()) {
+            passVariableToMaxima(qtiMaximaProcess, context, declaration);
+        }
+    }
+
+    protected void passVariableToMaxima(final QtiMaximaProcess qtiMaximaProcess, final ItemProcessingContext context,
+            final VariableDeclaration declaration) {
+        final Value value = context.getItemSessionState().getVariableValue(declaration);
+        final ValueWrapper valueWrapper = GlueValueBinder.jqtiToCas(value);
+        if (valueWrapper!=null) {
+            qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
+        }
+        else {
+            context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier() + " is one of the types supported by the MathAssess extensions so has not been passed to Maxima");
+        }
     }
 
     @Override

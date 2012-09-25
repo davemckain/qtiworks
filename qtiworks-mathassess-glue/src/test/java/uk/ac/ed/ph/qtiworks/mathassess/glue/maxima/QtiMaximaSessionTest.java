@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.BooleanValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.IntegerValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.MathsContentValueWrapper;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.types.NullValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.StringValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 import uk.ac.ed.ph.snuggletex.utilities.MathMLUtilities;
@@ -171,7 +172,7 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
         process.passQTIVariableToMaxima("x", new BooleanValueWrapper(true));
         
         /* Then we'll clear it */
-        process.passQTIVariableToMaxima("x", null);
+        process.passQTIVariableToMaxima("x", NullValueWrapper.INSTANCE);
         
         /* Make sure it is really unset */
         String output = process.executeStringOutput("x", false);

@@ -47,10 +47,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -109,12 +106,10 @@ public final class CasProcess extends MathAssessOperator {
 
     @Override
     protected void doAdditionalValidation(final ValidationContext context) {
-        /* Nothing to do here */
     }
 
     @Override
-    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues)
-            throws MaximaTimeoutException, MathsContentTooComplexException {
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) {
         final boolean simplify = getSimplify();
         final String code = childValues[0].toQtiString().trim();
 
@@ -123,20 +118,26 @@ public final class CasProcess extends MathAssessOperator {
         final QtiMaximaProcess qtiMaximaProcess = mathAssessExtensionPackage.obtainMaximaSessionForThread();
 
         /* Pass variables to Maxima */
-        logger.trace("Passing variables to maxima");
-        for (final VariableDeclaration declaration : getAllCASReadableVariableDeclarations()) {
-            final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasClass(declaration.getBaseType(), declaration.getCardinality());
-            if (resultClass!=null) {
-                final Value value = context.getItemSessionState().getVariableValue(declaration);
-                qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), GlueValueBinder.convertFromJQTI(value));
-            }
+        passVariablesToMaxima(qtiMaximaProcess, context);
+
+        /* Run Maxima code and extract result */
+        logger.trace("Running code to determine result of casProcess");
+        final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasReturnClass(getReturnType());
+        ValueWrapper maximaResult;
+        try {
+            maximaResult = qtiMaximaProcess.executeCasProcess(code, simplify, resultClass);
+        }
+        catch (final MaximaTimeoutException e) {
+            context.fireRuntimeError(this, "A timeout occurred executing the CasCondition logic. Returning NULL");
+            return NullValue.INSTANCE;
+        }
+        catch (final MathsContentTooComplexException e) {
+            context.fireRuntimeError(this, "An unexpected problem occurred querying the result of CasProcess, so returning NULL");
+            return NullValue.INSTANCE;
         }
 
-        /* Run Maxima code and return result */
-        logger.trace("Running code to determine result of casProcess");
-        final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasClass(getBaseType(), getCardinality());
-        final ValueWrapper maximaResult = qtiMaximaProcess.executeCasProcess(code, simplify, resultClass);
-        final Value result = GlueValueBinder.convertToJQTI(maximaResult);
+        /* Bind result */
+        final Value result = GlueValueBinder.casToJqti(maximaResult);
         if (result==null) {
             context.fireRuntimeError(this, "Failed to convert result from Maxima back to a QTI variable - returning NULL");
             return NullValue.INSTANCE;
@@ -144,17 +145,7 @@ public final class CasProcess extends MathAssessOperator {
         return result;
     }
 
-    protected void passVariable(final ProcessingContext context, final VariableDeclaration declaration, final ItemSessionState itemSessionState) {
-        final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasClass(declaration.getBaseType(), declaration.getCardinality());
-        if (resultClass!=null) {
-            final Value value = itemSessionState.getVariableValue(declaration);
-            final ValueWrapper wrappedValue = GlueValueBinder.convertFromJQTI(value);
-            qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), GlueValueBinder.convertFromJQTI(value));
-        }
-
-    }
-
-    private BaseType getBaseType() {
+    private BaseType getReturnBaseType() {
         if (getReturnType() == null) {
             return null;
         }
@@ -185,13 +176,13 @@ public final class CasProcess extends MathAssessOperator {
     @Override
     public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         if (getReturnType() != null) {
-            final BaseType type = getBaseType();
+            final BaseType type = getReturnBaseType();
             return type != null ? new BaseType[] { type } : BaseType.values();
         }
         return super.getProducedBaseTypes(context);
     }
 
-    private Cardinality getCardinality() {
+    private Cardinality getReturnCardinality() {
         if (getReturnType() == null) {
             return null;
         }
@@ -222,7 +213,7 @@ public final class CasProcess extends MathAssessOperator {
     @Override
     public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         if (getReturnType() != null) {
-            return new Cardinality[] { getCardinality() };
+            return new Cardinality[] { getReturnCardinality() };
         }
         return super.getProducedCardinalities(context);
     }
