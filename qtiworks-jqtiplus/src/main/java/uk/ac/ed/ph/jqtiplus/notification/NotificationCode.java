@@ -42,6 +42,9 @@ public interface NotificationCode {
 
     String getName();
 
+    /** FIXME: Make this i18n-able */
+    String getMessage();
+
     NotificationGroup getNotificationGroup();
 
 }

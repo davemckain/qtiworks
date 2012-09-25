@@ -46,6 +46,8 @@ public interface NotificationFirer {
     void fireNotification(QtiNode qtiNode, NotificationCode notificationCode,
             String message, Object... arguments);
 
+    void fireNotification(QtiNode qtiNode, NotificationCode notificationCode, Object... arguments);
+
     void fireAttributeValidationError(Attribute<?> attribute, String message);
 
     void fireAttributeValidationWarning(Attribute<?> attribute, String message);

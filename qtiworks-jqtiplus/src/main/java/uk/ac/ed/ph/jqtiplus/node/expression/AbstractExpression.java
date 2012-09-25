@@ -36,10 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.notification.QtiNotificationCodes;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.RuntimeValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
@@ -266,7 +266,8 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         final BaseType[] producedBaseTypes = getProducedBaseTypes(context);
 
         if (!check(requiredBaseTypes, producedBaseTypes)) {
-            context.add(new BaseTypeValidationError(this, requiredBaseTypes, producedBaseTypes));
+            context.fireNotification(this, QtiNotificationCodes.QTI_VEB, null,
+                    Arrays.toString(requiredBaseTypes), Arrays.toString(producedBaseTypes));
         }
     }
 

@@ -180,6 +180,11 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
+        public void fireNotification(final QtiNode qtiNode, final NotificationCode notificationCode, final Object... arguments) {
+            fireNotification(qtiNode, notificationCode, notificationCode.getName(), arguments);
+        }
+
+        @Override
         public void fireAttributeValidationError(final Attribute<?> attribute, final String message) {
             fireNotification(attribute.getOwner(), QtiNotificationCodes.QTI_VEA, message);
         }
