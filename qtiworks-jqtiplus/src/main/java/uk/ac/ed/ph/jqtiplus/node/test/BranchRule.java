@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 /**
  * A branchRule is A simple expression attached to TestPart or assessmentSection or assessmentItemRef.
@@ -209,11 +208,11 @@ public final class BranchRule extends AbstractJump {
                     }
                     else {
                         if (!getParent().isJumpSafeSource()) {
-                            context.add(new ValidationWarning(this, "It is not safe to jump from this node. Check selection and ordering settings."));
+                            context.fireValidationWarning(this, "It is not safe to jump from this node. Check selection and ordering settings.");
                         }
 
                         if (!targetPart.isJumpSafeTarget()) {
-                            context.add(new ValidationWarning(this, "Target is not safe for jump: " + target + " Check selection and ordering settings."));
+                            context.fireValidationWarning(this, "Target is not safe for jump: " + target + " Check selection and ordering settings.");
                         }
                     }
                 }

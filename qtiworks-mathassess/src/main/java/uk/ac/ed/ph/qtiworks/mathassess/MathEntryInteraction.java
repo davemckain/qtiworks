@@ -57,7 +57,6 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
@@ -149,7 +148,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getCardinality() != null
                     && !declaration.getCardinality().isRecord()) {
-                context.add(new ValidationError(this, "Response variable must have record cardinality"));
+                context.fireValidationError(this, "Response variable must have record cardinality");
             }
         }
 
@@ -157,12 +156,12 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
             final ResponseDeclaration declaration = getPrintIdentifierResponseDeclaration();
             if (declaration != null && declaration.getCardinality() != null
                     && !declaration.getCardinality().isSingle()) {
-                context.add(new ValidationError(this, "printIdentifier response variable must have record cardinality"));
+                context.fireValidationError(this, "printIdentifier response variable must have record cardinality");
             }
 
             if (declaration != null && declaration.getBaseType() != null
                     && !declaration.getBaseType().isString()) {
-                context.add(new ValidationError(this, "printIdentifier response variable must have string base type"));
+                context.fireValidationError(this, "printIdentifier response variable must have string base type");
             }
         }
     }

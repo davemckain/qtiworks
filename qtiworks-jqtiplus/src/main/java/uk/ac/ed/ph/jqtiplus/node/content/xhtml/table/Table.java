@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.BlockStatic;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.util.List;
 
@@ -139,7 +138,7 @@ public final class Table extends AbstractFlowBodyElement implements BlockStatic,
         super.validate(context);
 
         if (getColgroups().size() > 0 && getCols().size() > 0) {
-            context.add(new ValidationError(this, QTI_CLASS_NAME + " cannot contain both " + Colgroup.QTI_CLASS_NAME + " and " + Col.QTI_CLASS_NAME + " children"));
+            context.fireValidationError(this, QTI_CLASS_NAME + " cannot contain both " + Colgroup.QTI_CLASS_NAME + " and " + Col.QTI_CLASS_NAME + " children");
         }
     }
 

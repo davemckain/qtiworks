@@ -43,17 +43,18 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 /**
  * FIXME: This needs refactored and probably isn't needed as I think we can do validation better
  * to remove the need for runtime checking.
- * 
+ *
  * @author David McKain
  */
 @ToRefactor
+@Deprecated
 public final class RuntimeValidationResult extends AbstractValidationResult {
 
     private static final long serialVersionUID = -6570165277334622467L;
-    
+
     private final AssessmentObject assessmentObject;
-    
-    public RuntimeValidationResult(AssessmentObject assessmentObject) {
+
+    public RuntimeValidationResult(final AssessmentObject assessmentObject) {
         this.assessmentObject = assessmentObject;
     }
 
@@ -61,7 +62,7 @@ public final class RuntimeValidationResult extends AbstractValidationResult {
     public AssessmentObject getAssessmentObject() {
         return assessmentObject;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

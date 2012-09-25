@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -131,7 +130,7 @@ public class RecordEx extends AbstractFunctionalExpression {
         super.validateChildren(context);
 
         if (getChildren().size() == 0) {
-            context.add(new ValidationWarning(this, "Container should contain some children."));
+            context.fireValidationWarning(this, "Container should contain some children.");
         }
     }
 

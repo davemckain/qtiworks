@@ -47,8 +47,6 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -158,17 +156,17 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getCardinality() != null
                     && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isRecord())) {
-                context.add(new ValidationError(this, "Response variable must have single or record cardinality"));
+                context.fireValidationError(this, "Response variable must have single or record cardinality");
             }
 
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isRecord()) {
                 if (!(declaration.getBaseType().isString() || declaration.getBaseType().isNumeric())) {
-                    context.add(new ValidationError(this, "Response variable must have string or numeric base type"));
+                    context.fireValidationError(this, "Response variable must have string or numeric base type");
                 }
             }
 
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10) {
-                context.add(new ValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored."));
+                context.fireValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored.");
             }
         }
 
@@ -176,7 +174,7 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
             final ResponseDeclaration declaration = getStringIdentifierResponseDeclaration();
 
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isString()) {
-                context.add(new ValidationError(this, "StringIdentifier response variable must have String base type"));
+                context.fireValidationError(this, "StringIdentifier response variable must have String base type");
             }
         }
     }

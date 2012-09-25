@@ -44,8 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
@@ -139,11 +137,11 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
         final Cardinality cardinality = getCardinality();
         if (cardinality != null) {
             if (!cardinality.isRecord() && getBaseType() == null) {
-                context.add(new ValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined."));
+                context.fireValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined.");
             }
 
             if (cardinality.isRecord() && getBaseType() != null) {
-                context.add(new ValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined."));
+                context.fireValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined.");
             }
         }
     }

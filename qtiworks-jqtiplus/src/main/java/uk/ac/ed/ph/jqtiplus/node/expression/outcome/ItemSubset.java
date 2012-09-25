@@ -41,8 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.util.List;
 
@@ -110,7 +108,7 @@ public abstract class ItemSubset extends AbstractExpression {
     @Override
     protected void validateAttributes(final ValidationContext context) {
         if (getSectionIdentifier() != null && context.getSubjectTest().lookupDescendentOrSelf(getSectionIdentifier()) == null) {
-            context.add(new ValidationWarning(this, "Cannot find control object: " + getSectionIdentifier()));
+            context.fireValidationWarning(this, "Cannot find control object: " + getSectionIdentifier());
         }
     }
 
@@ -126,7 +124,7 @@ public abstract class ItemSubset extends AbstractExpression {
         }
 
         if (parent == null) {
-            context.add(new ValidationError(this, "Outcome expression can be used only in outcome processing."));
+            context.fireValidationError(this, "Outcome expression can be used only in outcome processing.");
         }
     }
 }

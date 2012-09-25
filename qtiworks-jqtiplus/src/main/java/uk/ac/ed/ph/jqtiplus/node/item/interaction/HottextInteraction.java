@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -136,23 +135,23 @@ public final class HottextInteraction extends BlockInteraction {
         final int minChoices = getMinChoices();
 
         if (maxChoices != 0 && minChoices > maxChoices) {
-            context.add(new ValidationError(this, "Minimum number of choices can't be bigger than maximum number"));
+            context.fireValidationError(this, "Minimum number of choices can't be bigger than maximum number");
         }
 
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                context.add(new ValidationError(this, "Response variable must have identifier base type"));
+                context.fireValidationError(this, "Response variable must have identifier base type");
             }
 
             if (declaration != null && getMaxChoices() == 1 &&
                     declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
                     !declaration.getCardinality().isMultiple()) {
-                context.add(new ValidationError(this, "Response variable must have single or multiple cardinality"));
+                context.fireValidationError(this, "Response variable must have single or multiple cardinality");
             }
 
             if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                context.add(new ValidationError(this, "Response variable must have multiple cardinality"));
+                context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }
     }

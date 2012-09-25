@@ -50,6 +50,12 @@ public abstract class AbstractNotificationFirer implements NotificationFirer {
 
     @Override
     public void fireValidationError(final QtiNode owner, final String message) {
+        final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING, message);
+        fireNotification(notification);
+    }
+
+    @Override
+    public void fireValidationWarning(final QtiNode owner, final String message) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR, message);
         fireNotification(notification);
     }

@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.util.List;
 
@@ -67,7 +66,7 @@ public abstract class OutcomeConditionChild extends AbstractNode {
         super.validateChildren(context);
 
         if (getOutcomeRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules."));
+            context.fireValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules.");
         }
     }
 

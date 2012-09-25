@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -123,11 +122,11 @@ public final class GraphicGapMatchInteraction extends GraphicInteraction impleme
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isDirectedPair()) {
-                context.add(new ValidationError(this, "Response variable must have directed pair base type"));
+                context.fireValidationError(this, "Response variable must have directed pair base type");
             }
 
             if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                context.add(new ValidationError(this, "Response variable must have multiple cardinality"));
+                context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }
     }

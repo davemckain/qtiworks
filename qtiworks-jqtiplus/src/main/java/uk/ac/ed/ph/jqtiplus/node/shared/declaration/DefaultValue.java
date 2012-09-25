@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -117,7 +116,7 @@ public final class DefaultValue extends AbstractNode implements FieldValueParent
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isSingle() && getFieldValues().size() > 1) {
-                context.add(new ValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size()));
+                context.fireValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size());
             }
         }
     }

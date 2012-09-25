@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -115,7 +114,7 @@ public final class SetDefaultValue extends ProcessTemplateValue {
         if (identifier != null) {
             final AssessmentItem item = getRootNode(AssessmentItem.class);
             if (item.getResponseDeclaration(identifier) == null && item.getOutcomeDeclaration(identifier) == null) {
-                context.add(new ValidationError(this, "Cannot find response or outcome declaration " + getIdentifier()));
+                context.fireValidationError(this, "Cannot find response or outcome declaration " + getIdentifier());
             }
         }
     }

@@ -33,20 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
-
 import java.io.Serializable;
 
 /**
- * Every object which supports validation must implement this interface.
+ * Every object which supports validation should implement this interface.
  *
  * @author Jiri Kajaba
  */
-@ToRefactor
 public interface Validatable extends Serializable {
 
-    /**
-     * Validates this object, appending to the given {@link AbstractValidationResult}
-     */
-    public void validate(ValidationContext context);
+    void validate(ValidationContext context);
 }

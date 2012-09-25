@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 /**
  * The selection class specifies the rules used to select the child elements of A section for each test
@@ -106,13 +105,13 @@ public final class Selection extends AbstractNode {
             }
 
             if (select < required) {
-                context.add(new ValidationError(this, "Invalid selection. Required at least: " + required + ", but found: " + select));
+                context.fireValidationError(this, "Invalid selection. Required at least: " + required + ", but found: " + select);
             }
 
             if (!getWithReplacement() && select > getParent().getSectionParts().size()) {
-                context.add(new ValidationError(this, "Invalid selection. Required no more than: " + getParent().getSectionParts().size()
+                context.fireValidationError(this, "Invalid selection. Required no more than: " + getParent().getSectionParts().size()
                         + ", but found: "
-                        + select));
+                        + select);
             }
         }
     }

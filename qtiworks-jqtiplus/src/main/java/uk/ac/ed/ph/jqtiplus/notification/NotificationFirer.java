@@ -51,6 +51,9 @@ public interface NotificationFirer {
     void fireValidationError(QtiNode owner, String message);
 
     /** Legacy method */
+    void fireValidationWarning(QtiNode owner, String message);
+
+    /** Legacy method */
     void fireAttributeValidationError(Attribute<?> attribute, String message);
 
     /** Legacy method */

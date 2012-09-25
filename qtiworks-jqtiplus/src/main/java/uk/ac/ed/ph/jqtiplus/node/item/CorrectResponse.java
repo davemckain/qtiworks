@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item;
 
-
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
@@ -42,13 +41,11 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
-
 /**
  * A response declaration may assign an optional correctResponse.
  * <p>
@@ -57,7 +54,7 @@ import java.util.List;
  * For responses that are being measured against A more complex scale than correct/incorrect this value should be set to the (or an) optimal value.
  * <p>
  * Finally, for responses for which no such optimal value is defined the correctResponse must be omitted.
- * 
+ *
  * @author Jonathon Hare
  */
 public class CorrectResponse extends AbstractNode implements FieldValueParent {
@@ -72,10 +69,10 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
 
     /**
      * Creates object.
-     * 
+     *
      * @param xmlObject parent of this object
      */
-    public CorrectResponse(QtiNode xmlObject) {
+    public CorrectResponse(final QtiNode xmlObject) {
         super(xmlObject, QTI_CLASS_NAME);
 
         getAttributes().add(new StringAttribute(this, ATTR_INTERPRETATION_NAME, false));
@@ -85,11 +82,11 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
 
     /**
      * Creates object with given value.
-     * 
+     *
      * @param xmlObject parent of this object
      * @param value value to use
      */
-    public CorrectResponse(QtiNode xmlObject, Value value) {
+    public CorrectResponse(final QtiNode xmlObject, final Value value) {
         this(xmlObject);
 
         getFieldValues().addAll(FieldValue.computeValues(this, value));
@@ -103,7 +100,7 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
 
     /**
      * Gets value of interpretation attribute.
-     * 
+     *
      * @return value of interpretation attribute
      * @see #setInterpretation
      */
@@ -113,17 +110,17 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
 
     /**
      * Sets new value of interpretation attribute.
-     * 
+     *
      * @param interpretation new value of interpretation attribute
      * @see #getInterpretation
      */
-    public void setInterpretation(String interpretation) {
+    public void setInterpretation(final String interpretation) {
         getAttributes().getStringAttribute(ATTR_INTERPRETATION_NAME).setValue(interpretation);
     }
 
     /**
      * Gets fieldValue children.
-     * 
+     *
      * @return fieldValue children
      */
     public List<FieldValue> getFieldValues() {
@@ -141,26 +138,26 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isSingle() && getFieldValues().size() > 1) {
-                context.add(new ValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size()));
+                context.fireValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size());
             }
         }
     }
 
     /**
      * Evaluates value of this defaultValue.
-     * 
+     *
      * @return evaluated value of this defaultValue
      */
     public Value evaluate() {
         return FieldValue.computeValue(getCardinality(), getFieldValues());
     }
-    //    
+    //
     //    @Override
     //    public void load(Node sourceNode) {
     //        super.load(sourceNode);

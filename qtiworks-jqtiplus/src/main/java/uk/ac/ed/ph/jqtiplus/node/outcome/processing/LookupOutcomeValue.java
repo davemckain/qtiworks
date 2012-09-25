@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
@@ -91,11 +90,11 @@ public final class LookupOutcomeValue extends ProcessOutcomeValue {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() == null) {
-                context.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
+                context.fireValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
-                        + getIdentifier()));
+                        + getIdentifier());
             }
         }
     }

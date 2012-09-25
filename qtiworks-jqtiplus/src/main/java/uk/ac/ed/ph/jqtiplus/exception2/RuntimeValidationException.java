@@ -38,9 +38,10 @@ import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 
 /**
  * Thrown if validation problems are detected at runtime (e.g. response processing)
- * 
+ *
  * @author Jiri Kajaba
  */
+@Deprecated
 public class RuntimeValidationException extends QtiException {
 
     private static final long serialVersionUID = 1114808435234903326L;

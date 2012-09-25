@@ -49,13 +49,10 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaProcessTerminatedException;
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,8 +198,8 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
         for (final VariableDeclaration decl : getAllReadableVariableDeclarations()) {
             final String ident = decl.getIdentifier().toString();
             if (!ident.matches(IDENTIFIER_REGEX_VALUE)) {
-                context.add(new ValidationWarning(this, "Variable " + ident
-                        + " does not follow the naming convention stated in the MathAssess extensions specification"));
+                context.fireValidationWarning(this, "Variable " + ident
+                        + " does not follow the naming convention stated in the MathAssess extensions specification");
             }
         }
 
@@ -213,7 +210,7 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
                     break;
 
                 default:
-                    context.add(new ValidationError(this, "Unsupported syntax type: " + getSyntax()));
+                    context.fireValidationError(this, "Unsupported syntax type: " + getSyntax());
             }
         }
 

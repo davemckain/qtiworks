@@ -40,8 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -97,16 +95,16 @@ public final class SetOutcomeValue extends ProcessResponseValue {
 
         if (getIdentifier() != null) {
             if (context.getSubject().getOutcomeDeclaration(getIdentifier()) == null) {
-                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier()));
+                context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
             }
 
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
-                context.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
+                context.fireValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
-                        + getIdentifier()));
+                        + getIdentifier());
             }
         }
     }

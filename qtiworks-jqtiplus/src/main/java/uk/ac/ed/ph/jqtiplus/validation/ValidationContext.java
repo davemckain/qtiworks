@@ -97,8 +97,6 @@ public interface ValidationContext extends NotificationFirer {
 
     ResolvedAssessmentTest getResolvedAssessmentTest();
 
-    void add(ValidationItem item);
-
     AbstractValidationResult getValidationResult();
 
     //------------------------------------------------------

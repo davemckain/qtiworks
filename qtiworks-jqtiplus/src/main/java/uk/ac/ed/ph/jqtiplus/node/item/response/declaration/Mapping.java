@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.MapEntryGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponse;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
@@ -132,14 +131,14 @@ public final class Mapping extends AbstractNode {
         final Double upperBound = getUpperBound();
 
         if (lowerBound != null && upperBound != null && lowerBound.doubleValue() > upperBound.doubleValue()) {
-            context.add(new ValidationError(this, "Upper bound cannot be less than lower bound."));
+            context.fireValidationError(this, "Upper bound cannot be less than lower bound.");
         }
 
         final ResponseDeclaration declaration = getParent();
         if (declaration != null) {
             if (declaration.getBaseType() != null &&
                     (declaration.getBaseType().isFile() || declaration.getBaseType().isDuration())) {
-                context.add(new ValidationError(this, "File or duration base types are not supported with a mapping."));
+                context.fireValidationError(this, "File or duration base types are not supported with a mapping.");
             }
 
             /* (The new caseSensitive="false" entries are only permitted for string baseTypes) */
@@ -151,7 +150,7 @@ public final class Mapping extends AbstractNode {
                 }
             }
             if (hasCaseInsensitiveEntry && !declaration.getBaseType().isString()) {
-                context.add(new ValidationError(this, "Only String base types may be used with case insensitive mapEntries."));
+                context.fireValidationError(this, "Only String base types may be used with case insensitive mapEntries.");
             }
         }
     }

@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -236,7 +235,7 @@ public final class AssessmentItemRef extends SectionPart {
             if (weight.getIdentifier() != null) {
                 for (int j = i + 1; j < getWeights().size(); j++) {
                     if (weight.getIdentifier().equals(getWeights().get(j).getIdentifier())) {
-                        context.add(new ValidationError(this, "Duplicate weight identifier: " + weight.getIdentifier()));
+                        context.fireValidationError(this, "Duplicate weight identifier: " + weight.getIdentifier());
                     }
                 }
             }

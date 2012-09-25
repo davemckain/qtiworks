@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
@@ -108,7 +107,7 @@ public final class FieldValue extends AbstractFunctionalExpression {
         if (getFieldIdentifier() != null && getChildren().size() != 0 && getChildren().get(0) instanceof RecordEx) {
             final RecordEx record = (RecordEx) getChildren().get(0);
             if (!record.getIdentifiers().contains(getFieldIdentifier())) {
-                context.add(new ValidationWarning(this, "Cannot find field with identifier: " + getFieldIdentifier()));
+                context.fireValidationWarning(this, "Cannot find field with identifier: " + getFieldIdentifier());
             }
         }
     }

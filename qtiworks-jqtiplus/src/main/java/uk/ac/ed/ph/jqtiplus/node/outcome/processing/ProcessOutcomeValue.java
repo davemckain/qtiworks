@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 /**
  * Abstract parent for setOutcomeValue and lookupOutcomeValue classes.
@@ -96,7 +95,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
         super.validateAttributes(context);
 
         if (getIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getIdentifier()) == null) {
-            context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier()));
+            context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }
     }
 }

@@ -36,8 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 import uk.ac.ed.ph.jqtiplus.attribute.value.SingleValueAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
@@ -125,7 +123,7 @@ public abstract class LookupTable extends AbstractNode {
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (!cardinality.isSingle()) {
-                context.add(new ValidationError(this, "This node is not supported for " + Cardinality.QTI_CLASS_NAME + ": " + cardinality));
+                context.fireValidationError(this, "This node is not supported for " + Cardinality.QTI_CLASS_NAME + ": " + cardinality);
             }
         }
 
@@ -144,7 +142,7 @@ public abstract class LookupTable extends AbstractNode {
                 for (int j = i + 1; j < getLookupEntries().size(); j++) {
                     final LookupTableEntry secondEntry = getLookupEntries().get(j);
                     if (secondEntry.getSourceValue() != null && firstEntry.getSourceValue().doubleValue() == secondEntry.getSourceValue().doubleValue()) {
-                        context.add(new ValidationWarning(this, "Duplicate source value: " + firstEntry.getSourceValue()));
+                        context.fireValidationWarning(this, "Duplicate source value: " + firstEntry.getSourceValue());
                     }
                 }
             }

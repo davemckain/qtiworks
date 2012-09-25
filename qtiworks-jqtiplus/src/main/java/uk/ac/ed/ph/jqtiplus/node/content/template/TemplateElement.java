@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
@@ -126,7 +125,7 @@ public abstract class TemplateElement extends AbstractFlowBodyElement {
         super.validateChildren(context);
 
         if (!hasChildNodes()) {
-            context.add(new ValidationWarning(this, "Feedback should contain something."));
+            context.fireValidationWarning(this, "Feedback should contain something.");
         }
     }
 

@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.util.List;
 
@@ -71,7 +70,7 @@ public final class ResponseProcessingFragment extends ResponseRule {
         super.validateChildren(context);
 
         if (getResponseRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules."));
+            context.fireValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules.");
         }
     }
 

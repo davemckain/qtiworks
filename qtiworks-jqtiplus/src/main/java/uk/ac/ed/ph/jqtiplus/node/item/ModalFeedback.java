@@ -45,8 +45,6 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
@@ -58,7 +56,7 @@ import java.util.List;
 /**
  * Modal Feedback: i.e. feedback possibly presented in a dialog box, which stops any
  * interaction whilst displayed
- * 
+ *
  * @author Jonathon Hare
  */
 public class ModalFeedback extends AbstractNode {
@@ -80,7 +78,7 @@ public class ModalFeedback extends AbstractNode {
     /** Name of title attribute in xml schema. */
     public static final String ATTR_TITLE_NAME = "title";
 
-    public ModalFeedback(AssessmentItem parent) {
+    public ModalFeedback(final AssessmentItem parent) {
         super(parent, QTI_CLASS_NAME);
 
         getAttributes().add(new VisibilityModeAttribute(this, ATTR_VISIBILITY_MODE_NAME, true));
@@ -93,7 +91,7 @@ public class ModalFeedback extends AbstractNode {
 
     /**
      * Gets the children of this element.
-     * 
+     *
      * @return the elements children.
      */
     public List<FlowStatic> getChildren() {
@@ -102,7 +100,7 @@ public class ModalFeedback extends AbstractNode {
 
     /**
      * Gets value of showHide attribute.
-     * 
+     *
      * @return value of showHide attribute
      * @see #setVisibilityMode
      */
@@ -112,17 +110,17 @@ public class ModalFeedback extends AbstractNode {
 
     /**
      * Sets new value of showHide attribute.
-     * 
+     *
      * @param visibilityMode new value of showHide attribute
      * @see #getVisibilityMode
      */
-    public void setVisibilityMode(VisibilityMode visibilityMode) {
+    public void setVisibilityMode(final VisibilityMode visibilityMode) {
         getAttributes().getVisibilityModeAttribute(ATTR_VISIBILITY_MODE_NAME).setValue(visibilityMode);
     }
 
     /**
      * Gets value of outcomeIdentifier attribute.
-     * 
+     *
      * @return value of outcomeIdentifier attribute
      * @see #setOutcomeIdentifier
      */
@@ -132,17 +130,17 @@ public class ModalFeedback extends AbstractNode {
 
     /**
      * Sets new value of outcomeIdentifier attribute.
-     * 
+     *
      * @param outcomeIdentifier new value of outcomeIdentifier attribute
      * @see #getOutcomeIdentifier
      */
-    public void setOutcomeIdentifier(Identifier outcomeIdentifier) {
+    public void setOutcomeIdentifier(final Identifier outcomeIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).setValue(outcomeIdentifier);
     }
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      */
     public Identifier getIdentifier() {
@@ -151,54 +149,54 @@ public class ModalFeedback extends AbstractNode {
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     @Override
-    public void validateAttributes(ValidationContext context) {
+    public void validateAttributes(final ValidationContext context) {
         super.validateAttributes(context);
 
         if (getOutcomeIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
 
             if (declaration == null) {
-                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier()));
+                context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier());
             }
 
             if (declaration != null && declaration.getCardinality() != null
                     && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
+                context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
                         + " or "
                         + Cardinality.MULTIPLE
                         + ", but found: "
-                        + declaration.getCardinality()));
+                        + declaration.getCardinality());
             }
 
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                context.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
+                context.fireValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType());
             }
         }
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
+    protected void validateChildren(final ValidationContext context) {
         super.validateChildren(context);
 
         if (getChildren().size() == 0) {
-            context.add(new ValidationWarning(this, "ModalFeedback is empty."));
+            context.fireValidationWarning(this, "ModalFeedback is empty.");
         }
     }
 
     /**
      * Returns true if this feedback can be displayed.
-     * 
+     *
      * @return true if this feedback can be displayed; false otherwise
      */
-    public boolean isVisible(ItemSessionController itemController) {
+    public boolean isVisible(final ItemSessionController itemController) {
 
         /* FIXME: This way of accessing outcome values looks old... probably needs refactored! */
         final ItemSessionState itemState = itemController.getItemSessionState();

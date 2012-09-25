@@ -49,7 +49,7 @@ public final class ModelNotification implements Serializable {
 
     private static final long serialVersionUID = 6723715622589447687L;
 
-    /** {@link QtiNode} that is the subject of this notification. (Not null) */
+    /** {@link QtiNode} that is the subject of this notification. (May be null if not known) */
     private final QtiNode qtiNode;
 
     /** Optional {@link Attribute} that is the subject of this notification. (May be null) */
@@ -65,7 +65,6 @@ public final class ModelNotification implements Serializable {
     private final String message;
 
     public ModelNotification(final QtiNode qtiNode, final Attribute<?> attribute, final NotificationType notificationType, final NotificationLevel notificationLevel, final String message) {
-        Assert.notNull(qtiNode, "qtiNode");
         Assert.notNull(notificationType, "notificationType");
         Assert.notNull(notificationLevel, "notificationLevel");
         this.qtiNode = qtiNode;

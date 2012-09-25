@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -86,11 +85,11 @@ public final class MapResponsePoint extends AbstractExpression {
         final ResponseDeclaration responseDeclaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
         if (responseDeclaration != null) {
             if (responseDeclaration.getCardinality().isRecord()) {
-                context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of single or container cardinalities."));
+                context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of single or container cardinalities.");
             }
 
             if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isPoint()) {
-                context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of point base type."));
+                context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of point base type.");
             }
         }
     }

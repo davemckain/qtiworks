@@ -47,6 +47,8 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
 import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -94,12 +96,14 @@ public final class AssessmentObjectValidator {
         if (item!=null) {
             final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplate = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplate!=null && !resolvedResponseProcessingTemplate.wasSuccessful()) {
-                result.add(new ValidationError(item.getResponseProcessing(), "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
+                result.add(new ModelNotification(item.getResponseProcessing(), null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+                        "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
             item.validate(new ItemValidationContextImpl(result, resolvedAssessmentItem));
         }
         else {
-            result.add(new ValidationError(null, "AssessmentItem was not successfully instantiated"));
+            result.add(new ModelNotification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+                    "AssessmentItem was not successfully instantiated"));
         }
         return result;
     }
@@ -130,16 +134,19 @@ public final class AssessmentObjectValidator {
                     final ItemValidationResult itemValidationResult = validateItem(itemHolder);
                     result.addItemValidationResult(itemValidationResult);
                     if (itemValidationResult.hasErrors()) {
-                        result.add(new ValidationError(test, messageBuilder.toString()
+                        result.add(new ModelNotification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+                                messageBuilder.toString()
                                 + " has errors. Please see the attached validation result for this item for further debugrmation."));
                     }
                     if (itemValidationResult.hasWarnings()) {
-                        result.add(new ValidationError(test, messageBuilder.toString()
+                        result.add(new ModelNotification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
+                                messageBuilder.toString()
                                 + " has warnings. Please see the attached validation result for this item for further debugrmation."));
                     }
                 }
                 else {
-                    result.add(new ValidationError(test, messageBuilder.toString()
+                    result.add(new ModelNotification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+                            messageBuilder.toString()
                             + " was not successfully instantiated. Further details are attached elsewhere."));
                 }
             }
@@ -148,7 +155,8 @@ public final class AssessmentObjectValidator {
             test.validate(new TestValidationContextImpl(result, resolvedAssessmentTest));
         }
         else {
-            result.add(new ValidationError(null, "Provision of AssessmentTest failed"));
+            result.add(new ModelNotification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+                    "Provision of AssessmentTest failed"));
         }
         return result;
     }
@@ -174,11 +182,6 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public void add(final ValidationItem item) {
-            validationResult.add(item);
-        }
-
-        @Override
         public final AbstractValidationResult getValidationResult() {
             return validationResult;
         }
@@ -199,7 +202,7 @@ public final class AssessmentObjectValidator {
                 return resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
             }
             catch (final VariableResolutionException e) {
-                validationResult.add(new ValidationError(owner, e.getMessage()));
+                fireValidationError(owner, e.getMessage());
                 return null;
             }
         }
@@ -210,7 +213,7 @@ public final class AssessmentObjectValidator {
                 return resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
             }
             catch (final VariableResolutionException e) {
-                validationResult.add(new ValidationError(owner, e.getMessage()));
+                fireValidationError(owner, e.getMessage());
                 return null;
             }
         }
@@ -233,7 +236,7 @@ public final class AssessmentObjectValidator {
                 messageBuilder.append(" variable but is a ")
                     .append(variableDeclaration.getVariableType().getName())
                     .append(" variable");
-                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                fireValidationError(owner, messageBuilder.toString());
                 result = false;
             }
             return result;
@@ -259,7 +262,7 @@ public final class AssessmentObjectValidator {
                     messageBuilder.append(" but has baseType ")
                         .append(variableDeclaration.getBaseType().toQtiString());
                 }
-                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                fireValidationError(owner, messageBuilder.toString());
                 result = false;
             }
             return result;
@@ -282,7 +285,7 @@ public final class AssessmentObjectValidator {
                 }
                 messageBuilder.append(" but has cardinality ")
                     .append(variableDeclaration.getCardinality().toQtiString());
-                validationResult.add(new ValidationError(owner, messageBuilder.toString()));
+                fireValidationError(owner, messageBuilder.toString());
                 result = false;
             }
             return result;

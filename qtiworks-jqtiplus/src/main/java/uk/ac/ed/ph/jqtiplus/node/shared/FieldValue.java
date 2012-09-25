@@ -42,8 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
@@ -188,19 +186,19 @@ public final class FieldValue extends AbstractNode {
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isRecord() && getFieldIdentifier() == null) {
-                context.add(new ValidationError(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") is not defined."));
+                context.fireValidationError(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") is not defined.");
             }
 
             if (cardinality.isRecord() && getBaseTypeAttrValue() == null) {
-                context.add(new ValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined."));
+                context.fireValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined.");
             }
 
             if (!cardinality.isRecord() && getFieldIdentifier() != null) {
-                context.add(new ValidationWarning(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") should not be defined."));
+                context.fireValidationWarning(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") should not be defined.");
             }
 
             if (!cardinality.isRecord() && getBaseTypeAttrValue() != null) {
-                context.add(new ValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined."));
+                context.fireValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined.");
             }
         }
     }
@@ -210,11 +208,11 @@ public final class FieldValue extends AbstractNode {
         super.validateChildren(context);
 
         if (singleValue == null) {
-            context.add(new ValidationError(this, "Value is not defined."));
+            context.fireValidationError(this, "Value is not defined.");
         }
 
         if (singleValue != null && getBaseType() != null && singleValue.getBaseType() != getBaseType()) {
-            context.add(new ValidationError(this, "BaseType of value does not match. Expected: " + getBaseType() + ", but found: " + singleValue.getBaseType()));
+            context.fireValidationError(this, "BaseType of value does not match. Expected: " + getBaseType() + ", but found: " + singleValue.getBaseType());
         }
     }
 
