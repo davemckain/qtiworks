@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.RuntimeValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -258,7 +257,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         final Cardinality[] producedCardinalities = getProducedCardinalities(context);
 
         if (!check(requiredCardinalities, producedCardinalities)) {
-            context.add(new CardinalityValidationError(this, requiredCardinalities, producedCardinalities));
+            context.fireCardinalityValidationError(this, requiredCardinalities, producedCardinalities);
         }
 
         final BaseType[] requiredBaseTypes = getParentRequiredBaseTypes(context);

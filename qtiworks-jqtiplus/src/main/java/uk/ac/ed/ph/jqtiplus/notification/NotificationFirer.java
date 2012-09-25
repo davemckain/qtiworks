@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.notification;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
  * FIXME: Document this type
@@ -53,6 +54,8 @@ public interface NotificationFirer {
     void fireAttributeValidationWarning(Attribute<?> attribute, String message);
 
     void fireBaseTypeValidationError(QtiNode owner, BaseType[] requiredBaseTypes, BaseType[] actualBaseTypes);
+
+    void fireCardinalityValidationError(QtiNode owner, Cardinality[] requiredCardinalities, Cardinality[] actualCardinalities);
 
 
 }

@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.notification;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.util.Arrays;
 
@@ -64,6 +65,14 @@ public abstract class AbstractNotificationFirer implements NotificationFirer {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
                 "Base type validation error: expected " + Arrays.toString(requiredBaseTypes)
                 + " but got " + Arrays.toString(actualBaseTypes));
+        fireNotification(notification);
+    }
+
+    @Override
+    public void fireCardinalityValidationError(final QtiNode owner, final Cardinality[] requiredCardinalities, final Cardinality[] actualCardinalities) {
+        final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
+                "Cardinality validation error: expected " + Arrays.toString(requiredCardinalities)
+                + " but got " + Arrays.toString(actualCardinalities));
         fireNotification(notification);
     }
 
