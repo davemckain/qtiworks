@@ -40,7 +40,6 @@ import uk.ac.ed.ph.qtiworks.mathassess.attribute.SyntaxAttribute;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathsContentTooComplexException;
 import uk.ac.ed.ph.qtiworks.mathassess.value.SyntaxType;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -49,6 +48,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaProcessTerminatedException;
@@ -74,21 +74,11 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
         getAttributes().add(new SyntaxAttribute(this, ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI));
     }
 
-    /**
-     * Get the syntax value of the expression.
-     *
-     * @return the value of the syntax attribute
-     */
     public SyntaxType getSyntax() {
         return ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
-    /**
-     * Set the syntax attribute of the expression.
-     *
-     * @param syntax value to set
-     */
     public void setSyntax(final SyntaxType syntax) {
         ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
@@ -104,20 +94,22 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
                     return maximaEvaluate(mathAssessExtensionPackage, (ItemProcessingContext) context, childValues);
                 }
                 catch (final MaximaProcessTerminatedException e) {
-                    throw new QtiEvaluationException("Maxima process was terminated earlier while processing this item", e);
+                    context.fireRuntimeError(this, "Maxima process was terminated earlier while processing this operator - returning NULL");
                 }
                 catch (final MaximaTimeoutException e) {
-                    throw new QtiEvaluationException("Maxima call timed out", e);
+                    context.fireRuntimeError(this, "Maxima call timed out processing this operator - returning NULL");
                 }
                 catch (final MathsContentTooComplexException e) {
-                    throw new QtiEvaluationException("Math content is too complex for current implementation", e);
+                    context.fireRuntimeError(this, "Math content is too complex for current implementation - returning NULL");
                 }
                 catch (final RuntimeException e) {
-                    throw new QtiEvaluationException("Unexpected Exception communicating with Maxima", e);
+                    context.fireRuntimeError(this, "Unexpected problem communicating with Maxima - returning NULL");
                 }
+                return NullValue.INSTANCE;
 
             default:
-                throw new QtiEvaluationException("Unsupported syntax type: " + getSyntax());
+                context.fireValidationError(this, "Unsupported syntax type: " + getSyntax() + " - returning NULL");
+                return NullValue.INSTANCE;
         }
     }
 

@@ -27,43 +27,33 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTITools and MathAssessEngine.
- * QTITools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.notification;
-
-import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
 /**
- * FIXME: Document this type
+ * Wrapper corresponding to a QTI NULL value
  *
  * @author David McKain
  */
-public interface NotificationFirer {
+public final class NullValueWrapper implements ValueWrapper {
+    
+    public static final NullValueWrapper INSTANCE = new NullValueWrapper();
+    
+    private NullValueWrapper() {
+        /* use singleton instead */
+    }
+    
+    @Override
+    public ValueCardinality getCardinality() {
+        return null;
+    }
 
-    void fireNotification(ModelNotification notification);
-
-    void fireRuntimeError(QtiNode owner, String message);
-
-    /** Legacy method */
-    void fireValidationError(QtiNode owner, String message);
-
-    /** Legacy method */
-    void fireValidationWarning(QtiNode owner, String message);
-
-    /** Legacy method */
-    void fireAttributeValidationError(Attribute<?> attribute, String message);
-
-    /** Legacy method */
-    void fireAttributeValidationWarning(Attribute<?> attribute, String message);
-
-    void fireBaseTypeValidationError(QtiNode owner, BaseType[] requiredBaseTypes, BaseType[] actualBaseTypes);
-
-    void fireCardinalityValidationError(QtiNode owner, Cardinality[] requiredCardinalities, Cardinality[] actualCardinalities);
-
+    @Override
+    public boolean isNull() {
+        return true;
+    }
 
 }

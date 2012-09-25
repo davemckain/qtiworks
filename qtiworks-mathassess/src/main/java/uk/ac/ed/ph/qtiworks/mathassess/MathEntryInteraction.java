@@ -89,41 +89,22 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
         getAttributes().add(new IdentifierAttribute(this, ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI, null, false));
     }
 
-    /**
-     * Get the value of the syntax attribute of the interaction.
-     *
-     * @return the value of the syntax attribute
-     */
     public SyntaxType getSyntax() {
         return ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
-    /**
-     * Set the syntax attribute of the interaction.
-     *
-     * @param syntax value to set
-     */
     public void setSyntax(final SyntaxType syntax) {
         ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
     }
 
-    /**
-     * Get the value of the printIdentifier attribute of the interaction.
-     *
-     * @return the value of the printIdentifier attribute
-     */
+
     public Identifier getPrintIdentifier() {
         return ((IdentifierAttribute) getAttributes().get(ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
-    /**
-     * Set the printIdentifier attribute of the interaction.
-     *
-     * @param printIdentifier value to set
-     */
     public void setPrintIdentifier(final Identifier printIdentifier) {
         ((IdentifierAttribute) getAttributes().get(ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(printIdentifier);
@@ -208,7 +189,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
                 logger.debug("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);
                 throw new ResponseBindingException(responseDeclaration, responseData, "Math content is too complex for current implementation");
             }
-            responseValue = CasTypeGlue.convertToJQTI(resultWrapper);
+            responseValue = GlueValueBinder.convertToJQTI(resultWrapper);
         }
         else {
             /* Blank input, so easy */

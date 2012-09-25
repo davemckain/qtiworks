@@ -448,7 +448,7 @@ public final class QtiMaximaProcess {
      * @param resultClass Class specifying required return type
      * @param <V> required return type
      * 
-     * @return wrapper encapsulating the resulting QTI value
+     * @return wrapper encapsulating the resulting QTI value, which will not be null
      * 
      * @throws MathAssessBadCasCodeException if the given Maxima code did not produce a result which
      *   could be parsed.

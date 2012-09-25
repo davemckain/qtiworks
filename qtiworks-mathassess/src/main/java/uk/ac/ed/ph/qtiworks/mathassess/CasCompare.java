@@ -196,10 +196,10 @@ public final class CasCompare extends MathAssessOperator {
                     new Object[] { code, simplify, v1, v2 });
         }
 
-        if (CasTypeGlue.isMathsContentRecord(v1) && ((RecordValue) v1).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
+        if (GlueValueBinder.isMathsContentRecord(v1) && ((RecordValue) v1).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
             return NullValue.INSTANCE;
         }
-        if (CasTypeGlue.isMathsContentRecord(v2) && ((RecordValue) v2).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
+        if (GlueValueBinder.isMathsContentRecord(v2) && ((RecordValue) v2).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
             return NullValue.INSTANCE;
         }
 
@@ -207,8 +207,8 @@ public final class CasCompare extends MathAssessOperator {
 
         return BooleanValue.valueOf(qtiMaximaProcess.executeCasCompare(code,
                 simplify,
-                CasTypeGlue.convertFromJQTI(v1),
-                CasTypeGlue.convertFromJQTI(v2)));
+                GlueValueBinder.convertFromJQTI(v1),
+                GlueValueBinder.convertFromJQTI(v2)));
     }
 
     @Override

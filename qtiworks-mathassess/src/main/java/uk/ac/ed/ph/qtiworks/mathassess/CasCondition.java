@@ -136,14 +136,14 @@ public final class CasCondition extends MathAssessOperator {
         final Value[] values = new Value[childValues.length];
         for (int i=0; i<childValues.length; i++) {
             final Value v = childValues[i];
-            if (CasTypeGlue.isMathsContentRecord(v) && ((RecordValue) v).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
+            if (GlueValueBinder.isMathsContentRecord(v) && ((RecordValue) v).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
                 return NullValue.INSTANCE;
             }
             values[i] = v;
         }
 
         final QtiMaximaProcess qtiMaximaProcess = mathAssessExtensionPackage.obtainMaximaSessionForThread();
-        return BooleanValue.valueOf(qtiMaximaProcess.executeCasCondition(code, simplify, CasTypeGlue.convertFromJQTI(values)));
+        return BooleanValue.valueOf(qtiMaximaProcess.executeCasCondition(code, simplify, GlueValueBinder.convertFromJQTI(values)));
     }
 
     @Override

@@ -45,10 +45,12 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
@@ -79,23 +81,11 @@ public final class ScriptRule extends MathAssessOperator {
         getNodeGroups().add(new ExpressionGroup(this, 1,1));
     }
 
-    /**
-     * Gets value of simplify attribute.
-     *
-     * @return value of simplify attribute
-     * @see #setSimplify
-     */
     public boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of simplify attribute.
-     *
-     * @param simplify new value of simplify attribute
-     * @see #getSimplify
-     */
     public void setSimplify(final Boolean simplify) {
         ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI)).setValue(simplify);
     }
@@ -118,12 +108,16 @@ public final class ScriptRule extends MathAssessOperator {
 
         /* Pass variables to Maxima */
         logger.debug("Passing variables to maxima");
+        final ItemSessionState itemSessionState = context.getItemSessionState();
         for (final VariableDeclaration declaration : inputDeclarations) {
-            final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(declaration.getBaseType(), declaration.getCardinality());
-            final Value value = context.getItemSessionState().getVariableValue(declaration);
-            if (value!=null && !value.isNull() && resultClass != null) {
-                qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), CasTypeGlue.convertFromJQTI(value));
+            final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasClass(declaration.getBaseType(), declaration.getCardinality());
+            if (resultClass!=null) {
+                final Value value = itemSessionState.getVariableValue(declaration);
+                if (value!=null && !value.isNull()) {
+                    qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), GlueValueBinder.convertFromJQTI(value));
+                }
             }
+
         }
 
         /* Run code */
@@ -133,11 +127,15 @@ public final class ScriptRule extends MathAssessOperator {
         /* Read variables back */
         logger.debug("Reading variables back from Maxima");
         for (final VariableDeclaration var : outputDeclarations) {
-            final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(var.getBaseType(), var.getCardinality());
+            final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasClass(var.getBaseType(), var.getCardinality());
             if (resultClass != null) {
+                /* Variable is supported */
                 final ValueWrapper wrapper = qtiMaximaProcess.queryMaximaVariable(var.getIdentifier().toString(), resultClass);
                 if (wrapper != null) {
-                    context.getItemSessionState().setVariableValue(var, CasTypeGlue.convertToJQTI(wrapper));
+                    itemSessionState.setVariableValue(var, GlueValueBinder.convertToJQTI(wrapper));
+                }
+                else {
+                    itemSessionState.setVariableValue(var, NullValue.INSTANCE);
                 }
             }
         }
