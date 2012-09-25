@@ -109,9 +109,8 @@ public abstract class JumpNode extends MiddleNode {
      * after this jump).
      * 
      * @return next node in item flow after this jump
-     * @throws RuntimeValidationException 
      */
-    public Node evaluate(TestProcessingContext context) throws RuntimeValidationException {
+    public Node evaluate(TestProcessingContext context) {
         logger.debug("Evaluation of jump {} started.", getIndex());
 
         Node target = null;

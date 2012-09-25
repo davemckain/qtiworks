@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -50,7 +51,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author David McKain
  */
-public interface ProcessingContext {
+public interface ProcessingContext extends NotificationFirer {
 
     /**
      * Provides access to the owning {@link JqtiExtensionManager} so that extensions

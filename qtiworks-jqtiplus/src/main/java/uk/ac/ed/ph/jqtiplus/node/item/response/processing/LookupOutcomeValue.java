@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
@@ -103,7 +102,7 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) {
         Value value = getExpression().evaluate(context);
         NumberValue numberValue = null;
         if (!value.isNull()) {

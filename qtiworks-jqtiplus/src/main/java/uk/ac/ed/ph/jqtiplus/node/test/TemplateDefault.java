@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
@@ -124,9 +123,8 @@ public final class TemplateDefault extends AbstractNode implements ExpressionPar
      * Evaluates this object.
      *
      * @return result of evaluation
-     * @throws RuntimeValidationException
      */
-    public Value evaluate(final ProcessingContext context) throws RuntimeValidationException {
+    public Value evaluate(final ProcessingContext context) {
         return getExpression().evaluate(context);
     }
 }

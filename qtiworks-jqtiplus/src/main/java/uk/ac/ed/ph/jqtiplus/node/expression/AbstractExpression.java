@@ -33,12 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.RuntimeValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -308,19 +306,11 @@ public abstract class AbstractExpression extends AbstractNode implements Express
 
     /**
      * Evaluates this Expression.
-     * <p>
-     * Note that this may result in a {@link RuntimeValidationException} triggered by run-time errors that are not detected using the "static" validation
-     * process. (In particular, baseType checking does not happen until run-time.)
-     * <p>
-     * For convenience, any resulting {@link RuntimeValidationException} will contain as many combined {@link ValidationItem}s as possible.
      */
     @Override
-    public final Value evaluate(final ProcessingContext context) throws RuntimeValidationException {
-        final AbstractValidationResult runtimeValidationResult = new RuntimeValidationResult(context.getSubject());
-        final Value result = evaluate(context, runtimeValidationResult, 0);
-        if (!runtimeValidationResult.getAllItems().isEmpty()) {
-            throw new RuntimeValidationException(runtimeValidationResult);
-        }
+    public final Value evaluate(final ProcessingContext context) {
+        final Value result = evaluate(context, 0);
+        Assert.notNull(result, "result of evaluation");
         return result;
     }
 
@@ -331,7 +321,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @return result of evaluation
      * @see #evaluate(ProcessingContext)
      */
-    private Value evaluate(final ProcessingContext context, final AbstractValidationResult runtimeValidationResult, final int depth) {
+    private Value evaluate(final ProcessingContext context, final int depth) {
         if (getChildren().size() > 0) {
             logger.debug("{}{}", formatIndent(depth), getClass().getSimpleName());
         }
@@ -343,16 +333,11 @@ public abstract class AbstractExpression extends AbstractNode implements Express
             final Expression child = children.get(i);
             Value childValue = NullValue.INSTANCE;
             if (child instanceof AbstractExpression) {
-                childValue = ((AbstractExpression) child).evaluate(context, runtimeValidationResult, depth + 1);
+                childValue = ((AbstractExpression) child).evaluate(context, depth + 1);
             }
             else {
                 /* (This only happens if an extension implements Expression directly) */
-                try {
-                    childValue = child.evaluate(context);
-                }
-                catch (final RuntimeValidationException e) {
-                    runtimeValidationResult.addAll(e.getValidationResult().getAllItems());
-                }
+                childValue = child.evaluate(context);
             }
             childValues[i] = childValue;
         }

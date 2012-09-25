@@ -62,5 +62,5 @@ public abstract class TemplateProcessingRule extends AbstractNode {
      * @throws TemplateProcessingInterrupt
      */
     public abstract void evaluate(ItemProcessingContext context)
-            throws TemplateProcessingInterrupt, RuntimeValidationException;
+            throws TemplateProcessingInterrupt;
 }

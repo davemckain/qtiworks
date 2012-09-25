@@ -27,48 +27,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
-package uk.ac.ed.ph.jqtiplus.running;
-
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+package uk.ac.ed.ph.jqtiplus.notification;
 
 /**
- * FIXME: This needs refactored and probably isn't needed as I think we can do validation better
- * to remove the need for runtime checking.
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-@ToRefactor
-@Deprecated
-public final class RuntimeValidationResult extends AbstractValidationResult {
+public interface NotificationListener {
 
-    private static final long serialVersionUID = -6570165277334622467L;
+    void onNotification(ModelNotification notification);
 
-    private final AssessmentObject assessmentObject;
-
-    public RuntimeValidationResult(final AssessmentObject assessmentObject) {
-        this.assessmentObject = assessmentObject;
-    }
-
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentObject getAssessmentObject() {
-        return assessmentObject;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(assessmentObject=" + assessmentObject
-                + ",errors=" + getErrors()
-                + ",warnings=" + getWarnings()
-                + ")";
-    }
 }

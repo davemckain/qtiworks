@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
@@ -67,6 +66,9 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
+import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
+import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationListener;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -97,12 +99,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public final class ItemSessionController implements ItemProcessingContext {
+public final class ItemSessionController extends AbstractNotificationFirer implements ItemProcessingContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 
     /** TODO: Make this settable! */
     public static final int MAX_TEMPLATE_PROCESSING_TRIES = 100;
+
+    private final List<NotificationListener> notificationListeners;
 
     private final JqtiExtensionManager jqtiExtensionManager;
     private final ResolvedAssessmentItem resolvedAssessmentItem;
@@ -112,6 +116,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState) {
         Assert.notNull(resolvedAssessmentItem, "resolvedAssessmentItem");
         Assert.notNull(itemSessionState, "itemSessionState");
+        this.notificationListeners = new ArrayList<NotificationListener>();
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
@@ -147,9 +152,26 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     //-------------------------------------------------------------------
+
+    public void addNotificationListener(final NotificationListener listener) {
+        notificationListeners.add(listener);
+    }
+
+    public void removeNotificationListener(final NotificationListener listener) {
+        notificationListeners.remove(listener);
+    }
+
+    @Override
+    public void fireNotification(final ModelNotification notification) {
+        for (final NotificationListener listener : notificationListeners) {
+            listener.onNotification(notification);
+        }
+    }
+
+    //-------------------------------------------------------------------
     // Initialization & template processing
 
-    public void initialize() throws RuntimeValidationException {
+    public void initialize() {
         initialize(null);
     }
 
@@ -159,10 +181,8 @@ public final class ItemSessionController implements ItemProcessingContext {
      * An item should only be initialised if it is going to be rendered/presented
      *
      * @param templateDefaults given templateDefaults values
-     * @throws RuntimeValidationException if a runtime validation error is detected during template
-     *             processing.
      */
-    public void initialize(final List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
+    public void initialize(final List<TemplateDefault> templateDefaults) {
         /* (We only allow initialization once. This contrasts with the original JQTI.) */
         if (itemSessionState.isInitialized()) {
             throw new IllegalStateException("Item state has already been initialized");
@@ -206,8 +226,7 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
     }
 
-    private boolean doTemplateProcessing(final List<TemplateDefault> templateDefaults, final int attemptNumber)
-            throws RuntimeValidationException {
+    private boolean doTemplateProcessing(final List<TemplateDefault> templateDefaults, final int attemptNumber) {
         logger.debug("Template Processing attempt #{} starting", attemptNumber);
 
         /* Initialise template defaults with any externally provided defaults */
@@ -341,10 +360,8 @@ public final class ItemSessionController implements ItemProcessingContext {
     /**
      * Runs response processing on the currently bound responses, changing {@link #itemSessionState}
      * as appropriate.
-     *
-     * @throws RuntimeValidationException
      */
-    public void processResponses() throws RuntimeValidationException {
+    public void processResponses() {
         logger.debug("Response processing starting");
         ensureInitialized();
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);

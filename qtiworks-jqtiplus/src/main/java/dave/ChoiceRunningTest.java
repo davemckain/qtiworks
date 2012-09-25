@@ -6,7 +6,6 @@
 package dave;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
@@ -28,7 +27,7 @@ import java.util.Set;
 
 public class ChoiceRunningTest {
 
-    public static void main(final String[] args) throws RuntimeValidationException {
+    public static void main(final String[] args) {
         final URI inputUri = URI.create("classpath:/variableRefs.xml");
 
         System.out.println("Reading");

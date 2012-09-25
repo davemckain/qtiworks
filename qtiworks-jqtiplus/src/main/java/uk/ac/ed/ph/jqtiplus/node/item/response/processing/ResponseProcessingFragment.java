@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
@@ -75,7 +74,7 @@ public final class ResponseProcessingFragment extends ResponseRule {
     }
 
     @Override
-    public void evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt {
         for (final ResponseRule responseRule : getResponseRules()) {
             responseRule.evaluate(context);
         }

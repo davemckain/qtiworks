@@ -65,7 +65,7 @@ public abstract class ExpressionAcceptTest extends ExpressionTest {
      * Tests evaluation of tested expression.
      */
     @Test
-    public void testEvaluate() throws RuntimeValidationException, Exception {
+    public void testEvaluate() throws Exception {
         assertEquals(expectedValue, getExpression().evaluate(ExpressionTest.createContextFreeItemProcessingContext()));
     }
 }

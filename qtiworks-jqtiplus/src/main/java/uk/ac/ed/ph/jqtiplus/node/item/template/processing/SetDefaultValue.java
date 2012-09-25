@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -86,7 +85,7 @@ public final class SetDefaultValue extends ProcessTemplateValue {
     }
 
     @Override
-    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) {
         final Value value = getExpression().evaluate(context);
         final AssessmentItem item = context.getSubjectItem();
         final ItemSessionState itemSessionState = context.getItemSessionState();
