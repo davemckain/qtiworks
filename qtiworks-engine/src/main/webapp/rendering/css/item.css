@@ -330,6 +330,17 @@ ul.playbackControls {
   text-decoration: underline;
 }
 
+.authorInfo table.notificationsTable {
+  width: 100%;
+  border-collapse: collapse
+}
+
+.authorInfo table.notificationsTable th,
+.authorInfo table.notificationsTable td {
+  border: 1px solid #666666;
+  padding: 0.3em;
+}
+
 .sessionState .variableName {
   font-weight: bold;
 }

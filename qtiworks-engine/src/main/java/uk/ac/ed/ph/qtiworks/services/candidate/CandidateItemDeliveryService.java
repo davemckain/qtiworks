@@ -45,6 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
@@ -506,7 +507,8 @@ public class CandidateItemDeliveryService {
 
     private void doRendering(final CandidateItemEvent candidateItemEvent, final ItemRenderingRequest renderingRequest, final OutputStream resultStream) {
         candidateAuditLogger.logRendering(candidateItemEvent, renderingRequest);
-        assessmentRenderer.renderItem(renderingRequest, resultStream);
+        final List<CandidateItemEventNotification> notifications = candidateItemEvent.getNotifications();
+        assessmentRenderer.renderItem(renderingRequest, notifications, resultStream);
     }
 
     private void extractResponseDataForRendering(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,

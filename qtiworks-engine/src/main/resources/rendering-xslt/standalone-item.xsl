@@ -28,6 +28,7 @@ Renders a standalone assessmentItem
 
   <xsl:param name="prompt" select="()" as="xs:string?"/>
   <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
+  <xsl:param name="notifications" as="element(qw:notification)*"/>
 
   <!-- Item Action URLs -->
   <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
@@ -330,14 +331,15 @@ Renders a standalone assessmentItem
 
     <xsl:if test="$authorMode">
       <div class="authorInfo authorMode">
-        <h2>QTI state information</h2>
+        <h2>QTI authoring feedback</h2>
         <h3>Candidate Session State</h3>
-        <p>Current candidate session state is:</p>
+        <p>The current candidate session state is:</p>
         <ul>
           <li>Primary: <xsl:value-of select="$candidateSessionState"/></li>
           <li>Secondary: <xsl:value-of select="$renderingMode"/></li>
         </ul>
 
+        <!-- Show response stuff -->
         <xsl:if test="exists($badResponseIdentifiers) or exists($invalidResponseIdentifiers)">
           <h3>Response errors</h3>
           <xsl:if test="exists($badResponseIdentifiers)">
@@ -374,12 +376,52 @@ Renders a standalone assessmentItem
             </ul>
           </xsl:if>
         </xsl:if>
+
+        <!-- Show current state -->
         <h3>Item Session State</h3>
+        <p>
+          The current values of all item variables are shown below:
+        </p>
         <xsl:call-template name="sessionState"/>
 
-        <h2>Delivery settings</h2>
+        <!-- Notifications -->
+        <xsl:if test="exists($notifications)">
+          <h3>Processing notifications</h3>
+          <p>
+            The following notifications were recorded during the most recent processing run on this item.
+            These may indicate issues with your item that need fixed.
+          </p>
+          <table class="notificationsTable">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Severity</th>
+                <th>QTI Class</th>
+                <th>Attribute</th>
+                <th>Line Number</th>
+                <th>Column Number</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody>
+              <xsl:for-each select="$notifications">
+                <tr>
+                  <td><xsl:value-of select="@type"/></td>
+                  <td><xsl:value-of select="@level"/></td>
+                  <td><xsl:value-of select="if (exists(@nodeQtiClassName)) then @nodeQtiClassName else 'N/A'"/></td>
+                  <td><xsl:value-of select="if (exists(@attrLocalName)) then @attrLocalName else 'N/A'"/></td>
+                  <td><xsl:value-of select="if (exists(@lineNumber)) then @lineNumber else 'Unknown'"/></td>
+                  <td><xsl:value-of select="if (exists(@columnNumber)) then @columnNumber else 'Unknown'"/></td>
+                  <td><xsl:value-of select="."/></td>
+                </tr>
+              </xsl:for-each>
+            </tbody>
+          </table>
+        </xsl:if>
+
+        <h3>Delivery settings</h3>
         <p>
-          Candidate is currently allowed to:
+          The current delivery settings allow the candidate to:
         </p>
         <dl>
           <dt>Reset session?</dt>

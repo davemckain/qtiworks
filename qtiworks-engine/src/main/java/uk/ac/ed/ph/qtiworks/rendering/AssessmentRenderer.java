@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -69,8 +70,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.commons.io.output.WriterOutputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
@@ -89,8 +88,6 @@ import org.springframework.validation.Validator;
  */
 @Service
 public class AssessmentRenderer {
-
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentRenderer.class);
 
     private static final URI standaloneItemXsltUri = URI.create("classpath:/rendering-xslt/standalone-item.xsl");
 
@@ -146,9 +143,9 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     /** (Convenience method) */
-    public String renderItemToString(final ItemRenderingRequest renderingRequest) {
+    public String renderItemToString(final ItemRenderingRequest renderingRequest, final List<CandidateItemEventNotification> notifications) {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        renderItem(renderingRequest, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+        renderItem(renderingRequest, notifications, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
         return stringBuilderWriter.toString();
     }
 
@@ -163,10 +160,9 @@ public class AssessmentRenderer {
      *
      * @throws QtiRenderingException if an unexpected Exception happens during rendering
      */
-    public void renderItem(final ItemRenderingRequest renderingRequest, final OutputStream resultStream) {
+    public void renderItem(final ItemRenderingRequest renderingRequest, final List<CandidateItemEventNotification> notifications, final OutputStream resultStream) {
         Assert.notNull(renderingRequest, "renderingRequest");
         Assert.notNull(resultStream, "resultStream");
-        logger.debug("renderItem({}, {})", renderingRequest, resultStream);
 
         /* Check request is valid */
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "renderingRequest");
@@ -179,6 +175,7 @@ public class AssessmentRenderer {
         final Map<Identifier, ResponseData> responseInputs = renderingRequest.getResponseInputs();
 
         /* Pass request info to XSLT as parameters */
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         xsltParameters.put("candidateSessionState", renderingRequest.getCandidateSessionState().toString());
         xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
@@ -229,8 +226,12 @@ public class AssessmentRenderer {
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
         xsltParameters.put("itemSessionState", ItemSesssionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
 
+        /* Pass notifications */
+        if (notifications!=null) {
+            xsltParameters.put("notifications", xsltParamBuilder.notificationsToElements(notifications));
+        }
+
         /* Pass raw response inputs (if appropriate) */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         if (responseInputs!=null) {
             xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
         }
