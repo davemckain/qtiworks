@@ -200,6 +200,9 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
             while (!templateProcessingCompleted) {
                 templateProcessingCompleted = doTemplateProcessing(templateDefaults, ++templateProcessingAttemptNumber);
             }
+            if (templateProcessingAttemptNumber>1) {
+                fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
+            }
 
             /* Initialises outcomeDeclaration's values. */
             for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
@@ -242,17 +245,17 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
         }
 
         /* Initialise template values. */
+        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
         for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
             initValue(templateDeclaration);
         }
 
         if (attemptNumber > MAX_TEMPLATE_PROCESSING_TRIES) {
-            logger.debug("Exceeded maxmimum number of template processing retries - leaving variables at default values");
+            fireRuntimeWarning(item, "Exceeded maximum number " + MAX_TEMPLATE_PROCESSING_TRIES + " of template processing retries - leaving variables at default values");
             return true;
         }
 
         /* Perform templateProcessing. */
-        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
         if (templateProcessing != null) {
             logger.trace("Evaluating template processing rules");
             try {
