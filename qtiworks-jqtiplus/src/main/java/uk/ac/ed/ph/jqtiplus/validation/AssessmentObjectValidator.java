@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
@@ -46,9 +45,8 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationCode;
-import uk.ac.ed.ph.jqtiplus.notification.QtiNotificationCodes;
 import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -157,7 +155,8 @@ public final class AssessmentObjectValidator {
 
     //-------------------------------------------------------------------
 
-    abstract class AbstractValidationContextImpl<E extends AssessmentObject> implements ValidationContext {
+    abstract class AbstractValidationContextImpl<E extends AssessmentObject> extends AbstractNotificationFirer
+            implements ValidationContext {
 
         protected final AbstractValidationResult validationResult;
         protected final ResolvedAssessmentObject<E> resolvedAssessmentObject;
@@ -170,28 +169,8 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public void fireNotification(final QtiNode qtiNode, final NotificationCode notificationCode, final String message, final Object... arguments) {
-            final String[] argumentsAsString = new String[arguments.length];
-            for (int i=0, length=arguments.length; i<length; i++) {
-                argumentsAsString[i] = arguments[i].toString();
-            }
-            final ModelNotification notification = new ModelNotification(qtiNode, notificationCode, message, argumentsAsString);
+        public void fireNotification(final ModelNotification notification) {
             validationResult.add(notification);
-        }
-
-        @Override
-        public void fireNotification(final QtiNode qtiNode, final NotificationCode notificationCode, final Object... arguments) {
-            fireNotification(qtiNode, notificationCode, notificationCode.getName(), arguments);
-        }
-
-        @Override
-        public void fireAttributeValidationError(final Attribute<?> attribute, final String message) {
-            fireNotification(attribute.getOwner(), QtiNotificationCodes.QTI_VEA, message);
-        }
-
-        @Override
-        public void fireAttributeValidationWarning(final Attribute<?> attribute, final String message) {
-            fireNotification(attribute.getOwner(), QtiNotificationCodes.QTI_VWA, message);
         }
 
         @Override

@@ -40,12 +40,8 @@ package uk.ac.ed.ph.jqtiplus.notification;
  */
 public enum NotificationType {
 
-    MODEL_BUILDING_ERROR,
-    MODEL_VALIDATION_INFO,
-    MODEL_VALIDATION_WARNING,
-    MODEL_VALIDATION_ERROR,
-    RUNTIME_INFO,
-    RUNTIME_WARNING,
-    RUNTIME_ERROR,
+    MODEL_BUILDING,
+    MODEL_VALIDATION,
+    RUNTIME,
 
 }

@@ -33,46 +33,38 @@
  */
 package uk.ac.ed.ph.jqtiplus.notification;
 
-import static uk.ac.ed.ph.jqtiplus.notification.NotificationType.MODEL_BUILDING_ERROR;
+import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
+import java.util.Arrays;
 
 /**
- * FIXME: Document this type
+ * Partial implementation of {@link NotificationFirer} that fills in the various
+ * convenience methods.
  *
  * @author David McKain
  */
-public enum QtiNotificationGroups implements NotificationGroup {
+public abstract class AbstractNotificationFirer implements NotificationFirer {
 
-    QTI_ME(MODEL_BUILDING_ERROR, "QTI model building error"),
-    QTI_VE(NotificationType.MODEL_VALIDATION_ERROR, "QTI validation error"),
-    QTI_VW(NotificationType.MODEL_VALIDATION_WARNING, "QTI validation warning")
-    ;
-
-    //---------------------------------------------------------
-
-    private NotificationType notificationLevel;
-    private String name;
-
-    private QtiNotificationGroups(final NotificationType notificationLevel, final String name) {
-        this.notificationLevel = notificationLevel;
-        this.name = name;
+    @Override
+    public void fireAttributeValidationError(final Attribute<?> attribute, final String message) {
+        final ModelNotification notification = new ModelNotification(attribute.getOwner(), attribute, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR, message);
+        fireNotification(notification);
     }
 
     @Override
-    public NotificationType getNotificationLevel() {
-        return notificationLevel;
+    public void fireAttributeValidationWarning(final Attribute<?> attribute, final String message) {
+        final ModelNotification notification = new ModelNotification(attribute.getOwner(), attribute, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING, message);
+        fireNotification(notification);
     }
 
     @Override
-    public String getName() {
-        return name;
+    public void fireBaseTypeValidationError(final QtiNode owner, final BaseType[] requiredBaseTypes, final BaseType[] actualBaseTypes) {
+        final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
+                "Base type validation error: expected " + Arrays.toString(requiredBaseTypes)
+                + " but got " + Arrays.toString(actualBaseTypes));
+        fireNotification(notification);
     }
-
-    @Override
-    public <E extends JqtiExtensionPackage<E>> JqtiExtensionPackage<E> getExtensionPackage() {
-        return null;
-    }
-
 
 }

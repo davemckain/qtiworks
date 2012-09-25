@@ -33,11 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.notification;
 
+import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * FIXME: Document this type
@@ -48,31 +49,54 @@ public final class ModelNotification implements Serializable {
 
     private static final long serialVersionUID = 6723715622589447687L;
 
+    /** {@link QtiNode} that is the subject of this notification. (Not null) */
     private final QtiNode qtiNode;
-    private final NotificationCode notificationCode;
-    private final String message;
-    private final String[] arguments;
 
-    public ModelNotification(final QtiNode qtiNode, final NotificationCode notificationCode, final String message, final String[] arguments) {
+    /** Optional {@link Attribute} that is the subject of this notification. (May be null) */
+    private final Attribute<?> attribute;
+
+    /** Type of notification */
+    private final NotificationType notificationType;
+
+    /** Severity of this notification */
+    private final NotificationLevel notificationLevel;
+
+    /** Message (legacy form - no i18n) */
+    private final String message;
+
+    public ModelNotification(final QtiNode qtiNode, final Attribute<?> attribute, final NotificationType notificationType, final NotificationLevel notificationLevel, final String message) {
+        Assert.notNull(qtiNode, "qtiNode");
+        Assert.notNull(notificationType, "notificationType");
+        Assert.notNull(notificationLevel, "notificationLevel");
         this.qtiNode = qtiNode;
-        this.notificationCode = notificationCode;
+        this.attribute = attribute;
+        this.notificationType = notificationType;
+        this.notificationLevel = notificationLevel;
         this.message = message;
-        this.arguments = arguments;
     }
 
     public QtiNode getQtiNode() {
         return qtiNode;
     }
 
-    public NotificationCode getNotificationCode() {
-        return notificationCode;
+    public Attribute<?> getAttribute() {
+        return attribute;
+    }
+
+    public NotificationType getNotificationType() {
+        return notificationType;
+    }
+
+    public NotificationLevel getNotificationLevel() {
+        return notificationLevel;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public List<String> getArguments() {
-        return ObjectUtilities.createView(arguments);
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

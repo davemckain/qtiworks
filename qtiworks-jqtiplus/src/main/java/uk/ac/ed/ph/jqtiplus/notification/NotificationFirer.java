@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.notification;
 
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
 
 /**
  * FIXME: Document this type
@@ -43,14 +44,15 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
  */
 public interface NotificationFirer {
 
-    void fireNotification(QtiNode qtiNode, NotificationCode notificationCode,
-            String message, Object... arguments);
+    void fireNotification(ModelNotification notification);
 
-    void fireNotification(QtiNode qtiNode, NotificationCode notificationCode, Object... arguments);
-
+    /** Legacy method */
     void fireAttributeValidationError(Attribute<?> attribute, String message);
 
+    /** Legacy method */
     void fireAttributeValidationWarning(Attribute<?> attribute, String message);
+
+    void fireBaseTypeValidationError(QtiNode owner, BaseType[] requiredBaseTypes, BaseType[] actualBaseTypes);
 
 
 }

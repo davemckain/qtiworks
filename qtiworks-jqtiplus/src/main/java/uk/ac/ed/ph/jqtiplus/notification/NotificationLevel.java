@@ -11,7 +11,7 @@
  *   list of conditions and the following disclaimer in the documentation and/or
  *   other materials provided with the distribution.
  *
- * * Neither the message of the University of Edinburgh nor the messages of its
+ * * Neither the name of the University of Edinburgh nor the names of its
  *   contributors may be used to endorse or promote products derived from this
  *   software without specific prior written permission.
  *
@@ -38,37 +38,11 @@ package uk.ac.ed.ph.jqtiplus.notification;
  *
  * @author David McKain
  */
-public enum QtiNotificationCodes implements NotificationCode {
+public enum NotificationLevel {
 
-    QTI_ME0000(QtiNotificationGroups.QTI_ME, "QTI model error"),
-    QTI_VEA(QtiNotificationGroups.QTI_VE, "QTI attribute validation error"),
-    QTI_VEB(QtiNotificationGroups.QTI_VE, "Base Type validation error: expected one of {0} but got {1}"),
-    QTI_VWA(QtiNotificationGroups.QTI_VW, "QTI attribute validation warning"),
+    ERROR,
+    WARNING,
+    INFO,
     ;
-
-    //---------------------------------------------------------
-
-    private NotificationGroup notificationGroup;
-    private String message;
-
-    private QtiNotificationCodes(final NotificationGroup notificationGroup, final String message) {
-        this.notificationGroup = notificationGroup;
-        this.message = message;
-    }
-
-    @Override
-    public NotificationGroup getNotificationGroup() {
-        return notificationGroup;
-    }
-
-    @Override
-    public String getName() {
-        return name();
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
 
 }
