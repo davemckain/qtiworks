@@ -48,6 +48,9 @@ public interface NotificationFirer {
     void fireNotification(ModelNotification notification);
 
     /** Legacy method */
+    void fireValidationError(QtiNode owner, String message);
+
+    /** Legacy method */
     void fireAttributeValidationError(Attribute<?> attribute, String message);
 
     /** Legacy method */

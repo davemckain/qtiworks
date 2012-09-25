@@ -49,6 +49,12 @@ import java.util.Arrays;
 public abstract class AbstractNotificationFirer implements NotificationFirer {
 
     @Override
+    public void fireValidationError(final QtiNode owner, final String message) {
+        final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR, message);
+        fireNotification(notification);
+    }
+
+    @Override
     public void fireAttributeValidationError(final Attribute<?> attribute, final String message) {
         final ModelNotification notification = new ModelNotification(attribute.getOwner(), attribute, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR, message);
         fireNotification(notification);

@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ItemFlowValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
@@ -180,12 +179,12 @@ public final class BranchRule extends AbstractJump {
             if (isSpecial()) {
                 if (isExitTestPart()) {
                     if (getParent() instanceof TestPart) {
-                        context.add(new ItemFlowValidationError(this, "Invalid special target: " + target));
+                        context.fireValidationError(this, "Invalid special target: " + target);
                     }
                 }
                 else if (isExitSection()) {
                     if (getParent() instanceof TestPart || getParent().getParent() instanceof TestPart) {
-                        context.add(new ItemFlowValidationError(this, "Invalid special target: " + target));
+                        context.fireValidationError(this, "Invalid special target: " + target);
                     }
                 }
             }
@@ -193,20 +192,20 @@ public final class BranchRule extends AbstractJump {
                 final AbstractPart targetPart = context.getSubjectTest().lookupDescendentOrSelf(target);
 
                 if (targetPart == null) {
-                    context.add(new ItemFlowValidationError(this, "Cannot find target: " + target));
+                    context.fireValidationError(this, "Cannot find target: " + target);
                 }
                 else {
                     final int parentIdex = getParent().getGlobalIndex();
                     final int targetIndex = targetPart.getGlobalIndex();
 
                     if (getParent() instanceof TestPart && (targetPart instanceof AssessmentSection || targetPart instanceof AssessmentItemRef)) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump from testPart to " + targetPart.getQtiClassName() + ": " + target));
+                        context.fireValidationError(this, "Cannot jump from testPart to " + targetPart.getQtiClassName() + ": " + target);
                     }
                     else if (targetIndex <= parentIdex) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump back to: " + target));
+                        context.fireValidationError(this, "Cannot jump back to: " + target);
                     }
                     else if (targetPart.isChildOf(getParent())) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump to own child: " + target));
+                        context.fireValidationError(this, "Cannot jump to own child: " + target);
                     }
                     else {
                         if (!getParent().isJumpSafeSource()) {
