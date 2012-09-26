@@ -35,7 +35,9 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.validation.Validatable;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+
+import java.io.Serializable;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -47,7 +49,7 @@ import org.w3c.dom.Node;
  *
  * @author Jiri Kajaba
  */
-public interface Attribute<V> extends Validatable {
+public interface Attribute<V> extends Serializable {
 
     /**
      * Gets the {@link QtiNode} owning this attribute.
@@ -149,6 +151,16 @@ public interface Attribute<V> extends Validatable {
      * @param value source string
      */
     void load(Element owner, String value, LoadingContext context);
+
+    /**
+     * Validates this attribute's value to ensure it fits the general
+     * restrictions placed on the attribute itself, such as whether
+     * a value has been specified.
+     * <p>
+     * It should *not* be used for additional node-specific validation,
+     * such as checking whether a value is positive etc.
+     */
+    void validateBasic(ValidationContext context);
 
     /**
      * Converts this Attribute's value to the String form used in

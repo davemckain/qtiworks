@@ -67,8 +67,8 @@ public final class StringOrVariableRefAttribute extends SingleAttribute<StringOr
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    public void validateBasic(final ValidationContext context) {
+        super.validateBasic(context);
 
         /* If variable reference, make sure it refers to the right type of variable */
         if (value.isVariableRef()) {

@@ -184,8 +184,7 @@ public final class OrderInteraction extends BlockInteraction implements SimpleCh
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    protected void validateAttributesComplex(final ValidationContext context) {
         final Integer maxChoices = getMaxChoices();
         final Integer minChoices = getMinChoices();
 
@@ -203,12 +202,13 @@ public final class OrderInteraction extends BlockInteraction implements SimpleCh
 
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                context.fireValidationError(this, "Response variable must have identifier base type");
-            }
-
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isOrdered()) {
-                context.fireValidationError(this, "Response variable must have ordered cardinality");
+            if (declaration!=null) {
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
+                    context.fireValidationError(this, "Response variable must have identifier base type");
+                }
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isOrdered()) {
+                    context.fireValidationError(this, "Response variable must have ordered cardinality");
+                }
             }
         }
     }

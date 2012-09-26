@@ -95,9 +95,7 @@ public final class EqualRounded extends AbstractExpression {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         final RoundingMode roundingMode = getRoundingMode();
         if (roundingMode != null) {
             roundingMode.validateFigures(context,

@@ -83,9 +83,7 @@ public final class LookupOutcomeValue extends ProcessOutcomeValue {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() == null) {

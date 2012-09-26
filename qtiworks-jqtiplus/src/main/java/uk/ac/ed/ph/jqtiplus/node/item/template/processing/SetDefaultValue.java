@@ -106,9 +106,7 @@ public final class SetDefaultValue extends ProcessTemplateValue {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
             final AssessmentItem item = getRootNode(AssessmentItem.class);

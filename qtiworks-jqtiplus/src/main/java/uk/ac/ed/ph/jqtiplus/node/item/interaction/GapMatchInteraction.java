@@ -142,23 +142,23 @@ public final class GapMatchInteraction extends BlockInteraction implements GapCh
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validate(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isDirectedPair()) {
-                context.fireValidationError(this, "Response variable must have directed pair base type");
-            }
+            if (declaration!=null) {
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isDirectedPair()) {
+                    context.fireValidationError(this, "Response variable must have directed pair base type");
+                }
 
-            if (declaration != null && countGaps() == 1 &&
-                    declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
-                    !declaration.getCardinality().isMultiple()) {
-                context.fireValidationError(this, "Response variable must have single or multiple cardinality");
-            }
+                if (countGaps() == 1 &&
+                        declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
+                        !declaration.getCardinality().isMultiple()) {
+                    context.fireValidationError(this, "Response variable must have single or multiple cardinality");
+                }
 
-            if (declaration != null && countGaps() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                context.fireValidationError(this, "Response variable must have multiple cardinality");
+                if (countGaps() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+                    context.fireValidationError(this, "Response variable must have multiple cardinality");
+                }
             }
         }
     }

@@ -129,8 +129,7 @@ public final class HottextInteraction extends BlockInteraction {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    protected void validateAttributesComplex(final ValidationContext context) {
         final int maxChoices = getMaxChoices();
         final int minChoices = getMinChoices();
 

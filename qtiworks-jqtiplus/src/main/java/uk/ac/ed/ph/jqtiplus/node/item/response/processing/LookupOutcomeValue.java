@@ -83,12 +83,10 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
-            if (declaration == null) {
+            if (declaration==null) {
                 context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
             }
             else if (declaration.getLookupTable() == null) {

@@ -105,9 +105,7 @@ public abstract class TemplateElement extends AbstractFlowBodyElement {
     }
 
     @Override
-    public void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    public void validateAttributesComplex(final ValidationContext context) {
         final Identifier templateIdentifier = getTemplateIdentifier();
         if (templateIdentifier != null) {
             context.checkVariableReference(this, templateIdentifier);

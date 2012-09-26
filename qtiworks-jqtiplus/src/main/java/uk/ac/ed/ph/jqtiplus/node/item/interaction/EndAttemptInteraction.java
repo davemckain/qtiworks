@@ -110,9 +110,7 @@ public final class EndAttemptInteraction extends InlineInteraction {
 
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isBoolean()) {

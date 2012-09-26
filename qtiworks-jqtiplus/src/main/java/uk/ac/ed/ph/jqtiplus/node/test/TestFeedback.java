@@ -140,9 +140,7 @@ public final class TestFeedback extends AbstractNode {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         if (getOutcomeIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
             context.fireValidationWarning(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier());
         }

@@ -117,9 +117,7 @@ public class RandomInteger extends RandomExpression {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         final IntegerOrVariableRef maxComputer = getMax();
         final IntegerOrVariableRef minComputer = getMin();
         final IntegerOrVariableRef stepComputer = getStep();

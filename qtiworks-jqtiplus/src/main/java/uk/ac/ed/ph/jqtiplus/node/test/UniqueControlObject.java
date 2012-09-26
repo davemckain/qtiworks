@@ -85,9 +85,7 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
     }
 }

@@ -91,8 +91,8 @@ public final class SingleValueAttribute extends SingleAttribute<SingleValue> {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    public void validateBasic(final ValidationContext context) {
+        super.validateBasic(context);
 
         if (getComputedValue() != null && getComputedValue().getBaseType() != baseType) {
             context.fireAttributeValidationError(this, "BaseType of " + getLocalName()

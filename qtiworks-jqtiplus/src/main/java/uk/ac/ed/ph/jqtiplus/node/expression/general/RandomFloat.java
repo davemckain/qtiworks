@@ -100,9 +100,7 @@ public class RandomFloat extends RandomExpression {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         final FloatOrVariableRef maxComputer = getMax();
         final FloatOrVariableRef minComputer = getMin();
 

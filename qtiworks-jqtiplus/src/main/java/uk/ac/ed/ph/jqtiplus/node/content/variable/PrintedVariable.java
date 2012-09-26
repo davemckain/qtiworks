@@ -180,9 +180,7 @@ public final class PrintedVariable extends AbstractFlowBodyElement implements Fl
 
 
     @Override
-    public void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    public void validateAttributesComplex(final ValidationContext context) {
         if (getIdentifier() != null) {
             final Identifier identifier = getIdentifier();
             final VariableDeclaration variableDeclaration = context.checkVariableReference(this, identifier);

@@ -94,9 +94,7 @@ public final class SetCorrectResponse extends ProcessTemplateValue {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         final Identifier identifier = getIdentifier();
         if (identifier!=null) {
             context.checkVariableReference(this, identifier);

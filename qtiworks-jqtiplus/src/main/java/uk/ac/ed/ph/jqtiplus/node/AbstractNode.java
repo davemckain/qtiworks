@@ -244,15 +244,24 @@ public abstract class AbstractNode implements QtiNode {
 
     @Override
     public void validate(final ValidationContext context) {
-        validateAttributes(context);
+        /* Do basic checking on individual Attributes */
+        attributes.validateBasic(context);
+
+        /* Perform Node-specific checks on the values of Attributes */
+        validateAttributesComplex(context);
+
+        /* Validate children */
         validateChildren(context);
     }
 
     /**
-     * Validates attributes of this node.
+     * Subclasses should fill in to perform any additional validation
+     * required on attributes, such as checking minimum/maximum values,
+     * checking attributes against each other etc.
      */
-    protected void validateAttributes(final ValidationContext context) {
-        attributes.validate(context);
+    @SuppressWarnings("unused")
+    protected void validateAttributesComplex(final ValidationContext context) {
+        /* Nothing to do in general */
     }
 
     /**

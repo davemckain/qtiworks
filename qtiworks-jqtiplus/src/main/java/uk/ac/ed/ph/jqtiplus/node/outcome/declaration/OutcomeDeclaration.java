@@ -177,8 +177,8 @@ public final class OutcomeDeclaration extends VariableDeclaration {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
+    protected void validateAttributesComplex(final ValidationContext context) {
+        super.validateAttributesComplex(context);
 
         if (getNormalMaximum() != null) {
             if (getCardinality() != null && !getCardinality().isSingle()) {

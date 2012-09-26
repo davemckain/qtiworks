@@ -115,9 +115,7 @@ public final class TimeLimit extends AbstractNode {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         if (getMinimum() != null && getMinimum().doubleValue() < 0) {
             context.fireValidationError(this, "Minimum time cannot be negative.");
         }

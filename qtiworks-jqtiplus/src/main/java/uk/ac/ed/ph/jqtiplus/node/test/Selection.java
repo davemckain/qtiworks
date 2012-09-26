@@ -92,10 +92,8 @@ public final class Selection extends AbstractNode {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
+    protected void validateAttributesComplex(final ValidationContext context) {
         final int select = getSelect();
-
         if (getParent() != null) {
             int required = 0;
             for (final SectionPart part : getParent().getSectionParts()) {

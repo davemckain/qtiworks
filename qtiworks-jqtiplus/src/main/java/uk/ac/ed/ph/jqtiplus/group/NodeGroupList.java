@@ -207,9 +207,8 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TimeLimit;
 import uk.ac.ed.ph.jqtiplus.node.test.VariableMapping;
 import uk.ac.ed.ph.jqtiplus.node.test.Weight;
-import uk.ac.ed.ph.jqtiplus.validation.Validatable;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -219,11 +218,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Container for all node groups of one node.
+ * Container for all node groups contained (owned) by a particular {@link QtiNode}.
  *
  * @author Jiri Kajaba
  */
-public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>> {
+public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?>> {
 
     private static final long serialVersionUID = 4649998181277985510L;
 
@@ -233,18 +232,13 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
     /** Children (groups) of this container. */
     private final List<NodeGroup<?,?>> groups;
 
-    /**
-     * Constructs container.
-     *
-     * @param parent parent of constructed container
-     */
     public NodeGroupList(final QtiNode parent) {
         this.parent = parent;
         this.groups = new ArrayList<NodeGroup<?,?>>();
     }
 
     /**
-     * Gets parent of this container.
+     * Gets parent (owner) of this container.
      *
      * @return parent of this container
      */
@@ -395,13 +389,6 @@ public final class NodeGroupList implements Validatable, Iterable<NodeGroup<?,?>
             }
         }
         throw new QtiNodeGroupException("Cannot find node group supporting " + qtiClassName);
-    }
-
-    @Override
-    public void validate(final ValidationContext context) {
-        for (final NodeGroup<?,?> child : groups) {
-            child.validate(context);
-        }
     }
 
     /**

@@ -129,9 +129,7 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
 
         final Cardinality cardinality = getCardinality();

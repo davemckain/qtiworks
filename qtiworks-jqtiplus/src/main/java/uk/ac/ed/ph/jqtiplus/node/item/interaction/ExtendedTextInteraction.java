@@ -233,9 +233,7 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         final Integer maxStrings = getMaxStrings();
         final int minStrings = getMinStrings();
         if (maxStrings != null) {
@@ -244,11 +242,10 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
             }
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-
+        final ResponseDeclaration declaration = getResponseDeclaration();
+        if (declaration != null) {
             if (minStrings > 1 || (maxStrings != null && maxStrings.intValue() > 1)) {
-                if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
                     if (declaration.getCardinality().isRecord()) {
                         context.fireValidationError(this,
                                 "JQTI doesn't currently support binding multiple strings to a record container (the spec is very unclear here)");
@@ -259,25 +256,25 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
                 }
             }
 
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isRecord()) {
+            if (declaration.getCardinality() != null && !declaration.getCardinality().isRecord()) {
                 if (declaration.getBaseType() != null && !(declaration.getBaseType().isString() || declaration.getBaseType().isNumeric())) {
                     context.fireValidationError(this, "Response variable must have string or numeric base type");
                 }
             }
 
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10) {
+            if (declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10) {
                 context.fireValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored.");
             }
         }
 
         if (getStringIdentifier() != null) {
-            final ResponseDeclaration declaration = getStringIdentifierResponseDeclaration();
-            if (declaration!=null) {
+            final ResponseDeclaration stringDeclaration = getStringIdentifierResponseDeclaration();
+            if (stringDeclaration!=null) {
                 if ((getMinStrings() > 1 || (getMaxStrings() != null && getMaxStrings() > 1))
-                        && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
+                        && stringDeclaration.getCardinality() != null && !stringDeclaration.getCardinality().isList()) {
                     context.fireValidationError(this, "StringIdentifier response variable must have multiple or ordered cardinality");
                 }
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isString()) {
+                if (stringDeclaration.getBaseType() != null && !stringDeclaration.getBaseType().isString()) {
                     context.fireValidationError(this, "StringIdentifier response variable must have String base type");
                 }
             }

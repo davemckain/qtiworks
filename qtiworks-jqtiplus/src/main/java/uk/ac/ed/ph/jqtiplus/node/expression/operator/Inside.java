@@ -99,9 +99,7 @@ public final class Inside extends AbstractFunctionalExpression {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         if (getShape() != null) {
             getShape().validateCoords(context, getAttributes().getCoordsAttribute(ATTR_COORDINATES_NAME),
                    convertCoordinates(getCoordinates()));

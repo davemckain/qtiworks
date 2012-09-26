@@ -157,9 +157,7 @@ public class ModalFeedback extends AbstractNode {
     }
 
     @Override
-    public void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    public void validateAttributesComplex(final ValidationContext context) {
         if (getOutcomeIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
 

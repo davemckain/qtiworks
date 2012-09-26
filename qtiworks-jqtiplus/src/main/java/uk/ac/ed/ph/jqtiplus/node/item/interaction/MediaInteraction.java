@@ -161,17 +161,17 @@ public final class MediaInteraction extends BlockInteraction {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isInteger()) {
-                context.fireValidationError(this, "Response variable must have integer base type");
-            }
+            if (declaration!=null) {
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isInteger()) {
+                    context.fireValidationError(this, "Response variable must have integer base type");
+                }
 
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                context.fireValidationError(this, "Response variable must have single cardinality");
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
+                    context.fireValidationError(this, "Response variable must have single cardinality");
+                }
             }
         }
     }

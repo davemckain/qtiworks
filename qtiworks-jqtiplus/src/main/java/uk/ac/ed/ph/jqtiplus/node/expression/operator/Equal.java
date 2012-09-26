@@ -172,9 +172,7 @@ public final class Equal extends AbstractExpression {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateAttributesComplex(final ValidationContext context) {
         final Attribute<?> tolerancesAttr = getAttributes().get(ATTR_TOLERANCES_NAME);
         final List<FloatOrVariableRef> tolerances = getTolerances();
         if (tolerances!=null && (tolerances.size()==0 || tolerances.size()>2)) {

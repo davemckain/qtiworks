@@ -106,7 +106,7 @@ public abstract class ItemSubset extends AbstractExpression {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
+    protected void validateAttributesComplex(final ValidationContext context) {
         if (getSectionIdentifier() != null && context.getSubjectTest().lookupDescendentOrSelf(getSectionIdentifier()) == null) {
             context.fireValidationWarning(this, "Cannot find control object: " + getSectionIdentifier());
         }
