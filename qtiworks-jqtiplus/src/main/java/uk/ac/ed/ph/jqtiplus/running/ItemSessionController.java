@@ -190,31 +190,41 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
 
         fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
         try {
-            /* Set up built-in variables */
-            itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
-            itemSessionState.setNumAttempts(0);
+            /* Initialise template defaults with any externally provided defaults */
+            if (templateDefaults != null) {
+                logger.trace("Setting template default values");
+                for (final TemplateDefault templateDefault : templateDefaults) {
+                    final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
+                    if (declaration != null) {
+                        final Value defaultValue = templateDefault.evaluate(this);
+                        itemSessionState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
+                    }
+                }
+            }
 
             /* Perform template processing as many times as required. */
             int templateProcessingAttemptNumber = 0;
             boolean templateProcessingCompleted = false;
             while (!templateProcessingCompleted) {
-                templateProcessingCompleted = doTemplateProcessing(templateDefaults, ++templateProcessingAttemptNumber);
+                templateProcessingCompleted = doTemplateProcessingRun(++templateProcessingAttemptNumber);
             }
             if (templateProcessingAttemptNumber>1) {
                 fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
             }
 
-            /* Initialises outcomeDeclaration's values. */
+            /* Initialise all outcome variables */
             for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
                 initValue(outcomeDeclaration);
             }
 
-            /* Initialises responseDeclaration's values. */
+            /* Initialise all response variables */
             for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
                 initValue(responseDeclaration);
             }
 
-            /* Set the completion status to unknown */
+            /* Set special built-in variables */
+            itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
+            itemSessionState.setNumAttempts(0);
             itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
 
             /* Initialize all interactions in the itemBody */
@@ -229,20 +239,9 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
         }
     }
 
-    private boolean doTemplateProcessing(final List<TemplateDefault> templateDefaults, final int attemptNumber) {
+    private boolean doTemplateProcessingRun(final int attemptNumber) {
         logger.debug("Template Processing attempt #{} starting", attemptNumber);
 
-        /* Initialise template defaults with any externally provided defaults */
-        if (templateDefaults != null) {
-            logger.trace("Setting template default values");
-            for (final TemplateDefault templateDefault : templateDefaults) {
-                final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
-                if (declaration != null) {
-                    final Value defaultValue = templateDefault.evaluate(this);
-                    itemSessionState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
-                }
-            }
-        }
 
         /* Initialise template values. */
         final TemplateProcessing templateProcessing = item.getTemplateProcessing();
