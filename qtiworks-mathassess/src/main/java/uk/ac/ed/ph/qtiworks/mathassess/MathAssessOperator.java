@@ -178,12 +178,16 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
     protected void passVariableToMaxima(final QtiMaximaProcess qtiMaximaProcess, final ItemProcessingContext context,
             final VariableDeclaration declaration) {
         final Value value = context.getItemSessionState().getVariableValue(declaration);
-        final ValueWrapper valueWrapper = GlueValueBinder.jqtiToCas(value);
-        if (valueWrapper!=null) {
-            qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
-        }
-        else {
-            context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier() + " is one of the types supported by the MathAssess extensions so has not been passed to Maxima");
+
+        /* NB: Depending on when this is run, some values (e.g. response values) will not have been initialised, so value could be null */
+        if (value!=null) {
+            final ValueWrapper valueWrapper = GlueValueBinder.jqtiToCas(value);
+            if (valueWrapper!=null) {
+                qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
+            }
+            else {
+                context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier() + " is one of the types supported by the MathAssess extensions so has not been passed to Maxima");
+            }
         }
     }
 
