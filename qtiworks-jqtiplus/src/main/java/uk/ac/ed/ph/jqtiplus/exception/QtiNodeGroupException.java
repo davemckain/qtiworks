@@ -38,19 +38,14 @@ import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 
 /**
  * This exception is used for reporting inconsistent use of {@link NodeGroup}s
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class QtiNodeGroupException extends QtiModelException {
 
     private static final long serialVersionUID = -1425955381105959375L;
 
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
-    public QtiNodeGroupException(String message) {
+    public QtiNodeGroupException(final String message) {
         super(message);
     }
 }
