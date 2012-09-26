@@ -86,17 +86,16 @@ public final class MapResponse extends AbstractExpression {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateThis(final ValidationContext context) {
         final AssessmentItem item = context.getSubjectItem();
-        if (item.getResponseDeclaration(getIdentifier()) == null) {
-            context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find response declaration: " + getIdentifier());
-        }
-        else if (item.getResponseDeclaration(getIdentifier()).getMapping() == null) {
-            context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find mapping for response declaration: " + getIdentifier());
+        if (item!=null) {
+            if (item.getResponseDeclaration(getIdentifier()) == null) {
+                context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find response declaration: " + getIdentifier());
+            }
+            else if (item.getResponseDeclaration(getIdentifier()).getMapping() == null) {
+                context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find mapping for response declaration: " + getIdentifier());
+            }
         }
     }
 

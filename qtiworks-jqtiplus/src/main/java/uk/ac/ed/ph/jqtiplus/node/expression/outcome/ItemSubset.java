@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
@@ -110,20 +109,8 @@ public abstract class ItemSubset extends AbstractExpression {
         if (getSectionIdentifier() != null && context.getSubjectTest().lookupDescendentOrSelf(getSectionIdentifier()) == null) {
             context.fireValidationWarning(this, "Cannot find control object: " + getSectionIdentifier());
         }
-    }
 
-    @Override
-    public void validate(final ValidationContext context) {
-        QtiNode parent = getParent();
-
-        while (parent != null) {
-            if (parent instanceof OutcomeProcessing) {
-                break;
-            }
-            parent = parent.getParent();
-        }
-
-        if (parent == null) {
+        if (getNearestAncestor(OutcomeProcessing.class)==null) {
             context.fireValidationError(this, "Outcome expression can be used only in outcome processing.");
         }
     }

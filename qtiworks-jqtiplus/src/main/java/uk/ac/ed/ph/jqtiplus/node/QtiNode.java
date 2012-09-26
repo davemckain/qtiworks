@@ -58,6 +58,13 @@ public interface QtiNode extends Serializable, Iterable<QtiNode> {
     QtiNode getParent();
 
     /**
+     * Finds the nearest ancestor of this Node having the given class
+     * (not counting this Node itself). Returns the ancestor if found,
+     * otherwise null.
+     */
+    <E extends QtiNode> E getNearestAncestor(final Class<E> ancestorClass);
+
+    /**
      * Gets root of this node, returning the node itself if it is already
      * a {@link RootNode}
      */

@@ -91,6 +91,18 @@ public abstract class AbstractNode implements QtiNode {
     }
 
     @Override
+    public <E extends QtiNode> E getNearestAncestor(final Class<E> ancestorClass) {
+        QtiNode ancestor = getParent();
+        while (ancestor!=null) {
+            if (ancestorClass.isInstance(ancestor)) {
+                return ancestorClass.cast(ancestor);
+            }
+            ancestor = ancestor.getParent();
+        }
+        return null;
+    }
+
+    @Override
     public final String getQtiClassName() {
         return qtiClassName;
     }
@@ -108,7 +120,6 @@ public abstract class AbstractNode implements QtiNode {
     public AttributeList getAttributes() {
         return attributes;
     }
-
 
     @Override
     public RootNode getRootNode() {
@@ -247,7 +258,7 @@ public abstract class AbstractNode implements QtiNode {
         /* Do basic checking on individual Attributes */
         attributes.validateBasic(context);
 
-        /* Perform additonal validation relevant to this Node */
+        /* Perform additional validation relevant to this Node */
         validateThis(context);
 
         /* Validate children */
