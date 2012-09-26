@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 
 import java.util.ArrayList;
@@ -83,7 +82,6 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      */
     public ListValue(final Iterable<? extends SingleValue> values) {
         container = new ArrayList<SingleValue>();
-
         for (final SingleValue value : values) {
             add(value);
         }
@@ -96,7 +94,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
 
     @Override
     public boolean isNull() {
-        return container.size() == 0;
+        return container.isEmpty();
     }
 
     @Override
@@ -178,7 +176,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      * @return true if value was added; false otherwise
      * @throws QtiBaseTypeException if <code>BaseType</code> is not same
      */
-    public boolean add(final SingleValue value) throws QtiBaseTypeException {
+    public boolean add(final SingleValue value) {
         if (value == null || value.isNull()) {
             return false;
         }
@@ -190,7 +188,10 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
         return container.add(value);
     }
 
-    public boolean merge(final ListValue value) throws QtiBaseTypeException {
+    /**
+     * @throws QtiBaseTypeException
+     */
+    public boolean merge(final ListValue value) {
         if (value.isNull()) {
             return false;
         }
@@ -219,7 +220,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
     }
 
     @Override
-    public Object clone() throws QtiEvaluationException {
+    public Object clone() {
         try {
             final ListValue value = (ListValue) super.clone();
             if (container != null) {
