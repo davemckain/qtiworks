@@ -182,5 +182,8 @@ public abstract class AbstractNodeGroup<P extends QtiNode, C extends QtiNode> im
         if (maximum != null && children.size() > maximum.intValue()) {
             context.fireValidationError(parent, "Too many children: " + name + ". Allowed maximum: " + maximum + ", but found: " + children.size());
         }
+        for (final QtiNode child : children) {
+            child.validate(context);
+        }
     }
 }

@@ -276,10 +276,8 @@ public abstract class AbstractNode implements QtiNode {
      */
     protected void validateChildren(final ValidationContext context) {
         for (int i = 0; i < nodeGroups.size(); i++) {
-            final NodeGroup<?,?> node = nodeGroups.get(i);
-            for (final QtiNode child : node.getChildren()) {
-                child.validate(context);
-            }
+            final NodeGroup<?,?> nodeGroup = nodeGroups.get(i);
+            nodeGroup.validate(context);
         }
     }
 

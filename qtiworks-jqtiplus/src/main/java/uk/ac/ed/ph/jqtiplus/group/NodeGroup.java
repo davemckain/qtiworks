@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestPartGroup;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.validation.Validatable;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.io.Serializable;
 import java.util.List;
@@ -56,7 +56,7 @@ import org.w3c.dom.Node;
  * @author Jiri Kajaba (original)
  * @author David McKain (refactored)
  */
-public interface NodeGroup<P extends QtiNode, C extends QtiNode> extends Validatable, Serializable, Iterable<C> {
+public interface NodeGroup<P extends QtiNode, C extends QtiNode> extends Serializable, Iterable<C> {
 
     /**
      * Gets parent node of group.
@@ -151,4 +151,9 @@ public interface NodeGroup<P extends QtiNode, C extends QtiNode> extends Validat
      * @throws QtiIllegalChildException if the given qtiClassName is not appropriate
      */
     C create(String qtiClassName);
+
+    /**
+     * Validates this group, recursively descending into children.
+     */
+    void validate(final ValidationContext context);
 }
