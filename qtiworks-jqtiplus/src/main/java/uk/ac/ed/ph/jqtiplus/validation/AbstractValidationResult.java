@@ -55,11 +55,13 @@ public abstract class AbstractValidationResult implements Serializable {
     private final NotificationRecorder notificationRecorder;
     private boolean hasErrors;
     private boolean hasWarnings;
+    private boolean hasInfos;
 
     public AbstractValidationResult() {
         this.notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         this.hasErrors = false;
         this.hasWarnings = false;
+        this.hasInfos = false;
     }
 
     public boolean hasErrors() {
@@ -68,6 +70,10 @@ public abstract class AbstractValidationResult implements Serializable {
 
     public boolean hasWarnings() {
         return hasWarnings;
+    }
+
+    public boolean hasInfos() {
+        return hasInfos;
     }
 
     public List<ModelNotification> getNotifications() {
@@ -88,14 +94,22 @@ public abstract class AbstractValidationResult implements Serializable {
         return getNotificationsAtLevel(NotificationLevel.WARNING);
     }
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public List<ModelNotification> getInfos() {
+        return getNotificationsAtLevel(NotificationLevel.INFO);
+    }
+
     public void add(final ModelNotification notification) {
         notificationRecorder.onNotification(notification);
         final NotificationLevel notificationLevel = notification.getNotificationLevel();
-        if (notificationLevel==NotificationLevel.ERROR) {
+        if (!hasErrors && notificationLevel==NotificationLevel.ERROR) {
             hasErrors = true;
         }
-        else if (notificationLevel==NotificationLevel.WARNING) {
+        else if (!hasWarnings && notificationLevel==NotificationLevel.WARNING) {
             hasWarnings = true;
+        }
+        else if (!hasInfos && notificationLevel==NotificationLevel.INFO) {
+            hasInfos = true;
         }
     }
 
