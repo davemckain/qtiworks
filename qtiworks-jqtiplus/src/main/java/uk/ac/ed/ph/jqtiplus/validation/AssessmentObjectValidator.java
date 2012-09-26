@@ -177,13 +177,8 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public void fireNotification(final ModelNotification notification) {
+        protected void handleNotification(final ModelNotification notification) {
             validationResult.add(notification);
-        }
-
-        @Override
-        public final AbstractValidationResult getValidationResult() {
-            return validationResult;
         }
 
         @Override
