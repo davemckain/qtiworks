@@ -108,7 +108,6 @@ public abstract class TemplateElement extends AbstractFlowBodyElement {
     public void validateThis(final ValidationContext context) {
         final Identifier templateIdentifier = getTemplateIdentifier();
         if (templateIdentifier != null) {
-            context.checkVariableReference(this, templateIdentifier);
             final VariableDeclaration declaration = context.checkVariableReference(this, templateIdentifier);
             if (declaration!=null) {
                 context.checkVariableType(this, declaration, VariableType.TEMPLATE);
