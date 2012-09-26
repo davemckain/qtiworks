@@ -41,7 +41,7 @@ import java.io.Serializable;
  * Represents any JQTI value object. Every JQTI value implementation must implement this interface.
  * <p>
  * This value can be single, multiple, ordered, record or NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
@@ -67,20 +67,22 @@ public interface Value extends Serializable, Stringifiable {
      */
     BaseType getBaseType();
 
+    boolean hasSignature(Signature signature);
+
     /**
      * Returns whether this value is considered the "same" as the
      * other value, as defined in the QTI spec.
      * <p>
      * This method is new in JQTI+; the original JQTI used the
      * default {@link #equals(Object)} method for this.
-     * 
+     *
      * @param other value to compare with, which will not be
      *   Java null (but might respresent a QTI NULL value!)
      */
     boolean qtiEquals(Value other);
 
     /**
-     * Converts this value to a QTI-meaningful String. 
+     * Converts this value to a QTI-meaningful String.
      * This is new in JQTI+; the original JQTI used {@link #toString()} for that.
      */
     @Override

@@ -163,7 +163,7 @@ public final class AssessmentObjectValidator {
 
     //-------------------------------------------------------------------
 
-    abstract class AbstractValidationContextImpl<E extends AssessmentObject> extends AbstractNotificationFirer
+    abstract static class AbstractValidationContextImpl<E extends AssessmentObject> extends AbstractNotificationFirer
             implements ValidationContext {
 
         protected final AbstractValidationResult validationResult;
@@ -216,6 +216,10 @@ public final class AssessmentObjectValidator {
         @Override
         public boolean checkVariableType(final QtiNode owner, final VariableDeclaration variableDeclaration, final VariableType... requiredTypes) {
             Assert.notNull(variableDeclaration);
+            if (requiredTypes.length==0) {
+                /* No restriction */
+                return true;
+            }
             boolean result;
             if (variableDeclaration.isType(requiredTypes)) {
                 result = true;

@@ -98,11 +98,7 @@ public final class RecordValue extends AbstractValue implements MultiValue {
 
     @Override
     public Cardinality getCardinality() {
-        if (isNull()) {
-            return null;
-        }
-
-        return Cardinality.RECORD;
+        return isNull() ? null : Cardinality.RECORD;
     }
 
     @Override

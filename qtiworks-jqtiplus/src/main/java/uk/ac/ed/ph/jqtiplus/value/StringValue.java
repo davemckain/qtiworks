@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 /**
@@ -59,7 +58,6 @@ public final class StringValue extends SingleValue {
      * Constructs <code>StringValue</code> from given <code>String</code> representation.
      *
      * @param value <code>String</code> representation of <code>StringValue</code>
-     * @throws QtiParseException if <code>String</code> representation of <code>StringValue</code> is not valid
      */
     public StringValue(final String value) {
         Assert.notNull(value);

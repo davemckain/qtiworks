@@ -33,23 +33,38 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+
 /**
  * Base class for all QTI {@link Value} classes.
- * 
+ *
  * @author David McKain
  */
 public abstract class AbstractValue implements Value {
 
     private static final long serialVersionUID = -2658294172416932855L;
-    
+
     @Override
-    public final boolean qtiEquals(Value other) {
+    public boolean hasSignature(final Signature signature) {
+        if (signature==null || isNull()) {
+            return false;
+        }
+        if (getCardinality()==Cardinality.RECORD) {
+            return signature==Signature.RECORD;
+        }
+        else {
+            return getCardinality()==signature.getCardinality()
+                    && getBaseType()==signature.getBaseType();
+        }
+    }
+
+    @Override
+    public final boolean qtiEquals(final Value other) {
         if (isNull() && other.isNull()) {
             return true;
         }
         return equals(other);
     }
-    
+
     @Override
     public final String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

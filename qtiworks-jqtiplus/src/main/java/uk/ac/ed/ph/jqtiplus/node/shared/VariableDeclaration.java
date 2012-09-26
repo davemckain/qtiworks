@@ -46,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 /**
  * Item variables are declared by variable declarations.
@@ -78,16 +79,31 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     public abstract VariableType getVariableType();
 
     public boolean isType(final VariableType... allowedTypes) {
-        if (allowedTypes.length==0) {
-            /* Interpret as "no restriction" */
-            return true;
-        }
         for (final VariableType type : allowedTypes) {
             if (type==getVariableType()) {
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean hasSignature(final Signature... allowedSignatures) {
+        boolean matches = false;
+        final Cardinality cardinality = getCardinality();
+        final BaseType baseType = getBaseType();
+        for (final Signature signature : allowedSignatures) {
+            if (cardinality==Cardinality.RECORD) {
+                matches = signature==Signature.RECORD;
+            }
+            else {
+                matches = signature.getCardinality()==cardinality
+                        && signature.getBaseType()==baseType;
+            }
+            if (matches) {
+                break;
+            }
+        }
+        return matches;
     }
 
     @Override

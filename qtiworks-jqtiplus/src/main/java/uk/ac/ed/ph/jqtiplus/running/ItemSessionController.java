@@ -182,15 +182,12 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
         notificationListeners.add(listener);
     }
 
-
-
-
     public void removeNotificationListener(final NotificationListener listener) {
         notificationListeners.remove(listener);
     }
 
     @Override
-    public void fireNotification(final ModelNotification notification) {
+    protected void handleNotification(final ModelNotification notification) {
         for (final NotificationListener listener : notificationListeners) {
             listener.onNotification(notification);
         }

@@ -45,6 +45,12 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
  */
 public interface NotificationFirer {
 
+    void setCheckpoint();
+
+    void clearCheckpoint();
+
+    boolean hadSinceCheckpoint();
+
     void fireNotification(ModelNotification notification);
 
     void fireRuntimeInfo(QtiNode owner, String message);

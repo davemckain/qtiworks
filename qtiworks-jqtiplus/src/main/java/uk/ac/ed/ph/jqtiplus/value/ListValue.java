@@ -99,11 +99,7 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
 
     @Override
     public BaseType getBaseType() {
-        if (isNull()) {
-            return null;
-        }
-
-        return container.get(0).getBaseType();
+        return isNull() ? null : container.get(0).getBaseType();
     }
 
     @Override

@@ -48,50 +48,80 @@ import java.util.Arrays;
  */
 public abstract class AbstractNotificationFirer implements NotificationFirer {
 
+    private boolean checkpointEnabled = false;
+    private boolean hadSinceCheckpoint = false;
+
     @Override
-    public void fireValidationError(final QtiNode owner, final String message) {
+    public final void setCheckpoint() {
+        this.checkpointEnabled = true;
+        this.hadSinceCheckpoint = false;
+    }
+
+    @Override
+    public final void clearCheckpoint() {
+        this.checkpointEnabled = false;
+        this.hadSinceCheckpoint = false;
+    }
+
+    @Override
+    public final boolean hadSinceCheckpoint() {
+        return hadSinceCheckpoint;
+    }
+
+    @Override
+    public final void fireNotification(final ModelNotification notification) {
+        handleNotification(notification);
+        if (checkpointEnabled) {
+            hadSinceCheckpoint = true;
+        }
+    }
+
+    protected abstract void handleNotification(final ModelNotification notification);
+
+    @Override
+    public final void fireValidationError(final QtiNode owner, final String message) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR, message);
         fireNotification(notification);
     }
 
     @Override
-    public void fireRuntimeInfo(final QtiNode owner, final String message) {
+    public final void fireRuntimeInfo(final QtiNode owner, final String message) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.RUNTIME, NotificationLevel.INFO, message);
         fireNotification(notification);
     }
 
     @Override
-    public void fireRuntimeWarning(final QtiNode owner, final String message) {
+    public final void fireRuntimeWarning(final QtiNode owner, final String message) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.RUNTIME, NotificationLevel.WARNING, message);
         fireNotification(notification);
     }
 
     @Override
-    public void fireRuntimeError(final QtiNode owner, final String message) {
+    public final void fireRuntimeError(final QtiNode owner, final String message) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.RUNTIME, NotificationLevel.ERROR, message);
         fireNotification(notification);
     }
 
     @Override
-    public void fireValidationWarning(final QtiNode owner, final String message) {
+    public final void fireValidationWarning(final QtiNode owner, final String message) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING, message);
         fireNotification(notification);
     }
 
     @Override
-    public void fireAttributeValidationError(final Attribute<?> attribute, final String message) {
+    public final void fireAttributeValidationError(final Attribute<?> attribute, final String message) {
         final ModelNotification notification = new ModelNotification(attribute.getOwner(), attribute, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR, message);
         fireNotification(notification);
     }
 
     @Override
-    public void fireAttributeValidationWarning(final Attribute<?> attribute, final String message) {
+    public final void fireAttributeValidationWarning(final Attribute<?> attribute, final String message) {
         final ModelNotification notification = new ModelNotification(attribute.getOwner(), attribute, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING, message);
         fireNotification(notification);
     }
 
     @Override
-    public void fireBaseTypeValidationError(final QtiNode owner, final BaseType[] requiredBaseTypes, final BaseType[] actualBaseTypes) {
+    public final void fireBaseTypeValidationError(final QtiNode owner, final BaseType[] requiredBaseTypes, final BaseType[] actualBaseTypes) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
                 "Base type validation error: expected " + Arrays.toString(requiredBaseTypes)
                 + " but got " + Arrays.toString(actualBaseTypes));
@@ -99,7 +129,7 @@ public abstract class AbstractNotificationFirer implements NotificationFirer {
     }
 
     @Override
-    public void fireCardinalityValidationError(final QtiNode owner, final Cardinality[] requiredCardinalities, final Cardinality[] actualCardinalities) {
+    public final void fireCardinalityValidationError(final QtiNode owner, final Cardinality[] requiredCardinalities, final Cardinality[] actualCardinalities) {
         final ModelNotification notification = new ModelNotification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
                 "Cardinality validation error: expected " + Arrays.toString(requiredCardinalities)
                 + " but got " + Arrays.toString(actualCardinalities));

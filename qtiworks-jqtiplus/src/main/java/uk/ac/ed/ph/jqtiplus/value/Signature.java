@@ -27,33 +27,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
 /**
- * Superclass for all single values.
- * <p>
- * This class is not mutable and cannot contain NULL value.
- * <p>
- * <code>Cardinality</code> of this class is always single.
+ * FIXME: Document this type
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public abstract class SingleValue extends AbstractValue {
+public enum Signature {
 
-    private static final long serialVersionUID = 4392147022615484889L;
+    SINGLE_FLOAT(BaseType.FLOAT, Cardinality.SINGLE),
+    RECORD(null, Cardinality.RECORD)
+    /* Fill in the rest */
 
-    @Override
-    public final boolean isNull() {
-        return false;
+    ;
+
+    private final BaseType baseType;
+    private final Cardinality cardinality;
+
+    private Signature(final BaseType baseType, final Cardinality cardinality) {
+        this.baseType = baseType;
+        this.cardinality = cardinality;
     }
 
-    @Override
-    public final Cardinality getCardinality() {
-        return isNull() ? null : Cardinality.SINGLE;
+    public BaseType getBaseType() {
+        return baseType;
     }
+
+    public Cardinality getCardinality() {
+        return cardinality;
+    }
+
 }

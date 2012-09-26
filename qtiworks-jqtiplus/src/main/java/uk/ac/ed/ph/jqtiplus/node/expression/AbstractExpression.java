@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Arrays;
@@ -328,7 +327,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         final Value[] childValues = new Value[children.size()];
         for (int i=0; i<children.size(); i++) {
             final Expression child = children.get(i);
-            Value childValue = NullValue.INSTANCE;
+            Value childValue;
             if (child instanceof AbstractExpression) {
                 childValue = ((AbstractExpression) child).evaluate(context, depth + 1);
             }
@@ -342,7 +341,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
 // DM: I think we should be able to catch all validation errors before runtime now, but haven't implemented this yet.
 // I have commented out the check here as the context interfaces aren't linked like they used to be.
 //      // 2) Validates this expression (but not its children, since they will have been done in 1 above).
-//      validateThisOnly(context);
+//        validateThis(context);
 
         // 3) Evaluates this expression.
         final Value value = evaluateSelf(context, childValues, depth);
