@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -53,7 +53,7 @@ import java.util.Random;
  *
  * @author Jiri Kajaba
  */
-public class RandomInteger extends RandomExpression {
+public class RandomInteger extends AbstractExpression {
 
     private static final long serialVersionUID = 4707680766519679314L;
 
@@ -112,11 +112,6 @@ public class RandomInteger extends RandomExpression {
 
 
     @Override
-    protected Long getSeedAttributeValue() {
-        return null;
-    }
-
-    @Override
     protected void validateThis(final ValidationContext context) {
         final IntegerOrVariableRef maxComputer = getMax();
         final IntegerOrVariableRef minComputer = getMin();
@@ -140,7 +135,7 @@ public class RandomInteger extends RandomExpression {
 
     @Override
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final Random randomGenerator = getRandomGenerator(depth);
+        final Random randomGenerator = context.getRandomGenerator();
 
         final int computedMin = getMin().evaluate(context);
         final int computedMax = getMax().evaluate(context);

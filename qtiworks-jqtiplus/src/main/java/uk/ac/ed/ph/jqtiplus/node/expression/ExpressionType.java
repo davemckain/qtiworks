@@ -42,9 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponse;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponsePoint;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.Null;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.RandomFloat;
-import uk.ac.ed.ph.jqtiplus.node.expression.general.RandomFloatEx;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.RandomInteger;
-import uk.ac.ed.ph.jqtiplus.node.expression.general.RandomIntegerEx;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.Variable;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.And;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.AnyN;
@@ -82,7 +80,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.PatternMatch;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Power;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Product;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Random;
-import uk.ac.ed.ph.jqtiplus.node.expression.operator.RandomEx;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.RecordEx;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Repeat;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.Round;
@@ -1019,23 +1016,6 @@ public enum ExpressionType {
     },
 
     /**
-     * Creates randomEx expression.
-     *
-     * @see RandomEx
-     */
-    RANDOM_EX(RandomEx.QTI_CLASS_NAME, 1, 1
-            , new Cardinality[] { Cardinality.MULTIPLE, Cardinality.ORDERED }
-            , BaseType.values()
-            , new Cardinality[] { Cardinality.SINGLE }
-            , BaseType.values()) {
-
-        @Override
-        public Expression create(final ExpressionParent parent) {
-            return new RandomEx(parent);
-        }
-    },
-
-    /**
      * Creates randomFloat expression.
      *
      * @see RandomFloat
@@ -1053,23 +1033,6 @@ public enum ExpressionType {
     },
 
     /**
-     * Creates randomFloatEx expression.
-     *
-     * @see RandomFloatEx
-     */
-    RANDOM_FLOAT_EX(RandomFloatEx.QTI_CLASS_NAME, 0, 0
-            , new Cardinality[] {}
-            , new BaseType[] {}
-            , new Cardinality[] { Cardinality.SINGLE }
-            , new BaseType[] { BaseType.FLOAT }) {
-
-        @Override
-        public Expression create(final ExpressionParent parent) {
-            return new RandomFloatEx(parent);
-        }
-    },
-
-    /**
      * Creates randomInteger expression.
      *
      * @see RandomInteger
@@ -1083,23 +1046,6 @@ public enum ExpressionType {
         @Override
         public Expression create(final ExpressionParent parent) {
             return new RandomInteger(parent);
-        }
-    },
-
-    /**
-     * Creates randomIntegerEx expression.
-     *
-     * @see RandomIntegerEx
-     */
-    RANDOM_INTEGER_EX(RandomIntegerEx.QTI_CLASS_NAME, 0, 0
-            , new Cardinality[] {}
-            , new BaseType[] {}
-            , new Cardinality[] { Cardinality.SINGLE }
-            , new BaseType[] { BaseType.INTEGER }) {
-
-        @Override
-        public Expression create(final ExpressionParent parent) {
-            return new RandomIntegerEx(parent);
         }
     },
 

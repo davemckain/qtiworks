@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -54,7 +54,7 @@ import java.util.Random;
  *
  * @author Jiri Kajaba
  */
-public class RandomFloat extends RandomExpression {
+public class RandomFloat extends AbstractExpression {
 
     private static final long serialVersionUID = 3837760238885597058L;
 
@@ -95,11 +95,6 @@ public class RandomFloat extends RandomExpression {
     }
 
     @Override
-    protected Long getSeedAttributeValue() {
-        return null;
-    }
-
-    @Override
     protected void validateThis(final ValidationContext context) {
         final FloatOrVariableRef maxComputer = getMax();
         final FloatOrVariableRef minComputer = getMin();
@@ -125,7 +120,7 @@ public class RandomFloat extends RandomExpression {
             return NullValue.INSTANCE;
         }
 
-        final Random randomGenerator = getRandomGenerator(depth);
+        final Random randomGenerator = context.getRandomGenerator();
         final double randomNumber = randomGenerator.nextDouble();
         final double randomFloat = computedMinimum + (computedMaximum - computedMinimum) * randomNumber;
 

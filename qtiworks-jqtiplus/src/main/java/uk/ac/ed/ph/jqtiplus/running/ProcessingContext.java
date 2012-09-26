@@ -42,6 +42,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.Random;
+
 /**
  * Callback for common tasks during item/test processing,
  * e.g. in template, response and outcome processing.
@@ -92,4 +94,6 @@ public interface ProcessingContext extends NotificationFirer {
      * @param permittedTypes
      */
     Value lookupVariableValue(VariableReferenceIdentifier variableReferenceIdentifier, VariableType... permittedTypes);
+
+    Random getRandomGenerator();
 }

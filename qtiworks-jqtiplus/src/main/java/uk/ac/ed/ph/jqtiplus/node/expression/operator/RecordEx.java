@@ -59,7 +59,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class RecordEx extends AbstractFunctionalExpression {
+public final class RecordEx extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -3277492769483531993L;
 

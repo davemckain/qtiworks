@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -47,38 +47,33 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * The result is A single value randomly selected from the container. The result has the same base-type
  * as the sub-expression but single cardinality.
  * If the sub-expression is NULL then the result is also NULL.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public class Random extends RandomExpression {
+public class Random extends AbstractExpression {
 
     private static final long serialVersionUID = -4841943053695949471L;
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "random";
 
-    public Random(ExpressionParent parent) {
+    public Random(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
-    protected Random(ExpressionParent parent, String qtiClassName) {
+    protected Random(final ExpressionParent parent, final String qtiClassName) {
         super(parent, qtiClassName);
     }
 
     @Override
-    protected Long getSeedAttributeValue() {
-        return null;
-    }
-
-    @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getRequiredSameBaseTypes(context, index, true);
     }
 
     @Override
-    public BaseType[] getProducedBaseTypes(ValidationContext context) {
+    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         if (getChildren().size() == 1) {
             return getChildren().get(0).getProducedBaseTypes(context);
         }
@@ -87,12 +82,12 @@ public class Random extends RandomExpression {
     }
 
     @Override
-    protected Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
+    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }
 
-        final java.util.Random randomGenerator = getRandomGenerator(depth);
+        final java.util.Random randomGenerator = context.getRandomGenerator();
         final int randomIndex = randomGenerator.nextInt(((ListValue) childValues[0]).size());
 
         final Value value = ((ListValue) childValues[0]).get(randomIndex);

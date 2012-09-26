@@ -88,6 +88,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -113,6 +114,9 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
     private final AssessmentItem item;
     private final ItemSessionState itemSessionState;
 
+    private Long randomSeed;
+    private Random randomGenerator;
+
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState) {
         Assert.notNull(resolvedAssessmentItem, "resolvedAssessmentItem");
         Assert.notNull(itemSessionState, "itemSessionState");
@@ -121,6 +125,8 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
         this.itemSessionState = itemSessionState;
+        this.randomSeed = null;
+        this.randomGenerator = null;
     }
 
     @Override
@@ -153,9 +159,31 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
 
     //-------------------------------------------------------------------
 
+    public Long getRandomSeed() {
+        return randomSeed;
+    }
+
+    public void setRandomSeed(final Long randomSeed) {
+        this.randomSeed = randomSeed;
+        this.randomGenerator = null;
+    }
+
+    @Override
+    public Random getRandomGenerator() {
+        if (randomGenerator==null) {
+            randomGenerator = randomSeed!=null ? new Random(randomSeed) : new Random();
+        }
+        return randomGenerator;
+    }
+
+    //-------------------------------------------------------------------
+
     public void addNotificationListener(final NotificationListener listener) {
         notificationListeners.add(listener);
     }
+
+
+
 
     public void removeNotificationListener(final NotificationListener listener) {
         notificationListeners.remove(listener);
