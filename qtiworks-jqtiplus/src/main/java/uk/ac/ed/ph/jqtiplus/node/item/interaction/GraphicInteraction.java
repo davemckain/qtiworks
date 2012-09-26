@@ -63,9 +63,7 @@ public abstract class GraphicInteraction extends BlockInteraction {
 
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getObject() != null && getObject().getType() != null && !getObject().getType().startsWith("image/")) {
             context.fireValidationError(this, "Object child must have an image type");
         }

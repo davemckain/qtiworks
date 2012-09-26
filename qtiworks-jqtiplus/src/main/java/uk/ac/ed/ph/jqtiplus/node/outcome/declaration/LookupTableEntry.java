@@ -78,7 +78,7 @@ public abstract class LookupTableEntry extends AbstractNode {
 
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getParent().getParent().getBaseType() != null) {
             getAttributes().getSingleValueAttribute(ATTR_TARGET_VALUE_NAME).setBaseType(getParent().getParent().getBaseType());
         }

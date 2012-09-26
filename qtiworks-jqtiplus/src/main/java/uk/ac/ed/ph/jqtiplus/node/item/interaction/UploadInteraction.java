@@ -77,7 +77,7 @@ public final class UploadInteraction extends BlockInteraction {
 
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getResponseIdentifier());
             if (declaration!=null) {

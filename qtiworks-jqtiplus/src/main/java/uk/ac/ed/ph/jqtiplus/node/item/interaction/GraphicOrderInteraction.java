@@ -147,8 +147,7 @@ public final class GraphicOrderInteraction extends GraphicInteraction implements
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    public void validateThis(final ValidationContext context) {
         final Integer minChoices = getMinChoices();
         final Integer maxChoices = getMaxChoices();
 

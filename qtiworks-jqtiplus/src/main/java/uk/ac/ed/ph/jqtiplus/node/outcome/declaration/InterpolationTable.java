@@ -92,9 +92,7 @@ public final class InterpolationTable extends LookupTable {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         Double lastValue = null;
         for (final InterpolationTableEntry entry : getInterpolationEntries()) {
             if (entry.getSourceValue() != null) {

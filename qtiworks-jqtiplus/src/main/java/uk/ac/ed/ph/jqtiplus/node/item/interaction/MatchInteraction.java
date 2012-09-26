@@ -153,7 +153,7 @@ public final class MatchInteraction extends BlockInteraction implements SimpleMa
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getMaxAssociations() != 0 && getMinAssociations() > getMaxAssociations()) {
             context.fireValidationError(this, "Minimum number of associations can't be bigger than maximum number");
         }

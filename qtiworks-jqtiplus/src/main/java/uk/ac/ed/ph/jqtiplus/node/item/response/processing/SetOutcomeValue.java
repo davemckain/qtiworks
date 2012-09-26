@@ -89,9 +89,7 @@ public final class SetOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getIdentifier() != null) {
             if (context.getSubject().getOutcomeDeclaration(getIdentifier()) == null) {
                 context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());

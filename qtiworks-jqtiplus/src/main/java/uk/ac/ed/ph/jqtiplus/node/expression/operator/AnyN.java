@@ -96,7 +96,7 @@ public final class AnyN extends AbstractExpression {
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final IntegerOrVariableRef minComputer = getMin();
         final IntegerOrVariableRef maxComputer = getMax();
         if (minComputer.isInteger()) {

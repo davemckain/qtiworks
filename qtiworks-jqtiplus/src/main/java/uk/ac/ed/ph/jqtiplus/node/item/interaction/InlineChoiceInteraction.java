@@ -137,7 +137,7 @@ public final class InlineChoiceInteraction extends InlineInteraction implements 
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration!=null) {

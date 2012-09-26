@@ -105,7 +105,7 @@ public class RecordEx extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getIdentifiers().size() != getChildren().size()) {
             context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIERS_NAME),
                     "Invalid number of identifiers. Expected: " + getChildren().size() + ", but found: " + getIdentifiers().size() + ".");
@@ -121,11 +121,6 @@ public class RecordEx extends AbstractFunctionalExpression {
                         "Duplicate identifier: " + identifier);
             }
         }
-    }
-
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
 
         if (getChildren().size() == 0) {
             context.fireValidationWarning(this, "Container should contain some children.");

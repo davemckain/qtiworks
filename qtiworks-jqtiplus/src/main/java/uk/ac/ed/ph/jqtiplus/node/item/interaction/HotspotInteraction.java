@@ -148,8 +148,7 @@ public final class HotspotInteraction extends GraphicInteraction implements Hots
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    public void validateThis(final ValidationContext context) {
         final int minChoices = getMinChoices();
         final int maxChoices = getMaxChoices();
 

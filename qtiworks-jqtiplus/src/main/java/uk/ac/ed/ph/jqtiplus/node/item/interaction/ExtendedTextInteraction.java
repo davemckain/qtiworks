@@ -233,7 +233,7 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final Integer maxStrings = getMaxStrings();
         final int minStrings = getMinStrings();
         if (maxStrings != null) {

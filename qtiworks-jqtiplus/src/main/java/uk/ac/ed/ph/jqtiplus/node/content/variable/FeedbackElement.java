@@ -143,7 +143,7 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
     }
 
     @Override
-    public void validateAttributesComplex(final ValidationContext context) {
+    public void validateThis(final ValidationContext context) {
         if (getOutcomeIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
 
@@ -164,12 +164,6 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
                 context.fireValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType());
             }
         }
-    }
-
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
         if (!hasChildNodes()) {
             context.fireValidationWarning(this, "Feedback should contain something.");
         }

@@ -114,8 +114,7 @@ public final class SelectPointInteraction extends GraphicInteraction implements 
 
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    public void validateThis(final ValidationContext context) {
         final int maxChoices = getMaxChoices();
         final int minChoices = getMinChoices();
 

@@ -129,16 +129,13 @@ public final class GraphicAssociateInteraction extends GraphicInteraction implem
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null) {
                 if (declaration.getBaseType() != null && !declaration.getBaseType().isPair()) {
                     context.fireValidationError(this, "Response variable must have pair base type");
                 }
-
                 if (getMaxAssociations() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
                     context.fireValidationError(this, "Response variable must have multiple cardinality when maxAssociations is not 1");
                 }

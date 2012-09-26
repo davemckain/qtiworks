@@ -105,7 +105,7 @@ public abstract class TemplateElement extends AbstractFlowBodyElement {
     }
 
     @Override
-    public void validateAttributesComplex(final ValidationContext context) {
+    public void validateThis(final ValidationContext context) {
         final Identifier templateIdentifier = getTemplateIdentifier();
         if (templateIdentifier != null) {
             context.checkVariableReference(this, templateIdentifier);
@@ -116,11 +116,6 @@ public abstract class TemplateElement extends AbstractFlowBodyElement {
                 context.checkBaseType(this, declaration, BaseType.IDENTIFIER);
             }
         }
-    }
-
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
 
         if (!hasChildNodes()) {
             context.fireValidationWarning(this, "Feedback should contain something.");

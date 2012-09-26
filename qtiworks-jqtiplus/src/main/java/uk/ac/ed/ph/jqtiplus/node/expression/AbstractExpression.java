@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -240,6 +241,10 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         return BaseType.values();
     }
 
+    /**
+     * TODO: I would like to tidy this API a bit!
+     */
+    @ToRefactor
     @Override
     public void validate(final ValidationContext context) {
         validateThisOnly(context);

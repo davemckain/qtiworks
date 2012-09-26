@@ -155,9 +155,7 @@ public final class AssociateInteraction extends BlockInteraction implements Simp
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getMinAssociations() > getMaxAssociations()) {
             context.fireValidationError(this, "Minimum number of associations must be less than or equal to maximum number of associations");
         }

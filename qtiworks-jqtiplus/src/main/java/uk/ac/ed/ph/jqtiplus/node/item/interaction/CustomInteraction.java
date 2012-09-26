@@ -75,7 +75,6 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
 
     @Override
     public final void validate(final ValidationContext context) {
-        super.validate(context);
         final E jqtiExtensionPackage = getOwningExtensionPackage(context);
         if (jqtiExtensionPackage!=null) {
             validateCustomInteractionAttributes(jqtiExtensionPackage, context);

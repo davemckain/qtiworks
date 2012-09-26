@@ -85,7 +85,7 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
     }
 
     @Override
-    public void validate(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final TestPart parentTestPart = getParent().getParentTestPart();
         if (parentTestPart.getNavigationMode() != null && parentTestPart.getSubmissionMode() != null) {
             if (getParent() != parentTestPart && !parentTestPart.areJumpsEnabled()) {

@@ -77,9 +77,7 @@ public final class Match extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         for (final Expression expression : getChildren()) {
             final Cardinality[] cardinalities = expression.getProducedCardinalities(context);
             if (cardinalities.length == 1 && cardinalities[0].isRecord()) {

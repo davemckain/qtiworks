@@ -142,7 +142,7 @@ public final class GapMatchInteraction extends BlockInteraction implements GapCh
     }
 
     @Override
-    protected void validate(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration!=null) {

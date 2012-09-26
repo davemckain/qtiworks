@@ -90,8 +90,8 @@ public final class RoundTo extends AbstractExpression {
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
-        super.validateAttributesComplex(context);
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
 
         final RoundingMode roundingMode = getRoundingMode();
         if (roundingMode != null) {

@@ -219,23 +219,14 @@ public final class AssessmentItemRef extends SectionPart {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        /* Validation of individual items is done by the calling validator, so there's not
-         * much to do here!
-         */
-        super.validate(context);
-    }
-
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    public void validateThis(final ValidationContext context) {
         for (int i = 0; i < getWeights().size(); i++) {
             final Weight weight = getWeights().get(i);
-            if (weight.getIdentifier() != null) {
+            final Identifier weightIdentifier = weight.getIdentifier();
+            if (weightIdentifier != null) {
                 for (int j = i + 1; j < getWeights().size(); j++) {
-                    if (weight.getIdentifier().equals(getWeights().get(j).getIdentifier())) {
-                        context.fireValidationError(this, "Duplicate weight identifier: " + weight.getIdentifier());
+                    if (weightIdentifier.equals(getWeights().get(j).getIdentifier())) {
+                        context.fireValidationError(this, "Duplicate weight identifier: " + weightIdentifier);
                     }
                 }
             }

@@ -91,7 +91,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
 
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getIdentifier()) == null) {
             context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
         }

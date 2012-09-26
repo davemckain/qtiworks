@@ -61,9 +61,7 @@ public abstract class OutcomeConditionChild extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getOutcomeRules().size() == 0) {
             context.fireValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules.");
         }

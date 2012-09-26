@@ -145,7 +145,7 @@ public final class PositionObjectInteraction extends BlockInteraction {
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final int maxChoices = getMaxChoices();
         final Integer minChoices = getMinChoices();
 

@@ -159,7 +159,7 @@ public final class ChoiceInteraction extends BlockInteraction implements SimpleC
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getMaxChoices() != 0 && getMinChoices() > getMaxChoices()) {
             context.fireValidationError(this, "Minimum number of choices can't be bigger than maximum number");
         }

@@ -110,7 +110,7 @@ public final class BaseValue extends AbstractFunctionalExpression {
     protected void loadChildren(final Element element, final LoadingContext context) {
         if (getBaseTypeAttrValue() != null) {
             try {
-                this.singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent().trim());
+                singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent().trim());
             }
             catch (final QtiParseException e) {
                 context.modelBuildingError(e, element);
@@ -137,9 +137,7 @@ public final class BaseValue extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (singleValue == null) {
             context.fireValidationError(this, "Value is not defined.");
         }

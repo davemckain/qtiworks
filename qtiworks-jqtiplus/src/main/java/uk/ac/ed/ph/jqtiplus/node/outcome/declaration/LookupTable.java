@@ -117,7 +117,7 @@ public abstract class LookupTable extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (!cardinality.isSingle()) {
@@ -128,11 +128,6 @@ public abstract class LookupTable extends AbstractNode {
         if (getParent().getBaseType() != null) {
             getAttributes().getSingleValueAttribute(ATTR_DEFAULT_VALUE_NAME).setBaseType(getParent().getBaseType());
         }
-    }
-
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
 
         for (int i = 0; i < getLookupEntries().size(); i++) {
             final LookupTableEntry firstEntry = getLookupEntries().get(i);

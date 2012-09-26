@@ -184,9 +184,7 @@ public abstract class Choice extends BodyElement {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         /* As per info model, the choice's identifier must not be used by any other choice or item variable */
         final Identifier identifier = getIdentifier();
         final AssessmentItem item = context.getSubjectItem();

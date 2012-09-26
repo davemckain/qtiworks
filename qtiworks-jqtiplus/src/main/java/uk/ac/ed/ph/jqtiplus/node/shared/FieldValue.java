@@ -180,7 +180,7 @@ public final class FieldValue extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isRecord() && getFieldIdentifier() == null) {
@@ -199,17 +199,11 @@ public final class FieldValue extends AbstractNode {
                 context.fireValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined.");
             }
         }
-    }
 
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
-        if (singleValue == null) {
+        if (singleValue==null) {
             context.fireValidationError(this, "Value is not defined.");
         }
-
-        if (singleValue != null && getBaseType() != null && singleValue.getBaseType() != getBaseType()) {
+        else if (getBaseType() != null && singleValue.getBaseType() != getBaseType()) {
             context.fireValidationError(this, "BaseType of value does not match. Expected: " + getBaseType() + ", but found: " + singleValue.getBaseType());
         }
     }

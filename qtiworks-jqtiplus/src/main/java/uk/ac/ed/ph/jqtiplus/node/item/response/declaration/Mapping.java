@@ -125,8 +125,7 @@ public final class Mapping extends AbstractNode {
 
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    public void validateThis(final ValidationContext context) {
         final Double lowerBound = getLowerBound();
         final Double upperBound = getUpperBound();
 

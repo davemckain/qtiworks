@@ -92,7 +92,7 @@ public final class Selection extends AbstractNode {
 
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final int select = getSelect();
         if (getParent() != null) {
             int required = 0;

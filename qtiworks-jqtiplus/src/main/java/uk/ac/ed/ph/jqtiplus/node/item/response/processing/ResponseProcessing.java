@@ -132,7 +132,7 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
 
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final List<ResponseRule> responseRules = getResponseRules();
         if (!responseRules.isEmpty()) {
             /* ResponseRules exist, so we'll validate these */

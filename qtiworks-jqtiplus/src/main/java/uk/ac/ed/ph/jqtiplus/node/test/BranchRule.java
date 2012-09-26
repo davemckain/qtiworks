@@ -169,7 +169,8 @@ public final class BranchRule extends AbstractJump {
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier target = getTarget();
         final TestPart parentTestPart = getParent().getParentTestPart();
         if (target != null && parentTestPart.areJumpsEnabled()) {

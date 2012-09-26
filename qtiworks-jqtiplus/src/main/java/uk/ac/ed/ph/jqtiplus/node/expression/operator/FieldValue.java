@@ -101,7 +101,7 @@ public final class FieldValue extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getFieldIdentifier() != null && getChildren().size() != 0 && getChildren().get(0) instanceof RecordEx) {
             final RecordEx record = (RecordEx) getChildren().get(0);
             if (!record.getIdentifiers().contains(getFieldIdentifier())) {

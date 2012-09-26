@@ -76,21 +76,21 @@ public final class DrawingInteraction extends BlockInteraction {
 
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isFile()) {
-                context.fireValidationError(this, "Response variable must have file base type");
-            }
+            if (declaration!=null) {
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isFile()) {
+                    context.fireValidationError(this, "Response variable must have file base type");
+                }
 
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                context.fireValidationError(this, "Response variable must have single cardinality");
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
+                    context.fireValidationError(this, "Response variable must have single cardinality");
+                }
             }
         }
-
-        if (getObject() != null && getObject().getType() != null && !getObject().getType().startsWith("image/")) {
+        final Object object = getObject();
+        if (object != null && object.getType() != null && !object.getType().startsWith("image/")) {
             context.fireValidationError(this, "Object child must have an image type");
         }
     }

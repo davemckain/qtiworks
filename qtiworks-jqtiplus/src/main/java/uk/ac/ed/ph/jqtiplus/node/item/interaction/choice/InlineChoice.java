@@ -64,9 +64,7 @@ public final class InlineChoice extends Choice {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (QueryUtils.hasDescendant(Interaction.class, this)) {
             context.fireValidationError(this, QTI_CLASS_NAME + " cannot contain nested interactions");
         }

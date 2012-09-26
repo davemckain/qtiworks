@@ -184,7 +184,7 @@ public final class OrderInteraction extends BlockInteraction implements SimpleCh
     }
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final Integer maxChoices = getMaxChoices();
         final Integer minChoices = getMinChoices();
 

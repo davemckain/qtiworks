@@ -247,8 +247,8 @@ public abstract class AbstractNode implements QtiNode {
         /* Do basic checking on individual Attributes */
         attributes.validateBasic(context);
 
-        /* Perform Node-specific checks on the values of Attributes */
-        validateAttributesComplex(context);
+        /* Perform additonal validation relevant to this Node */
+        validateThis(context);
 
         /* Validate children */
         validateChildren(context);
@@ -256,16 +256,23 @@ public abstract class AbstractNode implements QtiNode {
 
     /**
      * Subclasses should fill in to perform any additional validation
-     * required on attributes, such as checking minimum/maximum values,
-     * checking attributes against each other etc.
+     * required for this {@link AbstractNode}. This might involve complex
+     * validation of attributes, or extraction of data from other {@link AbstractNode}s
+     * in the hierarchy.
+     * <p>
+     * Subclasses should be aware that children of this {@link AbstractNode}
+     * will *not* have been validated at the time this method is called, so
+     * validation logic should be suitably defensive.
      */
     @SuppressWarnings("unused")
-    protected void validateAttributesComplex(final ValidationContext context) {
-        /* Nothing to do in general */
+    protected void validateThis(final ValidationContext context) {
+        /* Subclasses should fill in as required */
     }
 
     /**
      * Validates children (body) of this node.
+     * <p>
+     * Subclasses should only override this if they have special children.
      */
     protected void validateChildren(final ValidationContext context) {
         for (int i = 0; i < nodeGroups.size(); i++) {

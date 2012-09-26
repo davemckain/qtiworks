@@ -138,9 +138,7 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isSingle() && getFieldValues().size() > 1) {
@@ -157,10 +155,4 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
     public Value evaluate() {
         return FieldValue.computeValue(getCardinality(), getFieldValues());
     }
-    //
-    //    @Override
-    //    public void load(Node sourceNode) {
-    //        super.load(sourceNode);
-    //        evaluate();
-    //    }
 }

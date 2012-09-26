@@ -177,9 +177,7 @@ public final class OutcomeDeclaration extends VariableDeclaration {
 
 
     @Override
-    protected void validateAttributesComplex(final ValidationContext context) {
-        super.validateAttributesComplex(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getNormalMaximum() != null) {
             if (getCardinality() != null && !getCardinality().isSingle()) {
                 context.fireAttributeValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
@@ -224,11 +222,6 @@ public final class OutcomeDeclaration extends VariableDeclaration {
                     + " cannot be lower than attribute "
                     + ATTR_NORMAL_MINIMUM_NAME);
         }
-    }
-
-    @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
 
         // DM: I've commented this out, since I don't think a warning should be given if test variables are not read;
         // which would be comment in summative assessment scenarios

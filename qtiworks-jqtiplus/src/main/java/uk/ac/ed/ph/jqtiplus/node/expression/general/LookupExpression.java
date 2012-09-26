@@ -106,7 +106,7 @@ public abstract class LookupExpression extends AbstractExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected final void validateAttributesComplex(final ValidationContext context) {
+    protected final void validateThis(final ValidationContext context) {
         /* Check reference */
         final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
         final VariableDeclaration resolvedDeclaration = context.checkVariableReference(this, variableReferenceIdentifier);
