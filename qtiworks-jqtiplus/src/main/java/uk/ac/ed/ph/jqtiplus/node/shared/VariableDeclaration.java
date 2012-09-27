@@ -143,6 +143,15 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
         getNodeGroups().getDefaultValueGroup().setDefaultValue(defaultValue);
     }
 
+    /**
+     * Computes the {@link Signature} of this declaration from its {@link Cardinality}
+     * and {@link BaseType}, returning null if this cannot be determined.
+     */
+    public Signature computeSignature() {
+        final Cardinality cardinality = getCardinality();
+        final BaseType baseType = getBaseType();
+        return Signature.getSignature(cardinality, baseType);
+    }
 
     @Override
     protected void validateThis(final ValidationContext context) {

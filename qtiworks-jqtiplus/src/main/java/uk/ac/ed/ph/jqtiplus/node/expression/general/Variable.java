@@ -104,7 +104,7 @@ public final class Variable extends LookupExpression {
             final VariableDeclaration resolvedDeclaration) {
         final Identifier weightIdentifier = getWeightIdentifier();
         if (weightIdentifier!=null) {
-            if (context.isValidatingTest() && variableReferenceIdentifier.isDotted()) {
+            if (context.isSubjectTest() && variableReferenceIdentifier.isDotted()) {
                 final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
                 final ResolvedAssessmentTest resolvedAssessmentTest = context.getResolvedAssessmentTest();
                 final AssessmentItemRef itemRef = resolvedAssessmentTest.getItemRefsByIdentifierMap().get(itemRefIdentifier).get(0);
@@ -112,7 +112,7 @@ public final class Variable extends LookupExpression {
                     context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Cannot find weight " + weightIdentifier);
                 }
             }
-            else if (context.isValidatingItem()) {
+            else if (context.isSubjectItem()) {
                 context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Weights may only be used when referencing item variables from tests");
             }
         }

@@ -36,30 +36,19 @@ package uk.ac.ed.ph.jqtiplus.validation;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
 import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
-import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.net.URI;
 import java.util.List;
@@ -163,135 +152,7 @@ public final class AssessmentObjectValidator {
 
     //-------------------------------------------------------------------
 
-    abstract static class AbstractValidationContextImpl<E extends AssessmentObject> extends AbstractNotificationFirer
-            implements ValidationContext {
-
-        protected final AbstractValidationResult validationResult;
-        protected final ResolvedAssessmentObject<E> resolvedAssessmentObject;
-        protected final E subject;
-
-        AbstractValidationContextImpl(final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
-            this.validationResult = validationResult;
-            this.resolvedAssessmentObject = resolvedAssessmentObject;
-            this.subject = resolvedAssessmentObject.getRootNodeLookup().extractAssumingSuccessful();
-        }
-
-        @Override
-        protected void handleNotification(final ModelNotification notification) {
-            validationResult.add(notification);
-        }
-
-        @Override
-        public final ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
-            return resolvedAssessmentObject;
-        }
-
-        @Override
-        public final AssessmentObject getSubject() {
-            return subject;
-        }
-
-        @Override
-        public final VariableDeclaration checkVariableReference(final QtiNode owner, final Identifier variableDeclarationIdentifier) {
-            try {
-                return resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
-            }
-            catch (final VariableResolutionException e) {
-                fireValidationError(owner, e.getMessage());
-                return null;
-            }
-        }
-
-        @Override
-        public final VariableDeclaration checkVariableReference(final QtiNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
-            try {
-                return resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
-            }
-            catch (final VariableResolutionException e) {
-                fireValidationError(owner, e.getMessage());
-                return null;
-            }
-        }
-
-        @Override
-        public boolean checkVariableType(final QtiNode owner, final VariableDeclaration variableDeclaration, final VariableType... requiredTypes) {
-            Assert.notNull(variableDeclaration);
-            if (requiredTypes.length==0) {
-                /* No restriction */
-                return true;
-            }
-            boolean result;
-            if (variableDeclaration.isType(requiredTypes)) {
-                result = true;
-            }
-            else {
-                final StringBuilder messageBuilder = new StringBuilder("Variable ")
-                    .append(variableDeclaration)
-                    .append(" must be a ");
-                for (int i=0; i<requiredTypes.length; i++) {
-                    messageBuilder.append(requiredTypes[i].getName())
-                        .append(i < requiredTypes.length-1 ? ", " : " or ");
-                }
-                messageBuilder.append(" variable but is a ")
-                    .append(variableDeclaration.getVariableType().getName())
-                    .append(" variable");
-                fireValidationError(owner, messageBuilder.toString());
-                result = false;
-            }
-            return result;
-        }
-
-        @Override
-        public boolean checkBaseType(final QtiNode owner, final VariableDeclaration variableDeclaration, final BaseType... requiredTypes) {
-            Assert.notNull(variableDeclaration);
-            boolean result;
-            final BaseType baseType = variableDeclaration.getBaseType();
-            if (baseType!=null && baseType.isOneOf(requiredTypes)) {
-                result = true;
-            }
-            else {
-                final StringBuilder messageBuilder = new StringBuilder("Variable ")
-                    .append(variableDeclaration)
-                    .append(" must have baseType ");
-                for (int i=0; i<requiredTypes.length; i++) {
-                    messageBuilder.append(requiredTypes[i].toQtiString())
-                        .append(i < requiredTypes.length-1 ? ", " : " or ");
-                }
-                if (baseType!=null) {
-                    messageBuilder.append(" but has baseType ")
-                        .append(variableDeclaration.getBaseType().toQtiString());
-                }
-                fireValidationError(owner, messageBuilder.toString());
-                result = false;
-            }
-            return result;
-        }
-
-        @Override
-        public boolean checkCardinality(final QtiNode owner, final VariableDeclaration variableDeclaration, final Cardinality... requiredTypes) {
-            Assert.notNull(variableDeclaration);
-            boolean result;
-            if (variableDeclaration.getCardinality().isOneOf(requiredTypes)) {
-                result = true;
-            }
-            else {
-                final StringBuilder messageBuilder = new StringBuilder("Variable ")
-                    .append(variableDeclaration)
-                    .append(" must have cardinality ");
-                for (int i=0; i<requiredTypes.length; i++) {
-                    messageBuilder.append(requiredTypes[i].toQtiString())
-                        .append(i < requiredTypes.length-1 ? ", " : " or ");
-                }
-                messageBuilder.append(" but has cardinality ")
-                    .append(variableDeclaration.getCardinality().toQtiString());
-                fireValidationError(owner, messageBuilder.toString());
-                result = false;
-            }
-            return result;
-        }
-    }
-
-    final class ItemValidationContextImpl extends AbstractValidationContextImpl<AssessmentItem> {
+    final class ItemValidationContextImpl extends AbstractValidationContext<AssessmentItem> {
 
         ItemValidationContextImpl(final ItemValidationResult validationResult, final ResolvedAssessmentItem resolvedAssessmentItem) {
             super(validationResult, resolvedAssessmentItem);
@@ -313,12 +174,12 @@ public final class AssessmentObjectValidator {
         }
 
         @Override
-        public boolean isValidatingItem() {
+        public boolean isSubjectItem() {
             return true;
         }
 
         @Override
-        public boolean isValidatingTest() {
+        public boolean isSubjectTest() {
             return false;
         }
 
@@ -339,7 +200,7 @@ public final class AssessmentObjectValidator {
 
 
 
-    final class TestValidationContextImpl extends AbstractValidationContextImpl<AssessmentTest> {
+    final class TestValidationContextImpl extends AbstractValidationContext<AssessmentTest> {
 
         TestValidationContextImpl(final TestValidationResult result, final ResolvedAssessmentTest resolvedAssessmentTest) {
             super(result, resolvedAssessmentTest);
@@ -362,12 +223,12 @@ public final class AssessmentObjectValidator {
 
 
         @Override
-        public boolean isValidatingItem() {
+        public boolean isSubjectItem() {
             return false;
         }
 
         @Override
-        public boolean isValidatingTest() {
+        public boolean isSubjectTest() {
             return true;
         }
 

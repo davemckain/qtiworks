@@ -40,8 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 /**
  * Attribute with {@link IntegerOrVariableRef} value.
@@ -80,8 +79,7 @@ public final class IntegerOrVariableRefAttribute extends SingleAttribute<Integer
             final VariableDeclaration variableDeclaration = context.checkVariableReference(owner, variableReferenceIdentifier);
             if (variableDeclaration!=null) {
                 context.checkVariableType(owner, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
-                context.checkCardinality(owner, variableDeclaration, Cardinality.SINGLE);
-                context.checkBaseType(owner, variableDeclaration, BaseType.INTEGER);
+                context.checkSignature(owner, variableDeclaration, Signature.SINGLE_INTEGER);
             }
         }
     }
