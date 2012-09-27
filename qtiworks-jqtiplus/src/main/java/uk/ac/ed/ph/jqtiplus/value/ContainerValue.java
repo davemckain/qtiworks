@@ -34,24 +34,33 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 /**
- * Represents any JQTI non single value object (container). Every JQTI non single value implementation
- * (container) must implement this interface.
+ * Base interface for non-NULL QTI container values.
  * <p>
- * This container can be multiple, ordered, record or NULL (if empty).
- * <p>
- * Container can contain only single not NULL values.
- * <p>
- * Empty container is treated as NULL value.
- * 
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @author Jiri Kajaba
+ * In JQTI+, these are now immutable. (They were mutable in the original JQTI.)
+ *
+ * @see OrderedValue
+ * @see MultipleValue
+ * @see RecordValue
+ *
+ * @author David McKain
+ * @author Jiri Kajaba (original)
  */
-public interface MultiValue extends Value {
+public abstract class ContainerValue extends AbstractValue {
+
+    private static final long serialVersionUID = 3468149201162819028L;
 
     /**
-     * Returns number of values in this value.
-     * 
-     * @return number of values in this value
+     * Values represented here are now always non-NULL. Factory methods generating
+     * empty containers always now return a {@link NullValue}.
      */
-    public int size();
+    @Override
+    public final boolean isNull() {
+        return false;
+    }
+
+    /**
+     * Returns number of values in this container
+     */
+    public abstract int size();
+
 }

@@ -54,6 +54,6 @@ public abstract class SingleValue extends AbstractValue {
 
     @Override
     public final Cardinality getCardinality() {
-        return isNull() ? null : Cardinality.SINGLE;
+        return Cardinality.SINGLE;
     }
 }

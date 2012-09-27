@@ -86,14 +86,14 @@ public class PairValueTest extends ValueTest {
                 // UriValue
                 {false, new PairValue("ident1", "ident2"), new UriValue("uri")},
                 // MultipleValue
-                {false, new PairValue("ident1", "ident2"), new MultipleValue()},
-                {false, new PairValue("ident1", "ident2"), new MultipleValue(new PairValue("ident1", "ident2"))},
+                {false, new PairValue("ident1", "ident2"), MultipleValue.emptyValue()},
+                {false, new PairValue("ident1", "ident2"), MultipleValue.createMultipleValue(new PairValue("ident1", "ident2"))},
                 // OrderedValue
-                {false, new PairValue("ident1", "ident2"), new OrderedValue()},
-                {false, new PairValue("ident1", "ident2"), new OrderedValue(new PairValue("ident1", "ident2"))},
+                {false, new PairValue("ident1", "ident2"), OrderedValue.emptyValue()},
+                {false, new PairValue("ident1", "ident2"), OrderedValue.createOrderedValue(new PairValue("ident1", "ident2"))},
                 // RecordValue
-                {false, new PairValue("ident1", "ident2"), new RecordValue()},
-                {false, new PairValue("ident1", "ident2"), new RecordValue("identifier", new PairValue("ident1", "ident2"))},
+                {false, new PairValue("ident1", "ident2"), RecordValue.emptyRecord()},
+                {false, new PairValue("ident1", "ident2"), RecordValue.createRecordValue("identifier", new PairValue("ident1", "ident2"))},
                 });
     }
 

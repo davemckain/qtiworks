@@ -41,10 +41,12 @@ import java.io.Serializable;
  * Represents any JQTI value object. Every JQTI value implementation must implement this interface.
  * <p>
  * This value can be single, multiple, ordered, record or NULL.
+ * <p>
+ * In JQTI+, all {@link Value}s are now immutable. (Some implementations were mutable in the
+ * original JQTI.) A NULL value is always represented by {@link NullValue}.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
+ * @author David McKain (revised)
  */
 public interface Value extends Serializable, Stringifiable {
 

@@ -83,11 +83,11 @@ public class DirectedPairValueTest extends ValueTest {
                 // UriValue
                 {false, new DirectedPairValue("ident1", "ident2"), new UriValue("uri")},
                 // MultipleValue
-                {false, new DirectedPairValue("ident1", "ident2"), new MultipleValue()}, {false, new DirectedPairValue("ident1", "ident2"), new MultipleValue(new DirectedPairValue("ident1", "ident2"))},
+                {false, new DirectedPairValue("ident1", "ident2"), MultipleValue.emptyValue()}, {false, new DirectedPairValue("ident1", "ident2"), MultipleValue.createMultipleValue(new DirectedPairValue("ident1", "ident2"))},
                 // OrderedValue
-                {false, new DirectedPairValue("ident1", "ident2"), new OrderedValue()}, {false, new DirectedPairValue("ident1", "ident2"), new OrderedValue(new DirectedPairValue("ident1", "ident2"))},
+                {false, new DirectedPairValue("ident1", "ident2"), OrderedValue.emptyValue()}, {false, new DirectedPairValue("ident1", "ident2"), OrderedValue.createOrderedValue(new DirectedPairValue("ident1", "ident2"))},
                 // RecordValue
-                {false, new DirectedPairValue("ident1", "ident2"), new RecordValue()}, {false, new DirectedPairValue("ident1", "ident2"), new RecordValue("identifier", new DirectedPairValue("ident1", "ident2"))},
+                {false, new DirectedPairValue("ident1", "ident2"), RecordValue.emptyRecord()}, {false, new DirectedPairValue("ident1", "ident2"), RecordValue.createRecordValue("identifier", new DirectedPairValue("ident1", "ident2"))},
                 });
     }
 

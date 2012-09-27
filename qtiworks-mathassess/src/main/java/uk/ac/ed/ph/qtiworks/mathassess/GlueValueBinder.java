@@ -53,6 +53,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.value.ReturnTypeType;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -65,6 +66,11 @@ import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the required static methods for mapping between JQTI {@link Value}s
@@ -126,22 +132,20 @@ public final class GlueValueBinder {
         }
     }
 
-    private static OrderedValue casToJqti(final OrderedValueWrapper<?,?> wrapper) {
-        final OrderedValue value = new OrderedValue();
-
+    private static Value casToJqti(final OrderedValueWrapper<?,?> wrapper) {
+        final List<SingleValue> values = new ArrayList<SingleValue>();
         for (final SingleValueWrapper<?> v : wrapper) {
-            value.add(casToJqti(v));
+            values.add(casToJqti(v));
         }
-        return value;
+        return OrderedValue.createOrderedValue(values);
     }
 
-    private static MultipleValue casToJqti(final MultipleValueWrapper<?,?> wrapper) {
-        final MultipleValue value = new MultipleValue();
-
+    private static Value casToJqti(final MultipleValueWrapper<?,?> wrapper) {
+        final List<SingleValue> values = new ArrayList<SingleValue>();
         for (final SingleValueWrapper<?> v : wrapper) {
-            value.add(casToJqti(v));
+            values.add(casToJqti(v));
         }
-        return value;
+        return MultipleValue.createMultipleValue(values);
     }
 
 
@@ -158,7 +162,7 @@ public final class GlueValueBinder {
     }
 
     private static RecordValue casToJqti(final MathsContentValueWrapper value) {
-        final RecordValue rv = new RecordValue();
+        final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
 
         /* First add pseudo "class" entry that allows us to determine (to a
          * point) that this
@@ -167,20 +171,20 @@ public final class GlueValueBinder {
          * hack something
          * together in the interim using a URL identifier that nobody else is
          * likely to use. */
-        rv.add(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER, new StringValue(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE));
+        recordBuilder.put(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER, new StringValue(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE));
 
         /* Fill in other fields */
         if (value.getMaximaInput() != null && value.getMaximaInput().length() > 0) {
-            rv.add(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER, new StringValue(value.getMaximaInput()));
+            recordBuilder.put(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER, new StringValue(value.getMaximaInput()));
         }
         if (value.getPMathML() != null && value.getPMathML().length() > 0) {
-            rv.add(MathAssessConstants.FIELD_PMATHML_IDENTIFIER, new StringValue(value.getPMathML()));
+            recordBuilder.put(MathAssessConstants.FIELD_PMATHML_IDENTIFIER, new StringValue(value.getPMathML()));
         }
         if (value.getCMathML() != null && value.getCMathML().length() > 0) {
-            rv.add(MathAssessConstants.FIELD_CMATHML_IDENTIFIER, new StringValue(value.getCMathML()));
+            recordBuilder.put(MathAssessConstants.FIELD_CMATHML_IDENTIFIER, new StringValue(value.getCMathML()));
         }
         if (value.getAsciiMathInput() != null && value.getAsciiMathInput().length() > 0) {
-            rv.add(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER, new StringValue(value
+            recordBuilder.put(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER, new StringValue(value
                     .getAsciiMathInput()));
         }
         if (value instanceof MathsContentInputValueWrapper) {
@@ -191,10 +195,10 @@ public final class GlueValueBinder {
              * be used in rendering. */
             final MathsContentInputValueWrapper inputValue = (MathsContentInputValueWrapper) value;
             if (inputValue.getPMathMLBracketed() != null && inputValue.getPMathMLBracketed().length() > 0) {
-                rv.add(MathAssessConstants.FIELD_PMATHML_BRACKETED_IDENTIFIER, new StringValue(inputValue.getPMathMLBracketed()));
+                recordBuilder.put(MathAssessConstants.FIELD_PMATHML_BRACKETED_IDENTIFIER, new StringValue(inputValue.getPMathMLBracketed()));
             }
         }
-        return rv;
+        return (RecordValue) RecordValue.createRecordValue(recordBuilder);
     }
 
     // ----------------------------------------------------------------------

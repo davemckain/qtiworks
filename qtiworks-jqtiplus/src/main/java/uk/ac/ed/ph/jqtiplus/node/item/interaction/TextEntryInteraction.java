@@ -52,9 +52,12 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
+import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A textEntry interaction is an inlineInteraction that obtains A
@@ -240,11 +243,11 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
     /**
      * @throws QtiParseException
      */
-    protected static RecordValue parseRecordValueResponse(final String responseString, final int base) {
-        final RecordValue value = new RecordValue();
+    protected static Value parseRecordValueResponse(final String responseString, final int base) {
+        final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
 
-        value.add(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
-        value.add(KEY_FLOAT_VALUE_NAME, BaseType.FLOAT.parseSingleValue(responseString));
+        recordBuilder.put(KEY_STRING_VALUE_NAME, BaseType.STRING.parseSingleValue(responseString));
+        recordBuilder.put(KEY_FLOAT_VALUE_NAME, BaseType.FLOAT.parseSingleValue(responseString));
 
         String exponentIndicator = null;
         if (responseString.contains("e")) {
@@ -260,14 +263,14 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
         final String leftPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(0, responseStringAfterExp.indexOf(".")) : responseStringAfterExp;
 
         if (exponentIndicator != null || responseStringAfterExp.contains(".")) {
-            value.add(KEY_INTEGER_VALUE_NAME, null);
+            recordBuilder.put(KEY_INTEGER_VALUE_NAME, null);
         }
         else {
-            value.add(KEY_INTEGER_VALUE_NAME, IntegerValue.parseString(responseStringAfterExp, base));
+            recordBuilder.put(KEY_INTEGER_VALUE_NAME, IntegerValue.parseString(responseStringAfterExp, base));
         }
 
-        value.add(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
-        value.add(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart == null ? 0 : rightPart.length()));
+        recordBuilder.put(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
+        recordBuilder.put(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart == null ? 0 : rightPart.length()));
 
         if (exponentIndicator != null) {
             int frac = rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
@@ -275,22 +278,22 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
                 frac -= Integer.parseInt(exponentPart);
             }
 
-            value.add(KEY_NDP_NAME, new IntegerValue(frac));
+            recordBuilder.put(KEY_NDP_NAME, new IntegerValue(frac));
         }
         else {
-            value.add(KEY_NDP_NAME, IntegerValue.parseString(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
+            recordBuilder.put(KEY_NDP_NAME, IntegerValue.parseString(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
         }
 
         int nsf = leftPart == null || leftPart.length() == 0 ? 0 : new Integer(leftPart).toString().length();
         nsf += rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
-        value.add(KEY_NSF_NAME, new IntegerValue(nsf));
+        recordBuilder.put(KEY_NSF_NAME, new IntegerValue(nsf));
 
         if (exponentIndicator != null) {
-            value.add(KEY_EXPONENT_NAME, IntegerValue.parseString(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
+            recordBuilder.put(KEY_EXPONENT_NAME, IntegerValue.parseString(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
         }
         else {
-            value.add(KEY_EXPONENT_NAME, null);
+            recordBuilder.put(KEY_EXPONENT_NAME, null);
         }
-        return value;
+        return RecordValue.createRecordValue(recordBuilder);
     }
 }

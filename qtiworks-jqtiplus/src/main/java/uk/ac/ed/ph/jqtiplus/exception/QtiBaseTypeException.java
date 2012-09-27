@@ -35,19 +35,20 @@ package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
  * This exception is used for reporting problems with baseType.
- * 
+ *
  * @author Jiri Kajaba
  */
+@Deprecated
 public class QtiBaseTypeException extends QtiEvaluationException {
 
     private static final long serialVersionUID = 543586953995447052L;
 
     /**
      * Constructs A new exception with the specified detailed message.
-     * 
+     *
      * @param message the detail message
      */
-    public QtiBaseTypeException(String message) {
+    public QtiBaseTypeException(final String message) {
         super(message);
     }
 }

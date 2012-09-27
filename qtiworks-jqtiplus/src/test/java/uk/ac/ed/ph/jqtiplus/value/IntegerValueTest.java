@@ -83,11 +83,11 @@ public class IntegerValueTest extends ValueTest {
                 // UriValue
                 {false, new IntegerValue(1), new UriValue("uri")},
                 // MultipleValue
-                {false, new IntegerValue(1), new MultipleValue()}, {false, new IntegerValue(1), new MultipleValue(new IntegerValue(1))},
+                {false, new IntegerValue(1), MultipleValue.emptyValue()}, {false, new IntegerValue(1), MultipleValue.createMultipleValue(new IntegerValue(1))},
                 // OrderedValue
-                {false, new IntegerValue(1), new OrderedValue()}, {false, new IntegerValue(1), new OrderedValue(new IntegerValue(1))},
+                {false, new IntegerValue(1), OrderedValue.emptyValue()}, {false, new IntegerValue(1), OrderedValue.createOrderedValue(new IntegerValue(1))},
                 // RecordValue
-                {false, new IntegerValue(1), new RecordValue()}, {false, new IntegerValue(1), new RecordValue("identifier", new IntegerValue(1))},
+                {false, new IntegerValue(1), RecordValue.emptyRecord()}, {false, new IntegerValue(1), RecordValue.createRecordValue("identifier", new IntegerValue(1))},
                 });
     }
 

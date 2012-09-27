@@ -53,7 +53,9 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -218,7 +220,7 @@ public final class FieldValue extends AbstractNode {
      * @see #getValues
      */
     public static Value computeValue(final Cardinality cardinality, final List<FieldValue> values) {
-        if (values.size() == 0) {
+        if (values.isEmpty()) {
             return NullValue.INSTANCE;
         }
 
@@ -227,31 +229,25 @@ public final class FieldValue extends AbstractNode {
                 return values.get(0).getSingleValue();
             }
             case MULTIPLE: {
-                final MultipleValue value = new MultipleValue();
-
+                final List<SingleValue> singleValues = new ArrayList<SingleValue>();
                 for (final FieldValue fieldValue : values) {
-                    value.add(fieldValue.getSingleValue());
+                    singleValues.add(fieldValue.getSingleValue());
                 }
-
-                return value;
+                return MultipleValue.createMultipleValue(singleValues);
             }
             case ORDERED: {
-                final OrderedValue value = new OrderedValue();
-
+                final List<SingleValue> singleValues = new ArrayList<SingleValue>();
                 for (final FieldValue fieldValue : values) {
-                    value.add(fieldValue.getSingleValue());
+                    singleValues.add(fieldValue.getSingleValue());
                 }
-
-                return value;
+                return OrderedValue.createOrderedValue(singleValues);
             }
             case RECORD: {
-                final RecordValue value = new RecordValue();
-
+                final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
                 for (final FieldValue fieldValue : values) {
-                    value.add(fieldValue.getFieldIdentifier(), fieldValue.getSingleValue());
+                    recordBuilder.put(fieldValue.getFieldIdentifier(), fieldValue.getSingleValue());
                 }
-
-                return value;
+                return RecordValue.createRecordValue(recordBuilder);
             }
             default:
                 throw new QtiLogicException("Unsupported " + Cardinality.QTI_CLASS_NAME + ": " + cardinality);

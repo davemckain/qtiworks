@@ -33,72 +33,64 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * Implementation of "record-type" container.
- * <p>
- * This container can contain 0..N non NULL single values of any <code>BaseType</code>.
- * <p>
- * This container can be record or NULL (if empty).
+ * Represents a non-NULL record value.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
+ * @author David McKain (revised)
  */
-public final class RecordValue extends AbstractValue implements MultiValue {
+public final class RecordValue extends ContainerValue {
 
     private static final long serialVersionUID = -8055629924489632630L;
 
     private final TreeMap<Identifier, SingleValue> container;
 
-    /**
-     * Constructs empty (NULL) <code>RecordValue</code> container.
-     */
-    public RecordValue() {
+    public static NullValue emptyRecord() {
+        return NullValue.INSTANCE;
+    }
+
+    public static RecordValue createRecordValue(final Identifier identifier, final SingleValue value) {
+        Assert.notNull(identifier, "identifier");
+        Assert.notNull(value, "value");
+        return new RecordValue(identifier, value);
+    }
+
+    public static RecordValue createRecordValue(final String identifier, final SingleValue value) {
+        Assert.notNull(identifier, "identifier");
+        Assert.notNull(value, "value");
+        return new RecordValue(new Identifier(identifier), value);
+    }
+
+    public static Value createRecordValue(final Map<Identifier, SingleValue> values) {
+        Assert.notNull(values);
+        return values.isEmpty() ? NullValue.INSTANCE : new RecordValue(values);
+    }
+
+    private RecordValue(final Identifier identifier, final SingleValue value) {
         container = new TreeMap<Identifier, SingleValue>();
+        container.put(identifier, value);
     }
 
-    /**
-     * Constructs empty (NULL) <code>RecordValue</code> container and adds given <code>SingleValue</code> into it.
-     *
-     * @param identifier identifier of added <code>SingleValue</code>
-     * @param value added <code>SingleValue</code>
-     */
-    public RecordValue(final Identifier identifier, final SingleValue value) {
+    private RecordValue(final Map<Identifier, SingleValue> values) {
         container = new TreeMap<Identifier, SingleValue>();
-        add(identifier, value);
-    }
-
-    public RecordValue(final String identifier, final SingleValue value) {
-        this(new Identifier(identifier), value);
-    }
-
-    /**
-     * Constructs empty (NULL) <code>RecordValue</code> container and adds given <code>RecordValue</code> into it.
-     *
-     * @param value added <code>RecordValue</code>
-     */
-    public RecordValue(final RecordValue value) {
-        container = new TreeMap<Identifier, SingleValue>();
-        merge(value);
-    }
-
-    @Override
-    public boolean isNull() {
-        return container.size() == 0;
+        container.putAll(values);
     }
 
     @Override
     public Cardinality getCardinality() {
-        return isNull() ? null : Cardinality.RECORD;
+        return Cardinality.RECORD;
     }
 
     @Override
@@ -111,23 +103,12 @@ public final class RecordValue extends AbstractValue implements MultiValue {
         return container.size();
     }
 
-    /**
-     * Returns <code>SingleValue</code> for given identifier or null.
-     * <p>
-     * Returns null if there is no such identifier.
-     *
-     * @param identifier given identifier
-     * @return <code>SingleValue</code> for given identifier or null
-     */
     public SingleValue get(final Identifier identifier) {
         return container.get(identifier);
     }
 
     /**
      * Returns true if this container contains any <code>SingleValue</code> with given <code>BaseType</code> or false otherwise.
-     *
-     * @param baseType given <code>BaseType</code>
-     * @return true if this container contains any <code>SingleValue</code> with given <code>BaseType</code> or false otherwise
      */
     public boolean containsBaseType(final BaseType baseType) {
         return containsBaseType(new BaseType[] { baseType });
@@ -150,68 +131,21 @@ public final class RecordValue extends AbstractValue implements MultiValue {
     }
 
     /**
-     * Adds <code>SingleValue</code> into this container.
-     * <p>
-     * NULL <code>SingleValue</code> is ignored.
-     *
-     * @param identifier identifier of added <code>SingleValue</code>
-     * @param value added <code>SingleValue</code>
-     * @return true if value was added; false otherwise
-     */
-    public boolean add(final Identifier identifier, final SingleValue value) {
-        if (value == null || value.isNull()) {
-            return false;
-        }
-
-        container.put(identifier, value);
-
-        return true;
-    }
-
-    public boolean add(final String identifier, final SingleValue value) {
-        return add(new Identifier(identifier), value);
-    }
-
-    /**
-     * Adds <code>RecordValue</code> into this container.
-     * <p>
-     * Takes all values from <code>RecordValue</code> container and merges them into this container.
-     * <p>
-     * NULL <code>RecordValue</code> container is ignored.
-     *
-     * @param value added <code>RecordValue</code>
-     * @return true if value was added; false otherwise
-     */
-    public boolean merge(final RecordValue value) {
-        if (value.isNull()) {
-            return false;
-        }
-
-        container.putAll(value.container);
-
-        return true;
-    }
-
-    /**
-     * Returns A set view of the keys contained in this container.
-     *
-     * @return A set view of the keys contained in this container
+     * Returns a view of the keys contained in this container.
      */
     public Set<Identifier> keySet() {
-        return container.keySet();
+        return Collections.unmodifiableSet(container.keySet());
+    }
+
+    /**
+     * Returns a view of the values contained in this container.
+     */
+    public Collection<SingleValue> values() {
+        return Collections.unmodifiableCollection(container.values());
     }
 
     public Set<Entry<Identifier, SingleValue>> entrySet() {
-        return container.entrySet();
-    }
-
-    /**
-     * Returns A collection view of the values contained in this container.
-     *
-     * @return A collection view of the values contained in this container
-     */
-    public Collection<SingleValue> values() {
-        return container.values();
+        return Collections.unmodifiableSet(container.entrySet());
     }
 
     @Override

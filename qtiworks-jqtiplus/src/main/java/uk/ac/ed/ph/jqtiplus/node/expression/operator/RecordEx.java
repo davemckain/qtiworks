@@ -39,13 +39,14 @@ import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The record operator takes 0 or more single sub-expressions of any base-type. The result is A container with record
@@ -129,16 +130,16 @@ public final class RecordEx extends AbstractFunctionalExpression {
 
     @Override
     protected Value evaluateSelf(final Value[] childValues) {
-        final RecordValue container = new RecordValue();
+        final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
 
         for (int i=0; i<childValues.length; i++) {
             final Identifier identifier = getIdentifiers().get(i++);
             final Value value = childValues[i];
             if (!value.isNull()) {
-                container.add(identifier, (SingleValue) value);
+                recordBuilder.put(identifier, (SingleValue) value);
             }
         }
 
-        return container.isNull() ? NullValue.INSTANCE : container;
+        return RecordValue.createRecordValue(recordBuilder);
     }
 }

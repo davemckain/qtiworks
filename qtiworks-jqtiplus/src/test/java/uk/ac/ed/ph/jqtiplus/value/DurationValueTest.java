@@ -83,11 +83,11 @@ public class DurationValueTest extends ValueTest {
                 // UriValue
                 {false, new DurationValue(1), new UriValue("uri")},
                 // MultipleValue
-                {false, new DurationValue(1), new MultipleValue()}, {false, new DurationValue(1), new MultipleValue(new DurationValue(1))},
+                {false, new DurationValue(1), MultipleValue.emptyValue()}, {false, new DurationValue(1), MultipleValue.createMultipleValue(new DurationValue(1))},
                 // OrderedValue
-                {false, new DurationValue(1), new OrderedValue()}, {false, new DurationValue(1), new OrderedValue(new DurationValue(1))},
+                {false, new DurationValue(1), OrderedValue.emptyValue()}, {false, new DurationValue(1), OrderedValue.createOrderedValue(new DurationValue(1))},
                 // RecordValue
-                {false, new DurationValue(1), new RecordValue()}, {false, new DurationValue(1), new RecordValue("identifier", new DurationValue(1))},
+                {false, new DurationValue(1), RecordValue.emptyRecord()}, {false, new DurationValue(1), RecordValue.createRecordValue("identifier", new DurationValue(1))},
                 });
     }
 

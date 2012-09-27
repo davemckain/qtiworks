@@ -129,6 +129,6 @@ public final class Repeat extends AbstractExpression {
             }
         }
 
-        return new OrderedValue(resultList);
+        return OrderedValue.createOrderedValue(resultList);
     }
 }

@@ -33,49 +33,53 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
+import java.util.Collection;
+
 /**
- * Implementation of "bag-type" container.
- * <p>
- * This container can be multiple or NULL (if empty).
+ * Implementation of a non-NULL multiple container.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
+ * @author David McKain (revised version)
  */
 public final class MultipleValue extends ListValue {
 
     private static final long serialVersionUID = 717217375026655181L;
 
-    /**
-     * Constructs empty (NULL) <code>MultipleValue</code> container.
-     */
-    public MultipleValue() {
-        super();
+    public static NullValue emptyValue() {
+        return NullValue.INSTANCE;
     }
 
-    /**
-     * Constructs <code>MultipleValue</code> containing the given value.
-     *
-     * @param value added <code>SingleValue</code>
-     */
-    public MultipleValue(final SingleValue value) {
+    public static MultipleValue createMultipleValue(final SingleValue value) {
+        Assert.notNull(value, "value");
+        return new MultipleValue(value);
+    }
+
+    public static Value createMultipleValue(final SingleValue... values) {
+        Assert.notNull(values, "values");
+        return values.length==0 ? NullValue.INSTANCE : new MultipleValue(values);
+    }
+
+    public static Value createMultipleValue(final Collection<? extends SingleValue> values) {
+        Assert.notNull(values, "values");
+        return values.isEmpty() ? NullValue.INSTANCE : new MultipleValue(values);
+    }
+
+    private MultipleValue(final SingleValue value) {
         super(value);
     }
 
-    /**
-     * Constructs <code>MultipleValue</code> containing the given values.
-     *
-     * @param values added <code>SingleValue</code>s
-     */
-    public MultipleValue(final Iterable<? extends SingleValue> values) {
+    private MultipleValue(final Collection<? extends SingleValue> values) {
+        super(values);
+    }
+
+    private MultipleValue(final SingleValue... values) {
         super(values);
     }
 
     @Override
     public Cardinality getCardinality() {
-        if (isNull()) {
-            return null;
-        }
-
         return Cardinality.MULTIPLE;
     }
 
@@ -91,10 +95,6 @@ public final class MultipleValue extends ListValue {
      * @return true if this container contains given <code>MultipleValue</code>; false otherwise
      */
     public boolean contains(final MultipleValue multipleValue) {
-        if (multipleValue.isNull()) {
-            return false;
-        }
-
         for (final SingleValue singleValue : multipleValue.container) {
             if (multipleValue.count(singleValue) > count(singleValue)) {
                 return false;
@@ -111,10 +111,10 @@ public final class MultipleValue extends ListValue {
         }
 
         final MultipleValue other = (MultipleValue) object;
-        if (container.size() != other.container.size()) {
+        if (container.length != other.container.length) {
             return false;
         }
-        return container.containsAll(other.container);
+        return contains(other);
     }
 
     @Override

@@ -40,10 +40,15 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The multiple operator takes 0 or more sub-expressions all of which must have either single or multiple
@@ -96,22 +101,34 @@ public final class Multiple extends AbstractFunctionalExpression {
 
     @Override
     protected Value evaluateSelf(final Value[] childValues) {
-        final MultipleValue container = new MultipleValue();
-
+        final List<SingleValue> flattenedChildren = new ArrayList<SingleValue>();
         for (final Value childValue : childValues) {
             if (!childValue.isNull()) {
                 if (childValue.getCardinality() == Cardinality.SINGLE) {
-                    container.add((SingleValue) childValue);
+                    flattenedChildren.add((SingleValue) childValue);
                 }
                 else if (childValue.getCardinality() == Cardinality.MULTIPLE) {
-                    container.merge((MultipleValue) childValue);
+                    final ListValue childList = (ListValue) childValue;
+                    for (final SingleValue childListValue : childList) {
+                        flattenedChildren.add(childListValue);
+                    }
                 }
                 else {
+                    /* FIXME: Record runtime error */
                     throw new QtiLogicException("Invalid cardinality: " + childValue.getCardinality());
                 }
             }
         }
+        return MultipleValue.createMultipleValue(flattenedChildren);
+    }
 
-        return container.isNull() ? NullValue.INSTANCE: container;
+    public static void main(final String[] args) {
+        final List<SingleValue> children = new ArrayList<SingleValue>();
+        children.add(new IntegerValue(1));
+        children.add(new IntegerValue(2));
+        children.add(new FloatValue(2));
+        final Value mv = MultipleValue.createMultipleValue(children);
+        System.out.println(mv.getBaseType());
+        System.out.println(MultipleValue.createMultipleValue(children).getBaseType());
     }
 }

@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.PairValue;
-import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
@@ -192,8 +191,8 @@ public final class AssociateInteraction extends BlockInteraction implements Simp
         }
         else if (responseValue.getCardinality().isList()) {
             /* (Container response) */
-            for (final SingleValue association : (ListValue) responseValue) {
-                responseAssociations.add((PairValue) association);
+            for (final PairValue association : ((ListValue) responseValue).values(PairValue.class)) {
+                responseAssociations.add(association);
             }
         }
         else {

@@ -83,11 +83,11 @@ public class IdentifierValueTest extends ValueTest {
                 // UriValue
                 {false, new IdentifierValue("identifier"), new UriValue("uri")},
                 // MultipleValue
-                {false, new IdentifierValue("identifier"), new MultipleValue()}, {false, new IdentifierValue("identifier"), new MultipleValue(new IdentifierValue("identifier"))},
+                {false, new IdentifierValue("identifier"), MultipleValue.emptyValue()}, {false, new IdentifierValue("identifier"), MultipleValue.createMultipleValue(new IdentifierValue("identifier"))},
                 // OrderedValue
-                {false, new IdentifierValue("identifier"), new OrderedValue()}, {false, new IdentifierValue("identifier"), new OrderedValue(new IdentifierValue("identifier"))},
+                {false, new IdentifierValue("identifier"), OrderedValue.emptyValue()}, {false, new IdentifierValue("identifier"), OrderedValue.createOrderedValue(new IdentifierValue("identifier"))},
                 // RecordValue
-                {false, new IdentifierValue("identifier"), new RecordValue()}, {false, new IdentifierValue("identifier"), new RecordValue("identifier", new IdentifierValue("identifier"))},
+                {false, new IdentifierValue("identifier"), RecordValue.emptyRecord()}, {false, new IdentifierValue("identifier"), RecordValue.createRecordValue("identifier", new IdentifierValue("identifier"))},
                 });
     }
 

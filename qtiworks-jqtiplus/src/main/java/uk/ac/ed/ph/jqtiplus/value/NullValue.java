@@ -34,14 +34,10 @@
 package uk.ac.ed.ph.jqtiplus.value;
 
 /**
- * Represents NULL value.
- * <p>
- * This class is not mutable and can contain only NULL value.
+ * Represents NULL value, including an empty container value.
  * <p>
  * <code>Cardinality</code> of this class is always null and <code>BaseType</code> is always null.
- * 
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
+ *
  * @author Jiri Kajaba
  */
 public class NullValue extends AbstractValue {
@@ -71,7 +67,7 @@ public class NullValue extends AbstractValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof NullValue)) {
             return false;
         }

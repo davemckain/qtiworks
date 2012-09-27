@@ -59,17 +59,17 @@ public class OutcomeTest {
     private static final RecordValue recordValue;
 
     static {
-        multipleValue = new MultipleValue();
+        multipleValue = MultipleValue.emptyValue();
         multipleValue.add(new StringValue("DEFAULT 1"));
         multipleValue.add(new StringValue("DEFAULT 2"));
         multipleValue.add(new StringValue("DEFAULT 3"));
 
-        orderedValue = new OrderedValue();
+        orderedValue = OrderedValue.emptyValue();
         orderedValue.add(new StringValue("DEFAULT 1"));
         orderedValue.add(new StringValue("DEFAULT 2"));
         orderedValue.add(new StringValue("DEFAULT 3"));
 
-        recordValue = new RecordValue();
+        recordValue = RecordValue.emptyRecord();
         recordValue.add("IDENTIFIER_1", new StringValue("DEFAULT 1"));
         recordValue.add("IDENTIFIER_2", new StringValue("DEFAULT 2"));
         recordValue.add("IDENTIFIER_3", new StringValue("DEFAULT 3"));

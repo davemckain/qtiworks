@@ -83,11 +83,11 @@ public class BooleanValueTest extends ValueTest {
                 // UriValue
                 {false, BooleanValue.TRUE, new UriValue("uri")}, {false, BooleanValue.FALSE, new UriValue("uri")},
                 // MultipleValue
-                {false, BooleanValue.TRUE, new MultipleValue()}, {false, BooleanValue.TRUE, new MultipleValue(BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new MultipleValue()}, {false, BooleanValue.FALSE, new MultipleValue(BooleanValue.FALSE)},
+                {false, BooleanValue.TRUE, MultipleValue.emptyValue()}, {false, BooleanValue.TRUE, MultipleValue.createMultipleValue(BooleanValue.TRUE)}, {false, BooleanValue.FALSE, MultipleValue.emptyValue()}, {false, BooleanValue.FALSE, MultipleValue.createMultipleValue(BooleanValue.FALSE)},
                 // OrderedValue
-                {false, BooleanValue.TRUE, new OrderedValue()}, {false, BooleanValue.TRUE, new OrderedValue(BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new OrderedValue()}, {false, BooleanValue.FALSE, new OrderedValue(BooleanValue.FALSE)},
+                {false, BooleanValue.TRUE, OrderedValue.emptyValue()}, {false, BooleanValue.TRUE, OrderedValue.createOrderedValue(BooleanValue.TRUE)}, {false, BooleanValue.FALSE, OrderedValue.emptyValue()}, {false, BooleanValue.FALSE, OrderedValue.createOrderedValue(BooleanValue.FALSE)},
                 // RecordValue
-                {false, BooleanValue.TRUE, new RecordValue()}, {false, BooleanValue.TRUE, new RecordValue("identifier", BooleanValue.TRUE)}, {false, BooleanValue.FALSE, new RecordValue()}, {false, BooleanValue.FALSE, new RecordValue("identifier", BooleanValue.FALSE)},
+                {false, BooleanValue.TRUE, RecordValue.emptyRecord()}, {false, BooleanValue.TRUE, RecordValue.createRecordValue("identifier", BooleanValue.TRUE)}, {false, BooleanValue.FALSE, RecordValue.emptyRecord()}, {false, BooleanValue.FALSE, RecordValue.createRecordValue("identifier", BooleanValue.FALSE)},
                 });
     }
 

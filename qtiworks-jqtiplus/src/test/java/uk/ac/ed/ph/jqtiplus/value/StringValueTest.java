@@ -83,11 +83,11 @@ public class StringValueTest extends ValueTest {
                 // UriValue
                 {false, new StringValue("string"), new UriValue("uri")},
                 // MultipleValue
-                {false, new StringValue("string"), new MultipleValue()}, {false, new StringValue("string"), new MultipleValue(new StringValue("string"))},
+                {false, new StringValue("string"), MultipleValue.emptyValue()}, {false, new StringValue("string"), MultipleValue.createMultipleValue(new StringValue("string"))},
                 // OrderedValue
-                {false, new StringValue("string"), new OrderedValue()}, {false, new StringValue("string"), new OrderedValue(new StringValue("string"))},
+                {false, new StringValue("string"), OrderedValue.emptyValue()}, {false, new StringValue("string"), OrderedValue.createOrderedValue(new StringValue("string"))},
                 // RecordValue
-                {false, new StringValue("string"), new RecordValue()}, {false, new StringValue("string"), new RecordValue("identifier", new StringValue("string"))},
+                {false, new StringValue("string"), RecordValue.emptyRecord()}, {false, new StringValue("string"), RecordValue.createRecordValue("identifier", new StringValue("string"))},
                 });
     }
 

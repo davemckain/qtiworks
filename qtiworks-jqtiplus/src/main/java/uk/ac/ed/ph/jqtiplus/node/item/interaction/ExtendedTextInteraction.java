@@ -328,10 +328,10 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
                     }
 
                     if (responseCardinality == Cardinality.MULTIPLE) {
-                        result = new MultipleValue(values);
+                        result = MultipleValue.createMultipleValue(values);
                     }
                     else {
-                        result = new OrderedValue(values);
+                        result = OrderedValue.createOrderedValue(values);
                     }
                 }
                 else {

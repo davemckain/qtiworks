@@ -42,8 +42,10 @@ import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,7 +71,7 @@ public final class OutcomeMinimum extends OutcomeMinMax {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 
-        final MultipleValue list = new MultipleValue();
+        final List<SingleValue> resultValues = new ArrayList<SingleValue>();
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
             final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
             final OutcomeDeclaration outcomeDeclaration = itemRefController.getItemController().getItem().getOutcomeDeclaration(getOutcomeIdentifier());
@@ -81,10 +83,10 @@ public final class OutcomeMinimum extends OutcomeMinMax {
                 final double minimum = outcomeDeclaration.getNormalMinimum().doubleValue();
                 final double weight = itemRefController.getItemRef().lookupWeight(getWeightIdentifier());
 
-                list.add(new FloatValue(minimum * weight));
+                resultValues.add(new FloatValue(minimum * weight));
             }
         }
 
-        return list;
+        return MultipleValue.createMultipleValue(resultValues);
     }
 }

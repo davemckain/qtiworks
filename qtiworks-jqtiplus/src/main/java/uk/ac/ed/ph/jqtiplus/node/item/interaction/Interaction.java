@@ -190,10 +190,10 @@ public abstract class Interaction extends BodyElement {
                     }
 
                     if (responseCardinality == Cardinality.MULTIPLE) {
-                        value = new MultipleValue(values);
+                        value = MultipleValue.createMultipleValue(values);
                     }
                     else {
-                        value = new OrderedValue(values);
+                        value = OrderedValue.createOrderedValue(values);
                     }
                 }
             }

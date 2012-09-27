@@ -27,42 +27,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTITools and MathAssessEngine.
- * QTITools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.value;
+package uk.ac.ed.ph.jqtiplus.exception2;
+
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 /**
- * The enumerates the various permitted combinations of {@link BaseType}
- * and {@link Cardinality}.
- * <p>
- * This is new in JQTI+ and is designed to make checking logic simpler and
- * easier to read. Please use this for new code where possible.
+ * This exception is used for reporting expectation failures when constructing
+ * and manipulating container types.
  *
  * @author David McKain
  */
-public enum Signature {
+public final class QtiContainerException extends QtiRuntimeException {
 
-    RECORD(Cardinality.RECORD, null),
-    SINGLE_FLOAT(Cardinality.SINGLE, BaseType.FLOAT)
-    /* Fill in the rest */
+    private static final long serialVersionUID = 543586953995447052L;
 
-    ;
-
-    private final Cardinality cardinality;
-    private final BaseType baseType;
-
-    private Signature(final Cardinality cardinality, final BaseType baseType) {
-        this.baseType = baseType;
-        this.cardinality = cardinality;
-    }
-
-    public BaseType getBaseType() {
-        return baseType;
-    }
-
-    public Cardinality getCardinality() {
-        return cardinality;
+    public QtiContainerException(final String message) {
+        super(message);
     }
 }

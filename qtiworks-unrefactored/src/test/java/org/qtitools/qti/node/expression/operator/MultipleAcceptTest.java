@@ -70,12 +70,12 @@ public class MultipleAcceptTest extends ExpressionAcceptTest {
 
     static {
         // MULTIPLE_1__1_2_3
-        MULTIPLE_1__1_2_3 = new MultipleValue();
+        MULTIPLE_1__1_2_3 = MultipleValue.emptyValue();
         MULTIPLE_1__1_2_3.add(new IntegerValue(1));
         MULTIPLE_1__1_2_3.add(new IntegerValue(2));
         MULTIPLE_1__1_2_3.add(new IntegerValue(3));
         // MULTIPLE_2__1_2_3_4_5_6_7
-        MULTIPLE_2__1_2_3_4_5_6_7 = new MultipleValue();
+        MULTIPLE_2__1_2_3_4_5_6_7 = MultipleValue.emptyValue();
         MULTIPLE_2__1_2_3_4_5_6_7.add(new IntegerValue(1));
         MULTIPLE_2__1_2_3_4_5_6_7.add(new IntegerValue(2));
         MULTIPLE_2__1_2_3_4_5_6_7.add(new IntegerValue(3));
@@ -98,23 +98,23 @@ public class MultipleAcceptTest extends ExpressionAcceptTest {
                         "</multiple>", NullValue.INSTANCE }, { "<multiple>" +
                         "<null/>" +
                         "</multiple>", NullValue.INSTANCE }, { "<multiple>" +
-                        "</multiple>", new MultipleValue() }, { "<multiple>" +
+                        "</multiple>", MultipleValue.emptyValue() }, { "<multiple>" +
                         "<null/>" +
-                        "</multiple>", new MultipleValue() },
+                        "</multiple>", MultipleValue.emptyValue() },
                 // identifier
                 { "<multiple>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</multiple>", new MultipleValue(new IdentifierValue("identifier")) },
+                        "</multiple>", MultipleValue.createMultipleValue(new IdentifierValue("identifier")) },
                 // boolean
                 { "<multiple>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</multiple>", new MultipleValue(BooleanValue.TRUE) }, { "<multiple>" +
+                        "</multiple>", MultipleValue.createMultipleValue(BooleanValue.TRUE) }, { "<multiple>" +
                         "<baseValue baseType='boolean'>false</baseValue>" +
-                        "</multiple>", new MultipleValue(BooleanValue.FALSE) },
+                        "</multiple>", MultipleValue.createMultipleValue(BooleanValue.FALSE) },
                 // integer
                 { "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</multiple>", new MultipleValue(new IntegerValue(1)) }, { "<multiple>" +
+                        "</multiple>", MultipleValue.createMultipleValue(new IntegerValue(1)) }, { "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>2</baseValue>" +
                         "<baseValue baseType='integer'>3</baseValue>" +
@@ -138,41 +138,41 @@ public class MultipleAcceptTest extends ExpressionAcceptTest {
                 // float
                 { "<multiple>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</multiple>", new MultipleValue(new FloatValue(1)) },
+                        "</multiple>", MultipleValue.createMultipleValue(new FloatValue(1)) },
                 // string
                 { "<multiple>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</multiple>", new MultipleValue(new StringValue("string")) },
+                        "</multiple>", MultipleValue.createMultipleValue(new StringValue("string")) },
                 // point
                 { "<multiple>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</multiple>", new MultipleValue(new PointValue(1, 1)) },
+                        "</multiple>", MultipleValue.createMultipleValue(new PointValue(1, 1)) },
                 // pair
                 { "<multiple>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</multiple>", new MultipleValue(new PairValue("identifier_1", "identifier_2")) },
+                        "</multiple>", MultipleValue.createMultipleValue(new PairValue("identifier_1", "identifier_2")) },
                 // directedPair
                 { "<multiple>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</multiple>", new MultipleValue(new DirectedPairValue("identifier_1", "identifier_2")) },
+                        "</multiple>", MultipleValue.createMultipleValue(new DirectedPairValue("identifier_1", "identifier_2")) },
                 // duration
                 { "<multiple>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</multiple>", new MultipleValue(new DurationValue(1)) },
+                        "</multiple>", MultipleValue.createMultipleValue(new DurationValue(1)) },
                 // file
                 { "<multiple>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</multiple>", new MultipleValue(ValueTestUtils.createTestFileValue("file")) },
+                        "</multiple>", MultipleValue.createMultipleValue(ValueTestUtils.createTestFileValue("file")) },
                 // uri
                 { "<multiple>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</multiple>", new MultipleValue(new UriValue("uri")) },
+                        "</multiple>", MultipleValue.createMultipleValue(new UriValue("uri")) },
                 // multiple
                 { "<multiple>" +
                         "<multiple>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</multiple>" +
-                        "</multiple>", new MultipleValue(new IntegerValue(1)) },
+                        "</multiple>", MultipleValue.createMultipleValue(new IntegerValue(1)) },
         });
     }
 

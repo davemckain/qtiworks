@@ -83,11 +83,11 @@ public class FloatValueTest extends ValueTest {
                 // UriValue
                 {false, new FloatValue(1.2), new UriValue("uri")},
                 // MultipleValue
-                {false, new FloatValue(1.2), new MultipleValue()}, {false, new FloatValue(1.2), new MultipleValue(new FloatValue(1.2))},
+                {false, new FloatValue(1.2), MultipleValue.emptyValue()}, {false, new FloatValue(1.2), MultipleValue.createMultipleValue(new FloatValue(1.2))},
                 // OrderedValue
-                {false, new FloatValue(1.2), new OrderedValue()}, {false, new FloatValue(1.2), new OrderedValue(new FloatValue(1.2))},
+                {false, new FloatValue(1.2), OrderedValue.emptyValue()}, {false, new FloatValue(1.2), OrderedValue.createOrderedValue(new FloatValue(1.2))},
                 // RecordValue
-                {false, new FloatValue(1.2), new RecordValue()}, {false, new FloatValue(1.2), new RecordValue("identifier", new FloatValue(1.2))},
+                {false, new FloatValue(1.2), RecordValue.emptyRecord()}, {false, new FloatValue(1.2), RecordValue.createRecordValue("identifier", new FloatValue(1.2))},
                 });
     }
 
