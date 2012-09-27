@@ -117,9 +117,9 @@ public class RandomInteger extends AbstractExpression {
         final IntegerOrVariableRef minComputer = getMin();
         final IntegerOrVariableRef stepComputer = getStep();
 
-        if (maxComputer.isInteger() && minComputer.isInteger()) {
-            final int max = maxComputer.getInteger();
-            final int min = minComputer.getInteger();
+        if (maxComputer.isConstantInteger() && minComputer.isConstantInteger()) {
+            final int max = maxComputer.getConstantIntegerValue().intValue();
+            final int min = minComputer.getConstantIntegerValue().intValue();
             if (max < min) {
                 context.fireAttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
                         "Attribute " + ATTR_MAX_NAME + " (" + max + ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")");
@@ -127,9 +127,12 @@ public class RandomInteger extends AbstractExpression {
 
         }
 
-        if (stepComputer!=null && stepComputer.isInteger() && stepComputer.getInteger() < 1) {
-            context.fireAttributeValidationError(getAttributes().get(ATTR_STEP_NAME),
-                    "Attribute " + ATTR_STEP_NAME + " (" + stepComputer + ") must be positive.");
+        if (stepComputer!=null && stepComputer.isConstantInteger()) {
+            final int step = stepComputer.getConstantIntegerValue().intValue();
+            if (step < 1) {
+                context.fireAttributeValidationError(getAttributes().get(ATTR_STEP_NAME),
+                        "Attribute " + ATTR_STEP_NAME + " (" + step + ") must be positive.");
+            }
         }
     }
 
@@ -137,20 +140,20 @@ public class RandomInteger extends AbstractExpression {
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final Random randomGenerator = context.getRandomGenerator();
 
-        final int computedMin = getMin().evaluate(context);
-        final int computedMax = getMax().evaluate(context);
-        final int computedStep = getStep().evaluate(context);
+        final int min = getMin().evaluateNotNull(context, this, "Computed value of min was NULL. Replacing with 0", 0);
+        final int max = getMax().evaluateNotNull(context, this, "Computed value of max was NULL. Replacing with min+1", min+1);
+        final int step = getStep().evaluateNotNull(context, this, "Computed value of step was NULL. Replacing with 1", 1);
 
         /* Validate computed numbers */
-        if (computedStep < 1) {
+        if (step < 1) {
             return NullValue.INSTANCE;
         }
-        if (computedMax < computedMin) {
+        if (max < min) {
             return NullValue.INSTANCE;
         }
 
-        final int randomNumber = randomGenerator.nextInt((computedMax - computedMin) / computedStep + 1);
-        final int randomInteger = computedMin + randomNumber * computedStep;
+        final int randomNumber = randomGenerator.nextInt((max - min) / step + 1);
+        final int randomInteger = min + randomNumber * step;
 
         return new IntegerValue(randomInteger);
     }

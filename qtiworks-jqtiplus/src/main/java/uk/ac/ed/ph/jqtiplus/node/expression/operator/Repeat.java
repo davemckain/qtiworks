@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -97,8 +98,8 @@ public final class Repeat extends AbstractExpression {
     @Override
     protected void validateThis(final ValidationContext context) {
         final IntegerOrVariableRef numberRepeatsTemplate = getNumberRepeats();
-        if (numberRepeatsTemplate.isInteger()) {
-            final int numberRepeats = numberRepeatsTemplate.getInteger();
+        if (numberRepeatsTemplate.isConstantInteger()) {
+            final int numberRepeats = numberRepeatsTemplate.getConstantIntegerValue().intValue();
             if (numberRepeats < 1) {
                 context.fireAttributeValidationError(getAttributes().get(ATTR_NUMBER_REPEATS_NAME),
                         "Attribute " + ATTR_NUMBER_REPEATS_NAME + " (" + numberRepeats + ") must be at least 1");
@@ -117,18 +118,23 @@ public final class Repeat extends AbstractExpression {
          */
 
         /* Check runtime value of numberRepeats */
-        final int computedNumberRepeats = getNumberRepeats().evaluate(context);
-        if (computedNumberRepeats < 1) {
+        final Value numberRepeatsValue = getNumberRepeats().evaluate(context);
+        if (numberRepeatsValue.isNull()) {
+            context.fireRuntimeWarning(this, "numberRepeats evaluated to NULL. Returning NULL");
+            return NullValue.INSTANCE;
+        }
+        final int numberRepeats = ((IntegerValue) numberRepeatsValue).intValue();
+        if (numberRepeats < 1) {
+            context.fireRuntimeWarning(this, "numberRepeats ended up being less than 1. Returning NULL");
             return NullValue.INSTANCE;
         }
 
         final List<SingleValue> resultList = new ArrayList<SingleValue>();
-        for (int i=0; i<computedNumberRepeats; i++) {
+        for (int i=0; i<numberRepeats; i++) {
             for (int j=0; j<childValues.length; j++) {
                 resultList.add((SingleValue) childValues[j]);
             }
         }
-
         return OrderedValue.createOrderedValue(resultList);
     }
 }

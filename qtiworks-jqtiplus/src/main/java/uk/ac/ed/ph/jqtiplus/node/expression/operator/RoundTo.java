@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -107,12 +108,20 @@ public final class RoundTo extends AbstractExpression {
             return NullValue.INSTANCE;
         }
         final double childNumber = ((NumberValue) childValue).doubleValue();
-        final int computedFigures = getFigures().evaluate(context);
-        if (computedFigures < 1) {
+
+        final Value computedFigures = getFigures().evaluate(context);
+        if (computedFigures.isNull()) {
+            context.fireRuntimeWarning(this, "Computed value of figures is NULL. Returning NULL");
+        }
+
+        final RoundingMode roundingMode = getRoundingMode();
+        final int figures = ((IntegerValue) computedFigures).intValue();
+        if (!roundingMode.isFiguresValid(figures)) {
+            context.fireRuntimeWarning(this, "The computed value of figures (" + figures + ") was not compatible with the constraints of the rounding mode. Returning NULL");
             return NullValue.INSTANCE;
         }
-        final BigDecimal rounded = getRoundingMode().round(childNumber, computedFigures);
 
+        final BigDecimal rounded = getRoundingMode().round(childNumber, figures);
         return new FloatValue(rounded.doubleValue());
     }
 }

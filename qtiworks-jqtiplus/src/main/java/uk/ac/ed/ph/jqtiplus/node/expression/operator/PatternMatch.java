@@ -88,10 +88,16 @@ public final class PatternMatch extends AbstractExpression {
             return NullValue.INSTANCE;
         }
 
-        final String computedPattern = getPattern().evaluate(context);
+        final Value computedPattern = getPattern().evaluate(context);
+        if (computedPattern.isNull()) {
+            context.fireRuntimeWarning(this, "Computed value of pattern was NULL. Returning NULL");
+            return NullValue.INSTANCE;
+        }
+
+        final String pattern = ((StringValue) computedPattern).stringValue();
         final String childString =  ((StringValue) childValues[0]).toQtiString();
 
-        final boolean result = childString.matches(computedPattern);
+        final boolean result = childString.matches(pattern);
         return BooleanValue.valueOf(result);
     }
 }

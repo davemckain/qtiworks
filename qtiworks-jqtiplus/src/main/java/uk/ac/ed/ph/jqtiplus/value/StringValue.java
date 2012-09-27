@@ -69,6 +69,10 @@ public final class StringValue extends SingleValue {
         return BaseType.STRING;
     }
 
+    public String stringValue() {
+        return stringValue;
+    }
+
     @Override
     public String toQtiString() {
         return stringValue;

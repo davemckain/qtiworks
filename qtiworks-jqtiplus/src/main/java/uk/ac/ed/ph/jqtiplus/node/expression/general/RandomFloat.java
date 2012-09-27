@@ -99,9 +99,9 @@ public class RandomFloat extends AbstractExpression {
         final FloatOrVariableRef maxComputer = getMax();
         final FloatOrVariableRef minComputer = getMin();
 
-        if (maxComputer.isFloat() && minComputer.isFloat()) {
-            final double max = maxComputer.getDouble();
-            final double min = minComputer.getDouble();
+        if (maxComputer.isConstantFloat() && minComputer.isConstantFloat()) {
+            final double max = maxComputer.getConstantFloatValue().doubleValue();
+            final double min = minComputer.getConstantFloatValue().doubleValue();
             if (max < min) {
                 context.fireAttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
                         "Attribute " + ATTR_MAX_NAME + " (" + max + ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")");
@@ -112,17 +112,18 @@ public class RandomFloat extends AbstractExpression {
 
     @Override
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final double computedMinimum = getMin().evaluate(context);
-        final double computedMaximum = getMax().evaluate(context);
+        final double min = getMin().evaluateNotNull(context, this, "Computed value of min was NULL. Replacing with 0", 0);
+        final double max = getMax().evaluateNotNull(context, this, "Computed value of max was NULL. Replacing with min+1", min+1);
 
-        if (computedMinimum > computedMaximum) {
+        if (min > max) {
             /* Bad computed values */
+            context.fireRuntimeWarning(this, "Computed value of min (" + min + ") was greater than (" + max + "). Returning NULL");
             return NullValue.INSTANCE;
         }
 
         final Random randomGenerator = context.getRandomGenerator();
         final double randomNumber = randomGenerator.nextDouble();
-        final double randomFloat = computedMinimum + (computedMaximum - computedMinimum) * randomNumber;
+        final double randomFloat = min + (max - min) * randomNumber;
 
         return new FloatValue(randomFloat);
     }

@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
@@ -496,6 +497,9 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
             value = itemSessionState.getVariableValue(identifier);
+            if (value==null) {
+                throw new QtiInvalidLookupException("No variable declared with identifier " + identifier);
+            }
         }
         else {
             /* Only allows specified types of variables */
@@ -520,10 +524,10 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
                     break CHECK_LOOP;
                 }
             }
-        }
-        if (value==null) {
-            throw new QtiEvaluationException("No variable with identifier " + identifier
-                    + " and permitted type(s) " + Arrays.toString(permittedTypes));
+            if (value==null) {
+                throw new QtiInvalidLookupException("No variable declared with identifier " + identifier
+                        + " and permitted type(s) " + Arrays.toString(permittedTypes));
+            }
         }
         return value;
     }
@@ -531,7 +535,7 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
     @Override
     public Value lookupVariableValue(final VariableReferenceIdentifier variableReferenceIdentifier, final VariableType... permittedTypes) {
         if (variableReferenceIdentifier.isDotted()) {
-            throw new QtiEvaluationException("Dotted variables cannot be used in items");
+            throw new QtiInvalidLookupException("Dotted variables cannot be used in items");
         }
         final Identifier itemVariableIdentifier = variableReferenceIdentifier.getLocalIdentifier();
         return lookupVariableValue(itemVariableIdentifier, permittedTypes);

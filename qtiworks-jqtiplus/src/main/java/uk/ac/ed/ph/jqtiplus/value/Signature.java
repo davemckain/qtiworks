@@ -46,7 +46,9 @@ public enum Signature {
 
     RECORD(Cardinality.RECORD, null),
     SINGLE_INTEGER(Cardinality.SINGLE, BaseType.INTEGER),
-    SINGLE_FLOAT(Cardinality.SINGLE, BaseType.FLOAT)
+    SINGLE_FLOAT(Cardinality.SINGLE, BaseType.FLOAT),
+    SINGLE_STRING(Cardinality.SINGLE, BaseType.STRING),
+
     /* Fill in the rest */
 
     ;

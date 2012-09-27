@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
@@ -72,7 +72,7 @@ public interface ProcessingContext extends NotificationFirer {
      * <p>
      * If permittedTypes is empty, then it looks up ANY type of variable.
      *
-     * @throws QtiEvaluationException if no variable (of the permitted type) has
+     * @throws QtiInvalidLookupException if no variable (of the permitted type) has
      *   the given identifier.
      *
      * @param identifier
@@ -86,7 +86,7 @@ public interface ProcessingContext extends NotificationFirer {
      * <p>
      * If permittedTypes is empty, then it looks up ANY type of variable.
      *
-     * @throws QtiEvaluationException if no variable (of the permitted type) has
+     * @throws QtiInvalidLookupException if no variable (of the permitted type) has
      *   the given identifier, or if the given reference is not appropriate
      *   (e.g. using a dotted reference within an item)
      *

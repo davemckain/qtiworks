@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -96,8 +97,8 @@ public final class Index extends AbstractExpression {
     @Override
     protected void validateThis(final ValidationContext context) {
         final IntegerOrVariableRef indexComputer = getIndex();
-        if (indexComputer.isInteger()) {
-            final int index = indexComputer.getInteger();
+        if (indexComputer.isConstantInteger()) {
+            final int index = indexComputer.getConstantIntegerValue().intValue();
             if (index < 1) {
                 context.fireAttributeValidationError(getAttributes().get(ATTR_INDEX_NAME),
                         "Attribute " + ATTR_INDEX_NAME + " (" + index + ") must be positive");
@@ -121,12 +122,16 @@ public final class Index extends AbstractExpression {
         }
 
         final OrderedValue childOrderedValue = (OrderedValue) childValues[0];
-        final int computedIndex = getIndex().evaluate(context);
-
-        if (computedIndex < 1 || computedIndex > childOrderedValue.size()) {
+        final Value computedIndex = getIndex().evaluate(context);
+        if (computedIndex.isNull()) {
             return NullValue.INSTANCE;
         }
 
-        return childOrderedValue.get(computedIndex - 1);
+        final int index = ((IntegerValue) computedIndex).intValue();
+        if (index < 1 || index > childOrderedValue.size()) {
+            return NullValue.INSTANCE;
+        }
+
+        return childOrderedValue.get(index - 1);
     }
 }

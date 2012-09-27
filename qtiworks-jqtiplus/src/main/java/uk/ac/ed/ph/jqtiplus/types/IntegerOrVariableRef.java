@@ -33,14 +33,15 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.Serializable;
@@ -54,17 +55,17 @@ public final class IntegerOrVariableRef implements Serializable {
 
     private static final long serialVersionUID = 1215189767076373746L;
 
-    private final int integerValue;
+    private final IntegerValue constantIntegerValue;
     private final VariableReferenceIdentifier variableReferenceValue;
     private final String serializedValue;
 
     /**
-     * Creates a new integerOrVariableRef holding the given integer value
+     * Creates a new integerOrVariableRef holding the given constant integer value
      */
-    public IntegerOrVariableRef(final int integerValue) {
-        this.integerValue = integerValue;
+    public IntegerOrVariableRef(final int constantIntegerValue) {
+        this.constantIntegerValue = new IntegerValue(constantIntegerValue);
         this.variableReferenceValue = null;
-        this.serializedValue = Integer.toString(integerValue);
+        this.serializedValue = Integer.toString(constantIntegerValue);
     }
 
     /**
@@ -72,7 +73,7 @@ public final class IntegerOrVariableRef implements Serializable {
      */
     public IntegerOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
         Assert.notNull(variableReferenceIdentifier, "variableReferenceIdentifier");
-        this.integerValue = 0;
+        this.constantIntegerValue = null;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
     }
@@ -101,7 +102,7 @@ public final class IntegerOrVariableRef implements Serializable {
     }
 
     /** Returns true if this instance holds an explicit integer */
-    public boolean isInteger() {
+    public boolean isConstantInteger() {
         return variableReferenceValue==null;
     }
 
@@ -112,16 +113,16 @@ public final class IntegerOrVariableRef implements Serializable {
 
     /**
      * Returns the explicit integer held by this instance,
-     * returning 0 if this actually holds a variable reference.
-     * (The caller should use {@link #isInteger()} to check first.)
+     * returning null if this actually holds a variable reference.
+     * (The caller should use {@link #isConstantInteger()} to check first.)
      */
-    public int getInteger() {
-        return integerValue;
+    public IntegerValue getConstantIntegerValue() {
+        return constantIntegerValue;
     }
 
     /**
      * Returns the explicit variable reference identifier held by this instance,
-     *  returning null if this actually holds an integer.
+     * returning null if this actually holds an integer.
      * (The caller should use {@link #isVariableRef()} to check first.)
      */
     public VariableReferenceIdentifier getVariableReferenceIdentifier() {
@@ -148,20 +149,44 @@ public final class IntegerOrVariableRef implements Serializable {
     }
 
     /**
-     * Evaluates this instance. If this holds an explicit integer then its value is returned as-is.
+     * Evaluates this holder. If this holds an explicit integer then its value is returned as-is.
      * Otherwise, the given {@link ProcessingContext} is used to look up the value of the variable
-     * that this type refers to. The result in all cases will be an integer.
+     * that this type refers to. The result will either be an {@link IntegerValue} or {@link NullValue}
+     *
+     * @throws QtiInvalidLookupException if the variable cannot be successfully resolved, or
+     *   resolves to something other than a single integer.
      */
-    public int evaluate(final ProcessingContext context) {
-        if (isVariableRef()) {
-            final Value result = context.lookupVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
-            if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.INTEGER) {
-                return ((IntegerValue) result).intValue();
-            }
-            throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to be an integer");
+    public Value evaluate(final ProcessingContext context) {
+        if (isConstantInteger()) {
+            return constantIntegerValue;
         }
         else {
-            return integerValue;
+            final Value result = context.lookupVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
+            if (result.hasSignature(Signature.SINGLE_INTEGER)) {
+                return result;
+            }
+            throw new QtiInvalidLookupException("Variable referenced by " + variableReferenceValue + " was expected to be a single integer");
         }
+    }
+
+    /**
+     * Wrapper for {@link #evaluate(ProcessingContext)} that substitutes a replacement value and emits a
+     * runtime warning if the result was NULL.
+     *
+     * @throws QtiInvalidLookupException if the variable cannot be successfully resolved, or
+     *   resolves to something other than a single integer.
+     */
+    public int evaluateNotNull(final ProcessingContext context, final QtiNode owner,
+            final String messageOnNull, final int replacementOnNull) {
+        final Value evaluated = evaluate(context);
+        int result;
+        if (evaluated.isNull()) {
+            context.fireRuntimeWarning(owner, messageOnNull);
+            result = replacementOnNull;
+        }
+        else {
+            result = ((IntegerValue) evaluated).intValue();
+        }
+        return result;
     }
 }

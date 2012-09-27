@@ -99,15 +99,15 @@ public final class AnyN extends AbstractExpression {
     protected void validateThis(final ValidationContext context) {
         final IntegerOrVariableRef minComputer = getMin();
         final IntegerOrVariableRef maxComputer = getMax();
-        if (minComputer.isInteger()) {
-            final int min = minComputer.getInteger();
+        if (minComputer.isConstantInteger()) {
+            final int min = minComputer.getConstantIntegerValue().intValue();
             if (min < 0) {
                 context.fireValidationWarning(this,
                         "Attribute " + ATTR_MINIMUM_NAME
                         + " (" + min + ") should be positive.");
             }
-            if (maxComputer.isInteger()) {
-                final int max = maxComputer.getInteger();
+            if (maxComputer.isConstantInteger()) {
+                final int max = maxComputer.getConstantIntegerValue().intValue();
                 if (max < min) {
                     context.fireValidationWarning(this,
                             "Attribute " + ATTR_MAXIMUM_NAME
@@ -132,18 +132,18 @@ public final class AnyN extends AbstractExpression {
             }
         }
 
-        final int minimum = getMin().evaluate(context);
-        final int maximum = getMax().evaluate(context);
+        final int min = getMin().evaluateNotNull(context, this, "Computed value of minimum was NULL. Replacing with 0", 0);
+        final int max = getMax().evaluateNotNull(context, this, "Computed value of maximum was NULL. Replacing with 0", 0);
 
-        if (minimum > maximum) {
+        if (min > max) {
             return BooleanValue.FALSE;
         }
 
-        if (numberOfTrue >= minimum && numberOfTrue + numberOfNull <= maximum) {
+        if (numberOfTrue >= min && numberOfTrue + numberOfNull <= max) {
             return BooleanValue.TRUE;
         }
 
-        if (numberOfTrue + numberOfNull < minimum || numberOfTrue > maximum) {
+        if (numberOfTrue + numberOfNull < min || numberOfTrue > max) {
             return BooleanValue.FALSE;
         }
 

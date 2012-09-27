@@ -31,29 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception;
+package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 /**
- * This exception is used for propagating errors during execution of assessment.
- * Preferred way is to use more concrete exception (see sub-classes of this exception).
+ * This runtime Exception is thrown during evaluation (e.g. template, response
+ * or outcome processing) when an invalid variable lookup is performed.
  *
- * @deprecated Use {@link QtiInvalidLookupException} or notifications now, depending
- *   on how the error can occur.
- *
- * @author Jiri Kajaba
+ * @author David McKain
  */
-@Deprecated
-public class QtiEvaluationException extends QtiRuntimeException {
+public final class QtiInvalidLookupException extends QtiRuntimeException {
 
     private static final long serialVersionUID = 2827334569953049498L;
 
-    public QtiEvaluationException(final String message) {
+    public QtiInvalidLookupException(final String message) {
         super(message);
     }
 
-    public QtiEvaluationException(final String message, final Throwable cause) {
+    public QtiInvalidLookupException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }
