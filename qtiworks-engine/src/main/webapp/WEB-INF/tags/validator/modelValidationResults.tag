@@ -14,8 +14,8 @@ All Rights Reserved
 <%@ attribute name="validationResult" required="true" type="uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult" %>
 
 <c:set var="resolvedAssessmentObject" value="${validationResult.resolvedAssessmentObject}"/>
-<c:set var="rootObjectLookup" value="${resolvedAssessmentObject.rootObjectLookup}"/>
-<c:set var="qtiXmlObjectReadResult" value="${rootObjectLookup.rootObjectHolder}"/>
+<c:set var="rootNodeLookup" value="${resolvedAssessmentObject.rootNodeLookup}"/>
+<c:set var="qtiXmlObjectReadResult" value="${rootNodeLookup.rootNodeHolder}"/>
 <c:choose>
   <c:when test="${qtiXmlObjectReadResult==null}">
     <%-- Did not get this far --%>

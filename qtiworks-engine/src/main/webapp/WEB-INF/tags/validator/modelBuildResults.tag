@@ -10,10 +10,10 @@ All Rights Reserved
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
-<%@ attribute name="rootObjectLookup" required="true" type="uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup" %>
+<%@ attribute name="rootNodeLookup" required="true" type="uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup" %>
 
-<c:set var="qtiXmlObjectReadResult" value="${rootObjectLookup.rootObjectHolder}"/>
-<c:set var="qtiXmlInterpretationException" value="${rootObjectLookup.badResourceException}"/>
+<c:set var="qtiXmlObjectReadResult" value="${rootNodeLookup.rootNodeHolder}"/>
+<c:set var="qtiXmlInterpretationException" value="${rootNodeLookup.badResourceException}"/>
 <c:choose>
   <c:when test="${qtiXmlObjectReadResult!=null}">
     <div class="resultPanel success">
@@ -48,7 +48,7 @@ All Rights Reserved
           <div class="details">
             <p>
               This XML was expected to be a QTI ${qtiXmlInterpretationException.requiredResultClass.simpleName}
-              but it was actually a ${qtiXmlInterpretationException.rootObject.class.simpleName}.
+              but it was actually a ${qtiXmlInterpretationException.rootNode.class.simpleName}.
             </p>
           </div>
         </div>

@@ -10,10 +10,10 @@ All Rights Reserved
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
-<%@ attribute name="rootObjectLookup" required="true" type="uk.ac.ed.ph.jqtiplus.resolution.RootObjectLookup" %>
+<%@ attribute name="rootNodeLookup" required="true" type="uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup" %>
 
-<c:set var="qtiXmlObjectReadResult" value="${rootObjectLookup.rootObjectHolder}"/>
-<c:set var="qtiXmlInterpretationException" value="${rootObjectLookup.badResourceException}"/>
+<c:set var="qtiXmlObjectReadResult" value="${rootNodeLookup.rootNodeHolder}"/>
+<c:set var="qtiXmlInterpretationException" value="${rootNodeLookup.badResourceException}"/>
 <c:set var="xmlParseResult" value="${qtiXmlObjectReadResult!=null ? qtiXmlObjectReadResult.xmlParseResult : (qtiXmlInterpretationException!=null ? qtiXmlInterpretationException.xmlParseResult : null)}"/>
 <c:choose>
   <c:when test="${xmlParseResult==null || !xmlParseResult.parsed}">
