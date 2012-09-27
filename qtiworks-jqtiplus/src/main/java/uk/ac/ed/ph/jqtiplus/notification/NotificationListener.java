@@ -40,6 +40,6 @@ package uk.ac.ed.ph.jqtiplus.notification;
  */
 public interface NotificationListener {
 
-    void onNotification(ModelNotification notification);
+    void onNotification(Notification notification);
 
 }

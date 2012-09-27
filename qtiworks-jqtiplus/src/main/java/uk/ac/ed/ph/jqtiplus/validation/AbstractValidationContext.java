@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
-import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -67,7 +67,7 @@ public abstract class AbstractValidationContext<E extends AssessmentObject> exte
     }
 
     @Override
-    protected void handleNotification(final ModelNotification notification) {
+    public void fireNotification(final Notification notification) {
         validationResult.add(notification);
     }
 
@@ -140,7 +140,7 @@ public abstract class AbstractValidationContext<E extends AssessmentObject> exte
                 break;
             }
         }
-    
+
         if (!found) {
             final StringBuilder messageBuilder = new StringBuilder("Variable ")
                 .append(variableDeclaration)

@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
 import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
@@ -85,13 +85,13 @@ public final class AssessmentObjectValidator {
         if (item!=null) {
             final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplate = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplate!=null && !resolvedResponseProcessingTemplate.wasSuccessful()) {
-                result.add(new ModelNotification(item.getResponseProcessing(), null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+                result.add(new Notification(item.getResponseProcessing(), null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                         "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
             item.validate(new ItemValidationContextImpl(result, resolvedAssessmentItem));
         }
         else {
-            result.add(new ModelNotification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+            result.add(new Notification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                     "AssessmentItem was not successfully instantiated"));
         }
         return result;
@@ -123,18 +123,18 @@ public final class AssessmentObjectValidator {
                     final ItemValidationResult itemValidationResult = validateItem(itemHolder);
                     result.addItemValidationResult(itemValidationResult);
                     if (itemValidationResult.hasErrors()) {
-                        result.add(new ModelNotification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+                        result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                                 messageBuilder.toString()
                                 + " has errors. Please see the attached validation result for this item for further debugrmation."));
                     }
                     if (itemValidationResult.hasWarnings()) {
-                        result.add(new ModelNotification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
+                        result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
                                 messageBuilder.toString()
                                 + " has warnings. Please see the attached validation result for this item for further debugrmation."));
                     }
                 }
                 else {
-                    result.add(new ModelNotification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+                    result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                             messageBuilder.toString()
                             + " was not successfully instantiated. Further details are attached elsewhere."));
                 }
@@ -144,7 +144,7 @@ public final class AssessmentObjectValidator {
             test.validate(new TestValidationContextImpl(result, resolvedAssessmentTest));
         }
         else {
-            result.add(new ModelNotification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
+            result.add(new Notification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                     "Provision of AssessmentTest failed"));
         }
         return result;

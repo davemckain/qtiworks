@@ -41,11 +41,12 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import java.io.Serializable;
 
 /**
- * FIXME: Document this type
+ * This encapsulates a notification message generated during validation
+ * or processing.
  *
  * @author David McKain
  */
-public final class ModelNotification implements Serializable {
+public final class Notification implements Serializable {
 
     private static final long serialVersionUID = 6723715622589447687L;
 
@@ -64,7 +65,7 @@ public final class ModelNotification implements Serializable {
     /** Message (legacy form - no i18n) */
     private final String message;
 
-    public ModelNotification(final QtiNode qtiNode, final Attribute<?> attribute, final NotificationType notificationType, final NotificationLevel notificationLevel, final String message) {
+    public Notification(final QtiNode qtiNode, final Attribute<?> attribute, final NotificationType notificationType, final NotificationLevel notificationLevel, final String message) {
         Assert.notNull(notificationType, "notificationType");
         Assert.notNull(notificationLevel, "notificationLevel");
         this.qtiNode = qtiNode;

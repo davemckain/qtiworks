@@ -34,6 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.notification;
 
 /**
+ * Defines the various levels of severity for {@link Notification}s.
+ *
  * NB: These should be arranged in increasing level of importance
  *
  * @author David McKain

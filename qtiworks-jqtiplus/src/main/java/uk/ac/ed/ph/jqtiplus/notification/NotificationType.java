@@ -34,7 +34,9 @@
 package uk.ac.ed.ph.jqtiplus.notification;
 
 /**
- * FIXME: Document this type
+ * Defines the various types of {@link Notification}s.
+ * <p>
+ * More may appear in due course.
  *
  * @author David McKain
  */

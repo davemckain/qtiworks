@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 
@@ -76,30 +76,30 @@ public abstract class AbstractValidationResult implements Serializable {
         return hasInfos;
     }
 
-    public List<ModelNotification> getNotifications() {
+    public List<Notification> getNotifications() {
         return notificationRecorder.getNotifications();
     }
 
-    public List<ModelNotification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
+    public List<Notification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
         return notificationRecorder.getNotificationsAtLevel(requiredLevel);
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public List<ModelNotification> getErrors() {
+    public List<Notification> getErrors() {
         return getNotificationsAtLevel(NotificationLevel.ERROR);
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public List<ModelNotification> getWarnings() {
+    public List<Notification> getWarnings() {
         return getNotificationsAtLevel(NotificationLevel.WARNING);
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public List<ModelNotification> getInfos() {
+    public List<Notification> getInfos() {
         return getNotificationsAtLevel(NotificationLevel.INFO);
     }
 
-    public void add(final ModelNotification notification) {
+    public void add(final Notification notification) {
         notificationRecorder.onNotification(notification);
         final NotificationLevel notificationLevel = notification.getNotificationLevel();
         if (!hasErrors && notificationLevel==NotificationLevel.ERROR) {

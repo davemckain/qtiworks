@@ -39,19 +39,16 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
- * FIXME: Document this type
+ * Convenience API for firing off {@link Notification}s. Most of this is filled
+ * in by {@link AbstractNotificationFirer} so it's easy to implement.
+ *
+ * @see AbstractNotificationFirer
  *
  * @author David McKain
  */
 public interface NotificationFirer {
 
-    void setCheckpoint();
-
-    void clearCheckpoint();
-
-    boolean hadSinceCheckpoint();
-
-    void fireNotification(ModelNotification notification);
+    void fireNotification(Notification notification);
 
     void fireRuntimeInfo(QtiNode owner, String message);
 

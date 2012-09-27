@@ -68,7 +68,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
-import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationListener;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
@@ -188,7 +188,7 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
     }
 
     @Override
-    protected void handleNotification(final ModelNotification notification) {
+    public void fireNotification(final Notification notification) {
         for (final NotificationListener listener : notificationListeners) {
             listener.onNotification(notification);
         }

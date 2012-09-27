@@ -48,21 +48,21 @@ public final class NotificationRecorder implements NotificationListener, Seriali
 
     private static final long serialVersionUID = -8782072000887987018L;
 
-    private final List<ModelNotification> modelNotifications;
+    private final List<Notification> notifications;
     private final NotificationLevel notificationThreshold;
 
     public NotificationRecorder(final NotificationLevel notificationThreshold) {
-        this.modelNotifications = new ArrayList<ModelNotification>();
+        this.notifications = new ArrayList<Notification>();
         this.notificationThreshold = notificationThreshold;
     }
 
-    public List<ModelNotification> getNotifications() {
-        return Collections.unmodifiableList(modelNotifications);
+    public List<Notification> getNotifications() {
+        return Collections.unmodifiableList(notifications);
     }
 
-    public List<ModelNotification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
-        final List<ModelNotification> result = new ArrayList<ModelNotification>(modelNotifications.size());
-        for (final ModelNotification notification : modelNotifications) {
+    public List<Notification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
+        final List<Notification> result = new ArrayList<Notification>(notifications.size());
+        for (final Notification notification : notifications) {
             if (notification.getNotificationLevel()==requiredLevel) {
                 result.add(notification);
             }
@@ -71,10 +71,10 @@ public final class NotificationRecorder implements NotificationListener, Seriali
     }
 
     @Override
-    public void onNotification(final ModelNotification notification) {
+    public void onNotification(final Notification notification) {
         final NotificationLevel level = notification.getNotificationLevel();
         if (level.compareTo(notificationThreshold) >= 0) {
-            modelNotifications.add(notification);
+            notifications.add(notification);
         }
     }
 }

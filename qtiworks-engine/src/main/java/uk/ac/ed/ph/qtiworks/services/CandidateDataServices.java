@@ -49,7 +49,7 @@ import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -160,7 +160,7 @@ public class CandidateDataServices {
 
         /* Now store processing notifications */
         if (notificationRecorder!=null) {
-            for (final ModelNotification notification : notificationRecorder.getNotifications()) {
+            for (final Notification notification : notificationRecorder.getNotifications()) {
                 recordNotification(event, notification);
             }
         }
@@ -168,7 +168,7 @@ public class CandidateDataServices {
         return event;
     }
 
-    public CandidateItemEventNotification recordNotification(final CandidateItemEvent candidateItemEvent, final ModelNotification notification) {
+    public CandidateItemEventNotification recordNotification(final CandidateItemEvent candidateItemEvent, final Notification notification) {
         final CandidateItemEventNotification record = new CandidateItemEventNotification();
         record.setCandidateItemEvent(candidateItemEvent);
 
