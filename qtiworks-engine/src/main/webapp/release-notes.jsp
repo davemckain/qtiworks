@@ -10,7 +10,21 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes</h2>
+  <h2>QTIWorks Release Notes (Production/Stable)</h2>
+
+  <h3>1.0-M1 (27/09/2012)</h3>
+
+  <p>
+    This "Milestone 1" snapshot is the first of a set of stable, less frequent snapshots
+    so that people using QTIWorks for "real" stuff don't have to worry too much about things
+    suddenly changing. Functionally, this is the same as 1.0-DEV13 but includes a few improvements
+    you won't notice.
+  </p>
+  <p>
+    The next milestone snapshot will be released once we have some of the test functionality implemented.
+    For bleeding edge snapshots, please see the new DEV instance of QTIWorks at
+    <a href="https://www2.ph.ed.ac.uk/qtiworks-dev/">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
 
   <h3>1.0-DEV13 (04/09/2012)</h3>
 
