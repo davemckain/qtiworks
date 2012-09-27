@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
@@ -65,71 +65,71 @@ public class InsideRefuseTest extends ExpressionRefuseTest {
                 // attributes
                 { "<inside>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape=''>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape=''>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='unknown'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='unknown'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='rect' coords='1 2 3 A'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='rect' coords='1 2 3 A'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // attributes - default
                 { "<inside shape='default' coords='1'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // attributes - rect
                 { "<inside shape='rect' coords=''>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='rect' coords='1,2,3'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='rect' coords='1,2,3'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='rect' coords='1,2,3,4,5'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='rect' coords='1,2,3,4,5'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='rect' coords='1,2,1,4'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='rect' coords='1,2,1,4'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='rect' coords='3,2,1,4'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='rect' coords='3,2,1,4'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='rect' coords='1,2,3,2'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='rect' coords='1,2,3,2'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='rect' coords='1,4,3,2'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='rect' coords='1,4,3,2'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // attributes - circle
                 { "<inside shape='circle' coords=''>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='circle' coords='1,2'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='circle' coords='1,2'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='circle' coords='1,2,3,4'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='circle' coords='1,2,3,4'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='circle' coords='1,1,-1'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='circle' coords='1,1,-1'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='circle' coords='1,1,0'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='circle' coords='1,1,0'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // poly
                 { "<inside shape='poly' coords=''>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='poly' coords='1,2,3,4'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='poly' coords='1,2,3,4'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='poly' coords='1,2,3,4,1,2'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='poly' coords='1,2,3,4,1,2'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='poly' coords='1,2,3,4,5,6,7'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='poly' coords='1,2,3,4,5,6,7'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // ellipse
                 { "<inside shape='ellipse' coords=''>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='ellipse' coords='1,2,3'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='ellipse' coords='1,2,3'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='ellipse' coords='1,2,3,4,5'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='ellipse' coords='1,2,3,4,5'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='ellipse' coords='1,1,-1,1'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='ellipse' coords='1,1,-1,1'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='ellipse' coords='1,1,0,1'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='ellipse' coords='1,1,0,1'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='ellipse' coords='1,1,1,-1'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='ellipse' coords='1,1,1,-1'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class }, { "<inside shape='ellipse' coords='1,1,1,0'>" +
+                        "</inside>", QtiBaseTypeException.class }, { "<inside shape='ellipse' coords='1,1,1,0'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</inside>", QtiAttributeException.class },
+                        "</inside>", QtiBaseTypeException.class },
                 // record
                 { "<inside shape='default'>" +
                         "<recordEx/>" +

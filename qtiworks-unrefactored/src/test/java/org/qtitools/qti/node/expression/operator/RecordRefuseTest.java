@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
@@ -68,7 +68,7 @@ public class RecordRefuseTest extends ExpressionRefuseTest {
                         "<baseValue baseType='integer'>3</baseValue>" +
                         "<baseValue baseType='integer'>4</baseValue>" +
                         "<baseValue baseType='integer'>5</baseValue>" +
-                        "</recordEx>", QtiAttributeException.class },
+                        "</recordEx>", QtiBaseTypeException.class },
                 // multiple
                 { "<recordEx identifiers='key_1'>" +
                         "<multiple/>" +

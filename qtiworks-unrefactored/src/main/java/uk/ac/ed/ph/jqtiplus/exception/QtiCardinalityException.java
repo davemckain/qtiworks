@@ -31,45 +31,18 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package org.qtitools.qti.node.expression.general;
-
-import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.qtitools.qti.node.expression.ExpressionRefuseTest;
+package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * Test of <code>RandomFloat</code> expression.
+ * USED BY UNREFACTORED LEGACY CODE. DO NOT USE THIS ANY MORE!
  * 
- * @see uk.ac.ed.ph.jqtiplus.node.expression.general.RandomFloat
+ * @author Jiri Kajaba
  */
-@RunWith(Parameterized.class)
-public class RandomFloatRefuseTest extends ExpressionRefuseTest {
+public class QtiCardinalityException extends QtiRuntimeException {
 
-    /**
-     * Creates test data for this test.
-     * 
-     * @return test data for this test
-     */
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                // max < min
-                { "<randomFloat min='-4' max='-8'/>" }, { "<randomFloat min='1' max='-2'/>" }, { "<randomFloat min='7' max='3'/>" },
-        });
-    }
+    private static final long serialVersionUID = 2704011285854256980L;
 
-    /**
-     * Constructs <code>RandomFloat</code> expression test.
-     * 
-     * @param xml xml data used for creation tested expression
-     */
-    public RandomFloatRefuseTest(String xml) {
-        super(xml, QtiBaseTypeException.class);
+    public QtiCardinalityException(String message) {
+        super(message);
     }
 }
