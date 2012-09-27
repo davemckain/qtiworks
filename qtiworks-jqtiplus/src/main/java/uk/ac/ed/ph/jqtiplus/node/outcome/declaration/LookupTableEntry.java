@@ -43,30 +43,30 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
  *
  * @author Jiri Kajaba
  */
-public abstract class LookupTableEntry extends AbstractNode {
+public abstract class LookupTableEntry<N extends Number> extends AbstractNode {
 
     private static final long serialVersionUID = 3321503230408602996L;
 
     /** Name of targetValue attribute in xml schema. */
     public static final String ATTR_TARGET_VALUE_NAME = "targetValue";
 
-    public LookupTableEntry(final LookupTable parent, final String qtiClassName) {
+    public LookupTableEntry(final LookupTable<?,?> parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
-        getAttributes().add(new SingleValueAttribute(this, ATTR_TARGET_VALUE_NAME, getParent().getTargetValueBaseType(), true));
+        getAttributes().add(new SingleValueAttribute(this, ATTR_TARGET_VALUE_NAME, parent.getTargetValueBaseType(), true));
     }
 
     @Override
-    public LookupTable getParent() {
-        return (LookupTable) super.getParent();
+    public LookupTable<?,?> getParent() {
+        return (LookupTable<?,?>) super.getParent();
     }
 
     /**
      * Gets numeric value of sourceValue attribute.
-     *
-     * @return numeric value of sourceValue attribute
      */
-    public abstract Number getSourceValue();
+    public abstract N getSourceValue();
+
+    public abstract void setSourceValue(N sourceValue);
 
     public SingleValue getTargetValue() {
         return getAttributes().getSingleValueAttribute(ATTR_TARGET_VALUE_NAME).getComputedValue();

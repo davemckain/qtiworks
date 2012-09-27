@@ -56,11 +56,11 @@ public final class LookupTableGroup extends ComplexNodeGroup<OutcomeDeclaration,
                 0, 1);
     }
 
-    public LookupTable getLookupTable() {
+    public LookupTable<?,?> getLookupTable() {
         return children.size() != 0 ? children.get(0) : null;
     }
 
-    public void setLookupTable(final LookupTable lookupTable) {
+    public void setLookupTable(final LookupTable<?,?> lookupTable) {
         children.clear();
         if (lookupTable != null) {
             children.add(lookupTable);
@@ -68,7 +68,7 @@ public final class LookupTableGroup extends ComplexNodeGroup<OutcomeDeclaration,
     }
 
     @Override
-    public LookupTable create(final String qtiClassName) {
+    public LookupTable<?,?> create(final String qtiClassName) {
         if (qtiClassName.equals(MatchTable.QTI_CLASS_NAME)) {
             return new MatchTable(getParent());
         }

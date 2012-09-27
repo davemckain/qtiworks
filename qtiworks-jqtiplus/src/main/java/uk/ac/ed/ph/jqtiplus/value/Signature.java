@@ -45,6 +45,7 @@ package uk.ac.ed.ph.jqtiplus.value;
 public enum Signature {
 
     RECORD(Cardinality.RECORD, null),
+    SINGLE_INTEGER(Cardinality.SINGLE, BaseType.INTEGER),
     SINGLE_FLOAT(Cardinality.SINGLE, BaseType.FLOAT)
     /* Fill in the rest */
 

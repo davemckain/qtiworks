@@ -38,10 +38,8 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
-import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
 
@@ -55,7 +53,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public abstract class LookupTable extends AbstractNode {
+public abstract class LookupTable<N extends Number, E extends LookupTableEntry<N>> extends AbstractNode {
 
     private static final long serialVersionUID = -6380035531180684801L;
 
@@ -91,10 +89,8 @@ public abstract class LookupTable extends AbstractNode {
 
     /**
      * Gets lookupTableEntry children.
-     *
-     * @return lookupTableEntry children
      */
-    public abstract List<? extends LookupTableEntry> getLookupEntries();
+    public abstract List<E> getLookupEntries();
 
     /**
      * Gets target value for given source value.
@@ -102,19 +98,7 @@ public abstract class LookupTable extends AbstractNode {
      * @param sourceValue given source value
      * @return target value for given source value
      */
-    public SingleValue getTargetValue(final NumberValue sourceValue) {
-        SingleValue targetValue = getDefaultValue();
-        if (targetValue == null) {
-            if (getParent().getCardinality().isSingle() && getParent().getBaseType().isInteger()) {
-                targetValue = IntegerValue.ZERO;
-            }
-            else if (getParent().getCardinality().isSingle() && getParent().getBaseType().isFloat()) {
-                targetValue = new FloatValue(0);
-            }
-        }
-
-        return targetValue;
-    }
+    public abstract Value getTargetValue(final double sourceValue);
 
     @Override
     protected void validateThis(final ValidationContext context) {
@@ -130,12 +114,14 @@ public abstract class LookupTable extends AbstractNode {
         }
 
         for (int i = 0; i < getLookupEntries().size(); i++) {
-            final LookupTableEntry firstEntry = getLookupEntries().get(i);
-            if (firstEntry.getSourceValue() != null) {
-                for (int j = i + 1; j < getLookupEntries().size(); j++) {
-                    final LookupTableEntry secondEntry = getLookupEntries().get(j);
-                    if (secondEntry.getSourceValue() != null && firstEntry.getSourceValue().doubleValue() == secondEntry.getSourceValue().doubleValue()) {
-                        context.fireValidationWarning(this, "Duplicate source value: " + firstEntry.getSourceValue());
+            final LookupTableEntry<N> firstEntry = getLookupEntries().get(i);
+            final N firstSourceValue = firstEntry.getSourceValue();
+            if (firstSourceValue != null) {
+                for (int j=i+1; j<getLookupEntries().size(); j++) {
+                    final LookupTableEntry<N> secondEntry = getLookupEntries().get(j);
+                    final N secondSourceValue = secondEntry.getSourceValue();
+                    if (secondSourceValue != null && firstSourceValue.doubleValue() == secondSourceValue.doubleValue()) {
+                        context.fireValidationWarning(this, "Duplicate source value: " + firstSourceValue);
                     }
                 }
             }

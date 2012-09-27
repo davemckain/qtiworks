@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
  *
  * @author Jiri Kajaba
  */
-public class InterpolationTableEntry extends LookupTableEntry {
+public class InterpolationTableEntry extends LookupTableEntry<Double> {
 
     private static final long serialVersionUID = -7963297659090182595L;
 
@@ -69,6 +69,7 @@ public class InterpolationTableEntry extends LookupTableEntry {
         return getAttributes().getFloatAttribute(ATTR_SOURCE_VALUE_NAME).getComputedValue();
     }
 
+    @Override
     public void setSourceValue(final Double sourceValue) {
         getAttributes().getFloatAttribute(ATTR_SOURCE_VALUE_NAME).setValue(sourceValue);
     }

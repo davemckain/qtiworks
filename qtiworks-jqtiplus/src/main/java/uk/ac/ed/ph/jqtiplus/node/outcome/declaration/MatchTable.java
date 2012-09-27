@@ -33,11 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.MatchTableEntryGroup;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
-import uk.ac.ed.ph.jqtiplus.value.NumberValue;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class MatchTable extends LookupTable {
+public final class MatchTable extends LookupTable<Integer,MatchTableEntry> {
 
     private static final long serialVersionUID = 352441541205819413L;
 
@@ -60,33 +60,23 @@ public final class MatchTable extends LookupTable {
     }
 
     @Override
-    public List<? extends LookupTableEntry> getLookupEntries() {
+    public List<MatchTableEntry> getLookupEntries() {
         return getMatchEntries();
     }
 
-    /**
-     * Gets matchTableEntry children.
-     *
-     * @return matchTableEntry children
-     */
     public List<MatchTableEntry> getMatchEntries() {
         return getNodeGroups().getMatchTableEntryGroup().getEntries();
     }
 
     @Override
-    public SingleValue getTargetValue(final NumberValue sourceValue) {
-        if (sourceValue != null) {
-            if (!(sourceValue instanceof IntegerValue)) {
-                throw new QtiBaseTypeException(computeXPath() + " Invalid baseType: " + sourceValue.getBaseType());
-            }
-
-            for (final MatchTableEntry entry : getMatchEntries()) {
-                if (entry.getSourceValue().intValue() == sourceValue.intValue()) {
-                    return entry.getTargetValue();
-                }
+    public Value getTargetValue(final double sourceValue) {
+        Assert.notNull(sourceValue, "sourceValue");
+        for (final MatchTableEntry entry : getMatchEntries()) {
+            if (entry.getSourceValue()==sourceValue) {
+                return entry.getTargetValue();
             }
         }
-
-        return super.getTargetValue(sourceValue);
+        final SingleValue defaultValue = getDefaultValue();
+        return defaultValue!=null ? defaultValue : NullValue.INSTANCE;
     }
 }

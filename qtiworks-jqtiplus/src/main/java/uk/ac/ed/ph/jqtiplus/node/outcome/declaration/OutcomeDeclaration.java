@@ -167,11 +167,11 @@ public final class OutcomeDeclaration extends VariableDeclaration {
     }
 
 
-    public LookupTable getLookupTable() {
+    public LookupTable<?,?> getLookupTable() {
         return getNodeGroups().getLookupTableGroup().getLookupTable();
     }
 
-    public void setLookupTable(final LookupTable lookupTable) {
+    public void setLookupTable(final LookupTable<?,?> lookupTable) {
         getNodeGroups().getLookupTableGroup().setLookupTable(lookupTable);
     }
 
