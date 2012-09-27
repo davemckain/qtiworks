@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
@@ -66,13 +66,13 @@ public class StringMatchRefuseTest extends ExpressionRefuseTest {
                 { "<stringMatch caseSensitive='True'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</stringMatch>", QtiAttributeException.class }, { "<stringMatch caseSensitive='TRUE'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='TRUE'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</stringMatch>", QtiAttributeException.class }, { "<stringMatch caseSensitive='1.0'>" +
+                        "</stringMatch>", QtiBaseTypeException.class }, { "<stringMatch caseSensitive='1.0'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</stringMatch>", QtiAttributeException.class },
+                        "</stringMatch>", QtiBaseTypeException.class },
                 // multiple
                 { "<stringMatch caseSensitive='true'>" +
                         "<multiple>" +

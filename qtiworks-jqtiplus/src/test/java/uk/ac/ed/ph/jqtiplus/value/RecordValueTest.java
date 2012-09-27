@@ -33,8 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -58,26 +62,29 @@ public class RecordValueTest extends ValueTest {
 
     static {
         // RECORD_1__1_2_3
-        RECORD_1__1_2_3 = new RecordValue();
-        RECORD_1__1_2_3.add("key_1", new IntegerValue(1));
-        RECORD_1__1_2_3.add("key_2", new IntegerValue(2));
-        RECORD_1__1_2_3.add("key_3", new IntegerValue(3));
+        final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
+        recordBuilder.put(new Identifier("key_1"), new IntegerValue(1));
+        recordBuilder.put(new Identifier("key_2"), new IntegerValue(2));
+        recordBuilder.put(new Identifier("key_3"), new IntegerValue(3));
+        RECORD_1__1_2_3 = (RecordValue) RecordValue.createRecordValue(recordBuilder);
+
         // RECORD_2__1_2_3
-        RECORD_2__1_2_3 = new RecordValue();
-        RECORD_2__1_2_3.add("key_1", new IntegerValue(1));
-        RECORD_2__1_2_3.add("key_2", new IntegerValue(2));
-        RECORD_2__1_2_3.add("key_3", new IntegerValue(3));
+        RECORD_2__1_2_3 = (RecordValue) RecordValue.createRecordValue(recordBuilder);
+
         // RECORD_3__3_2_1
-        RECORD_3__3_2_1 = new RecordValue();
-        RECORD_3__3_2_1.add("key_3", new IntegerValue(3));
-        RECORD_3__3_2_1.add("key_2", new IntegerValue(2));
-        RECORD_3__3_2_1.add("key_1", new IntegerValue(1));
+        recordBuilder.clear();
+        recordBuilder.put(new Identifier("key_3"), new IntegerValue(3));
+        recordBuilder.put(new Identifier("key_2"), new IntegerValue(2));
+        recordBuilder.put(new Identifier("key_1"), new IntegerValue(1));
+        RECORD_3__3_2_1 = (RecordValue) RecordValue.createRecordValue(recordBuilder);
+
         // RECORD_4__1_2_3_4
-        RECORD_4__1_2_3_4 = new RecordValue();
-        RECORD_4__1_2_3_4.add("key_1", new IntegerValue(1));
-        RECORD_4__1_2_3_4.add("key_2", new IntegerValue(2));
-        RECORD_4__1_2_3_4.add("key_3", new IntegerValue(3));
-        RECORD_4__1_2_3_4.add("key_4", new IntegerValue(4));
+        recordBuilder.clear();
+        recordBuilder.put(new Identifier("key_1"), new IntegerValue(1));
+        recordBuilder.put(new Identifier("key_2"), new IntegerValue(2));
+        recordBuilder.put(new Identifier("key_3"), new IntegerValue(3));
+        recordBuilder.put(new Identifier("key_4"), new IntegerValue(4));
+        RECORD_4__1_2_3_4 = (RecordValue) RecordValue.createRecordValue(recordBuilder);
     }
 
     /**
@@ -89,35 +96,35 @@ public class RecordValueTest extends ValueTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 // NullValue
-                {true, new RecordValue(), NullValue.INSTANCE}, {false, new RecordValue("identifier", new IntegerValue(1)), NullValue.INSTANCE},
+                {true, RecordValue.emptyRecord(), NullValue.INSTANCE}, {false, RecordValue.createRecordValue("identifier", new IntegerValue(1)), NullValue.INSTANCE},
                 // IdentifierValue
-                {false, new RecordValue(), new IdentifierValue("identifier")}, {false, new RecordValue("identifier", new IdentifierValue("identifier")), new IdentifierValue("identifier")},
+                {false, RecordValue.emptyRecord(), new IdentifierValue("identifier")}, {false, RecordValue.createRecordValue("identifier", new IdentifierValue("identifier")), new IdentifierValue("identifier")},
                 // BooleanValue
-                {false, new RecordValue(), BooleanValue.TRUE}, {false, new RecordValue("identifier", BooleanValue.TRUE), BooleanValue.TRUE}, {false, new RecordValue(), BooleanValue.FALSE}, {false, new RecordValue("identifier", BooleanValue.FALSE), BooleanValue.FALSE},
+                {false, RecordValue.emptyRecord(), BooleanValue.TRUE}, {false, RecordValue.createRecordValue("identifier", BooleanValue.TRUE), BooleanValue.TRUE}, {false, RecordValue.emptyRecord(), BooleanValue.FALSE}, {false, RecordValue.createRecordValue("identifier", BooleanValue.FALSE), BooleanValue.FALSE},
                 // IntegerValue
-                {false, new RecordValue(), new IntegerValue(1)}, {false, new RecordValue("identifier", new IntegerValue(1)), new IntegerValue(1)},
+                {false, RecordValue.emptyRecord(), new IntegerValue(1)}, {false, RecordValue.createRecordValue("identifier", new IntegerValue(1)), new IntegerValue(1)},
                 // FloatValue
-                {false, new RecordValue(), new FloatValue(1)}, {false, new RecordValue("identifier", new FloatValue(1)), new FloatValue(1)},
+                {false, RecordValue.emptyRecord(), new FloatValue(1)}, {false, RecordValue.createRecordValue("identifier", new FloatValue(1)), new FloatValue(1)},
                 // StringValue
-                {false, new RecordValue(), new StringValue("string")}, {false, new RecordValue("identifier", new StringValue("string")), new StringValue("string")},
+                {false, RecordValue.emptyRecord(), new StringValue("string")}, {false, RecordValue.createRecordValue("identifier", new StringValue("string")), new StringValue("string")},
                 // PointValue
-                {false, new RecordValue(), new PointValue(1, 1)}, {false, new RecordValue("identifier", new PointValue(1, 1)), new PointValue(1, 1)},
+                {false, RecordValue.emptyRecord(), new PointValue(1, 1)}, {false, RecordValue.createRecordValue("identifier", new PointValue(1, 1)), new PointValue(1, 1)},
                 // PairValue
-                {false, new RecordValue(), new PairValue("ident1", "ident2")}, {false, new RecordValue("identifier", new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2")},
+                {false, RecordValue.emptyRecord(), new PairValue("ident1", "ident2")}, {false, RecordValue.createRecordValue("identifier", new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2")},
                 // DirectedPairValue
-                {false, new RecordValue(), new DirectedPairValue("ident1", "ident2")}, {false, new RecordValue("identifier", new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2")},
+                {false, RecordValue.emptyRecord(), new DirectedPairValue("ident1", "ident2")}, {false, RecordValue.createRecordValue("identifier", new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2")},
                 // DurationValue
-                {false, new RecordValue(), new DurationValue(1)}, {false, new RecordValue("identifier", new DurationValue(1)), new DurationValue(1)},
+                {false, RecordValue.emptyRecord(), new DurationValue(1)}, {false, RecordValue.createRecordValue("identifier", new DurationValue(1)), new DurationValue(1)},
                 // FileValue
-                {false, new RecordValue(), ValueTestUtils.createTestFileValue("file")}, {false, new RecordValue("identifier", ValueTestUtils.createTestFileValue("file")), ValueTestUtils.createTestFileValue("file")},
+                {false, RecordValue.emptyRecord(), ValueTestUtils.createTestFileValue("file")}, {false, RecordValue.createRecordValue("identifier", ValueTestUtils.createTestFileValue("file")), ValueTestUtils.createTestFileValue("file")},
                 // UriValue
-                {false, new RecordValue(), new UriValue("uri")}, {false, new RecordValue("identifier", new UriValue("uri")), new UriValue("uri")},
+                {false, RecordValue.emptyRecord(), new UriValue("uri")}, {false, RecordValue.createRecordValue("identifier", new UriValue("uri")), new UriValue("uri")},
                 // MultipleValue
-                {true, new RecordValue(), new MultipleValue()}, {false, new RecordValue(), new MultipleValue(new IntegerValue(1))}, {false, new RecordValue("identifier", new IntegerValue(1)), new MultipleValue()}, {false, new RecordValue("identifier", new IntegerValue(1)), new MultipleValue(new IntegerValue(1))},
+                {true, RecordValue.emptyRecord(), MultipleValue.emptyValue()}, {false, RecordValue.emptyRecord(), MultipleValue.createMultipleValue(new IntegerValue(1))}, {false, RecordValue.createRecordValue("identifier", new IntegerValue(1)), MultipleValue.emptyValue()}, {false, RecordValue.createRecordValue("identifier", new IntegerValue(1)), MultipleValue.createMultipleValue(new IntegerValue(1))},
                 // OrderedValue
-                {true, new RecordValue(), new OrderedValue()}, {false, new RecordValue(), new OrderedValue(new IntegerValue(1))}, {false, new RecordValue("identifier", new IntegerValue(1)), new OrderedValue()}, {false, new RecordValue("identifier", new IntegerValue(1)), new OrderedValue(new IntegerValue(1))},
+                {true, RecordValue.emptyRecord(), OrderedValue.emptyValue()}, {false, RecordValue.emptyRecord(), OrderedValue.createOrderedValue(new IntegerValue(1))}, {false, RecordValue.createRecordValue("identifier", new IntegerValue(1)), OrderedValue.emptyValue()}, {false, RecordValue.createRecordValue("identifier", new IntegerValue(1)), OrderedValue.createOrderedValue(new IntegerValue(1))},
                 // RecordValue
-                {true, new RecordValue(), new RecordValue()}, {false, new RecordValue(), new RecordValue("identifier", new IntegerValue(1))}, {false, new RecordValue("identifier", new IntegerValue(1)), new RecordValue()}, {true, new RecordValue("identifier", new IntegerValue(1)), new RecordValue("identifier", new IntegerValue(1))}, {true, RECORD_1__1_2_3, RECORD_2__1_2_3}, {true, RECORD_1__1_2_3, RECORD_3__3_2_1}, {false, RECORD_1__1_2_3, RECORD_4__1_2_3_4},
+                {true, RecordValue.emptyRecord(), RecordValue.emptyRecord()}, {false, RecordValue.emptyRecord(), RecordValue.createRecordValue("identifier", new IntegerValue(1))}, {false, RecordValue.createRecordValue("identifier", new IntegerValue(1)), RecordValue.emptyRecord()}, {true, RecordValue.createRecordValue("identifier", new IntegerValue(1)), RecordValue.createRecordValue("identifier", new IntegerValue(1))}, {true, RECORD_1__1_2_3, RECORD_2__1_2_3}, {true, RECORD_1__1_2_3, RECORD_3__3_2_1}, {false, RECORD_1__1_2_3, RECORD_4__1_2_3_4},
                 });
     }
 

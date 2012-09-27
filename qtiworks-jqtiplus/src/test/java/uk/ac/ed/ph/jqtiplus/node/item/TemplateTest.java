@@ -49,31 +49,31 @@ public class TemplateTest {
     @Test
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TemplateTest.class);
-        final ItemSessionState itemState = itemSessionController.getItemSessionState();
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getItem();
 
-        assertNull(itemState.getResponseValue("response"));
-        assertNull(itemState.getOverriddenDefaultValue("response"));
-        assertNull(itemState.getOverriddenCorrectResponseValue("response"));
+        assertNull(itemSessionState.getResponseValue("response"));
+        assertNull(itemSessionState.getOverriddenDefaultValue("response"));
+        assertNull(itemSessionState.getOverriddenCorrectResponseValue("response"));
 
-        assertNull(itemState.getTemplateValue("template1"));
+        assertNull(itemSessionState.getTemplateValue("template1"));
         assertEquals("initial", item.getTemplateDeclaration("template1").getDefaultValue().evaluate().toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue("template1").toQtiString());
 
-        assertNull(itemState.getTemplateValue("template2"));
+        assertNull(itemSessionState.getTemplateValue("template2"));
         assertEquals("initial", item.getTemplateDeclaration("template2").getDefaultValue().evaluate().toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue("template2").toQtiString());
 
         itemSessionController.initialize();
 
-        assertEquals("incorrect", itemState.getResponseValue("response").toQtiString());
+        assertEquals("incorrect", itemSessionState.getResponseValue("response").toQtiString());
         assertEquals("incorrect", itemSessionController.computeDefaultValue("response").toQtiString());
         assertEquals("correct", itemSessionController.computeCorrectResponse("response").toQtiString());
 
-        assertEquals("final", itemState.getTemplateValue("template1").toQtiString());
+        assertEquals("final", itemSessionState.getTemplateValue("template1").toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue("template1").toQtiString());
 
-        assertEquals("initial", itemState.getTemplateValue("template2").toQtiString());
+        assertEquals("initial", itemSessionState.getTemplateValue("template2").toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue("template2").toQtiString());
 
     }

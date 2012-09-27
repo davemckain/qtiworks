@@ -31,77 +31,29 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
-
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-
-import java.io.Serializable;
+package uk.ac.ed.ph.qtiworks.mathassess.glue.types;
 
 /**
- * Abstract partial implementation of ValidationItem.
+ * Wrapper corresponding to a QTI NULL value
  *
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public abstract class AbstractValidationItem implements ValidationItem, Serializable {
-
-    private static final long serialVersionUID = -965289438371398086L;
-
-    /** Source of this item. */
-    private final Validatable source;
-
-    /** Source node of this item. */
-    private final QtiNode node;
-
-    /** Message of this item. */
-    private final String message;
-
-    private final Throwable cause;
-
-    /**
-     * Constructs validation item.
-     *
-     * @param source source of constructed item
-     * @param node source node of constructed item
-     * @param message message of constructed item
-     */
-    public AbstractValidationItem(final Validatable source, final QtiNode node, final String message) {
-        this(source, node, message, null);
+public final class NullValueWrapper implements ValueWrapper {
+    
+    public static final NullValueWrapper INSTANCE = new NullValueWrapper();
+    
+    private NullValueWrapper() {
+        /* use singleton instead */
     }
-
-    public AbstractValidationItem(final Validatable source, final QtiNode node, final String message, final Throwable cause) {
-        this.source = source;
-        this.node = node;
-        this.message = message;
-        this.cause = cause;
+    
+    @Override
+    public ValueCardinality getCardinality() {
+        return null;
     }
 
     @Override
-    public Validatable getSource() {
-        return source;
+    public boolean isNull() {
+        return true;
     }
 
-    @Override
-    public QtiNode getNode() {
-        return node;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
-    @Override
-    public Throwable getCause() {
-        return cause;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(source=" + source
-                + ",node=" + node
-                + ",message=" + message
-                + ",cause=" + cause
-                + ")";
-    }
 }

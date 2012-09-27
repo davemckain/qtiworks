@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
@@ -48,13 +49,14 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 /**
- * Callback interface used when {@link QtiNode}s validate themselves.
+ * Callback interface to enable {@link QtiNode} to validate themselves.
  *
  * @author David McKain
  */
-public interface ValidationContext {
+public interface ValidationContext extends NotificationFirer {
 
     /**
      * Provides access to the underlying {@link JqtiExtensionManager} behind this process
@@ -62,31 +64,31 @@ public interface ValidationContext {
     JqtiExtensionManager getJqtiExtensionManager();
 
     /**
-     * Returns true if validating an {@link AssessmentItem}, false otherwise.
+     * Returns true if handling an {@link AssessmentItem}, false otherwise.
      */
-    boolean isValidatingItem();
+    boolean isSubjectItem();
 
     /**
-     * Returns true of validating an {@link AssessmentTest}, false otherwise.
+     * Returns true if handling an {@link AssessmentTest}, false otherwise.
      */
-    boolean isValidatingTest();
+    boolean isSubjectTest();
 
     /**
-     * Returns the {@link AssessmentObject} being validated, which will not be null.
+     * Returns the {@link AssessmentObject} being handled, which will not be null.
      */
     AssessmentObject getSubject();
 
     /**
-     * Returns the {@link AssessmentItem} being validated, if this is the case.
+     * Returns the {@link AssessmentItem} being handled, if this is the case.
      *
-     * @throws QtiLogicException if not validating an item
+     * @throws QtiLogicException if not handling an item
      */
     AssessmentItem getSubjectItem();
 
     /**
-     * Returns the {@link AssessmentTest} being validated, if this is the case.
+     * Returns the {@link AssessmentTest} being handling, if this is the case.
      *
-     * @throws QtiLogicException if not validating a test
+     * @throws QtiLogicException if not handling a test
      */
     AssessmentTest getSubjectTest();
 
@@ -95,10 +97,6 @@ public interface ValidationContext {
     ResolvedAssessmentItem getResolvedAssessmentItem();
 
     ResolvedAssessmentTest getResolvedAssessmentTest();
-
-    void add(ValidationItem item);
-
-    AbstractValidationResult getValidationResult();
 
     //------------------------------------------------------
 
@@ -121,25 +119,34 @@ public interface ValidationContext {
     /**
      * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s, returning
      * true if successful.
-     *
+     * <p>
      * A {@link ValidationError} is recorded and false is returned if unsuccessful.
      */
-    boolean checkVariableType(QtiNode owner, VariableDeclaration variableDeclaration, VariableType... requiredTypes);
+    boolean checkVariableType(QtiNode owner, VariableDeclaration variableDeclaration, VariableType... allowedTypes);
+
+    /**
+     * Checks that the given {@link VariableDeclaration} has one of the given {@link Signature}s,
+     * returning true if successful.
+     * <p>
+     * A {@link ValidationError} is recorded and false is returned if unsuccessful.
+     */
+    boolean checkSignature(QtiNode owner, VariableDeclaration variableDeclaration, Signature... allowedSignatures);
 
     /**
      * Checks that the given {@link VariableDeclaration} is of the given {@link BaseType}s, returning true
      * if successful.
-     *
+     * <p>
      * A {@link ValidationError} is recorded and false is returned if unsuccessful.
      */
-    boolean checkBaseType(QtiNode owner, VariableDeclaration variableDeclaration, BaseType... requiedBaseTypes);
+    boolean checkBaseType(QtiNode owner, VariableDeclaration variableDeclaration, BaseType... allowedBaseTypes);
 
     /**
      * Checks that the given {@link VariableDeclaration} is of one of the stated items in the given
      * {@link Cardinality} array, returning true if successful.
-     * re
+     * <p>
      * A {@link ValidationError} is recorded and false is returned if unsuccessful.
      */
-    boolean checkCardinality(QtiNode owner, VariableDeclaration variableDeclaration, Cardinality... requiredCardinalities);
+    boolean checkCardinality(QtiNode owner, VariableDeclaration variableDeclaration, Cardinality... allowedCardinalities);
+
 
 }

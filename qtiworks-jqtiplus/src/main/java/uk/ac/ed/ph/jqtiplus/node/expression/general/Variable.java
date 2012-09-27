@@ -43,9 +43,7 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -106,17 +104,16 @@ public final class Variable extends LookupExpression {
             final VariableDeclaration resolvedDeclaration) {
         final Identifier weightIdentifier = getWeightIdentifier();
         if (weightIdentifier!=null) {
-            if (context.isValidatingTest() && variableReferenceIdentifier.isDotted()) {
+            if (context.isSubjectTest() && variableReferenceIdentifier.isDotted()) {
                 final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
                 final ResolvedAssessmentTest resolvedAssessmentTest = context.getResolvedAssessmentTest();
                 final AssessmentItemRef itemRef = resolvedAssessmentTest.getItemRefsByIdentifierMap().get(itemRefIdentifier).get(0);
                 if (itemRef.getWeight(weightIdentifier) == null) {
-                    context.getValidationResult().add(new ValidationWarning(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Cannot find weight " + weightIdentifier));
+                    context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Cannot find weight " + weightIdentifier);
                 }
             }
-            else if (context.isValidatingItem()) {
-                context.getValidationResult().add(new AttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME),
-                        "Weights may only be used when referencing item variables from tests"));
+            else if (context.isSubjectItem()) {
+                context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Weights may only be used when referencing item variables from tests");
             }
         }
     }

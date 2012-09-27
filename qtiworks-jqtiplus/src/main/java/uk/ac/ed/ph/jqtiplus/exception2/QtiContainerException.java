@@ -31,34 +31,21 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
+package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-
-import java.util.Arrays;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 /**
- * Error validation item for cardinality problems.
- * 
- * @author Jiri Kajaba
+ * This exception is used for reporting expectation failures when constructing
+ * and manipulating container types.
+ *
+ * @author David McKain
  */
-public class CardinalityValidationError extends ValidationError {
+public final class QtiContainerException extends QtiRuntimeException {
 
-    private static final long serialVersionUID = -169690431325492280L;
+    private static final long serialVersionUID = 543586953995447052L;
 
-    /**
-     * Constructs validation item.
-     * 
-     * @param source source node of constructed item
-     * @param expected expected cardinalities
-     * @param found found cardinalities
-     */
-    public CardinalityValidationError(QtiNode source, Cardinality[] expected, Cardinality[] found) {
-        super(source, createMessage(expected, found));
-    }
-
-    private static String createMessage(Cardinality[] expected, Cardinality[] found) {
-        return "Invalid " + Cardinality.QTI_CLASS_NAME + ". Expected " + Arrays.toString(expected) + ", but found " + Arrays.toString(found) + ".";
+    public QtiContainerException(final String message) {
+        super(message);
     }
 }

@@ -40,6 +40,7 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAM
 
 import uk.ac.ed.ph.qtiworks.mathassess.attribute.ActionAttribute;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.value.ActionType;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -47,12 +48,10 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
@@ -166,25 +165,25 @@ public final class CasCompare extends MathAssessOperator {
     @Override
     protected void doAdditionalValidation(final ValidationContext context) {
         if (getAction() == ActionType.CODE && getCode() == null) {
-            context.add(new ValidationError(this, "The " + ATTR_CODE_NAME + " attribute must be specified when the " + ATTR_ACTION_NAME + " is " + getAction()));
+            context.fireValidationError(this, "The " + ATTR_CODE_NAME + " attribute must be specified when the " + ATTR_ACTION_NAME + " is " + getAction());
         }
         else if (getAction() != null && getCode() == null) {
             switch (getSyntax()) {
                 case MAXIMA:
                     if (!isActionSupported(getAction())) {
-                        context.add(new ValidationError(this, "The action '" + getAction() + "' is not supported by the '" + getSyntax() + "' engine."));
+                        context.fireValidationError(this, "The action '" + getAction() + "' is not supported by the '" + getSyntax() + "' engine.");
                     }
                     break;
             }
         }
 
         if (getChildren().size() != 2) {
-            context.add(new ValidationError(this, "Wrong number of children - expected 2"));
+            context.fireValidationError(this, "Wrong number of children - expected 2");
         }
     }
 
     @Override
-    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) throws MaximaTimeoutException {
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) {
         final Value v1 = childValues[0];
         final Value v2 = childValues[1];
 
@@ -197,19 +196,25 @@ public final class CasCompare extends MathAssessOperator {
                     new Object[] { code, simplify, v1, v2 });
         }
 
-        if (CasTypeGlue.isMathsContentRecord(v1) && ((RecordValue) v1).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
+        final ValueWrapper casValue1 = GlueValueBinder.jqtiToCas(v1);
+        final ValueWrapper casValue2 = GlueValueBinder.jqtiToCas(v2);
+        if (casValue1==null) {
+            context.fireRuntimeError(this, "First child value " + v1.toQtiString() + " cannot be passed to Maima - returning NULL");
             return NullValue.INSTANCE;
         }
-        if (CasTypeGlue.isMathsContentRecord(v2) && ((RecordValue) v2).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
+        if (casValue2==null) {
+            context.fireRuntimeError(this, "Second child value " + v2.toQtiString() + " cannot be passed to Maxima - returning NULL");
             return NullValue.INSTANCE;
         }
 
         final QtiMaximaProcess qtiMaximaProcess = mathAssessExtensionPackage.obtainMaximaSessionForThread();
-
-        return BooleanValue.valueOf(qtiMaximaProcess.executeCasCompare(code,
-                simplify,
-                CasTypeGlue.convertFromJQTI(v1),
-                CasTypeGlue.convertFromJQTI(v2)));
+        try {
+            return BooleanValue.valueOf(qtiMaximaProcess.executeCasCompare(code, simplify, casValue1, casValue2));
+        }
+        catch (final MaximaTimeoutException e) {
+            context.fireRuntimeError(this, "A timeout occurred executing the CasCompare logic. Returning NULL");
+            return NullValue.INSTANCE;
+        }
     }
 
     @Override

@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
@@ -185,31 +184,31 @@ public final class OrderInteraction extends BlockInteraction implements SimpleCh
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    protected void validateThis(final ValidationContext context) {
         final Integer maxChoices = getMaxChoices();
         final Integer minChoices = getMinChoices();
 
         if (minChoices != null && minChoices.intValue() < 1) {
-            context.add(new ValidationError(this, "Minimum number of choices can't be less than one"));
+            context.fireValidationError(this, "Minimum number of choices can't be less than one");
         }
 
         if (maxChoices != null && minChoices != null && maxChoices.intValue() < minChoices.intValue()) {
-            context.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
+            context.fireValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices");
         }
 
         if (maxChoices != null && maxChoices.intValue() > getSimpleChoices().size()) {
-            context.add(new ValidationError(this, "Maximum number of choices cannot be larger than the number of choice children"));
+            context.fireValidationError(this, "Maximum number of choices cannot be larger than the number of choice children");
         }
 
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                context.add(new ValidationError(this, "Response variable must have identifier base type"));
-            }
-
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isOrdered()) {
-                context.add(new ValidationError(this, "Response variable must have ordered cardinality"));
+            if (declaration!=null) {
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
+                    context.fireValidationError(this, "Response variable must have identifier base type");
+                }
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isOrdered()) {
+                    context.fireValidationError(this, "Response variable must have ordered cardinality");
+                }
             }
         }
     }

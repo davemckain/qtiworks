@@ -33,7 +33,6 @@
  */
 package org.qtitools.qti.node.test.flow;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractJump;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
@@ -109,9 +108,8 @@ public abstract class JumpNode extends MiddleNode {
      * after this jump).
      * 
      * @return next node in item flow after this jump
-     * @throws RuntimeValidationException 
      */
-    public Node evaluate(TestProcessingContext context) throws RuntimeValidationException {
+    public Node evaluate(TestProcessingContext context) {
         logger.debug("Evaluation of jump {} started.", getIndex());
 
         Node target = null;

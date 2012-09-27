@@ -48,36 +48,39 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class OrderedValueTest extends ValueTest {
 
-    private static final OrderedValue ORDERED_1__1_2_3;
+    private static final Value ORDERED_1__1_2_3;
 
-    private static final OrderedValue ORDERED_2__1_2_3;
+    private static final Value ORDERED_2__1_2_3;
 
-    private static final OrderedValue ORDERED_3__3_2_1;
+    private static final Value ORDERED_3__3_2_1;
 
-    private static final OrderedValue ORDERED_4__1_2_3_4;
+    private static final Value ORDERED_4__1_2_3_4;
 
     static {
         // ORDERED_1__1_2_3
-        ORDERED_1__1_2_3 = new OrderedValue();
-        ORDERED_1__1_2_3.add(new IntegerValue(1));
-        ORDERED_1__1_2_3.add(new IntegerValue(2));
-        ORDERED_1__1_2_3.add(new IntegerValue(3));
+        ORDERED_1__1_2_3 = OrderedValue.createOrderedValue(
+                new IntegerValue(1),
+                new IntegerValue(2),
+                new IntegerValue(3));
+
         // ORDERED_2__1_2_3
-        ORDERED_2__1_2_3 = new OrderedValue();
-        ORDERED_2__1_2_3.add(new IntegerValue(1));
-        ORDERED_2__1_2_3.add(new IntegerValue(2));
-        ORDERED_2__1_2_3.add(new IntegerValue(3));
+        ORDERED_2__1_2_3 = OrderedValue.createOrderedValue(
+                new IntegerValue(1),
+                new IntegerValue(2),
+                new IntegerValue(3));
+
         // ORDERED_3__3_2_1
-        ORDERED_3__3_2_1 = new OrderedValue();
-        ORDERED_3__3_2_1.add(new IntegerValue(3));
-        ORDERED_3__3_2_1.add(new IntegerValue(2));
-        ORDERED_3__3_2_1.add(new IntegerValue(1));
+        ORDERED_3__3_2_1 = OrderedValue.createOrderedValue(
+                new IntegerValue(3),
+                new IntegerValue(2),
+                new IntegerValue(1));
+
         // ORDERED_4__1_2_3_4
-        ORDERED_4__1_2_3_4 = new OrderedValue();
-        ORDERED_4__1_2_3_4.add(new IntegerValue(1));
-        ORDERED_4__1_2_3_4.add(new IntegerValue(2));
-        ORDERED_4__1_2_3_4.add(new IntegerValue(3));
-        ORDERED_4__1_2_3_4.add(new IntegerValue(4));
+        ORDERED_4__1_2_3_4 = OrderedValue.createOrderedValue(
+                new IntegerValue(1),
+                new IntegerValue(2),
+                new IntegerValue(3),
+                new IntegerValue(4));
     }
 
     /**
@@ -89,60 +92,60 @@ public class OrderedValueTest extends ValueTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 // NullValue
-                {true, new OrderedValue(), NullValue.INSTANCE},
-                {false, new OrderedValue(new IntegerValue(1)), NullValue.INSTANCE},
+                {true, OrderedValue.emptyValue(), NullValue.INSTANCE},
+                {false, OrderedValue.createOrderedValue(new IntegerValue(1)), NullValue.INSTANCE},
                 // IdentifierValue
-                {false, new OrderedValue(), new IdentifierValue("identifier")},
-                {false, new OrderedValue(new IdentifierValue("identifier")), new IdentifierValue("identifier")},
+                {false, OrderedValue.emptyValue(), new IdentifierValue("identifier")},
+                {false, OrderedValue.createOrderedValue(new IdentifierValue("identifier")), new IdentifierValue("identifier")},
                 // BooleanValue
-                {false, new OrderedValue(), BooleanValue.TRUE},
-                {false, new OrderedValue(BooleanValue.TRUE), BooleanValue.TRUE},
-                {false, new OrderedValue(), BooleanValue.FALSE},
-                {false, new OrderedValue(BooleanValue.FALSE), BooleanValue.FALSE},
+                {false, OrderedValue.emptyValue(), BooleanValue.TRUE},
+                {false, OrderedValue.createOrderedValue(BooleanValue.TRUE), BooleanValue.TRUE},
+                {false, OrderedValue.emptyValue(), BooleanValue.FALSE},
+                {false, OrderedValue.createOrderedValue(BooleanValue.FALSE), BooleanValue.FALSE},
                 // IntegerValue
-                {false, new OrderedValue(), new IntegerValue(1)},
-                {false, new OrderedValue(new IntegerValue(1)), new IntegerValue(1)},
+                {false, OrderedValue.emptyValue(), new IntegerValue(1)},
+                {false, OrderedValue.createOrderedValue(new IntegerValue(1)), new IntegerValue(1)},
                 // FloatValue
-                {false, new OrderedValue(), new FloatValue(1)},
-                {false, new OrderedValue(new FloatValue(1)), new FloatValue(1)},
+                {false, OrderedValue.emptyValue(), new FloatValue(1)},
+                {false, OrderedValue.createOrderedValue(new FloatValue(1)), new FloatValue(1)},
                 // StringValue
-                {false, new OrderedValue(), new StringValue("string")},
-                {false, new OrderedValue(new StringValue("string")), new StringValue("string")},
+                {false, OrderedValue.emptyValue(), new StringValue("string")},
+                {false, OrderedValue.createOrderedValue(new StringValue("string")), new StringValue("string")},
                 // PointValue
-                {false, new OrderedValue(), new PointValue(1, 1)},
-                {false, new OrderedValue(new PointValue(1, 1)), new PointValue(1, 1)},
+                {false, OrderedValue.emptyValue(), new PointValue(1, 1)},
+                {false, OrderedValue.createOrderedValue(new PointValue(1, 1)), new PointValue(1, 1)},
                 // PairValue
-                {false, new OrderedValue(), new PairValue("ident1", "ident2")},
-                {false, new OrderedValue(new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2")},
+                {false, OrderedValue.emptyValue(), new PairValue("ident1", "ident2")},
+                {false, OrderedValue.createOrderedValue(new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2")},
                 // DirectedPairValue
-                {false, new OrderedValue(), new DirectedPairValue("ident1", "ident2")},
-                {false, new OrderedValue(new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2")},
+                {false, OrderedValue.emptyValue(), new DirectedPairValue("ident1", "ident2")},
+                {false, OrderedValue.createOrderedValue(new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2")},
                 // DurationValue
-                {false, new OrderedValue(), new DurationValue(1)},
-                {false, new OrderedValue(new DurationValue(1)), new DurationValue(1)},
+                {false, OrderedValue.emptyValue(), new DurationValue(1)},
+                {false, OrderedValue.createOrderedValue(new DurationValue(1)), new DurationValue(1)},
                 // FileValue
-                {false, new OrderedValue(), ValueTestUtils.createTestFileValue("file")},
-                {false, new OrderedValue(ValueTestUtils.createTestFileValue("file")), ValueTestUtils.createTestFileValue("file")},
+                {false, OrderedValue.emptyValue(), ValueTestUtils.createTestFileValue("file")},
+                {false, OrderedValue.createOrderedValue(ValueTestUtils.createTestFileValue("file")), ValueTestUtils.createTestFileValue("file")},
                 // UriValue
-                {false, new OrderedValue(), new UriValue("uri")},
-                {false, new OrderedValue(new UriValue("uri")), new UriValue("uri")},
+                {false, OrderedValue.emptyValue(), new UriValue("uri")},
+                {false, OrderedValue.createOrderedValue(new UriValue("uri")), new UriValue("uri")},
                 // MultipleValue
-                {true, new OrderedValue(), new MultipleValue()},
-                {false, new OrderedValue(), new MultipleValue(new IntegerValue(1))},
-                {false, new OrderedValue(new IntegerValue(1)), new MultipleValue()},
-                {false, new OrderedValue(new IntegerValue(1)), new MultipleValue(new IntegerValue(1))},
+                {true, OrderedValue.emptyValue(), MultipleValue.emptyValue()},
+                {false, OrderedValue.emptyValue(), MultipleValue.createMultipleValue(new IntegerValue(1))},
+                {false, OrderedValue.createOrderedValue(new IntegerValue(1)), MultipleValue.emptyValue()},
+                {false, OrderedValue.createOrderedValue(new IntegerValue(1)), MultipleValue.createMultipleValue(new IntegerValue(1))},
                 // OrderedValue
-                {true, new OrderedValue(), new OrderedValue()},
-                {false, new OrderedValue(), new OrderedValue(new IntegerValue(1))},
-                {false, new OrderedValue(new IntegerValue(1)), new OrderedValue()},
-                {true, new OrderedValue(new IntegerValue(1)), new OrderedValue(new IntegerValue(1))},
+                {true, OrderedValue.emptyValue(), OrderedValue.emptyValue()},
+                {false, OrderedValue.emptyValue(), OrderedValue.createOrderedValue(new IntegerValue(1))},
+                {false, OrderedValue.createOrderedValue(new IntegerValue(1)), OrderedValue.emptyValue()},
+                {true, OrderedValue.createOrderedValue(new IntegerValue(1)), OrderedValue.createOrderedValue(new IntegerValue(1))},
                 {true, ORDERED_1__1_2_3, ORDERED_2__1_2_3}, {false, ORDERED_1__1_2_3, ORDERED_3__3_2_1},
                 {false, ORDERED_1__1_2_3, ORDERED_4__1_2_3_4},
                 // RecordValue
-                {true, new OrderedValue(), new RecordValue()},
-                {false, new OrderedValue(), new RecordValue("identifier", new IntegerValue(1))},
-                {false, new OrderedValue(new IntegerValue(1)), new RecordValue()},
-                {false, new OrderedValue(new IntegerValue(1)), new RecordValue("identifier", new IntegerValue(1))},
+                {true, OrderedValue.emptyValue(), RecordValue.emptyRecord()},
+                {false, OrderedValue.emptyValue(), RecordValue.createRecordValue("identifier", new IntegerValue(1))},
+                {false, OrderedValue.createOrderedValue(new IntegerValue(1)), RecordValue.emptyRecord()},
+                {false, OrderedValue.createOrderedValue(new IntegerValue(1)), RecordValue.createRecordValue("identifier", new IntegerValue(1))},
                 });
     }
 

@@ -72,7 +72,7 @@ public final class DirectedPairValue extends AbstractPairValue {
 
     @Override
     public BaseType getBaseType() {
-        return BaseType.DIRECTED_PAIR;
+        return isNull() ? null : BaseType.DIRECTED_PAIR;
     }
 
     @Override

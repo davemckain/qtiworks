@@ -33,59 +33,54 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
- * Implementation of "sequence-type" container.
- * <p>
- * This container can be ordered or NULL (if empty).
+ * Implementation of a non-NULL ordered value.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
+ * @author David McKain (revised version)
  */
 public final class OrderedValue extends ListValue {
 
     private static final long serialVersionUID = 5819887477828683688L;
 
-    /**
-     * Constructs empty (NULL) <code>OrderedValue</code> container.
-     */
-    public OrderedValue() {
-        super();
+    public static NullValue emptyValue() {
+        return NullValue.INSTANCE;
     }
 
-    /**
-     * Constructs <code>OrderedValue</code> containing the given value
-     *
-     * @param value added <code>SingleValue</code>
-     */
-    public OrderedValue(final SingleValue value) {
+    public static OrderedValue createOrderedValue(final SingleValue value) {
+        Assert.notNull(value, "value");
+        return new OrderedValue(value);
+    }
+
+    public static Value createOrderedValue(final SingleValue... values) {
+        Assert.notNull(values, "values");
+        return values.length==0 ? NullValue.INSTANCE : new OrderedValue(values);
+    }
+
+    public static Value createOrderedValue(final Collection<? extends SingleValue> values) {
+        Assert.notNull(values, "values");
+        return values.isEmpty() ? NullValue.INSTANCE : new OrderedValue(values);
+    }
+
+    private OrderedValue(final SingleValue value) {
         super(value);
     }
 
-    /**
-     * Constructs <code>OrderedValue</code> containing the given values
-     *
-     * @param values added <code>SingleValue</code>s
-     */
-    public OrderedValue(final Iterable<? extends SingleValue> values) {
+    private OrderedValue(final SingleValue... values) {
         super(values);
     }
 
-    /**
-     * Constructs empty (NULL) <code>OrderedValue</code> container and adds given <code>OrderedValue</code> into it.
-     *
-     * @param value added <code>OrderedValue</code>
-     */
-    public OrderedValue(final OrderedValue value) {
-        super();
-        merge(value);
+    private OrderedValue(final Collection<? extends SingleValue> values) {
+        super(values);
     }
 
     @Override
     public Cardinality getCardinality() {
-        if (isNull()) {
-            return null;
-        }
-
         return Cardinality.ORDERED;
     }
 
@@ -101,25 +96,21 @@ public final class OrderedValue extends ListValue {
      * @return true if this container contains given <code>OrderedValue</code>; false otherwise
      */
     public boolean contains(final OrderedValue orderedValue) {
-        if (orderedValue.isNull()) {
-            return false;
-        }
-
-        final SingleValue firstValue = orderedValue.container.get(0);
+        final SingleValue firstValue = orderedValue.container[0];
 
         // Try to find first value in this container.
-        for (int i = 0; i < container.size(); i++) {
-            if (container.get(i).equals(firstValue)) {
+        for (int i=0; i<container.length; i++) {
+            if (container[i].equals(firstValue)) {
                 // First value was found in this container.
                 boolean found = true;
 
                 // Compares rest of values (from 2nd to the last).
-                for (int j = 1; j < orderedValue.container.size(); j++) {
-                    if (i + j >= container.size()) {
+                for (int j = 1; j < orderedValue.container.length; j++) {
+                    if (i + j >= container.length) {
                         return false; // End of this container. Stop searching.
                     }
 
-                    if (!orderedValue.container.get(j).equals(container.get(i + j))) {
+                    if (!orderedValue.container[j].equals(container[i + j])) {
                         // Values are different. Break searching.
                         found = false;
                         break;
@@ -142,11 +133,11 @@ public final class OrderedValue extends ListValue {
         }
 
         final OrderedValue other = (OrderedValue) object;
-        return container.equals(other.container);
+        return Arrays.equals(container, other.container);
     }
 
     @Override
     public final int hashCode() {
-        return container.hashCode();
+        return Arrays.hashCode(container);
     }
 }

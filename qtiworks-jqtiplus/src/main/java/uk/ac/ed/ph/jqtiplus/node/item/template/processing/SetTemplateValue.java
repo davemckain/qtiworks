@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
@@ -89,7 +88,7 @@ public final class SetTemplateValue extends ProcessTemplateValue {
     }
 
     @Override
-    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) {
         final Value value = getExpression().evaluate(context);
 
         final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
@@ -101,9 +100,7 @@ public final class SetTemplateValue extends ProcessTemplateValue {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
         final Identifier identifier = getIdentifier();
         if (identifier!=null) {
             context.checkVariableReference(this, identifier);

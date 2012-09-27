@@ -43,12 +43,16 @@ import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
+import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.w3c.dom.Document;
 
@@ -61,11 +65,14 @@ public final class XmlMarshalTest {
 
     public static void main(final String[] args) {
         final ItemSessionState itemSessionState = new ItemSessionState();
-        final RecordValue rv = new RecordValue();
-        rv.add(new Identifier("PMathML"), new StringValue("Hello"));
-        rv.add(new Identifier("Number"), new IntegerValue(5));
+
+        final Map<Identifier, SingleValue> recordMap = new HashMap<Identifier, SingleValue>();
+        recordMap.put(new Identifier("PMathML"), new StringValue("Hello"));
+        recordMap.put(new Identifier("Number"), new IntegerValue(5));
+
+        final Value rv = RecordValue.createRecordValue(recordMap);
         itemSessionState.setShuffledInteractionChoiceOrder(new Identifier("dave"), Arrays.asList(new Identifier("a")));
-        itemSessionState.setResponseValue(new Identifier("RESPONSE"), new MultipleValue(Arrays.asList(new StringValue("Bad"), new StringValue("Thing"))));
+        itemSessionState.setResponseValue(new Identifier("RESPONSE"), MultipleValue.createMultipleValue(new StringValue("Bad"), new StringValue("Thing")));
         itemSessionState.setTemplateValue(new Identifier("TEMPLATE"), NullValue.INSTANCE);
         itemSessionState.setOutcomeValue(new Identifier("RECORD"), rv);
         itemSessionState.setInitialized(true);

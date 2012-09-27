@@ -517,7 +517,7 @@ public final class ItemSessionState implements Serializable {
     public void setOutcomeValueFromLookupTable(final OutcomeDeclaration outcomeDeclaration, final NumberValue value) {
         Assert.notNull(outcomeDeclaration);
         Assert.notNull(value);
-        Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value);
+        Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value.doubleValue());
         if (targetValue == null) {
             targetValue = NullValue.INSTANCE;
         }

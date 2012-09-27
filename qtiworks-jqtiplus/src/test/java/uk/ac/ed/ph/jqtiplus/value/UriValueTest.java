@@ -83,11 +83,11 @@ public class UriValueTest extends ValueTest {
                 // UriValue
                 {true, new UriValue("uri"), new UriValue("uri")}, {false, new UriValue("uri"), new UriValue("Uri")}, {false, new UriValue("uri"), new UriValue("URI")}, {false, new UriValue("uri1"), new UriValue("uri2")},
                 // MultipleValue
-                {false, new UriValue("uri"), new MultipleValue()}, {false, new UriValue("uri"), new MultipleValue(new UriValue("uri"))},
+                {false, new UriValue("uri"), MultipleValue.emptyValue()}, {false, new UriValue("uri"), MultipleValue.createMultipleValue(new UriValue("uri"))},
                 // OrderedValue
-                {false, new UriValue("uri"), new OrderedValue()}, {false, new UriValue("uri"), new OrderedValue(new UriValue("uri"))},
+                {false, new UriValue("uri"), OrderedValue.emptyValue()}, {false, new UriValue("uri"), OrderedValue.createOrderedValue(new UriValue("uri"))},
                 // RecordValue
-                {false, new UriValue("uri"), new RecordValue()}, {false, new UriValue("uri"), new RecordValue("identifier", new UriValue("uri"))},
+                {false, new UriValue("uri"), RecordValue.emptyRecord()}, {false, new UriValue("uri"), RecordValue.createRecordValue("identifier", new UriValue("uri"))},
                 });
     }
 

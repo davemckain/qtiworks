@@ -36,17 +36,17 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * This expression looks up the value of A response variable that must be of base-type point, and transforms it using
+ * This expression looks up the value of a response variable that must be of base-type point, and transforms it using
  * the associated areaMapping. The transformation is similar to mapResponse except that the points are tested against
  * each area in turn. When mapping containers each area can be mapped once only.
  * <p>
@@ -78,19 +78,18 @@ public final class MapResponsePoint extends AbstractExpression {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
-        final ResponseDeclaration responseDeclaration = context.getSubjectItem().getResponseDeclaration(getIdentifier());
-        if (responseDeclaration != null) {
-            if (responseDeclaration.getCardinality().isRecord()) {
-                context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of single or container cardinalities."));
-            }
-
-            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isPoint()) {
-                context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of point base type."));
+    protected void validateThis(final ValidationContext context) {
+        final AssessmentItem item = context.getSubjectItem();
+        if (item!=null) {
+            final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(getIdentifier());
+            if (responseDeclaration != null) {
+                if (responseDeclaration.getCardinality().isRecord()) {
+                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of single or container cardinalities.");
+                }
+                if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isPoint()) {
+                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of point base type.");
+                }
             }
         }
     }

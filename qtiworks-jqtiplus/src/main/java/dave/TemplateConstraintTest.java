@@ -6,7 +6,6 @@
 package dave;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
@@ -21,7 +20,7 @@ import java.net.URI;
 
 public class TemplateConstraintTest {
 
-    public static void main(final String[] args) throws RuntimeValidationException {
+    public static void main(final String[] args) {
         final URI inputUri = URI.create("classpath:/templateConstraint-1.xml");
 
         System.out.println("Reading and validating");

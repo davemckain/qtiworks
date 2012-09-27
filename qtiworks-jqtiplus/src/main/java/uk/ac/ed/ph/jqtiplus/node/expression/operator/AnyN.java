@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -97,23 +96,23 @@ public final class AnyN extends AbstractExpression {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final IntegerOrVariableRef minComputer = getMin();
         final IntegerOrVariableRef maxComputer = getMax();
-        if (minComputer.isInteger()) {
-            final int min = minComputer.getInteger();
+        if (minComputer.isConstantInteger()) {
+            final int min = minComputer.getConstantIntegerValue().intValue();
             if (min < 0) {
-                context.add(new ValidationWarning(this,
+                context.fireValidationWarning(this,
                         "Attribute " + ATTR_MINIMUM_NAME
-                        + " (" + min + ") should be positive."));
+                        + " (" + min + ") should be positive.");
             }
-            if (maxComputer.isInteger()) {
-                final int max = maxComputer.getInteger();
+            if (maxComputer.isConstantInteger()) {
+                final int max = maxComputer.getConstantIntegerValue().intValue();
                 if (max < min) {
-                    context.add(new ValidationWarning(this,
+                    context.fireValidationWarning(this,
                             "Attribute " + ATTR_MAXIMUM_NAME
                             + " (" + max + ") should be greater than "
-                            + ATTR_MINIMUM_NAME + " (" + min + ")."));
+                            + ATTR_MINIMUM_NAME + " (" + min + ").");
                 }
             }
         }
@@ -133,18 +132,18 @@ public final class AnyN extends AbstractExpression {
             }
         }
 
-        final int minimum = getMin().evaluate(context);
-        final int maximum = getMax().evaluate(context);
+        final int min = getMin().evaluateNotNull(context, this, "Computed value of minimum was NULL. Replacing with 0", 0);
+        final int max = getMax().evaluateNotNull(context, this, "Computed value of maximum was NULL. Replacing with 0", 0);
 
-        if (minimum > maximum) {
+        if (min > max) {
             return BooleanValue.FALSE;
         }
 
-        if (numberOfTrue >= minimum && numberOfTrue + numberOfNull <= maximum) {
+        if (numberOfTrue >= min && numberOfTrue + numberOfNull <= max) {
             return BooleanValue.TRUE;
         }
 
-        if (numberOfTrue + numberOfNull < minimum || numberOfTrue > maximum) {
+        if (numberOfTrue + numberOfNull < min || numberOfTrue > max) {
             return BooleanValue.FALSE;
         }
 

@@ -50,9 +50,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.net.URI;
 import java.util.List;
@@ -169,46 +167,49 @@ public final class OutcomeDeclaration extends VariableDeclaration {
     }
 
 
-    public LookupTable getLookupTable() {
+    public LookupTable<?,?> getLookupTable() {
         return getNodeGroups().getLookupTableGroup().getLookupTable();
     }
 
-    public void setLookupTable(final LookupTable lookupTable) {
+    public void setLookupTable(final LookupTable<?,?> lookupTable) {
         getNodeGroups().getLookupTableGroup().setLookupTable(lookupTable);
     }
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getNormalMaximum() != null) {
             if (getCardinality() != null && !getCardinality().isSingle()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                context.fireAttributeValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
                         + " will be ignored for cardinality: "
-                        + getCardinality()));
+                        + getCardinality());
             }
             else if (getBaseType() != null && !getBaseType().isNumeric()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                context.fireAttributeValidationWarning(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
                         + " will be ignored for baseType: "
-                        + getBaseType()));
+                        + getBaseType());
             }
             else if (getNormalMaximum().doubleValue() <= 0) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
-                        + " must be positive."));
+                context.fireAttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+                        + " must be positive.");
             }
         }
 
         if (getNormalMinimum() != null) {
             if (getCardinality() != null && !getCardinality().isSingle()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME), "Attribute " + ATTR_NORMAL_MINIMUM_NAME
+                context.fireAttributeValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MINIMUM_NAME
                         + " will be ignored for cardinality: "
-                        + getCardinality()));
+                        + getCardinality());
             }
             else if (getBaseType() != null && !getBaseType().isNumeric()) {
-                context.add(new ValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME), "Attribute " + ATTR_NORMAL_MINIMUM_NAME
+                context.fireAttributeValidationWarning(getAttributes().get(ATTR_NORMAL_MINIMUM_NAME),
+                        "Attribute " + ATTR_NORMAL_MINIMUM_NAME
                         + " will be ignored for baseType: "
-                        + getBaseType()));
+                        + getBaseType());
             }
         }
 
@@ -216,21 +217,16 @@ public final class OutcomeDeclaration extends VariableDeclaration {
                 getBaseType() != null && getBaseType().isNumeric() &&
                 getNormalMaximum() != null && getNormalMinimum() != null
                 && getNormalMaximum().doubleValue() < getNormalMinimum().doubleValue()) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME), "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
+            context.fireAttributeValidationError(getAttributes().get(ATTR_NORMAL_MAXIMUM_NAME),
+                    "Attribute " + ATTR_NORMAL_MAXIMUM_NAME
                     + " cannot be lower than attribute "
-                    + ATTR_NORMAL_MINIMUM_NAME
-                    + "."));
+                    + ATTR_NORMAL_MINIMUM_NAME);
         }
-    }
-
-    @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
 
         // DM: I've commented this out, since I don't think a warning should be given if test variables are not read;
         // which would be comment in summative assessment scenarios
         //        if (context instanceof TestValidationContext && !isRead(context, getParentRoot())) {
-        //            context.add(new ValidationWarning(this, "Outcome declaration is never read."));
+        //            context.fireAttributeValidationWarning(this, "Outcome declaration is never read.");
         //        }
     }
 

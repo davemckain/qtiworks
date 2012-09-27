@@ -57,7 +57,6 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
@@ -90,41 +89,22 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
         getAttributes().add(new IdentifierAttribute(this, ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI, null, false));
     }
 
-    /**
-     * Get the value of the syntax attribute of the interaction.
-     *
-     * @return the value of the syntax attribute
-     */
     public SyntaxType getSyntax() {
         return ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
-    /**
-     * Set the syntax attribute of the interaction.
-     *
-     * @param syntax value to set
-     */
     public void setSyntax(final SyntaxType syntax) {
         ((SyntaxAttribute) getAttributes().get(ATTR_SYNTAX_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(syntax);
     }
 
-    /**
-     * Get the value of the printIdentifier attribute of the interaction.
-     *
-     * @return the value of the printIdentifier attribute
-     */
+
     public Identifier getPrintIdentifier() {
         return ((IdentifierAttribute) getAttributes().get(ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
-    /**
-     * Set the printIdentifier attribute of the interaction.
-     *
-     * @param printIdentifier value to set
-     */
     public void setPrintIdentifier(final Identifier printIdentifier) {
         ((IdentifierAttribute) getAttributes().get(ATTR_PRINT_IDENTIFIER_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(printIdentifier);
@@ -149,7 +129,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getCardinality() != null
                     && !declaration.getCardinality().isRecord()) {
-                context.add(new ValidationError(this, "Response variable must have record cardinality"));
+                context.fireValidationError(this, "Response variable must have record cardinality");
             }
         }
 
@@ -157,12 +137,12 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
             final ResponseDeclaration declaration = getPrintIdentifierResponseDeclaration();
             if (declaration != null && declaration.getCardinality() != null
                     && !declaration.getCardinality().isSingle()) {
-                context.add(new ValidationError(this, "printIdentifier response variable must have record cardinality"));
+                context.fireValidationError(this, "printIdentifier response variable must have record cardinality");
             }
 
             if (declaration != null && declaration.getBaseType() != null
                     && !declaration.getBaseType().isString()) {
-                context.add(new ValidationError(this, "printIdentifier response variable must have string base type"));
+                context.fireValidationError(this, "printIdentifier response variable must have string base type");
             }
         }
     }
@@ -209,7 +189,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
                 logger.debug("ASCIIMath input '{}' could not be bound to a Maths Content variable", asciiMathInput);
                 throw new ResponseBindingException(responseDeclaration, responseData, "Math content is too complex for current implementation");
             }
-            responseValue = CasTypeGlue.convertToJQTI(resultWrapper);
+            responseValue = GlueValueBinder.casToJqti(resultWrapper);
         }
         else {
             /* Blank input, so easy */

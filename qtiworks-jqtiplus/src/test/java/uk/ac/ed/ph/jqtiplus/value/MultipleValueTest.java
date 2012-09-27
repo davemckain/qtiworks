@@ -48,36 +48,39 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class MultipleValueTest extends ValueTest {
 
-    private static final MultipleValue MULTIPLE_1__1_2_3;
+    private static final Value MULTIPLE_1__1_2_3;
 
-    private static final MultipleValue MULTIPLE_2__1_2_3;
+    private static final Value MULTIPLE_2__1_2_3;
 
-    private static final MultipleValue MULTIPLE_3__3_2_1;
+    private static final Value MULTIPLE_3__3_2_1;
 
-    private static final MultipleValue MULTIPLE_4__1_2_3_4;
+    private static final Value MULTIPLE_4__1_2_3_4;
 
     static {
         // MULTIPLE_1__1_2_3
-        MULTIPLE_1__1_2_3 = new MultipleValue();
-        MULTIPLE_1__1_2_3.add(new IntegerValue(1));
-        MULTIPLE_1__1_2_3.add(new IntegerValue(2));
-        MULTIPLE_1__1_2_3.add(new IntegerValue(3));
+        MULTIPLE_1__1_2_3 = MultipleValue.createMultipleValue(
+                new IntegerValue(1),
+                new IntegerValue(2),
+                new IntegerValue(3));
+
         // MULTIPLE_2__1_2_3
-        MULTIPLE_2__1_2_3 = new MultipleValue();
-        MULTIPLE_2__1_2_3.add(new IntegerValue(1));
-        MULTIPLE_2__1_2_3.add(new IntegerValue(2));
-        MULTIPLE_2__1_2_3.add(new IntegerValue(3));
+        MULTIPLE_2__1_2_3 = MultipleValue.createMultipleValue(
+                new IntegerValue(1),
+                new IntegerValue(2),
+                new IntegerValue(3));
+
         // MULTIPLE_3__3_2_1
-        MULTIPLE_3__3_2_1 = new MultipleValue();
-        MULTIPLE_3__3_2_1.add(new IntegerValue(3));
-        MULTIPLE_3__3_2_1.add(new IntegerValue(2));
-        MULTIPLE_3__3_2_1.add(new IntegerValue(1));
+        MULTIPLE_3__3_2_1 = MultipleValue.createMultipleValue(
+                new IntegerValue(3),
+                new IntegerValue(1),
+                new IntegerValue(2));
+
         // MULTIPLE_4__1_2_3_4
-        MULTIPLE_4__1_2_3_4 = new MultipleValue();
-        MULTIPLE_4__1_2_3_4.add(new IntegerValue(1));
-        MULTIPLE_4__1_2_3_4.add(new IntegerValue(2));
-        MULTIPLE_4__1_2_3_4.add(new IntegerValue(3));
-        MULTIPLE_4__1_2_3_4.add(new IntegerValue(4));
+        MULTIPLE_4__1_2_3_4 = MultipleValue.createMultipleValue(
+                new IntegerValue(1),
+                new IntegerValue(2),
+                new IntegerValue(3),
+                new IntegerValue(4));
     }
 
     /**
@@ -89,61 +92,61 @@ public class MultipleValueTest extends ValueTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 // NullValue
-                {true, new MultipleValue(), NullValue.INSTANCE},
-                {false, new MultipleValue(new IntegerValue(1)), NullValue.INSTANCE},
+                {true, MultipleValue.emptyValue(), NullValue.INSTANCE},
+                {false, MultipleValue.createMultipleValue(new IntegerValue(1)), NullValue.INSTANCE},
                 // IdentifierValue
-                {false, new MultipleValue(), new IdentifierValue("identifier")},
-                {false, new MultipleValue(new IdentifierValue("identifier")), new IdentifierValue("identifier")},
+                {false, MultipleValue.emptyValue(), new IdentifierValue("identifier")},
+                {false, MultipleValue.createMultipleValue(new IdentifierValue("identifier")), new IdentifierValue("identifier")},
                 // BooleanValue
-                {false, new MultipleValue(), BooleanValue.TRUE},
-                {false, new MultipleValue(BooleanValue.TRUE), BooleanValue.TRUE},
-                {false, new MultipleValue(), BooleanValue.FALSE},
-                {false, new MultipleValue(BooleanValue.FALSE), BooleanValue.FALSE},
+                {false, MultipleValue.emptyValue(), BooleanValue.TRUE},
+                {false, MultipleValue.createMultipleValue(BooleanValue.TRUE), BooleanValue.TRUE},
+                {false, MultipleValue.emptyValue(), BooleanValue.FALSE},
+                {false, MultipleValue.createMultipleValue(BooleanValue.FALSE), BooleanValue.FALSE},
                 // IntegerValue
-                {false, new MultipleValue(), new IntegerValue(1)},
-                {false, new MultipleValue(new IntegerValue(1)), new IntegerValue(1)},
+                {false, MultipleValue.emptyValue(), new IntegerValue(1)},
+                {false, MultipleValue.createMultipleValue(new IntegerValue(1)), new IntegerValue(1)},
                 // FloatValue
-                {false, new MultipleValue(), new FloatValue(1)},
-                {false, new MultipleValue(new FloatValue(1)), new FloatValue(1)},
+                {false, MultipleValue.emptyValue(), new FloatValue(1)},
+                {false, MultipleValue.createMultipleValue(new FloatValue(1)), new FloatValue(1)},
                 // StringValue
-                {false, new MultipleValue(), new StringValue("string")},
-                {false, new MultipleValue(new StringValue("string")), new StringValue("string")},
+                {false, MultipleValue.emptyValue(), new StringValue("string")},
+                {false, MultipleValue.createMultipleValue(new StringValue("string")), new StringValue("string")},
                 // PointValue
-                {false, new MultipleValue(), new PointValue(1, 1)},
-                {false, new MultipleValue(new PointValue(1, 1)), new PointValue(1, 1)},
+                {false, MultipleValue.emptyValue(), new PointValue(1, 1)},
+                {false, MultipleValue.createMultipleValue(new PointValue(1, 1)), new PointValue(1, 1)},
                 // PairValue
-                {false, new MultipleValue(), new PairValue("ident1", "ident2")},
-                {false, new MultipleValue(new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2")},
+                {false, MultipleValue.emptyValue(), new PairValue("ident1", "ident2")},
+                {false, MultipleValue.createMultipleValue(new PairValue("ident1", "ident2")), new PairValue("ident1", "ident2")},
                 // DirectedPairValue
-                {false, new MultipleValue(), new DirectedPairValue("ident1", "ident2")},
-                {false, new MultipleValue(new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2")},
+                {false, MultipleValue.emptyValue(), new DirectedPairValue("ident1", "ident2")},
+                {false, MultipleValue.createMultipleValue(new DirectedPairValue("ident1", "ident2")), new DirectedPairValue("ident1", "ident2")},
                 // DurationValue
-                {false, new MultipleValue(), new DurationValue(1)},
-                {false, new MultipleValue(new DurationValue(1)), new DurationValue(1)},
+                {false, MultipleValue.emptyValue(), new DurationValue(1)},
+                {false, MultipleValue.createMultipleValue(new DurationValue(1)), new DurationValue(1)},
                 // FileValue
-                {false, new MultipleValue(), ValueTestUtils.createTestFileValue("file")},
-                {false, new MultipleValue(ValueTestUtils.createTestFileValue("file")), ValueTestUtils.createTestFileValue("file")},
+                {false, MultipleValue.emptyValue(), ValueTestUtils.createTestFileValue("file")},
+                {false, MultipleValue.createMultipleValue(ValueTestUtils.createTestFileValue("file")), ValueTestUtils.createTestFileValue("file")},
                 // UriValue
-                {false, new MultipleValue(), new UriValue("uri")},
-                {false, new MultipleValue(new UriValue("uri")), new UriValue("uri")},
+                {false, MultipleValue.emptyValue(), new UriValue("uri")},
+                {false, MultipleValue.createMultipleValue(new UriValue("uri")), new UriValue("uri")},
                 // MultipleValue
-                {true, new MultipleValue(), new MultipleValue()},
-                {false, new MultipleValue(), new MultipleValue(new IntegerValue(1))},
-                {false, new MultipleValue(new IntegerValue(1)), new MultipleValue()},
-                {true, new MultipleValue(new IntegerValue(1)), new MultipleValue(new IntegerValue(1))},
+                {true, MultipleValue.emptyValue(), MultipleValue.emptyValue()},
+                {false, MultipleValue.emptyValue(), MultipleValue.createMultipleValue(new IntegerValue(1))},
+                {false, MultipleValue.createMultipleValue(new IntegerValue(1)), MultipleValue.emptyValue()},
+                {true, MultipleValue.createMultipleValue(new IntegerValue(1)), MultipleValue.createMultipleValue(new IntegerValue(1))},
                 {true, MULTIPLE_1__1_2_3, MULTIPLE_2__1_2_3},
                 {true, MULTIPLE_1__1_2_3, MULTIPLE_3__3_2_1},
                 {false, MULTIPLE_1__1_2_3, MULTIPLE_4__1_2_3_4},
                 // OrderedValue
-                {true, new MultipleValue(), new OrderedValue()},
-                {false, new MultipleValue(), new OrderedValue(new IntegerValue(1))},
-                {false, new MultipleValue(new IntegerValue(1)), new OrderedValue()},
-                {false, new MultipleValue(new IntegerValue(1)), new OrderedValue(new IntegerValue(1))},
+                {true, MultipleValue.emptyValue(), OrderedValue.emptyValue()},
+                {false, MultipleValue.emptyValue(), OrderedValue.createOrderedValue(new IntegerValue(1))},
+                {false, MultipleValue.createMultipleValue(new IntegerValue(1)), OrderedValue.emptyValue()},
+                {false, MultipleValue.createMultipleValue(new IntegerValue(1)), OrderedValue.createOrderedValue(new IntegerValue(1))},
                 // RecordValue
-                {true, new MultipleValue(), new RecordValue()},
-                {false, new MultipleValue(), new RecordValue("identifier", new IntegerValue(1))},
-                {false, new MultipleValue(new IntegerValue(1)), new RecordValue()},
-                {false, new MultipleValue(new IntegerValue(1)), new RecordValue("identifier", new IntegerValue(1))},
+                {true, MultipleValue.emptyValue(), RecordValue.emptyRecord()},
+                {false, MultipleValue.emptyValue(), RecordValue.createRecordValue("identifier", new IntegerValue(1))},
+                {false, MultipleValue.createMultipleValue(new IntegerValue(1)), RecordValue.emptyRecord()},
+                {false, MultipleValue.createMultipleValue(new IntegerValue(1)), RecordValue.createRecordValue("identifier", new IntegerValue(1))},
         });
     }
 

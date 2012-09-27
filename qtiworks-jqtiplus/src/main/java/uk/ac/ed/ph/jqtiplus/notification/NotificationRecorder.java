@@ -31,23 +31,50 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception;
+package uk.ac.ed.ph.jqtiplus.notification;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * This exception is used for reporting problems with baseType.
- * 
- * @author Jiri Kajaba
+ * Trivial implementation of {@link NotificationListener} that simply records all
+ * events (above a certain threshold) for later inspection.
+ *
+ * @author David McKain
  */
-public class QtiBaseTypeException extends QtiEvaluationException {
+public final class NotificationRecorder implements NotificationListener, Serializable {
 
-    private static final long serialVersionUID = 543586953995447052L;
+    private static final long serialVersionUID = -8782072000887987018L;
 
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
-    public QtiBaseTypeException(String message) {
-        super(message);
+    private final List<ModelNotification> modelNotifications;
+    private final NotificationLevel notificationThreshold;
+
+    public NotificationRecorder(final NotificationLevel notificationThreshold) {
+        this.modelNotifications = new ArrayList<ModelNotification>();
+        this.notificationThreshold = notificationThreshold;
+    }
+
+    public List<ModelNotification> getNotifications() {
+        return Collections.unmodifiableList(modelNotifications);
+    }
+
+    public List<ModelNotification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
+        final List<ModelNotification> result = new ArrayList<ModelNotification>(modelNotifications.size());
+        for (final ModelNotification notification : modelNotifications) {
+            if (notification.getNotificationLevel()==requiredLevel) {
+                result.add(notification);
+            }
+        }
+        return Collections.unmodifiableList(result);
+    }
+
+    @Override
+    public void onNotification(final ModelNotification notification) {
+        final NotificationLevel level = notification.getNotificationLevel();
+        if (level.compareTo(notificationThreshold) >= 0) {
+            modelNotifications.add(notification);
+        }
     }
 }

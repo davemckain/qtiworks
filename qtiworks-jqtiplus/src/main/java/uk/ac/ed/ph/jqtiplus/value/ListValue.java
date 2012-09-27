@@ -33,84 +33,108 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiContainerException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * Superclass for multiple and ordered containers.
  * <p>
- * This container can contain 0..N non NULL single values of the same <code>BaseType</code>.
+ * This container can contain 1..N non NULL single values of the same <code>BaseType</code>.
  * <p>
- * This container can be multiple, ordered or NULL (if empty).
+ * In JQTI+, these values are now immutable. Subclasses now use factory methods instead of
+ * constructors, and empty containers (which are treated as NULL) now generate {@link NullValue}
+ * instances rather than instances of this class.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
- * @author Jiri Kajaba
+ * @author David McKain
+ * @author Jiri Kajaba (original version)
  */
-public abstract class ListValue extends AbstractValue implements Cloneable, MultiValue, Iterable<SingleValue> {
+public abstract class ListValue extends ContainerValue implements Iterable<SingleValue> {
 
     private static final long serialVersionUID = 4655949258467611295L;
 
     /** Container for single values. */
-    protected List<SingleValue> container;
+    protected final SingleValue[] container;
 
-    /**
-     * Constructs empty (NULL) <code>ListValue</code> container.
-     */
-    public ListValue() {
-        container = new ArrayList<SingleValue>();
+    protected ListValue(final SingleValue value) {
+        container = new SingleValue[1];
+        container[0] = value;
     }
 
-    /**
-     * Constructs <code>ListValue</code> containing the given <code>SingleValue</code>.
-     *
-     * @param value added <code>SingleValue</code>
-     */
-    public ListValue(final SingleValue value) {
-        container = new ArrayList<SingleValue>();
-        add(value);
-    }
-
-    /**
-     * Constructs <code>ListValue</code> containing copies of the given <code>SingleValue</code>s into it.
-     *
-     * @param values added <code>SingleValue</code>s
-     */
-    public ListValue(final Iterable<? extends SingleValue> values) {
-        container = new ArrayList<SingleValue>();
-
+    protected ListValue(final Collection<? extends SingleValue> values) {
+        if (values.isEmpty()) {
+            throw new QtiLogicException("Did not expect subclass to call this method with an empty list");
+        }
+        container = new SingleValue[values.size()];
+        BaseType contentBaseType = null;
+        int i = 0;
         for (final SingleValue value : values) {
-            add(value);
+            if (contentBaseType==null) {
+                contentBaseType = value.getBaseType();
+            }
+            else {
+                if (value.getBaseType()!=contentBaseType) {
+                    throw new QtiContainerException("Values in a list container must all have the same baseType");
+                }
+            }
+            container[i++] = value;
+        }
+    }
+
+    protected ListValue(final SingleValue... values) {
+        Assert.notNull(values, "values");
+        if (values.length==0) {
+            throw new QtiLogicException("Did not expect subclass to call this method with an empty list");
+        }
+        container = new SingleValue[values.length];
+        container[0] = values[0];
+        final BaseType contentBaseType = container[0].getBaseType();
+        for (int i=1; i<values.length; i++) {
+            if (values[i].getBaseType()!=contentBaseType) {
+                throw new QtiContainerException("Values in a list container must all have the same baseType");
+            }
+            container[i] = values[i];
         }
     }
 
     @Override
-    public Iterator<SingleValue> iterator() {
-        return container.iterator();
+    public final BaseType getBaseType() {
+        return container[0].getBaseType();
     }
 
     @Override
-    public boolean isNull() {
-        return container.size() == 0;
+    public final Iterator<SingleValue> iterator() {
+        return ObjectUtilities.createView(container).iterator();
     }
 
-    @Override
-    public BaseType getBaseType() {
-        if (isNull()) {
-            return null;
+    public final List<SingleValue> getAll() {
+        return ObjectUtilities.createView(container);
+    }
+
+    @SuppressWarnings("unchecked")
+    public final <F extends SingleValue> Collection<F> values(final Class<F> expectedValueClass) {
+        if (expectedValueClass.isInstance(container[0])) {
+            return (Collection<F>) ObjectUtilities.createView(container);
         }
+        throw new QtiContainerException("Expected list container to contain " + expectedValueClass);
 
-        return container.get(0).getBaseType();
     }
 
     @Override
     public int size() {
-        return container.size();
+        return container.length;
+    }
+
+    public SingleValue get(final int index) {
+        if (index<0 || index>=container.length) {
+            throw new QtiContainerException("Index " + index + " out of bounds of container of size " + container.length);
+        }
+        return container[index];
     }
 
     /**
@@ -126,130 +150,39 @@ public abstract class ListValue extends AbstractValue implements Cloneable, Mult
      * @param value given <code>SingleValue</code>
      * @return true if this container contains given <code>SingleValue</code>; false otherwise
      */
-    public boolean contains(final SingleValue value) {
-        return container.contains(value);
+    public final boolean contains(final SingleValue testValue) {
+        for (final SingleValue singleValue : container) {
+            if (singleValue.equals(testValue)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Returns number of occurrences of given <code>SingleValue</code>.
      *
-     * @param value given <code>SingleValue</code>
+     * @param testValue given <code>SingleValue</code>
      * @return number of occurrences of given <code>SingleValue</code>
      */
-    public int count(final SingleValue value) {
+    public final int count(final SingleValue testValue) {
         int count = 0;
-
         for (final SingleValue singleValue : container) {
-            if (singleValue.equals(value)) {
+            if (singleValue.equals(testValue)) {
                 count++;
             }
         }
-
         return count;
-    }
-
-    /**
-     * Returns <code>SingleValue</code> on given index.
-     *
-     * @param index given index
-     * @return <code>SingleValue</code> on given index
-     */
-    public SingleValue get(final int index) {
-        return container.get(index);
-    }
-
-    /**
-     * Returns a list of <code>SingleValue</code>s.
-     *
-     * @return list of <code>SingleValue</code>s.
-     */
-    public List<SingleValue> getAll() {
-        return container;
-    }
-
-    /**
-     * Adds <code>SingleValue</code> into this container.
-     * <p>
-     * This container can contain only values of the same <code>BaseType</code>.
-     * <p>
-     * NULL <code>SingleValue</code> is ignored.
-     *
-     * @param value added <code>SingleValue</code>
-     * @return true if value was added; false otherwise
-     * @throws QtiBaseTypeException if <code>BaseType</code> is not same
-     */
-    public boolean add(final SingleValue value) throws QtiBaseTypeException {
-        if (value == null || value.isNull()) {
-            return false;
-        }
-
-        if (!isNull() && getBaseType() != value.getBaseType()) {
-            throw new QtiBaseTypeException("Invalid baseType: " + value.getBaseType());
-        }
-
-        return container.add(value);
-    }
-
-    public boolean merge(final ListValue value) throws QtiBaseTypeException {
-        if (value.isNull()) {
-            return false;
-        }
-
-        if (!isNull() && getBaseType() != value.getBaseType()) {
-            throw new QtiBaseTypeException("Invalid baseType: " + value.getBaseType());
-        }
-
-        return container.addAll(value.container);
-    }
-
-    /**
-     * Removes all occurrences of given <code>SingleValue</code> from this container.
-     *
-     * @param value given <code>SingleValue</code>
-     * @return true if value was removed (container contained this value); false otherwise
-     */
-    public boolean removeAll(final SingleValue value) {
-        boolean result = false;
-
-        while (container.remove(value)) {
-            result = true;
-        }
-
-        return result;
-    }
-
-    @Override
-    public Object clone() throws QtiEvaluationException {
-        try {
-            final ListValue value = (ListValue) super.clone();
-            if (container != null) {
-                value.container = new ArrayList<SingleValue>(container);
-            }
-            return value;
-        }
-        catch (final CloneNotSupportedException e) {
-            throw new QtiLogicException("Cannot clone container", e);
-        }
     }
 
     /**
      * This outputs this value in the format used when describing ordered and multiple
      * cardinalities, i.e.
      *
-     * <pre>[value1,value2,value3]</pre>
+     * <pre>[value1, value2, value3]</pre>
      */
     @Override
     public final String toQtiString() {
-        final StringBuilder stringBuilder = new StringBuilder("[");
-        final Iterator<SingleValue> iterator = container.iterator();
-        while (iterator.hasNext()) {
-            final SingleValue value = iterator.next();
-            stringBuilder.append(value.toQtiString());
-            if (iterator.hasNext()) {
-                stringBuilder.append(',');
-            }
-        }
-        stringBuilder.append(']');
-        return stringBuilder.toString();
+        return container.toString();
     }
 }

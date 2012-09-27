@@ -44,10 +44,9 @@ import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 /**
  * Item variables are declared by variable declarations.
@@ -80,16 +79,31 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
     public abstract VariableType getVariableType();
 
     public boolean isType(final VariableType... allowedTypes) {
-        if (allowedTypes.length==0) {
-            /* Interpret as "no restriction" */
-            return true;
-        }
         for (final VariableType type : allowedTypes) {
             if (type==getVariableType()) {
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean hasSignature(final Signature... allowedSignatures) {
+        boolean matches = false;
+        final Cardinality cardinality = getCardinality();
+        final BaseType baseType = getBaseType();
+        for (final Signature signature : allowedSignatures) {
+            if (cardinality==Cardinality.RECORD) {
+                matches = signature==Signature.RECORD;
+            }
+            else {
+                matches = signature.getCardinality()==cardinality
+                        && signature.getBaseType()==baseType;
+            }
+            if (matches) {
+                break;
+            }
+        }
+        return matches;
     }
 
     @Override
@@ -129,21 +143,28 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
         getNodeGroups().getDefaultValueGroup().setDefaultValue(defaultValue);
     }
 
+    /**
+     * Computes the {@link Signature} of this declaration from its {@link Cardinality}
+     * and {@link BaseType}, returning null if this cannot be determined.
+     */
+    public Signature computeSignature() {
+        final Cardinality cardinality = getCardinality();
+        final BaseType baseType = getBaseType();
+        return Signature.getSignature(cardinality, baseType);
+    }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
-        validateUniqueIdentifier(context.getValidationResult(), getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
+    protected void validateThis(final ValidationContext context) {
+        validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
 
         final Cardinality cardinality = getCardinality();
         if (cardinality != null) {
             if (!cardinality.isRecord() && getBaseType() == null) {
-                context.add(new ValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined."));
+                context.fireValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined.");
             }
 
             if (cardinality.isRecord() && getBaseType() != null) {
-                context.add(new ValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined."));
+                context.fireValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined.");
             }
         }
     }

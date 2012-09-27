@@ -35,9 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ItemFlowValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 /**
  * A branchRule is A simple expression attached to TestPart or assessmentSection or assessmentItemRef.
@@ -171,21 +169,20 @@ public final class BranchRule extends AbstractJump {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final Identifier target = getTarget();
         final TestPart parentTestPart = getParent().getParentTestPart();
         if (target != null && parentTestPart.areJumpsEnabled()) {
             if (isSpecial()) {
                 if (isExitTestPart()) {
                     if (getParent() instanceof TestPart) {
-                        context.add(new ItemFlowValidationError(this, "Invalid special target: " + target));
+                        context.fireValidationError(this, "Invalid special target: " + target);
                     }
                 }
                 else if (isExitSection()) {
                     if (getParent() instanceof TestPart || getParent().getParent() instanceof TestPart) {
-                        context.add(new ItemFlowValidationError(this, "Invalid special target: " + target));
+                        context.fireValidationError(this, "Invalid special target: " + target);
                     }
                 }
             }
@@ -193,28 +190,28 @@ public final class BranchRule extends AbstractJump {
                 final AbstractPart targetPart = context.getSubjectTest().lookupDescendentOrSelf(target);
 
                 if (targetPart == null) {
-                    context.add(new ItemFlowValidationError(this, "Cannot find target: " + target));
+                    context.fireValidationError(this, "Cannot find target: " + target);
                 }
                 else {
                     final int parentIdex = getParent().getGlobalIndex();
                     final int targetIndex = targetPart.getGlobalIndex();
 
                     if (getParent() instanceof TestPart && (targetPart instanceof AssessmentSection || targetPart instanceof AssessmentItemRef)) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump from testPart to " + targetPart.getQtiClassName() + ": " + target));
+                        context.fireValidationError(this, "Cannot jump from testPart to " + targetPart.getQtiClassName() + ": " + target);
                     }
                     else if (targetIndex <= parentIdex) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump back to: " + target));
+                        context.fireValidationError(this, "Cannot jump back to: " + target);
                     }
                     else if (targetPart.isChildOf(getParent())) {
-                        context.add(new ItemFlowValidationError(this, "Cannot jump to own child: " + target));
+                        context.fireValidationError(this, "Cannot jump to own child: " + target);
                     }
                     else {
                         if (!getParent().isJumpSafeSource()) {
-                            context.add(new ValidationWarning(this, "It is not safe to jump from this node. Check selection and ordering settings."));
+                            context.fireValidationWarning(this, "It is not safe to jump from this node. Check selection and ordering settings.");
                         }
 
                         if (!targetPart.isJumpSafeTarget()) {
-                            context.add(new ValidationWarning(this, "Target is not safe for jump: " + target + " Check selection and ordering settings."));
+                            context.fireValidationWarning(this, "Target is not safe for jump: " + target + " Check selection and ordering settings.");
                         }
                     }
                 }

@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.types.DataTypeBinder;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always duration.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @see uk.ac.ed.ph.jqtiplus.value.FloatValue
@@ -58,25 +58,24 @@ public final class DurationValue extends SingleValue {
 
     /**
      * Constructs <code>DurationValue</code> from given <code>double</code>.
-     * 
+     *
      * @param value <code>double</code>
      * @throws IllegalArgumentException if given <code>double</code> is negative
      */
-    public DurationValue(double value) throws IllegalArgumentException {
+    public DurationValue(final double value) throws IllegalArgumentException {
         if (value < 0) {
             throw new IllegalArgumentException("Invalid duration '" + value + "'. Duration cannot be negative.");
         }
-
         this.doubleValue = value;
     }
 
     /**
      * Constructs <code>DurationValue</code> from given <code>String</code> representation.
-     * 
+     *
      * @param value <code>String</code> representation of <code>DurationValue</code>
      * @throws QtiParseException if <code>String</code> representation of <code>DurationValue</code> is not valid
      */
-    public DurationValue(String value) {
+    public DurationValue(final String value) {
         try {
             this.doubleValue = DataTypeBinder.parseFloat(value);
             if (doubleValue < 0) {
@@ -95,7 +94,7 @@ public final class DurationValue extends SingleValue {
 
     /**
      * Returns the value of this <code>DurationValue</code> as A <code>double</code>.
-     * 
+     *
      * @return the value of this <code>DurationValue</code> as A <code>double</code>
      */
     public double doubleValue() {
@@ -103,7 +102,7 @@ public final class DurationValue extends SingleValue {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (!(object instanceof DurationValue)) {
             return false;
         }

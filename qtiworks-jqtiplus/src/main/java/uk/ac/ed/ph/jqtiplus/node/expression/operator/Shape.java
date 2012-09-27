@@ -36,8 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.PointValue;
 
 import java.math.BigDecimal;
@@ -60,8 +59,8 @@ public enum Shape implements Stringifiable {
         private static final int COORDS_LENGTH = 0;
 
         @Override
-        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
-            validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
+        public void validateCoords(final ValidationContext context, final CoordsAttribute attribute, final int[] coords) {
+            validateCoordsLength(context, attribute, coords, COORDS_LENGTH);
         }
 
         @Override
@@ -86,20 +85,20 @@ public enum Shape implements Stringifiable {
         private static final int BOTTOM_Y = 3;
 
         @Override
-        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
-            validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
+        public void validateCoords(final ValidationContext context, final CoordsAttribute attribute, final int[] coords) {
+            validateCoordsLength(context, attribute, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH) {
-                validatePositiveCoords(attribute, result, coords);
+                validatePositiveCoords(context, attribute, coords);
 
                 if (coords[LEFT_X] >= coords[RIGHT_X]) {
-                    result.add(new AttributeValidationError(attribute, "Left-x (" + coords[LEFT_X] +
-                            ") cannot be larger or equal than right-x (" + coords[RIGHT_X] + ")."));
+                    context.fireAttributeValidationError(attribute, "Left-x (" + coords[LEFT_X] +
+                            ") cannot be larger or equal than right-x (" + coords[RIGHT_X] + ").");
                 }
 
                 if (coords[TOP_Y] >= coords[BOTTOM_Y]) {
-                    result.add(new AttributeValidationError(attribute, "Top-y (" + coords[TOP_Y] +
-                            ") cannot be larger or equal than bottom-y (" + coords[BOTTOM_Y] + ")."));
+                    context.fireAttributeValidationError(attribute, "Top-y (" + coords[TOP_Y] +
+                            ") cannot be larger or equal than bottom-y (" + coords[BOTTOM_Y] + ").");
                 }
             }
         }
@@ -130,15 +129,15 @@ public enum Shape implements Stringifiable {
         private static final int RADIUS = 2;
 
         @Override
-        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
-            validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
+        public void validateCoords(final ValidationContext context, final CoordsAttribute attribute, final int[] coords) {
+            validateCoordsLength(context, attribute, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH) {
                 if (coords[RADIUS] < 1) {
-                    result.add(new AttributeValidationError(attribute, "Radius (" + coords[RADIUS] + ") must be positive."));
+                    context.fireAttributeValidationError(attribute, "Radius (" + coords[RADIUS] + ") must be positive.");
                 }
 
-                validatePositiveCoords(attribute, result, coords);
+                validatePositiveCoords(context, attribute, coords);
             }
         }
 
@@ -159,7 +158,7 @@ public enum Shape implements Stringifiable {
         private static final int MINIMUM_COORDS_LENGTH = 6;
 
         @Override
-        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
+        public void validateCoords(final ValidationContext context, final CoordsAttribute attribute, final int[] coords) {
             boolean sameLastPoint = false;
             if (coords.length > 1 && coords[0] == coords[coords.length - 2] && coords[1] == coords[coords.length - 1]) {
                 sameLastPoint = true;
@@ -171,17 +170,15 @@ public enum Shape implements Stringifiable {
             }
 
             if (coords.length < minimumCoordsLength) {
-                result.add(new AttributeValidationError(attribute, "Invalid number of coordinates for " +
-                        toString() + " shape. Expected at least: " + minimumCoordsLength + ", but found: " + coords.length));
+                context.fireAttributeValidationError(attribute, "Invalid number of coordinates for " + toString() + " shape. Expected at least: " + minimumCoordsLength + ", but found: " + coords.length);
             }
 
             if (coords.length >= minimumCoordsLength) {
                 if (coords.length % 2 != 0) {
-                    result.add(new AttributeValidationError(attribute, "Invalid number of coordinates for " +
-                            toString() + " shape. Expected even number of coordinates, but found: " + coords.length));
+                    context.fireAttributeValidationError(attribute, "Invalid number of coordinates for " + toString() + " shape. Expected even number of coordinates, but found: " + coords.length);
                 }
 
-                validatePositiveCoords(attribute, result, coords);
+                validatePositiveCoords(context, attribute, coords);
             }
         }
 
@@ -270,19 +267,19 @@ public enum Shape implements Stringifiable {
         private static final int V_RADIUS = 3;
 
         @Override
-        public void validateCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
-            validateCoordsLength(attribute, result, coords, COORDS_LENGTH);
+        public void validateCoords(final ValidationContext context, final CoordsAttribute attribute, final int[] coords) {
+            validateCoordsLength(context, attribute, coords, COORDS_LENGTH);
 
             if (coords.length == COORDS_LENGTH) {
                 if (coords[H_RADIUS] < 1) {
-                    result.add(new AttributeValidationError(attribute, "H-radius (" + coords[H_RADIUS] + ") must be positive."));
+                    context.fireAttributeValidationError(attribute, "H-radius (" + coords[H_RADIUS] + ") must be positive.");
                 }
 
                 if (coords[V_RADIUS] < 1) {
-                    result.add(new AttributeValidationError(attribute, "V-radius (" + coords[V_RADIUS] + ") must be positive."));
+                    context.fireAttributeValidationError(attribute, "V-radius (" + coords[V_RADIUS] + ") must be positive.");
                 }
 
-                validatePositiveCoords(attribute, result, coords);
+                validatePositiveCoords(context, attribute, coords);
             }
         }
 
@@ -321,7 +318,7 @@ public enum Shape implements Stringifiable {
      * @param result TODO
      * @param coords attribute's value to be validated
      */
-    public abstract void validateCoords(CoordsAttribute attribute, AbstractValidationResult result, int[] coords);
+    public abstract void validateCoords(final ValidationContext context, CoordsAttribute attribute, int[] coords);
 
     /**
      * Validates length of coords attribute (number of coordinates).
@@ -331,10 +328,10 @@ public enum Shape implements Stringifiable {
      * @param coords attribute's value to be validated
      * @param expectedLength expected length of coords attribute (number of coordinates)
      */
-    protected void validateCoordsLength(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords, final int expectedLength) {
+    protected void validateCoordsLength(final ValidationContext context, final CoordsAttribute attribute, final int[] coords, final int expectedLength) {
         if (coords.length != expectedLength) {
-            result.add(new AttributeValidationError(attribute, "Invalid number of coordinates for " +
-                    toString() + " shape. Expected: " + expectedLength + ", but found: " + coords.length));
+            context.fireAttributeValidationError(attribute, "Invalid number of coordinates for " +
+                    toString() + " shape. Expected: " + expectedLength + ", but found: " + coords.length);
         }
     }
 
@@ -345,11 +342,11 @@ public enum Shape implements Stringifiable {
      * @param result TODO
      * @param coords attribute's value to be validated
      */
-    protected void validatePositiveCoords(final CoordsAttribute attribute, final AbstractValidationResult result, final int[] coords) {
+    protected void validatePositiveCoords(final ValidationContext context, final CoordsAttribute attribute, final int[] coords) {
         for (int i = 0; i < coords.length; i++) {
             if (coords[i] < 0) {
-                result.add(new AttributeValidationError(attribute, "Coordinte (" + coords[i] + ") at (" + (i + 1) +
-                        ") cannot be negative."));
+                context.fireAttributeValidationError(attribute, "Coordinate (" + coords[i] + ") at (" + (i + 1) +
+                        ") cannot be negative.");
             }
         }
     }

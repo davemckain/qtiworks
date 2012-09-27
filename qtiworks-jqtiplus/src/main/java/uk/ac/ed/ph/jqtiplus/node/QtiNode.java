@@ -36,8 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node;
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
-import uk.ac.ed.ph.jqtiplus.validation.Validatable;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
+
+import java.io.Serializable;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -48,12 +50,19 @@ import org.xml.sax.SAXException;
  * @author Jiri Kajaba
  * @author David McKain
  */
-public interface QtiNode extends Validatable, Iterable<QtiNode> {
+public interface QtiNode extends Serializable, Iterable<QtiNode> {
 
     /**
      * Gets parent of this node, or null if this is a {@link RootNode}
      */
     QtiNode getParent();
+
+    /**
+     * Finds the nearest ancestor of this Node having the given class
+     * (not counting this Node itself). Returns the ancestor if found,
+     * otherwise null.
+     */
+    <E extends QtiNode> E getNearestAncestor(final Class<E> ancestorClass);
 
     /**
      * Gets root of this node, returning the node itself if it is already
@@ -124,6 +133,11 @@ public interface QtiNode extends Validatable, Iterable<QtiNode> {
      * Loads this node from given DOM source {@link Element}.
      */
     void load(Element sourceElement, LoadingContext context);
+
+    /**
+     * Validate this {@link QtiNode} and descends downwards.
+     */
+    void validate(final ValidationContext context);
 
     /** Callback used to serialize this Nodes. Do not call directly. */
     void fireSaxEvents(QtiSaxDocumentFirer qtiSaxDocumentFirer)

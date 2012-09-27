@@ -31,42 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
+package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Validation item of warning type.
- * 
- * @author Jiri Kajaba
+ * DAO implementation for the {@link CandidateItemEventNotification} entity.
+ *
+ * @author David McKain
  */
-public class ValidationWarning extends AbstractValidationItem {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class CandidateItemEventNotificationDao extends GenericDao<CandidateItemEventNotification> {
 
-    private static final long serialVersionUID = -4293271893741927980L;
+    @PersistenceContext
+    private EntityManager em;
 
-    /**
-     * Constructs validation item.
-     * 
-     * @param node source node of constructed item
-     * @param message message of constructed item
-     */
-    public ValidationWarning(QtiNode node, String message) {
-        super(node, node, message);
+    public CandidateItemEventNotificationDao() {
+        super(CandidateItemEventNotification.class);
     }
 
-    /**
-     * Constructs validation item.
-     * 
-     * @param attribute source attribute of constructed item
-     * @param message message of constructed item
-     */
-    public ValidationWarning(Attribute<?> attribute, String message) {
-        super(attribute, attribute.getOwner(), message);
-    }
-
-    @Override
-    public ValidationType getType() {
-        return ValidationType.WARNING;
+    public List<CandidateItemEventNotification> getForEvent(final CandidateItemEvent event) {
+        final TypedQuery<CandidateItemEventNotification> query = em.createNamedQuery("CandidateItemEventNotification.getForEvent", CandidateItemEventNotification.class);
+        query.setParameter("candidateItemEvent", event);
+        return query.getResultList();
     }
 }

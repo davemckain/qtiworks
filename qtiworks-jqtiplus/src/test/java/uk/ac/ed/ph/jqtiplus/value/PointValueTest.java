@@ -83,11 +83,11 @@ public class PointValueTest extends ValueTest {
                 // UriValue
                 {false, new PointValue(1, 1), new UriValue("uri")},
                 // MultipleValue
-                {false, new PointValue(1, 1), new MultipleValue()}, {false, new PointValue(1, 1), new MultipleValue(new PointValue(1, 1))},
+                {false, new PointValue(1, 1), MultipleValue.emptyValue()}, {false, new PointValue(1, 1), MultipleValue.createMultipleValue(new PointValue(1, 1))},
                 // OrderedValue
-                {false, new PointValue(1, 1), new OrderedValue()}, {false, new PointValue(1, 1), new OrderedValue(new PointValue(1, 1))},
+                {false, new PointValue(1, 1), OrderedValue.emptyValue()}, {false, new PointValue(1, 1), OrderedValue.createOrderedValue(new PointValue(1, 1))},
                 // RecordValue
-                {false, new PointValue(1, 1), new RecordValue()}, {false, new PointValue(1, 1), new RecordValue("identifier", new PointValue(1, 1))},
+                {false, new PointValue(1, 1), RecordValue.emptyRecord()}, {false, new PointValue(1, 1), RecordValue.createRecordValue("identifier", new PointValue(1, 1))},
                 });
     }
 

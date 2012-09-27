@@ -33,11 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * This interface is definition how to handle all expressions.
  * Every expression must implement this interface.
- * 
+ *
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
@@ -56,7 +56,7 @@ public interface Expression extends ExpressionParent {
 
     /**
      * Gets parent of this expression.
-     * 
+     *
      * @return parent of this expression
      */
     @Override
@@ -64,7 +64,7 @@ public interface Expression extends ExpressionParent {
 
     /**
      * Gets expression type of this expression.
-     * 
+     *
      * @return expression type of this expression
      */
     public ExpressionType getType();
@@ -79,7 +79,7 @@ public interface Expression extends ExpressionParent {
      * its result (and it can change every evaluation call!).
      * <p>
      * Null expression, empty containers (multiple, ordered, record), or NULL values produces all cardinalities. So they are compatible with anything.
-     * 
+     *
      * @param context TODO
      * @return list of all possible produced cardinalities after evaluation
      */
@@ -95,7 +95,7 @@ public interface Expression extends ExpressionParent {
      * result (and it can change every evaluation call!).
      * <p>
      * Null expression, empty containers (multiple, ordered, record), or NULL values produces all baseTypes. So they are compatible with anything.
-     * 
+     *
      * @param context TODO
      * @return list of all possible produced baseTypes after evaluation
      */
@@ -103,7 +103,7 @@ public interface Expression extends ExpressionParent {
 
     /**
      * Gets all children of this expression.
-     * 
+     *
      * @return all children of this expression
      */
     public List<Expression> getChildren();
@@ -115,10 +115,8 @@ public interface Expression extends ExpressionParent {
      * <li>validates this expression (calls <code>validate</code> method)
      * <li>evaluates this expression (calls <code>evaluateSelf</code> method)
      * </ol>
-     * 
-     * @param context
-     * @return result of evaluation
-     * @throws RuntimeValidationException
+     *
+     * @return result of evaluation, which will not be null (but might be a {@link NullValue}!)
      */
-    public Value evaluate(ProcessingContext context) throws RuntimeValidationException;
+    public Value evaluate(ProcessingContext context);
 }

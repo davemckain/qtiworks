@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingRul
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.util.List;
 
@@ -68,11 +67,9 @@ public final class TemplateProcessing extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getTemplateProcessingRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules."));
+            context.fireValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules.");
         }
     }
 }

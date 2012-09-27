@@ -45,8 +45,10 @@ import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,10 +95,11 @@ public class MapResponseTest {
             response = new IdentifierValue(new Identifier(responses[0]));
         }
         else {
-            response = new MultipleValue();
+            final List<IdentifierValue> values = new ArrayList<IdentifierValue>();
             for (final String s : responses) {
-                ((MultipleValue) response).add(new IdentifierValue(new Identifier(s)));
+                values.add(new IdentifierValue(new Identifier(s)));
             }
+            response = MultipleValue.createMultipleValue(values);
         }
     }
 
@@ -109,7 +112,7 @@ public class MapResponseTest {
         final AssessmentItem item = itemSessionController.getItem();
 
         if (item.getResponseDeclaration("RESPONSE").getCardinality().isMultiple() && response.getCardinality().isSingle()) {
-            response = new MultipleValue((SingleValue) response);
+            response = MultipleValue.createMultipleValue((SingleValue) response);
         }
         itemSessionState.setResponseValue("RESPONSE", response);
         itemSessionController.processResponses();

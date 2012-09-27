@@ -37,9 +37,9 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
@@ -67,6 +67,9 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
+import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
+import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationListener;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -86,6 +89,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -97,25 +101,33 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public final class ItemSessionController implements ItemProcessingContext {
+public final class ItemSessionController extends AbstractNotificationFirer implements ItemProcessingContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 
     /** TODO: Make this settable! */
     public static final int MAX_TEMPLATE_PROCESSING_TRIES = 100;
 
+    private final List<NotificationListener> notificationListeners;
+
     private final JqtiExtensionManager jqtiExtensionManager;
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final AssessmentItem item;
     private final ItemSessionState itemSessionState;
 
+    private Long randomSeed;
+    private Random randomGenerator;
+
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState) {
         Assert.notNull(resolvedAssessmentItem, "resolvedAssessmentItem");
         Assert.notNull(itemSessionState, "itemSessionState");
+        this.notificationListeners = new ArrayList<NotificationListener>();
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
         this.itemSessionState = itemSessionState;
+        this.randomSeed = null;
+        this.randomGenerator = null;
     }
 
     @Override
@@ -147,9 +159,45 @@ public final class ItemSessionController implements ItemProcessingContext {
     }
 
     //-------------------------------------------------------------------
+
+    public Long getRandomSeed() {
+        return randomSeed;
+    }
+
+    public void setRandomSeed(final Long randomSeed) {
+        this.randomSeed = randomSeed;
+        this.randomGenerator = null;
+    }
+
+    @Override
+    public Random getRandomGenerator() {
+        if (randomGenerator==null) {
+            randomGenerator = randomSeed!=null ? new Random(randomSeed) : new Random();
+        }
+        return randomGenerator;
+    }
+
+    //-------------------------------------------------------------------
+
+    public void addNotificationListener(final NotificationListener listener) {
+        notificationListeners.add(listener);
+    }
+
+    public void removeNotificationListener(final NotificationListener listener) {
+        notificationListeners.remove(listener);
+    }
+
+    @Override
+    protected void handleNotification(final ModelNotification notification) {
+        for (final NotificationListener listener : notificationListeners) {
+            listener.onNotification(notification);
+        }
+    }
+
+    //-------------------------------------------------------------------
     // Initialization & template processing
 
-    public void initialize() throws RuntimeValidationException {
+    public void initialize() {
         initialize(null);
     }
 
@@ -159,10 +207,8 @@ public final class ItemSessionController implements ItemProcessingContext {
      * An item should only be initialised if it is going to be rendered/presented
      *
      * @param templateDefaults given templateDefaults values
-     * @throws RuntimeValidationException if a runtime validation error is detected during template
-     *             processing.
      */
-    public void initialize(final List<TemplateDefault> templateDefaults) throws RuntimeValidationException {
+    public void initialize(final List<TemplateDefault> templateDefaults) {
         /* (We only allow initialization once. This contrasts with the original JQTI.) */
         if (itemSessionState.isInitialized()) {
             throw new IllegalStateException("Item state has already been initialized");
@@ -170,28 +216,41 @@ public final class ItemSessionController implements ItemProcessingContext {
 
         fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
         try {
-            /* Set up built-in variables */
-            itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
-            itemSessionState.setNumAttempts(0);
+            /* Initialise template defaults with any externally provided defaults */
+            if (templateDefaults != null) {
+                logger.trace("Setting template default values");
+                for (final TemplateDefault templateDefault : templateDefaults) {
+                    final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
+                    if (declaration != null) {
+                        final Value defaultValue = templateDefault.evaluate(this);
+                        itemSessionState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
+                    }
+                }
+            }
 
             /* Perform template processing as many times as required. */
             int templateProcessingAttemptNumber = 0;
             boolean templateProcessingCompleted = false;
             while (!templateProcessingCompleted) {
-                templateProcessingCompleted = doTemplateProcessing(templateDefaults, ++templateProcessingAttemptNumber);
+                templateProcessingCompleted = doTemplateProcessingRun(++templateProcessingAttemptNumber);
+            }
+            if (templateProcessingAttemptNumber>1) {
+                fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
             }
 
-            /* Initialises outcomeDeclaration's values. */
+            /* Initialise all outcome variables */
             for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
                 initValue(outcomeDeclaration);
             }
 
-            /* Initialises responseDeclaration's values. */
+            /* Initialise all response variables */
             for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
                 initValue(responseDeclaration);
             }
 
-            /* Set the completion status to unknown */
+            /* Set special built-in variables */
+            itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
+            itemSessionState.setNumAttempts(0);
             itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
 
             /* Initialize all interactions in the itemBody */
@@ -206,34 +265,22 @@ public final class ItemSessionController implements ItemProcessingContext {
         }
     }
 
-    private boolean doTemplateProcessing(final List<TemplateDefault> templateDefaults, final int attemptNumber)
-            throws RuntimeValidationException {
+    private boolean doTemplateProcessingRun(final int attemptNumber) {
         logger.debug("Template Processing attempt #{} starting", attemptNumber);
 
-        /* Initialise template defaults with any externally provided defaults */
-        if (templateDefaults != null) {
-            logger.trace("Setting template default values");
-            for (final TemplateDefault templateDefault : templateDefaults) {
-                final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
-                if (declaration != null) {
-                    final Value defaultValue = templateDefault.evaluate(this);
-                    itemSessionState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
-                }
-            }
-        }
 
         /* Initialise template values. */
+        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
         for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
             initValue(templateDeclaration);
         }
 
         if (attemptNumber > MAX_TEMPLATE_PROCESSING_TRIES) {
-            logger.debug("Exceeded maxmimum number of template processing retries - leaving variables at default values");
+            fireRuntimeWarning(item, "Exceeded maximum number " + MAX_TEMPLATE_PROCESSING_TRIES + " of template processing retries - leaving variables at default values");
             return true;
         }
 
         /* Perform templateProcessing. */
-        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
         if (templateProcessing != null) {
             logger.trace("Evaluating template processing rules");
             try {
@@ -341,10 +388,8 @@ public final class ItemSessionController implements ItemProcessingContext {
     /**
      * Runs response processing on the currently bound responses, changing {@link #itemSessionState}
      * as appropriate.
-     *
-     * @throws RuntimeValidationException
      */
-    public void processResponses() throws RuntimeValidationException {
+    public void processResponses() {
         logger.debug("Response processing starting");
         ensureInitialized();
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
@@ -452,6 +497,9 @@ public final class ItemSessionController implements ItemProcessingContext {
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
             value = itemSessionState.getVariableValue(identifier);
+            if (value==null) {
+                throw new QtiInvalidLookupException("No variable declared with identifier " + identifier);
+            }
         }
         else {
             /* Only allows specified types of variables */
@@ -476,10 +524,10 @@ public final class ItemSessionController implements ItemProcessingContext {
                     break CHECK_LOOP;
                 }
             }
-        }
-        if (value==null) {
-            throw new QtiEvaluationException("No variable with identifier " + identifier
-                    + " and permitted type(s) " + Arrays.toString(permittedTypes));
+            if (value==null) {
+                throw new QtiInvalidLookupException("No variable declared with identifier " + identifier
+                        + " and permitted type(s) " + Arrays.toString(permittedTypes));
+            }
         }
         return value;
     }
@@ -487,7 +535,7 @@ public final class ItemSessionController implements ItemProcessingContext {
     @Override
     public Value lookupVariableValue(final VariableReferenceIdentifier variableReferenceIdentifier, final VariableType... permittedTypes) {
         if (variableReferenceIdentifier.isDotted()) {
-            throw new QtiEvaluationException("Dotted variables cannot be used in items");
+            throw new QtiInvalidLookupException("Dotted variables cannot be used in items");
         }
         final Identifier itemVariableIdentifier = variableReferenceIdentifier.getLocalIdentifier();
         return lookupVariableValue(itemVariableIdentifier, permittedTypes);

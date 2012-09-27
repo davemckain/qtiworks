@@ -142,8 +142,8 @@ public enum ToleranceMode implements Stringifiable {
      *
      * @param firstNumber first number to compare
      * @param secondNumber second number to compare
-     * @param tolerance1 tolerance for lower boundary (0 if not specified)
-     * @param tolerance2 tolerance for upper boundary (0 if not specified)
+     * @param tolerance1 tolerance for lower boundary
+     * @param tolerance2 tolerance for upper boundary
      * @param includeLowerBound accept lower boundary
      * @param includeUpperBound accept upper boundary
      * @return true if given numbers are equal; false otherwise

@@ -34,14 +34,12 @@
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -53,7 +51,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * <p>
  * Special care is required when using the numeric base-types because floating point values can not be assigned to integer variables and vice-versa. The
  * truncate, round, or integerToFloat operators must be used to achieve numeric type conversion.
- * 
+ *
  * @author Jiri Kajaba
  */
 public class SetOutcomeValue extends ProcessOutcomeValue {
@@ -63,12 +61,12 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "setOutcomeValue";
 
-    public SetOutcomeValue(QtiNode parent) {
+    public SetOutcomeValue(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(ValidationContext context, int index) {
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getCardinality() != null) {
@@ -80,7 +78,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(ValidationContext context, int index) {
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getBaseType() != null) {
@@ -92,23 +90,21 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     }
 
     @Override
-    public void validate(ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
             if (declaration != null && declaration.getLookupTable() != null) {
-                context.add(new ValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
+                context.fireValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
-                        + getIdentifier()));
+                        + getIdentifier());
             }
         }
     }
 
     @Override
-    public void evaluate(TestProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final TestProcessingContext context) {
         final Value value = getExpression().evaluate(context);
 
         final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());

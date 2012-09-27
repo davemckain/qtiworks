@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
@@ -66,26 +66,26 @@ public class EqualRoundedRefuseTest extends ExpressionRefuseTest {
                 { "<equalRounded figures='1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equalRounded>", QtiAttributeException.class }, { "<equalRounded roundingMode='' figures='1'>" +
+                        "</equalRounded>", QtiBaseTypeException.class }, { "<equalRounded roundingMode='' figures='1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equalRounded>", QtiAttributeException.class }, { "<equalRounded roundingMode='unknown' figures='1'>" +
+                        "</equalRounded>", QtiBaseTypeException.class }, { "<equalRounded roundingMode='unknown' figures='1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equalRounded>", QtiAttributeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // attributes - significantFigures
                 { "<equalRounded roundingMode='significantFigures' figures='-1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equalRounded>", QtiAttributeException.class }, { "<equalRounded roundingMode='significantFigures' figures='0'>" +
+                        "</equalRounded>", QtiBaseTypeException.class }, { "<equalRounded roundingMode='significantFigures' figures='0'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equalRounded>", QtiAttributeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // attributes - decimalPlaces
                 { "<equalRounded roundingMode='decimalPlaces' figures='-1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</equalRounded>", QtiAttributeException.class },
+                        "</equalRounded>", QtiBaseTypeException.class },
                 // multiple
                 { "<equalRounded roundingMode='significantFigures' figures='1'>" +
                         "<multiple>" +

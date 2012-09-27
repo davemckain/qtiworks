@@ -38,6 +38,7 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAM
 
 import uk.ac.ed.ph.qtiworks.mathassess.glue.MathsContentTooComplexException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaTypeConversionException;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
@@ -45,10 +46,12 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
@@ -74,28 +77,16 @@ public final class ScriptRule extends MathAssessOperator {
 
         getAttributes().add(new BooleanAttribute(this, ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI, false, false));
 
-        // Allow 1 child only
+        /* Allow 1 child only */
         getNodeGroups().clear();
         getNodeGroups().add(new ExpressionGroup(this, 1,1));
     }
 
-    /**
-     * Gets value of simplify attribute.
-     *
-     * @return value of simplify attribute
-     * @see #setSimplify
-     */
     public boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of simplify attribute.
-     *
-     * @param simplify new value of simplify attribute
-     * @see #getSimplify
-     */
     public void setSimplify(final Boolean simplify) {
         ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI)).setValue(simplify);
     }
@@ -106,43 +97,61 @@ public final class ScriptRule extends MathAssessOperator {
     }
 
     @Override
-    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues)
-            throws MaximaTimeoutException, MathsContentTooComplexException {
-        final QtiMaximaProcess qtiMaximaProcess = mathAssessExtensionPackage.obtainMaximaSessionForThread();
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) {
         final String code = childValues[0].toQtiString().trim();
-        final List<VariableDeclaration> inputDeclarations = getAllCASReadableVariableDeclarations();
-        final List<VariableDeclaration> outputDeclarations = getAllCASWriteableVariableDeclarations();
         final boolean simplify = getSimplify();
 
         logger.debug("Performing scriptRule: code={}, simplify={}", code, simplify);
 
         /* Pass variables to Maxima */
-        logger.debug("Passing variables to maxima");
-        for (final VariableDeclaration declaration : inputDeclarations) {
-            final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(declaration.getBaseType(), declaration.getCardinality());
-            final Value value = context.getItemSessionState().getVariableValue(declaration);
-            if (value!=null && !value.isNull() && resultClass != null) {
-                qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), CasTypeGlue.convertFromJQTI(value));
-            }
-        }
+        final QtiMaximaProcess qtiMaximaProcess = mathAssessExtensionPackage.obtainMaximaSessionForThread();
+        passVariablesToMaxima(qtiMaximaProcess, context);
 
         /* Run code */
         logger.debug("Executing scriptRule code");
-        qtiMaximaProcess.executeScriptRule(code, simplify);
+        try {
+            qtiMaximaProcess.executeScriptRule(code, simplify);
+        }
+        catch (final MaximaTimeoutException e) {
+            context.fireRuntimeError(this, "A timeout occurred executing the ScriptRule logic. Not setting QTI variables and returing FALSE");
+            return BooleanValue.FALSE;
+        }
 
         /* Read variables back */
         logger.debug("Reading variables back from Maxima");
+        final ItemSessionState itemSessionState = context.getItemSessionState();
+        final List<VariableDeclaration> outputDeclarations = getAllCASWriteableVariableDeclarations();
         for (final VariableDeclaration var : outputDeclarations) {
-            final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(var.getBaseType(), var.getCardinality());
-            if (resultClass != null) {
-                final ValueWrapper wrapper = qtiMaximaProcess.queryMaximaVariable(var.getIdentifier().toString(), resultClass);
-                if (wrapper != null) {
-                    context.getItemSessionState().setVariableValue(var, CasTypeGlue.convertToJQTI(wrapper));
+            final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasReturnClass(var.getBaseType(), var.getCardinality());
+            Value resultValue = NullValue.INSTANCE;
+            if (resultClass!=null) {
+                /* Variable is supported */
+                ValueWrapper wrapper;
+                try {
+                    wrapper = qtiMaximaProcess.queryMaximaVariable(var.getIdentifier().toString(), resultClass);
+                    if (wrapper!=null) {
+                        resultValue = GlueValueBinder.casToJqti(wrapper);
+                    }
+                    else {
+                        /* Variable isn't defined in Maxima, so leave as NULL */
+                        context.fireRuntimeInfo(this, "Variable " + var.getIdentifier() + " remained undefined in Maxima at end of ScriptRule logic so is being set to NULL");
+                    }
+                }
+                catch (final QtiMaximaTypeConversionException e) {
+                    logger.warn("Unexpected conversion failure", e);
+                    context.fireRuntimeError(this, "An unexpected problem occurred querying the value of " + var.getIdentifier() + ", so this variable was set to NULL");
+                }
+                catch (final MathsContentTooComplexException e) {
+                    context.fireRuntimeError(this, "The value of the variable " + var.getIdentifier() + " was too complex to extract from Maxima, so it was set to NULL");
                 }
             }
+            else {
+                context.fireRuntimeInfo(this, "Variable " + var.getIdentifier() + " is not of a supported baseType and/or cardinality for passing to the CAS - setting to NULL");
+            }
+            itemSessionState.setVariableValue(var, resultValue);
         }
 
-        logger.debug("scriptRule finished - returning TRUE");
+        logger.debug("scriptRule finished successfully - returning TRUE");
         return BooleanValue.TRUE;
     }
 

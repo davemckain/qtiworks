@@ -56,7 +56,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.HashMap;
@@ -316,7 +315,7 @@ public final class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
 
@@ -325,7 +324,7 @@ public final class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
         final ItemDelivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
@@ -334,7 +333,7 @@ public final class InstructorAssessmentManagementController {
     }
 
     private String runDelivery(final long aid, final ItemDelivery itemDelivery)
-            throws RuntimeValidationException, PrivilegeException {
+            throws PrivilegeException {
         final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
         final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(itemDelivery, exitUrl);
         return "redirect:/candidate/session/" + candidateItemSession.getId() + "/" + candidateItemSession.getSessionToken();
@@ -365,7 +364,7 @@ public final class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/delivery/{did}/try", method=RequestMethod.POST)
     public String tryOwnDelivery(final @PathVariable long did)
-            throws PrivilegeException, DomainEntityNotFoundException, RuntimeValidationException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery itemDelivery = assessmentManagementService.lookupOwnItemDelivery(did);
         final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
         final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(itemDelivery, exitUrl);

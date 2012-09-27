@@ -43,11 +43,10 @@ import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -106,27 +105,18 @@ public abstract class TemplateElement extends AbstractFlowBodyElement {
     }
 
     @Override
-    public void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    public void validateThis(final ValidationContext context) {
         final Identifier templateIdentifier = getTemplateIdentifier();
         if (templateIdentifier != null) {
-            context.checkVariableReference(this, templateIdentifier);
             final VariableDeclaration declaration = context.checkVariableReference(this, templateIdentifier);
             if (declaration!=null) {
                 context.checkVariableType(this, declaration, VariableType.TEMPLATE);
-                context.checkCardinality(this, declaration, Cardinality.SINGLE, Cardinality.MULTIPLE);
-                context.checkBaseType(this, declaration, BaseType.IDENTIFIER);
+                context.checkSignature(this, declaration, Signature.SINGLE_IDENTIFIER, Signature.MULTIPLE_IDENTIFIER);
             }
         }
-    }
-
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
 
         if (!hasChildNodes()) {
-            context.add(new ValidationWarning(this, "Feedback should contain something."));
+            context.fireValidationWarning(this, "Feedback should contain something.");
         }
     }
 

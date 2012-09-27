@@ -43,8 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
@@ -145,37 +143,29 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
     }
 
     @Override
-    public void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getOutcomeIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
 
             if (declaration == null) {
-                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier()));
+                context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier());
             }
 
             if (declaration != null && declaration.getCardinality() != null
                     && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
+                context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
                         + " or "
                         + Cardinality.MULTIPLE
                         + ", but found: "
-                        + declaration.getCardinality()));
+                        + declaration.getCardinality());
             }
 
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                context.add(new ValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType()));
+                context.fireValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType());
             }
         }
-    }
-
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
         if (!hasChildNodes()) {
-            context.add(new ValidationWarning(this, "Feedback should contain something."));
+            context.fireValidationWarning(this, "Feedback should contain something.");
         }
     }
 

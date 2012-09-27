@@ -27,44 +27,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.expression.general;
-
-import uk.ac.ed.ph.jqtiplus.attribute.value.LongAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+package uk.ac.ed.ph.jqtiplus.notification;
 
 /**
- * Extends randomInteger expression - supports seed attribute.
- * <p>
- * This expression should be used only for special purposes when you need repeatability (not for real assessments).
+ * FIXME: Document this type
  *
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public final class RandomIntegerEx extends RandomInteger {
+public enum NotificationType {
 
-    private static final long serialVersionUID = 3373996193226800523L;
+    MODEL_VALIDATION,
+    RUNTIME,
 
-    /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "randomIntegerEx";
-
-    /** Name of seed attribute in xml schema. */
-    public static final String ATTR_SEED_NAME = "seed";
-
-    public RandomIntegerEx(final ExpressionParent parent) {
-        super(parent, QTI_CLASS_NAME);
-
-        getAttributes().add(new LongAttribute(this, ATTR_SEED_NAME, false));
-    }
-
-    @Override
-    public Long getSeedAttributeValue() {
-        return getAttributes().getLongAttribute(ATTR_SEED_NAME).getComputedValue();
-    }
-
-    public void setSeedAttributeValue(final Long seed) {
-        getAttributes().getLongAttribute(ATTR_SEED_NAME).setValue(seed);
-    }
 }

@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
+import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -63,18 +64,18 @@ public class TextEntryInteractionTest {
 
     public static RecordValue createRecordResult(final String stringValue, final double floatValue, final Integer integerValue, final int leftDigits, final int rightDigits, final int ndp,
             final int nsf, final Integer exponent) {
-        final RecordValue rv = new RecordValue();
+        final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
 
-        rv.add(StringInteraction.KEY_STRING_VALUE_NAME, new StringValue(stringValue));
-        rv.add(StringInteraction.KEY_FLOAT_VALUE_NAME, new FloatValue(floatValue));
-        rv.add(StringInteraction.KEY_INTEGER_VALUE_NAME, integerValue == null ? null : new IntegerValue(integerValue));
-        rv.add(StringInteraction.KEY_LEFT_DIGITS_NAME, new IntegerValue(leftDigits));
-        rv.add(StringInteraction.KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightDigits));
-        rv.add(StringInteraction.KEY_NDP_NAME, new IntegerValue(ndp));
-        rv.add(StringInteraction.KEY_NSF_NAME, new IntegerValue(nsf));
-        rv.add(StringInteraction.KEY_EXPONENT_NAME, exponent == null ? null : new IntegerValue(exponent));
+        recordBuilder.put(StringInteraction.KEY_STRING_VALUE_NAME, new StringValue(stringValue));
+        recordBuilder.put(StringInteraction.KEY_FLOAT_VALUE_NAME, new FloatValue(floatValue));
+        recordBuilder.put(StringInteraction.KEY_INTEGER_VALUE_NAME, integerValue == null ? null : new IntegerValue(integerValue));
+        recordBuilder.put(StringInteraction.KEY_LEFT_DIGITS_NAME, new IntegerValue(leftDigits));
+        recordBuilder.put(StringInteraction.KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightDigits));
+        recordBuilder.put(StringInteraction.KEY_NDP_NAME, new IntegerValue(ndp));
+        recordBuilder.put(StringInteraction.KEY_NSF_NAME, new IntegerValue(nsf));
+        recordBuilder.put(StringInteraction.KEY_EXPONENT_NAME, exponent == null ? null : new IntegerValue(exponent));
 
-        return rv;
+        return (RecordValue) RecordValue.createRecordValue(recordBuilder);
     }
 
     /**

@@ -35,14 +35,13 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 
 /**
  * Attribute with single value.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class SingleValueAttribute extends SingleAttribute<SingleValue> {
@@ -52,18 +51,18 @@ public final class SingleValueAttribute extends SingleAttribute<SingleValue> {
     /** BaseType of attribute. */
     private BaseType baseType;
 
-    public SingleValueAttribute(QtiNode parent, String localName, BaseType baseType, boolean required) {
+    public SingleValueAttribute(final QtiNode parent, final String localName, final BaseType baseType, final boolean required) {
         this(parent, localName, baseType, null, required);
     }
 
-    public SingleValueAttribute(QtiNode parent, String localName, BaseType baseType, SingleValue defaultValue, boolean required) {
+    public SingleValueAttribute(final QtiNode parent, final String localName, final BaseType baseType, final SingleValue defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
         this.baseType = baseType;
     }
 
     /**
      * Gets baseType of attribute.
-     * 
+     *
      * @return baseType of attribute
      * @see #setBaseType
      */
@@ -73,34 +72,34 @@ public final class SingleValueAttribute extends SingleAttribute<SingleValue> {
 
     /**
      * Sets new baseType of attribute.
-     * 
+     *
      * @param baseType new baseType of attribute
      * @see #getBaseType
      */
-    public void setBaseType(BaseType baseType) {
+    public void setBaseType(final BaseType baseType) {
         this.baseType = baseType;
     }
 
     @Override
-    protected SingleValue parseQtiString(String value) {
+    protected SingleValue parseQtiString(final String value) {
         return baseType.parseSingleValue(value);
     }
-    
+
     @Override
-    protected String toQtiString(SingleValue value) {
+    protected String toQtiString(final SingleValue value) {
         return value.toQtiString();
     }
 
     @Override
-    public void validate(ValidationContext context) {
-        super.validate(context);
+    public void validateBasic(final ValidationContext context) {
+        super.validateBasic(context);
 
         if (getComputedValue() != null && getComputedValue().getBaseType() != baseType) {
-            context.add(new AttributeValidationError(this, "BaseType of " + getLocalName()
+            context.fireAttributeValidationError(this, "BaseType of " + getLocalName()
                     + " attribute does not match. Expected:  "
                     + baseType
                     + ", but found: "
-                    + getComputedValue().getBaseType()));
+                    + getComputedValue().getBaseType());
         }
     }
 }

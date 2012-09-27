@@ -39,9 +39,14 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
+import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The delete operator takes two sub-expressions which must both have the same base-type. The first
@@ -111,9 +116,20 @@ public final class Delete extends AbstractFunctionalExpression {
             return NullValue.INSTANCE;
         }
 
-        final ListValue value = (ListValue) ((ListValue) childValues[1]).clone();
-        value.removeAll((SingleValue) childValues[0]);
+        final SingleValue toDelete = (SingleValue) childValues[0];
+        final ListValue source = (ListValue) childValues[1];
 
-        return value.isNull() ? NullValue.INSTANCE : value;
+        final List<SingleValue> toKeep = new ArrayList<SingleValue>(source.size());
+        for (final SingleValue sourceValue : source) {
+            if (!sourceValue.equals(toDelete)) {
+                toKeep.add(sourceValue);
+            }
+        }
+        if (source.getCardinality()==Cardinality.MULTIPLE) {
+            return MultipleValue.createMultipleValue(toKeep);
+        }
+        else {
+            return OrderedValue.createOrderedValue(toKeep);
+        }
     }
 }

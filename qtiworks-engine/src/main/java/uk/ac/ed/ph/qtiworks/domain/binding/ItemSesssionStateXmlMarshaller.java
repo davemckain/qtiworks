@@ -53,6 +53,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -306,10 +307,10 @@ public final class ItemSesssionStateXmlMarshaller {
                 return parseSingleValue(element);
 
             case MULTIPLE:
-                return new MultipleValue(parseListValues(element));
+                return MultipleValue.createMultipleValue(parseListValues(element));
 
             case ORDERED:
-                return new OrderedValue(parseListValues(element));
+                return OrderedValue.createOrderedValue(parseListValues(element));
 
             case RECORD:
                 return parseRecordValue(element);
@@ -349,18 +350,18 @@ public final class ItemSesssionStateXmlMarshaller {
         return itemValues;
     }
 
-    private static RecordValue parseRecordValue(final Element element) {
+    private static Value parseRecordValue(final Element element) {
         final List<Element> childElements = expectElementChildren(element);
-        final RecordValue result = new RecordValue();
+        final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
         for (final Element childElement : childElements) {
             if (!"value".equals(childElement.getLocalName())) {
                 throw new MarshallingException("Expected only <value> children of " + element);
             }
             final Identifier itemIdentifier = parseIdentifierAttribute(childElement, "fieldIdentifier");
             final SingleValue itemValue = parseSingleValue(childElement);
-            result.add(itemIdentifier, itemValue);
+            recordBuilder.put(itemIdentifier, itemValue);
         }
-        return result;
+        return RecordValue.createRecordValue(recordBuilder);
     }
 
     private static Cardinality parseCardinalityAttribute(final Element element) {

@@ -33,19 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.RuntimeValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.BaseTypeValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.CardinalityValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationItem;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Arrays;
@@ -246,27 +240,24 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        validateThisOnly(context);
-
-        // This is unusual order, because previous code logically belongs to parent validation.
+    public final void validate(final ValidationContext context) {
         super.validate(context);
     }
 
-    /** Validates this Expression only, without descending into children */
-    private void validateThisOnly(final ValidationContext context) {
+    @Override
+    protected void validateThis(final ValidationContext context) {
         final Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
         final Cardinality[] producedCardinalities = getProducedCardinalities(context);
 
         if (!check(requiredCardinalities, producedCardinalities)) {
-            context.add(new CardinalityValidationError(this, requiredCardinalities, producedCardinalities));
+            context.fireCardinalityValidationError(this, requiredCardinalities, producedCardinalities);
         }
 
         final BaseType[] requiredBaseTypes = getParentRequiredBaseTypes(context);
         final BaseType[] producedBaseTypes = getProducedBaseTypes(context);
 
         if (!check(requiredBaseTypes, producedBaseTypes)) {
-            context.add(new BaseTypeValidationError(this, requiredBaseTypes, producedBaseTypes));
+            context.fireBaseTypeValidationError(this, requiredBaseTypes, producedBaseTypes);
         }
     }
 
@@ -311,19 +302,11 @@ public abstract class AbstractExpression extends AbstractNode implements Express
 
     /**
      * Evaluates this Expression.
-     * <p>
-     * Note that this may result in a {@link RuntimeValidationException} triggered by run-time errors that are not detected using the "static" validation
-     * process. (In particular, baseType checking does not happen until run-time.)
-     * <p>
-     * For convenience, any resulting {@link RuntimeValidationException} will contain as many combined {@link ValidationItem}s as possible.
      */
     @Override
-    public final Value evaluate(final ProcessingContext context) throws RuntimeValidationException {
-        final AbstractValidationResult runtimeValidationResult = new RuntimeValidationResult(context.getSubject());
-        final Value result = evaluate(context, runtimeValidationResult, 0);
-        if (!runtimeValidationResult.getAllItems().isEmpty()) {
-            throw new RuntimeValidationException(runtimeValidationResult);
-        }
+    public final Value evaluate(final ProcessingContext context) {
+        final Value result = evaluate(context, 0);
+        Assert.notNull(result, "result of evaluation");
         return result;
     }
 
@@ -334,7 +317,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @return result of evaluation
      * @see #evaluate(ProcessingContext)
      */
-    private Value evaluate(final ProcessingContext context, final AbstractValidationResult runtimeValidationResult, final int depth) {
+    private Value evaluate(final ProcessingContext context, final int depth) {
         if (getChildren().size() > 0) {
             logger.debug("{}{}", formatIndent(depth), getClass().getSimpleName());
         }
@@ -344,18 +327,13 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         final Value[] childValues = new Value[children.size()];
         for (int i=0; i<children.size(); i++) {
             final Expression child = children.get(i);
-            Value childValue = NullValue.INSTANCE;
+            Value childValue;
             if (child instanceof AbstractExpression) {
-                childValue = ((AbstractExpression) child).evaluate(context, runtimeValidationResult, depth + 1);
+                childValue = ((AbstractExpression) child).evaluate(context, depth + 1);
             }
             else {
                 /* (This only happens if an extension implements Expression directly) */
-                try {
-                    childValue = child.evaluate(context);
-                }
-                catch (final RuntimeValidationException e) {
-                    runtimeValidationResult.addAll(e.getValidationResult().getAllItems());
-                }
+                childValue = child.evaluate(context);
             }
             childValues[i] = childValue;
         }
@@ -363,7 +341,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
 // DM: I think we should be able to catch all validation errors before runtime now, but haven't implemented this yet.
 // I have commented out the check here as the context interfaces aren't linked like they used to be.
 //      // 2) Validates this expression (but not its children, since they will have been done in 1 above).
-//      validateThisOnly(context);
+//        validateThis(context);
 
         // 3) Evaluates this expression.
         final Value value = evaluateSelf(context, childValues, depth);

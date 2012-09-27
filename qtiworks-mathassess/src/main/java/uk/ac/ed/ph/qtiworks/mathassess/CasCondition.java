@@ -38,6 +38,7 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.ATTR_SIMPLIFY_
 import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
@@ -48,7 +49,6 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
@@ -124,7 +124,7 @@ public final class CasCondition extends MathAssessOperator {
     }
 
     @Override
-    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) throws MaximaTimeoutException {
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) {
         final boolean simplify = getSimplify();
         final String code = getCode().trim();
 
@@ -133,17 +133,26 @@ public final class CasCondition extends MathAssessOperator {
                     new Object[] { code, simplify, childValues });
         }
 
-        final Value[] values = new Value[childValues.length];
+        final ValueWrapper[] casValues = new ValueWrapper[childValues.length];
         for (int i=0; i<childValues.length; i++) {
-            final Value v = childValues[i];
-            if (CasTypeGlue.isMathsContentRecord(v) && ((RecordValue) v).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) == null) {
+            final Value value = childValues[i];
+            final ValueWrapper casValue = GlueValueBinder.jqtiToCas(childValues[i]);
+            if (casValue==null) {
+                context.fireRuntimeError(this, "Child value " + value.toQtiString() + " at index "
+                        + i + " cannot be passed to Maxima - returning NULL");
                 return NullValue.INSTANCE;
             }
-            values[i] = v;
+            casValues[i] = casValue;
         }
 
         final QtiMaximaProcess qtiMaximaProcess = mathAssessExtensionPackage.obtainMaximaSessionForThread();
-        return BooleanValue.valueOf(qtiMaximaProcess.executeCasCondition(code, simplify, CasTypeGlue.convertFromJQTI(values)));
+        try {
+            return BooleanValue.valueOf(qtiMaximaProcess.executeCasCondition(code, simplify, casValues));
+        }
+        catch (final MaximaTimeoutException e) {
+            context.fireRuntimeError(this, "A timeout occurred executing the CasCondition logic. Returning NULL");
+            return NullValue.INSTANCE;
+        }
     }
 
     @Override

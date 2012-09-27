@@ -70,9 +70,9 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.validation.Validatable;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -87,7 +87,7 @@ import org.w3c.dom.Node;
  *
  * @author Jiri Kajaba
  */
-public final class AttributeList implements Validatable, Iterable<Attribute<?>> {
+public final class AttributeList implements Serializable, Iterable<Attribute<?>> {
 
     private static final long serialVersionUID = 4537124098886951888L;
 
@@ -97,11 +97,6 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
     /** Children (attributes) of this container. */
     private final List<Attribute<?>> attributes;
 
-    /**
-     * Constructs container.
-     *
-     * @param owner parent of constructed container
-     */
     public AttributeList(final QtiNode owner) {
         Assert.notNull(owner);
         this.owner = owner;
@@ -140,7 +135,6 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
                 throw new QtiAttributeException("Duplicate attribute name: " + attribute.computeXPath());
             }
         }
-
         attributes.add(attribute);
     }
 
@@ -305,10 +299,9 @@ public final class AttributeList implements Validatable, Iterable<Attribute<?>> 
         return attributes.iterator();
     }
 
-    @Override
-    public void validate(final ValidationContext context) {
+    public void validateBasic(final ValidationContext context) {
         for (final Attribute<?> attribute : attributes) {
-            attribute.validate(context);
+            attribute.validateBasic(context);
         }
     }
 

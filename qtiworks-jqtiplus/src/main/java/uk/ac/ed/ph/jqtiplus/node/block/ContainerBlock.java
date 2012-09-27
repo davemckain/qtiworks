@@ -116,8 +116,6 @@ public abstract class ContainerBlock extends AbstractNode {
 
     @Override
     protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
         for (final QtiNode child : children) {
             child.validate(context);
         }

@@ -38,46 +38,22 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 /**
  * This exception is used for propagating errors when parsing/converting literal Strings
  * into QTI types, allowed attribute valuess etc.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class QtiParseException extends QtiModelException {
 
     private static final long serialVersionUID = -696709617768595326L;
 
-    /**
-     * Constructs A new exception with <code>null</code> as its detailed message.
-     */
     protected QtiParseException() {
         super();
     }
 
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
-    public QtiParseException(String message) {
+    public QtiParseException(final String message) {
         super(message);
     }
 
-    /**
-     * Constructs A new exception with the specified detailed message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause
-     */
-    public QtiParseException(String message, Throwable cause) {
+    public QtiParseException(final String message, final Throwable cause) {
         super(message, cause);
-    }
-
-    /**
-     * Constructs A new exception with the specified cause.
-     * If cause is not <code>null</code> detailed message is set from this cause.
-     * 
-     * @param cause the cause
-     */
-    public QtiParseException(Throwable cause) {
-        super(cause);
     }
 }

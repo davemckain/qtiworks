@@ -27,23 +27,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
-
-import java.io.Serializable;
+package uk.ac.ed.ph.jqtiplus.notification;
 
 /**
- * Every object which supports validation must implement this interface.
- * 
- * @author Jiri Kajaba
+ * NB: These should be arranged in increasing level of importance
+ *
+ * @author David McKain
  */
-public interface Validatable extends Serializable {
+public enum NotificationLevel {
 
-    /**
-     * Validates this object, appending to the given {@link AbstractValidationResult}
-     */
-    public void validate(ValidationContext context);
+    INFO,
+    WARNING,
+    ERROR,
+    ;
+
 }

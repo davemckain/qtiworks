@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
@@ -173,19 +172,18 @@ public final class SliderInteraction extends BlockInteraction {
         getAttributes().getBooleanAttribute(ATTR_REVERSE_NAME).setValue(reverse);
     }
 
-
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getResponseIdentifier());
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                context.add(new ValidationError(this, "Response variable must have single cardinality"));
-            }
+            if (declaration!=null) {
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
+                    context.fireValidationError(this, "Response variable must have single cardinality");
+                }
 
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isNumeric()) {
-                context.add(new ValidationError(this, "Response variable must have numeric base type"));
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isNumeric()) {
+                    context.fireValidationError(this, "Response variable must have numeric base type");
+                }
             }
         }
     }

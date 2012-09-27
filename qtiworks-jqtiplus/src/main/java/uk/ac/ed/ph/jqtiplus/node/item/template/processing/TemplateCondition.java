@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateElseIfGroup;
@@ -137,7 +136,7 @@ public final class TemplateCondition extends TemplateRule {
     }
 
     @Override
-    public void evaluate(final ItemProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws TemplateProcessingInterrupt {
         for (final TemplateConditionChild child : getConditionChildren()) {
             if (child.evaluate(context)) {
                 return;

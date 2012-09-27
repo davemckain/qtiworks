@@ -71,10 +71,10 @@ public final class AreaMapEntry extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         if (getShape() != null) {
-            getShape().validateCoords(getAttributes().getCoordsAttribute(ATTR_COORDS_NAME),
-                    context.getValidationResult(), convertCoordinates(getCoordinates()));
+            getShape().validateCoords(context, getAttributes().getCoordsAttribute(ATTR_COORDS_NAME),
+                    convertCoordinates(getCoordinates()));
         }
     }
 

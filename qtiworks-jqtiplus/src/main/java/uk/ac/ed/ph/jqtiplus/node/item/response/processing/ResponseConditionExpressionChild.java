@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -80,10 +79,10 @@ public abstract class ResponseConditionExpressionChild extends ResponseCondition
     }
 
     @Override
-    public boolean evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt {
         final Value value = getExpression().evaluate(context);
 
-        if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {
+        if (value.isNull() || !((BooleanValue) value).booleanValue()) {
             return false;
         }
 

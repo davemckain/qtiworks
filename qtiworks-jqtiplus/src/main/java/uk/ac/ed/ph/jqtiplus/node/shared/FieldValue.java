@@ -42,8 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
@@ -55,7 +53,9 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -182,39 +182,31 @@ public final class FieldValue extends AbstractNode {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
         final Cardinality cardinality = getParent().getCardinality();
         if (cardinality != null) {
             if (cardinality.isRecord() && getFieldIdentifier() == null) {
-                context.add(new ValidationError(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") is not defined."));
+                context.fireValidationError(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") is not defined.");
             }
 
             if (cardinality.isRecord() && getBaseTypeAttrValue() == null) {
-                context.add(new ValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined."));
+                context.fireValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined.");
             }
 
             if (!cardinality.isRecord() && getFieldIdentifier() != null) {
-                context.add(new ValidationWarning(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") should not be defined."));
+                context.fireValidationWarning(this, "Attribute (" + ATTR_FIELD_IDENTIFIER_NAME + ") should not be defined.");
             }
 
             if (!cardinality.isRecord() && getBaseTypeAttrValue() != null) {
-                context.add(new ValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined."));
+                context.fireValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined.");
             }
         }
-    }
 
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
-        if (singleValue == null) {
-            context.add(new ValidationError(this, "Value is not defined."));
+        if (singleValue==null) {
+            context.fireValidationError(this, "Value is not defined.");
         }
-
-        if (singleValue != null && getBaseType() != null && singleValue.getBaseType() != getBaseType()) {
-            context.add(new ValidationError(this, "BaseType of value does not match. Expected: " + getBaseType() + ", but found: " + singleValue.getBaseType()));
+        else if (getBaseType() != null && singleValue.getBaseType() != getBaseType()) {
+            context.fireValidationError(this, "BaseType of value does not match. Expected: " + getBaseType() + ", but found: " + singleValue.getBaseType());
         }
     }
 
@@ -228,7 +220,7 @@ public final class FieldValue extends AbstractNode {
      * @see #getValues
      */
     public static Value computeValue(final Cardinality cardinality, final List<FieldValue> values) {
-        if (values.size() == 0) {
+        if (values.isEmpty()) {
             return NullValue.INSTANCE;
         }
 
@@ -237,31 +229,25 @@ public final class FieldValue extends AbstractNode {
                 return values.get(0).getSingleValue();
             }
             case MULTIPLE: {
-                final MultipleValue value = new MultipleValue();
-
+                final List<SingleValue> singleValues = new ArrayList<SingleValue>();
                 for (final FieldValue fieldValue : values) {
-                    value.add(fieldValue.getSingleValue());
+                    singleValues.add(fieldValue.getSingleValue());
                 }
-
-                return value;
+                return MultipleValue.createMultipleValue(singleValues);
             }
             case ORDERED: {
-                final OrderedValue value = new OrderedValue();
-
+                final List<SingleValue> singleValues = new ArrayList<SingleValue>();
                 for (final FieldValue fieldValue : values) {
-                    value.add(fieldValue.getSingleValue());
+                    singleValues.add(fieldValue.getSingleValue());
                 }
-
-                return value;
+                return OrderedValue.createOrderedValue(singleValues);
             }
             case RECORD: {
-                final RecordValue value = new RecordValue();
-
+                final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
                 for (final FieldValue fieldValue : values) {
-                    value.add(fieldValue.getFieldIdentifier(), fieldValue.getSingleValue());
+                    recordBuilder.put(fieldValue.getFieldIdentifier(), fieldValue.getSingleValue());
                 }
-
-                return value;
+                return RecordValue.createRecordValue(recordBuilder);
             }
             default:
                 throw new QtiLogicException("Unsupported " + Cardinality.QTI_CLASS_NAME + ": " + cardinality);

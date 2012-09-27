@@ -68,7 +68,7 @@ public class RecordAcceptTest extends ExpressionAcceptTest {
 
     static {
         // RECORD_1__1_2_3
-        RECORD_1__1_2_3 = new RecordValue();
+        RECORD_1__1_2_3 = RecordValue.emptyRecord();
         RECORD_1__1_2_3.add("key_1", new IntegerValue(1));
         RECORD_1__1_2_3.add("key_2", new IntegerValue(2));
         RECORD_1__1_2_3.add("key_3", new IntegerValue(3));
@@ -90,17 +90,17 @@ public class RecordAcceptTest extends ExpressionAcceptTest {
                 // identifier
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new IdentifierValue("identifier")) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new IdentifierValue("identifier")) },
                 // boolean
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", BooleanValue.TRUE) }, { "<recordEx identifiers='key_1'>" +
+                        "</recordEx>", RecordValue.createRecordValue("key_1", BooleanValue.TRUE) }, { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='boolean'>false</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", BooleanValue.FALSE) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", BooleanValue.FALSE) },
                 // integer
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new IntegerValue(1)) }, { "<recordEx identifiers='key_1 key_2 key_3'>" +
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new IntegerValue(1)) }, { "<recordEx identifiers='key_1 key_2 key_3'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>2</baseValue>" +
                         "<baseValue baseType='integer'>3</baseValue>" +
@@ -114,35 +114,35 @@ public class RecordAcceptTest extends ExpressionAcceptTest {
                 // float
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new FloatValue(1)) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new FloatValue(1)) },
                 // string
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new StringValue("string")) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new StringValue("string")) },
                 // point
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new PointValue(1, 1)) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new PointValue(1, 1)) },
                 // pair
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new PairValue("identifier_1", "identifier_2")) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new PairValue("identifier_1", "identifier_2")) },
                 // directedPair
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new DirectedPairValue("identifier_1", "identifier_2")) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new DirectedPairValue("identifier_1", "identifier_2")) },
                 // duration
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new DurationValue(1)) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new DurationValue(1)) },
                 // file
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", ValueTestUtils.createTestFileValue("file")) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", ValueTestUtils.createTestFileValue("file")) },
                 // uri
                 { "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</recordEx>", new RecordValue("key_1", new UriValue("uri")) },
+                        "</recordEx>", RecordValue.createRecordValue("key_1", new UriValue("uri")) },
         });
     }
 

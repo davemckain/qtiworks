@@ -84,13 +84,13 @@ public class FileValueTest extends ValueTest {
                 // UriValue
                 {false, ValueTestUtils.createTestFileValue("file"), new UriValue("uri")},
                 // MultipleValue
-                {false, ValueTestUtils.createTestFileValue("file"), new MultipleValue()},
-                {false, ValueTestUtils.createTestFileValue("file"), new MultipleValue(ValueTestUtils.createTestFileValue("file"))},
+                {false, ValueTestUtils.createTestFileValue("file"), MultipleValue.emptyValue()},
+                {false, ValueTestUtils.createTestFileValue("file"), MultipleValue.createMultipleValue(ValueTestUtils.createTestFileValue("file"))},
                 // OrderedValue
-                {false, ValueTestUtils.createTestFileValue("file"), new OrderedValue()},
-                {false, ValueTestUtils.createTestFileValue("file"), new OrderedValue(ValueTestUtils.createTestFileValue("file"))},
+                {false, ValueTestUtils.createTestFileValue("file"), OrderedValue.emptyValue()},
+                {false, ValueTestUtils.createTestFileValue("file"), OrderedValue.createOrderedValue(ValueTestUtils.createTestFileValue("file"))},
                 // RecordValue
-                {false, ValueTestUtils.createTestFileValue("file"), new RecordValue()}
+                {false, ValueTestUtils.createTestFileValue("file"), RecordValue.emptyRecord()}
         });
     }
 

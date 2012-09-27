@@ -42,8 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceReader;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
@@ -93,6 +91,18 @@ public abstract class AbstractNode implements QtiNode {
     }
 
     @Override
+    public <E extends QtiNode> E getNearestAncestor(final Class<E> ancestorClass) {
+        QtiNode ancestor = getParent();
+        while (ancestor!=null) {
+            if (ancestorClass.isInstance(ancestor)) {
+                return ancestorClass.cast(ancestor);
+            }
+            ancestor = ancestor.getParent();
+        }
+        return null;
+    }
+
+    @Override
     public final String getQtiClassName() {
         return qtiClassName;
     }
@@ -110,7 +120,6 @@ public abstract class AbstractNode implements QtiNode {
     public AttributeList getAttributes() {
         return attributes;
     }
-
 
     @Override
     public RootNode getRootNode() {
@@ -246,37 +255,51 @@ public abstract class AbstractNode implements QtiNode {
 
     @Override
     public void validate(final ValidationContext context) {
-        validateAttributes(context);
+        /* Do basic checking on individual Attributes */
+        attributes.validateBasic(context);
+
+        /* Perform additional validation relevant to this Node */
+        validateThis(context);
+
+        /* Validate children */
         validateChildren(context);
     }
 
     /**
-     * Validates attributes of this node.
+     * Subclasses should fill in to perform any additional validation
+     * required for this {@link AbstractNode}. This might involve complex
+     * validation of attributes, or extraction of data from other {@link AbstractNode}s
+     * in the hierarchy.
+     * <p>
+     * Subclasses should be aware that children of this {@link AbstractNode}
+     * will *not* have been validated at the time this method is called, so
+     * validation logic should be suitably defensive.
      */
-    protected void validateAttributes(final ValidationContext context) {
-        attributes.validate(context);
+    @SuppressWarnings("unused")
+    protected void validateThis(final ValidationContext context) {
+        /* Subclasses should fill in as required */
     }
 
     /**
      * Validates children (body) of this node.
+     * <p>
+     * Subclasses should only override this if they have special children.
      */
     protected void validateChildren(final ValidationContext context) {
         for (int i = 0; i < nodeGroups.size(); i++) {
-            final NodeGroup<?,?> node = nodeGroups.get(i);
-            for (final QtiNode child : node.getChildren()) {
-                child.validate(context);
-            }
+            final NodeGroup<?,?> nodeGroup = nodeGroups.get(i);
+            nodeGroup.validate(context);
         }
     }
 
     /** Helper method to validate a unique identifier (definition) attribute */
-    protected void validateUniqueIdentifier(final AbstractValidationResult result, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
+    protected void validateUniqueIdentifier(final ValidationContext context, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
         if (identifier != null) {
             if (getRootNode(AssessmentTest.class) != null && BranchRule.isSpecial(identifier)) {
-                result.add(new AttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute));
+                context.fireAttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute);
             }
             if (!validateUniqueIdentifier(getRootNode(), identifier)) {
-                result.add(new AttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute));
+                context.fireAttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute);
             }
         }
     }

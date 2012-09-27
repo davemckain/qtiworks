@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.variable.TextOrVariable;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.util.List;
 
@@ -65,11 +64,9 @@ public final class InlineChoice extends Choice {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (QueryUtils.hasDescendant(Interaction.class, this)) {
-            context.add(new ValidationError(this, QTI_CLASS_NAME + " cannot contain nested interactions"));
+            context.fireValidationError(this, QTI_CLASS_NAME + " cannot contain nested interactions");
         }
     }
 

@@ -45,6 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
@@ -53,8 +54,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
@@ -80,6 +82,9 @@ public class CandidateSessionStarter {
 
     @Resource
     private IdentityContext identityContext;
+
+    @Resource
+    private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
     private CandidateDataServices candidateDataServices;
@@ -153,7 +158,7 @@ public class CandidateSessionStarter {
     // Session creation and initialisation
 
     public CandidateItemSession createSystemSampleSession(final long aid, final String exitUrl)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery sampleItemDelivery = lookupSystemSampleDelivery(aid);
         return createCandidateSession(sampleItemDelivery, exitUrl);
     }
@@ -163,20 +168,21 @@ public class CandidateSessionStarter {
      * having the given ID (did).
      */
     public CandidateItemSession createCandidateSession(final long did, final String exitUrl)
-            throws RuntimeValidationException, PrivilegeException, DomainEntityNotFoundException {
+            throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDelivery itemDelivery = lookupItemDelivery(did);
         return createCandidateSession(itemDelivery, exitUrl);
     }
 
     /**
      * Starts new {@link CandidateItemSession} for the given {@link ItemDelivery}
+     *
      * @param itemDelivery
+     *
      * @return
-     * @throws RuntimeValidationException
      * @throws PrivilegeException
      */
     public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery, final String exitUrl)
-            throws RuntimeValidationException, PrivilegeException {
+            throws PrivilegeException {
         Assert.notNull(itemDelivery, "itemDelivery");
 
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
@@ -196,8 +202,11 @@ public class CandidateSessionStarter {
         /* Create fresh JQTI+ state Object */
         final ItemSessionState itemSessionState = new ItemSessionState();
 
+        /* Set up listener to record any notifications */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
         /* Initialise state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState, notificationRecorder);
         itemSessionController.initialize();
 
         /* Check whether an attempt is allowed. This is a bit pathological here,
@@ -214,8 +223,9 @@ public class CandidateSessionStarter {
         candidateSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.persist(candidateSession);
 
-        /* Record initialisation event */
-        candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState);
+        /* Record and log event */
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateItemEvent(candidateSession, candidateItemEvent);
 
         auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
                 + " on ItemDelivery #" + itemDelivery.getId());

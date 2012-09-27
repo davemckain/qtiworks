@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
 import uk.ac.ed.ph.qtiworks.rendering.XsltParamDocumentBuilder.SaxFirerCallback;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
@@ -95,6 +96,40 @@ public final class XsltParamBuilder {
         for (final Identifier identifier : identifiers) {
             result.add(identifier.toString());
         }
+        return result;
+    }
+
+    public List<Node> notificationsToElements(final List<CandidateItemEventNotification> notifications) {
+        final ArrayList<Node> result = new ArrayList<Node>();
+        final Document doc = documentBuilder.newDocument();
+        for (final CandidateItemEventNotification notification : notifications) {
+            final Element element = doc.createElementNS(QTIWORKS_NAMESPACE, "notification");
+            element.setAttribute("type", notification.getNotificationType().toString());
+            element.setAttribute("level", notification.getNotificationLevel().toString());
+            final String attrLocalName = notification.getAttributeLocalName();
+            if (attrLocalName!=null) {
+                element.setAttribute("attrLocalName", attrLocalName);
+                element.setAttribute("attrNamespaceUri", notification.getAttributeNamespaceUri());
+            }
+            final String nodeQtiClassName = notification.getNodeQtiClassName();
+            if (nodeQtiClassName!=null) {
+                element.setAttribute("nodeQtiClassName", nodeQtiClassName);
+            }
+            final Integer columnNumber = notification.getColumnNumber();
+            if (columnNumber!=null) {
+                element.setAttribute("columnNumber", columnNumber.toString());
+            }
+            final Integer lineNumber = notification.getLineNumber();
+            if (lineNumber!=null) {
+                element.setAttribute("lineNumber", lineNumber.toString());
+            }
+            final String systemId = notification.getSystemId();
+            if (systemId!=null) {
+                element.setAttribute("systemId", systemId);
+            }
+            element.appendChild(doc.createTextNode(notification.getMessage()));
+            result.add(element);
+         }
         return result;
     }
 

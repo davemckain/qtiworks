@@ -45,11 +45,15 @@ import uk.ac.ed.ph.qtiworks.mathassess.glue.types.IntegerValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.MathsContentInputValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.MathsContentValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.MultipleValueWrapper;
+import uk.ac.ed.ph.qtiworks.mathassess.glue.types.NullValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.OrderedValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.SingleValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
+import uk.ac.ed.ph.qtiworks.mathassess.value.ReturnTypeType;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -63,31 +67,102 @@ import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the required static methods for mapping between JQTI {@link Value}s
- * and the
- * corresponding {@link ValueWrapper}s in MathAssessTools.
- * 
- * @author Jonathon Hare
- * @author David McKain
+ * and the corresponding {@link ValueWrapper}s in the "glue" module.
+ *
+ * @author Jonathon Hare (original)
+ * @author David McKain (rewritten)
  */
-public final class CasTypeGlue {
+public final class GlueValueBinder {
 
-    public static BooleanValue convertToJQTI(BooleanValueWrapper value) {
+    /**
+     * Converts the given {@link ValueWrapper} to a JQTI {@link Value}.
+     * <p>
+     * Returns null if the given wrapper cannot be converted to a {@link Value}
+     * (which indicates that the current implementation is incomplete).
+     *
+     * @param value {@link ValueWrapper} to convert, which must not be null.
+     */
+    public static Value casToJqti(final ValueWrapper value) {
+        Assert.notNull(value);
+        if (value.isNull()) {
+            return NullValue.INSTANCE;
+        }
+        switch (value.getCardinality()) {
+            case SINGLE:
+                return casToJqti((SingleValueWrapper<?>) value);
+
+            case MULTIPLE:
+                return casToJqti((MultipleValueWrapper<?,?>) value);
+
+            case ORDERED:
+                return casToJqti((OrderedValueWrapper<?,?>) value);
+
+            case MATHS_CONTENT:
+                return casToJqti((MathsContentValueWrapper) value);
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + value.getCardinality());
+        }
+    }
+
+    private static SingleValue casToJqti(final SingleValueWrapper<?> value) {
+        switch (value.getBaseType()) {
+            case BOOLEAN:
+                return casToJqti((BooleanValueWrapper) value);
+
+            case INTEGER:
+                return casToJqti((IntegerValueWrapper) value);
+
+            case FLOAT:
+                return casToJqti((FloatValueWrapper) value);
+
+            case POINT:
+            case STRING:
+                return null;
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + value.getBaseType());
+        }
+    }
+
+    private static Value casToJqti(final OrderedValueWrapper<?,?> wrapper) {
+        final List<SingleValue> values = new ArrayList<SingleValue>();
+        for (final SingleValueWrapper<?> v : wrapper) {
+            values.add(casToJqti(v));
+        }
+        return OrderedValue.createOrderedValue(values);
+    }
+
+    private static Value casToJqti(final MultipleValueWrapper<?,?> wrapper) {
+        final List<SingleValue> values = new ArrayList<SingleValue>();
+        for (final SingleValueWrapper<?> v : wrapper) {
+            values.add(casToJqti(v));
+        }
+        return MultipleValue.createMultipleValue(values);
+    }
+
+
+    private static BooleanValue casToJqti(final BooleanValueWrapper value) {
         return BooleanValue.valueOf(value.getValue().booleanValue());
     }
 
-    public static IntegerValue convertToJQTI(IntegerValueWrapper value) {
+    private static IntegerValue casToJqti(final IntegerValueWrapper value) {
         return new IntegerValue(value.getValue().intValue());
     }
 
-    public static FloatValue convertToJQTI(FloatValueWrapper value) {
+    private static FloatValue casToJqti(final FloatValueWrapper value) {
         return new FloatValue(value.getValue().floatValue());
     }
 
-    public static RecordValue convertToJQTI(MathsContentValueWrapper value) {
-        final RecordValue rv = new RecordValue();
+    private static RecordValue casToJqti(final MathsContentValueWrapper value) {
+        final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
 
         /* First add pseudo "class" entry that allows us to determine (to a
          * point) that this
@@ -96,20 +171,20 @@ public final class CasTypeGlue {
          * hack something
          * together in the interim using a URL identifier that nobody else is
          * likely to use. */
-        rv.add(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER, new StringValue(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE));
+        recordBuilder.put(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER, new StringValue(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE));
 
         /* Fill in other fields */
         if (value.getMaximaInput() != null && value.getMaximaInput().length() > 0) {
-            rv.add(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER, new StringValue(value.getMaximaInput()));
+            recordBuilder.put(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER, new StringValue(value.getMaximaInput()));
         }
         if (value.getPMathML() != null && value.getPMathML().length() > 0) {
-            rv.add(MathAssessConstants.FIELD_PMATHML_IDENTIFIER, new StringValue(value.getPMathML()));
+            recordBuilder.put(MathAssessConstants.FIELD_PMATHML_IDENTIFIER, new StringValue(value.getPMathML()));
         }
         if (value.getCMathML() != null && value.getCMathML().length() > 0) {
-            rv.add(MathAssessConstants.FIELD_CMATHML_IDENTIFIER, new StringValue(value.getCMathML()));
+            recordBuilder.put(MathAssessConstants.FIELD_CMATHML_IDENTIFIER, new StringValue(value.getCMathML()));
         }
         if (value.getAsciiMathInput() != null && value.getAsciiMathInput().length() > 0) {
-            rv.add(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER, new StringValue(value
+            recordBuilder.put(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER, new StringValue(value
                     .getAsciiMathInput()));
         }
         if (value instanceof MathsContentInputValueWrapper) {
@@ -120,74 +195,15 @@ public final class CasTypeGlue {
              * be used in rendering. */
             final MathsContentInputValueWrapper inputValue = (MathsContentInputValueWrapper) value;
             if (inputValue.getPMathMLBracketed() != null && inputValue.getPMathMLBracketed().length() > 0) {
-                rv.add(MathAssessConstants.FIELD_PMATHML_BRACKETED_IDENTIFIER, new StringValue(inputValue.getPMathMLBracketed()));
+                recordBuilder.put(MathAssessConstants.FIELD_PMATHML_BRACKETED_IDENTIFIER, new StringValue(inputValue.getPMathMLBracketed()));
             }
         }
-        return rv;
-    }
-
-    public static Value convertToJQTI(ValueWrapper value) {
-        if (value == null || value.isNull()) {
-            return NullValue.INSTANCE;
-        }
-
-        switch (value.getCardinality()) {
-            case SINGLE:
-                return convertToJQTI((SingleValueWrapper<?>) value);
-
-            case MULTIPLE:
-                return convertToJQTI((MultipleValueWrapper<?, ?>) value);
-
-            case ORDERED:
-                return convertToJQTI((OrderedValueWrapper<?, ?>) value);
-
-            case MATHS_CONTENT:
-                return convertToJQTI((MathsContentValueWrapper) value);
-
-            default:
-                throw new QtiEvaluationException("Converting type " + value.getCardinality()
-                        + " is not supported.");
-        }
-    }
-
-    public static SingleValue convertToJQTI(SingleValueWrapper<?> value) {
-        switch (value.getBaseType()) {
-            case BOOLEAN:
-                return convertToJQTI((BooleanValueWrapper) value);
-
-            case INTEGER:
-                return convertToJQTI((IntegerValueWrapper) value);
-
-            case FLOAT:
-                return convertToJQTI((FloatValueWrapper) value);
-
-            default:
-                throw new QtiEvaluationException("Converting type " + value.getBaseType()
-                        + " is not supported.");
-        }
-    }
-
-    public static OrderedValue convertToJQTI(OrderedValueWrapper<?, ?> wrapper) {
-        final OrderedValue value = new OrderedValue();
-
-        for (final SingleValueWrapper<?> v : wrapper) {
-            value.add(convertToJQTI(v));
-        }
-        return value;
-    }
-
-    public static MultipleValue convertToJQTI(MultipleValueWrapper<?, ?> wrapper) {
-        final MultipleValue value = new MultipleValue();
-
-        for (final SingleValueWrapper<?> v : wrapper) {
-            value.add(convertToJQTI(v));
-        }
-        return value;
+        return (RecordValue) RecordValue.createRecordValue(recordBuilder);
     }
 
     // ----------------------------------------------------------------------
 
-    public static boolean isMathsContentRecord(Value value) {
+    public static boolean isMathsContentRecord(final Value value) {
         if (!(value instanceof RecordValue)) {
             return false;
         }
@@ -195,46 +211,60 @@ public final class CasTypeGlue {
         return testValue != null && testValue.toQtiString().equals(MathAssessConstants.MATHS_CONTENT_RECORD_VARIABLE_VALUE);
     }
 
-    public static ValueWrapper convertFromJQTI(Value value) {
+    public static boolean isCasCompatibleMathsContentRecord(final Value value) {
+        return isMathsContentRecord(value) && ((RecordValue) value).get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER)!=null;
+    }
+
+    /**
+     * Converts a JQTI {@link Value} to a {@link ValueWrapper} suitable for passing to the
+     * glue code.
+     * <p>
+     * Returns null if the given {@link Value} is not supported by the glue code.
+     *
+     * @param value
+     * @return
+     */
+    public static ValueWrapper jqtiToCas(final Value value) {
+        if (value.isNull()) {
+            return NullValueWrapper.INSTANCE;
+        }
         switch (value.getCardinality()) {
             case SINGLE:
-                return convertFromJQTI((SingleValue) value);
+                return jqtiToCas((SingleValue) value);
 
             case MULTIPLE:
-                return convertFromJQTI((MultipleValue) value);
+                return jqtiToCas((MultipleValue) value);
 
             case ORDERED:
-                return convertFromJQTI((OrderedValue) value);
+                return jqtiToCas((OrderedValue) value);
 
             case RECORD:
                 final RecordValue recordValue = (RecordValue) value;
-                if (!isMathsContentRecord(recordValue)) {
-                    throw new QtiEvaluationException("RecordValue " + recordValue + " does not appear to hold MathsContent");
+                if (!isCasCompatibleMathsContentRecord(recordValue)) {
+                    return null;
                 }
-                return convertFromJQTI(recordValue);
+                return jqtiToCas(recordValue);
 
             default:
-                throw new QtiEvaluationException("Unexpected switch case");
-
+                throw new QtiLogicException("Unexpected switch case");
         }
     }
 
-    public static SingleValueWrapper<?> convertFromJQTI(SingleValue value) {
+    private static SingleValueWrapper<?> jqtiToCas(final SingleValue value) {
         if (value.getBaseType().isBoolean()) {
-            return convertFromJQTI((BooleanValue) value);
+            return jqtiToCas((BooleanValue) value);
         }
         else if (value.getBaseType().isInteger()) {
-            return convertFromJQTI((IntegerValue) value);
+            return jqtiToCas((IntegerValue) value);
         }
         else if (value.getBaseType().isFloat()) {
-            return convertFromJQTI((FloatValue) value);
+            return jqtiToCas((FloatValue) value);
         }
-        throw new QtiEvaluationException("Converting type " + value.getBaseType()
-                + " is not supported.");
+        return null;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static OrderedValueWrapper<?, ?> convertFromJQTI(OrderedValue value) {
+    private static OrderedValueWrapper<?,?> jqtiToCas(final OrderedValue value) {
         OrderedValueWrapper wrapper;
 
         if (value.getBaseType().isBoolean()) {
@@ -247,18 +277,17 @@ public final class CasTypeGlue {
             wrapper = new FloatOrderedValueWrapper();
         }
         else {
-            throw new QtiEvaluationException("Converting type " + value.getBaseType()
-                    + " is not supported.");
+            return null;
         }
 
         for (final SingleValue v : value) {
-            wrapper.add(convertFromJQTI(v));
+            wrapper.add(jqtiToCas(v));
         }
         return wrapper;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static MultipleValueWrapper<?, ?> convertFromJQTI(MultipleValue value) {
+    private static MultipleValueWrapper<?,?> jqtiToCas(final MultipleValue value) {
         MultipleValueWrapper wrapper;
 
         if (value.getBaseType().isBoolean()) {
@@ -271,29 +300,28 @@ public final class CasTypeGlue {
             wrapper = new FloatMultipleValueWrapper();
         }
         else {
-            throw new QtiEvaluationException("Converting type " + value.getBaseType()
-                    + " is not supported.");
+            return null;
         }
 
         for (final SingleValue v : value) {
-            wrapper.add(convertFromJQTI(v));
+            wrapper.add(jqtiToCas(v));
         }
         return wrapper;
     }
 
-    public static BooleanValueWrapper convertFromJQTI(BooleanValue value) {
+    private static BooleanValueWrapper jqtiToCas(final BooleanValue value) {
         return new BooleanValueWrapper(value.booleanValue());
     }
 
-    public static IntegerValueWrapper convertFromJQTI(IntegerValue value) {
+    private static IntegerValueWrapper jqtiToCas(final IntegerValue value) {
         return new IntegerValueWrapper(value.intValue());
     }
 
-    public static FloatValueWrapper convertFromJQTI(FloatValue value) {
+    private static FloatValueWrapper jqtiToCas(final FloatValue value) {
         return new FloatValueWrapper(value.doubleValue());
     }
 
-    public static MathsContentValueWrapper convertFromJQTI(RecordValue value) {
+    private static MathsContentValueWrapper jqtiToCas(final RecordValue value) {
         final MathsContentInputValueWrapper wrapper = new MathsContentInputValueWrapper();
         if (value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER) != null) {
             wrapper.setMaximaInput(value.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER).toQtiString());
@@ -312,18 +340,60 @@ public final class CasTypeGlue {
         }
         return wrapper;
     }
-    
-    public static ValueWrapper[] convertFromJQTI(Value[] values) {
-        final ValueWrapper[] output = new ValueWrapper[values.length];
-        for (int i = 0; i < values.length; i++) {
-            output[i] = convertFromJQTI(values[i]);
-        }
-        return output;
-    }
 
     // ----------------------------------------------------------------------
 
-    public static Class<? extends ValueWrapper> getCasClass(BaseType baseType, Cardinality cardinality) {
+    /**
+     * Returns the {@link ValueWrapper} class that would be used to wrap the output
+     * from the CAS for the {@link ReturnTypeType}. This will never be null.
+     */
+    public static Class<? extends ValueWrapper> getCasReturnClass(final ReturnTypeType returnType) {
+        switch (returnType) {
+            case BOOLEAN:
+                return BooleanValueWrapper.class;
+
+            case BOOLEAN_MULTIPLE:
+                return BooleanMultipleValueWrapper.class;
+
+            case BOOLEAN_ORDERED:
+                return BooleanOrderedValueWrapper.class;
+
+            case FLOAT:
+                return FloatValueWrapper.class;
+
+            case FLOAT_MULTIPLE:
+                return FloatMultipleValueWrapper.class;
+
+            case FLOAT_ORDERED:
+                return FloatOrderedValueWrapper.class;
+
+            case INTEGER:
+                return IntegerValueWrapper.class;
+
+            case INTEGER_MULTIPLE:
+                return IntegerMultipleValueWrapper.class;
+
+            case INTEGER_ORDERED:
+                return IntegerOrderedValueWrapper.class;
+
+            case MATHS_CONTENT:
+                return MathsContentInputValueWrapper.class;
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + returnType);
+        }
+    }
+
+    /**
+     * Returns the {@link ValueWrapper} class that would be used to wrap the output
+     * from the CAS for the given {@link BaseType} and {@link Cardinality},
+     * or null if that particular combination is not supported.
+     *
+     * @param baseType
+     * @param cardinality
+     * @return
+     */
+    public static Class<? extends ValueWrapper> getCasReturnClass(final BaseType baseType, final Cardinality cardinality) {
         switch (cardinality) {
             case SINGLE:
                 switch (baseType) {

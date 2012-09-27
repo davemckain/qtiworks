@@ -48,8 +48,6 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -235,52 +233,49 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateThis(final ValidationContext context) {
         final Integer maxStrings = getMaxStrings();
         final int minStrings = getMinStrings();
         if (maxStrings != null) {
             if (maxStrings.intValue() < minStrings) {
-                context.add(new ValidationError(this, "maxStrings cannot be smaller than minStrings"));
+                context.fireValidationError(this, "maxStrings cannot be smaller than minStrings");
             }
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-
+        final ResponseDeclaration declaration = getResponseDeclaration();
+        if (declaration != null) {
             if (minStrings > 1 || (maxStrings != null && maxStrings.intValue() > 1)) {
-                if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
                     if (declaration.getCardinality().isRecord()) {
-                        context.add(new ValidationError(this,
-                                "JQTI doesn't currently support binding multiple strings to a record container (the spec is very unclear here)"));
+                        context.fireValidationError(this,
+                                "JQTI doesn't currently support binding multiple strings to a record container (the spec is very unclear here)");
                     }
                     else {
-                        context.add(new ValidationError(this, "Response variable must have multiple or ordered cardinality"));
+                        context.fireValidationError(this, "Response variable must have multiple or ordered cardinality");
                     }
                 }
             }
 
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isRecord()) {
+            if (declaration.getCardinality() != null && !declaration.getCardinality().isRecord()) {
                 if (declaration.getBaseType() != null && !(declaration.getBaseType().isString() || declaration.getBaseType().isNumeric())) {
-                    context.add(new ValidationError(this, "Response variable must have string or numeric base type"));
+                    context.fireValidationError(this, "Response variable must have string or numeric base type");
                 }
             }
 
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10) {
-                context.add(new ValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored."));
+            if (declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10) {
+                context.fireValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored.");
             }
         }
 
         if (getStringIdentifier() != null) {
-            final ResponseDeclaration declaration = getStringIdentifierResponseDeclaration();
-            if (declaration!=null) {
+            final ResponseDeclaration stringDeclaration = getStringIdentifierResponseDeclaration();
+            if (stringDeclaration!=null) {
                 if ((getMinStrings() > 1 || (getMaxStrings() != null && getMaxStrings() > 1))
-                        && declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
-                    context.add(new ValidationError(this, "StringIdentifier response variable must have multiple or ordered cardinality"));
+                        && stringDeclaration.getCardinality() != null && !stringDeclaration.getCardinality().isList()) {
+                    context.fireValidationError(this, "StringIdentifier response variable must have multiple or ordered cardinality");
                 }
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isString()) {
-                    context.add(new ValidationError(this, "StringIdentifier response variable must have String base type"));
+                if (stringDeclaration.getBaseType() != null && !stringDeclaration.getBaseType().isString()) {
+                    context.fireValidationError(this, "StringIdentifier response variable must have String base type");
                 }
             }
 
@@ -333,10 +328,10 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
                     }
 
                     if (responseCardinality == Cardinality.MULTIPLE) {
-                        result = new MultipleValue(values);
+                        result = MultipleValue.createMultipleValue(values);
                     }
                     else {
-                        result = new OrderedValue(values);
+                        result = OrderedValue.createOrderedValue(values);
                     }
                 }
                 else {

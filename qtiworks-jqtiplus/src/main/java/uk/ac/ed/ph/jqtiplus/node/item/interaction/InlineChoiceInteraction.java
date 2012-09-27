@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -138,17 +137,17 @@ public final class InlineChoiceInteraction extends InlineInteraction implements 
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                context.add(new ValidationError(this, "Response variable must have identifier base type"));
-            }
+            if (declaration!=null) {
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
+                    context.fireValidationError(this, "Response variable must have identifier base type");
+                }
 
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                context.add(new ValidationError(this, "Response variable must have single cardinality"));
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
+                    context.fireValidationError(this, "Response variable must have single cardinality");
+                }
             }
         }
     }

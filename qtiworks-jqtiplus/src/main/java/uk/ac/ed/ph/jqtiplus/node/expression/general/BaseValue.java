@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -111,7 +110,7 @@ public final class BaseValue extends AbstractFunctionalExpression {
     protected void loadChildren(final Element element, final LoadingContext context) {
         if (getBaseTypeAttrValue() != null) {
             try {
-                this.singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent().trim());
+                singleValue = getBaseTypeAttrValue().parseSingleValue(element.getTextContent().trim());
             }
             catch (final QtiParseException e) {
                 context.modelBuildingError(e, element);
@@ -138,17 +137,15 @@ public final class BaseValue extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (singleValue == null) {
-            context.add(new ValidationError(this, "Value is not defined."));
+            context.fireValidationError(this, "Value is not defined.");
         }
 
         if (singleValue != null && getBaseTypeAttrValue() != null && singleValue.getBaseType() != getBaseTypeAttrValue()) {
-            context.add(new ValidationError(this, "BaseType of value does not match. Expected: " + getBaseTypeAttrValue()
+            context.fireValidationError(this, "BaseType of value does not match. Expected: " + getBaseTypeAttrValue()
                     + ", but found: "
-                    + singleValue.getBaseType()));
+                    + singleValue.getBaseType());
         }
     }
 

@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.TextRun;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -178,10 +177,13 @@ public abstract class AbstractNodeGroup<P extends QtiNode, C extends QtiNode> im
     @Override
     public void validate(final ValidationContext context) {
         if (children.size() < minimum) {
-            context.add(new ValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size()));
+            context.fireValidationError(parent, "Not enough children: " + name + ". Expected at least: " + minimum + ", but found: " + children.size());
         }
         if (maximum != null && children.size() > maximum.intValue()) {
-            context.add(new ValidationError(parent, "Too many children: " + name + ". Allowed maximum: " + maximum + ", but found: " + children.size()));
+            context.fireValidationError(parent, "Too many children: " + name + ". Allowed maximum: " + maximum + ", but found: " + children.size());
+        }
+        for (final QtiNode child : children) {
+            child.validate(context);
         }
     }
 }

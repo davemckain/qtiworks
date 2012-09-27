@@ -45,6 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
@@ -57,14 +58,16 @@ import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
+import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
 import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -92,8 +95,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,11 +111,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional(propagation=Propagation.REQUIRED)
 public class CandidateItemDeliveryService {
 
-    /** Special logger for auditing candidate actions */
-    private static final Logger candidateLogger = LoggerFactory.getLogger("CandidateAuditor");
-
     @Resource
     private RequestTimestampContext requestTimestampContext;
+
+    @Resource
+    private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
     private QtiSerializer qtiSerializer;
@@ -165,7 +166,7 @@ public class CandidateItemDeliveryService {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateItemSession candidateItemSession = candidateItemSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateItemSession.getSessionToken())) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
         }
         return candidateItemSession;
     }
@@ -173,7 +174,7 @@ public class CandidateItemDeliveryService {
     private void ensureSessionNotTerminated(final CandidateItemSession candidateItemSession) throws CandidateForbiddenException {
         if (candidateItemSession.getState()==CandidateSessionState.TERMINATED) {
             /* No access when session has been is closed */
-            logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_TERMINATED_SESSION);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_TERMINATED_SESSION);
         }
     }
 
@@ -284,7 +285,7 @@ public class CandidateItemDeliveryService {
                 break;
 
             default:
-                throw new QtiWorksLogicException("Unexpected logic branch. Event " + eventType
+                throw new QtiWorksLogicException("Unexpected candidateAuditLogger.logic branch. Event " + eventType
                         + " should have moved session state out of " + CandidateSessionState.INTERACTING
                         + " mode");
         }
@@ -358,7 +359,7 @@ public class CandidateItemDeliveryService {
                 break;
 
             default:
-                throw new QtiWorksLogicException("Unexpected logic branch. Event " + eventType
+                throw new QtiWorksLogicException("Unexpected candidateAuditLogger.logic branch. Event " + eventType
                         + " either hasn't been implemented here, or should have earlier moved session state out of "
                         + CandidateSessionState.INTERACTING
                         + " mode");
@@ -505,8 +506,9 @@ public class CandidateItemDeliveryService {
     }
 
     private void doRendering(final CandidateItemEvent candidateItemEvent, final ItemRenderingRequest renderingRequest, final OutputStream resultStream) {
-        logRendering(candidateItemEvent, renderingRequest);
-        assessmentRenderer.renderItem(renderingRequest, resultStream);
+        candidateAuditLogger.logRendering(candidateItemEvent, renderingRequest);
+        final List<CandidateItemEventNotification> notifications = candidateItemEvent.getNotifications();
+        assessmentRenderer.renderItem(renderingRequest, notifications, resultStream);
     }
 
     private void extractResponseDataForRendering(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
@@ -546,7 +548,7 @@ public class CandidateItemDeliveryService {
     public CandidateItemAttempt handleAttempt(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
-            throws RuntimeValidationException, CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateItemSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
     }
@@ -554,13 +556,13 @@ public class CandidateItemDeliveryService {
     public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateItemSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
-            throws RuntimeValidationException, CandidateForbiddenException {
+            throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
 
         /* Make sure an attempt is allowed */
         if (candidateItemSession.getState()!=CandidateSessionState.INTERACTING) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.MAKE_ATTEMPT);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.MAKE_ATTEMPT);
         }
 
         /* Build response map in required format for JQTI+.
@@ -617,9 +619,12 @@ public class CandidateItemDeliveryService {
         }
         candidateItemAttempt.setResponses(candidateItemResponses);
 
+        /* Set up listener to record any notifications from JQTI candidateAuditLogger.logic */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
         /* Get current JQTI state and create JQTI controller */
         final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateItemSession);
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, notificationRecorder);
 
         /* Attempt to bind responses */
         final Set<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
@@ -652,13 +657,14 @@ public class CandidateItemDeliveryService {
         final CandidateItemEventType eventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
             : CandidateItemEventType.ATTEMPT_BAD;
-        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, eventType, itemSessionController.getItemSessionState());
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession,
+                eventType, itemSessionController.getItemSessionState(), notificationRecorder);
 
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);
 
         /* Log this (in existing state) */
-        logCandidateItemAttempt(candidateItemSession, candidateItemAttempt);
+        candidateAuditLogger.logCandidateItemAttempt(candidateItemSession, candidateItemAttempt);
 
         /* Finally update session state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
@@ -689,16 +695,16 @@ public class CandidateItemDeliveryService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSession.getState()==CandidateSessionState.CLOSED) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.CLOSE_SESSION_WHEN_CLOSED);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.CLOSE_SESSION_WHEN_CLOSED);
         }
         else if (!itemDeliverySettings.isAllowClose()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.CLOSE_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.CLOSE_SESSION_WHEN_INTERACTING);
         }
 
         /* Record and log event */
         final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.CLOSE, itemSessionState);
-        logCandidateItemEvent(candidateItemSession, candidateItemEvent);
+        candidateAuditLogger.logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
         /* Update state */
         candidateItemSession.setState(CandidateSessionState.CLOSED);
@@ -715,13 +721,13 @@ public class CandidateItemDeliveryService {
      * randomised values will change as a result of this process.
      */
     public CandidateItemSession reinitCandidateSession(final long xid, final String sessionToken)
-            throws RuntimeValidationException, CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return reinitCandidateSession(candidateItemSession);
     }
 
     public CandidateItemSession reinitCandidateSession(final CandidateItemSession candidateItemSession)
-            throws RuntimeValidationException, CandidateForbiddenException {
+            throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may reinit the session */
@@ -730,24 +736,28 @@ public class CandidateItemDeliveryService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.REINIT_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.REINIT_SESSION_WHEN_INTERACTING);
         }
         else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowReinitWhenClosed()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
         }
 
         /* Create fresh JQTI+ state */
         final ItemSessionState itemSessionState = new ItemSessionState();
 
+        /* Set up listener to record any notifications from JQTI candidateAuditLogger.logic */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
         /* Get the resolved JQTI+ Object for the underlying package */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery,
+                itemSessionState, notificationRecorder);
 
         /* Initialise state */
         itemSessionController.initialize();
 
         /* Record and log event */
-        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.REINIT, itemSessionState);
-        logCandidateItemEvent(candidateItemSession, candidateItemEvent);
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.REINIT, itemSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
         /* Update state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
@@ -781,10 +791,10 @@ public class CandidateItemDeliveryService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowResetWhenInteracting()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
         }
         else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
         }
 
         /* Find the last REINIT, falling back to original INIT if none present */
@@ -805,10 +815,10 @@ public class CandidateItemDeliveryService {
 
         /* Record and event */
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.RESET, itemSessionState);
-        logCandidateItemEvent(candidateItemSession, candidateItemEvent);
+        candidateAuditLogger.logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
         /* Update state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState, null);
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
         candidateItemSession.setState(attemptAllowed ? CandidateSessionState.INTERACTING : CandidateSessionState.CLOSED);
         candidateItemSessionDao.update(candidateItemSession);
@@ -837,16 +847,16 @@ public class CandidateItemDeliveryService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSessionState==CandidateSessionState.INTERACTING && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
         }
         else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowResetWhenClosed()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
         }
 
         /* Record and log event */
         final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.SOLUTION, itemSessionState);
-        logCandidateItemEvent(candidateItemSession, candidateItemEvent);
+        candidateAuditLogger.logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
         /* Change session state to CLOSED if it's not already there */
         if (candidateItemSessionState==CandidateSessionState.INTERACTING) {
@@ -879,28 +889,28 @@ public class CandidateItemDeliveryService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         if (candidateItemSessionState==CandidateSessionState.INTERACTING) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK_WHEN_INTERACTING);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK_WHEN_INTERACTING);
         }
         else if (candidateItemSessionState==CandidateSessionState.CLOSED && !itemDeliverySettings.isAllowPlayback()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK);
         }
 
         /* Look up target event, make sure it belongs to this session and make sure it can be played back */
         final CandidateItemEvent targetEvent = candidateItemEventDao.requireFindById(xeid);
         if (targetEvent.getCandidateItemSession().getId().longValue()!=candidateItemSession.getId().longValue()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK_OTHER_SESSION);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK_OTHER_SESSION);
         }
         final CandidateItemEventType targetEventType = targetEvent.getEventType();
         if (targetEventType==CandidateItemEventType.PLAYBACK
                 || targetEventType==CandidateItemEventType.CLOSE
                 || targetEventType==CandidateItemEventType.TERMINATE) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK_EVENT);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK_EVENT);
         }
 
         /* Record and event */
         final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.PLAYBACK, itemSessionState, targetEvent);
-        logPlaybackEvent(candidateItemSession, candidateItemEvent, targetEvent);
+        candidateAuditLogger.logPlaybackEvent(candidateItemSession, candidateItemEvent, targetEvent);
 
         return candidateItemSession;
     }
@@ -932,7 +942,7 @@ public class CandidateItemDeliveryService {
         /* Record and log event */
         final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.TERMINATE, itemSessionState);
-        logCandidateItemEvent(candidateItemSession, candidateItemEvent);
+        candidateAuditLogger.logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
         /* Update state */
         candidateItemSession.setState(CandidateSessionState.TERMINATED);
@@ -962,7 +972,7 @@ public class CandidateItemDeliveryService {
             }
         }
         if (resultingFileHref==null) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
         }
 
         /* Finally stream the required resource */
@@ -988,14 +998,14 @@ public class CandidateItemDeliveryService {
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
         assessmentPackageFileService.streamAssessmentPackageSource(assessmentPackage, outputStreamer);
-        logAction(candidateItemSession, "ACCESS_SOURCE");
+        candidateAuditLogger.logAction(candidateItemSession, "ACCESS_SOURCE");
     }
 
     private void ensureCallerMayViewSource(final CandidateItemSession candidateItemSession)
             throws CandidateForbiddenException {
         final ItemDeliverySettings itemDeliverySettings = candidateItemSession.getItemDelivery().getItemDeliverySettings();
         if (!itemDeliverySettings.isAllowSource()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.VIEW_ASSESSMENT_SOURCE);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.VIEW_ASSESSMENT_SOURCE);
         }
     }
 
@@ -1024,19 +1034,19 @@ public class CandidateItemDeliveryService {
         final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateItemSession);
 
         /* Generate result Object from state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, null);
         final ItemResult itemResult = itemSessionController.computeItemResult();
 
         /* Send result */
         qtiSerializer.serializeJqtiObject(itemResult, outputStream);
-        logAction(candidateItemSession, "ACCESS_RESULT");
+        candidateAuditLogger.logAction(candidateItemSession, "ACCESS_RESULT");
     }
 
     private void ensureCallerMayViewResult(final CandidateItemSession candidateItemSession)
             throws CandidateForbiddenException {
         final ItemDeliverySettings itemDeliverySettings = candidateItemSession.getItemDelivery().getItemDeliverySettings();
         if (!itemDeliverySettings.isAllowResult()) {
-            logAndForbid(candidateItemSession, CandidatePrivilege.VIEW_ASSESSMENT_RESULT);
+            candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.VIEW_ASSESSMENT_RESULT);
         }
     }
 
@@ -1069,53 +1079,5 @@ public class CandidateItemDeliveryService {
                 || eventType==CandidateItemEventType.INIT
                 || eventType==CandidateItemEventType.REINIT
                 || eventType==CandidateItemEventType.RESET;
-    }
-
-    //----------------------------------------------------
-    // Candidate Auditing
-
-    private void logEvent(final CandidateItemSession candidateItemSession, final String message) {
-        candidateLogger.info("user={} xid={} did={} aid={} state={} {}",
-                new Object[] {
-                    candidateItemSession.getCandidate().getBusinessKey(),
-                    candidateItemSession.getId(),
-                    candidateItemSession.getItemDelivery().getId(),
-                    candidateItemSession.getItemDelivery().getAssessment().getId(),
-                    candidateItemSession.getState(),
-                    message
-        });
-    }
-
-    private void logRendering(final CandidateItemEvent candidateItemEvent, final ItemRenderingRequest renderingRequest) {
-        logEvent(candidateItemEvent.getCandidateItemSession(), "action=RENDER mode=" + renderingRequest.getRenderingMode());
-    }
-
-    private void logAction(final CandidateItemSession candidateItemSession, final String actionName) {
-        logEvent(candidateItemSession, "action=" + actionName);
-    }
-
-    private void logCandidateItemEvent(final CandidateItemSession candidateItemSession, final CandidateItemEvent candidateItemEvent) {
-        logEvent(candidateItemSession, "action=CANDIDATE_ITEM_EVENT xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getEventType());
-    }
-
-    private void logPlaybackEvent(final CandidateItemSession candidateItemSession, final CandidateItemEvent candidateItemEvent,
-            final CandidateItemEvent targetEvent) {
-        logEvent(candidateItemSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getEventType()
-                + " target_xeid=" + targetEvent.getId());
-    }
-
-    private void logCandidateItemAttempt(final CandidateItemSession candidateItemSession, final CandidateItemAttempt candidateItemAttempt) {
-        final CandidateItemEvent candidateItemEvent = candidateItemAttempt.getEvent();
-        logEvent(candidateItemSession, "action=CANDIDATE_ITEM_ATTEMPT xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getEventType()
-                + " xaid=" + candidateItemAttempt.getId());
-    }
-
-    private void logAndForbid(final CandidateItemSession candidateItemSession, final CandidatePrivilege privilege)
-            throws CandidateForbiddenException {
-        logEvent(candidateItemSession, "forbid=" + privilege);
-        throw new CandidateForbiddenException(candidateItemSession, privilege);
     }
 }

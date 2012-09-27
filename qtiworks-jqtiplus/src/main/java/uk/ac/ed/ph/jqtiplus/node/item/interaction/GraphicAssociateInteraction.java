@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.PairValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -130,21 +129,18 @@ public final class GraphicAssociateInteraction extends GraphicInteraction implem
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null) {
                 if (declaration.getBaseType() != null && !declaration.getBaseType().isPair()) {
-                    context.add(new ValidationError(this, "Response variable must have pair base type"));
+                    context.fireValidationError(this, "Response variable must have pair base type");
                 }
-
                 if (getMaxAssociations() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                    context.add(new ValidationError(this, "Response variable must have multiple cardinality when maxAssociations is not 1"));
+                    context.fireValidationError(this, "Response variable must have multiple cardinality when maxAssociations is not 1");
                 }
                 else if (declaration.getCardinality() != null && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                    context.add(new ValidationError(this, "Response variable must have single or multiple cardinality"));
+                    context.fireValidationError(this, "Response variable must have single or multiple cardinality");
                 }
             }
         }

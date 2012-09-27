@@ -46,7 +46,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
@@ -181,9 +180,7 @@ public final class PrintedVariable extends AbstractFlowBodyElement implements Fl
 
 
     @Override
-    public void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    public void validateThis(final ValidationContext context) {
         if (getIdentifier() != null) {
             final Identifier identifier = getIdentifier();
             final VariableDeclaration variableDeclaration = context.checkVariableReference(this, identifier);
@@ -195,10 +192,10 @@ public final class PrintedVariable extends AbstractFlowBodyElement implements Fl
                 // to be used here as well. We perhaps ought to test whether the record really is a MathsContent as well, but I don't want to
                 // pollute this code with too much MathAssess-specfic stuff.
                 //            if (variableDeclaration != null && variableDeclaration.getCardinality() != null && !variableDeclaration.getCardinality().isSingle())
-                //                context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()));
+                //                context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality());
                 if (!(variableDeclaration.getCardinality().isSingle() || variableDeclaration.getCardinality().isRecord())) {
-                    context.add(new ValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()
-                            + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)"));
+                    context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()
+                            + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)");
                 }
             }
         }

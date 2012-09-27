@@ -27,38 +27,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
-
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-
-import java.util.Arrays;
+package uk.ac.ed.ph.jqtiplus.notification;
 
 /**
- * Error validation item for baseType problems.
- * 
- * @author Jiri Kajaba
+ * FIXME: Document this type
+ *
+ * @author David McKain
  */
-public class BaseTypeValidationError extends ValidationError {
+public interface NotificationListener {
 
-    private static final long serialVersionUID = -4077590083626073849L;
+    void onNotification(ModelNotification notification);
 
-    /**
-     * Constructs validation item.
-     * 
-     * @param source source node of constructed item
-     * @param expected expected baseTypes
-     * @param found found baseTypes
-     */
-    public BaseTypeValidationError(QtiNode source, BaseType[] expected, BaseType[] found) {
-        super(source, createMessage(expected, found));
-    }
-
-    private static String createMessage(BaseType[] expected, BaseType[] found) {
-        return "Invalid " + BaseType.QTI_CLASS_NAME + ". Expected " + Arrays.toString(expected) + ", but found " + Arrays.toString(found) + ".";
-    }
 }

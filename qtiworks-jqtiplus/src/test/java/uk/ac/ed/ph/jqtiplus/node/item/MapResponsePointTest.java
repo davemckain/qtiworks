@@ -44,8 +44,10 @@ import uk.ac.ed.ph.jqtiplus.value.PointValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,13 +59,13 @@ public class MapResponsePointTest {
 
     /**
      * Creates test data for this test.
-     * 
+     *
      * @return test data for this test
      */
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "MapResponsePoint-Single.xml", new String[] { "1 1" }, 1.0 }, 
+                { "MapResponsePoint-Single.xml", new String[] { "1 1" }, 1.0 },
                 { "MapResponsePoint-Single.xml", new String[] { "1 3" }, 2.0 },
                 { "MapResponsePoint-Single.xml", new String[] { "3 1" }, 3.0 },
                 { "MapResponsePoint-Single.xml", new String[] { "3 3" }, 4.0 },
@@ -81,7 +83,7 @@ public class MapResponsePointTest {
     private Value response;
     private final double expectedOutcome;
 
-    public MapResponsePointTest(String fileName, String[] responses, double expectedOutcome) {
+    public MapResponsePointTest(final String fileName, final String[] responses, final double expectedOutcome) {
         this.fileName = fileName;
         this.expectedOutcome = expectedOutcome;
 
@@ -89,10 +91,11 @@ public class MapResponsePointTest {
             response = PointValue.parseString(responses[0]);
         }
         else {
-            response = new MultipleValue();
+            final List<PointValue> values = new ArrayList<PointValue>();
             for (final String s : responses) {
-                ((MultipleValue) response).add(PointValue.parseString(s));
+                values.add(PointValue.parseString(s));
             }
+            response = MultipleValue.createMultipleValue(values);
         }
     }
 
@@ -100,12 +103,12 @@ public class MapResponsePointTest {
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, MapResponseTest.class);
         itemSessionController.initialize();
-        
-        ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        AssessmentItem item = itemSessionController.getItem();
+
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+        final AssessmentItem item = itemSessionController.getItem();
 
         if (item.getResponseDeclaration("RESPONSE").getCardinality().isMultiple() && response.getCardinality().isSingle()) {
-            response = new MultipleValue((SingleValue) response);
+            response = MultipleValue.createMultipleValue((SingleValue) response);
         }
 
         itemSessionState.setResponseValue("RESPONSE", response);

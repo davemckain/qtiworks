@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -95,13 +96,11 @@ public final class EqualRounded extends AbstractExpression {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
         final RoundingMode roundingMode = getRoundingMode();
         if (roundingMode != null) {
-            roundingMode.validateFigures(getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME),
-                    context.getValidationResult());
+            roundingMode.validateFigures(context,
+                    getAttributes().getIntegerOrVariableRefAttribute(ATTR_FIGURES_NAME));
         }
     }
 
@@ -114,13 +113,19 @@ public final class EqualRounded extends AbstractExpression {
         final double firstNumber = ((NumberValue) childValues[0]).doubleValue();
         final double secondNumber = ((NumberValue) childValues[1]).doubleValue();
 
-        final int computedFigures = getFigures().evaluate(context);
-        if (computedFigures<1) {
+        final Value computedFigures = getFigures().evaluate(context);
+        if (computedFigures.isNull()) {
+            context.fireRuntimeWarning(this, "Computed value of figures was NULL. Returning NULL");
             return NullValue.INSTANCE;
         }
 
-        final boolean result = getRoundingMode().isEqual(firstNumber, secondNumber, computedFigures);
+        final RoundingMode roundingMode = getRoundingMode();
+        final int figures = ((IntegerValue) computedFigures).intValue();
+        if (!roundingMode.isFiguresValid(figures)) {
+            context.fireRuntimeWarning(this, "The computed value of figures (" + figures + ") was not compatible with the constraints of the rounding mode. Returning NULL");
+            return NullValue.INSTANCE;
+        }
 
-        return BooleanValue.valueOf(result);
+        return BooleanValue.valueOf(roundingMode.isEqual(firstNumber, secondNumber, figures));
     }
 }

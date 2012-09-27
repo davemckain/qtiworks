@@ -47,7 +47,6 @@ import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
@@ -127,7 +126,7 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/{sessionToken}/attempt", method=RequestMethod.POST)
     public String handleAttempt(final HttpServletRequest request, @PathVariable final long xid,
             @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, RuntimeValidationException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
         /* First need to extract responses */
         final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
 
@@ -217,7 +216,7 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/{sessionToken}/reinit", method=RequestMethod.POST)
     public String reinitSession(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, RuntimeValidationException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
         candidateItemDeliveryService.reinitCandidateSession(xid, sessionToken);
 
         /* Redirect to rendering of current session state */

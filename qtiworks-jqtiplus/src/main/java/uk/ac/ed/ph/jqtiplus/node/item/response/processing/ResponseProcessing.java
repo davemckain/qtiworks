@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
@@ -133,7 +132,7 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
 
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context) {
         final List<ResponseRule> responseRules = getResponseRules();
         if (!responseRules.isEmpty()) {
             /* ResponseRules exist, so we'll validate these */
@@ -149,12 +148,7 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
         }
     }
 
-    /**
-     * Evaluates all child outcomeRules.
-     *
-     * @throws RuntimeValidationException
-     */
-    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) {
         try {
             for (final ResponseRule responseRule : getResponseRules()) {
                 responseRule.evaluate(context);

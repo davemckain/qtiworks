@@ -31,26 +31,36 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
-
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+package uk.ac.ed.ph.jqtiplus.value;
 
 /**
- * Error validation item for item flow problems.
- * 
- * @author Jiri Kajaba
+ * Base interface for non-NULL QTI container values.
+ * <p>
+ * In JQTI+, these are now immutable. (They were mutable in the original JQTI.)
+ *
+ * @see OrderedValue
+ * @see MultipleValue
+ * @see RecordValue
+ *
+ * @author David McKain
+ * @author Jiri Kajaba (original)
  */
-public class ItemFlowValidationError extends ValidationError {
+public abstract class ContainerValue extends AbstractValue {
 
-    private static final long serialVersionUID = 7969204121175178914L;
+    private static final long serialVersionUID = 3468149201162819028L;
 
     /**
-     * Constructs validation item.
-     * 
-     * @param source source node of constructed item
-     * @param message message of constructed item
+     * Values represented here are now always non-NULL. Factory methods generating
+     * empty containers always now return a {@link NullValue}.
      */
-    public ItemFlowValidationError(QtiNode source, String message) {
-        super(source, message);
+    @Override
+    public final boolean isNull() {
+        return false;
     }
+
+    /**
+     * Returns number of values in this container
+     */
+    public abstract int size();
+
 }

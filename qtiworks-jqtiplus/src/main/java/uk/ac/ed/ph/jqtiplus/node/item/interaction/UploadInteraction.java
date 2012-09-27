@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -78,17 +77,17 @@ public final class UploadInteraction extends BlockInteraction {
 
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getResponseIdentifier());
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                context.add(new ValidationError(this, "Response variable must have single cardinality"));
-            }
+            if (declaration!=null) {
+                if (declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
+                    context.fireValidationError(this, "Response variable must have single cardinality");
+                }
 
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isFile()) {
-                context.add(new ValidationError(this, "Response variable must have file base type"));
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isFile()) {
+                    context.fireValidationError(this, "Response variable must have file base type");
+                }
             }
         }
     }

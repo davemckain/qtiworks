@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.text;
 
-
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractAtomicBlock;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AtomicBlock;
@@ -45,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Sub;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.presentation.Sup;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 
 /**
  * pre
@@ -64,28 +62,25 @@ public final class Pre extends AbstractAtomicBlock implements AtomicBlock {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
-        //Although pre inherits from atomicBlock it must not contain, either directly
-        //or indirectly, any of the following objects: img, object, big, small, sub, sup.
+    public void validateThis(final ValidationContext context) {
+        /*Although pre inherits from atomicBlock it must not contain, either directly or indirectly, any of the following objects: img, object, big, small, sub, sup. */
         if (QueryUtils.hasDescendant(Img.class, this)) {
-            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Img.QTI_CLASS_NAME + " children"));
+            context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Img.QTI_CLASS_NAME + " children");
         }
         if (QueryUtils.hasDescendant(Object.class, this)) {
-            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Object.QTI_CLASS_NAME + " children"));
+            context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Object.QTI_CLASS_NAME + " children");
         }
         if (QueryUtils.hasDescendant(Big.class, this)) {
-            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Big.QTI_CLASS_NAME + " children"));
+            context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Big.QTI_CLASS_NAME + " children");
         }
         if (QueryUtils.hasDescendant(Small.class, this)) {
-            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Small.QTI_CLASS_NAME + " children"));
+            context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Small.QTI_CLASS_NAME + " children");
         }
         if (QueryUtils.hasDescendant(Sub.class, this)) {
-            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Sub.QTI_CLASS_NAME + " children"));
+            context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Sub.QTI_CLASS_NAME + " children");
         }
         if (QueryUtils.hasDescendant(Sup.class, this)) {
-            context.add(new ValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Sup.QTI_CLASS_NAME + " children"));
+            context.fireValidationError(this, "The " + QTI_CLASS_NAME + " class cannot contain " + Sup.QTI_CLASS_NAME + " children");
         }
     }
 }

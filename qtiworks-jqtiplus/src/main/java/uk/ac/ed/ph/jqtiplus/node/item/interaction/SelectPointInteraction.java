@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.graphic.HotspotChoiceContainer
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.PointValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -115,29 +114,28 @@ public final class SelectPointInteraction extends GraphicInteraction implements 
 
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    public void validateThis(final ValidationContext context) {
         final int maxChoices = getMaxChoices();
         final int minChoices = getMinChoices();
 
         if (maxChoices < minChoices) {
-            context.add(new ValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices"));
+            context.fireValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices");
         }
 
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isPoint()) {
-                context.add(new ValidationError(this, "Response variable must have point base type"));
+                context.fireValidationError(this, "Response variable must have point base type");
             }
 
             if (declaration != null && maxChoices == 1 &&
                     declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
                     !declaration.getCardinality().isMultiple()) {
-                context.add(new ValidationError(this, "Response variable must have single or multiple cardinality"));
+                context.fireValidationError(this, "Response variable must have single or multiple cardinality");
             }
 
             if (declaration != null && maxChoices != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                context.add(new ValidationError(this, "Response variable must have multiple cardinality"));
+                context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }
     }

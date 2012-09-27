@@ -31,53 +31,18 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
-
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * One item of validation (the smallest piece of indivisible information).
+ * USED BY UNREFACTORED LEGACY CODE. DO NOT USE THIS ANY MORE!
  * 
  * @author Jiri Kajaba
  */
-public interface ValidationItem {
+public class QtiBaseTypeException extends QtiRuntimeException {
 
-    /**
-     * Gets type of this item.
-     * 
-     * @return type of this item
-     * @see ValidationType
-     */
-    ValidationType getType();
+    private static final long serialVersionUID = 2704011285854256980L;
 
-    /**
-     * Gets source of this item.
-     * 
-     * @return source of this item
-     */
-    Validatable getSource();
-
-    /**
-     * Gets source node of this item.
-     * <p>
-     * <ul>
-     * <li>If source of this item is node, this method returns this node.</li>
-     * <li>If source of this item is not node (e.g. attribute), this method returns source's (e.g. attribute's) parent node.</li>
-     * </ul>
-     * 
-     * @return source node of this item
-     */
-    QtiNode getNode();
-
-    /**
-     * Gets message of this item.
-     * 
-     * @return message of this item
-     */
-    String getMessage();
-
-    /**
-     * Gets optional "cause" associated with this item
-     */
-    Throwable getCause();
+    public QtiBaseTypeException(String message) {
+        super(message);
+    }
 }

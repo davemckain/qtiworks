@@ -33,14 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
@@ -85,26 +83,24 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getIdentifier() != null) {
             final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
-            if (declaration == null) {
-                context.add(new ValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier()));
+            if (declaration==null) {
+                context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
             }
             else if (declaration.getLookupTable() == null) {
-                context.add(new ValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
+                context.fireValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
-                        + getIdentifier()));
+                        + getIdentifier());
             }
         }
     }
 
     @Override
-    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) {
         Value value = getExpression().evaluate(context);
         NumberValue numberValue = null;
         if (!value.isNull()) {

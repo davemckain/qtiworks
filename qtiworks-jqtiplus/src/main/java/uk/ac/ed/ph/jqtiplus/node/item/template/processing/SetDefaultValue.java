@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -43,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -87,7 +85,7 @@ public final class SetDefaultValue extends ProcessTemplateValue {
     }
 
     @Override
-    public void evaluate(final ItemProcessingContext context) throws RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) {
         final Value value = getExpression().evaluate(context);
         final AssessmentItem item = context.getSubjectItem();
         final ItemSessionState itemSessionState = context.getItemSessionState();
@@ -108,14 +106,12 @@ public final class SetDefaultValue extends ProcessTemplateValue {
     }
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
             final AssessmentItem item = getRootNode(AssessmentItem.class);
             if (item.getResponseDeclaration(identifier) == null && item.getOutcomeDeclaration(identifier) == null) {
-                context.add(new ValidationError(this, "Cannot find response or outcome declaration " + getIdentifier()));
+                context.fireValidationError(this, "Cannot find response or outcome declaration " + getIdentifier());
             }
         }
     }

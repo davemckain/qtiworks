@@ -34,14 +34,13 @@
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 
 /**
  * Abstract parent of all response rules.
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class ResponseRule extends AbstractNode {
@@ -51,16 +50,15 @@ public abstract class ResponseRule extends AbstractNode {
     /** Display name of this class. */
     public static final String DISPLAY_NAME = "responseRule";
 
-    public ResponseRule(QtiNode parent, String qtiClassName) {
+    public ResponseRule(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
     }
 
     /**
      * Evaluates this rule and all its children.
-     * 
+     *
      * @throws QtiProcessingInterrupt
-     * @throws RuntimeValidationException
      */
     public abstract void evaluate(ItemProcessingContext context)
-            throws QtiProcessingInterrupt, RuntimeValidationException;
+            throws QtiProcessingInterrupt;
 }

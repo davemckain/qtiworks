@@ -34,10 +34,11 @@
 package uk.ac.ed.ph.jqtiplus.node.outcome.declaration;
 
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.InterpolationTableEntryGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
-import uk.ac.ed.ph.jqtiplus.value.NumberValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public final class InterpolationTable extends LookupTable {
+public final class InterpolationTable extends LookupTable<Double,InterpolationTableEntry> {
 
     private static final long serialVersionUID = -7056243816798489068L;
 
@@ -64,7 +65,7 @@ public final class InterpolationTable extends LookupTable {
     }
 
     @Override
-    public List<? extends LookupTableEntry> getLookupEntries() {
+    public List<InterpolationTableEntry> getLookupEntries() {
         return getInterpolationEntries();
     }
 
@@ -73,29 +74,26 @@ public final class InterpolationTable extends LookupTable {
     }
 
     @Override
-    public SingleValue getTargetValue(final NumberValue sourceValue) {
-        if (sourceValue != null) {
-            for (final InterpolationTableEntry entry : getInterpolationEntries()) {
-                if (entry.getIncludeBoundary()) {
-                    if (entry.getSourceValue().doubleValue() <= sourceValue.doubleValue()) {
-                        return entry.getTargetValue();
-                    }
+    public Value getTargetValue(final double sourceValue) {
+        Assert.notNull(sourceValue, "sourceValue");
+        for (final InterpolationTableEntry entry : getInterpolationEntries()) {
+            if (entry.getIncludeBoundary()) {
+                if (entry.getSourceValue().doubleValue() <= sourceValue) {
+                    return entry.getTargetValue();
                 }
-                else {
-                    if (entry.getSourceValue().doubleValue() < sourceValue.doubleValue()) {
-                        return entry.getTargetValue();
-                    }
+            }
+            else {
+                if (entry.getSourceValue().doubleValue() < sourceValue) {
+                    return entry.getTargetValue();
                 }
             }
         }
-
-        return super.getTargetValue(sourceValue);
+        final SingleValue defaultValue = getDefaultValue();
+        return defaultValue!=null ? defaultValue : NullValue.INSTANCE;
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         Double lastValue = null;
         for (final InterpolationTableEntry entry : getInterpolationEntries()) {
             if (entry.getSourceValue() != null) {
@@ -104,7 +102,7 @@ public final class InterpolationTable extends LookupTable {
                     lastValue = currentValue;
                 }
                 else {
-                    context.add(new ValidationWarning(this, "Invalid order of entries. Entries should be ordered from highest to lowest."));
+                    context.fireValidationWarning(this, "Invalid order of entries. Entries should be ordered from highest to lowest.");
                     break;
                 }
             }

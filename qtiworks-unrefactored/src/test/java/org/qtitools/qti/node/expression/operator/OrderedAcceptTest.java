@@ -70,12 +70,12 @@ public class OrderedAcceptTest extends ExpressionAcceptTest {
 
     static {
         // ORDERED_1__1_2_3
-        ORDERED_1__1_2_3 = new OrderedValue();
+        ORDERED_1__1_2_3 = OrderedValue.emptyValue();
         ORDERED_1__1_2_3.add(new IntegerValue(1));
         ORDERED_1__1_2_3.add(new IntegerValue(2));
         ORDERED_1__1_2_3.add(new IntegerValue(3));
         // ORDERED_2__1_2_3_4_5_6_7
-        ORDERED_2__1_2_3_4_5_6_7 = new OrderedValue();
+        ORDERED_2__1_2_3_4_5_6_7 = OrderedValue.emptyValue();
         ORDERED_2__1_2_3_4_5_6_7.add(new IntegerValue(1));
         ORDERED_2__1_2_3_4_5_6_7.add(new IntegerValue(2));
         ORDERED_2__1_2_3_4_5_6_7.add(new IntegerValue(3));
@@ -98,21 +98,21 @@ public class OrderedAcceptTest extends ExpressionAcceptTest {
                         "</ordered>", NullValue.INSTANCE }, { "<ordered>" +
                         "<null/>" +
                         "</ordered>", NullValue.INSTANCE }, { "<ordered>" +
-                        "</ordered>", new OrderedValue() }, { "<ordered>" +
+                        "</ordered>", OrderedValue.emptyValue() }, { "<ordered>" +
                         "<null/>" +
-                        "</ordered>", new OrderedValue() },
+                        "</ordered>", OrderedValue.emptyValue() },
                 // identifier
                 { "<ordered>" +
                         "<baseValue baseType='identifier'>identifier</baseValue>" +
-                        "</ordered>", new OrderedValue(new IdentifierValue("identifier")) },
+                        "</ordered>", OrderedValue.createOrderedValue(new IdentifierValue("identifier")) },
                 // boolean
                 { "<ordered>" +
                         "<baseValue baseType='boolean'>true</baseValue>" +
-                        "</ordered>", new OrderedValue(BooleanValue.TRUE) },
+                        "</ordered>", OrderedValue.createOrderedValue(BooleanValue.TRUE) },
                 // integer
                 { "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
-                        "</ordered>", new OrderedValue(new IntegerValue(1)) }, { "<ordered>" +
+                        "</ordered>", OrderedValue.createOrderedValue(new IntegerValue(1)) }, { "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "<baseValue baseType='integer'>2</baseValue>" +
                         "<baseValue baseType='integer'>3</baseValue>" +
@@ -136,41 +136,41 @@ public class OrderedAcceptTest extends ExpressionAcceptTest {
                 // float
                 { "<ordered>" +
                         "<baseValue baseType='float'>1</baseValue>" +
-                        "</ordered>", new OrderedValue(new FloatValue(1)) },
+                        "</ordered>", OrderedValue.createOrderedValue(new FloatValue(1)) },
                 // string
                 { "<ordered>" +
                         "<baseValue baseType='string'>string</baseValue>" +
-                        "</ordered>", new OrderedValue(new StringValue("string")) },
+                        "</ordered>", OrderedValue.createOrderedValue(new StringValue("string")) },
                 // point
                 { "<ordered>" +
                         "<baseValue baseType='point'>1 1</baseValue>" +
-                        "</ordered>", new OrderedValue(new PointValue(1, 1)) },
+                        "</ordered>", OrderedValue.createOrderedValue(new PointValue(1, 1)) },
                 // pair
                 { "<ordered>" +
                         "<baseValue baseType='pair'>identifier_1 identifier_2</baseValue>" +
-                        "</ordered>", new OrderedValue(new PairValue("identifier_1", "identifier_2")) },
+                        "</ordered>", OrderedValue.createOrderedValue(new PairValue("identifier_1", "identifier_2")) },
                 // directedPair
                 { "<ordered>" +
                         "<baseValue baseType='directedPair'>identifier_1 identifier_2</baseValue>" +
-                        "</ordered>", new OrderedValue(new DirectedPairValue("identifier_1", "identifier_2")) },
+                        "</ordered>", OrderedValue.createOrderedValue(new DirectedPairValue("identifier_1", "identifier_2")) },
                 // duration
                 { "<ordered>" +
                         "<baseValue baseType='duration'>1</baseValue>" +
-                        "</ordered>", new OrderedValue(new DurationValue(1)) },
+                        "</ordered>", OrderedValue.createOrderedValue(new DurationValue(1)) },
                 // file
                 { "<ordered>" +
                         "<baseValue baseType='file'>file</baseValue>" +
-                        "</ordered>", new OrderedValue(ValueTestUtils.createTestFileValue("file")) },
+                        "</ordered>", OrderedValue.createOrderedValue(ValueTestUtils.createTestFileValue("file")) },
                 // uri
                 { "<ordered>" +
                         "<baseValue baseType='uri'>uri</baseValue>" +
-                        "</ordered>", new OrderedValue(new UriValue("uri")) },
+                        "</ordered>", OrderedValue.createOrderedValue(new UriValue("uri")) },
                 // ordered
                 { "<ordered>" +
                         "<ordered>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</ordered>" +
-                        "</ordered>", new OrderedValue(new IntegerValue(1)) },
+                        "</ordered>", OrderedValue.createOrderedValue(new IntegerValue(1)) },
         });
     }
 

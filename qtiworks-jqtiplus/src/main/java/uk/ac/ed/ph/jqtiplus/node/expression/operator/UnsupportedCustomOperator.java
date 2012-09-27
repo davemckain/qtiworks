@@ -56,7 +56,7 @@ public final class UnsupportedCustomOperator extends CustomOperator<JqtiExtensio
     }
 
     @Override
-    public void validate(final ValidationContext context) {
+    public void validateThis(final ValidationContext context) {
         /* Nothing to do */
     }
 

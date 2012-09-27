@@ -48,7 +48,6 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FileValue;
@@ -100,15 +99,12 @@ public abstract class Interaction extends BodyElement {
         return getRootNode(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
     }
 
-
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
             if (declaration == null) {
-                context.add(new ValidationError(this, "Response declaration for variable (" + getResponseIdentifier() + ") not found"));
+                context.fireValidationError(this, "Response declaration for variable (" + getResponseIdentifier() + ") not found");
             }
         }
     }
@@ -194,10 +190,10 @@ public abstract class Interaction extends BodyElement {
                     }
 
                     if (responseCardinality == Cardinality.MULTIPLE) {
-                        value = new MultipleValue(values);
+                        value = MultipleValue.createMultipleValue(values);
                     }
                     else {
-                        value = new OrderedValue(values);
+                        value = OrderedValue.createOrderedValue(values);
                     }
                 }
             }

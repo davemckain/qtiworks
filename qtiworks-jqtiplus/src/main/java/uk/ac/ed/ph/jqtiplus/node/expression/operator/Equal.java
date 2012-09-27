@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
+import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ToleranceModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefMultipleAttribute;
@@ -40,9 +41,9 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
+import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -172,41 +173,35 @@ public final class Equal extends AbstractExpression {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
+        final Attribute<?> tolerancesAttr = getAttributes().get(ATTR_TOLERANCES_NAME);
         final List<FloatOrVariableRef> tolerances = getTolerances();
         if (tolerances!=null && (tolerances.size()==0 || tolerances.size()>2)) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
-                    "Attribute " +
-                    ATTR_TOLERANCES_NAME + " must contain 1 or 2 floatOrVariableRefs when specified"));
+            context.fireAttributeValidationError(tolerancesAttr,
+                    "Attribute " + ATTR_TOLERANCES_NAME + " must contain 1 or 2 floatOrVariableRefs when specified");
         }
 
         final FloatOrVariableRef firstToleranceComputer = getFirstTolerance();
-        if (firstToleranceComputer!=null && firstToleranceComputer.isFloat()) {
-            final double firstToleranceValue = firstToleranceComputer.getDouble();
-            if (firstToleranceValue < 0) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
-                        "Attribute " + ATTR_TOLERANCES_NAME + " (" +
-                        firstToleranceValue + ") cannot be negative."));
+        if (firstToleranceComputer!=null && firstToleranceComputer.isConstantFloat()) {
+            final double firstToleranceValue = firstToleranceComputer.getConstantFloatValue().doubleValue();
+            if (firstToleranceValue <= 0) {
+                context.fireAttributeValidationError(tolerancesAttr,
+                        "Attribute " + ATTR_TOLERANCES_NAME + " (" + firstToleranceValue + ") must be positive");
             }
         }
 
         final FloatOrVariableRef secondToleranceComputer = getSecondTolerance();
-        if (secondToleranceComputer!=null && secondToleranceComputer.isFloat()) {
-            final double secondToleranceValue = secondToleranceComputer.getDouble();
+        if (secondToleranceComputer!=null && secondToleranceComputer.isConstantFloat()) {
+            final double secondToleranceValue = secondToleranceComputer.getConstantFloatValue().doubleValue();
             if (secondToleranceValue < 0) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
-                        "Attribute " + ATTR_TOLERANCES_NAME + " (" +
-                        getSecondTolerance() + ") cannot be negative."));
+                context.fireAttributeValidationError(tolerancesAttr,
+                        "Attribute " + ATTR_TOLERANCES_NAME + " (" + getSecondTolerance() + ") must be positive if specified");
             }
         }
 
-        if (getToleranceMode() != null && getToleranceMode() != ToleranceMode.EXACT &&
-                tolerances==null) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_TOLERANCES_NAME),
-                    "Attribute " +
-                    ATTR_TOLERANCES_NAME + " must be specified when toleranceMode is absolute or relative"));
+        if (getToleranceMode() != null && getToleranceMode() != ToleranceMode.EXACT && tolerances==null) {
+            context.fireAttributeValidationError(tolerancesAttr,
+                    "Attribute " + ATTR_TOLERANCES_NAME + " must be specified when toleranceMode is absolute or relative");
         }
     }
 
@@ -219,15 +214,35 @@ public final class Equal extends AbstractExpression {
         final double firstNumber = ((NumberValue) childValues[0]).doubleValue();
         final double secondNumber = ((NumberValue) childValues[1]).doubleValue();
 
-        double firstTolerance = 0.0;
-        double secondTolerance = 0.0;
         final FloatOrVariableRef firstToleranceComputer = getFirstTolerance();
-        if (firstToleranceComputer!=null) {
-            firstTolerance = firstToleranceComputer.evaluate(context);
-        }
         final FloatOrVariableRef secondToleranceComputer = getSecondTolerance();
+
+        double firstTolerance = 0.0;
+        if (firstToleranceComputer!=null) {
+            final Value firstToleranceValue = firstToleranceComputer.evaluate(context);
+            if (firstToleranceValue.isNull()) {
+                context.fireRuntimeWarning(this, "Computed value of first tolerance is NULL. Returning NULL");
+                return NullValue.INSTANCE;
+            }
+            firstTolerance = ((IntegerValue) firstToleranceValue).doubleValue();
+            if (firstTolerance <= 0.0) {
+                context.fireRuntimeWarning(this, "Computed value of first tolerance " + firstTolerance + " is negative. Returning NULL");
+                return NullValue.INSTANCE;
+            }
+        }
+
+        double secondTolerance = firstTolerance;
         if (secondToleranceComputer!=null) {
-            secondTolerance = secondToleranceComputer.evaluate(context);
+            final Value secondToleranceValue = secondToleranceComputer.evaluate(context);
+            if (secondToleranceValue.isNull()) {
+                context.fireRuntimeWarning(this, "Computed value of second tolerance is NULL. Returning NULL");
+                return NullValue.INSTANCE;
+            }
+            secondTolerance = ((IntegerValue) secondToleranceValue).doubleValue();
+            if (secondTolerance <= 0.0) {
+                context.fireRuntimeWarning(this, "Computed value of second tolerance " + secondTolerance + " is negative. Returning NULL");
+                return NullValue.INSTANCE;
+            }
         }
 
         final boolean result = getToleranceMode().isEqual(firstNumber, secondNumber,

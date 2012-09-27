@@ -38,13 +38,15 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.OrderedValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The ordered operator takes 0 or more sub-expressions all of which must have either single or ordered
@@ -90,33 +92,32 @@ public final class Ordered extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getChildren().size() == 0) {
-            context.add(new ValidationWarning(this, "Container should contain some children."));
+            context.fireValidationWarning(this, "Container should contain some children.");
         }
     }
 
     @Override
     protected Value evaluateSelf(final Value[] childValues) {
-        final OrderedValue container = new OrderedValue();
-
-        for (int i=0; i<childValues.length; i++) {
-            final Value value = childValues[i];
-            if (!value.isNull()) {
-                if (value.getCardinality() == Cardinality.SINGLE) {
-                    container.add((SingleValue) value);
+        final List<SingleValue> flattenedChildren = new ArrayList<SingleValue>();
+        for (final Value childValue : childValues) {
+            if (!childValue.isNull()) {
+                if (childValue.getCardinality() == Cardinality.SINGLE) {
+                    flattenedChildren.add((SingleValue) childValue);
                 }
-                else if (value.getCardinality() == Cardinality.ORDERED) {
-                    container.merge((OrderedValue) value);
+                else if (childValue.getCardinality() == Cardinality.ORDERED) {
+                    final ListValue childList = (ListValue) childValue;
+                    for (final SingleValue childListValue : childList) {
+                        flattenedChildren.add(childListValue);
+                    }
                 }
                 else {
-                    throw new QtiLogicException("Invalid cardinality: " + value.getCardinality());
+                    /* FIXME: Record runtime error */
+                    throw new QtiLogicException("Invalid cardinality: " + childValue.getCardinality());
                 }
             }
         }
-
-        return container.isNull() ? NullValue.INSTANCE : container;
+        return OrderedValue.createOrderedValue(flattenedChildren);
     }
 }

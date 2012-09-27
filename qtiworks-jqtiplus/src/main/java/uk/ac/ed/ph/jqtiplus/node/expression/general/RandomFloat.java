@@ -34,11 +34,10 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -55,7 +54,7 @@ import java.util.Random;
  *
  * @author Jiri Kajaba
  */
-public class RandomFloat extends RandomExpression {
+public class RandomFloat extends AbstractExpression {
 
     private static final long serialVersionUID = 3837760238885597058L;
 
@@ -96,24 +95,16 @@ public class RandomFloat extends RandomExpression {
     }
 
     @Override
-    protected Long getSeedAttributeValue() {
-        return null;
-    }
-
-    @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
         final FloatOrVariableRef maxComputer = getMax();
         final FloatOrVariableRef minComputer = getMin();
 
-        if (maxComputer.isFloat() && minComputer.isFloat()) {
-            final double max = maxComputer.getDouble();
-            final double min = minComputer.getDouble();
+        if (maxComputer.isConstantFloat() && minComputer.isConstantFloat()) {
+            final double max = maxComputer.getConstantFloatValue().doubleValue();
+            final double min = minComputer.getConstantFloatValue().doubleValue();
             if (max < min) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
-                        "Attribute " + ATTR_MAX_NAME + " (" + max +
-                        ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")"));
+                context.fireAttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
+                        "Attribute " + ATTR_MAX_NAME + " (" + max + ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")");
             }
 
         }
@@ -121,17 +112,18 @@ public class RandomFloat extends RandomExpression {
 
     @Override
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final double computedMinimum = getMin().evaluate(context);
-        final double computedMaximum = getMax().evaluate(context);
+        final double min = getMin().evaluateNotNull(context, this, "Computed value of min was NULL. Replacing with 0", 0);
+        final double max = getMax().evaluateNotNull(context, this, "Computed value of max was NULL. Replacing with min+1", min+1);
 
-        if (computedMinimum > computedMaximum) {
+        if (min > max) {
             /* Bad computed values */
+            context.fireRuntimeWarning(this, "Computed value of min (" + min + ") was greater than (" + max + "). Returning NULL");
             return NullValue.INSTANCE;
         }
 
-        final Random randomGenerator = getRandomGenerator(depth);
+        final Random randomGenerator = context.getRandomGenerator();
         final double randomNumber = randomGenerator.nextDouble();
-        final double randomFloat = computedMinimum + (computedMaximum - computedMinimum) * randomNumber;
+        final double randomFloat = min + (max - min) * randomNumber;
 
         return new FloatValue(randomFloat);
     }

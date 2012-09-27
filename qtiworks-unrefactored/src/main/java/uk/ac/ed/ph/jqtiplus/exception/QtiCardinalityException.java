@@ -31,61 +31,18 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.expression;
-
-import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * Parent of all expressions with random values.
- *
+ * USED BY UNREFACTORED LEGACY CODE. DO NOT USE THIS ANY MORE!
+ * 
  * @author Jiri Kajaba
  */
-public abstract class RandomExpression extends AbstractExpression {
+public class QtiCardinalityException extends QtiRuntimeException {
 
-    private static final long serialVersionUID = -3110092399048367667L;
+    private static final long serialVersionUID = 2704011285854256980L;
 
-    private static Logger logger = LoggerFactory.getLogger(RandomExpression.class);
-
-    private static Random randomGenerator = new Random();
-
-    public RandomExpression(final ExpressionParent parent, final String qtiClassName) {
-        super(parent, qtiClassName);
-    }
-
-    /**
-     * Gets value of seed attribute.
-     *
-     * @return value of seed attribute
-     */
-    protected abstract Long getSeedAttributeValue();
-
-    /**
-     * Generates long seed for random generator.
-     * <ol>
-     * <li>returns value of seed attribute if defined</li>
-     * <li>returns null otherwise</li>
-     * </ol>
-     *
-     * @param depth depth of current expression in expression tree (root's depth = 0)
-     * @return long seed for random generator
-     */
-    private Long getSeed(final int depth) {
-        final Long seed = getSeedAttributeValue();
-        return seed;
-    }
-
-    /**
-     * Gets a random number generator.
-     * Generator will be created with seed if provided, otherwise the default generator is returned
-     *
-     * @param depth depth of current expression in expression tree (root's depth = 0)
-     */
-    protected Random getRandomGenerator(final int depth) {
-        final Long seed = getSeed(depth);
-
-        return seed!=null ? new Random(seed) : randomGenerator;
+    public QtiCardinalityException(String message) {
+        super(message);
     }
 }

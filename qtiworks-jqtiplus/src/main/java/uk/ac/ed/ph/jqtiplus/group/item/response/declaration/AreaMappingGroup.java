@@ -47,7 +47,7 @@ public final class AreaMappingGroup extends SimpleSingleNodeGroup<ResponseDeclar
     private static final long serialVersionUID = 5207162137272888723L;
 
     public AreaMappingGroup(final ResponseDeclaration parent) {
-        super(parent, AreaMapping.QTI_CLASS_NAME, true);
+        super(parent, AreaMapping.QTI_CLASS_NAME, false);
     }
 
     public AreaMapping getAreaMapping() {

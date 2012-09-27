@@ -34,11 +34,10 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.expression.RandomExpression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -54,7 +53,7 @@ import java.util.Random;
  *
  * @author Jiri Kajaba
  */
-public class RandomInteger extends RandomExpression {
+public class RandomInteger extends AbstractExpression {
 
     private static final long serialVersionUID = 4707680766519679314L;
 
@@ -113,54 +112,48 @@ public class RandomInteger extends RandomExpression {
 
 
     @Override
-    protected Long getSeedAttributeValue() {
-        return null;
-    }
-
-    @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
         final IntegerOrVariableRef maxComputer = getMax();
         final IntegerOrVariableRef minComputer = getMin();
         final IntegerOrVariableRef stepComputer = getStep();
 
-        if (maxComputer.isInteger() && minComputer.isInteger()) {
-            final int max = maxComputer.getInteger();
-            final int min = minComputer.getInteger();
+        if (maxComputer.isConstantInteger() && minComputer.isConstantInteger()) {
+            final int max = maxComputer.getConstantIntegerValue().intValue();
+            final int min = minComputer.getConstantIntegerValue().intValue();
             if (max < min) {
-                context.add(new AttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
-                        "Attribute " + ATTR_MAX_NAME + " (" + max +
-                        ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")"));
+                context.fireAttributeValidationError(getAttributes().get(ATTR_MAX_NAME),
+                        "Attribute " + ATTR_MAX_NAME + " (" + max + ") cannot be lower than " + ATTR_MIN_NAME + " (" + min + ")");
             }
 
         }
 
-        if (stepComputer!=null && stepComputer.isInteger() && stepComputer.getInteger() < 1) {
-            context.add(new AttributeValidationError(getAttributes().get(ATTR_STEP_NAME),
-                    "Attribute " + ATTR_STEP_NAME
-                    + " (" + stepComputer + ") must be positive."));
+        if (stepComputer!=null && stepComputer.isConstantInteger()) {
+            final int step = stepComputer.getConstantIntegerValue().intValue();
+            if (step < 1) {
+                context.fireAttributeValidationError(getAttributes().get(ATTR_STEP_NAME),
+                        "Attribute " + ATTR_STEP_NAME + " (" + step + ") must be positive.");
+            }
         }
     }
 
     @Override
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final Random randomGenerator = getRandomGenerator(depth);
+        final Random randomGenerator = context.getRandomGenerator();
 
-        final int computedMin = getMin().evaluate(context);
-        final int computedMax = getMax().evaluate(context);
-        final int computedStep = getStep().evaluate(context);
+        final int min = getMin().evaluateNotNull(context, this, "Computed value of min was NULL. Replacing with 0", 0);
+        final int max = getMax().evaluateNotNull(context, this, "Computed value of max was NULL. Replacing with min+1", min+1);
+        final int step = getStep().evaluateNotNull(context, this, "Computed value of step was NULL. Replacing with 1", 1);
 
         /* Validate computed numbers */
-        if (computedStep < 1) {
+        if (step < 1) {
             return NullValue.INSTANCE;
         }
-        if (computedMax < computedMin) {
+        if (max < min) {
             return NullValue.INSTANCE;
         }
 
-        final int randomNumber = randomGenerator.nextInt((computedMax - computedMin) / computedStep + 1);
-        final int randomInteger = computedMin + randomNumber * computedStep;
+        final int randomNumber = randomGenerator.nextInt((max - min) / step + 1);
+        final int randomInteger = min + randomNumber * step;
 
         return new IntegerValue(randomInteger);
     }

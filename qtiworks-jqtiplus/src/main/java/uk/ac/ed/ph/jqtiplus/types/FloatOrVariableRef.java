@@ -33,14 +33,15 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.Serializable;
@@ -54,7 +55,7 @@ public final class FloatOrVariableRef implements Serializable {
 
     private static final long serialVersionUID = 1215189767076373746L;
 
-    private final double floatValue;
+    private final FloatValue constantFloatValue;
     private final VariableReferenceIdentifier variableReferenceValue;
     private final String serializedValue;
 
@@ -62,7 +63,7 @@ public final class FloatOrVariableRef implements Serializable {
      * Creates a new floatOrVariableRef holding the given float value
      */
     public FloatOrVariableRef(final double floatValue) {
-        this.floatValue = floatValue;
+        this.constantFloatValue = new FloatValue(floatValue);
         this.variableReferenceValue = null;
         this.serializedValue = Double.toString(floatValue);
     }
@@ -72,7 +73,7 @@ public final class FloatOrVariableRef implements Serializable {
      */
     public FloatOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
         Assert.notNull(variableReferenceIdentifier, "variableReferenceIdentifier");
-        this.floatValue = 0;
+        this.constantFloatValue = null;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
     }
@@ -101,7 +102,7 @@ public final class FloatOrVariableRef implements Serializable {
     }
 
     /** Returns true if this instance holds an explicit float */
-    public boolean isFloat() {
+    public boolean isConstantFloat() {
         return variableReferenceValue==null;
     }
 
@@ -112,16 +113,16 @@ public final class FloatOrVariableRef implements Serializable {
 
     /**
      * Returns the explicit float held by this instance,
-     * returning 0 if this actually holds a variable reference.
-     * (The caller should use {@link #isInteger()} to check first.)
+     * returning null if this actually holds a variable reference.
+     * (The caller should use {@link #isConstantFloat()} to check first.)
      */
-    public double getDouble() {
-        return floatValue;
+    public FloatValue getConstantFloatValue() {
+        return constantFloatValue;
     }
 
     /**
      * Returns the explicit variable reference identifier held by this instance,
-     *  returning null if this actually holds an float.
+     * returning null if this actually holds an float.
      * (The caller should use {@link #isVariableRef()} to check first.)
      */
     public VariableReferenceIdentifier getVariableReferenceIdentifier() {
@@ -148,20 +149,44 @@ public final class FloatOrVariableRef implements Serializable {
     }
 
     /**
-     * Evaluates this instance. If this holds an explicit float then its value is returned as-is.
+     * Evaluates this holder. If this holds an explicit float then its value is returned as-is.
      * Otherwise, the given {@link ProcessingContext} is used to look up the value of the variable
-     * that this type refers to. The result in all cases will be a float.
+     * that this type refers to. The result will either be an {@link FloatValue} or {@link NullValue}
+     *
+     * @throws QtiInvalidLookupException if the variable cannot be successfully resolved, or
+     *   resolves to something other than a single integer.
      */
-    public double evaluate(final ProcessingContext context) {
-        if (isVariableRef()) {
-            final Value result = context.lookupVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
-            if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.FLOAT) {
-                return ((FloatValue) result).doubleValue();
-            }
-            throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to be float");
+    public Value evaluate(final ProcessingContext context) {
+        if (isConstantFloat()) {
+            return constantFloatValue;
         }
         else {
-            return floatValue;
+            final Value result = context.lookupVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
+            if (result.hasSignature(Signature.SINGLE_FLOAT)) {
+                return result;
+            }
+            throw new QtiInvalidLookupException("Variable referenced by " + variableReferenceValue + " was expected to be a single float");
         }
+    }
+
+    /**
+     * Wrapper for {@link #evaluate(ProcessingContext)} that substitutes a replacement value and emits a
+     * runtime warning if the result was NULL.
+     *
+     * @throws QtiInvalidLookupException if the variable cannot be successfully resolved, or
+     *   resolves to something other than a single integer.
+     */
+    public double evaluateNotNull(final ProcessingContext context, final QtiNode owner,
+            final String messageOnNull, final double replacementOnNull) {
+        final Value evaluated = evaluate(context);
+        double result;
+        if (evaluated.isNull()) {
+            context.fireRuntimeWarning(owner, messageOnNull);
+            result = replacementOnNull;
+        }
+        else {
+            result = ((FloatValue) evaluated).doubleValue();
+        }
+        return result;
     }
 }

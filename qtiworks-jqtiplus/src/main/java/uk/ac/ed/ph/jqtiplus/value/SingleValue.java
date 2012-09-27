@@ -39,7 +39,7 @@ package uk.ac.ed.ph.jqtiplus.value;
  * This class is not mutable and cannot contain NULL value.
  * <p>
  * <code>Cardinality</code> of this class is always single.
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @author Jiri Kajaba
  */

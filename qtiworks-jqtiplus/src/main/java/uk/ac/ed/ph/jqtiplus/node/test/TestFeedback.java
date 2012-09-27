@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
@@ -141,20 +140,13 @@ public final class TestFeedback extends AbstractNode {
 
 
     @Override
-    protected void validateAttributes(final ValidationContext context) {
-        super.validateAttributes(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getOutcomeIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
-            context.add(new ValidationWarning(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier()));
+            context.fireValidationWarning(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier());
         }
-    }
-
-    @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
 
         if (getChildren().size() == 0) {
-            context.add(new ValidationWarning(this, "Feedback should contain something."));
+            context.fireValidationWarning(this, "Feedback should contain something.");
         }
     }
 

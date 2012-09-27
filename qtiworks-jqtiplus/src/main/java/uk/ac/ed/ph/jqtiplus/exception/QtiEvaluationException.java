@@ -33,49 +33,27 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
+
 /**
  * This exception is used for propagating errors during execution of assessment.
  * Preferred way is to use more concrete exception (see sub-classes of this exception).
- * 
+ *
+ * @deprecated Use {@link QtiInvalidLookupException} or notifications now, depending
+ *   on how the error can occur.
+ *
  * @author Jiri Kajaba
  */
+@Deprecated
 public class QtiEvaluationException extends QtiRuntimeException {
 
     private static final long serialVersionUID = 2827334569953049498L;
 
-    /**
-     * Constructs A new exception with <code>null</code> as its detailed message.
-     */
-    protected QtiEvaluationException() {
-        super();
-    }
-
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
-    public QtiEvaluationException(String message) {
+    public QtiEvaluationException(final String message) {
         super(message);
     }
 
-    /**
-     * Constructs A new exception with the specified detailed message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause
-     */
-    public QtiEvaluationException(String message, Throwable cause) {
+    public QtiEvaluationException(final String message, final Throwable cause) {
         super(message, cause);
-    }
-
-    /**
-     * Constructs A new exception with the specified cause.
-     * If cause is not <code>null</code> detailed message is set from this cause.
-     * 
-     * @param cause the cause
-     */
-    public QtiEvaluationException(Throwable cause) {
-        super(cause);
     }
 }

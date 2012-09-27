@@ -156,14 +156,14 @@ public final class TestVariables extends ItemSubset {
             }
         }
 
-        final MultipleValue result = new MultipleValue();
+        final List<SingleValue> resultValues = new ArrayList<SingleValue>();
         for (SingleValue value : values) {
             if (baseType == null && value.getBaseType().isInteger() && floatFound) {
                 value = new FloatValue(((IntegerValue) value).doubleValue());
             }
-            result.add(value);
+            resultValues.add(value);
         }
 
-        return result;
+        return MultipleValue.createMultipleValue(resultValues);
     }
 }

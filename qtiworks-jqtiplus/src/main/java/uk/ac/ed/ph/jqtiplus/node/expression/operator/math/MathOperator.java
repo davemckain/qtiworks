@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -98,15 +97,13 @@ public final class MathOperator extends AbstractFunctionalExpression {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    public void validateThis(final ValidationContext context) {
         /* Make sure number of children is correct */
         final MathOperatorTarget operation = getTarget();
         if (operation != null && getChildren().size() != operation.getArgumentCount()) {
-            context.add(new ValidationError(this, "Operation " + operation.getName()
+            context.fireValidationError(this, "Operation " + operation.getName()
                     + " expects " + operation.getArgumentCount() + " children, not "
-                    + getChildren().size()));
+                    + getChildren().size());
         }
     }
 }

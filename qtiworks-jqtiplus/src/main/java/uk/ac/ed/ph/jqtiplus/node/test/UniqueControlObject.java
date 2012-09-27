@@ -53,10 +53,10 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
 
     /**
      * Constructs object.
-     * 
+     *
      * @param parent parent of constructed object
      */
-    public UniqueControlObject(ControlObject<?> parent, String qtiClassName) {
+    public UniqueControlObject(final ControlObject<?> parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
@@ -64,7 +64,7 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
 
     /**
      * Gets value of identifier attribute.
-     * 
+     *
      * @return value of identifier attribute
      * @see #setIdentifier
      */
@@ -75,19 +75,17 @@ public abstract class UniqueControlObject extends ControlObject<Identifier> impl
 
     /**
      * Sets new value of identifier attribute.
-     * 
+     *
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
     @Override
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     @Override
-    protected void validateAttributes(ValidationContext context) {
-        super.validateAttributes(context);
-
-        validateUniqueIdentifier(context.getValidationResult(), getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
+    protected void validateThis(final ValidationContext context) {
+        validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
     }
 }

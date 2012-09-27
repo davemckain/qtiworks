@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.general;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -70,6 +70,6 @@ public class RandomFloatRefuseTest extends ExpressionRefuseTest {
      * @param xml xml data used for creation tested expression
      */
     public RandomFloatRefuseTest(String xml) {
-        super(xml, QtiAttributeException.class);
+        super(xml, QtiBaseTypeException.class);
     }
 }

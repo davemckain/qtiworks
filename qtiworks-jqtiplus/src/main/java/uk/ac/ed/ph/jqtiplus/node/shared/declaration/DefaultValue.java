@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -111,13 +110,11 @@ public final class DefaultValue extends AbstractNode implements FieldValueParent
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
-        final Cardinality cardinality = getParent().getCardinality();
+    protected void validateThis(final ValidationContext context) {
+        final Cardinality cardinality = getCardinality();
         if (cardinality != null) {
             if (cardinality.isSingle() && getFieldValues().size() > 1) {
-                context.add(new ValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size()));
+                context.fireValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size());
             }
         }
     }
@@ -130,10 +127,4 @@ public final class DefaultValue extends AbstractNode implements FieldValueParent
     public Value evaluate() {
         return FieldValue.computeValue(getCardinality(), getFieldValues());
     }
-
-    //    @Override
-    //    public void load(Node sourceNode) {
-    //        super.load(sourceNode);
-    //        evaluate();
-    //    }
 }

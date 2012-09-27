@@ -31,50 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
+package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 /**
- * Validation item of error type.
- * 
- * @author Jiri Kajaba
+ * This runtime Exception is thrown during evaluation (e.g. template, response
+ * or outcome processing) when an invalid variable lookup is performed.
+ *
+ * @author David McKain
  */
-public class ValidationError extends AbstractValidationItem {
+public final class QtiInvalidLookupException extends QtiRuntimeException {
 
-    private static final long serialVersionUID = 8636935313209399027L;
+    private static final long serialVersionUID = 2827334569953049498L;
 
-    /**
-     * Constructs validation item.
-     * 
-     * @param node source node of constructed item
-     * @param message message of constructed item
-     */
-    public ValidationError(QtiNode node, String message) {
-        this(node, node, message);
+    public QtiInvalidLookupException(final String message) {
+        super(message);
     }
 
-    public ValidationError(QtiNode node, String message, Throwable cause) {
-        this(node, node, message, cause);
-    }
-
-    /**
-     * Constructs validation item.
-     * 
-     * @param source source of constructed item
-     * @param node source node of constructed item
-     * @param message message of constructed item
-     */
-    public ValidationError(Validatable source, QtiNode node, String message) {
-        super(source, node, message);
-    }
-
-    public ValidationError(Validatable source, QtiNode node, String message, Throwable cause) {
-        super(source, node, message, cause);
-    }
-
-    @Override
-    public ValidationType getType() {
-        return ValidationType.ERROR;
+    public QtiInvalidLookupException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 }

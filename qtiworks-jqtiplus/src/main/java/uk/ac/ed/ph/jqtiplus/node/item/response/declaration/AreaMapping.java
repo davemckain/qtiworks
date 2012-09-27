@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.AreaMapEntryGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponsePoint;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
@@ -128,19 +127,18 @@ public final class AreaMapping extends AbstractNode {
 
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
+    public void validateThis(final ValidationContext context) {
         final Double lowerBound = getLowerBound();
         final Double upperBound = getUpperBound();
 
         if (lowerBound != null && upperBound != null && lowerBound.doubleValue() > upperBound.doubleValue()) {
-            context.add(new ValidationError(this, "Upper bound cannot be less than lower bound."));
+            context.fireValidationError(this, "Upper bound cannot be less than lower bound.");
         }
 
         final ResponseDeclaration declaration = getParent();
         if (declaration != null) {
             if (declaration.getBaseType() != null && !declaration.getBaseType().isPoint()) {
-                context.add(new ValidationError(this, "Base type must be point."));
+                context.fireValidationError(this, "Base type must be point.");
             }
         }
     }

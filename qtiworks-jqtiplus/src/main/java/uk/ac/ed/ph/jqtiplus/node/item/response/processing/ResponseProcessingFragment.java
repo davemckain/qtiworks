@@ -34,12 +34,10 @@
 package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.util.List;
 
@@ -67,16 +65,14 @@ public final class ResponseProcessingFragment extends ResponseRule {
     }
 
     @Override
-    protected void validateChildren(final ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getResponseRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules."));
+            context.fireValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules.");
         }
     }
 
     @Override
-    public void evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt, RuntimeValidationException {
+    public void evaluate(final ItemProcessingContext context) throws QtiProcessingInterrupt {
         for (final ResponseRule responseRule : getResponseRules()) {
             responseRule.evaluate(context);
         }

@@ -33,178 +33,83 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.notification.ModelNotification;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Partial base class for result of validation. Container of validation items.
- * 
+ *
  * @author Jiri Kajaba
- * @authro David McKain
+ * @author David McKain
  */
 public abstract class AbstractValidationResult implements Serializable {
 
     private static final long serialVersionUID = 7987550924957601153L;
 
-    /** Container of all errors. */
-    private final List<ValidationError> errors;
+    private final NotificationRecorder notificationRecorder;
+    private boolean hasErrors;
+    private boolean hasWarnings;
+    private boolean hasInfos;
 
-    /** Container of all warnings. */
-    private final List<ValidationWarning> warnings;
-
-    /**
-     * Container of all validation items.
-     * <p>
-     * Every validation item (error, warning, info) is in this container and in its type container. Containers are kept synchronised all the time.
-     * <p>
-     * Do not add items directly getErrors().add(ERROR), use add(ERROR) method instead of it!
-     */
-    private final List<ValidationItem> allItems;
-
-    /**
-     * Constructs validation result container.
-     */
     public AbstractValidationResult() {
-        this.errors = new ArrayList<ValidationError>();
-        this.warnings = new ArrayList<ValidationWarning>();
-        this.allItems = new ArrayList<ValidationItem>();
+        this.notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        this.hasErrors = false;
+        this.hasWarnings = false;
+        this.hasInfos = false;
     }
 
     public boolean hasErrors() {
-        return !errors.isEmpty();
+        return hasErrors;
     }
 
-    /**
-     * Gets all errors of this container.
-     * <p>
-     * Do not add errors directly getErrors().add(ERROR), use add(ERROR) method instead of it!
-     * 
-     * @return all errors of this container
-     * @see #getErrors(QtiNode)
-     */
-    public List<ValidationError> getErrors() {
-        return errors;
-    }
-
-    /**
-     * Gets all errors of this container for given source node.
-     * <p>
-     * Convenient method for obtaining only errors related to one node.
-     * 
-     * @param source given source node
-     * @return all errors of this container for given source node
-     * @see #getErrors()
-     */
-    public List<ValidationError> getErrors(QtiNode source) {
-        return get(errors, source);
-    }
-    
     public boolean hasWarnings() {
-        return !warnings.isEmpty();
+        return hasWarnings;
     }
 
-    /**
-     * Gets all warnings of this container.
-     * <p>
-     * Do not add warnings directly getWarnings().add(WARNING), use add(WARNING) method instead of it!
-     * 
-     * @return all warnings of this container
-     * @see #getWarnings(QtiNode)
-     */
-    public List<ValidationWarning> getWarnings() {
-        return warnings;
+    public boolean hasInfos() {
+        return hasInfos;
     }
 
-    /**
-     * Gets all warnings of this container for given source node.
-     * <p>
-     * Convenient method for obtaining only warnings related to one node.
-     * 
-     * @param source given source node
-     * @return all warnings of this container for given source node
-     * @see #getWarnings()
-     */
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public List<ValidationWarning> getWarnings(QtiNode source) {
-        return get(warnings, source);
+    public List<ModelNotification> getNotifications() {
+        return notificationRecorder.getNotifications();
     }
 
-    /**
-     * Gets all validation items (error, warning, info) of this container.
-     * <p>
-     * Do not add validation items directly getAllItems().add(ITEM), use add(ITEM) method instead of it!
-     * 
-     * @return all validation items (error, warning, info) of this container
-     * @see #getAllItems(QtiNode)
-     */
+    public List<ModelNotification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
+        return notificationRecorder.getNotificationsAtLevel(requiredLevel);
+    }
+
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public List<ValidationItem> getAllItems() {
-        return allItems;
+    public List<ModelNotification> getErrors() {
+        return getNotificationsAtLevel(NotificationLevel.ERROR);
     }
 
-    /**
-     * Gets all validation items (error, warning, info) of this container for given source node.
-     * <p>
-     * Convenient method for obtaining only validation items (error, warning, info) related to one node.
-     * 
-     * @param source given source node
-     * @return all validation items (error, warning, info) of this container for given source node
-     * @see #getAllItems()
-     */
-    public List<ValidationItem> getAllItems(QtiNode source) {
-        return get(allItems, source);
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public List<ModelNotification> getWarnings() {
+        return getNotificationsAtLevel(NotificationLevel.WARNING);
     }
 
-    /**
-     * Gets all validation items from given source list of validation items for given source node.
-     * 
-     * @param items source list of validation items
-     * @param source given source node
-     * @return all validation items from given source list of validation items for given source node
-     */
-    private static <E extends ValidationItem> List<E> get(List<E> items, QtiNode source) {
-        final List<E> result = new ArrayList<E>();
-        for (final E item : items) {
-            if (item.getNode() == source) {
-                result.add(item);
-            }
-        }
-        return result;
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public List<ModelNotification> getInfos() {
+        return getNotificationsAtLevel(NotificationLevel.INFO);
     }
 
-    /**
-     * Adds validation item into this container.
-     * <ol>
-     * <li>adds validation item into its type list (for example if item is error: <code>getErrors().add(ITEM)</code>)</li>
-     * <li>adds validation item into allItems list (<code>getAllItems().add(ITEM)</code>)
-     * </ol>
-     * Using of this method is preferred way how to insert new item into this container.
-     * 
-     * @param item item to be added
-     */
-    public void add(ValidationItem item) {
-        Assert.notNull(item);
-        if (item instanceof ValidationError) {
-            errors.add((ValidationError) item);
+    public void add(final ModelNotification notification) {
+        notificationRecorder.onNotification(notification);
+        final NotificationLevel notificationLevel = notification.getNotificationLevel();
+        if (!hasErrors && notificationLevel==NotificationLevel.ERROR) {
+            hasErrors = true;
         }
-        else if (item instanceof ValidationWarning) {
-            warnings.add((ValidationWarning) item);
+        else if (!hasWarnings && notificationLevel==NotificationLevel.WARNING) {
+            hasWarnings = true;
         }
-        else {
-            throw new IllegalArgumentException("Unsupported validation item: " + item.getClass().getName());
-        }
-        allItems.add(item);
-    }
-
-    public void addAll(Iterable<ValidationItem> items) {
-        for (final ValidationItem item : items) {
-            add(item);
+        else if (!hasInfos && notificationLevel==NotificationLevel.INFO) {
+            hasInfos = true;
         }
     }
 

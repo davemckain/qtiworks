@@ -33,26 +33,24 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.RuntimeValidationException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationWarning;
 
 import java.util.List;
 
 /**
  * Abstract parent for all templateCondition children (IF, ELSE-IF, ELSE).
- * 
+ *
  * @author Jonathon Hare
  */
 public abstract class TemplateConditionChild extends AbstractNode {
 
     private static final long serialVersionUID = 1073349682487961960L;
 
-    public TemplateConditionChild(TemplateCondition parent, String qtiClassName) {
+    public TemplateConditionChild(final TemplateCondition parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getNodeGroups().add(new TemplateRuleGroup(this));
@@ -63,21 +61,18 @@ public abstract class TemplateConditionChild extends AbstractNode {
     }
 
     @Override
-    protected void validateChildren(ValidationContext context) {
-        super.validateChildren(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getTemplateRules().size() == 0) {
-            context.add(new ValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules."));
+            context.fireValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules.");
         }
     }
 
     /**
      * Evaluates all child templateRules and returns true.
-     * 
+     *
      * @return true
-     * @throws RuntimeValidationException
      */
-    public boolean evaluate(ItemProcessingContext context) throws TemplateProcessingInterrupt, RuntimeValidationException {
+    public boolean evaluate(final ItemProcessingContext context) throws TemplateProcessingInterrupt {
         for (final TemplateRule templateRule : getTemplateRules()) {
             templateRule.evaluate(context);
         }

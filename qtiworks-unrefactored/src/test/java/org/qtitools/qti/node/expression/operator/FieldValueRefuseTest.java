@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiBaseTypeException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCardinalityException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
@@ -66,7 +66,7 @@ public class FieldValueRefuseTest extends ExpressionRefuseTest {
                         "<recordEx identifiers='key_1'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +
                         "</recordEx>" +
-                        "</fieldValue>", QtiAttributeException.class },
+                        "</fieldValue>", QtiBaseTypeException.class },
                 // single
                 { "<fieldValue fieldIdentifier='identifier'>" +
                         "<baseValue baseType='integer'>1</baseValue>" +

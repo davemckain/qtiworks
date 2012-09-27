@@ -55,7 +55,7 @@ import java.util.Map;
 
 /**
  * Encapsulates the runtime state of an {@link AssessmentTest}
- * 
+ *
  * @author David McKain
  * @author Jiri Kajaba
  * @author Jonathon Hare
@@ -87,7 +87,7 @@ public final class AssessmentTestState extends ControlObjectState<String> {
     /* FIXME: timer isn't worked out correctly yet */
     private Timer timer;
 
-    public AssessmentTestState(AssessmentTest test) {
+    public AssessmentTestState(final AssessmentTest test) {
         super(test.getIdentifier());
         this.outcomeValues = new HashMap<Identifier, Value>();
         this.testPartStates = Collections.<TestPartState> emptyList();
@@ -108,7 +108,7 @@ public final class AssessmentTestState extends ControlObjectState<String> {
         return sectionPartStateMap;
     }
 
-    public <E extends SectionPartState> E getSectionPartState(SectionPartStateKey key, Class<E> resultClass) {
+    public <E extends SectionPartState> E getSectionPartState(final SectionPartStateKey key, final Class<E> resultClass) {
         final SectionPartState result = sectionPartStateMap.get(key);
         if (result == null) {
             throw new QtiLogicException("Expected to find SectionPart with key " + key);
@@ -125,14 +125,14 @@ public final class AssessmentTestState extends ControlObjectState<String> {
         return timer;
     }
 
-    public void setTimer(Timer timer) {
+    public void setTimer(final Timer timer) {
         this.timer = timer;
     }
 
     //---------------------------------------------------------------
 
-    public void initialize(List<TestPartState> testPartStates, Map<Identifier, List<AbstractPartState>> abstractPartStateMap,
-            Map<SectionPartStateKey, SectionPartState> sectionPartStateMap) {
+    public void initialize(final List<TestPartState> testPartStates, final Map<Identifier, List<AbstractPartState>> abstractPartStateMap,
+            final Map<SectionPartStateKey, SectionPartState> sectionPartStateMap) {
         this.testPartStates = Collections.unmodifiableList(testPartStates);
         for (final TestPartState testPartState : testPartStates) {
             testPartState.setParentState(this);
@@ -145,32 +145,32 @@ public final class AssessmentTestState extends ControlObjectState<String> {
 
     //---------------------------------------------------------------
 
-    public Value getOutcomeValue(Identifier identifier) {
+    public Value getOutcomeValue(final Identifier identifier) {
         Assert.notNull(identifier);
         return outcomeValues.get(identifier);
     }
 
-    public Value getOutcomeValue(OutcomeDeclaration outcomeDeclaration) {
+    public Value getOutcomeValue(final OutcomeDeclaration outcomeDeclaration) {
         Assert.notNull(outcomeDeclaration);
         return getOutcomeValue(outcomeDeclaration.getIdentifier());
     }
 
-    public void setOutcomeValue(Identifier identifier, Value value) {
+    public void setOutcomeValue(final Identifier identifier, final Value value) {
         Assert.notNull(identifier);
         Assert.notNull(value);
         outcomeValues.put(identifier, value);
     }
 
-    public void setOutcomeValue(OutcomeDeclaration outcomeDeclaration, Value value) {
+    public void setOutcomeValue(final OutcomeDeclaration outcomeDeclaration, final Value value) {
         Assert.notNull(outcomeDeclaration);
         Assert.notNull(value);
         setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
     }
 
-    public void setOutcomeValueFromLookupTable(OutcomeDeclaration outcomeDeclaration, NumberValue value) {
+    public void setOutcomeValueFromLookupTable(final OutcomeDeclaration outcomeDeclaration, final NumberValue value) {
         Assert.notNull(outcomeDeclaration);
         Assert.notNull(value);
-        Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value);
+        Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value.doubleValue());
         if (targetValue == null) {
             targetValue = NullValue.INSTANCE;
         }
@@ -201,7 +201,7 @@ public final class AssessmentTestState extends ControlObjectState<String> {
         return result.toString();
     }
 
-    private void buildStructure(StringBuilder result, List<? extends AbstractPartState> states, int indent) {
+    private void buildStructure(final StringBuilder result, final List<? extends AbstractPartState> states, final int indent) {
         for (final AbstractPartState state : states) {
             for (int i = 0; i < indent; i++) {
                 result.append("  ");

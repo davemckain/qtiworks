@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.attribute;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
@@ -158,10 +157,17 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
      */
     protected abstract String toQtiString(V value);
 
+    /**
+     * Default implementation of attribute validation that simply
+     * checks the value has been set if required.
+     * <p>
+     * Subclasses may choose to add additional validation of the
+     * attribute.
+     */
     @Override
-    public void validate(final ValidationContext context) {
+    public void validateBasic(final ValidationContext context) {
         if (required && value==null) {
-            context.add(new AttributeValidationError(this, "Required attribute has not been assigned a value: " + localName));
+            context.fireAttributeValidationError(this, "Required attribute has not been assigned a value: " + localName);
         }
     }
 }

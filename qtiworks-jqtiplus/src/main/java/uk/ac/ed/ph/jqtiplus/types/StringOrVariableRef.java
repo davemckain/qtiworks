@@ -33,12 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -53,20 +54,20 @@ public final class StringOrVariableRef implements Serializable {
 
     private static final long serialVersionUID = 5566424487613057171L;
 
-    private final String stringValue;
+    private final StringValue constantStringValue;
     private final VariableReferenceIdentifier variableReferenceValue;
     private final String serializedValue;
 
     public StringOrVariableRef(final String stringValue) {
         Assert.notNull(stringValue);
-        this.stringValue = stringValue;
+        this.constantStringValue = new StringValue(stringValue);
         this.variableReferenceValue = null;
         this.serializedValue = "{" + stringValue + "}";
     }
 
     public StringOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
         Assert.notNull(variableReferenceIdentifier, "variableReferenceIdentifier");
-        this.stringValue = null;
+        this.constantStringValue = null;
         this.variableReferenceValue = variableReferenceIdentifier;
         this.serializedValue = variableReferenceIdentifier.toString();
     }
@@ -91,16 +92,16 @@ public final class StringOrVariableRef implements Serializable {
         }
     }
 
-    public boolean isString() {
-        return stringValue!=null;
+    public boolean isConstantString() {
+        return constantStringValue!=null;
     }
 
     public boolean isVariableRef() {
         return variableReferenceValue!=null;
     }
 
-    public String getString() {
-        return stringValue;
+    public StringValue getConstantStringValue() {
+        return constantStringValue;
     }
 
     public VariableReferenceIdentifier getVariableReferenceIdentifier() {
@@ -126,16 +127,45 @@ public final class StringOrVariableRef implements Serializable {
         return serializedValue.equals(other.serializedValue);
     }
 
-    public String evaluate(final ProcessingContext context) {
-        if (isVariableRef()) {
-            final Value result = context.lookupVariableValue(variableReferenceValue);
-            if (result.getCardinality()==Cardinality.SINGLE && result.getBaseType()==BaseType.STRING) {
-                return ((StringValue) result).toQtiString();
-            }
-            throw new QtiEvaluationException("Variable referenced by " + variableReferenceValue + " was expected to be an integer");
+    /**
+     * Evaluates this holder. If this holds an explicit integer then its value is returned as-is.
+     * Otherwise, the given {@link ProcessingContext} is used to look up the value of the variable
+     * that this type refers to. The result will either be an {@link StringValue} or {@link NullValue}
+     *
+     * @throws QtiInvalidLookupException if the variable cannot be successfully resolved, or
+     *   resolves to something other than a single integer.
+     */
+    public Value evaluate(final ProcessingContext context) {
+        if (isConstantString()) {
+            return constantStringValue;
         }
         else {
-            return stringValue;
+            final Value result = context.lookupVariableValue(variableReferenceValue);
+            if (result.hasSignature(Signature.SINGLE_STRING)) {
+                return result;
+            }
+            throw new QtiInvalidLookupException("Variable referenced by " + variableReferenceValue + " was expected to be a single string");
         }
+    }
+
+    /**
+     * Wrapper for {@link #evaluate(ProcessingContext)} that substitutes a replacement value and emits a
+     * runtime warning if the result was NULL.
+     *
+     * @throws QtiInvalidLookupException if the variable cannot be successfully resolved, or
+     *   resolves to something other than a single integer.
+     */
+    public String evaluateNotNull(final ProcessingContext context, final QtiNode owner,
+            final String messageOnNull, final String replacementOnNull) {
+        final Value evaluated = evaluate(context);
+        String result;
+        if (evaluated.isNull()) {
+            context.fireRuntimeWarning(owner, messageOnNull);
+            result = replacementOnNull;
+        }
+        else {
+            result = ((StringValue) evaluated).stringValue();
+        }
+        return result;
     }
 }

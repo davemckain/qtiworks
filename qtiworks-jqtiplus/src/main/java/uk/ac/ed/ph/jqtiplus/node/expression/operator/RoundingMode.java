@@ -37,8 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.types.Stringifiable;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.AttributeValidationError;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -57,8 +56,19 @@ public enum RoundingMode implements Stringifiable {
     SIGNIFICANT_FIGURES("significantFigures") {
 
         @Override
-        public void validateFigures(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
-            RoundingMode.validateFiguresAttribute(attribute, result);
+        public boolean isFiguresValid(final int figures) {
+            return figures >= 1;
+        }
+
+        @Override
+        public void validateFigures(final ValidationContext context, final IntegerOrVariableRefAttribute attribute) {
+            final IntegerOrVariableRef integerOrVariableRef = attribute.getValue();
+            if (integerOrVariableRef.isConstantInteger()) {
+                final int intValue = integerOrVariableRef.getConstantIntegerValue().intValue();
+                if (intValue < 1) {
+                    context.fireAttributeValidationError(attribute, "Figures count (" + intValue + ") must be 1 or more.");
+                }
+            }
         }
 
         @Override
@@ -102,8 +112,19 @@ public enum RoundingMode implements Stringifiable {
     DECIMAL_PLACES("decimalPlaces") {
 
         @Override
-        public void validateFigures(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
-            RoundingMode.validateFiguresAttribute(attribute, result);
+        public boolean isFiguresValid(final int figures) {
+            return figures >= 0;
+        }
+
+        @Override
+        public void validateFigures(final ValidationContext context, final IntegerOrVariableRefAttribute attribute) {
+            final IntegerOrVariableRef integerOrVariableRef = attribute.getValue();
+            if (integerOrVariableRef.isConstantInteger()) {
+                final int intValue = integerOrVariableRef.getConstantIntegerValue().intValue();
+                if (intValue < 0) {
+                    context.fireAttributeValidationError(attribute, "Figures count (" + intValue + ") must be 0 or more.");
+                }
+            }
         }
 
         @Override
@@ -133,13 +154,15 @@ public enum RoundingMode implements Stringifiable {
         this.roundingMode = roundingMode;
     };
 
+    public abstract boolean isFiguresValid(int figures);
+
     /**
      * Validates figures attribute.
      *
      * @param attribute attribute to be validated
      * @param figures attribute's value to be validated
      */
-    public abstract void validateFigures(IntegerOrVariableRefAttribute attribute, AbstractValidationResult result);
+    public abstract void validateFigures(ValidationContext context, IntegerOrVariableRefAttribute attribute);
 
     /**
      * Rounds given number for given number of figures.
@@ -168,19 +191,6 @@ public enum RoundingMode implements Stringifiable {
     @Override
     public String toQtiString() {
         return roundingMode;
-    }
-
-    public static void validateFiguresAttribute(final IntegerOrVariableRefAttribute attribute, final AbstractValidationResult result) {
-        final IntegerOrVariableRef integerOrVariableRef = attribute.getValue();
-        if (integerOrVariableRef.isInteger()) {
-            final int intValue = integerOrVariableRef.getInteger();
-            if (intValue < 1) {
-                result.add(new AttributeValidationError(attribute, "Figures count (" + intValue + ") must be positive."));
-            }
-        }
-        else {
-            /* FIXME: I've chosen not to say anything here, but it is possible for the resulting value to be illegal */
-        }
     }
 
     /**

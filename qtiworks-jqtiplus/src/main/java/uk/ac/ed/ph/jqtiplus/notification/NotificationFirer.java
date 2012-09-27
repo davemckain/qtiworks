@@ -27,47 +27,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
+package uk.ac.ed.ph.jqtiplus.notification;
 
-package uk.ac.ed.ph.jqtiplus.running;
-
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
- * FIXME: This needs refactored and probably isn't needed as I think we can do validation better
- * to remove the need for runtime checking.
- * 
+ * FIXME: Document this type
+ *
  * @author David McKain
  */
-@ToRefactor
-public final class RuntimeValidationResult extends AbstractValidationResult {
+public interface NotificationFirer {
 
-    private static final long serialVersionUID = -6570165277334622467L;
-    
-    private final AssessmentObject assessmentObject;
-    
-    public RuntimeValidationResult(AssessmentObject assessmentObject) {
-        this.assessmentObject = assessmentObject;
-    }
+    void setCheckpoint();
 
-    @ObjectDumperOptions(DumpMode.DEEP)
-    public AssessmentObject getAssessmentObject() {
-        return assessmentObject;
-    }
-    
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(assessmentObject=" + assessmentObject
-                + ",errors=" + getErrors()
-                + ",warnings=" + getWarnings()
-                + ")";
-    }
+    void clearCheckpoint();
+
+    boolean hadSinceCheckpoint();
+
+    void fireNotification(ModelNotification notification);
+
+    void fireRuntimeInfo(QtiNode owner, String message);
+
+    void fireRuntimeWarning(QtiNode owner, String message);
+
+    void fireRuntimeError(QtiNode owner, String message);
+
+    void fireValidationError(QtiNode owner, String message);
+
+    void fireValidationWarning(QtiNode owner, String message);
+
+    void fireAttributeValidationError(Attribute<?> attribute, String message);
+
+    void fireAttributeValidationWarning(Attribute<?> attribute, String message);
+
+    void fireBaseTypeValidationError(QtiNode owner, BaseType[] requiredBaseTypes, BaseType[] actualBaseTypes);
+
+    void fireCardinalityValidationError(QtiNode owner, Cardinality[] requiredCardinalities, Cardinality[] actualCardinalities);
+
+
 }

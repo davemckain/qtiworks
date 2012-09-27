@@ -81,11 +81,11 @@ public class NullValueTest extends ValueTest {
                 // UriValue
                 {false, NullValue.INSTANCE, new UriValue("uri")},
                 // MultipleValue
-                {true, NullValue.INSTANCE, new MultipleValue()}, {false, NullValue.INSTANCE, new MultipleValue(new IntegerValue(1))},
+                {true, NullValue.INSTANCE, MultipleValue.emptyValue()}, {false, NullValue.INSTANCE, MultipleValue.createMultipleValue(new IntegerValue(1))},
                 // OrderedValue
-                {true, NullValue.INSTANCE, new OrderedValue()}, {false, NullValue.INSTANCE, new OrderedValue(new IntegerValue(1))},
+                {true, NullValue.INSTANCE, OrderedValue.emptyValue()}, {false, NullValue.INSTANCE, OrderedValue.createOrderedValue(new IntegerValue(1))},
                 // RecordValue
-                {true, NullValue.INSTANCE, new RecordValue()}, {false, NullValue.INSTANCE, new RecordValue("identifier", new IntegerValue(1))},
+                {true, NullValue.INSTANCE, RecordValue.emptyRecord()}, {false, NullValue.INSTANCE, RecordValue.createRecordValue("identifier", new IntegerValue(1))},
                 });
     }
 

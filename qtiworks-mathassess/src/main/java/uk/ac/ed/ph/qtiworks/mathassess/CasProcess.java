@@ -44,14 +44,14 @@ import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.value.ReturnTypeType;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import uk.ac.ed.ph.jacomax.MaximaTimeoutException;
@@ -81,45 +81,24 @@ public final class CasProcess extends MathAssessOperator {
         getNodeGroups().add(new ExpressionGroup(this, 1, 1));
     }
 
-    /**
-     * Gets value of returnType attribute.
-     *
-     * @return value of returnType attribute
-     * @see #setReturnType
-     */
+
+
     public ReturnTypeType getReturnType() {
         return ((ReturnTypeAttribute) getAttributes().get(ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedValue();
     }
 
-    /**
-     * Sets new value of returnType attribute.
-     *
-     * @param returnTypeType new value of returnType attribute
-     * @see #getReturnType
-     */
     public void setReturnType(final ReturnTypeType returnTypeType) {
         ((ReturnTypeAttribute) getAttributes().get(ATTR_RETURN_TYPE_NAME, MATHASSESS_NAMESPACE_URI))
                 .setValue(returnTypeType);
     }
 
-    /**
-     * Gets value of simplify attribute.
-     *
-     * @return value of simplify attribute
-     * @see #setSimplify
-     */
+
     public boolean getSimplify() {
         return ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
                 .getComputedNonNullValue();
     }
 
-    /**
-     * Sets new value of simplify attribute.
-     *
-     * @param simplify new value of simplify attribute
-     * @see #getSimplify
-     */
     public void setSimplify(final Boolean simplify) {
         ((BooleanAttribute) getAttributes().get(ATTR_SIMPLIFY_NAME, MATHASSESS_NAMESPACE_URI))
             .setValue(simplify);
@@ -127,11 +106,10 @@ public final class CasProcess extends MathAssessOperator {
 
     @Override
     protected void doAdditionalValidation(final ValidationContext context) {
-        /* Nothing to do here */
     }
 
     @Override
-    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) throws MaximaTimeoutException, MathsContentTooComplexException {
+    protected Value maximaEvaluate(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemProcessingContext context, final Value[] childValues) {
         final boolean simplify = getSimplify();
         final String code = childValues[0].toQtiString().trim();
 
@@ -140,23 +118,34 @@ public final class CasProcess extends MathAssessOperator {
         final QtiMaximaProcess qtiMaximaProcess = mathAssessExtensionPackage.obtainMaximaSessionForThread();
 
         /* Pass variables to Maxima */
-        logger.trace("Passing variables to maxima");
-        for (final VariableDeclaration declaration : getAllCASReadableVariableDeclarations()) {
-            final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(declaration.getBaseType(), declaration.getCardinality());
-            final Value value = context.getItemSessionState().getVariableValue(declaration);
-            if (value!=null && !value.isNull() && resultClass != null) {
-                qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), CasTypeGlue.convertFromJQTI(value));
-            }
+        passVariablesToMaxima(qtiMaximaProcess, context);
+
+        /* Run Maxima code and extract result */
+        logger.trace("Running code to determine result of casProcess");
+        final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasReturnClass(getReturnType());
+        ValueWrapper maximaResult;
+        try {
+            maximaResult = qtiMaximaProcess.executeCasProcess(code, simplify, resultClass);
+        }
+        catch (final MaximaTimeoutException e) {
+            context.fireRuntimeError(this, "A timeout occurred executing the CasCondition logic. Returning NULL");
+            return NullValue.INSTANCE;
+        }
+        catch (final MathsContentTooComplexException e) {
+            context.fireRuntimeError(this, "An unexpected problem occurred querying the result of CasProcess, so returning NULL");
+            return NullValue.INSTANCE;
         }
 
-        /* Run Maxima code and return result */
-        logger.trace("Running code to determine result of casProcess");
-        final Class<? extends ValueWrapper> resultClass = CasTypeGlue.getCasClass(getBaseType(), getCardinality());
-        final ValueWrapper result = qtiMaximaProcess.executeCasProcess(code, simplify, resultClass);
-        return CasTypeGlue.convertToJQTI(result);
+        /* Bind result */
+        final Value result = GlueValueBinder.casToJqti(maximaResult);
+        if (result==null) {
+            context.fireRuntimeError(this, "Failed to convert result from Maxima back to a QTI variable - returning NULL");
+            return NullValue.INSTANCE;
+        }
+        return result;
     }
 
-    private BaseType getBaseType() {
+    private BaseType getReturnBaseType() {
         if (getReturnType() == null) {
             return null;
         }
@@ -176,21 +165,24 @@ public final class CasProcess extends MathAssessOperator {
             case BOOLEAN_ORDERED:
                 return BaseType.BOOLEAN;
 
-            default:
+            case MATHS_CONTENT:
                 return null;
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + getReturnType());
         }
     }
 
     @Override
     public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         if (getReturnType() != null) {
-            final BaseType type = getBaseType();
+            final BaseType type = getReturnBaseType();
             return type != null ? new BaseType[] { type } : BaseType.values();
         }
         return super.getProducedBaseTypes(context);
     }
 
-    private Cardinality getCardinality() {
+    private Cardinality getReturnCardinality() {
         if (getReturnType() == null) {
             return null;
         }
@@ -214,15 +206,14 @@ public final class CasProcess extends MathAssessOperator {
                 return Cardinality.ORDERED;
 
             default:
-                throw new QtiEvaluationException("Error: Unsupported return type " + getReturnType()
-                        + " (unable to determine cardinality)");
+                throw new QtiLogicException("Unexpected switch case " + getReturnType());
         }
     }
 
     @Override
     public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         if (getReturnType() != null) {
-            return new Cardinality[] { getCardinality() };
+            return new Cardinality[] { getReturnCardinality() };
         }
         return super.getProducedCardinalities(context);
     }

@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import org.slf4j.Logger;
@@ -76,13 +75,12 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
 
     @Override
     public final void validate(final ValidationContext context) {
-        super.validate(context);
         final E jqtiExtensionPackage = getOwningExtensionPackage(context);
         if (jqtiExtensionPackage!=null) {
             validateCustomInteractionAttributes(jqtiExtensionPackage, context);
         }
         else {
-            context.add(new ValidationError(this, "customInteraction with class " + getClassAttr() + " is not supported"));
+            context.fireValidationError(this, "customInteraction with class " + getClassAttr() + " is not supported");
         }
     }
 

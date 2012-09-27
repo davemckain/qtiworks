@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationError;
 import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -154,27 +153,27 @@ public final class MatchInteraction extends BlockInteraction implements SimpleMa
     }
 
     @Override
-    public void validate(final ValidationContext context) {
-        super.validate(context);
-
+    protected void validateThis(final ValidationContext context) {
         if (getMaxAssociations() != 0 && getMinAssociations() > getMaxAssociations()) {
-            context.add(new ValidationError(this, "Minimum number of associations can't be bigger than maximum number"));
+            context.fireValidationError(this, "Minimum number of associations can't be bigger than maximum number");
         }
 
         if (getResponseIdentifier() != null) {
             final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isDirectedPair()) {
-                context.add(new ValidationError(this, "Response variable must have directedPair base type"));
-            }
+            if (declaration!=null) {
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isDirectedPair()) {
+                    context.fireValidationError(this, "Response variable must have directedPair base type");
+                }
 
-            if (declaration != null && getMaxAssociations() == 1 &&
-                    declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
-                    !declaration.getCardinality().isMultiple()) {
-                context.add(new ValidationError(this, "Response variable must have single or multiple cardinality"));
-            }
+                if (getMaxAssociations() == 1 &&
+                        declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
+                        !declaration.getCardinality().isMultiple()) {
+                    context.fireValidationError(this, "Response variable must have single or multiple cardinality");
+                }
 
-            if (declaration != null && getMaxAssociations() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                context.add(new ValidationError(this, "Response variable must have multiple cardinality"));
+                if (getMaxAssociations() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+                    context.fireValidationError(this, "Response variable must have multiple cardinality");
+                }
             }
         }
     }
