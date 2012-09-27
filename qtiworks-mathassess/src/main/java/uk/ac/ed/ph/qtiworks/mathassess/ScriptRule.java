@@ -144,11 +144,11 @@ public final class ScriptRule extends MathAssessOperator {
                 catch (final MathsContentTooComplexException e) {
                     context.fireRuntimeError(this, "The value of the variable " + var.getIdentifier() + " was too complex to extract from Maxima, so it was set to NULL");
                 }
+                itemSessionState.setVariableValue(var, resultValue);
             }
             else {
-                context.fireRuntimeInfo(this, "Variable " + var.getIdentifier() + " is not of a supported baseType and/or cardinality for passing to the CAS - setting to NULL");
+                context.fireRuntimeInfo(this, "Variable " + var.getIdentifier() + " is not of a supported baseType and/or cardinality for passing to the CAS so its value is being left unchanged");
             }
-            itemSessionState.setVariableValue(var, resultValue);
         }
 
         logger.debug("scriptRule finished successfully - returning TRUE");

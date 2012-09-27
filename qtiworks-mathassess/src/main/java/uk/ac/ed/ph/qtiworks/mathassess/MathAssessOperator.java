@@ -94,7 +94,7 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
                 return maximaEvaluate(mathAssessExtensionPackage, (ItemProcessingContext) context, childValues);
 
             default:
-                context.fireValidationError(this, "Unsupported syntax type: " + getSyntax() + " - returning NULL");
+                context.fireValidationError(this, "Unsupported syntax type " + getSyntax() + " - returning NULL");
                 return NullValue.INSTANCE;
         }
     }
@@ -186,7 +186,7 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
                 qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
             }
             else {
-                context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier() + " is one of the types supported by the MathAssess extensions so has not been passed to Maxima");
+                context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier() + " is not of a type supported by the MathAssess extensions so has not been passed to Maxima");
             }
         }
     }
