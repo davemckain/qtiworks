@@ -85,11 +85,17 @@ public final class MapResponsePoint extends AbstractExpression {
             final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(getIdentifier());
             if (responseDeclaration != null) {
                 if (responseDeclaration.getCardinality().isRecord()) {
-                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of single or container cardinalities.");
+                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression cannot be bound to variables with record cardinality");
                 }
-                if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isPoint()) {
-                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of point base type.");
+                else if (!responseDeclaration.getBaseType().isPoint()) {
+                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of point base type");
                 }
+                if (responseDeclaration.getAreaMapping()==null) {
+                    context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find areaMapping for response declaration " + getIdentifier());
+                }
+            }
+            else {
+                context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find response declaration " + getIdentifier());
             }
         }
     }

@@ -34,12 +34,10 @@
 package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiNotImplementedException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.AreaMapEntryGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponsePoint;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.PointValue;
@@ -132,13 +130,13 @@ public final class AreaMapping extends AbstractNode {
         final Double upperBound = getUpperBound();
 
         if (lowerBound != null && upperBound != null && lowerBound.doubleValue() > upperBound.doubleValue()) {
-            context.fireValidationError(this, "Upper bound cannot be less than lower bound.");
+            context.fireValidationError(this, "Upper bound cannot be less than lower bound");
         }
 
         final ResponseDeclaration declaration = getParent();
         if (declaration != null) {
             if (declaration.getBaseType() != null && !declaration.getBaseType().isPoint()) {
-                context.fireValidationError(this, "Base type must be point.");
+                context.fireValidationError(this, "Base type must be point");
             }
         }
     }
@@ -159,7 +157,8 @@ public final class AreaMapping extends AbstractNode {
              * fall in the same area then the mappedValue is still added
              * to the calculated total just once.
              */
-            if (getParent().getCardinality() == Cardinality.SINGLE) {
+            final ResponseDeclaration parent = getParent();
+            if (parent.getCardinality().isSingle()) {
                 for (final AreaMapEntry entry : getAreaMapEntries()) {
                     if (entry.getShape().isInside(convertCoordinates(entry.getCoordinates()), (PointValue) sourceValue)) {
                         return new FloatValue(applyConstraints(entry.getMappedValue()));
@@ -167,21 +166,19 @@ public final class AreaMapping extends AbstractNode {
                 }
             }
             else {
-                if (!(sourceValue instanceof ListValue)) {
-                    throw new QtiNotImplementedException();
-                }
                 double sum = 0.0;
-                final List<SingleValue> values = new ArrayList<SingleValue>(((ListValue) sourceValue).getAll());
+                final ListValue sourceListValue = (ListValue) sourceValue;
+                final List<SingleValue> values = new ArrayList<SingleValue>(sourceListValue.getAll());
 
                 for (final AreaMapEntry entry : getAreaMapEntries()) {
                     boolean allow = true;
-                    for (int i = 0; i < ((ListValue) sourceValue).size(); i++) {
-                        if (entry.getShape().isInside(convertCoordinates(entry.getCoordinates()), (PointValue) ((ListValue) sourceValue).get(i))) {
+                    for (int i = 0; i < sourceListValue.size(); i++) {
+                        if (entry.getShape().isInside(convertCoordinates(entry.getCoordinates()), (PointValue) sourceListValue.get(i))) {
                             if (allow) {
                                 sum += entry.getMappedValue();
                                 allow = false;
                             }
-                            values.remove(((ListValue) sourceValue).get(i));
+                            values.remove(sourceListValue.get(i));
                         }
                     }
                 }

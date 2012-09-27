@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
-import uk.ac.ed.ph.jqtiplus.exception.QtiNotImplementedException;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.MapEntryGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponse;
@@ -130,14 +129,14 @@ public final class Mapping extends AbstractNode {
         final Double upperBound = getUpperBound();
 
         if (lowerBound != null && upperBound != null && lowerBound.doubleValue() > upperBound.doubleValue()) {
-            context.fireValidationError(this, "Upper bound cannot be less than lower bound.");
+            context.fireValidationError(this, "Upper bound cannot be less than lower bound");
         }
 
         final ResponseDeclaration declaration = getParent();
         if (declaration != null) {
             if (declaration.getBaseType() != null &&
                     (declaration.getBaseType().isFile() || declaration.getBaseType().isDuration())) {
-                context.fireValidationError(this, "File or duration base types are not supported with a mapping.");
+                context.fireValidationError(this, "File or duration base types are not supported with a mapping");
             }
 
             /* (The new caseSensitive="false" entries are only permitted for string baseTypes) */
@@ -149,7 +148,7 @@ public final class Mapping extends AbstractNode {
                 }
             }
             if (hasCaseInsensitiveEntry && !declaration.getBaseType().isString()) {
-                context.fireValidationError(this, "Only String base types may be used with case insensitive mapEntries.");
+                context.fireValidationError(this, "Only String base types may be used with case insensitive mapEntries");
             }
         }
     }
@@ -186,28 +185,25 @@ public final class Mapping extends AbstractNode {
                 }
             }
             else {
-                if (!(sourceValue instanceof ListValue)) {
-                    throw new QtiNotImplementedException();
-                }
                 double sum = 0.0;
-                final List<SingleValue> values = new ArrayList<SingleValue>(((ListValue) sourceValue).getAll());
+                final ListValue sourceListValue = (ListValue) sourceValue;
+                final List<SingleValue> values = new ArrayList<SingleValue>(sourceListValue.getAll());
 
                 for (final MapEntry entry : getMapEntries()) {
                     boolean allow = true;
 
-                    for (int i = 0; i < ((ListValue) sourceValue).size(); i++) {
-                        if (entryCompare(entry, ((ListValue) sourceValue).get(i))) {
+                    for (int i = 0; i < sourceListValue.size(); i++) {
+                        if (entryCompare(entry, sourceListValue.get(i))) {
                             if (allow) {
                                 sum += entry.getMappedValue();
                                 allow = false;
                             }
-                            values.remove(((ListValue) sourceValue).get(i));
+                            values.remove(sourceListValue.get(i));
                         }
                     }
                 }
 
                 sum += getDefaultValue() * values.size();
-
                 return new FloatValue(applyConstraints(sum));
             }
         }

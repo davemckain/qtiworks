@@ -90,11 +90,17 @@ public final class MapResponse extends AbstractExpression {
     protected void validateThis(final ValidationContext context) {
         final AssessmentItem item = context.getSubjectItem();
         if (item!=null) {
-            if (item.getResponseDeclaration(getIdentifier()) == null) {
-                context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find response declaration: " + getIdentifier());
+            final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(getIdentifier());
+            if (responseDeclaration!=null) {
+                if (responseDeclaration.getCardinality().isRecord()) {
+                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression cannot be bound to variables with record cardinality");
+                }
+                if (responseDeclaration.getMapping() == null) {
+                    context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find mapping for response declaration " + getIdentifier());
+                }
             }
-            else if (item.getResponseDeclaration(getIdentifier()).getMapping() == null) {
-                context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find mapping for response declaration: " + getIdentifier());
+            else {
+                context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find response declaration " + getIdentifier());
             }
         }
     }

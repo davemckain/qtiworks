@@ -1,0 +1,276 @@
+<assessmentResult xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.imsglobal.org/xsd/imsqti_result_v2p1"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_result_v2p1 http://www.imsglobal.org/xsd/imsqti_result_v2p1.xsd">
+  <itemResult identifier="MAD01-newSRinRP" datestamp="2012-09-18T18:45:49" sessionStatus="final">
+    <outcomeVariable identifier="t1Zero" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="isEquiv" cardinality="single" baseType="boolean">
+      <value>false</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="SCORE" cardinality="single" baseType="float" normalMaximum="2.0"
+                     normalMinimum="0.0">
+      <value>0.0</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="seenSolution" cardinality="single" baseType="boolean">
+      <value>false</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="polyOK" cardinality="single" baseType="boolean">
+      <value>true</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="t1OK" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="t2Zero" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="constOK" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="termsOK" cardinality="single" baseType="boolean">
+      <value>false</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="t2One" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="completionStatus" cardinality="single" baseType="identifier">
+      <value>completed</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="odummy" cardinality="single" baseType="boolean">
+      <value>true</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="ASKHINT" cardinality="single" baseType="identifier">
+      <value>null</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="t1One" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="isEqual" cardinality="single" baseType="boolean">
+      <value>false</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="t2BadSign" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="ASKSOLUTION" cardinality="single" baseType="identifier">
+      <value>null</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="t2OK" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="t1BadSign" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="seenHint" cardinality="single" baseType="boolean">
+      <value>false</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="constOne" cardinality="single" baseType="boolean"/>
+    <outcomeVariable identifier="isExpanded" cardinality="single" baseType="boolean">
+      <value>true</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="FEEDBACK" cardinality="multiple" baseType="identifier">
+      <value>IS-POLY</value>
+      <value>T1-BAD</value>
+      <value>T2-BAD</value>
+    </outcomeVariable>
+    <outcomeVariable identifier="EMPTY" cardinality="single" baseType="identifier"/>
+    <responseVariable identifier="HINTREQUEST" cardinality="single" baseType="boolean">
+      <candidateResponse>
+        <value>false</value>
+      </candidateResponse>
+    </responseVariable>
+    <responseVariable identifier="duration" cardinality="single" baseType="float">
+      <candidateResponse>
+        <value>0.0</value>
+      </candidateResponse>
+    </responseVariable>
+    <responseVariable identifier="SOLREQUEST" cardinality="single" baseType="boolean">
+      <candidateResponse>
+        <value>false</value>
+      </candidateResponse>
+    </responseVariable>
+    <responseVariable identifier="RESPONSE" cardinality="record">
+      <candidateResponse>
+        <value fieldIdentifier="CMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;cn&gt;10&lt;/cn&gt;
+  &lt;/math&gt;</value>
+        <value fieldIdentifier="CandidateInput" baseType="string">10</value>
+        <value fieldIdentifier="MathsContentClass" baseType="string">org.qtitools.mathassess</value>
+        <value fieldIdentifier="Maxima" baseType="string">10</value>
+        <value fieldIdentifier="PMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;mn&gt;10&lt;/mn&gt;
+  &lt;/math&gt;</value>
+        <value fieldIdentifier="PMathMLBracketed" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;mn&gt;10&lt;/mn&gt;
+  &lt;/math&gt;</value>
+      </candidateResponse>
+    </responseVariable>
+    <responseVariable identifier="numAttempts" cardinality="single" baseType="integer">
+      <candidateResponse>
+        <value>1</value>
+      </candidateResponse>
+    </responseVariable>
+    <responseVariable identifier="printMath" cardinality="single" baseType="string">
+      <candidateResponse>
+        <value>&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;mn&gt;10&lt;/mn&gt;
+  &lt;/math&gt;</value>
+      </candidateResponse>
+    </responseVariable>
+    <templateVariable identifier="iApC" cardinality="single" baseType="integer">
+      <value>-7</value>
+    </templateVariable>
+    <templateVariable identifier="mX" cardinality="record">
+      <value fieldIdentifier="CMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;ci&gt;y&lt;/ci&gt;
+  &lt;/math&gt;</value>
+      <value fieldIdentifier="MathsContentClass" baseType="string">org.qtitools.mathassess</value>
+      <value fieldIdentifier="Maxima" baseType="string">y</value>
+      <value fieldIdentifier="PMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;mi&gt;y&lt;/mi&gt;
+  &lt;/math&gt;</value>
+    </templateVariable>
+    <templateVariable identifier="mBad4" cardinality="record">
+      <value fieldIdentifier="CMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;apply&gt;
+      &lt;times/&gt;
+      &lt;cn&gt;2&lt;/cn&gt;
+      &lt;ci&gt;y&lt;/ci&gt;
+    &lt;/apply&gt;
+  &lt;/math&gt;</value>
+      <value fieldIdentifier="MathsContentClass" baseType="string">org.qtitools.mathassess</value>
+      <value fieldIdentifier="Maxima" baseType="string">2 * y</value>
+      <value fieldIdentifier="PMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;mrow&gt;
+      &lt;mn&gt;2&lt;/mn&gt;
+      &lt;mo&gt;⁢&lt;/mo&gt;
+      &lt;mi&gt;y&lt;/mi&gt;
+    &lt;/mrow&gt;
+  &lt;/math&gt;</value>
+    </templateVariable>
+    <templateVariable identifier="iAbsC" cardinality="single" baseType="integer">
+      <value>10</value>
+    </templateVariable>
+    <templateVariable identifier="keepRandomSeed" cardinality="single" baseType="boolean"/>
+    <templateVariable identifier="iAbsA" cardinality="single" baseType="integer">
+      <value>3</value>
+    </templateVariable>
+    <templateVariable identifier="iAbsB" cardinality="single" baseType="integer">
+      <value>9</value>
+    </templateVariable>
+    <templateVariable identifier="iAB" cardinality="single" baseType="integer">
+      <value>-27</value>
+    </templateVariable>
+    <templateVariable identifier="iBad3" cardinality="single" baseType="integer">
+      <value>-18</value>
+    </templateVariable>
+    <templateVariable identifier="iRandomState" cardinality="ordered" baseType="integer"/>
+    <templateVariable identifier="sBadSignAB" cardinality="single" baseType="string">
+      <value>+</value>
+    </templateVariable>
+    <templateVariable identifier="mX2" cardinality="record">
+      <value fieldIdentifier="CMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;ci&gt;w&lt;/ci&gt;
+  &lt;/math&gt;</value>
+      <value fieldIdentifier="MathsContentClass" baseType="string">org.qtitools.mathassess</value>
+      <value fieldIdentifier="Maxima" baseType="string">w</value>
+      <value fieldIdentifier="PMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;mi&gt;w&lt;/mi&gt;
+  &lt;/math&gt;</value>
+    </templateVariable>
+    <templateVariable identifier="mAns" cardinality="record">
+      <value fieldIdentifier="CMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;apply&gt;
+      &lt;minus/&gt;
+      &lt;apply&gt;
+        &lt;minus/&gt;
+        &lt;apply&gt;
+          &lt;times/&gt;
+          &lt;cn&gt;7&lt;/cn&gt;
+          &lt;ci&gt;y&lt;/ci&gt;
+        &lt;/apply&gt;
+      &lt;/apply&gt;
+      &lt;cn&gt;27&lt;/cn&gt;
+    &lt;/apply&gt;
+  &lt;/math&gt;</value>
+      <value fieldIdentifier="MathsContentClass" baseType="string">org.qtitools.mathassess</value>
+      <value fieldIdentifier="Maxima" baseType="string">(-(7 * y)) - 27</value>
+      <value fieldIdentifier="PMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;mrow&gt;
+      &lt;mrow&gt;
+        &lt;mo&gt;-&lt;/mo&gt;
+        &lt;mrow&gt;
+          &lt;mn&gt;7&lt;/mn&gt;
+          &lt;mo&gt;⁢&lt;/mo&gt;
+          &lt;mi&gt;y&lt;/mi&gt;
+        &lt;/mrow&gt;
+      &lt;/mrow&gt;
+      &lt;mo&gt;-&lt;/mo&gt;
+      &lt;mn&gt;27&lt;/mn&gt;
+    &lt;/mrow&gt;
+  &lt;/math&gt;</value>
+    </templateVariable>
+    <templateVariable identifier="iBad5" cardinality="single" baseType="integer">
+      <value>-54</value>
+    </templateVariable>
+    <templateVariable identifier="iAbsAB" cardinality="single" baseType="integer">
+      <value>27</value>
+    </templateVariable>
+    <templateVariable identifier="mQues" cardinality="record">
+      <value fieldIdentifier="CMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;apply&gt;
+      &lt;plus/&gt;
+      &lt;apply&gt;
+        &lt;times/&gt;
+        &lt;cn&gt;3&lt;/cn&gt;
+        &lt;apply&gt;
+          &lt;minus/&gt;
+          &lt;ci&gt;y&lt;/ci&gt;
+          &lt;cn&gt;9&lt;/cn&gt;
+        &lt;/apply&gt;
+      &lt;/apply&gt;
+      &lt;apply&gt;
+        &lt;times/&gt;
+        &lt;apply&gt;
+          &lt;minus/&gt;
+          &lt;cn&gt;10&lt;/cn&gt;
+        &lt;/apply&gt;
+        &lt;ci&gt;y&lt;/ci&gt;
+      &lt;/apply&gt;
+    &lt;/apply&gt;
+  &lt;/math&gt;</value>
+      <value fieldIdentifier="MathsContentClass" baseType="string">org.qtitools.mathassess</value>
+      <value fieldIdentifier="Maxima" baseType="string">(3 * (y - 9)) + ((-10) * y)</value>
+      <value fieldIdentifier="PMathML" baseType="string">&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;
+    &lt;mrow&gt;
+      &lt;mrow&gt;
+        &lt;mn&gt;3&lt;/mn&gt;
+        &lt;mo&gt;⁢&lt;/mo&gt;
+        &lt;mfenced close=")" open="("&gt;
+          &lt;mrow&gt;
+            &lt;mi&gt;y&lt;/mi&gt;
+            &lt;mo&gt;-&lt;/mo&gt;
+            &lt;mn&gt;9&lt;/mn&gt;
+          &lt;/mrow&gt;
+        &lt;/mfenced&gt;
+      &lt;/mrow&gt;
+      &lt;mo&gt;+&lt;/mo&gt;
+      &lt;mrow&gt;
+        &lt;mfenced close=")" open="("&gt;
+          &lt;mrow&gt;
+            &lt;mo&gt;-&lt;/mo&gt;
+            &lt;mn&gt;10&lt;/mn&gt;
+          &lt;/mrow&gt;
+        &lt;/mfenced&gt;
+        &lt;mo&gt;⁢&lt;/mo&gt;
+        &lt;mi&gt;y&lt;/mi&gt;
+      &lt;/mrow&gt;
+    &lt;/mrow&gt;
+  &lt;/math&gt;</value>
+    </templateVariable>
+    <templateVariable identifier="iC" cardinality="single" baseType="integer">
+      <value>-10</value>
+    </templateVariable>
+    <templateVariable identifier="iA" cardinality="single" baseType="integer">
+      <value>3</value>
+    </templateVariable>
+    <templateVariable identifier="showSolParts" cardinality="multiple" baseType="identifier"/>
+    <templateVariable identifier="iB" cardinality="single" baseType="integer">
+      <value>-9</value>
+    </templateVariable>
+    <templateVariable identifier="sSignAB" cardinality="single" baseType="string">
+      <value>-</value>
+    </templateVariable>
+    <templateVariable identifier="sSignB" cardinality="single" baseType="string">
+      <value>-</value>
+    </templateVariable>
+    <templateVariable identifier="sSignC" cardinality="single" baseType="string">
+      <value>-</value>
+    </templateVariable>
+    <templateVariable identifier="dummy" cardinality="single" baseType="boolean">
+      <value>true</value>
+    </templateVariable>
+    <templateVariable identifier="iRandomSeed" cardinality="single" baseType="integer"/>
+  </itemResult>
+</assessmentResult>
