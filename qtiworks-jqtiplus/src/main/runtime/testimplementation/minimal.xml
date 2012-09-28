@@ -1,0 +1,14 @@
+<!--
+
+Example of a minimal valid assessmentTest
+
+-->
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    identifier="minimal" title="Minimal Test"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd">
+  <testPart identifier="part1" navigationMode="linear" submissionMode="individual">
+    <assessmentSection identifier="section" title="Section" visible="true">
+      <assessmentItemRef href="questions/choice.xml" identifier="choice"/>
+    </assessmentSection>
+  </testPart>
+</assessmentTest>
