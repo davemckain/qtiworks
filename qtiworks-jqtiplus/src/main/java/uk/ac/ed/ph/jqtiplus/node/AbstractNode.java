@@ -103,6 +103,14 @@ public abstract class AbstractNode implements QtiNode {
     }
 
     @Override
+    public <E extends QtiNode> E getNearestAncestorOrSelf(final Class<E> ancestorClass) {
+        if (ancestorClass.isInstance(this)) {
+            return ancestorClass.cast(this);
+        }
+        return getNearestAncestor(ancestorClass);
+    }
+
+    @Override
     public final String getQtiClassName() {
         return qtiClassName;
     }
@@ -296,10 +304,10 @@ public abstract class AbstractNode implements QtiNode {
     protected void validateUniqueIdentifier(final ValidationContext context, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
         if (identifier != null) {
             if (getRootNode(AssessmentTest.class) != null && BranchRule.isSpecial(identifier)) {
-                context.fireAttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute);
+                context.fireAttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute.getComputedValue());
             }
             if (!validateUniqueIdentifier(getRootNode(), identifier)) {
-                context.fireAttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute);
+                context.fireAttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute.getComputedValue());
             }
         }
     }

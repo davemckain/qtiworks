@@ -31,41 +31,21 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.test;
+package uk.ac.ed.ph.jqtiplus.xperimental;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
-import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Extension of {@link ControlObject} that mixes in that {@link UniqueNode} interface.
+ * Temporary annotation for things from the original JQTI/QTIEngine that need
+ * further investigation.
+ *
  * @author David McKain
  */
-public abstract class UniqueControlObject extends ControlObject<Identifier> implements UniqueNode<Identifier> {
+@Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR })
+public @interface ToCheck {
 
-    private static final long serialVersionUID = -4531023498836564003L;
-
-    public UniqueControlObject(final ControlObject<?> parent, final String qtiClassName) {
-        super(parent, qtiClassName);
-
-        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
-    }
-
-    @Override
-    public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
-    }
-
-    @Override
-    public void setIdentifier(final Identifier identifier) {
-        getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
-    }
-
-
-    @Override
-    protected void validateThis(final ValidationContext context) {
-        validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
-    }
 }

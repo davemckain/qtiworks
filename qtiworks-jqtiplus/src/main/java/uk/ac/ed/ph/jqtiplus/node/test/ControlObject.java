@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
@@ -47,9 +48,9 @@ import java.util.List;
 /**
  * Abstract parent for assessmentTest, testPart, assessmentSection and assessmentItemRef.
  *
- * @param <E> type of the identifier attribute for this Object. This is required since {@link AssessmentTest} identifiers are arbitrary strings; whereas others
- *            are
- *            proper identifiers.
+ * @param <E> type of the identifier attribute for this Object. This is required since
+ *   {@link AssessmentTest} identifiers are arbitrary strings; whereas others are proper identifiers.
+ *
  * @author Jiri Kajaba
  * @author David McKain
  */
@@ -134,7 +135,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      *
      * @return global index (position) of this object in test
      */
-    @ToRefactor
+    @ToCheck
     public int getGlobalIndex() {
         int index = 0;
 
@@ -153,6 +154,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
         return index;
     }
 
+    @ToCheck
     private int getGlobalChildrenCount() {
         int count = 0;
 
@@ -196,7 +198,25 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     }
 
     /**
-     * Searches this Object and its descendents for the {@link ControlObject} having the
+     * Searches descendants of this Object for the {@link AbstractPart} having the
+     * given {@link Identifier}, or null if not found.
+     *
+     * @param identifier identifier of requested object
+     * @return object with given identifier or null
+     */
+    public AbstractPart lookupDescendant(final Identifier identifier) {
+        AbstractPart result;
+        for (final AbstractPart child : getChildren()) {
+            result = child.lookupDescendantOrSelf(identifier);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Searches this Object and its descendants for the {@link ControlObject} having the
      * given {@link Identifier}, returning null if not found.
      * <p>
      * (Note that this will never return "self" for an {@link AssessmentTest}, since its identifier is a String).
@@ -204,29 +224,11 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public AbstractPart lookupDescendentOrSelf(final Identifier identifier) {
+    public AbstractPart lookupDescendantOrSelf(final Identifier identifier) {
         if (getIdentifier() != null && getIdentifier().equals(identifier)) {
             return (AbstractPart) this;
         }
-        return lookupDescendent(identifier);
-    }
-
-    /**
-     * Searches descendents of this Object for the {@link AbstractPart} having the
-     * given {@link Identifier}, or null if not found.
-     *
-     * @param identifier identifier of requested object
-     * @return object with given identifier or null
-     */
-    public AbstractPart lookupDescendent(final Identifier identifier) {
-        AbstractPart result;
-        for (final AbstractPart child : getChildren()) {
-            result = child.lookupDescendentOrSelf(identifier);
-            if (result != null) {
-                return result;
-            }
-        }
-        return null;
+        return lookupDescendant(identifier);
     }
 
     /**
@@ -236,26 +238,30 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @return item reference with given identifier or null if identifier is not found or doesn't correspond
      *         to an {@link AssessmentItemRef}
      */
+    @ToCheck
     public AssessmentItemRef lookupItemRef(final Identifier identifier) {
-        final AbstractPart descendent = lookupDescendent(identifier);
+        final AbstractPart descendent = lookupDescendant(identifier);
         if (descendent instanceof AssessmentItemRef) {
             return (AssessmentItemRef) descendent;
         }
         return null;
     }
 
+    @ToCheck
     public List<AssessmentItemRef> searchItemRefs() {
         final List<AssessmentItemRef> resultBuilder = new ArrayList<AssessmentItemRef>();
         searchItemRefs(this, resultBuilder);
         return resultBuilder;
     }
 
+    @ToCheck
     public LinkedHashSet<AssessmentItemRef> searchUniqueItemRefs() {
         final LinkedHashSet<AssessmentItemRef> resultBuilder = new LinkedHashSet<AssessmentItemRef>();
         searchItemRefs(this, resultBuilder);
         return resultBuilder;
     }
 
+    @ToCheck
     private static void searchItemRefs(final ControlObject<?> start, final Collection<AssessmentItemRef> resultBuilder) {
         if (start instanceof AssessmentItemRef) {
             resultBuilder.add((AssessmentItemRef) start);

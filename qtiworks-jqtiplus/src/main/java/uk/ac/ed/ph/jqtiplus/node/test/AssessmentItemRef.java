@@ -220,6 +220,7 @@ public final class AssessmentItemRef extends SectionPart {
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         for (int i = 0; i < getWeights().size(); i++) {
             final Weight weight = getWeights().get(i);
             final Identifier weightIdentifier = weight.getIdentifier();

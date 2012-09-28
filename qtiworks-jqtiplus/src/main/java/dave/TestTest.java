@@ -16,10 +16,15 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
 
-public class TestTest {
+/**
+ * (Used for ad hoc test of test functionality)
+ *
+ * @author David McKain
+ */
+public final class TestTest {
 
     public static void main(final String[] args) throws Exception {
-        final URI inputUri = URI.create("classpath:/WebDeveloperTest1/template_test1.xml");
+        final URI inputUri = URI.create("classpath:/testimplementation/non_unique_identifier.xml");
 
         System.out.println("Reading and validating");
         final QtiXmlReader qtiXmlReader = new QtiXmlReader(new JqtiExtensionManager());

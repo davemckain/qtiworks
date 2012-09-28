@@ -36,6 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 import uk.ac.ed.ph.jqtiplus.group.test.BranchRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.ItemSessionControlGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.PreConditionGroup;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
 
@@ -56,21 +58,6 @@ public abstract class AbstractPart extends UniqueControlObject {
         getNodeGroups().add(2, new ItemSessionControlGroup(this));
     }
 
-    /**
-     * Gets parent test part of this part (returns itself if this part is instance of test part).
-     *
-     * @return parent test part of this part (returns itself if this part is instance of test part)
-     */
-    public TestPart getParentTestPart() {
-        ControlObject<?> parent = this;
-
-        while (!(parent instanceof TestPart)) {
-            parent = parent.getParent();
-        }
-
-        return (TestPart) parent;
-    }
-
     public List<PreCondition> getPreConditions() {
         return getNodeGroups().getPreConditionGroup().getPreConditions();
     }
@@ -79,25 +66,22 @@ public abstract class AbstractPart extends UniqueControlObject {
         return getNodeGroups().getBranchRuleGroup().getBranchRules();
     }
 
-    /**
-     * Gets itemSessionControl child.
-     *
-     * @return itemSessionControl child
-     * @see #setItemSessionControlNode
-     * @see #getItemSessionControl
-     */
+
     public ItemSessionControl getItemSessionControlNode() {
         return getNodeGroups().getItemSessionControlGroup().getItemSessionControl();
     }
 
-    /**
-     * Sets new itemSessionControl child.
-     *
-     * @param itemSessionControl new itemSessionControl child
-     * @see #getItemSessionControlNode
-     */
     public void setItemSessionControlNode(final ItemSessionControl itemSessionControl) {
         getNodeGroups().getItemSessionControlGroup().setItemSessionControl(itemSessionControl);
+    }
+
+    /**
+     * Gets parent test part of this part (returns itself if this part is instance of test part).
+     *
+     * @return parent test part of this part (returns itself if this part is instance of test part)
+     */
+    public TestPart getParentTestPart() {
+        return getNearestAncestorOrSelf(TestPart.class);
     }
 
     /**
@@ -108,6 +92,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      *
      * @return itemSessionControl object for this part
      */
+    @ToRefactor
     public abstract ItemSessionControl getItemSessionControl();
 
     /**
@@ -118,6 +103,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      *
      * @return true if it is safe to jump from this object; false otherwise
      */
+    @ToCheck
     public boolean isJumpSafeSource() {
         return true;
     }
@@ -133,6 +119,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      *
      * @return true if this object is safe target of jump; false otherwise
      */
+    @ToCheck
     public boolean isJumpSafeTarget() {
         return true;
     }
