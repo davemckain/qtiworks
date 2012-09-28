@@ -39,6 +39,8 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
+ * Represents the <code>itemSessionControl</code> QTI class
+ *
  * FIXME: The old "XML to string" methods did something tortuous when writing out attributes, so check
  * the logic in here to make sure it's not doing something odd!
  *

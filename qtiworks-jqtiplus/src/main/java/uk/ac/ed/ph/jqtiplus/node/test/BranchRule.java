@@ -38,17 +38,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
- * A branchRule is A simple expression attached to TestPart or assessmentSection or assessmentItemRef.
- * It must evaluate to true if this branchRule should be applied.
- * <p>
- * If the expression evaluates to false, or has A NULL value, this branchRule will not be applied.
- * <p>
- * BranchRules are evaluated after part or section or item is finished (not presented).
- * <p>
- * BranchRule is not real expression (doesn't implement Expression interface).
+ * Represents the <code>branchRule</code> QTI class
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
 public final class BranchRule extends AbstractJump {

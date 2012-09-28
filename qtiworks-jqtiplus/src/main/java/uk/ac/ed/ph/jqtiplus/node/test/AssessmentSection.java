@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
 import java.util.List;
 
 /**
- * Sections group together individual item references and/or sub-sections.
+ * Represents the <code>assessmentSection</code> QTI class
  *
  * @author Jiri Kajaba
  * @author Jonathon Hare

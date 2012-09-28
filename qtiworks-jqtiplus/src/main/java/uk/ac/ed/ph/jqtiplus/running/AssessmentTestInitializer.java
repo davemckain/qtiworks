@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-final class AssessmentTestInitializer {
+public final class AssessmentTestInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentTestInitializer.class);
 
@@ -80,7 +80,7 @@ final class AssessmentTestInitializer {
 
         private final List<RuntimeTreeNode> childNodes;
 
-        public RuntimeTreeNode(SectionPart sectionPart, List<RuntimeTreeNode> childNodes) {
+        public RuntimeTreeNode(final SectionPart sectionPart, final List<RuntimeTreeNode> childNodes) {
             this.sectionPart = sectionPart;
             this.childNodes = childNodes;
         }
@@ -110,7 +110,7 @@ final class AssessmentTestInitializer {
 
     private final Map<SectionPartStateKey, SectionPartState> sectionPartStateMap;
 
-    public AssessmentTestInitializer(AssessmentTest test, AssessmentTestState testState) {
+    public AssessmentTestInitializer(final AssessmentTest test, final AssessmentTestState testState) {
         this.test = test;
         this.testState = testState;
         this.abstractPartStateMap = new HashMap<Identifier, List<AbstractPartState>>();
@@ -136,7 +136,7 @@ final class AssessmentTestInitializer {
         logger.info("Resulting state for test {} is {}", test.getIdentifier(), testState);
     }
 
-    private List<RuntimeTreeNode> doTestPart(TestPart testPart) {
+    private List<RuntimeTreeNode> doTestPart(final TestPart testPart) {
         logger.debug("Initialising testPart {}", testPart.getIdentifier());
 
         /* Process each AssessmentSection */
@@ -155,7 +155,7 @@ final class AssessmentTestInitializer {
         return runtimeChildNodes;
     }
 
-    private RuntimeTreeNode doSectionPart(SectionPart sectionPart) {
+    private RuntimeTreeNode doSectionPart(final SectionPart sectionPart) {
         RuntimeTreeNode result;
         if (sectionPart instanceof AssessmentSection) {
             result = doAssessmentSectionState((AssessmentSection) sectionPart);
@@ -169,7 +169,7 @@ final class AssessmentTestInitializer {
         return result;
     }
 
-    private RuntimeTreeNode doAssessmentSectionState(AssessmentSection section) {
+    private RuntimeTreeNode doAssessmentSectionState(final AssessmentSection section) {
         logger.debug("Initialising instance of assessmentSection {}", section.getIdentifier());
 
         /* We first need to select which children we're going to have */
@@ -222,12 +222,12 @@ final class AssessmentTestInitializer {
         return new RuntimeTreeNode(section, afterFlattening);
     }
 
-    private RuntimeTreeNode doAssessmentItemRef(AssessmentItemRef itemRef) {
+    private RuntimeTreeNode doAssessmentItemRef(final AssessmentItemRef itemRef) {
         logger.debug("Initialising instance of assessmentItemRef {}", itemRef.getIdentifier());
         return new RuntimeTreeNode(itemRef, Collections.<RuntimeTreeNode> emptyList());
     }
 
-    private List<SectionPart> selectSectionParts(AssessmentSection assessmentSection) {
+    private List<SectionPart> selectSectionParts(final AssessmentSection assessmentSection) {
         final List<SectionPart> children = assessmentSection.getSectionParts();
         final int childCount = children.size();
 
@@ -274,7 +274,7 @@ final class AssessmentTestInitializer {
         return result;
     }
 
-    private List<RuntimeTreeNode> orderSectionParts(List<RuntimeTreeNode> childNodes) {
+    private List<RuntimeTreeNode> orderSectionParts(final List<RuntimeTreeNode> childNodes) {
         /* Merge all invisible assessmentSections with keepTogether=false now */
         final List<RuntimeTreeNode> beforeShuffle = new ArrayList<RuntimeTreeNode>();
         for (final RuntimeTreeNode item : childNodes) {
@@ -340,13 +340,13 @@ final class AssessmentTestInitializer {
 
     //------------------------------------------------------
 
-    private TestPartState buildTestPartState(TestPart testPart, List<RuntimeTreeNode> runtimeChildNodes) {
+    private TestPartState buildTestPartState(final TestPart testPart, final List<RuntimeTreeNode> runtimeChildNodes) {
         final TestPartState result = new TestPartState(testState, testPart.getIdentifier(), buildState(runtimeChildNodes));
         registerAbstractPartStateLookup(testPart, result);
         return result;
     }
 
-    private List<SectionPartState> buildState(List<RuntimeTreeNode> treeNodes) {
+    private List<SectionPartState> buildState(final List<RuntimeTreeNode> treeNodes) {
         final List<SectionPartState> result = new ArrayList<SectionPartState>();
         for (int i = 0, size = treeNodes.size(); i < size; i++) {
             final RuntimeTreeNode treeNode = treeNodes.get(i);
@@ -355,7 +355,7 @@ final class AssessmentTestInitializer {
         return result;
     }
 
-    private SectionPartState buildState(RuntimeTreeNode treeNode, int siblingIndex) {
+    private SectionPartState buildState(final RuntimeTreeNode treeNode, final int siblingIndex) {
         final SectionPart sectionPart = treeNode.getSectionPart();
         SectionPartState result;
         if (sectionPart instanceof AssessmentSection) {
@@ -380,7 +380,7 @@ final class AssessmentTestInitializer {
         return result;
     }
 
-    private void registerAbstractPartStateLookup(AbstractPart abstractPart, AbstractPartState abstractPartState) {
+    private void registerAbstractPartStateLookup(final AbstractPart abstractPart, final AbstractPartState abstractPartState) {
         List<AbstractPartState> statesForIdentifier = abstractPartStateMap.get(abstractPart.getIdentifier());
         if (statesForIdentifier == null) {
             statesForIdentifier = new ArrayList<AbstractPartState>();

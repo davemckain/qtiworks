@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
 import java.util.List;
 
 /**
- * Part of assessment test.
+ * Represents the <code>testPart</code> class
  *
  * @author Jiri Kajaba
  * @author Jonathon Hare

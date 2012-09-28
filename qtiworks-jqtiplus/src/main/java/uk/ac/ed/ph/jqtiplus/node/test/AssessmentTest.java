@@ -53,9 +53,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * A test is A group of assessmentItems with an associated set of rules that determine which of the items the candidate sees,
- * in what order, and in what way the candidate interacts with them. The rules describe the valid paths through the test,
- * when responses are submitted for response processing and when (if at all) feedback is to be given.
+ * Represents the <code>assessmentTest</code> QTI class
  *
  * @author Jiri Kajaba
  * @author Jonathon Hare

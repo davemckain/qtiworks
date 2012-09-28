@@ -34,12 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.test;
 
 /**
- * A preCondition is A simple expression attached to testPart or assessmentSection or assessmentItemRef.
- * It must evaluate to true if the part, section or item is to be presented.
- * <p>
- * If the expression evaluates to false or has A NULL value, the associated part, section or item will be skipped.
- * <p>
- * PreCondition is not real expression (doesn't implement Expression interface).
+ * Represents the <code>preCondition</code> QTI class
  *
  * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType

@@ -41,20 +41,18 @@ import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
 
 import java.net.URI;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Items are incorporated into the test by reference and not by direct aggregation.
- * <p>
- * Note that the identifier of the reference need not have any meaning outside the test. In particular it is not required to be unique in the context of any
- * catalogue, or be represented in the item's meta-data. The syntax of this identifier is more restrictive than that of the identifier attribute of the
- * assessmentItem itself.
+ * Represents the <code>assessmentItemRef</code> QTI class
  *
  * @author Jiri Kajaba
  * @author Jonathon Hare
+ * @author David McKain
  */
 public final class AssessmentItemRef extends SectionPart {
 
@@ -70,8 +68,6 @@ public final class AssessmentItemRef extends SectionPart {
     public static final String ATTR_CATEGORIES_NAME = "category";
 
     //    private final LifecycleListener lifecycleEventProxy;
-
-    private final List<AbstractPart> children;
 
     //    private AssessmentItem item;
 
@@ -114,7 +110,6 @@ public final class AssessmentItemRef extends SectionPart {
         getNodeGroups().add(new WeightGroup(this));
         getNodeGroups().add(new TemplateDefaultGroup(this));
 
-        children = new ArrayList<AbstractPart>();
         //        states = new ArrayList<ItemState>();
         //
         //        /* Create a LifecycleListener to attach to Items that will forward Lifecycle events
@@ -154,7 +149,7 @@ public final class AssessmentItemRef extends SectionPart {
 
     @Override
     public List<AbstractPart> getChildren() {
-        return children;
+        return Collections.emptyList();
     }
 
     public URI getHref() {
@@ -359,6 +354,7 @@ public final class AssessmentItemRef extends SectionPart {
 //    }
 
     @Override
+    @ToCheck
     public boolean isBuiltInVariable(final Identifier identifier) {
         if (identifier != null) {
             if (identifier.toString().equals(AssessmentItem.VARIABLE_COMPLETION_STATUS)

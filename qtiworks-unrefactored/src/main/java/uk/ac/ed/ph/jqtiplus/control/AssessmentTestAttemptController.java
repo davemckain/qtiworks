@@ -266,6 +266,8 @@ public final class AssessmentTestAttemptController {
     private void initializeItemRefControllers() {
         itemRefControllerMap.clear();
         final Map<Identifier, List<AbstractPartState>> controlObjectStateMap = testState.getAbstractPartStateMap();
+        
+        /* FIXME: The next search reflects how it used to work and is not appropriate now! */
         for (final AssessmentItemRef itemRef : test.searchItemRefs()) {
             final List<AbstractPartState> statesForItemRef = controlObjectStateMap.get(itemRef.getIdentifier());
             if (statesForItemRef != null) {
@@ -490,6 +492,8 @@ public final class AssessmentTestAttemptController {
 
     public List<AssessmentItemRefAttemptController> findAssessmentItemRefControllers(ControlObject<?> start) {
         final List<AssessmentItemRefAttemptController> result = new ArrayList<AssessmentItemRefAttemptController>();
+        
+        /* FIXME: The next search reflects how it used to work and is not appropriate now! */
         for (final AssessmentItemRef itemRef : start.searchItemRefs()) {
             final List<AbstractPartState> itemRefStates = testState.getAbstractPartStateMap().get(itemRef.getIdentifier());
             for (final AbstractPartState itemRefState : itemRefStates) {

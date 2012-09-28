@@ -94,9 +94,10 @@ public final class Selection extends AbstractNode {
     @Override
     protected void validateThis(final ValidationContext context) {
         final int select = getSelect();
-        if (getParent() != null) {
+        final AssessmentSection section = getParent();
+        if (section != null) {
             int required = 0;
-            for (final SectionPart part : getParent().getSectionParts()) {
+            for (final SectionPart part : section.getSectionParts()) {
                 if (part.getRequired()) {
                     required++;
                 }
@@ -106,8 +107,8 @@ public final class Selection extends AbstractNode {
                 context.fireValidationError(this, "Invalid selection. Required at least: " + required + ", but found: " + select);
             }
 
-            if (!getWithReplacement() && select > getParent().getSectionParts().size()) {
-                context.fireValidationError(this, "Invalid selection. Required no more than: " + getParent().getSectionParts().size()
+            if (!getWithReplacement() && select > section.getSectionParts().size()) {
+                context.fireValidationError(this, "Invalid selection. Required no more than: " + section.getSectionParts().size()
                         + ", but found: "
                         + select);
             }

@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
  * Extension of {@link ControlObject} that mixes in that {@link UniqueNode} interface.
+ *
  * @author David McKain
  */
 public abstract class UniqueControlObject extends ControlObject<Identifier> implements UniqueNode<Identifier> {

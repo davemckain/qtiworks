@@ -38,11 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -57,8 +53,6 @@ import java.util.List;
 public abstract class ControlObject<E> extends AbstractNode implements IdentifiableNode<E> {
 
     private static final long serialVersionUID = 3477216040498945052L;
-
-    protected boolean finished;
 
     public ControlObject(final ControlObject<?> parent, final String qtiClassName) {
         super(parent, qtiClassName);
@@ -172,7 +166,8 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param parent given parameter
      * @return true if given parameter is direct or indirect parent of this object; false otherwise
      */
-    public boolean isChildOf(final ControlObject<?> parent) {
+    @ToCheck
+    public final boolean isChildOf(final ControlObject<?> parent) {
         if (getParent() == null) {
             return false;
         }
@@ -188,7 +183,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public AbstractPart getChildPart(final Identifier identifier) {
+    public final AbstractPart getChildPart(final Identifier identifier) {
         for (final AbstractPart child : getChildren()) {
             if (identifier.equals(child.getIdentifier())) {
                 return child;
@@ -204,7 +199,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public AbstractPart lookupDescendant(final Identifier identifier) {
+    public final AbstractPart lookupDescendant(final Identifier identifier) {
         AbstractPart result;
         for (final AbstractPart child : getChildren()) {
             result = child.lookupDescendantOrSelf(identifier);
@@ -224,8 +219,8 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public AbstractPart lookupDescendantOrSelf(final Identifier identifier) {
-        if (getIdentifier() != null && getIdentifier().equals(identifier)) {
+    public final AbstractPart lookupDescendantOrSelf(final Identifier identifier) {
+        if (identifier.equals(getIdentifier())) {
             return (AbstractPart) this;
         }
         return lookupDescendant(identifier);
@@ -239,7 +234,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      *         to an {@link AssessmentItemRef}
      */
     @ToCheck
-    public AssessmentItemRef lookupItemRef(final Identifier identifier) {
+    public final AssessmentItemRef lookupItemRef(final Identifier identifier) {
         final AbstractPart descendent = lookupDescendant(identifier);
         if (descendent instanceof AssessmentItemRef) {
             return (AssessmentItemRef) descendent;
@@ -247,239 +242,19 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
         return null;
     }
 
-    @ToCheck
-    public List<AssessmentItemRef> searchItemRefs() {
-        final List<AssessmentItemRef> resultBuilder = new ArrayList<AssessmentItemRef>();
-        searchItemRefs(this, resultBuilder);
-        return resultBuilder;
-    }
-
-    @ToCheck
-    public LinkedHashSet<AssessmentItemRef> searchUniqueItemRefs() {
-        final LinkedHashSet<AssessmentItemRef> resultBuilder = new LinkedHashSet<AssessmentItemRef>();
-        searchItemRefs(this, resultBuilder);
-        return resultBuilder;
-    }
-
-    @ToCheck
-    private static void searchItemRefs(final ControlObject<?> start, final Collection<AssessmentItemRef> resultBuilder) {
-        if (start instanceof AssessmentItemRef) {
-            resultBuilder.add((AssessmentItemRef) start);
-        }
-        else {
-            for (final AbstractPart child : start.getChildren()) {
-                searchItemRefs(child, resultBuilder);
-            }
-        }
-    }
-
-// NB: The 2 methods below are probably obsolete. They also don't handle the fact that
-// identifiers in tests are Strings, whereas elsewhere they're Identifiers.
-//    /**
-//     * Returns all item references of given parent (identifier).
-//     * <ul>
-//     * <li>If you pass identifier of test or null, you will get all item references in test.</li>
-//     * <li>If you pass identifier of section, you will get all item references in this section.</li>
-//     * <li>If you pass identifier of item reference, you will get this item reference.</li>
-//     * <li>If you pass unknown identifier, you will get empty list.</li>
-//     * </ul>
-//     *
-//     * @param identifier identifier of requested parent
-//     * @return all item references of given parent (identifier)
-//     * @see #lookupItemRefs(String, List, List)
-//     */
-//    @Deprecated
-//    @ToRefactor
-//    /* NB: Maybe this needs to account for selection/ordering? */
-//    public List<AssessmentItemRef> lookupItemRefs(String identifier) {
-//        return lookupItemRefs(identifier, null, null);
-//    }
-//
-//    /**
-//     * Returns all item references of given parent (identifier) with given conditions.
-//     *
-//     * @param identifier identifier of requested parent
-//     * @param includeCategories returned item reference must contain this category
-//     * @param excludeCategories returned item reference must not contain this category
-//     * @return all item references of given parent (identifier) with given conditions
-//     * @see #lookupItemRefs(String)
-//     */
-//    @Deprecated
-//    @ToRefactor
-//    /* NB: Maybe this needs to account for selection/ordering? */
-//    public List<AssessmentItemRef> lookupItemRefs(String identifier, List<String> includeCategories, List<String> excludeCategories) {
-//        if (getIdentifier() != null && getIdentifier().equals(identifier)) {
-//            identifier = null;
-//        }
-//
-//        final List<AssessmentItemRef> itemRefs = new ArrayList<AssessmentItemRef>();
-//
-//        for (final AbstractPart child : getChildren()) {
-//            itemRefs.addAll(child.lookupItemRefs(identifier, includeCategories, excludeCategories));
-//        }
-//
-//        return itemRefs;
-//    }
-
     /**
      * Returns true if given identifier is identifier of one of built-in variables; false otherwise.
      *
      * @param identifier given identifier
      * @return true if given identifier is identifier of one of built-in variables; false otherwise
      */
-    @ToRefactor
+    @ToCheck
     public boolean isBuiltInVariable(final Identifier identifier) {
         if (identifier != null && identifier.equals(AssessmentTest.VARIABLE_DURATION_IDENTIFIER)) {
             return true;
         }
         return false;
     }
-
-    //    /**
-    //     * Lookups for value of variable with given identifier.
-    //     *
-    //     * @param identifier identifier of requested variable
-    //     * @return value of variable with given identifier or null
-    //     */
-    //    public Value lookupValue(String identifier)
-    //    {
-    //        if (identifier != null && identifier.equals(VARIABLE_DURATION_NAME))
-    //            return new FloatValue(getDuration() / 1000.0);
-    //
-    //        return null;
-    //    }
-    //
-    //    /**
-    //     * Gets total number of item references of this control object.
-    //     *
-    //     * @return total number of item references of this control object
-    //     */
-    //    public int getTotalCount()
-    //    {
-    //        int result = 0;
-    //        for (ControlObject<?> child : getChildren())
-    //            result += child.getTotalCount();
-    //
-    //        return result;
-    //    }
-    //
-    //    /**
-    //     * Gets total number of presented item references of this control object.
-    //     *
-    //     * @return total number of presented item references of this control object
-    //     */
-    //    public int getPresentedCount()
-    //    {
-    //        int result = 0;
-    //        for (ControlObject<?> child : getChildren())
-    //            result += child.getPresentedCount();
-    //
-    //        return result;
-    //    }
-    //
-    //    /**
-    //     * Gets total number of finished item references of this control object.
-    //     *
-    //     * @return total number of finished item references of this control object
-    //     */
-    //    public int getFinishedCount()
-    //    {
-    //        int result = 0;
-    //        for (ControlObject<?> child : getChildren())
-    //            result += child.getFinishedCount();
-    //
-    //        return result;
-    //    }
-    //
-    //    /**
-    //     * Gets total time spent <em>inside</em> this object including navigation time.
-    //     *
-    //     * @return total time spent <em>inside</em> this object including navigation time
-    //     * @see #getResponseTime
-    //     */
-    //    public long getTotalTime()
-    //    {
-    //        long total = 0;
-    //        for (ControlObject<?> child : getChildren())
-    //            total += child.getTotalTime();
-    //
-    //        return total;
-    //    }
-    //
-    //    /**
-    //     * Gets total time spent <em>inside</em> this object excluding navigation time.
-    //     * <p>
-    //     * This methods returns pure response (thinking) time (navigation time is not included).
-    //     *
-    //     * @return total time spent <em>inside</em> this object excluding navigation time
-    //     * @see #getTotalTime
-    //     */
-    //    public long getResponseTime()
-    //    {
-    //        long response = 0;
-    //        for (ControlObject<?> child : getChildren())
-    //            response += child.getResponseTime();
-    //
-    //        return response;
-    //    }
-    //
-    //    /**
-    //     * Gets value of duration built-in variable.
-    //     * <p>
-    //     * Duration for test or test part or section means total time (thinking time including navigation time).
-    //     * <p>
-    //     * Duration for item reference means response time (thinking time excluding navigation time).
-    //     *
-    //     * @return value of duration built-in variable
-    //     */
-    //    public long getDuration()
-    //    {
-    //        return getTotalTime();
-    //    }
-    //
-    //    /**
-    //     * Returns true if time used by this control object is higher or equal than minimum time limit; false otherwise.
-    //     * <p>
-    //     * Time used by this control object is calculated as:
-    //     * <ul>
-    //     * <li>If this control object is {@code AssessmentItemRef} method {@code getDuration} is used.</li>
-    //     * <li>If this control object if not {@code AssessmentItemRef} method {@code getTotalTime} is used.</li>
-    //     * </ul>
-    //     * <p>
-    //     * This method is not implemented and returns always true.
-    //     *
-    //     * @return true if time used by this control object is higher or equal than minimum time limit; false otherwise
-    //     */
-    //    public boolean passMinimumTimeLimit()
-    //    {
-    //        return true;
-    //    }
-    //
-    //    /**
-    //     * Returns true if time used by this control object is lower or equal than maximum time limit; false otherwise.
-    //     * This method checks first this control object and then recursively all its parents
-    //     * and returns true only if every tested object passed check.
-    //     * <p>
-    //     * Time used by this control object is calculated as:
-    //     * <ul>
-    //     * <li>If this control object is {@code AssessmentItemRef} method {@code getDuration} is used.</li>
-    //     * <li>If this control object if not {@code AssessmentItemRef} method {@code getTotalTime} is used.</li>
-    //     * </ul>
-    //     * <p>
-    //     * This method is used for check if item can be shown to the user.
-    //     *
-    //     * @return true if time used by this control object is lower or equal than maximum time limit; false otherwise
-    //     */
-    //    public boolean passMaximumTimeLimit()
-    //    {
-    //        if (getTimeLimit() != null && getTimeLimit().getMaximumMillis() != null)
-    //        {
-    //            if (getDuration() >= getTimeLimit().getMaximumMillis())
-    //                return false;
-    //        }
-    //
-    //        return (getParent() != null) ? getParent().passMaximumTimeLimit() : true;
-    //    }
 
     @Override
     public final String computeXPathComponent() {
