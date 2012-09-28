@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<assessmentTest identifier="TEST" title="Web Developer Website"
+    xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd">
+    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE"/>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="outcomeIdentifier"/>
+
+    <testPart identifier="part1" navigationMode="linear" submissionMode="individual">
+        <itemSessionControl maxAttempts="1" showFeedback="true" showSolution="false"/>
+
+        <assessmentSection identifier="sectionquestion1" title="Electronics and Computer Science" visible="true">
+            <assessmentItemRef href="question1.xml" identifier="question1"/>
+            <assessmentItemRef href="question2.xml" identifier="question2"/>
+            <assessmentItemRef href="question3.xml" identifier="question3"/>
+            <assessmentItemRef href="question4.xml" identifier="question4"/>
+            <assessmentItemRef href="question5.xml" identifier="question5"/>
+            <assessmentItemRef href="question6.xml" identifier="question6"/>
+            <assessmentItemRef href="question7.xml" identifier="question7"/>
+            <assessmentItemRef href="question8.xml" identifier="question8"/>
+            <assessmentItemRef href="question9.xml" identifier="question9"/>
+        </assessmentSection>
+    </testPart>
+
+    <outcomeProcessing>
+        <setOutcomeValue identifier="SCORE">
+            <sum>
+                <variable identifier="question1.SCORE"/>
+                <variable identifier="question2.SCORE"/>
+                <variable identifier="question3.SCORE"/>
+                <variable identifier="question4.SCORE"/>
+                <variable identifier="question5.SCORE"/>
+                <variable identifier="question6.SCORE"/>
+                <variable identifier="question7.SCORE"/>
+                <variable identifier="question8.SCORE"/>
+                <variable identifier="question9.SCORE"/>
+            </sum>
+        </setOutcomeValue>
+    </outcomeProcessing>
+
+    <testFeedback access="atEnd" identifier="outcomeValue"
+        outcomeIdentifier="outcomeIdentifier" showHide="hide" title="Test Feedback">
+        <p>The assessment is now complete. You scored <printedVariable identifier="SCORE"/> out of 12</p>
+        <p>If you scored lower than 10 out of 12, it is suggested that you go back over the content of the 'Getting Started' section to
+        refresh your knowledge of this area. You can access this section by following this link:
+        <a href="http://users.ecs.soton.ac.uk/cw1006/webDeveloper/getStarted/">Get Started</a></p>
+        <p>If you scored 10 or above out of 12, you should have a sufficient level of knowledge to continue onto the next section of the
+        website, which can be accessed by following this link:
+        <a href="http://users.ecs.soton.ac.uk/cw1006/webDeveloper/goodPractice/">Good Practice</a></p>
+
+    </testFeedback>
+</assessmentTest>

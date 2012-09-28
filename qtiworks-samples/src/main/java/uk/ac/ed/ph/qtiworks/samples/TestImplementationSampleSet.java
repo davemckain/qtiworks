@@ -33,21 +33,23 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+
 /**
- * Sample set containing Graham Smith's language examples
- * 
+ * Sample assessmentTests used to test the implementation of tests.
+ *
  * @author David McKain
  */
-public final class LanguageSampleSet {
+public final class TestImplementationSampleSet {
     
-    private static final QtiSampleSet instance = new QtiSampleSet("Language examples",
-            "These examples demonstrate some uses of QTI in the areas of language. We hope to add some further examples soon!",
-            new QtiSampleAssessment(DeliveryStyle.LANGUAGE_STANDARD, "language/habenprompt.xml"),
-            new QtiSampleAssessment(DeliveryStyle.LANGUAGE_STANDARD, "language/pburg1g.xml"),
-            new QtiSampleAssessment(DeliveryStyle.LANGUAGE_STANDARD, "language/qcyril2gV2.xml")
+    private static final QtiSampleSet instance = new QtiSampleSet("Test Implementation Test Samples",
+            "Set of sample assessmentTests used to test our implementation",
+            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_TEST, null, "testimplementation/WebDeveloperTest1/template_test1.xml",
+                    new String[] { "question1.xml", "question2.xml", "question3.xml", "question4.xml", "question5.xml", "question6.xml", "question7.xml", "question8.xml", "question9.xml" },
+                    new String[] { "directory.jpg" })
     );
     
-    private LanguageSampleSet() {
+    private TestImplementationSampleSet() {
         /* No constructor */
     }
     

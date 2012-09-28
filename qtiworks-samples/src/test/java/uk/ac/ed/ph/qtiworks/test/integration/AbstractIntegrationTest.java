@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
@@ -111,8 +111,18 @@ public abstract class AbstractIntegrationTest {
         return new AssessmentObjectManager(objectReader);
     }
     
-    protected ItemValidationResult validateSampleItem() {
-        return createAssessmentObjectManager().resolveAndValidateItem(sampleResourceUri);
+    protected AssessmentObjectValidationResult<?> validateSampleObject() {
+        AssessmentObjectValidationResult<?> result = null;
+        switch (qtiSampleAssessment.getType()) {
+            case ASSESSMENT_ITEM:
+                result = createAssessmentObjectManager().resolveAndValidateItem(sampleResourceUri);
+                break;
+                
+            case ASSESSMENT_TEST:
+                result = createAssessmentObjectManager().resolveAndValidateTest(sampleResourceUri);
+                break;
+        }
+        return result;
     }
     
     protected ItemSessionController createItemSessionController() {

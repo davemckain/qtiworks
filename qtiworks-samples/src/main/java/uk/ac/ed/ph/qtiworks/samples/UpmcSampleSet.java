@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-
 /**
  * Sample set containing examples of the MathAssess extensions
  *
@@ -44,27 +42,27 @@ public final class UpmcSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("UPMC examples",
             "Mathematics examples from Université Pierre et Marie Curie (Paris)",
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/addition.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/addition2entier.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/carre2.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/carre2g.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise1.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise2.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise3.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise4.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise5.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/relatif3.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice1.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice13.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice14.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice2.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice6.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice7.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercice7.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercice8.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercise1.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercise2.xml"),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercise3.xml")
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/addition.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/addition2entier.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/carre2.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/carre2g.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise1.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise2.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise3.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise4.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/exercise5.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/relatif3.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice1.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice13.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice14.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice2.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice6.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/sexercice7.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercice7.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercice8.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercise1.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercise2.xml"),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "upmc/wexercise3.xml")
     );
     
     private UpmcSampleSet() {

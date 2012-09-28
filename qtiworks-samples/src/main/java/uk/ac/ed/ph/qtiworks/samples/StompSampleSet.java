@@ -35,8 +35,6 @@ package uk.ac.ed.ph.qtiworks.samples;
 
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-
 /**
  * Sample set containing examples of the MathAssess extensions
  *
@@ -46,26 +44,26 @@ public final class StompSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("SToMP examples",
             "stomp/Examples from Dick Bacon's SToMP system",
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/a_mcq_dkG2.xml", new String[] { "stomp/ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/adap3_3pSM.xml", new String[] { "stomp/ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/baseG.xml", new String[] { "stomp/ststyle.css" }, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/binary_2GS.xml", new String[] { "stomp/ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_inlineGS.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_mcqS.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_mulS.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_pairingGS.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/digholeG.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/graphic_associate.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/graphic_gap_matchGS.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/graphic_orderG.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/hot_accel_2G.xml", new String[] { "stomp/ststyle.css" }, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/hotspotsS.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/hottext.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/meanGS.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/nel1_1pg.xml", new String[] { "stomp/ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/precisionGS.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/slider2.xml", new String[] { "stomp/ststyle.css" }),
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_ITEM, DeliveryStyle.MATHASSESS_STANDARD, "stomp/xchoiceS.xml", new String[] { "stomp/ststyle.css" })
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/a_mcq_dkG2.xml", new String[] { "ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/adap3_3pSM.xml", new String[] { "ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/baseG.xml", new String[] { "ststyle.css" }, Feature.NOT_FULLY_VALID),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/binary_2GS.xml", new String[] { "ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_inlineGS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_mcqS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_mulS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/chc_pairingGS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/digholeG.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/graphic_associate.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/graphic_gap_matchGS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/graphic_orderG.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/hot_accel_2G.xml", new String[] { "ststyle.css" }, Feature.NOT_FULLY_VALID),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/hotspotsS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/hottext.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/meanGS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/nel1_1pg.xml", new String[] { "ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/precisionGS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/slider2.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/xchoiceS.xml", new String[] { "ststyle.css" })
     );
     
     private StompSampleSet() {

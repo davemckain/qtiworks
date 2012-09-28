@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+    identifier="choice" title="Getting Started" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+        <correctResponse>
+            <value>ChoiceD</value>
+        </correctResponse>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="integer">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <itemBody>
+    <p><b>Question 4</b></p>
+    <p>Look at the website directory below:</p>
+    <p><img src = "directory.jpg" alt = "File Directory"/></p>
+        <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+            <prompt>How would you display myimage.jpg in your webpage if it was stored in the 'images' subdirectory?<br /><br /></prompt>
+            <simpleChoice identifier="ChoiceA">&lt;img src = "myimage.jpg" /&gt;</simpleChoice>
+            <simpleChoice identifier="ChoiceB">&lt;img src = "images" /&gt;</simpleChoice>
+            <simpleChoice identifier="ChoiceC">&lt;img src = "myimage.jpg/images" /&gt;</simpleChoice>
+            <simpleChoice identifier="ChoiceD">&lt;img src = "images/myimage.jpg" /&gt;</simpleChoice>
+        </choiceInteraction>
+    </itemBody>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+</assessmentItem>

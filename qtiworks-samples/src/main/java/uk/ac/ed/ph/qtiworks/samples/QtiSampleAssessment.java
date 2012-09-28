@@ -46,7 +46,7 @@ import java.util.Set;
  *
  * @author David McKain
  */
-public class QtiSampleAssessment implements Serializable {
+public final class QtiSampleAssessment implements Serializable {
     
     private static final long serialVersionUID = -1829298855881792575L;
     
@@ -59,28 +59,42 @@ public class QtiSampleAssessment implements Serializable {
     private final AssessmentObjectType type;
     private final DeliveryStyle deliveryStyle;
     private final String assessmentHref;
+    private final Set<String> otherQtiHrefs;
     private final Set<Feature> features;
     private final Set<String> fileHrefs;
     
-    public QtiSampleAssessment(AssessmentObjectType type, String assessmentHref, Feature... features) {
-        this(type, null, assessmentHref, new String[0], features);
+    /** Use this constructor for sample *items* only */
+    public QtiSampleAssessment(DeliveryStyle deliveryStyle, String itemHref, Feature... features) {
+        this(deliveryStyle, itemHref, new String[0], features);
     }
     
-    public QtiSampleAssessment(AssessmentObjectType type, DeliveryStyle deliveryStyle, String assessmentHref, Feature... features) {
-        this(type, deliveryStyle, assessmentHref, new String[0], features);
-    }
-        
-    public QtiSampleAssessment(AssessmentObjectType type, String assessmentHref, String[] fileHrefs, Feature... features) {
-        this(type, null, assessmentHref, fileHrefs, features);
+    /** Use this constructor for sample *items* only */
+    public QtiSampleAssessment(DeliveryStyle deliveryStyle, String itemHref,
+            String[] fileRelativeHrefs, Feature... features) {
+        this(AssessmentObjectType.ASSESSMENT_ITEM, deliveryStyle, itemHref, new String[0], fileRelativeHrefs, features);
     }
     
+    /** Use this constructor for both items or tests */
     public QtiSampleAssessment(AssessmentObjectType type, DeliveryStyle deliveryStyle,
-            String assessmentHref, String[] fileHrefs, Feature... features) {
+            String assessmentHref, String[] otherQtiRelativeHrefs, String[] fileRelativeHrefs, Feature... features) {
         this.type = type;
         this.deliveryStyle = deliveryStyle;
         this.assessmentHref = assessmentHref;
-        this.fileHrefs = new HashSet<String>(Arrays.asList(fileHrefs));
+        this.otherQtiHrefs = resolveHrefs(assessmentHref, otherQtiRelativeHrefs);
+        this.fileHrefs = resolveHrefs(assessmentHref, fileRelativeHrefs);
         this.features = new HashSet<Feature>(Arrays.asList(features));
+    }
+    
+    private static Set<String> resolveHrefs(final String baseHref, String... relativeHrefs) {
+        Set<String> result = new HashSet<String>();
+        for (String relativeHref : relativeHrefs) {
+            result.add(resolveHref(baseHref, relativeHref));
+        }
+        return result;
+    }
+    
+    private static String resolveHref(String baseHref, String relativeHref) {
+        return URI.create(baseHref).resolve(relativeHref).toString();
     }
     
     public AssessmentObjectType getType() {
@@ -93,6 +107,10 @@ public class QtiSampleAssessment implements Serializable {
     
     public String getAssessmentHref() {
         return assessmentHref;
+    }
+    
+    public Set<String> getOtherQtiHrefs() {
+        return otherQtiHrefs;
     }
     
     public Set<String> getFileHrefs() {
@@ -129,7 +147,9 @@ public class QtiSampleAssessment implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(type=" + type
-                + ",assessmentPath=" + assessmentHref
+                + ",deliveryStyle=" + deliveryStyle
+                + ",assessmentHref=" + assessmentHref
+                + ",otherQtiHrefs=" + otherQtiHrefs
                 + ",fileHrefs=" + fileHrefs
                 + ",features=" + features
                 + ")";

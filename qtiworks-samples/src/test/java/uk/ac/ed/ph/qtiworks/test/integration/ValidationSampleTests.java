@@ -41,12 +41,13 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
+import uk.ac.ed.ph.qtiworks.samples.TestImplementationSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.Collection;
 
@@ -71,7 +72,8 @@ public class ValidationSampleTests extends AbstractIntegrationTest {
                 MathAssessSampleSet.instance(),
                 UpmcSampleSet.instance(),
                 StompSampleSet.instance(),
-                LanguageSampleSet.instance()
+                LanguageSampleSet.instance(),
+                TestImplementationSampleSet.instance()
         );
     }
     
@@ -81,7 +83,7 @@ public class ValidationSampleTests extends AbstractIntegrationTest {
     
     @Test
     public void test() throws Exception {
-        ItemValidationResult validationResult = validateSampleItem();
+        AssessmentObjectValidationResult<?> validationResult = validateSampleObject();
         
         boolean expectedValid = !qtiSampleAssessment.hasFeature(Feature.NOT_FULLY_VALID);
         if (expectedValid != validationResult.isValid()) {
