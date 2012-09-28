@@ -15,7 +15,7 @@ All Rights Reserved
 
 <%-- Show overall result --%>
 <c:set var="resolvedAssessmentItem" value="${validationResult.resolvedAssessmentItem}"/>
-<c:set var="itemLookup" value="${resolvedAssessmentItem.rootObjectLookup}"/>
+<c:set var="itemLookup" value="${resolvedAssessmentItem.rootNodeLookup}"/>
 <c:set var="itemSystemId" value="${itemLookup.systemId}"/>
 <div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}">
   <h4>
@@ -48,22 +48,22 @@ All Rights Reserved
       </c:choose>
     </p>
     <c:if test="${test}">
-      <validator:xmlFindResult rootObjectLookup="${itemLookup}"/>
+      <validator:xmlFindResult rootNodeLookup="${itemLookup}"/>
     </c:if>
-    <validator:xmlParseResults rootObjectLookup="${itemLookup}"/>
-    <validator:xmlSchemaValidationResults rootObjectLookup="${itemLookup}"/>
+    <validator:xmlParseResults rootNodeLookup="${itemLookup}"/>
+    <validator:xmlSchemaValidationResults rootNodeLookup="${itemLookup}"/>
     <c:set var="resolvedResponseProcessingTemplateLookup" value="${resolvedAssessmentItem.resolvedResponseProcessingTemplateLookup}"/>
     <c:if test="${resolvedResponseProcessingTemplateLookup!=null}">
       <c:set var="templateLookup" value="${resolvedAssessmentItem.resolvedResponseProcessingTemplateLookup}"/>
       <c:choose>
-        <c:when test="${templateLookup.rootObjectHolder!=null}">
+        <c:when test="${templateLookup.rootNodeHolder!=null}">
           <div class="resultPanel success">
             <h4>The referenced response processing template was successfully resolved</h4>
             <div class="details">
               <%-- (These are in context of RP) --%>
-              <validator:xmlFindResult rootObjectLookup="${templateLookup}"/>
-              <validator:xmlParseResults rootObjectLookup="${templateLookup}"/>
-              <validator:xmlSchemaValidationResults rootObjectLookup="${templateLookup}"/>
+              <validator:xmlFindResult rootNodeLookup="${templateLookup}"/>
+              <validator:xmlParseResults rootNodeLookup="${templateLookup}"/>
+              <validator:xmlSchemaValidationResults rootNodeLookup="${templateLookup}"/>
             </div>
           </div>
         </c:when>
@@ -76,15 +76,15 @@ All Rights Reserved
                 <b>${utils:extractContentPackagePath(resolvedResponseProcessingTemplateLookup.systemId)}</b>.
               </p>
               <%-- (These are in context of RP) --%>
-              <validator:xmlFindResult rootObjectLookup="${templateLookup}"/>
-              <validator:xmlParseResults rootObjectLookup="${templateLookup}"/>
-              <validator:xmlSchemaValidationResults rootObjectLookup="${templateLookup}"/>
+              <validator:xmlFindResult rootNodeLookup="${templateLookup}"/>
+              <validator:xmlParseResults rootNodeLookup="${templateLookup}"/>
+              <validator:xmlSchemaValidationResults rootNodeLookup="${templateLookup}"/>
             </div>
           </div>
         </c:otherwise>
       </c:choose>
     </c:if>
-    <validator:modelBuildResults rootObjectLookup="${itemLookup}"/>
+    <validator:modelBuildResults rootNodeLookup="${itemLookup}"/>
     <validator:modelValidationResults validationResult="${validationResult}"/>
   </div>
 </div>

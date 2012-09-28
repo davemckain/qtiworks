@@ -22,10 +22,10 @@ All Rights Reserved
       ${validationResult.valid ? 'passed' : 'did not pass'}
       all of our validation checks. Further details are provided below:
     </p>
-    <c:set var="rootObjectLookup" value="${resolvedAssessmentTest.rootObjectLookup}"/>
-    <validator:xmlParseResults rootObjectLookup="${rootObjectLookup}"/>
-    <validator:xmlSchemaValidationResults rootObjectLookup="${rootObjectLookup}"/>
-    <validator:modelBuildResults rootObjectLookup="${rootObjectLookup}"/>
+    <c:set var="rootNodeLookup" value="${resolvedAssessmentTest.rootNodeLookup}"/>
+    <validator:xmlParseResults rootNodeLookup="${rootNodeLookup}"/>
+    <validator:xmlSchemaValidationResults rootNodeLookup="${rootNodeLookup}"/>
+    <validator:modelBuildResults rootNodeLookup="${rootNodeLookup}"/>
     <validator:modelValidationResults validationResult="${validationResult}"/>
 
     <%-- Show item results --%>
