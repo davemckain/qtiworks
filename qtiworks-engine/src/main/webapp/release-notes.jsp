@@ -12,8 +12,49 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Production/Stable)</h2>
 
-  <h3>1.0-M1 (27/09/2012)</h3>
+  <h3>1.0-DEV14 [Development] (28/09/2012)</h3>
+  <p>
+    This is the first development snapshot following the split into two instances.
+    This snapshot does not contain any visible new features but includes a lot of changes
+    and code refactoring to consolidate the work of the last few iterations and
+    help prepare for the work on tests. Key changes are:
+  </p>
+  <ul>
+    <li>
+      This snapshot now includes the final (final?!) schema.
+    </li>
+    <li>
+      The validation API has been signficantly refactored, merging with a newer more general
+      "notification" API. This notification API can be used to report informational messages,
+      warnings and errors at "runtime" (e.g. template, response or outcome processing),
+      and will replace the currently inconsistent behaviour or either dying horribly or silently
+      recovering.
+    </li>
+    <li>
+      The processing of the MathAssess extensions has been updated to use the new notification API
+      and make more sensible decision about which variables should (or not) be set during processing.
+      (The MathAssess spec could do with being updated now...)
+    </li>
+    <li>
+      The handling of <code>integerOrVariableRef</code> and friends in the many corner cases not discussed by
+      the QTI spec has been refined (using the new notification API) and documented (in the wiki).
+    </li>
+    <li>
+      The <code>Value</code> hierarchy for container values has been refactored and simplified. These values
+      are now immutable, and factory constructors now return explicit the <code>NullValue</code> in place of
+      empty containers, which should make life easier for using the JQTI+ API.
+    </li>
+    <li>
+      Added a <code>Signature</code> concept, which combines <code>BaseType</code> and <code>Cardinality</code>
+      and makes code using this easier to read. Methods have been added to the
+      validation API to use this, which should be used in all new code in favour of the old cumbersome checks.
+    </li>
+  </ul>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
 
+  <h3>1.0-M1 [Production] (27/09/2012)</h3>
   <p>
     This "Milestone 1" snapshot is the first of a set of stable, less frequent snapshots
     so that people using QTIWorks for "real" stuff don't have to worry too much about things
@@ -22,12 +63,14 @@ All Rights Reserved
   </p>
   <p>
     The next milestone snapshot will be released once we have some of the test functionality implemented.
+    You can always see the latest production snapshot at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>.
     For bleeding edge snapshots, please see the new DEV instance of QTIWorks at
     <a href="https://www2.ph.ed.ac.uk/qtiworks-dev/">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
+  <p>
+  </p>
 
   <h3>1.0-DEV13 (04/09/2012)</h3>
-
   <p>
     This snapshot finally adds in support for the <code>integerOrVariableRef</code>,
     <code>floatOrVariableRef</code> and <code>stringOrVariableRef</code> types.
