@@ -77,11 +77,11 @@ public class BootstrapServices {
         return user;
     }
 
-    public InstructorUser createProjectTeamUser(final String loginName, final String firstName,
-            final String lastName, final String emailAddress) {
+    public InstructorUser createInstructorUser(final String loginName, final String firstName,
+            final String lastName, final String emailAddress, final boolean sysAdmin, final String password) {
         final InstructorUser user = createUserIfRequired(loginName, firstName, lastName,
-                emailAddress, qtiWorksSettings.getBootstrapUserPassword(), true, false);
-        logger.info("Created project team user {}", user);
+                emailAddress, password, sysAdmin, false);
+        logger.info("Created instructor user {}", user);
         return user;
     }
 

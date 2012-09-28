@@ -72,13 +72,6 @@ public final class SchemaSetup {
         final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
         sampleResourceImporter.importQtiSamples();
 
-        logger.info("Creating accounts for project team");
-        bootstrapServices.createProjectTeamUser("dmckain", "David", "McKain", "david.mckain@ed.ac.uk");
-        bootstrapServices.createProjectTeamUser("suem", "Sue", "Milne", "sue@elandweb.co.uk");
-        bootstrapServices.createProjectTeamUser("niallb", "Niall", "Barr", "niall.barr@glasgow.ac.uk");
-        bootstrapServices.createProjectTeamUser("Loccy", "Paul", "Neve", "p.neve@kingston.ac.uk");
-        bootstrapServices.createProjectTeamUser("ghs235", "Graham", "Smith", "G.H.Smith@leeds.ac.uk");
-
         ctx.close();
     }
 }

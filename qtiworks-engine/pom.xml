@@ -228,6 +228,43 @@ All Rights Reserved
         </plugins>
       </build>
     </profile>
+    <!--
+
+    To import users: "mvn -DUserImporter exec:exec"
+
+    This will look for a file called user-import.csv in the current directory.
+    This should be a CSV of the form:
+
+    loginName,firstName,lastName,emailAddress,sysAdmin?(t|f),password
+
+    Blank lines and lines starting with '#' will be ignored.
+
+    -->
+    <profile>
+      <id>UserImporter</id>
+      <activation>
+        <property>
+          <name>UserImporter</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>uk.ac.ed.ph.qtiworks.tools.UserImporter</argument>
+                <argument>user-import.csv</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- To run JPA custom code: "mvn -DAdhocRunner exec:exec" -->
     <profile>
       <id>AdhocRunner</id>
