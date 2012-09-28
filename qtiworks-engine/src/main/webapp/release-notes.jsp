@@ -10,7 +10,7 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes (Production/Stable)</h2>
+  <h2>QTIWorks Release Notes (Development)</h2>
 
   <h3>1.0-DEV14 [Development] (28/09/2012)</h3>
   <p>
