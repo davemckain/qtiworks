@@ -36,27 +36,17 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 
 /**
- * Represents the <code>itemSessionControl</code> QTI class
+ * Represents the <code>itemSessionControl</code> QTI class.
+ * <p>
+ * This is significantly different from the implementation of this class
+ * in the orignal JQTI.
  *
- * FIXME: The old "XML to string" methods did something tortuous when writing out attributes, so check
- * the logic in here to make sure it's not doing something odd!
- *
- * FIXME: The logic in this class does too much with merging defaults together. It needs a lot of refactoring
- * before it can be used properly.
- *
- * When items are referenced as part of A test, the test may impose constraints on how many attempts
- * and which states are allowed. These constraints can be specified for individual items, for whole
- * sections, or for an entire testPart. By default, A setting at testPart level affects all items in
- * that part unless the setting is overridden at the assessmentSection level or ultimately at the
- * individual assessmentItemRef. The defaults given below are used only in the absence of any
- * applicable constraint.
- *
- * @author Jiri Kajaba
+ * @author Jiri Kajaba (original)
+ * @author David McKain (refactored)
  */
-@ToRefactor
 public final class ItemSessionControl extends AbstractNode {
 
     private static final long serialVersionUID = 4320465731424106788L;
@@ -74,42 +64,36 @@ public final class ItemSessionControl extends AbstractNode {
     public static final String ATTR_SHOW_FEEDBACK_NAME = "showFeedback";
 
     /** Default value of getShowFeedback method. */
-    @ToRefactor
     public static final boolean SHOW_FEEDBACK_DEFAULT_VALUE = false;
 
     /** Name of allowReview attribute in xml schema. */
     public static final String ATTR_ALLOW_REVIEW_NAME = "allowReview";
 
     /** Default value of getAllowReview method. */
-    @ToRefactor
     public static final boolean ALLOW_REVIEW_DEFAULT_VALUE = true;
 
     /** Name of showSolution attribute in xml schema. */
     public static final String ATTR_SHOW_SOLUTION_NAME = "showSolution";
 
     /** Default value of getShowSolution method. */
-    @ToRefactor
     public static final boolean SHOW_SOLUTION_DEFAULT_VALUE = false;
 
     /** Name of allowComment attribute in xml schema. */
     public static final String ATTR_ALLOW_COMMENT_NAME = "allowComment";
 
     /** Default value of getAllowComment method. */
-    @ToRefactor
     public static final boolean ALLOW_COMMENT_DEFAULT_VALUE = false;
 
     /** Name of allowSkipping attribute in xml schema. */
     public static final String ATTR_ALLOW_SKIPPING_NAME = "allowSkipping";
 
     /** Default value of getAllowSkipping method. */
-    @ToRefactor
     public static final boolean ALLOW_SKIPPING_DEFAULT_VALUE = true;
 
     /** Name of validateResponses attribute in xml schema. */
     public static final String ATTR_VALIDATE_RESPONSES_NAME = "validateResponses";
 
     /** Default value of getValidateResponses method. */
-    @ToRefactor
     public static final boolean VALIDATE_RESPONSES_DEFAULT_VALUE = false;
 
     public ItemSessionControl(final AbstractPart parent) {
@@ -129,566 +113,190 @@ public final class ItemSessionControl extends AbstractNode {
         return (AbstractPart) super.getParent();
     }
 
-    /**
-     * Gets value of maxAttempts attribute.
-     *
-     * @return value of maxAttempts attribute
-     * @see #setMaxAttemptsAttrValue
-     */
-    public Integer getMaxAttemptsAttrValue() {
+    public Integer getMaxAttempts() {
         return getAttributes().getIntegerAttribute(ATTR_MAX_ATTEMPTS_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of maxAttempts attribute.
-     *
-     * @param maxAttempts new value of maxAttempts attribute
-     * @see #getMaxAttemptsAttrValue
-     */
-    public void setMaxAttemptsAttrValue(final Integer maxAttempts) {
+    public void setMaxAttempts(final Integer maxAttempts) {
         getAttributes().getIntegerAttribute(ATTR_MAX_ATTEMPTS_NAME).setValue(maxAttempts);
     }
 
-    /**
-     * Gets value of showFeedback attribute.
-     *
-     * @return value of showFeedback attribute
-     * @see #setShowFeedbackAttrValue
-     */
-    public Boolean getShowFeedbackAttrValue() {
+
+    public Boolean getShowFeedback() {
         return getAttributes().getBooleanAttribute(ATTR_SHOW_FEEDBACK_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of showFeedback attribute.
-     *
-     * @param showFeedback new value of showFeedback attribute
-     * @see #getShowFeedbackAttrValue
-     */
-    public void setShowFeedbackAttrValue(final Boolean showFeedback) {
+    public void setShowFeedback(final Boolean showFeedback) {
         getAttributes().getBooleanAttribute(ATTR_SHOW_FEEDBACK_NAME).setValue(showFeedback);
     }
 
-    /**
-     * Gets value of allowReview attribute.
-     *
-     * @return value of allowReview attribute
-     * @see #setAllowReviewAttrValue
-     */
-    public Boolean getAllowReviewAttrValue() {
+
+    public Boolean getAllowReview() {
         return getAttributes().getBooleanAttribute(ATTR_ALLOW_REVIEW_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of allowReview attribute.
-     *
-     * @param allowReview new value of allowReview attribute
-     * @see #getAllowReviewAttrValue
-     */
-    public void setAllowReviewAttrValue(final Boolean allowReview) {
+    public void setAllowReview(final Boolean allowReview) {
         getAttributes().getBooleanAttribute(ATTR_ALLOW_REVIEW_NAME).setValue(allowReview);
     }
 
-    /**
-     * Gets value of showSolution attribute.
-     *
-     * @return value of showSolution attribute
-     * @see #setShowSolutionAttrValue
-     */
-    public Boolean getShowSolutionAttrValue() {
+
+    public Boolean getShowSolution() {
         return getAttributes().getBooleanAttribute(ATTR_SHOW_SOLUTION_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of showSolution attribute.
-     *
-     * @param showSolution new value of showSolution attribute
-     * @see #getShowSolutionAttrValue
-     */
-    public void setShowSolutionAttrValue(final Boolean showSolution) {
+    public void setShowSolution(final Boolean showSolution) {
         getAttributes().getBooleanAttribute(ATTR_SHOW_SOLUTION_NAME).setValue(showSolution);
     }
 
-    /**
-     * Gets value of allowComment attribute.
-     *
-     * @return value of allowComment attribute
-     * @see #setAllowCommentAttrValue
-     */
-    public Boolean getAllowCommentAttrValue() {
+
+    public Boolean getAllowComment() {
         return getAttributes().getBooleanAttribute(ATTR_ALLOW_COMMENT_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of allowComment attribute.
-     *
-     * @param allowComment new value of allowComment attribute
-     * @see #getAllowCommentAttrValue
-     */
-    public void setAllowCommentAttrValue(final Boolean allowComment) {
+    public void setAllowComment(final Boolean allowComment) {
         getAttributes().getBooleanAttribute(ATTR_ALLOW_COMMENT_NAME).setValue(allowComment);
     }
 
-    /**
-     * Gets value of allowSkipping attribute.
-     *
-     * @return value of allowSkipping attribute
-     * @see #setAllowSkippingAttrValue
-     */
-    public Boolean getAllowSkippingAttrValue() {
+
+    public Boolean getAllowSkipping() {
         return getAttributes().getBooleanAttribute(ATTR_ALLOW_SKIPPING_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of allowSkipping attribute.
-     *
-     * @param allowSkipping new value of allowSkipping attribute
-     * @see #getAllowSkippingAttrValue
-     */
-    public void setAllowSkippingAttrValue(final Boolean allowSkipping) {
+    public void setAllowSkipping(final Boolean allowSkipping) {
         getAttributes().getBooleanAttribute(ATTR_ALLOW_SKIPPING_NAME).setValue(allowSkipping);
     }
 
-    /**
-     * Gets value of validateResponses attribute.
-     *
-     * @return value of validateResponses attribute
-     * @see #setValidateResponsesAttrValue
-     */
-    public Boolean getValidateResponsesAttrValue() {
+
+    public Boolean getValidateResponses() {
         return getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of validateResponses attribute.
-     *
-     * @param validateResponses new value of validateResponses attribute
-     * @see #getValidateResponsesAttrValue
-     */
-    public void setValidateResponsesAttrValue(final Boolean validateResponses) {
+    public void setValidateResponses(final Boolean validateResponses) {
         getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).setValue(validateResponses);
     }
 
-    /**
-     * Gets final maxAttempts value.
-     * <ol>
-     * <li>returns value of corresponding attribute if it is not null
-     * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
-     * <li>returns parent's final maxAttempts value (parent must be <code>SectionPart</code>)
-     * </ol>
-     *
-     * @return final maxAttempts value
-     */
-    public int getMaxAttempts() {
-        final Integer maxAttempts = getMaxAttemptsAttrValue();
-        if (maxAttempts != null) {
-            return maxAttempts;
-        }
+    //------------------------------------------------------
 
-        return getParentsMaxAttempts();
+    public EffectiveItemSessionControl computeEffectiveValue() {
+        final EffectiveItemSessionControl result = new EffectiveItemSessionControl();
+        result.setMaxAttempts(computeEffectiveMaxAttempts());
+        result.setShowFeedback(computeEffectiveShowFeedback());
+        result.setAllowReview(computeEffectiveAllowReview());
+        result.setShowSolution(computeEffectiveShowSolution());
+        result.setAllowComment(computeEffectiveAllowComment());
+        result.setAllowSkipping(computeEffectiveAllowSkipping());
+        return result;
     }
 
-    /**
-     * Gets parent's (parent of parent of this itemSessionControl) final maxAttempts value or default
-     * value if parent of this itemSessionControl is TestPart.
-     *
-     * @return parent's final maxAttempts value or default value
-     */
-    protected Integer getParentsMaxAttempts() {
-        final AbstractPart parent = getParent();
-
-        if (parent instanceof TestPart) {
-            return MAX_ATTEMPTS_DEFAULT_VALUE;
+    public int computeEffectiveMaxAttempts() {
+        ItemSessionControl current = this;
+        Integer maxAttempts;
+        for (;;) {
+            maxAttempts = current.getMaxAttempts();
+            if (maxAttempts!=null) {
+                return maxAttempts.intValue();
+            }
+            final AbstractPart owner = getParent();
+            if (owner instanceof TestPart) {
+                return MAX_ATTEMPTS_DEFAULT_VALUE;
+            }
+            current = ((SectionPart) owner).getParent().getItemSessionControl();
         }
-
-        assert parent instanceof SectionPart;
-
-        return ((SectionPart) parent).getParent().getItemSessionControl().getMaxAttempts();
     }
 
-    /**
-     * Gets default value of maxAttempts attribute.
-     * <p>
-     * If attribute should be printed, it returns null. Because attribute's current value will be different as its default value, it will be printed.
-     * <p>
-     * If attribute should not be printed, it returns current attribute's value. Because attribute's current value will be same as its default value, it will
-     * not be printed.
-     * <p>
-     * Attribute should be printed if and only if it holds some additional information.
-     * <p>
-     * This method returns opposite value what everybody would expect.
-     *
-     * @return default value of maxAttempts attribute
-     */
-    private Integer getMaxAttemptsDefaultValue() {
-        final Integer maxAttempts = getMaxAttemptsAttrValue();
-        if (maxAttempts == null || maxAttempts.equals(getParentsMaxAttempts()))
-        {
-            return maxAttempts; // Attribute should not be printed.
-            // -> returns same default value like attribute's current value
-            // -> attribute will not be printed, because its value is same like its default value
+    public boolean computeEffectiveShowFeedback() {
+        ItemSessionControl current = this;
+        Boolean showFeedback;
+        for (;;) {
+            showFeedback = current.getShowFeedback();
+            if (showFeedback!=null) {
+                return showFeedback.booleanValue();
+            }
+            final AbstractPart owner = getParent();
+            if (owner instanceof TestPart) {
+                return SHOW_FEEDBACK_DEFAULT_VALUE;
+            }
+            current = ((SectionPart) owner).getParent().getItemSessionControl();
         }
-
-        return null; // Attribute should be printed.
     }
 
-    /**
-     * Gets final showFeedback value.
-     * <ol>
-     * <li>returns value of corresponding attribute if it is not null
-     * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
-     * <li>returns parent's final showFeedback value (parent must be <code>SectionPart</code>)
-     * </ol>
-     *
-     * @return final showFeedback value
-     */
-    public boolean getShowFeedback() {
-        final Boolean showFeedback = getShowFeedbackAttrValue();
-        if (showFeedback != null) {
-            return showFeedback;
+    public boolean computeEffectiveAllowReview() {
+        ItemSessionControl current = this;
+        Boolean allowReview;
+        for (;;) {
+            allowReview = current.getAllowReview();
+            if (allowReview!=null) {
+                return allowReview.booleanValue();
+            }
+            final AbstractPart owner = getParent();
+            if (owner instanceof TestPart) {
+                return ALLOW_REVIEW_DEFAULT_VALUE;
+            }
+            current = ((SectionPart) owner).getParent().getItemSessionControl();
         }
-
-        return getParentsShowFeedback();
     }
 
-    /**
-     * Gets parent's (parent of parent of this itemSessionControl) final showFeedback value or default
-     * value if parent of this itemSessionControl is TestPart.
-     *
-     * @return parent's final showFeedback value or default value
-     */
-    protected boolean getParentsShowFeedback() {
-        final AbstractPart parent = getParent();
-
-        if (parent instanceof TestPart) {
-            return SHOW_FEEDBACK_DEFAULT_VALUE;
+    public boolean computeEffectiveShowSolution() {
+        ItemSessionControl current = this;
+        Boolean showSolution;
+        for (;;) {
+            showSolution = current.getShowSolution();
+            if (showSolution!=null) {
+                return showSolution.booleanValue();
+            }
+            final AbstractPart owner = getParent();
+            if (owner instanceof TestPart) {
+                return SHOW_SOLUTION_DEFAULT_VALUE;
+            }
+            current = ((SectionPart) owner).getParent().getItemSessionControl();
         }
-
-        assert parent instanceof SectionPart;
-
-        return ((SectionPart) parent).getParent().getItemSessionControl().getShowFeedback();
     }
 
-    /**
-     * Gets default value of showFeedback attribute.
-     * <p>
-     * If attribute should be printed, it returns null. Because attribute's current value will be different as its default value, it will be printed.
-     * <p>
-     * If attribute should not be printed, it returns current attribute's value. Because attribute's current value will be same as its default value, it will
-     * not be printed.
-     * <p>
-     * Attribute should be printed if and only if it holds some additional information.
-     * <p>
-     * This method returns opposite value what everybody would expect.
-     *
-     * @return default value of showFeedback attribute
-     */
-    private Boolean getShowFeedbackDefaultValue() {
-        final Boolean showFeedback = getShowFeedbackAttrValue();
-        if (showFeedback == null || showFeedback.equals(getParentsShowFeedback())) {
-            return showFeedback;
+    public boolean computeEffectiveAllowComment() {
+        ItemSessionControl current = this;
+        Boolean allowComment;
+        for (;;) {
+            allowComment = current.getAllowComment();
+            if (allowComment!=null) {
+                return allowComment.booleanValue();
+            }
+            final AbstractPart owner = getParent();
+            if (owner instanceof TestPart) {
+                return ALLOW_COMMENT_DEFAULT_VALUE;
+            }
+            current = ((SectionPart) owner).getParent().getItemSessionControl();
         }
-
-        return null;
     }
 
-    /**
-     * Gets final allowReview value.
-     * <ol>
-     * <li>returns value of corresponding attribute if it is not null
-     * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
-     * <li>returns parent's final allowReview value (parent must be <code>SectionPart</code>)
-     * </ol>
-     *
-     * @return final allowReview value
-     */
-    public boolean getAllowReview() {
-        final Boolean allowReview = getAllowReviewAttrValue();
-        if (allowReview != null) {
-            return allowReview;
+    public boolean computeEffectiveAllowSkipping() {
+        ItemSessionControl current = this;
+        Boolean allowSkipping;
+        for (;;) {
+            allowSkipping = current.getAllowSkipping();
+            if (allowSkipping!=null) {
+                return allowSkipping.booleanValue();
+            }
+            final AbstractPart owner = getParent();
+            if (owner instanceof TestPart) {
+                return ALLOW_SKIPPING_DEFAULT_VALUE;
+            }
+            current = ((SectionPart) owner).getParent().getItemSessionControl();
         }
-
-        return getParentsAllowReview();
     }
 
-    /**
-     * Gets parent's (parent of parent of this itemSessionControl) final allowReview value or default
-     * value if parent of this itemSessionControl is TestPart.
-     *
-     * @return parent's final allowReview value or default value
-     */
-    protected boolean getParentsAllowReview() {
-        final AbstractPart parent = getParent();
-
-        if (parent instanceof TestPart) {
-            return ALLOW_REVIEW_DEFAULT_VALUE;
+    public boolean computeEffectiveValidateResponses() {
+        ItemSessionControl current = this;
+        Boolean validateResponses;
+        for (;;) {
+            validateResponses = current.getValidateResponses();
+            if (validateResponses!=null) {
+                return validateResponses.booleanValue();
+            }
+            final AbstractPart owner = getParent();
+            if (owner instanceof TestPart) {
+                return VALIDATE_RESPONSES_DEFAULT_VALUE;
+            }
+            current = ((SectionPart) owner).getParent().getItemSessionControl();
         }
-
-        assert parent instanceof SectionPart;
-
-        return ((SectionPart) parent).getParent().getItemSessionControl().getAllowReview();
-    }
-
-    /**
-     * Gets default value of allowReview attribute.
-     * <p>
-     * If attribute should be printed, it returns null. Because attribute's current value will be different as its default value, it will be printed.
-     * <p>
-     * If attribute should not be printed, it returns current attribute's value. Because attribute's current value will be same as its default value, it will
-     * not be printed.
-     * <p>
-     * Attribute should be printed if and only if it holds some additional information.
-     * <p>
-     * This method returns opposite value what everybody would expect.
-     *
-     * @return default value of allowReview attribute
-     */
-    private Boolean getAllowReviewDefaultValue() {
-        final Boolean allowReview = getAllowReviewAttrValue();
-        if (allowReview == null || allowReview.equals(getParentsAllowReview())) {
-            return allowReview;
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets final showSolution value.
-     * <ol>
-     * <li>returns value of corresponding attribute if it is not null
-     * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
-     * <li>returns parent's final showSolution value (parent must be <code>SectionPart</code>)
-     * </ol>
-     *
-     * @return final showSolution value
-     */
-    public boolean getShowSolution() {
-        final Boolean showSolution = getShowSolutionAttrValue();
-        if (showSolution != null) {
-            return showSolution;
-        }
-
-        return getParentsShowSolution();
-    }
-
-    /**
-     * Gets parent's (parent of parent of this itemSessionControl) final showSolution value or default
-     * value if parent of this itemSessionControl is TestPart.
-     *
-     * @return parent's final showSolution value or default value
-     */
-    protected boolean getParentsShowSolution() {
-        final AbstractPart parent = getParent();
-
-        if (parent instanceof TestPart) {
-            return SHOW_SOLUTION_DEFAULT_VALUE;
-        }
-
-        assert parent instanceof SectionPart;
-
-        return ((SectionPart) parent).getParent().getItemSessionControl().getShowSolution();
-    }
-
-    /**
-     * Gets default value of showSolution attribute.
-     * <p>
-     * If attribute should be printed, it returns null. Because attribute's current value will be different as its default value, it will be printed.
-     * <p>
-     * If attribute should not be printed, it returns current attribute's value. Because attribute's current value will be same as its default value, it will
-     * not be printed.
-     * <p>
-     * Attribute should be printed if and only if it holds some additional information.
-     * <p>
-     * This method returns opposite value what everybody would expect.
-     *
-     * @return default value of showSolution attribute
-     */
-    private Boolean getShowSolutionDefaultValue() {
-        final Boolean showSolution = getShowSolutionAttrValue();
-        if (showSolution == null || showSolution.equals(getParentsShowSolution())) {
-            return showSolution;
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets final allowComment value.
-     * <ol>
-     * <li>returns value of corresponding attribute if it is not null
-     * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
-     * <li>returns parent's final allowComment value (parent must be <code>SectionPart</code>)
-     * </ol>
-     *
-     * @return final allowComment value
-     */
-    public boolean getAllowComment() {
-        final Boolean allowComment = getAllowCommentAttrValue();
-        if (allowComment != null) {
-            return allowComment;
-        }
-
-        return getParentsAllowComment();
-    }
-
-    /**
-     * Gets parent's (parent of parent of this itemSessionControl) final allowComment value or default
-     * value if parent of this itemSessionControl is TestPart.
-     *
-     * @return parent's final allowComment value or default value
-     */
-    protected boolean getParentsAllowComment() {
-        final AbstractPart parent = getParent();
-
-        if (parent instanceof TestPart) {
-            return ALLOW_COMMENT_DEFAULT_VALUE;
-        }
-
-        assert parent instanceof SectionPart;
-
-        return ((SectionPart) parent).getParent().getItemSessionControl().getAllowComment();
-    }
-
-    /**
-     * Gets default value of allowComment attribute.
-     * <p>
-     * If attribute should be printed, it returns null. Because attribute's current value will be different as its default value, it will be printed.
-     * <p>
-     * If attribute should not be printed, it returns current attribute's value. Because attribute's current value will be same as its default value, it will
-     * not be printed.
-     * <p>
-     * Attribute should be printed if and only if it holds some additional information.
-     * <p>
-     * This method returns opposite value what everybody would expect.
-     *
-     * @return default value of allowComment attribute
-     */
-    private Boolean getAllowCommentDefaultValue() {
-        final Boolean allowComment = getAllowCommentAttrValue();
-        if (allowComment == null || allowComment.equals(getParentsAllowComment())) {
-            return allowComment;
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets final allowSkipping value.
-     * <ol>
-     * <li>returns value of corresponding attribute if it is not null
-     * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
-     * <li>returns parent's final allowSkipping value (parent must be <code>SectionPart</code>)
-     * </ol>
-     *
-     * @return final allowSkipping value
-     */
-    public boolean getAllowSkipping() {
-        final Boolean allowSkipping = getAllowSkippingAttrValue();
-        if (allowSkipping != null) {
-            return allowSkipping;
-        }
-
-        return getParentsAllowSkipping();
-    }
-
-    /**
-     * Gets parent's (parent of parent of this itemSessionControl) final allowSkipping value or default
-     * value if parent of this itemSessionControl is TestPart.
-     *
-     * @return parent's final allowSkipping value or default value
-     */
-    protected boolean getParentsAllowSkipping() {
-        final AbstractPart parent = getParent();
-
-        if (parent instanceof TestPart) {
-            return ALLOW_SKIPPING_DEFAULT_VALUE;
-        }
-
-        assert parent instanceof SectionPart;
-
-        return ((SectionPart) parent).getParent().getItemSessionControl().getAllowSkipping();
-    }
-
-    /**
-     * Gets default value of allowSkipping attribute.
-     * <p>
-     * If attribute should be printed, it returns null. Because attribute's current value will be different as its default value, it will be printed.
-     * <p>
-     * If attribute should not be printed, it returns current attribute's value. Because attribute's current value will be same as its default value, it will
-     * not be printed.
-     * <p>
-     * Attribute should be printed if and only if it holds some additional information.
-     * <p>
-     * This method returns opposite value what everybody would expect.
-     *
-     * @return default value of allowSkipping attribute
-     */
-    private Boolean getAllowSkippingDefaultValue() {
-        final Boolean allowSkipping = getAllowSkippingAttrValue();
-        if (allowSkipping == null || allowSkipping.equals(getParentsAllowSkipping())) {
-            return allowSkipping;
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets final validateResponses value.
-     * <ol>
-     * <li>returns value of corresponding attribute if it is not null
-     * <li>returns default value if parent of this <code>itemSessionControl</code> is <code>TestPart</code>
-     * <li>returns parent's final validateResponse value (parent must be <code>SectionPart</code>)
-     * </ol>
-     *
-     * @return final validateResponses value
-     */
-    public boolean getValidateResponses() {
-        final Boolean validateResponses = getValidateResponsesAttrValue();
-        if (validateResponses != null) {
-            return validateResponses;
-        }
-
-        return getParentsValidateResponses();
-    }
-
-    /**
-     * Gets parent's (parent of parent of this itemSessionControl) final validateResponses value or default
-     * value if parent of this itemSessionControl is TestPart.
-     *
-     * @return parent's final validateResponses value or default value
-     */
-    protected boolean getParentsValidateResponses() {
-        final AbstractPart parent = getParent();
-
-        if (parent instanceof TestPart) {
-            return VALIDATE_RESPONSES_DEFAULT_VALUE;
-        }
-
-        assert parent instanceof SectionPart;
-
-        return ((SectionPart) parent).getParent().getItemSessionControl().getValidateResponses();
-    }
-
-    /**
-     * Gets default value of validateResponses attribute.
-     * <p>
-     * If attribute should be printed, it returns null. Because attribute's current value will be different as its default value, it will be printed.
-     * <p>
-     * If attribute should not be printed, it returns current attribute's value. Because attribute's current value will be same as its default value, it will
-     * not be printed.
-     * <p>
-     * Attribute should be printed if and only if it holds some additional information.
-     * <p>
-     * This method returns opposite value what everybody would expect.
-     *
-     * @return default value of validateResponses attribute
-     */
-    private Boolean getValidateResponsesDefaultValue() {
-        final Boolean validateResponses = getValidateResponsesAttrValue();
-        if (validateResponses == null || validateResponses.equals(getParentsValidateResponses())) {
-            return validateResponses;
-        }
-
-        return null;
     }
 }
