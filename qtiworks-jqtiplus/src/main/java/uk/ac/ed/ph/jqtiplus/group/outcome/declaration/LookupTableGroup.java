@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
  *
  * @author Jiri Kajaba
  */
-public final class LookupTableGroup extends ComplexNodeGroup<OutcomeDeclaration,LookupTable> {
+public final class LookupTableGroup extends ComplexNodeGroup<OutcomeDeclaration,LookupTable<?,?>> {
 
     private static final long serialVersionUID = 8957840239215915389L;
 
