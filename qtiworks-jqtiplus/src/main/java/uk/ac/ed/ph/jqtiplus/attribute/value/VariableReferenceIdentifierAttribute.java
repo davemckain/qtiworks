@@ -56,7 +56,7 @@ public final class VariableReferenceIdentifierAttribute extends SingleAttribute<
 
     @Override
     protected VariableReferenceIdentifier parseQtiString(final String value) {
-        return new VariableReferenceIdentifier(value);
+        return VariableReferenceIdentifier.parseString(value);
     }
 
     @Override

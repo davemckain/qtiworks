@@ -96,7 +96,7 @@ public final class FloatOrVariableRef implements Serializable {
         }
         catch (final QtiParseException e) {
             /* Try to parse as a variable reference */
-            final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string);
+            final VariableReferenceIdentifier variableReferenceIdentifier = VariableReferenceIdentifier.parseString(string);
             return new FloatOrVariableRef(variableReferenceIdentifier);
         }
     }

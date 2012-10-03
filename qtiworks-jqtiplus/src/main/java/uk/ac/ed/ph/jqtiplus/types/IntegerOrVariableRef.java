@@ -96,7 +96,7 @@ public final class IntegerOrVariableRef implements Serializable {
         }
         catch (final QtiParseException e) {
             /* Parse as a variable reference */
-            final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string);
+            final VariableReferenceIdentifier variableReferenceIdentifier = VariableReferenceIdentifier.parseString(string);
             return new IntegerOrVariableRef(variableReferenceIdentifier);
         }
     }

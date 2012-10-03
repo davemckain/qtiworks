@@ -83,7 +83,7 @@ public final class StringOrVariableRef implements Serializable {
         }
         if (string.charAt(0)=='{' && string.charAt(string.length()-1)=='}') {
             /* It's a variable reference */
-            final VariableReferenceIdentifier variableReferenceIdentifier = new VariableReferenceIdentifier(string.substring(1, string.length()-1));
+            final VariableReferenceIdentifier variableReferenceIdentifier = VariableReferenceIdentifier.parseString(string.substring(1, string.length()-1));
             return new StringOrVariableRef(variableReferenceIdentifier);
         }
         else {

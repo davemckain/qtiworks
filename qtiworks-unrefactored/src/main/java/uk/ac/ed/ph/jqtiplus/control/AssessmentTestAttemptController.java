@@ -472,7 +472,7 @@ public final class AssessmentTestAttemptController {
 
     private void processDuration(TestResult result, AbstractPartState parentState) {
         if (!(parentState instanceof AssessmentItemRefState)) {
-            final VariableReferenceIdentifier identifier = new VariableReferenceIdentifier(parentState.getTestIdentifier() + "."
+            final VariableReferenceIdentifier identifier = VariableReferenceIdentifier.parseString(parentState.getTestIdentifier() + "."
                     + AssessmentTest.VARIABLE_DURATION_NAME);
             final DurationValue duration = new DurationValue(getDuration(parentState) / 1000.0);
 

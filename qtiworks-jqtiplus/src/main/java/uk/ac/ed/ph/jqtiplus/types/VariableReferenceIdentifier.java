@@ -57,10 +57,14 @@ public final class VariableReferenceIdentifier implements Serializable {
 
     private final Identifier assessmentItemItemVariableIdentifier;
 
+    public static VariableReferenceIdentifier parseString(final String value) {
+        return new VariableReferenceIdentifier(value);
+    }
+
     /**
      * @throws QtiParseException if value is not a valid identifier (definition)
      */
-    public VariableReferenceIdentifier(final String value) {
+    private VariableReferenceIdentifier(final String value) {
         Assert.notNull(value);
 
         if (value.isEmpty()) {
