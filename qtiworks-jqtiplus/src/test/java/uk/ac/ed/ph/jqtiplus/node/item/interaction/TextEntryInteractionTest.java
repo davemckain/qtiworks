@@ -127,11 +127,11 @@ public class TextEntryInteractionTest {
         itemSessionController.initialize();
 
         final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
-        responses.put(new Identifier(RESPONSE_NAME), new StringResponseData(stringResponse));
+        responses.put(Identifier.parseString(RESPONSE_NAME), new StringResponseData(stringResponse));
         final Set<Identifier> badResponses = itemSessionController.bindResponses(responses);
         assertEquals(0, badResponses.size());
         assertEquals(expectedValidates, itemSessionController.validateResponses().size() == 0);
-        assertEquals(expectedResponse, itemSessionState.getResponseValue(new Identifier(RESPONSE_NAME)));
-        assertEquals(expectedStringResponse, itemSessionState.getResponseValue(new Identifier(STRING_RESPONSE_NAME)));
+        assertEquals(expectedResponse, itemSessionState.getResponseValue(Identifier.parseString(RESPONSE_NAME)));
+        assertEquals(expectedStringResponse, itemSessionState.getResponseValue(Identifier.parseString(STRING_RESPONSE_NAME)));
     }
 }

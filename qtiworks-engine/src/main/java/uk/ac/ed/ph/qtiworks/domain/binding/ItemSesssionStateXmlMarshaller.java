@@ -266,7 +266,7 @@ public final class ItemSesssionStateXmlMarshaller {
     private static Identifier parseIdentifierAttribute(final Element element, final String identifierAttrName) {
         final String identifierAttrValue = requireAttribute(element, identifierAttrName);
         try {
-            return new Identifier(identifierAttrValue);
+            return Identifier.parseString(identifierAttrValue);
         }
         catch (final QtiParseException e) {
             throw new MarshallingException("Value "
@@ -281,7 +281,7 @@ public final class ItemSesssionStateXmlMarshaller {
         final List<Identifier> result = new ArrayList<Identifier>(identifierArray.length);
         for (final String identifierString : identifierArray) {
             try {
-                result.add(new Identifier(identifierString));
+                result.add(Identifier.parseString(identifierString));
             }
             catch (final QtiParseException e) {
                 throw new MarshallingException("Value "

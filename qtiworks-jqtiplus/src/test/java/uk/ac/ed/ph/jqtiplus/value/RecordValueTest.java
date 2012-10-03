@@ -63,9 +63,9 @@ public class RecordValueTest extends ValueTest {
     static {
         // RECORD_1__1_2_3
         final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
-        recordBuilder.put(new Identifier("key_1"), new IntegerValue(1));
-        recordBuilder.put(new Identifier("key_2"), new IntegerValue(2));
-        recordBuilder.put(new Identifier("key_3"), new IntegerValue(3));
+        recordBuilder.put(Identifier.parseString("key_1"), new IntegerValue(1));
+        recordBuilder.put(Identifier.parseString("key_2"), new IntegerValue(2));
+        recordBuilder.put(Identifier.parseString("key_3"), new IntegerValue(3));
         RECORD_1__1_2_3 = (RecordValue) RecordValue.createRecordValue(recordBuilder);
 
         // RECORD_2__1_2_3
@@ -73,17 +73,17 @@ public class RecordValueTest extends ValueTest {
 
         // RECORD_3__3_2_1
         recordBuilder.clear();
-        recordBuilder.put(new Identifier("key_3"), new IntegerValue(3));
-        recordBuilder.put(new Identifier("key_2"), new IntegerValue(2));
-        recordBuilder.put(new Identifier("key_1"), new IntegerValue(1));
+        recordBuilder.put(Identifier.parseString("key_3"), new IntegerValue(3));
+        recordBuilder.put(Identifier.parseString("key_2"), new IntegerValue(2));
+        recordBuilder.put(Identifier.parseString("key_1"), new IntegerValue(1));
         RECORD_3__3_2_1 = (RecordValue) RecordValue.createRecordValue(recordBuilder);
 
         // RECORD_4__1_2_3_4
         recordBuilder.clear();
-        recordBuilder.put(new Identifier("key_1"), new IntegerValue(1));
-        recordBuilder.put(new Identifier("key_2"), new IntegerValue(2));
-        recordBuilder.put(new Identifier("key_3"), new IntegerValue(3));
-        recordBuilder.put(new Identifier("key_4"), new IntegerValue(4));
+        recordBuilder.put(Identifier.parseString("key_1"), new IntegerValue(1));
+        recordBuilder.put(Identifier.parseString("key_2"), new IntegerValue(2));
+        recordBuilder.put(Identifier.parseString("key_3"), new IntegerValue(3));
+        recordBuilder.put(Identifier.parseString("key_4"), new IntegerValue(4));
         RECORD_4__1_2_3_4 = (RecordValue) RecordValue.createRecordValue(recordBuilder);
     }
 

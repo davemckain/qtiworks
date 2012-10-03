@@ -89,6 +89,6 @@ public class IdentifierValueRefuseTest {
      */
     @Test(expected = QtiParseException.class)
     public void testParseIdentifier() throws QtiParseException {
-        new IdentifierValue(new Identifier(string));
+        new IdentifierValue(Identifier.parseString(string));
     }
 }

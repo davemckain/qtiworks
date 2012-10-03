@@ -59,17 +59,17 @@ public interface MathAssessConstants {
 
     public static final String SCRIPT_RULE_CLASS = "org.qtitools.mathassess.ScriptRule";
 
-    public static final Identifier FIELD_PMATHML_IDENTIFIER = new Identifier("PMathML", false);
+    public static final Identifier FIELD_PMATHML_IDENTIFIER = new Identifier("PMathML");
 
-    public static final Identifier FIELD_PMATHML_BRACKETED_IDENTIFIER = new Identifier("PMathMLBracketed", false);
+    public static final Identifier FIELD_PMATHML_BRACKETED_IDENTIFIER = new Identifier("PMathMLBracketed");
 
-    public static final Identifier FIELD_CMATHML_IDENTIFIER = new Identifier("CMathML", false);
+    public static final Identifier FIELD_CMATHML_IDENTIFIER = new Identifier("CMathML");
 
-    public static final Identifier FIELD_MAXIMA_IDENTIFIER = new Identifier("Maxima", false);
+    public static final Identifier FIELD_MAXIMA_IDENTIFIER = new Identifier("Maxima");
 
-    public static final Identifier FIELD_CANDIDATE_INPUT_IDENTIFIER = new Identifier("CandidateInput", false);
+    public static final Identifier FIELD_CANDIDATE_INPUT_IDENTIFIER = new Identifier("CandidateInput");
 
-    public static final Identifier MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER = new Identifier("MathsContentClass");
+    public static final Identifier MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER = Identifier.parseString("MathsContentClass");
 
     public static final String MATHS_CONTENT_RECORD_VARIABLE_VALUE = "org.qtitools.mathassess";
 

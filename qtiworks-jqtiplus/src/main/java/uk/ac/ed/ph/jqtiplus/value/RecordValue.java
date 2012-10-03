@@ -70,7 +70,7 @@ public final class RecordValue extends ContainerValue {
     public static RecordValue createRecordValue(final String identifier, final SingleValue value) {
         Assert.notNull(identifier, "identifier");
         Assert.notNull(value, "value");
-        return new RecordValue(new Identifier(identifier), value);
+        return new RecordValue(Identifier.parseString(identifier), value);
     }
 
     public static Value createRecordValue(final Map<Identifier, SingleValue> values) {

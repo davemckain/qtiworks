@@ -78,7 +78,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     public static final String VARIABLE_DURATION_NAME = "duration";
 
     /** Identifier of duration built-in variable. */
-    public static final Identifier VARIABLE_DURATION_IDENTIFIER = new Identifier(VARIABLE_DURATION_NAME, false);
+    public static final Identifier VARIABLE_DURATION_IDENTIFIER = new Identifier(VARIABLE_DURATION_NAME);
 
     private URI systemId;
     private ModelRichness modelRichness;

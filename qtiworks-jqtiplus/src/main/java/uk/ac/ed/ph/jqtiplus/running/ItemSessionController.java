@@ -543,7 +543,7 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
 
     public Value lookupVariableValue(final String identifierString, final VariableType... permittedTypes) {
         Assert.notNull(identifierString);
-        return lookupVariableValue(new Identifier(identifierString), permittedTypes);
+        return lookupVariableValue(Identifier.parseString(identifierString), permittedTypes);
     }
 
     @Override
@@ -554,7 +554,7 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
 
     public Value computeDefaultValue(final String identifierString) {
         Assert.notNull(identifierString);
-        return computeDefaultValue(ensureVariableDeclaration(new Identifier(identifierString)));
+        return computeDefaultValue(ensureVariableDeclaration(Identifier.parseString(identifierString)));
     }
 
     public Value computeDefaultValue(final VariableDeclaration declaration) {
@@ -598,7 +598,7 @@ public final class ItemSessionController extends AbstractNotificationFirer imple
 
     public Value computeCorrectResponse(final String identifierString) {
         Assert.notNull(identifierString);
-        return computeCorrectResponse(new Identifier(identifierString));
+        return computeCorrectResponse(Identifier.parseString(identifierString));
     }
 
     public Value computeCorrectResponse(final ResponseDeclaration declaration) {

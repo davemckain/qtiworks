@@ -514,7 +514,7 @@ public class CandidateItemDeliveryService {
     private void extractResponseDataForRendering(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
             final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
         for (final CandidateItemResponse response : attempt.getResponses()) {
-            final Identifier responseIdentifier = new Identifier(response.getResponseIdentifier());
+            final Identifier responseIdentifier = Identifier.parseString(response.getResponseIdentifier());
             final ResponseLegality responseLegality = response.getResponseLegality();
             final ResponseDataType responseType = response.getResponseType();
             ResponseData responseData = null;

@@ -155,7 +155,7 @@ public class CandidateItemController {
                 final String responseIdentifierString = name.substring("qtiworks_uploadpresented_".length());
                 final Identifier responseIdentifier;
                 try {
-                    responseIdentifier = new Identifier(responseIdentifierString);
+                    responseIdentifier = Identifier.parseString(responseIdentifierString);
                 }
                 catch (final QtiParseException e) {
                     throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
@@ -183,7 +183,7 @@ public class CandidateItemController {
                 final String responseIdentifierString = name.substring("qtiworks_presented_".length());
                 final Identifier responseIdentifier;
                 try {
-                    responseIdentifier = new Identifier(responseIdentifierString);
+                    responseIdentifier = Identifier.parseString(responseIdentifierString);
                 }
                 catch (final QtiParseException e) {
                     throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);

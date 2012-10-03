@@ -46,7 +46,7 @@ public class ChoiceRunningTest {
 
         System.out.println("\nBinding & validating responses");
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
-        responseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
+        responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
         final Set<Identifier> badResponses = itemController.bindResponses(responseMap);
         final Set<Identifier> invalidResponses = itemController.validateResponses();
         System.out.println("Bad responses: " + badResponses);

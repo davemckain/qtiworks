@@ -160,8 +160,8 @@ public final class DataTypeBinder {
         }
 
         try {
-            final Identifier first = new Identifier(parts[0]);
-            final Identifier second = new Identifier(parts[1]);
+            final Identifier first = Identifier.parseString(parts[0]);
+            final Identifier second = Identifier.parseString(parts[1]);
             return new Pair<Identifier, Identifier>(first, second);
         }
         catch (final QtiParseException e) {

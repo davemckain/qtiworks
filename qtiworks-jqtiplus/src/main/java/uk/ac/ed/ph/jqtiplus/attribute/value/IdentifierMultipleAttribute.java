@@ -58,7 +58,7 @@ public final class IdentifierMultipleAttribute extends MultipleAttribute<Identif
 
     @Override
     protected Identifier parseItemValue(String value) {
-        return new Identifier(value);
+        return Identifier.parseString(value);
     }
     
     @Override

@@ -60,7 +60,7 @@ public final class IdentifierAttribute extends SingleAttribute<Identifier> {
 
     @Override
     protected Identifier parseQtiString(String value) {
-        return new Identifier(value);
+        return Identifier.parseString(value);
     }
     
     @Override

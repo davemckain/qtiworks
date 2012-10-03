@@ -67,14 +67,14 @@ public final class XmlMarshalTest {
         final ItemSessionState itemSessionState = new ItemSessionState();
 
         final Map<Identifier, SingleValue> recordMap = new HashMap<Identifier, SingleValue>();
-        recordMap.put(new Identifier("PMathML"), new StringValue("Hello"));
-        recordMap.put(new Identifier("Number"), new IntegerValue(5));
+        recordMap.put(Identifier.parseString("PMathML"), new StringValue("Hello"));
+        recordMap.put(Identifier.parseString("Number"), new IntegerValue(5));
 
         final Value rv = RecordValue.createRecordValue(recordMap);
-        itemSessionState.setShuffledInteractionChoiceOrder(new Identifier("dave"), Arrays.asList(new Identifier("a")));
-        itemSessionState.setResponseValue(new Identifier("RESPONSE"), MultipleValue.createMultipleValue(new StringValue("Bad"), new StringValue("Thing")));
-        itemSessionState.setTemplateValue(new Identifier("TEMPLATE"), NullValue.INSTANCE);
-        itemSessionState.setOutcomeValue(new Identifier("RECORD"), rv);
+        itemSessionState.setShuffledInteractionChoiceOrder(Identifier.parseString("dave"), Arrays.asList(Identifier.parseString("a")));
+        itemSessionState.setResponseValue(Identifier.parseString("RESPONSE"), MultipleValue.createMultipleValue(new StringValue("Bad"), new StringValue("Thing")));
+        itemSessionState.setTemplateValue(Identifier.parseString("TEMPLATE"), NullValue.INSTANCE);
+        itemSessionState.setOutcomeValue(Identifier.parseString("RECORD"), rv);
         itemSessionState.setInitialized(true);
 
         /* Marshal */

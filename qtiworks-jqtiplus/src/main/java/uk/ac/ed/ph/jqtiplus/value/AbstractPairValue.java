@@ -74,8 +74,8 @@ public abstract class AbstractPairValue extends SingleValue {
      * @throws QtiParseException if either value is not a valid identifier
      */
     public AbstractPairValue(final String sourceValue, final String destValue) {
-        this.sourceValue = new Identifier(sourceValue);
-        this.destValue = new Identifier(destValue);
+        this.sourceValue = Identifier.parseString(sourceValue);
+        this.destValue = Identifier.parseString(destValue);
     }
 
     /**

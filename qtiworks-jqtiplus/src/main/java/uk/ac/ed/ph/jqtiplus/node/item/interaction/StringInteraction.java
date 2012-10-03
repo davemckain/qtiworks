@@ -102,28 +102,28 @@ public interface StringInteraction {
     static final String ATTR_PLACEHOLDER_TEXT_NAME = "placeholderText";
 
     /** Name of stringValue key if response is bound to A record container. */
-    static final Identifier KEY_STRING_VALUE_NAME = new Identifier("stringValue", false);
+    static final Identifier KEY_STRING_VALUE_NAME = new Identifier("stringValue");
 
     /** Name of floatValue key if response is bound to A record container. */
-    static final Identifier KEY_FLOAT_VALUE_NAME = new Identifier("floatValue", false);
+    static final Identifier KEY_FLOAT_VALUE_NAME = new Identifier("floatValue");
 
     /** Name of integerValue key if response is bound to A record container. */
-    static final Identifier KEY_INTEGER_VALUE_NAME = new Identifier("integerValue", false);
+    static final Identifier KEY_INTEGER_VALUE_NAME = new Identifier("integerValue");
 
     /** Name of leftDigits key if response is bound to A record container. */
-    static final Identifier KEY_LEFT_DIGITS_NAME = new Identifier("leftDigits", false);
+    static final Identifier KEY_LEFT_DIGITS_NAME = new Identifier("leftDigits");
 
     /** Name of rightDigits key if response is bound to A record container. */
-    static final Identifier KEY_RIGHT_DIGITS_NAME = new Identifier("rightDigits", false);
+    static final Identifier KEY_RIGHT_DIGITS_NAME = new Identifier("rightDigits");
 
     /** Name of ndp key if response is bound to A record container. */
-    static final Identifier KEY_NDP_NAME = new Identifier("ndp", false);
+    static final Identifier KEY_NDP_NAME = new Identifier("ndp");
 
     /** Name of nsf key if response is bound to A record container. */
-    static final Identifier KEY_NSF_NAME = new Identifier("nsf", false);
+    static final Identifier KEY_NSF_NAME = new Identifier("nsf");
 
     /** Name of exponent key if response is bound to A record container. */
-    static final Identifier KEY_EXPONENT_NAME = new Identifier("exponent", false);
+    static final Identifier KEY_EXPONENT_NAME = new Identifier("exponent");
 
     int getBase();
     void setBase(Integer base);

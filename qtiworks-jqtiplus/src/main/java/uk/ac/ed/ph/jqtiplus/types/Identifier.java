@@ -56,19 +56,23 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
     private final String value;
 
     /**
+     * Parses the given Identifier String, making sure it follows the required syntax.
+     * <p>
+     * Use this factory method fo
+     *
      * @throws QtiParseException if value is not a valid identifier
      */
-    public Identifier(final String value) {
-        this(value, true);
+    public static Identifier parseString(final String value) {
+        verifyIdentifier(value);
+        return new Identifier(value);
     }
 
     /**
-     * @throws QtiParseException if value is not a valid identifier
+     * Creates an {@link Identifier} from the given String, without checking its syntax.
+     * This should ONLY be used for identifiers that are known to be valid, such as the ones
+     * defined in the QTI specification.
      */
-    public Identifier(final String value, final boolean verify) {
-        if (verify) {
-            verifyIdentifier(value);
-        }
+    public Identifier(final String value) {
         this.value = value;
     }
 
@@ -125,4 +129,5 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
             }
         }
     }
+
 }

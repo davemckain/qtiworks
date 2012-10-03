@@ -88,14 +88,14 @@ public final class VariableReferenceIdentifier implements Serializable {
         }
         this.value = value;
         if (dotPos == -1) {
-            this.localIdentifier = new Identifier(value, false);
+            this.localIdentifier = new Identifier(value);
             this.assessmentItemRefIdentifier = null;
             this.assessmentItemItemVariableIdentifier = null;
         }
         else {
             this.localIdentifier = null;
-            this.assessmentItemRefIdentifier = new Identifier(value.substring(0, dotPos), false);
-            this.assessmentItemItemVariableIdentifier = new Identifier(value.substring(dotPos + 1));
+            this.assessmentItemRefIdentifier = new Identifier(value.substring(0, dotPos));
+            this.assessmentItemItemVariableIdentifier = Identifier.parseString(value.substring(dotPos + 1));
         }
     }
 

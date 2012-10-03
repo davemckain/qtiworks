@@ -53,13 +53,13 @@ public final class BranchRule extends AbstractJump {
     public static final String ATTR_TARGET_NAME = "target";
 
     /** Special target for exiting assessmentTest. */
-    public static final Identifier EXIT_TEST = new Identifier("EXIT_TEST", false);
+    public static final Identifier EXIT_TEST = new Identifier("EXIT_TEST");
 
     /** Special target for exiting testPart. */
-    public static final Identifier EXIT_TEST_PART = new Identifier("EXIT_TESTPART", false);
+    public static final Identifier EXIT_TEST_PART = new Identifier("EXIT_TESTPART");
 
     /** Special target for exiting assessmentSection. */
-    public static final Identifier EXIT_SECTION = new Identifier("EXIT_SECTION", false);
+    public static final Identifier EXIT_SECTION = new Identifier("EXIT_SECTION");
 
     public BranchRule(final AbstractPart parent) {
         super(parent, QTI_CLASS_NAME);

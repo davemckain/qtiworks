@@ -105,7 +105,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public static final String VARIABLE_COMPLETION_STATUS = "completionStatus";
 
     /** Name of completion status built-in variable. */
-    public static final Identifier VARIABLE_COMPLETION_STATUS_IDENTIFIER = new Identifier("completionStatus", false);
+    public static final Identifier VARIABLE_COMPLETION_STATUS_IDENTIFIER = new Identifier("completionStatus");
 
     /** Value of completion status built-in variable. */
     public static final String VALUE_ITEM_IS_NOT_ATTEMPTED = "not_attempted";
@@ -122,12 +122,12 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /** Name of number of attempts built-in variable. */
     public static final String VARIABLE_NUMBER_OF_ATTEMPTS = "numAttempts";
 
-    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = new Identifier("numAttempts");
+    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.parseString("numAttempts");
 
     /** Name of duration built-in variable. */
     public static final String VARIABLE_DURATION_NAME = "duration";
 
-    public static final Identifier VARIABLE_DURATION_NAME_IDENTIFIER = new Identifier("duration");
+    public static final Identifier VARIABLE_DURATION_NAME_IDENTIFIER = Identifier.parseString("duration");
 
     private URI systemId;
     private ModelRichness modelRichness;

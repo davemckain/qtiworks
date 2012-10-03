@@ -59,7 +59,7 @@ public final class IdentifierValue extends SingleValue {
     }
 
     public IdentifierValue(final String value) {
-        this(new Identifier(value));
+        this(Identifier.parseString(value));
     }
 
     @Override

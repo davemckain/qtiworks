@@ -119,7 +119,7 @@ public class MathAssessTest {
 
             System.out.println("\n\nBinding Math responses");
             final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
-            responses.put(new Identifier("RESPONSE"), new StringResponseData("1+x"));
+            responses.put(Identifier.parseString("RESPONSE"), new StringResponseData("1+x"));
             final Set<Identifier> badResponses = itemController.bindResponses(responses);
             final Set<Identifier> invalidResponses = itemController.validateResponses();
             System.out.println("Bad responses: " + badResponses);

@@ -72,7 +72,7 @@ public enum BaseType implements Stringifiable {
 
         @Override
         public SingleValue parseSingleValue(final String singleValue) {
-            return new IdentifierValue(new Identifier(singleValue));
+            return new IdentifierValue(Identifier.parseString(singleValue));
         }
     },
 

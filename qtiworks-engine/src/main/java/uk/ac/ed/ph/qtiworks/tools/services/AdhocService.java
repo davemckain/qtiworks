@@ -119,17 +119,17 @@ public class AdhocService {
 
         /* Do bad attempt == file submission */
         final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
-        fileResponseMap.put(new Identifier("RESPONSE"), new NullMultipartFile());
+        fileResponseMap.put(Identifier.parseString("RESPONSE"), new NullMultipartFile());
         candidateItemDeliveryService.handleAttempt(candidateItemSession, null, fileResponseMap);
 
         /* Do invalid attempt */
         final Map<Identifier, StringResponseData> stringResponseMap = new HashMap<Identifier, StringResponseData>();
-        stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("x"));
+        stringResponseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("x"));
         candidateItemDeliveryService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Then valid attempt */
         stringResponseMap.clear();
-        stringResponseMap.put(new Identifier("RESPONSE"), new StringResponseData("ChoiceA"));
+        stringResponseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
         candidateItemDeliveryService.handleAttempt(candidateItemSession, stringResponseMap, null);
 
         /* Render new state */

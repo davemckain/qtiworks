@@ -89,6 +89,6 @@ public class IdentifierValueAcceptTest {
      */
     @Test
     public void testParseIdentifier() {
-        assertEquals(expectedIdentifier, new IdentifierValue(new Identifier(string)).toQtiString());
+        assertEquals(expectedIdentifier, new IdentifierValue(Identifier.parseString(string)).toQtiString());
     }
 }

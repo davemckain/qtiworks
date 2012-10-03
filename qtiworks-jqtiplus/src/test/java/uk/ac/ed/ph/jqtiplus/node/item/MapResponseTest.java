@@ -92,12 +92,12 @@ public class MapResponseTest {
         this.expectedOutcome = expectedOutcome;
 
         if (responses.length == 1) {
-            response = new IdentifierValue(new Identifier(responses[0]));
+            response = new IdentifierValue(Identifier.parseString(responses[0]));
         }
         else {
             final List<IdentifierValue> values = new ArrayList<IdentifierValue>();
             for (final String s : responses) {
-                values.add(new IdentifierValue(new Identifier(s)));
+                values.add(new IdentifierValue(Identifier.parseString(s)));
             }
             response = MultipleValue.createMultipleValue(values);
         }
