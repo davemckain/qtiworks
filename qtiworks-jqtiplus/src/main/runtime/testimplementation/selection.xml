@@ -1,0 +1,37 @@
+<!--
+
+Selection and ordering examples
+
+-->
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    identifier="minimal" title="Minimal Test"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd">
+  <testPart identifier="part0" navigationMode="linear" submissionMode="individual">
+    <assessmentSection identifier="s" title="section" visible="false">
+      <selection select="10" withReplacement="true"/>
+      <ordering shuffle="true"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="c1" fixed="true"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="c2"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="c3" fixed="true"/>
+    </assessmentSection>
+  </testPart>
+  <testPart identifier="part1" navigationMode="linear" submissionMode="individual">
+    <assessmentSection identifier="section" title="Section" visible="true">
+      <!--<selection select="10"/>-->
+      <ordering shuffle="true"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="choice1" required="true"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="choice2" required="true"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="choice3" required="true"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="choice4"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="choice5"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="choice6"/>
+      <assessmentItemRef href="questions/choice.xml" identifier="choice7"/>
+      <assessmentSection identifier="section" title="Section 2" visible="false" keepTogether="true">
+        <selection select="10" withReplacement="true"/>
+        <ordering shuffle="true"/>
+        <assessmentItemRef href="questions/choice.xml" identifier="choiceB1"/>
+        <assessmentItemRef href="questions/choice.xml" identifier="choiceB2"/>
+      </assessmentSection>
+    </assessmentSection>
+  </testPart>
+</assessmentTest>

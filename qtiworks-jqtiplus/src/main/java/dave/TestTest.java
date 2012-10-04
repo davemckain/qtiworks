@@ -9,6 +9,9 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
@@ -28,7 +31,7 @@ public final class TestTest {
 
     public static void main(final String[] args) throws Exception {
 //        final URI inputUri = URI.create("classpath:/testimplementation/non_unique_identifier.xml");
-        final URI inputUri = URI.create("classpath:/testimplementation/minimal.xml");
+        final URI inputUri = URI.create("classpath:/testimplementation/selection.xml");
 
         System.out.println("Reading and validating");
         final QtiXmlReader qtiXmlReader = new QtiXmlReader(new JqtiExtensionManager());
@@ -40,8 +43,11 @@ public final class TestTest {
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
 
         final AssessmentTest test = result.getResolvedAssessmentTest().getTestLookup().getRootNodeHolder().getRootNode();
-        final AssessmentTestPlanner testPlanner = new AssessmentTestPlanner(test);
-        final TestPlan testPlan = testPlanner.run();
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final ListenerNotificationFirer notificationFirer = new ListenerNotificationFirer();
+        notificationFirer.addNotificationListener(notificationRecorder);
+        final AssessmentTestPlanner testPlanner = new AssessmentTestPlanner(test, notificationFirer);
+        final TestPlan testPlan = testPlanner.generateTestPlan();
         System.out.println(testPlan.debugStructure());
     }
 }

@@ -65,12 +65,15 @@ public final class TestPlan implements Serializable {
         return testPlanRootNode;
     }
 
-    /**
-     * FIXME: Finish this off!
-     * FIXME: What to do if not found?
-     */
-    public TestPlanNode getSectionPart(final Identifier identifier, final int instanceNumber) {
-        return null;
+    public TestPlanNode getNodeInstance(final Identifier identifier, final int instanceNumber) {
+        final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
+        if (nodesForIdentifier==null) {
+            return null;
+        }
+        if (instanceNumber<0 || instanceNumber>=nodesForIdentifier.size()) {
+            return null;
+        }
+        return nodesForIdentifier.get(instanceNumber);
     }
 
     //-------------------------------------------------------------------

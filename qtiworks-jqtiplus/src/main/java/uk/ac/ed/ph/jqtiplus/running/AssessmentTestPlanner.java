@@ -39,9 +39,9 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
+import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.state.SectionPartState;
-import uk.ac.ed.ph.jqtiplus.state.SectionPartStateKey;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -70,14 +70,14 @@ public final class AssessmentTestPlanner {
     private static final Logger logger = LoggerFactory.getLogger(AssessmentTestPlanner.class);
 
     /**
-     * Private class used to build up computed tree structure below {@link TestPart}s.
+     * Private class used to build up a temporary tree structure below {@link TestPart}s.
      */
-    private static class RuntimeTreeNode {
+    private static class BuildTreeNode {
 
         private final SectionPart sectionPart;
-        private final List<RuntimeTreeNode> childNodes;
+        private final List<BuildTreeNode> childNodes;
 
-        public RuntimeTreeNode(final SectionPart sectionPart, final List<RuntimeTreeNode> childNodes) {
+        public BuildTreeNode(final SectionPart sectionPart, final List<BuildTreeNode> childNodes) {
             this.sectionPart = sectionPart;
             this.childNodes = childNodes;
         }
@@ -86,7 +86,7 @@ public final class AssessmentTestPlanner {
             return sectionPart;
         }
 
-        public List<RuntimeTreeNode> getChildNodes() {
+        public List<BuildTreeNode> getChildNodes() {
             return childNodes;
         }
 
@@ -100,28 +100,26 @@ public final class AssessmentTestPlanner {
     }
 
     private final AssessmentTest test;
+    private final NotificationFirer notificationFirer;
 
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
     private final TestPlanNode testPlanRootNode;
 
-    @Deprecated
-    private final Map<SectionPartStateKey, SectionPartState> sectionPartStateMap;
-
-    public AssessmentTestPlanner(final AssessmentTest test) {
+    public AssessmentTestPlanner(final AssessmentTest test, final NotificationFirer notificationFirer) {
         this.test = test;
+        this.notificationFirer = notificationFirer;
         this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
         this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, null, 0);
-        this.sectionPartStateMap = new HashMap<SectionPartStateKey, SectionPartState>();
     }
 
-    public TestPlan run() {
+    public TestPlan generateTestPlan() {
         logger.debug("Creating a test plan for test {}", test.getIdentifier());
         testPlanNodesByIdentifierMap.clear();
 
         final List<TestPlanNode> testPlanNodes = new ArrayList<TestPlanNode>();
         for (final TestPart testPart : test.getTestParts()) {
             /* Process test part */
-            final List<RuntimeTreeNode> runtimeChildNodes = doTestPart(testPart);
+            final List<BuildTreeNode> runtimeChildNodes = doTestPart(testPart);
             logger.debug("Result of processing testPart {} is {}", testPart.getIdentifier(), runtimeChildNodes);
 
             /* Build up tree */
@@ -134,13 +132,13 @@ public final class AssessmentTestPlanner {
         return result;
     }
 
-    private List<RuntimeTreeNode> doTestPart(final TestPart testPart) {
-        logger.debug("Initialising testPart {}", testPart.getIdentifier());
+    private List<BuildTreeNode> doTestPart(final TestPart testPart) {
+        logger.debug("Handling testPart {}", testPart.getIdentifier());
 
         /* Process each AssessmentSection */
-        final List<RuntimeTreeNode> runtimeChildNodes = new ArrayList<RuntimeTreeNode>();
+        final List<BuildTreeNode> runtimeChildNodes = new ArrayList<BuildTreeNode>();
         for (final AssessmentSection section : testPart.getAssessmentSections()) {
-            final RuntimeTreeNode sectionNode = doAssessmentSectionState(section);
+            final BuildTreeNode sectionNode = doAssessmentSection(section);
 
             /* Flatten out invisible AssessmentSections */
             if (section.getVisible()) {
@@ -153,10 +151,10 @@ public final class AssessmentTestPlanner {
         return runtimeChildNodes;
     }
 
-    private RuntimeTreeNode doSectionPart(final SectionPart sectionPart) {
-        RuntimeTreeNode result;
+    private BuildTreeNode doSectionPart(final SectionPart sectionPart) {
+        BuildTreeNode result;
         if (sectionPart instanceof AssessmentSection) {
-            result = doAssessmentSectionState((AssessmentSection) sectionPart);
+            result = doAssessmentSection((AssessmentSection) sectionPart);
         }
         else if (sectionPart instanceof AssessmentItemRef) {
             result = doAssessmentItemRef((AssessmentItemRef) sectionPart);
@@ -167,8 +165,8 @@ public final class AssessmentTestPlanner {
         return result;
     }
 
-    private RuntimeTreeNode doAssessmentSectionState(final AssessmentSection section) {
-        logger.debug("Initialising instance of assessmentSection {}", section.getIdentifier());
+    private BuildTreeNode doAssessmentSection(final AssessmentSection section) {
+        logger.debug("Handling assessmentSection {}", section.getIdentifier());
 
         /* We first need to select which children we're going to have */
         List<SectionPart> afterSelection;
@@ -180,17 +178,16 @@ public final class AssessmentTestPlanner {
             /* Select all children */
             afterSelection = section.getSectionParts();
         }
-        logger.info("After selection for section {} have {}", section, afterSelection);
 
-        /* Set up each selected child */
-        final List<RuntimeTreeNode> childNodes = new ArrayList<RuntimeTreeNode>();
+        /* Handle each selected child */
+        final List<BuildTreeNode> childNodes = new ArrayList<BuildTreeNode>();
         for (final SectionPart sectionPart : afterSelection) {
             childNodes.add(doSectionPart(sectionPart));
         }
-        logger.info("Initialisation of child Nodes for section {} resulted in {}", section, childNodes);
+        logger.debug("Initialisation of child Nodes for section {} resulted in {}", section, childNodes);
 
         /* Then we do ordering, if requested */
-        List<RuntimeTreeNode> afterOrdering;
+        List<BuildTreeNode> afterOrdering;
         final Ordering ordering = section.getOrdering();
         if (ordering != null && ordering.getShuffle()) {
             afterOrdering = orderSectionParts(childNodes);
@@ -201,8 +198,8 @@ public final class AssessmentTestPlanner {
         logger.info("Ordering of child Nodes for section {} resulted in {}", section, afterOrdering);
 
         /* Flatten invisible child assessmentSections */
-        final List<RuntimeTreeNode> afterFlattening = new ArrayList<RuntimeTreeNode>();
-        for (final RuntimeTreeNode childNode : afterOrdering) {
+        final List<BuildTreeNode> afterFlattening = new ArrayList<BuildTreeNode>();
+        for (final BuildTreeNode childNode : afterOrdering) {
             if (childNode.getSectionPart() instanceof AssessmentSection) {
                 final AssessmentSection childSection = (AssessmentSection) childNode.getSectionPart();
                 if (childSection.getVisible()) {
@@ -217,45 +214,82 @@ public final class AssessmentTestPlanner {
             }
         }
 
-        return new RuntimeTreeNode(section, afterFlattening);
+        return new BuildTreeNode(section, afterFlattening);
     }
 
-    private RuntimeTreeNode doAssessmentItemRef(final AssessmentItemRef itemRef) {
-        logger.debug("Initialising instance of assessmentItemRef {}", itemRef.getIdentifier());
-        return new RuntimeTreeNode(itemRef, Collections.<RuntimeTreeNode> emptyList());
+    private BuildTreeNode doAssessmentItemRef(final AssessmentItemRef itemRef) {
+        logger.debug("Handling assessmentItemRef {}", itemRef.getIdentifier());
+        return new BuildTreeNode(itemRef, Collections.<BuildTreeNode> emptyList());
     }
 
     private List<SectionPart> selectSectionParts(final AssessmentSection assessmentSection) {
         final List<SectionPart> children = assessmentSection.getSectionParts();
+        final Selection selection = assessmentSection.getSelection();
         final int childCount = children.size();
+        int requestedSelections = selection.getSelect();
 
-        /* Work out how many selections to make for each child */
-        final int[] selectionCounts = new int[childCount]; /* (Number of selections made per child) */
-        int requiredCount = 0;
-        for (int i = 0; i < childCount; i++) {
+        /* Handle edge and corner cases */
+        if (requestedSelections < 0) {
+            notificationFirer.fireRuntimeWarning(assessmentSection,
+                    "The requested number of selections (" + requestedSelections
+                    + ") is negative and is being treated as an empty selection");
+            requestedSelections = 0;
+        }
+        if (requestedSelections==0) {
+            return Collections.emptyList();
+        }
+        if (!selection.getWithReplacement() && requestedSelections > childCount) {
+            /* Trivial corner case: not enough children for selection without replacement */
+            notificationFirer.fireRuntimeWarning(assessmentSection,
+                    "The requested number of selections (" + requestedSelections
+                    + ") is greater than the number of children (" + childCount
+                    + "), which makes selection without replacement impossible. "
+                    + "As a result, all children have been selected.");
+            return children;
+        }
+
+        final int[] selectionsPerChild = new int[childCount]; /* (Number of selections to make per child) */
+        int requiredChildCount = 0; /* (Number of children marked as required) */
+
+        /* Note any required selections */
+        for (int i=0; i<childCount; i++) {
             if (children.get(i).getRequired()) {
-                selectionCounts[i]++;
-                requiredCount++;
+                selectionsPerChild[i]++;
+                requiredChildCount++;
             }
         }
-        final int toSelect = assessmentSection.getSelection().getSelect() - requiredCount;
-        final Random random = new Random(System.currentTimeMillis());
-        if (assessmentSection.getSelection().getWithReplacement()) {
-            for (int i = 0; i < toSelect; i++) {
-                final int index = random.nextInt(childCount);
-                selectionCounts[index]++;
-            }
+        if (requiredChildCount > requestedSelections) {
+            notificationFirer.fireRuntimeWarning(assessmentSection,
+                    "The requested number of selections (" + requestedSelections
+                    + ") was smaller than the number of children marked as 'required' ("
+                    + requiredChildCount
+                    + "). All required children will be selected");
+            requestedSelections = requiredChildCount;
         }
-        else {
-            for (int i = 0; i < toSelect; i++) {
-                int index = random.nextInt(childCount - requiredCount - i);
-                for (int j = 0; j < selectionCounts.length; j++) {
-                    if (selectionCounts[j] == 0) {
-                        index--;
-                    }
-                    if (index == -1) {
-                        selectionCounts[j]++;
-                        break;
+
+        /* Now decide how many selections to make from remaining children */
+        final int remainingSelections = requestedSelections - requiredChildCount;
+        if (remainingSelections > 0) {
+            final Random random = new Random(System.currentTimeMillis());
+            if (selection.getWithReplacement()) {
+                /* Selection with replacement */
+                for (int i=0; i<remainingSelections; i++) {
+                    final int index = random.nextInt(childCount);
+                    selectionsPerChild[index]++;
+                }
+            }
+            else {
+                /* Selection without replacement */
+                for (int i=0; i<remainingSelections; i++) {
+                    int index = random.nextInt(childCount - requiredChildCount - i);
+                    for (int j=0; j<selectionsPerChild.length; j++) {
+                        if (selectionsPerChild[j] == 0) {
+                            index--;
+                        }
+                        if (index == -1) {
+                            selectionsPerChild[j]++;
+                            break;
+                        }
                     }
                 }
             }
@@ -265,17 +299,17 @@ public final class AssessmentTestPlanner {
         final List<SectionPart> result = new ArrayList<SectionPart>();
         for (int i = 0; i < childCount; i++) {
             final SectionPart sectionPart = children.get(i);
-            for (int j = 0; j < selectionCounts[i]; j++) {
+            for (int j = 0; j < selectionsPerChild[i]; j++) {
                 result.add(sectionPart);
             }
         }
         return result;
     }
 
-    private List<RuntimeTreeNode> orderSectionParts(final List<RuntimeTreeNode> childNodes) {
+    private List<BuildTreeNode> orderSectionParts(final List<BuildTreeNode> childNodes) {
         /* Merge all invisible assessmentSections with keepTogether=false now */
-        final List<RuntimeTreeNode> beforeShuffle = new ArrayList<RuntimeTreeNode>();
-        for (final RuntimeTreeNode item : childNodes) {
+        final List<BuildTreeNode> beforeShuffle = new ArrayList<BuildTreeNode>();
+        for (final BuildTreeNode item : childNodes) {
             final SectionPart sectionPart = item.getSectionPart();
             if (sectionPart instanceof AssessmentSection) {
                 final AssessmentSection section = (AssessmentSection) sectionPart;
@@ -292,8 +326,8 @@ public final class AssessmentTestPlanner {
         }
 
         /* Extract the entries to be shuffled */
-        final List<RuntimeTreeNode> toShuffle = new ArrayList<RuntimeTreeNode>();
-        for (final RuntimeTreeNode item : beforeShuffle) {
+        final List<BuildTreeNode> toShuffle = new ArrayList<BuildTreeNode>();
+        for (final BuildTreeNode item : beforeShuffle) {
             if (!item.getSectionPart().getFixed()) {
                 toShuffle.add(item);
             }
@@ -303,9 +337,9 @@ public final class AssessmentTestPlanner {
         Collections.shuffle(toShuffle);
 
         /* Merge the shuffled items in */
-        final List<RuntimeTreeNode> afterShuffle = new ArrayList<RuntimeTreeNode>();
-        final Iterator<RuntimeTreeNode> shuffledIterator = toShuffle.iterator();
-        for (final RuntimeTreeNode item : beforeShuffle) {
+        final List<BuildTreeNode> afterShuffle = new ArrayList<BuildTreeNode>();
+        final Iterator<BuildTreeNode> shuffledIterator = toShuffle.iterator();
+        for (final BuildTreeNode item : beforeShuffle) {
             if (!item.getSectionPart().getFixed()) {
                 afterShuffle.add(shuffledIterator.next());
             }
@@ -315,8 +349,8 @@ public final class AssessmentTestPlanner {
         }
 
         /* Finally, merge remaining invisible assessmentSections with keepTogether=true */
-        final List<RuntimeTreeNode> result = new ArrayList<RuntimeTreeNode>();
-        for (final RuntimeTreeNode item : afterShuffle) {
+        final List<BuildTreeNode> result = new ArrayList<BuildTreeNode>();
+        for (final BuildTreeNode item : afterShuffle) {
             final SectionPart sectionPart = item.getSectionPart();
             if (sectionPart instanceof AssessmentSection) {
                 final AssessmentSection section = (AssessmentSection) sectionPart;
@@ -338,21 +372,21 @@ public final class AssessmentTestPlanner {
 
     //------------------------------------------------------
 
-    private TestPlanNode recordTestPartPlan(final TestPart testPart, final List<RuntimeTreeNode> runtimeChildNodes) {
+    private TestPlanNode recordTestPartPlan(final TestPart testPart, final List<BuildTreeNode> runtimeChildNodes) {
         final TestPlanNode result = recordTestPlanNode(testPlanRootNode, TestNodeType.TEST_PART, testPart.getIdentifier());
         recordChildPlans(result, runtimeChildNodes);
         return result;
     }
 
-    private List<TestPlanNode> recordChildPlans(final TestPlanNode targetParent, final List<RuntimeTreeNode> treeNodes) {
+    private List<TestPlanNode> recordChildPlans(final TestPlanNode targetParent, final List<BuildTreeNode> treeNodes) {
         final List<TestPlanNode> result = new ArrayList<TestPlanNode>();
-        for (final RuntimeTreeNode treeNode : treeNodes) {
+        for (final BuildTreeNode treeNode : treeNodes) {
             result.add(recordChildPlans(targetParent, treeNode));
         }
         return result;
     }
 
-    private TestPlanNode recordChildPlans(final TestPlanNode targetParent, final RuntimeTreeNode treeNode) {
+    private TestPlanNode recordChildPlans(final TestPlanNode targetParent, final BuildTreeNode treeNode) {
         final SectionPart sectionPart = treeNode.getSectionPart();
         TestPlanNode result;
         if (sectionPart instanceof AssessmentSection) {

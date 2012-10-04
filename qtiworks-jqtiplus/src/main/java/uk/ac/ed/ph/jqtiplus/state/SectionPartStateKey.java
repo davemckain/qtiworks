@@ -41,9 +41,10 @@ import java.io.Serializable;
 /**
  * Composite of an {@link Identifier} and an integer, used to uniquely refer to instances of {@link SectionPart}s. We need this to accommodate the case of
  * selection without replacement.
- * 
+ *
  * @author David McKain
  */
+@Deprecated
 public final class SectionPartStateKey implements Serializable {
 
     private static final long serialVersionUID = 4455522269963629406L;
@@ -77,7 +78,7 @@ public final class SectionPartStateKey implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof SectionPartStateKey)) {
             return false;
         }

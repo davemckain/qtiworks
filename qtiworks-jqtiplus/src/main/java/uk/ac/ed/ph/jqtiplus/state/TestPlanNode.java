@@ -35,6 +35,10 @@ package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
@@ -43,7 +47,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * FIXME: Document this type!
+ * Represents an instance of a {@link TestPart}, {@link AssessmentSection}
+ * or {@link AssessmentItemRef} in a {@link TestPlan}.
+ *
+ * @see TestPlan
  *
  * @author David McKain
  */
@@ -52,20 +59,34 @@ public final class TestPlanNode implements Serializable {
     private static final long serialVersionUID = -1618684181224400175L;
 
     public static enum TestNodeType {
-        ROOT,
+        ROOT, /* NB: ROOT is only used internally */
         TEST_PART,
         ASSESSMENT_SECTION,
         ASSESSMENT_ITEM_REF,
         ;
     }
 
+    /** Parent Node (set internally) */
     private TestPlanNode parentNode;
+
+    /** Index within siblings, starting at 0 */
     private int siblingIndex;
 
+    /** Type of Node represented */
     private final TestNodeType testNodeType;
+
+    /** {@link Identifier} of the Node in the {@link AssessmentTest} model */
     private final Identifier identifier;
+
+    /**
+     * Instance number of this {@link Identifier} within the plan, starting at 1.
+     * This can be greater than 1 in the following cases:
+     * - selection with replacement
+     * - identifiers being reused (which is invalid)
+     */
     private final int instanceNumber;
 
+    /** Children of this Node */
     private final List<TestPlanNode> children;
 
     public TestPlanNode(final TestNodeType testNodeType, final Identifier identifier, final int instanceNumber) {
