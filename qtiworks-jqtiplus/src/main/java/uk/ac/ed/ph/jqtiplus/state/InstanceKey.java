@@ -31,26 +31,60 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.running;
+package uk.ac.ed.ph.jqtiplus.state;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.io.Serializable;
 
 /**
- * Extension of {@link ProcessingContext} passed when running an {@link AssessmentItem}
+ * Pairing of an {@link Identifier} and an {@link Integer} used for
+ * referring to instances of an {@link AssessmentItemRef} or similar
  *
  * @author David McKain
  */
-public interface ItemProcessingContext extends ProcessingContext {
+public final class InstanceKey implements Serializable {
 
-    AssessmentItem getSubjectItem();
+    private static final long serialVersionUID = 1928489721725826864L;
 
-    ItemSessionState getItemSessionState();
+    /** Identifier used to refer to this {@link AbstractPart} in the enclosing AssessmentTest */
+    private final Identifier identifier;
 
-    Value computeDefaultValue(Identifier identifier);
+    private final int instanceNumber;
 
-    Value computeCorrectResponse(Identifier responseIdentifier);
+    public InstanceKey(final Identifier identifier, final int instanceNumber) {
+        this.identifier = identifier;
+        this.instanceNumber = instanceNumber;
+    }
 
+    public Identifier getIdentifier() {
+        return identifier;
+    }
+
+    public int getInstanceNumber() {
+        return instanceNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + identifier.toString() + "," + instanceNumber + ")";
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof InstanceKey)) {
+            return false;
+        }
+        final InstanceKey other = (InstanceKey) obj;
+        return ObjectUtilities.nullSafeEquals(identifier, other.identifier)
+                && instanceNumber==other.instanceNumber;
+    }
 }

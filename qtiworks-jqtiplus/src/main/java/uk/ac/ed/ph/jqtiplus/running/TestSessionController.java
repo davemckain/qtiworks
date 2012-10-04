@@ -27,30 +27,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Extension of {@link ProcessingContext} passed when running an {@link AssessmentItem}
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public interface ItemProcessingContext extends ProcessingContext {
+public final class TestSessionController {
 
-    AssessmentItem getSubjectItem();
+    private static final Logger logger = LoggerFactory.getLogger(TestSessionController.class);
 
-    ItemSessionState getItemSessionState();
+    private final JqtiExtensionManager jqtiExtensionManager;
+    private final ResolvedAssessmentTest resolvedAssessmentTest;
+    private final TestSessionState testSessionState;
 
-    Value computeDefaultValue(Identifier identifier);
+    public TestSessionController(final JqtiExtensionManager jqtiExtensionManager,
+            final ResolvedAssessmentTest resolvedAssessmentTest,
+            final TestSessionState testSessionState) {
+        this.jqtiExtensionManager = jqtiExtensionManager;
+        this.resolvedAssessmentTest = resolvedAssessmentTest;
+        this.testSessionState = testSessionState;
+    }
 
-    Value computeCorrectResponse(Identifier responseIdentifier);
+    public JqtiExtensionManager getJqtiExtensionManager() {
+        return jqtiExtensionManager;
+    }
 
+    public ResolvedAssessmentTest getResolvedAssessmentTest() {
+        return resolvedAssessmentTest;
+    }
+
+    public TestSessionState getTestSessionState() {
+        return testSessionState;
+    }
 }
