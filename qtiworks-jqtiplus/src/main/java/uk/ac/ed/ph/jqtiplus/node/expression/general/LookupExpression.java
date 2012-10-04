@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.running.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
+import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;

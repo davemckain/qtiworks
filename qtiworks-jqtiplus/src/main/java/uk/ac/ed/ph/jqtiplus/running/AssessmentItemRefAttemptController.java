@@ -40,8 +40,8 @@ import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
-import uk.ac.ed.ph.jqtiplus.state.TimeRecord;
+import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
+import uk.ac.ed.ph.jqtiplus.state.legacy.TimeRecord;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.Date;

@@ -38,8 +38,8 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
-import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
+import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentTestState;
+import uk.ac.ed.ph.jqtiplus.state.legacy.ControlObjectState;
 
 /**
  * THIS IS A MINIMISED BUT NON-FUNCTIONAL VERSION OF THE CLASS IN THE UNREFACTORED MODULE

@@ -31,58 +31,44 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.state;
+package uk.ac.ed.ph.jqtiplus.state.legacy;
 
-import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
-import java.io.Serializable;
+import java.util.List;
 
 /**
- * Composite of an {@link Identifier} and an integer, used to uniquely refer to instances of {@link SectionPart}s. We need this to accommodate the case of
- * selection without replacement.
- *
+ * Encapsulates the runtime state of an {@link AssessmentSection}
+ * 
  * @author David McKain
  */
-@Deprecated
-public final class SectionPartStateKey implements Serializable {
+@ObjectDumperOptions(DumpMode.DEEP)
+public final class AssessmentSectionState extends SectionPartState {
 
-    private static final long serialVersionUID = 4455522269963629406L;
+    private static final long serialVersionUID = -1465101870364998266L;
 
-    /** Identifier used to refer to SectionPart in the enclosing AssessmentTest */
-    private final Identifier identifier;
-
-    private final int siblingIndex;
-
-    public SectionPartStateKey(final Identifier identifier, final int siblingIndex) {
-        this.identifier = identifier;
-        this.siblingIndex = siblingIndex;
+    public AssessmentSectionState(AssessmentTestState testState, Identifier identifier, int siblingIndex,
+            List<? extends SectionPartState> runtimeSectionPartStates) {
+        super(testState, identifier, siblingIndex, runtimeSectionPartStates);
     }
 
-    public Identifier getIdentifier() {
-        return identifier;
+    public List<? extends SectionPartState> getRuntimeSectionPartStates() {
+        return childStates;
     }
 
-    public int getSiblingIndex() {
-        return siblingIndex;
-    }
+    //-------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return identifier.toString() + "@" + siblingIndex;
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(testIdentifier=" + testIdentifier
+                + ",siblingIndex=" + siblingIndex
+                + ",finished=" + isFinished()
+                + ",runtimeSectionPartStates=" + getRuntimeSectionPartStates()
+                + ")";
     }
 
-    @Override
-    public int hashCode() {
-        return toString().hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof SectionPartStateKey)) {
-            return false;
-        }
-        final SectionPartStateKey other = (SectionPartStateKey) obj;
-        return toString().equals(other.toString()); /* (String rep is suitably unique) */
-    }
 }

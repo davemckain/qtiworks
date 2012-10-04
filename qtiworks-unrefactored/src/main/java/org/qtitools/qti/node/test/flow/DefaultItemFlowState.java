@@ -33,7 +33,7 @@
  */
 package org.qtitools.qti.node.test.flow;
 
-import uk.ac.ed.ph.jqtiplus.state.SectionPartStateKey;
+import uk.ac.ed.ph.jqtiplus.state.legacy.SectionPartStateKey;
 
 import java.io.Serializable;
 

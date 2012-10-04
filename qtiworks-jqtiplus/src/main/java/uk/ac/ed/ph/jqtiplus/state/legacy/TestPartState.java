@@ -31,66 +31,46 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.state;
+package uk.ac.ed.ph.jqtiplus.state.legacy;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Encapsulates the runtime state of an {@link AbstractPart}
- * 
+ * Encapsulates the runtime state of an {@link TestPart}
+ *
  * @author David McKain
  */
-public abstract class AbstractPartState extends ControlObjectState<Identifier> {
+@ObjectDumperOptions(DumpMode.DEEP)
+public final class TestPartState extends AbstractPartState {
 
-    private static final long serialVersionUID = 3905562260354725912L;
+    private static final long serialVersionUID = 5713456627632942141L;
 
-    /** State for the owning {@link AssessmentTest} */
-    protected final AssessmentTestState testState;
+    /** READ-ONLY list of runtime {@link SectionPartState}s, taking into account selections and ordering */
+    private final List<SectionPartState> runtimeSectionPartStates;
 
-    /** Read-only access to parent in state hierarchy. This may differ from the hierarchy in the test due to selection/ordering/visibility */
-    protected ControlObjectState<?> parentState;
-
-    /** Read-only access to parent in state hierarchy. This may differ from the hierarchy in the test due to selection/ordering/visibility */
-    protected final List<? extends SectionPartState> childStates;
-
-    public AbstractPartState(AssessmentTestState testState, Identifier testIdentifier, List<? extends SectionPartState> childStates) {
-        super(testIdentifier);
-        this.testState = testState;
-        this.childStates = Collections.unmodifiableList(childStates);
-        this.finished = false;
-        for (final SectionPartState childState : childStates) {
-            childState.setParentState(this);
-        }
+    public TestPartState(AssessmentTestState testState, Identifier identifier, List<SectionPartState> runtimeSectionPartStates) {
+        super(testState, identifier, runtimeSectionPartStates);
+        this.runtimeSectionPartStates = Collections.unmodifiableList(runtimeSectionPartStates);
     }
 
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public AssessmentTestState getTestState() {
-        return testState;
+    public List<SectionPartState> getRuntimeSectionPartStates() {
+        return runtimeSectionPartStates;
     }
 
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public ControlObjectState<?> getParentState() {
-        return parentState;
-    }
+    //-------------------------------------------------------------------
 
-    /**
-     * Used only to complete the parent/child hierarchy. JQTI client applications MUST NOT call this.
-     * 
-     * @param parentState
-     */
-    protected void setParentState(ControlObjectState<?> parentState) {
-        this.parentState = parentState;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(identifier=" + testIdentifier
+                + ",finished=" + isFinished()
+                + ",runtimeSectionPartStates=" + runtimeSectionPartStates
+                + ")";
     }
-
-    public List<? extends SectionPartState> getChildStates() {
-        return childStates;
-    }
-
 }

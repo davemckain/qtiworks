@@ -35,6 +35,9 @@ package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
+import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 import uk.ac.ed.ph.jqtiplus.running.AssessmentTestPlanner;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
@@ -43,9 +46,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * FIXME: Document this type!
- * TODO: Document that this is immutable!
+ * Represents the shape of an {@link AssessmentTest} once
+ * {@link Ordering} and {@link Selection} have been applied.
+ * <p>
+ * An instance of this class should be consider immutable once created.
  *
+ * @see TestPlanNode
  * @see AssessmentTestPlanner
  */
 @ObjectDumperOptions(DumpMode.DEEP)
