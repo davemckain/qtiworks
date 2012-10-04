@@ -12,8 +12,8 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentTestInitializer;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
+import uk.ac.ed.ph.jqtiplus.running.AssessmentTestPlanner;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
@@ -39,13 +39,9 @@ public final class TestTest {
         final TestValidationResult result = objectManager.resolveAndValidateTest(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
 
-        if (result.isValid()) {
-            final AssessmentTest test = result.getResolvedAssessmentTest().getTestLookup().getRootNodeHolder().getRootNode();
-            final AssessmentTestState testState = new AssessmentTestState(test);
-            final AssessmentTestInitializer initializer = new AssessmentTestInitializer(test, testState);
-            initializer.run();
-
-            System.out.println("Test state after init: " + ObjectDumper.dumpObject(testState, DumpMode.DEEP));
-        }
+        final AssessmentTest test = result.getResolvedAssessmentTest().getTestLookup().getRootNodeHolder().getRootNode();
+        final AssessmentTestPlanner testPlanner = new AssessmentTestPlanner(test);
+        final TestPlan testPlan = testPlanner.run();
+        System.out.println(testPlan.debugStructure());
     }
 }

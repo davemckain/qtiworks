@@ -43,6 +43,8 @@ import java.util.List;
 
 /**
  * Abstract super class for test part and section part.
+ * <p>
+ * NB: This is not explicitly defined in the QTI specification, but is convenient here.
  *
  * @author Jiri Kajaba
  */

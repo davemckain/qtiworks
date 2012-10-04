@@ -34,23 +34,18 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.state.AbstractPartState;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentItemRefState;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionState;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentTestState;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.SectionPartState;
 import uk.ac.ed.ph.jqtiplus.state.SectionPartStateKey;
-import uk.ac.ed.ph.jqtiplus.state.TestPartState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,18 +59,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Helper that performs the selection and ordering of the underlying Objects in the {@link AssessmentTest}.
+ * FIXME: Document this type!
  *
- * FIXME: Part of the work done here is now done by {@link AssessmentTestPlanner}. Refactoring is required
- *
- * @see AssessmentTestPlanner
+ * Usage: use once and discard; not thread safe.
  *
  * @author David McKain
  */
-@ToRefactor
-public final class AssessmentTestInitializer {
+public final class AssessmentTestPlanner {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentTestInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentTestPlanner.class);
 
     /**
      * Private class used to build up computed tree structure below {@link TestPart}s.
@@ -83,7 +75,6 @@ public final class AssessmentTestInitializer {
     private static class RuntimeTreeNode {
 
         private final SectionPart sectionPart;
-
         private final List<RuntimeTreeNode> childNodes;
 
         public RuntimeTreeNode(final SectionPart sectionPart, final List<RuntimeTreeNode> childNodes) {
@@ -110,36 +101,37 @@ public final class AssessmentTestInitializer {
 
     private final AssessmentTest test;
 
-    private final AssessmentTestState testState;
+    private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
+    private final TestPlanNode testPlanRootNode;
 
-    private final Map<Identifier, List<AbstractPartState>> abstractPartStateMap;
-
+    @Deprecated
     private final Map<SectionPartStateKey, SectionPartState> sectionPartStateMap;
 
-    public AssessmentTestInitializer(final AssessmentTest test, final AssessmentTestState testState) {
+    public AssessmentTestPlanner(final AssessmentTest test) {
         this.test = test;
-        this.testState = testState;
-        this.abstractPartStateMap = new HashMap<Identifier, List<AbstractPartState>>();
+        this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
+        this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, null, 0);
         this.sectionPartStateMap = new HashMap<SectionPartStateKey, SectionPartState>();
     }
 
-    public void run() {
-        logger.debug("Initialising state Object for test {}", test.getIdentifier());
-        abstractPartStateMap.clear();
+    public TestPlan run() {
+        logger.debug("Creating a test plan for test {}", test.getIdentifier());
+        testPlanNodesByIdentifierMap.clear();
 
-        final List<TestPartState> testPartStates = new ArrayList<TestPartState>();
+        final List<TestPlanNode> testPlanNodes = new ArrayList<TestPlanNode>();
         for (final TestPart testPart : test.getTestParts()) {
             /* Process test part */
             final List<RuntimeTreeNode> runtimeChildNodes = doTestPart(testPart);
             logger.debug("Result of processing testPart {} is {}", testPart.getIdentifier(), runtimeChildNodes);
 
-            /* Build up state */
-            final TestPartState testPartState = buildTestPartState(testPart, runtimeChildNodes);
-            testPartStates.add(testPartState);
+            /* Build up tree */
+            final TestPlanNode testPlanNode = recordTestPartPlan(testPart, runtimeChildNodes);
+            testPlanNodes.add(testPlanNode);
         }
 
-        testState.initialize(testPartStates, abstractPartStateMap, sectionPartStateMap);
-        logger.info("Resulting state for test {} is {}", test.getIdentifier(), testState);
+        final TestPlan result = new TestPlan(testPlanRootNode, testPlanNodesByIdentifierMap);
+        logger.info("Computed test plan for test {} is {}", test.getIdentifier(), result);
+        return result;
     }
 
     private List<RuntimeTreeNode> doTestPart(final TestPart testPart) {
@@ -346,52 +338,58 @@ public final class AssessmentTestInitializer {
 
     //------------------------------------------------------
 
-    private TestPartState buildTestPartState(final TestPart testPart, final List<RuntimeTreeNode> runtimeChildNodes) {
-        final TestPartState result = new TestPartState(testState, testPart.getIdentifier(), buildState(runtimeChildNodes));
-        registerAbstractPartStateLookup(testPart, result);
+    private TestPlanNode recordTestPartPlan(final TestPart testPart, final List<RuntimeTreeNode> runtimeChildNodes) {
+        final TestPlanNode result = recordTestPlanNode(testPlanRootNode, TestNodeType.TEST_PART, testPart.getIdentifier());
+        recordChildPlans(result, runtimeChildNodes);
         return result;
     }
 
-    private List<SectionPartState> buildState(final List<RuntimeTreeNode> treeNodes) {
-        final List<SectionPartState> result = new ArrayList<SectionPartState>();
-        for (int i = 0, size = treeNodes.size(); i < size; i++) {
-            final RuntimeTreeNode treeNode = treeNodes.get(i);
-            result.add(buildState(treeNode, i));
+    private List<TestPlanNode> recordChildPlans(final TestPlanNode targetParent, final List<RuntimeTreeNode> treeNodes) {
+        final List<TestPlanNode> result = new ArrayList<TestPlanNode>();
+        for (final RuntimeTreeNode treeNode : treeNodes) {
+            result.add(recordChildPlans(targetParent, treeNode));
         }
         return result;
     }
 
-    private SectionPartState buildState(final RuntimeTreeNode treeNode, final int siblingIndex) {
+    private TestPlanNode recordChildPlans(final TestPlanNode targetParent, final RuntimeTreeNode treeNode) {
         final SectionPart sectionPart = treeNode.getSectionPart();
-        SectionPartState result;
+        TestPlanNode result;
         if (sectionPart instanceof AssessmentSection) {
-            final AssessmentSection section = (AssessmentSection) sectionPart;
-            final List<SectionPartState> childStates = buildState(treeNode.getChildNodes());
-            result = new AssessmentSectionState(testState, section.getIdentifier(), siblingIndex, childStates);
+            result = recordTestPlanNode(targetParent, TestNodeType.ASSESSMENT_SECTION, sectionPart.getIdentifier());
         }
         else if (sectionPart instanceof AssessmentItemRef) {
-            final AssessmentItemRef itemRef = (AssessmentItemRef) sectionPart;
-
-            final ItemSessionState itemState = new ItemSessionState();
-            final AssessmentItemRefState itemRefState = new AssessmentItemRefState(testState, itemRef.getIdentifier(), siblingIndex, itemState);
-// FIXME: Need to set item's duration to the correct value here. We used to have an ItemTimeRecord but this has been removed
-//            itemState.setTimeRecord(itemRefState.getTimeRecord());
-            result = itemRefState;
+            result = recordTestPlanNode(targetParent, TestNodeType.ASSESSMENT_ITEM_REF, sectionPart.getIdentifier());
         }
         else {
             throw new QtiLogicException("Unexpected logic branch: sectionPart=" + sectionPart);
         }
-        registerAbstractPartStateLookup(sectionPart, result);
-        sectionPartStateMap.put(result.getSectionPartStateKey(), result);
+        recordChildPlans(result, treeNode.getChildNodes());
         return result;
     }
 
-    private void registerAbstractPartStateLookup(final AbstractPart abstractPart, final AbstractPartState abstractPartState) {
-        List<AbstractPartState> statesForIdentifier = abstractPartStateMap.get(abstractPart.getIdentifier());
-        if (statesForIdentifier == null) {
-            statesForIdentifier = new ArrayList<AbstractPartState>();
-            abstractPartStateMap.put(abstractPart.getIdentifier(), statesForIdentifier);
+    private int computeCurrentInstanceCount(final Identifier identifier) {
+        final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
+        return nodesForIdentifier!=null ? nodesForIdentifier.size() : 0;
+    }
+
+    private TestPlanNode recordTestPlanNode(final TestPlanNode parent, final TestNodeType testNodeType,
+            final Identifier identifier) {
+        /* Compute instance number for this identifier */
+        final int instanceNumber = 1 + computeCurrentInstanceCount(identifier);
+
+        /* Create resulting Node and add to tree */
+        final TestPlanNode result = new TestPlanNode(testNodeType, identifier, instanceNumber);
+        parent.addChild(result);
+
+        /* Record nodes for this Identifier */
+        List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
+        if (nodesForIdentifier == null) {
+            nodesForIdentifier = new ArrayList<TestPlanNode>();
+            testPlanNodesByIdentifierMap.put(identifier, nodesForIdentifier);
         }
-        statesForIdentifier.add(abstractPartState);
+        nodesForIdentifier.add(result);
+
+        return result;
     }
 }
