@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.running;
+package uk.ac.ed.ph.jqtiplus.running.legacy;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiItemFlowException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.state.legacy.TimeRecord;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;

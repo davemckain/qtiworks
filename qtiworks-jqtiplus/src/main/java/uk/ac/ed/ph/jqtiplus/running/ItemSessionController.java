@@ -656,7 +656,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         return result;
     }
 
-    void recordItemVariables(final ItemResult result) {
+    public void recordItemVariables(final ItemResult result) {
         final List<ItemVariable> itemVariables = result.getItemVariables();
         itemVariables.clear();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
