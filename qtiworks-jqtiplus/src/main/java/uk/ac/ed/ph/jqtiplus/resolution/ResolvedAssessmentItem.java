@@ -36,16 +36,22 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
+import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException.VariableResolutionFailureReason;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Wraps up the lookup of an {@link AssessmentItem} and its corresponding
- * {@link ResponseProcessing} template (where applicable). 
- * 
+ * {@link ResponseProcessing} template (where applicable).
+ *
  * @author David McKain
  */
 public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<AssessmentItem> {
@@ -54,53 +60,76 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
 
     /** {@link AssessmentItem} lookup */
     private final RootNodeLookup<AssessmentItem> itemLookup;
-    
+
     /** Resolved {@link ResponseProcessing} template, if specified, otherwise null */
     private final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup;
-    
+
     public ResolvedAssessmentItem(final ModelRichness modelRichness, final RootNodeLookup<AssessmentItem> itemLookup, final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup) {
         super(modelRichness, itemLookup);
         this.itemLookup = itemLookup;
         this.resolvedResponseProcessingTemplateLookup = resolvedResponseProcessingTemplateLookup;
     }
-    
+
     @Override
     public AssessmentObjectType getType() {
         return AssessmentObjectType.ASSESSMENT_ITEM;
     }
-    
+
     public RootNodeLookup<AssessmentItem> getItemLookup() {
         return itemLookup;
     }
-    
+
     public RootNodeLookup<ResponseProcessing> getResolvedResponseProcessingTemplateLookup() {
         return resolvedResponseProcessingTemplateLookup;
     }
 
+    public List<VariableDeclaration> resolveVariableReferenceNew(final Identifier variableReferenceIdentifier) {
+        if (!itemLookup.wasSuccessful()) {
+            return null;
+        }
+        final List<VariableDeclaration> result = new ArrayList<VariableDeclaration>();
+        final AssessmentItem item = itemLookup.extractAssumingSuccessful();
+        for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
+            if (templateDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
+                result.add(templateDeclaration);
+            }
+        }
+        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+            if (responseDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
+                result.add(responseDeclaration);
+            }
+        }
+        for (final OutcomeDeclaration putcomeDeclaration : item.getOutcomeDeclarations()) {
+            if (putcomeDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
+                result.add(putcomeDeclaration);
+            }
+        }
+        return result;
+    }
+
     @Override
-    public VariableDeclaration resolveVariableReference(Identifier variableReferenceIdentifier)
+    @Deprecated
+    public VariableDeclaration resolveVariableReference(final Identifier variableReferenceIdentifier)
             throws VariableResolutionException {
         if (!itemLookup.wasSuccessful()) {
             throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.THIS_ITEM_LOOKUP_FAILURE);
         }
-        AssessmentItem item = itemLookup.extractIfSuccessful();
-        VariableDeclaration result = item.getVariableDeclaration(variableReferenceIdentifier);
+        final AssessmentItem item = itemLookup.extractIfSuccessful();
+        final VariableDeclaration result = item.getVariableDeclaration(variableReferenceIdentifier);
         if (result==null) {
             throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.ITEM_VARIABLE_NOT_DECLARED);
         }
         return result;
     }
-    
+
     @Override
-    public VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier)
+    @Deprecated
+    public VariableDeclaration resolveVariableReference(final VariableReferenceIdentifier variableReferenceIdentifier)
             throws VariableResolutionException {
-        if (variableReferenceIdentifier.isDotted()) {
-            throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.DOTTED_VARIABLE_IN_ITEM);
-        }
         final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
         return resolveVariableReference(localIdentifier);
     }
-    
+
     //-------------------------------------------------------------------
 
     @Override

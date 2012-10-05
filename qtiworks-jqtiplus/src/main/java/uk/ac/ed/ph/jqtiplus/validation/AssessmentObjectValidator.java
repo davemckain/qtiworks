@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -68,7 +66,7 @@ public final class AssessmentObjectValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectValidator.class);
 
-    private final RootNodeProvider rootNodeProvider;
+    final RootNodeProvider rootNodeProvider;
 
     public AssessmentObjectValidator(final RootNodeProvider resourceProvider) {
         this.rootNodeProvider = resourceProvider;
@@ -88,7 +86,7 @@ public final class AssessmentObjectValidator {
                 result.add(new Notification(item.getResponseProcessing(), null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                         "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
-            item.validate(new ItemValidationContextImpl(result, resolvedAssessmentItem));
+            item.validate(new AbstractItemValidationContext(rootNodeProvider.getJqtiExtensionManager(), result, resolvedAssessmentItem));
         }
         else {
             result.add(new Notification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
@@ -141,7 +139,7 @@ public final class AssessmentObjectValidator {
             }
 
             /* Then validate the test itself */
-            test.validate(new TestValidationContextImpl(result, resolvedAssessmentTest));
+            test.validate(new AbstractTestValidationContext(rootNodeProvider.getJqtiExtensionManager(), result, resolvedAssessmentTest));
         }
         else {
             result.add(new Notification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
@@ -152,100 +150,7 @@ public final class AssessmentObjectValidator {
 
     //-------------------------------------------------------------------
 
-    final class ItemValidationContextImpl extends AbstractValidationContext<AssessmentItem> {
 
-        ItemValidationContextImpl(final ItemValidationResult validationResult, final ResolvedAssessmentItem resolvedAssessmentItem) {
-            super(validationResult, resolvedAssessmentItem);
-        }
-
-        @Override
-        public JqtiExtensionManager getJqtiExtensionManager() {
-            return rootNodeProvider.getJqtiExtensionManager();
-        }
-
-        @Override
-        public ResolvedAssessmentItem getResolvedAssessmentItem() {
-            return (ResolvedAssessmentItem) resolvedAssessmentObject;
-        }
-
-        @Override
-        public ResolvedAssessmentTest getResolvedAssessmentTest() {
-            throw fail();
-        }
-
-        @Override
-        public boolean isSubjectItem() {
-            return true;
-        }
-
-        @Override
-        public boolean isSubjectTest() {
-            return false;
-        }
-
-        @Override
-        public AssessmentItem getSubjectItem() {
-            return subject;
-        }
-
-        @Override
-        public AssessmentTest getSubjectTest() {
-            throw fail();
-        }
-
-        private QtiLogicException fail() {
-            return new QtiLogicException("Current ValidationContext is for an item, not a test");
-        }
-    }
-
-
-
-    final class TestValidationContextImpl extends AbstractValidationContext<AssessmentTest> {
-
-        TestValidationContextImpl(final TestValidationResult result, final ResolvedAssessmentTest resolvedAssessmentTest) {
-            super(result, resolvedAssessmentTest);
-        }
-
-        @Override
-        public JqtiExtensionManager getJqtiExtensionManager() {
-            return rootNodeProvider.getJqtiExtensionManager();
-        }
-
-        @Override
-        public ResolvedAssessmentItem getResolvedAssessmentItem() {
-            throw fail();
-        }
-
-        @Override
-        public ResolvedAssessmentTest getResolvedAssessmentTest() {
-            return (ResolvedAssessmentTest) resolvedAssessmentObject;
-        }
-
-
-        @Override
-        public boolean isSubjectItem() {
-            return false;
-        }
-
-        @Override
-        public boolean isSubjectTest() {
-            return true;
-        }
-
-        @Override
-        public AssessmentItem getSubjectItem() {
-            throw fail();
-        }
-
-        @Override
-        public AssessmentTest getSubjectTest() {
-            return subject;
-        }
-
-        private QtiLogicException fail() {
-            return new QtiLogicException("Current ValidationContext is for a test, not an item");
-        }
-    }
 
     //-------------------------------------------------------------------
 

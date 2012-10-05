@@ -398,6 +398,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     //---------------------------------------------------------------
 
+    @Deprecated
     @Override
     public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
         VariableDeclaration result = getResponseDeclaration(identifier);

@@ -35,12 +35,15 @@ package uk.ac.ed.ph.jqtiplus.types;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.expression.general.Variable;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.Serializable;
 
 /**
- * FIXME: This needs to support double-dotted identifiers.
+ * FIXME: This is no longer going to work like this. It's going to be exactly the same as
+ * {@link Identifier}, but will be used for when the special dotted variable references are
+ * allowed. (E.g. in {@link Variable}.)
  *
  * Encapsulates an identifier used as a variable *reference*. This concept isn't made
  * explicit in the QTI specification.
@@ -126,18 +129,26 @@ public final class VariableReferenceIdentifier implements Serializable {
         this.value = assessmentItemRefIdentifier.toString() + "." + assessmentItemItemVariableIdentifier.toString();
     }
 
+    public Identifier asIdentifier() {
+        return new Identifier(value);
+    }
+
+    @Deprecated
     public Identifier getLocalIdentifier() {
         return localIdentifier;
     }
 
+    @Deprecated
     public Identifier getAssessmentItemRefIdentifier() {
         return assessmentItemRefIdentifier;
     }
 
+    @Deprecated
     public Identifier getAssessmentItemItemVariableIdentifier() {
         return assessmentItemItemVariableIdentifier;
     }
 
+    @Deprecated
     public boolean isDotted() {
         return localIdentifier==null;
     }

@@ -101,7 +101,7 @@ public interface ValidationContext extends NotificationFirer {
     //------------------------------------------------------
 
     /**
-     * Checks that the given {@link VariableReferenceIdentifier} can be correctly dereferenced.
+     * Checks that the variable having the given {@link Identifier} can be correctly dereferenced.
      * A {@link ValidationError} is recorded if this is unsuccessful.
      * <p>
      * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.

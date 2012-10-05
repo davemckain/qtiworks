@@ -44,77 +44,73 @@ import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
  *
  * @author David McKain
  */
+@Deprecated
 public final class VariableResolutionException extends QtiException {
 
     private static final long serialVersionUID = -6987026133309921007L;
-    
+
     public static enum VariableResolutionFailureReason {
-        
+
         // Item-specific failures
-        
-        /** 
+
+        /**
          * Indicates that the lookup of the {@link AssessmentObject} behind a {@link ResolvedAssessmentObject} had failed.
          * (Therefore ALL variable resolutions will automatically fail.)
          */
         THIS_ITEM_LOOKUP_FAILURE("This AssessmentItem was not successfully looked up"),
-        
+
         ITEM_VARIABLE_NOT_DECLARED("The referenced item variable was not declared"),
-        
-        /**
-         * "Dotted" variable references can only be used in tests 
-         */
-        DOTTED_VARIABLE_IN_ITEM("'Dotted' variable references may only be used in AssessmentTests"),
-        
+
         // Test-specific failures
-        
-        /** 
+
+        /**
          * Indicates that the lookup of the {@link AssessmentObject} behind a {@link ResolvedAssessmentObject} had failed.
          * (Therefore ALL variable resolutions will automatically fail.)
          */
         THIS_TEST_LOOKUP_FAILURE("This AssessmentTest was not successfully looked up"),
-        
+
         TEST_VARIABLE_NOT_DECLARED("The referenced test variable was not declared"),
-        
+
         UNMATCHED_ASSESSMENT_ITEM_REF_IDENTIFIER("The variable reference did not match a declared AssessmentItemRef"),
-        
+
         NON_UNIQUE_ASSESSMENT_ITEM_REF_IDENTIFIER("The variable reference matched multiple AssessmentItemRefs"),
-        
+
         TEST_ITEM_LOOKUP_FAILURE("The referenced AssessmentItem was not successfully looked up"),
-        
+
         TEST_MAPPED_ITEM_VARIABLE_NOT_DECLARED("The (mapped) item variable within the referenced AssessmentItem was not declared"),
 
         ;
-        
+
         private final String description;
-        
-        private VariableResolutionFailureReason(String description) {
+
+        private VariableResolutionFailureReason(final String description) {
             this.description = description;
         }
-        
+
         public String getDescription() {
             return description;
         }
 
     }
-    
+
     private final VariableReferenceIdentifier variableReferenceIdentifier;
     private final VariableResolutionFailureReason reason;
-    
-    public VariableResolutionException(Identifier variableReferenceIdentifier, VariableResolutionFailureReason reason) {
+
+    public VariableResolutionException(final Identifier variableReferenceIdentifier, final VariableResolutionFailureReason reason) {
         this(variableReferenceIdentifier.toVariableReferenceIdentifier(), reason);
     }
-    
-    public VariableResolutionException(VariableReferenceIdentifier variableReferenceIdentifier, VariableResolutionFailureReason reason) {
+
+    public VariableResolutionException(final VariableReferenceIdentifier variableReferenceIdentifier, final VariableResolutionFailureReason reason) {
         super("Resolution of variable reference " + variableReferenceIdentifier
                 + " failed: " + reason.getDescription());
         this.variableReferenceIdentifier = variableReferenceIdentifier;
         this.reason = reason;
     }
-    
+
     public VariableReferenceIdentifier getVariableReferenceIdentifier() {
         return variableReferenceIdentifier;
     }
-    
+
     public VariableResolutionFailureReason getReason() {
         return reason;
     }

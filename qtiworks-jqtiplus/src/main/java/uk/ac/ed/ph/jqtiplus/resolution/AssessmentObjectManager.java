@@ -166,6 +166,7 @@ public final class AssessmentObjectManager {
     }
 
     private ResolvedAssessmentTest initResolvedAssessmentTest(final RootNodeLookup<AssessmentTest> testLookup, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
+        final List<AssessmentItemRef> assessmentItemRefs = new ArrayList<AssessmentItemRef>();
         final Map<AssessmentItemRef, URI> systemIdByItemRefMap = new HashMap<AssessmentItemRef, URI>();
         final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap = new HashMap<Identifier, List<AssessmentItemRef>>();
         final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new HashMap<URI, List<AssessmentItemRef>>();
@@ -175,7 +176,7 @@ public final class AssessmentObjectManager {
         if (testLookup.wasSuccessful()) {
             /* Resolve the system ID of each assessmentItemRef */
             final AssessmentTest test = testLookup.extractIfSuccessful();
-            final List<AssessmentItemRef> assessmentItemRefs = QueryUtils.search(AssessmentItemRef.class, test);
+            assessmentItemRefs.addAll(QueryUtils.search(AssessmentItemRef.class, test));
             for (final AssessmentItemRef itemRef : assessmentItemRefs) {
                 final Identifier identifier = itemRef.getIdentifier();
                 if (identifier!=null) {
@@ -204,8 +205,8 @@ public final class AssessmentObjectManager {
                 resolvedAssessmentItemMap.put(itemSystemId, resolveAssessmentItem(itemSystemId, modelRichness, cachedResourceProvider));
             }
         }
-        return new ResolvedAssessmentTest(modelRichness, testLookup, itemRefsByIdentifierMap,
-                systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
+        return new ResolvedAssessmentTest(modelRichness, testLookup, assessmentItemRefs,
+                itemRefsByIdentifierMap, systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
     }
 
     public TestValidationResult resolveAndValidateTest(final URI systemId) {

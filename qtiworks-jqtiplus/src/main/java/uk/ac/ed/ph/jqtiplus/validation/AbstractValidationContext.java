@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -41,9 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
-import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -53,14 +51,16 @@ import uk.ac.ed.ph.jqtiplus.value.Signature;
  *
  * @author David McKain
  */
-public abstract class AbstractValidationContext<E extends AssessmentObject> extends AbstractNotificationFirer
+abstract class AbstractValidationContext<E extends AssessmentObject> extends AbstractNotificationFirer
         implements ValidationContext {
 
+    protected final JqtiExtensionManager jqtiExtensionManager;
     protected final AbstractValidationResult validationResult;
     protected final ResolvedAssessmentObject<E> resolvedAssessmentObject;
     protected final E subject;
 
-    AbstractValidationContext(final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
+    AbstractValidationContext(final JqtiExtensionManager jqtiExtensionManager, final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
+        this.jqtiExtensionManager = jqtiExtensionManager;
         this.validationResult = validationResult;
         this.resolvedAssessmentObject = resolvedAssessmentObject;
         this.subject = resolvedAssessmentObject.getRootNodeLookup().extractAssumingSuccessful();
@@ -77,34 +77,18 @@ public abstract class AbstractValidationContext<E extends AssessmentObject> exte
     }
 
     @Override
+    public final JqtiExtensionManager getJqtiExtensionManager() {
+        return jqtiExtensionManager;
+    }
+
+    @Override
     public final AssessmentObject getSubject() {
         return subject;
     }
 
     @Override
-    public final VariableDeclaration checkVariableReference(final QtiNode owner, final Identifier variableDeclarationIdentifier) {
-        try {
-            return resolvedAssessmentObject.resolveVariableReference(variableDeclarationIdentifier);
-        }
-        catch (final VariableResolutionException e) {
-            fireValidationError(owner, e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public final VariableDeclaration checkVariableReference(final QtiNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
-        try {
-            return resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
-        }
-        catch (final VariableResolutionException e) {
-            fireValidationError(owner, e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public boolean checkVariableType(final QtiNode owner, final VariableDeclaration variableDeclaration, final VariableType... allowedTypes) {
+    public boolean checkVariableType(final QtiNode owner, final VariableDeclaration variableDeclaration,
+            final VariableType... allowedTypes) {
         Assert.notNull(variableDeclaration);
         if (allowedTypes.length==0) {
             throw new IllegalArgumentException("Expected at leas one VariableType to be specified");
@@ -131,7 +115,8 @@ public abstract class AbstractValidationContext<E extends AssessmentObject> exte
     }
 
     @Override
-    public boolean checkSignature(final QtiNode owner, final VariableDeclaration variableDeclaration, final Signature... allowedSignatures) {
+    public boolean checkSignature(final QtiNode owner, final VariableDeclaration variableDeclaration,
+            final Signature... allowedSignatures) {
         Assert.notNull(variableDeclaration);
         boolean found = false;
         for (final Signature signature : allowedSignatures) {
@@ -158,7 +143,8 @@ public abstract class AbstractValidationContext<E extends AssessmentObject> exte
     }
 
     @Override
-    public boolean checkBaseType(final QtiNode owner, final VariableDeclaration variableDeclaration, final BaseType... allowedBaseTypes) {
+    public boolean checkBaseType(final QtiNode owner, final VariableDeclaration variableDeclaration,
+            final BaseType... allowedBaseTypes) {
         Assert.notNull(variableDeclaration);
         if (allowedBaseTypes.length==0) {
             throw new IllegalArgumentException("Expected at least one baseType to be specified");
@@ -187,7 +173,8 @@ public abstract class AbstractValidationContext<E extends AssessmentObject> exte
     }
 
     @Override
-    public boolean checkCardinality(final QtiNode owner, final VariableDeclaration variableDeclaration, final Cardinality... allowedSignatures) {
+    public boolean checkCardinality(final QtiNode owner, final VariableDeclaration variableDeclaration,
+            final Cardinality... allowedSignatures) {
         Assert.notNull(variableDeclaration);
         boolean result;
         if (variableDeclaration.getCardinality().isOneOf(allowedSignatures)) {

@@ -46,20 +46,20 @@ import java.util.List;
  * <p>
  * These have an <tt>identifier</tt> attribute which can be an arbitrary string,
  * rather than an identifier!
- * 
+ *
  * @see AssessmentItem
  * @see AssessmentTest
- * 
+ *
  * @author David McKain
  */
 public interface AssessmentObject extends RootNode, IdentifiableNode<String> {
-    
+
     AssessmentObjectType getType();
-    
+
     String getTitle();
-    
+
     void setTitle(String title);
-    
+
     String getToolName();
 
     void setToolName(String toolName);
@@ -73,9 +73,10 @@ public interface AssessmentObject extends RootNode, IdentifiableNode<String> {
     OutcomeDeclaration getOutcomeDeclaration(Identifier identifier);
 
     /**
-     * Convenience method to return the appropriate {@link VariableDeclaration} with the given identifier
-     * within the {@link AssessmentItem} or {@link AssessmentTest}
+     * Convenience method to return the (first) appropriate {@link VariableDeclaration} with the given identifier
+     * within the {@link AssessmentItem} or {@link AssessmentTest}.
      */
+    @Deprecated
     VariableDeclaration getVariableDeclaration(Identifier identifier);
 
 }
