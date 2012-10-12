@@ -167,7 +167,7 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
     @Override
     public void validateBasic(final ValidationContext context) {
         if (required && value==null) {
-            context.fireAttributeValidationError(this, "Required attribute has not been assigned a value: " + localName);
+            context.fireAttributeValidationError(this, "Required attribute '" + localName + "' has not been assigned a value");
         }
     }
 }

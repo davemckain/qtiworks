@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node;
 
+import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.AttributeList;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
@@ -261,7 +262,7 @@ public abstract class AbstractNode implements QtiNode {
     }
 
     @Override
-    public void validate(final ValidationContext context) {
+    public final void validate(final ValidationContext context) {
         /* Do basic checking on individual Attributes */
         attributes.validateBasic(context);
 
@@ -277,6 +278,10 @@ public abstract class AbstractNode implements QtiNode {
      * required for this {@link AbstractNode}. This might involve complex
      * validation of attributes, or extraction of data from other {@link AbstractNode}s
      * in the hierarchy.
+     * <p>
+     * The {@link Attribute}s of this Node will have had basic checks made before
+     * this method has been called, so implementations don't have to repeat this
+     * but should still treat attributes defensively.
      * <p>
      * Subclasses should be aware that children of this {@link AbstractNode}
      * will *not* have been validated at the time this method is called, so

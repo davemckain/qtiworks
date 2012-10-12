@@ -163,18 +163,25 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
         return Signature.getSignature(cardinality, baseType);
     }
 
+    public boolean hasValidSignature() {
+        final Cardinality cardinality = getCardinality();
+        final BaseType baseType = getBaseType();
+        return cardinality!=null && !(cardinality==Cardinality.RECORD && baseType!=null);
+    }
+
     @Override
     protected void validateThis(final ValidationContext context) {
         validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
 
         final Cardinality cardinality = getCardinality();
-        if (cardinality != null) {
-            if (!cardinality.isRecord() && getBaseType() == null) {
-                context.fireValidationError(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") is not defined.");
+        if (cardinality!=null) {
+            final BaseType baseType = getBaseType();
+            if (!cardinality.isRecord() && baseType==null) {
+                context.fireValidationError(this, "Attribute '" + ATTR_BASE_TYPE_NAME + "' must be defined for variables with cardinality " + cardinality);
             }
 
-            if (cardinality.isRecord() && getBaseType() != null) {
-                context.fireValidationWarning(this, "Attribute (" + ATTR_BASE_TYPE_NAME + ") should not be defined.");
+            if (cardinality.isRecord() && baseType!=null) {
+                context.fireValidationWarning(this, "Attribute '" + ATTR_BASE_TYPE_NAME + "' must not be defined for variables with cardinality " + cardinality);
             }
         }
     }

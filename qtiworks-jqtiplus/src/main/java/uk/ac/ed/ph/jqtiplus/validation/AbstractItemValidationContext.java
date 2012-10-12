@@ -107,7 +107,12 @@ class AbstractItemValidationContext extends AbstractValidationContext<Assessment
         else if (variableDeclarations.size()==1) {
             /* Found and unique, which is what we want */
             final VariableDeclaration declaration = variableDeclarations.get(0);
-            return declaration.getCardinality()!=null ? declaration : null;
+            if (declaration.hasValidSignature()) {
+                fireValidationWarning(owner, "Item variable referenced by identifier '" + variableReferenceIdentifier
+                        + "' has an invalid cardinality/baseType combination so no further validation will be performed on this reference");
+                return null;
+            }
+            return declaration;
         }
         else if (variableDeclarations.isEmpty()) {
             /* No variable found */

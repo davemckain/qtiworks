@@ -240,11 +240,6 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
-    public final void validate(final ValidationContext context) {
-        super.validate(context);
-    }
-
-    @Override
     protected void validateThis(final ValidationContext context) {
         final Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
         final Cardinality[] producedCardinalities = getProducedCardinalities(context);

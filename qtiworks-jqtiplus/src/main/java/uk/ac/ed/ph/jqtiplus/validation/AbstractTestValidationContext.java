@@ -103,7 +103,12 @@ class AbstractTestValidationContext extends AbstractValidationContext<Assessment
         else if (outcomeDeclarations.size()==1) {
             /* Found and unique which is what we want */
             final OutcomeDeclaration outcomeDeclaration = outcomeDeclarations.get(0);
-            return outcomeDeclaration.getCardinality()!=null ? outcomeDeclaration : null;
+            if (outcomeDeclaration.hasValidSignature()) {
+                fireValidationWarning(owner, "Test (or referenced item) variable referenced by identifier '" + variableReferenceIdentifier
+                        + "' has an invalid cardinality/baseType combination so no further validation will be performed on this reference");
+                return null;
+            }
+            return outcomeDeclaration;
         }
         if (outcomeDeclarations.isEmpty()) {
             /* No variable found */
@@ -127,7 +132,12 @@ class AbstractTestValidationContext extends AbstractValidationContext<Assessment
         else if (resolvedReferences.size()==1) {
             /* Found and unique which is what we want */
             final VariableDeclaration declaration = resolvedReferences.get(0).getVariableDeclaration();
-            return declaration.getCardinality()!=null ? declaration : null;
+            if (declaration.hasValidSignature()) {
+                fireValidationWarning(owner, "Test (or referenced item) variable referenced by identifier '" + variableReferenceIdentifier
+                        + "' has an invalid cardinality/baseType combination so no further validation will be performed on this reference");
+                return null;
+            }
+            return declaration;
         }
         if (resolvedReferences.isEmpty()) {
             /* No variable found */
