@@ -145,7 +145,7 @@ public final class PositionObjectInteraction extends BlockInteraction {
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         final int maxChoices = getMaxChoices();
         final Integer minChoices = getMinChoices();
 
@@ -157,21 +157,18 @@ public final class PositionObjectInteraction extends BlockInteraction {
             context.fireValidationError(this, "Minimum number of choices can't be less than 1");
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration!=null) {
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isPoint()) {
-                    context.fireValidationError(this, "Response variable must have point base type");
-                }
+        if (responseDeclaration!=null) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isPoint()) {
+                context.fireValidationError(this, "Response variable must have point base type");
+            }
 
-                if (maxChoices == 1 && declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
-                        !declaration.getCardinality().isMultiple()) {
-                    context.fireValidationError(this, "Response variable must have single or multiple cardinality");
-                }
+            if (maxChoices == 1 && !responseDeclaration.getCardinality().isSingle() &&
+                    !responseDeclaration.getCardinality().isMultiple()) {
+                context.fireValidationError(this, "Response variable must have single or multiple cardinality");
+            }
 
-                if (maxChoices != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                    context.fireValidationError(this, "Response variable must have multiple cardinality");
-                }
+            if (maxChoices != 1 && !responseDeclaration.getCardinality().isMultiple()) {
+                context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }
     }

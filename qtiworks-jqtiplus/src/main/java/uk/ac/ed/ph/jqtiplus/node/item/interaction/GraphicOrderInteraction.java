@@ -147,7 +147,7 @@ public final class GraphicOrderInteraction extends GraphicInteraction implements
     }
 
     @Override
-    public void validateThis(final ValidationContext context) {
+    public void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         final Integer minChoices = getMinChoices();
         final Integer maxChoices = getMaxChoices();
 
@@ -163,13 +163,12 @@ public final class GraphicOrderInteraction extends GraphicInteraction implements
             context.fireValidationError(this, "Maximum number of choices cannot be larger than the number of choice children");
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
+        if (responseDeclaration!=null) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isIdentifier()) {
                 context.fireValidationError(this, "Response variable must have identifier base type");
             }
 
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isOrdered()) {
+            if (!responseDeclaration.getCardinality().isOrdered()) {
                 context.fireValidationError(this, "Response variable must have ordered cardinality");
             }
         }

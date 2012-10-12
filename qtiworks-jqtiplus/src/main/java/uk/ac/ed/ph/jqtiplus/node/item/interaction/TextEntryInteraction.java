@@ -152,22 +152,18 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration!=null) {
-                if (declaration.getCardinality() != null
-                        && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isRecord())) {
-                    context.fireValidationError(this, "Response variable must have single or record cardinality");
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
+        if (responseDeclaration!=null) {
+            if (!(responseDeclaration.getCardinality().isSingle() || responseDeclaration.getCardinality().isRecord())) {
+                context.fireValidationError(this, "Response variable must have single or record cardinality");
+            }
+            if (!responseDeclaration.getCardinality().isRecord()) {
+                if (!(responseDeclaration.getBaseType().isString() || responseDeclaration.getBaseType().isNumeric())) {
+                    context.fireValidationError(this, "Response variable must have string or numeric base type");
                 }
-                if (declaration.getCardinality() != null && !declaration.getCardinality().isRecord()) {
-                    if (!(declaration.getBaseType().isString() || declaration.getBaseType().isNumeric())) {
-                        context.fireValidationError(this, "Response variable must have string or numeric base type");
-                    }
-                }
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10) {
-                    context.fireValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored.");
-                }
+            }
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isFloat() && getBase() != 10) {
+                context.fireValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored.");
             }
         }
 

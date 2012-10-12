@@ -148,7 +148,7 @@ public final class HotspotInteraction extends GraphicInteraction implements Hots
     }
 
     @Override
-    public void validateThis(final ValidationContext context) {
+    public void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         final int minChoices = getMinChoices();
         final int maxChoices = getMaxChoices();
 
@@ -156,19 +156,18 @@ public final class HotspotInteraction extends GraphicInteraction implements Hots
             context.fireValidationError(this, "Maximum number of choices must be greater or equal to minimum number of choices");
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
+        if (responseDeclaration != null) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isIdentifier()) {
                 context.fireValidationError(this, "Response variable must have identifier base type");
             }
 
-            if (declaration != null && maxChoices == 1 &&
-                    declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
-                    !declaration.getCardinality().isMultiple()) {
+            if (maxChoices == 1 &&
+                    !responseDeclaration.getCardinality().isSingle() &&
+                    !responseDeclaration.getCardinality().isMultiple()) {
                 context.fireValidationError(this, "Response variable must have single or multiple cardinality");
             }
 
-            if (declaration != null && maxChoices != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+            if (maxChoices != 1 && responseDeclaration.getCardinality().isMultiple()) {
                 context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }

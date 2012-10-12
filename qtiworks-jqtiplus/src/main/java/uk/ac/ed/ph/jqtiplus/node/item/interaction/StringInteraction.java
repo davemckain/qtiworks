@@ -102,28 +102,28 @@ public interface StringInteraction {
     static final String ATTR_PLACEHOLDER_TEXT_NAME = "placeholderText";
 
     /** Name of stringValue key if response is bound to A record container. */
-    static final Identifier KEY_STRING_VALUE_NAME = new Identifier("stringValue");
+    static final Identifier KEY_STRING_VALUE_NAME = Identifier.assumedLegal("stringValue");
 
     /** Name of floatValue key if response is bound to A record container. */
-    static final Identifier KEY_FLOAT_VALUE_NAME = new Identifier("floatValue");
+    static final Identifier KEY_FLOAT_VALUE_NAME = Identifier.assumedLegal("floatValue");
 
     /** Name of integerValue key if response is bound to A record container. */
-    static final Identifier KEY_INTEGER_VALUE_NAME = new Identifier("integerValue");
+    static final Identifier KEY_INTEGER_VALUE_NAME = Identifier.assumedLegal("integerValue");
 
     /** Name of leftDigits key if response is bound to A record container. */
-    static final Identifier KEY_LEFT_DIGITS_NAME = new Identifier("leftDigits");
+    static final Identifier KEY_LEFT_DIGITS_NAME = Identifier.assumedLegal("leftDigits");
 
     /** Name of rightDigits key if response is bound to A record container. */
-    static final Identifier KEY_RIGHT_DIGITS_NAME = new Identifier("rightDigits");
+    static final Identifier KEY_RIGHT_DIGITS_NAME = Identifier.assumedLegal("rightDigits");
 
     /** Name of ndp key if response is bound to A record container. */
-    static final Identifier KEY_NDP_NAME = new Identifier("ndp");
+    static final Identifier KEY_NDP_NAME = Identifier.assumedLegal("ndp");
 
     /** Name of nsf key if response is bound to A record container. */
-    static final Identifier KEY_NSF_NAME = new Identifier("nsf");
+    static final Identifier KEY_NSF_NAME = Identifier.assumedLegal("nsf");
 
     /** Name of exponent key if response is bound to A record container. */
-    static final Identifier KEY_EXPONENT_NAME = new Identifier("exponent");
+    static final Identifier KEY_EXPONENT_NAME = Identifier.assumedLegal("exponent");
 
     int getBase();
     void setBase(Integer base);

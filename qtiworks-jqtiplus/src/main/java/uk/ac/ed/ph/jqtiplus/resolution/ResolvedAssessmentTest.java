@@ -193,7 +193,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
                 final Matcher matcher = pattern.matcher(itemRefIdentifier.toString());
                 if (matcher.matches()) {
                     final Integer instanceNumber = Integer.valueOf(matcher.group(1));
-                    final Identifier possibleItemVariableIdentifier = new Identifier(matcher.group(2));
+                    final Identifier possibleItemVariableIdentifier = Identifier.assumedLegal(matcher.group(2));
 
                     final List<VariableDeclaration> itemVariableDeclarations = tryItemVariableDeclaration(itemRef, possibleItemVariableIdentifier);
                     if (itemVariableDeclarations!=null) {
@@ -208,7 +208,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
                 final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\p{L}.+)$");
                 final Matcher matcher = pattern.matcher(itemRefIdentifier.toString());
                 if (matcher.matches()) {
-                    final Identifier possibleItemVariableIdentifier = new Identifier(matcher.group(1));
+                    final Identifier possibleItemVariableIdentifier = Identifier.assumedLegal(matcher.group(1));
 
                     final List<VariableDeclaration> itemVariableDeclarations = tryItemVariableDeclaration(itemRef, possibleItemVariableIdentifier);
                     if (itemVariableDeclarations!=null) {
@@ -241,7 +241,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     private List<VariableDeclaration> tryItemVariableDeclaration(final AssessmentItemRef itemRef, final Identifier possibleItemVariableIdentifier) {
         final Identifier possibleMappedItemVarIdentifier = itemRef.resolveVariableMapping(possibleItemVariableIdentifier);
         final ResolvedAssessmentItem resolvedItem = getResolvedAssessmentItem(itemRef);
-        return resolvedItem.resolveVariableReferenceNew(possibleMappedItemVarIdentifier);
+        return resolvedItem.resolveVariableReference(possibleMappedItemVarIdentifier);
     }
 
     @Override

@@ -163,12 +163,12 @@ public final class ItemSessionState implements Serializable {
 
     @ObjectDumperOptions(DumpMode.IGNORE)
     public FloatValue getDurationValue() {
-        return (FloatValue) responseValues.get(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER);
+        return (FloatValue) responseValues.get(AssessmentItem.VARIABLE_DURATION_IDENTIFIER);
     }
 
     public void setDurationValue(final FloatValue value) {
         Assert.notNull(value);
-        responseValues.put(AssessmentItem.VARIABLE_DURATION_NAME_IDENTIFIER, value);
+        responseValues.put(AssessmentItem.VARIABLE_DURATION_IDENTIFIER, value);
     }
 
     public double getDuration() {

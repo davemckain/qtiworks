@@ -72,7 +72,11 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
      * This should ONLY be used for identifiers that are known to be valid, such as the ones
      * defined in the QTI specification.
      */
-    public Identifier(final String value) {
+    public static Identifier assumedLegal(final String value) {
+        return new Identifier(value);
+    }
+
+    private Identifier(final String value) {
         this.value = value;
     }
 
@@ -130,5 +134,6 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
             }
         }
     }
+
 
 }

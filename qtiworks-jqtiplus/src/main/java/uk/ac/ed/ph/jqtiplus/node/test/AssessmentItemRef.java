@@ -357,8 +357,8 @@ public final class AssessmentItemRef extends SectionPart {
     @ToCheck
     public boolean isBuiltInVariable(final Identifier identifier) {
         if (identifier != null) {
-            if (identifier.toString().equals(AssessmentItem.VARIABLE_COMPLETION_STATUS)
-                    || identifier.toString().equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS)) {
+            if (identifier.equals(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER)
+                    || identifier.equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
                 return true;
             }
         }

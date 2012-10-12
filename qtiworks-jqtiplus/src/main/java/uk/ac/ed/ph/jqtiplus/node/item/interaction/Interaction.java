@@ -41,6 +41,8 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -95,19 +97,37 @@ public abstract class Interaction extends BodyElement {
     }
 
 
+    /**
+     * NB: Don't use this for validation as it only returns the first {@link ResponseDeclaration}
+     * if found, so is no good for validating references.
+     */
     public ResponseDeclaration getResponseDeclaration() {
         return getRootNode(AssessmentItem.class).getResponseDeclaration(getResponseIdentifier());
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration == null) {
-                context.fireValidationError(this, "Response declaration for variable (" + getResponseIdentifier() + ") not found");
+    protected final void validateThis(final ValidationContext context) {
+        final Identifier responseIdentifier = getResponseIdentifier();
+        ResponseDeclaration responseDeclaration = null;
+        if (responseIdentifier!=null) {
+            final VariableDeclaration declaration = context.checkVariableReference(this, responseIdentifier);
+            if (declaration!=null && declaration.getCardinality()!=null
+                    && context.checkVariableType(this, declaration, VariableType.RESPONSE)) {
+                responseDeclaration = (ResponseDeclaration) declaration;
             }
         }
+        validateThis(context, responseDeclaration);
     }
+
+    /**
+     * Partial implementation of {@link #validateThis(ValidationContext)} that looks up the
+     * target {@link ResponseDeclaration} and checks that it is unique and of the correct type.
+     *
+     * @param context {@link ValidationContext}
+     * @param responseDeclaration resolved {@link ResponseDeclaration}, or null if
+     *   the interaction was not associated with a unique {@link ResponseDeclaration}
+     */
+    protected abstract void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration);
 
     /**
      * Initialize the interaction.

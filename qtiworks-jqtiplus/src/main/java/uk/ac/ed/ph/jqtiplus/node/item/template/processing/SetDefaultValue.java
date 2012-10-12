@@ -38,6 +38,8 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -109,9 +111,9 @@ public final class SetDefaultValue extends ProcessTemplateValue {
     protected void validateThis(final ValidationContext context) {
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
-            final AssessmentItem item = getRootNode(AssessmentItem.class);
-            if (item.getResponseDeclaration(identifier) == null && item.getOutcomeDeclaration(identifier) == null) {
-                context.fireValidationError(this, "Cannot find response or outcome declaration " + getIdentifier());
+            final VariableDeclaration declaration = context.checkVariableReference(this, identifier);
+            if (declaration!=null) {
+                context.checkVariableType(this, declaration, VariableType.RESPONSE, VariableType.TEMPLATE);
             }
         }
     }

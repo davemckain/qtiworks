@@ -59,7 +59,7 @@ public final class UnsupportedCustomInteraction extends CustomInteraction<JqtiEx
     }
 
     @Override
-    protected void validateCustomInteractionAttributes(final FallbackExtensionPackage jqtiExtensionPackaage, final ValidationContext context) {
+    protected void validateThis(final FallbackExtensionPackage jqtiExtensionPackage, final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         /* Nothing more to do */
     }
 

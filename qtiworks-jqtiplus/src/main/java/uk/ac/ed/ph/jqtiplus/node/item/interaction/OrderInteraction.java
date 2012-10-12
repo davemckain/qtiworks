@@ -47,6 +47,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -184,7 +185,7 @@ public final class OrderInteraction extends BlockInteraction implements SimpleCh
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         final Integer maxChoices = getMaxChoices();
         final Integer minChoices = getMinChoices();
 
@@ -200,16 +201,8 @@ public final class OrderInteraction extends BlockInteraction implements SimpleCh
             context.fireValidationError(this, "Maximum number of choices cannot be larger than the number of choice children");
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration!=null) {
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                    context.fireValidationError(this, "Response variable must have identifier base type");
-                }
-                if (declaration.getCardinality() != null && !declaration.getCardinality().isOrdered()) {
-                    context.fireValidationError(this, "Response variable must have ordered cardinality");
-                }
-            }
+        if (responseDeclaration!=null) {
+            context.checkSignature(this, responseDeclaration, Signature.ORDERED_IDENTIFIER);
         }
     }
 

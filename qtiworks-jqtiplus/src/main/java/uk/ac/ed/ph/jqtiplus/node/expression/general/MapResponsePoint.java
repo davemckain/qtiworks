@@ -36,8 +36,8 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
@@ -80,22 +80,21 @@ public final class MapResponsePoint extends AbstractExpression {
 
     @Override
     protected void validateThis(final ValidationContext context) {
-        final AssessmentItem item = context.getSubjectItem();
-        if (item!=null) {
-            final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(getIdentifier());
-            if (responseDeclaration != null) {
-                if (responseDeclaration.getCardinality().isRecord()) {
-                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression cannot be bound to variables with record cardinality");
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.checkVariableReference(this, referenceIdentifier);
+            if (declaration!=null) {
+                if (context.checkVariableType(this, declaration, VariableType.RESPONSE)) {
+                    if (declaration.getCardinality().isRecord()) {
+                        context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression cannot be bound to variables with record cardinality");
+                    }
+                    else if (!declaration.getBaseType().isPoint()) {
+                        context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of point base type");
+                    }
+                    if (((ResponseDeclaration) declaration).getAreaMapping()==null) {
+                        context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find areaMapping for response declaration " + getIdentifier());
+                    }
                 }
-                else if (!responseDeclaration.getBaseType().isPoint()) {
-                    context.fireValidationError(this, "The " + QTI_CLASS_NAME + " expression can only be bound to variables of point base type");
-                }
-                if (responseDeclaration.getAreaMapping()==null) {
-                    context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find areaMapping for response declaration " + getIdentifier());
-                }
-            }
-            else {
-                context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Cannot find response declaration " + getIdentifier());
             }
         }
     }

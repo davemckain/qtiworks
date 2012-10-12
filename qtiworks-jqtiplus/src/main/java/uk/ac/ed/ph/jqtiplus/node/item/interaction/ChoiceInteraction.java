@@ -159,24 +159,22 @@ public final class ChoiceInteraction extends BlockInteraction implements SimpleC
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         if (getMaxChoices() != 0 && getMinChoices() > getMaxChoices()) {
             context.fireValidationError(this, "Minimum number of choices can't be bigger than maximum number");
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
+        if (responseDeclaration!=null) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isIdentifier()) {
                 context.fireValidationError(this, "Response variable must have identifier base type");
             }
 
-            if (declaration != null && getMaxChoices() == 1 &&
-                    declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
-                    !declaration.getCardinality().isMultiple()) {
+            if (getMaxChoices() == 1 && !responseDeclaration.getCardinality().isSingle() &&
+                    !responseDeclaration.getCardinality().isMultiple()) {
                 context.fireValidationError(this, "Response variable must have single or multiple cardinality");
             }
 
-            if (declaration != null && getMaxChoices() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+            if (getMaxChoices() != 1 && !responseDeclaration.getCardinality().isMultiple()) {
                 context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }

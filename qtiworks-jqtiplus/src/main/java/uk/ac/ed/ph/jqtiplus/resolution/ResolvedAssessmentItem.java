@@ -92,25 +92,36 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
      *
      * @param variableReferenceIdentifier
      */
-    public List<VariableDeclaration> resolveVariableReferenceNew(final Identifier variableReferenceIdentifier) {
+    public List<VariableDeclaration> resolveVariableReference(final Identifier variableReferenceIdentifier) {
         if (!itemLookup.wasSuccessful()) {
             return null;
         }
-        final List<VariableDeclaration> result = new ArrayList<VariableDeclaration>();
         final AssessmentItem item = itemLookup.extractAssumingSuccessful();
-        for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
-            if (templateDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
-                result.add(templateDeclaration);
-            }
+        final List<VariableDeclaration> result = new ArrayList<VariableDeclaration>();
+        if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER)) {
+            result.add(item.getResponseDeclaration(AssessmentItem.VARIABLE_DURATION_IDENTIFIER));
         }
-        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (responseDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
-                result.add(responseDeclaration);
-            }
+        else if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
+            result.add(item.getResponseDeclaration(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER));
         }
-        for (final OutcomeDeclaration putcomeDeclaration : item.getOutcomeDeclarations()) {
-            if (putcomeDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
-                result.add(putcomeDeclaration);
+        else if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
+            result.add(item.getOutcomeDeclaration(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER));
+        }
+        else {
+            for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
+                if (templateDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
+                    result.add(templateDeclaration);
+                }
+            }
+            for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
+                if (responseDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
+                    result.add(responseDeclaration);
+                }
+            }
+            for (final OutcomeDeclaration putcomeDeclaration : item.getOutcomeDeclarations()) {
+                if (putcomeDeclaration.getIdentifier().equals(variableReferenceIdentifier)) {
+                    result.add(putcomeDeclaration);
+                }
             }
         }
         return result;

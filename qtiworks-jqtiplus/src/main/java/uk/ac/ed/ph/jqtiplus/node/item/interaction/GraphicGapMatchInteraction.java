@@ -116,17 +116,16 @@ public final class GraphicGapMatchInteraction extends GraphicInteraction impleme
     }
 
     @Override
-    public void validateThis(final ValidationContext context) {
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isDirectedPair()) {
+    public void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
+        if (responseDeclaration!=null) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isDirectedPair()) {
                 context.fireValidationError(this, "Response variable must have directed pair base type");
             }
-
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+            if (!responseDeclaration.getCardinality().isMultiple()) {
                 context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }
+
     }
 
     @Override

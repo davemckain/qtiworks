@@ -153,27 +153,24 @@ public final class MatchInteraction extends BlockInteraction implements SimpleMa
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         if (getMaxAssociations() != 0 && getMinAssociations() > getMaxAssociations()) {
             context.fireValidationError(this, "Minimum number of associations can't be bigger than maximum number");
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration!=null) {
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isDirectedPair()) {
-                    context.fireValidationError(this, "Response variable must have directedPair base type");
-                }
 
-                if (getMaxAssociations() == 1 &&
-                        declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
-                        !declaration.getCardinality().isMultiple()) {
-                    context.fireValidationError(this, "Response variable must have single or multiple cardinality");
-                }
+        if (responseDeclaration!=null) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isDirectedPair()) {
+                context.fireValidationError(this, "Response variable must have directedPair base type");
+            }
 
-                if (getMaxAssociations() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                    context.fireValidationError(this, "Response variable must have multiple cardinality");
-                }
+            if (getMaxAssociations() == 1 && !responseDeclaration.getCardinality().isSingle() &&
+                    !responseDeclaration.getCardinality().isMultiple()) {
+                context.fireValidationError(this, "Response variable must have single or multiple cardinality");
+            }
+
+            if (getMaxAssociations() != 1 && !responseDeclaration.getCardinality().isMultiple()) {
+                context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }
     }

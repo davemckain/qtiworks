@@ -111,10 +111,11 @@ public class MapResponseTest {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getItem();
 
-        if (item.getResponseDeclaration("RESPONSE").getCardinality().isMultiple() && response.getCardinality().isSingle()) {
+        final Identifier responseIdentifier = Identifier.assumedLegal("RESPONSE");
+        if (item.getResponseDeclaration(responseIdentifier).getCardinality().isMultiple() && response.getCardinality().isSingle()) {
             response = MultipleValue.createMultipleValue((SingleValue) response);
         }
-        itemSessionState.setResponseValue("RESPONSE", response);
+        itemSessionState.setResponseValue(responseIdentifier, response);
         itemSessionController.processResponses();
 
         assertEquals(expectedOutcome, ((FloatValue) itemSessionState.getOutcomeValue("OUTCOME")).doubleValue(), 0.1);

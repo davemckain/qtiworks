@@ -77,17 +77,14 @@ public final class UploadInteraction extends BlockInteraction {
 
 
     @Override
-    protected void validateThis(final ValidationContext context) {
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getResponseIdentifier());
-            if (declaration!=null) {
-                if (declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                    context.fireValidationError(this, "Response variable must have single cardinality");
-                }
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
+        if (responseDeclaration!=null) {
+            if (!responseDeclaration.getCardinality().isSingle()) {
+                context.fireValidationError(this, "Response variable must have single cardinality");
+            }
 
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isFile()) {
-                    context.fireValidationError(this, "Response variable must have file base type");
-                }
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isFile()) {
+                context.fireValidationError(this, "Response variable must have file base type");
             }
         }
     }

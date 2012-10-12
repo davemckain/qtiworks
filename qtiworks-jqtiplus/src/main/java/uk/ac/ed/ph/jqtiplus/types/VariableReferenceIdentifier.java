@@ -101,13 +101,13 @@ public final class VariableReferenceIdentifier implements Serializable {
         }
         this.value = value;
         if (dotPos == -1) {
-            this.localIdentifier = new Identifier(value);
+            this.localIdentifier = Identifier.assumedLegal(value);
             this.assessmentItemRefIdentifier = null;
             this.assessmentItemItemVariableIdentifier = null;
         }
         else {
             this.localIdentifier = null;
-            this.assessmentItemRefIdentifier = new Identifier(value.substring(0, dotPos));
+            this.assessmentItemRefIdentifier = Identifier.assumedLegal(value.substring(0, dotPos));
             this.assessmentItemItemVariableIdentifier = Identifier.parseString(value.substring(dotPos + 1));
         }
     }
@@ -130,7 +130,7 @@ public final class VariableReferenceIdentifier implements Serializable {
     }
 
     public Identifier asIdentifier() {
-        return new Identifier(value);
+        return Identifier.assumedLegal(value);
     }
 
     @Deprecated

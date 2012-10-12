@@ -42,6 +42,8 @@ import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -233,7 +235,7 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         final Integer maxStrings = getMaxStrings();
         final int minStrings = getMinStrings();
         if (maxStrings != null) {
@@ -242,11 +244,10 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
             }
         }
 
-        final ResponseDeclaration declaration = getResponseDeclaration();
-        if (declaration != null) {
+        if (responseDeclaration != null) {
             if (minStrings > 1 || (maxStrings != null && maxStrings.intValue() > 1)) {
-                if (declaration.getCardinality() != null && !declaration.getCardinality().isList()) {
-                    if (declaration.getCardinality().isRecord()) {
+                if (!responseDeclaration.getCardinality().isList()) {
+                    if (responseDeclaration.getCardinality().isRecord()) {
                         context.fireValidationError(this,
                                 "JQTI doesn't currently support binding multiple strings to a record container (the spec is very unclear here)");
                     }
@@ -256,20 +257,22 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
                 }
             }
 
-            if (declaration.getCardinality() != null && !declaration.getCardinality().isRecord()) {
-                if (declaration.getBaseType() != null && !(declaration.getBaseType().isString() || declaration.getBaseType().isNumeric())) {
+            if (!responseDeclaration.getCardinality().isRecord()) {
+                if (responseDeclaration.getBaseType() != null && !(responseDeclaration.getBaseType().isString() || responseDeclaration.getBaseType().isNumeric())) {
                     context.fireValidationError(this, "Response variable must have string or numeric base type");
                 }
             }
 
-            if (declaration.getBaseType() != null && !declaration.getBaseType().isFloat() && getBase() != 10) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isFloat() && getBase() != 10) {
                 context.fireValidationWarning(this, "JQTI currently doesn't support radix conversion for floats. Base attribute will be ignored.");
             }
         }
 
-        if (getStringIdentifier() != null) {
-            final ResponseDeclaration stringDeclaration = getStringIdentifierResponseDeclaration();
+        final Identifier stringIdentifier = getStringIdentifier();
+        if (stringIdentifier != null) {
+            final VariableDeclaration stringDeclaration = context.checkVariableReference(this, stringIdentifier);
             if (stringDeclaration!=null) {
+                context.checkVariableType(this, stringDeclaration, VariableType.RESPONSE);
                 if ((getMinStrings() > 1 || (getMaxStrings() != null && getMaxStrings() > 1))
                         && stringDeclaration.getCardinality() != null && !stringDeclaration.getCardinality().isList()) {
                     context.fireValidationError(this, "StringIdentifier response variable must have multiple or ordered cardinality");
@@ -278,7 +281,6 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
                     context.fireValidationError(this, "StringIdentifier response variable must have String base type");
                 }
             }
-
         }
     }
 

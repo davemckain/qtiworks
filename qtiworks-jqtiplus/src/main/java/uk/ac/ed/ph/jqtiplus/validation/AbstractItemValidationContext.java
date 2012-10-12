@@ -99,7 +99,7 @@ class AbstractItemValidationContext extends AbstractValidationContext<Assessment
 
     @Override
     public final VariableDeclaration checkVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
-        final List<VariableDeclaration> variableDeclarations = resolvedAssessmentItem.resolveVariableReferenceNew(variableReferenceIdentifier);
+        final List<VariableDeclaration> variableDeclarations = resolvedAssessmentItem.resolveVariableReference(variableReferenceIdentifier);
         if (variableDeclarations==null) {
             /* Item lookup failed, which is impossible here */
             throw new QtiLogicException("Unexpected logic branch");

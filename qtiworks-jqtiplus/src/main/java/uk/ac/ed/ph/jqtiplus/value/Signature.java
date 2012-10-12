@@ -47,10 +47,13 @@ public enum Signature {
 
     RECORD("record", Cardinality.RECORD, null),
     SINGLE_INTEGER("single integer", Cardinality.SINGLE, BaseType.INTEGER),
+    SINGLE_BOOLEAN("single boolean", Cardinality.SINGLE, BaseType.BOOLEAN),
     SINGLE_FLOAT("single float", Cardinality.SINGLE, BaseType.FLOAT),
     SINGLE_STRING("single string", Cardinality.SINGLE, BaseType.STRING),
     SINGLE_IDENTIFIER("single identifier", Cardinality.SINGLE, BaseType.IDENTIFIER),
-    MULTIPLE_IDENTIFIER("multiple identfier", Cardinality.MULTIPLE, BaseType.IDENTIFIER)
+    SINGLE_FILE("single file", Cardinality.SINGLE, BaseType.FILE),
+    MULTIPLE_IDENTIFIER("multiple identfier", Cardinality.MULTIPLE, BaseType.IDENTIFIER),
+    ORDERED_IDENTIFIER("ordered identifier", Cardinality.ORDERED, BaseType.IDENTIFIER),
 
     /* Fill in the rest */
 

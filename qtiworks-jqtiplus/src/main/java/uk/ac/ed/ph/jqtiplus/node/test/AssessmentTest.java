@@ -78,7 +78,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     public static final String VARIABLE_DURATION_NAME = "duration";
 
     /** Identifier of duration built-in variable. */
-    public static final Identifier VARIABLE_DURATION_IDENTIFIER = new Identifier(VARIABLE_DURATION_NAME);
+    public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal(VARIABLE_DURATION_NAME);
 
     private URI systemId;
     private ModelRichness modelRichness;
@@ -203,6 +203,11 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
 
 
     @Override
+    public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
+        return getOutcomeDeclaration(identifier);
+    }
+
+    @Override
     public List<OutcomeDeclaration> getOutcomeDeclarations() {
         return getNodeGroups().getOutcomeDeclarationGroup().getOutcomeDeclarations();
     }
@@ -218,11 +223,6 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         return null;
     }
 
-    @Override
-    public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
-        Assert.notNull(identifier);
-        return getOutcomeDeclaration(identifier);
-    }
 
     //    /**
     //     * Gets value of outcomeDeclaration with given identifier or null.

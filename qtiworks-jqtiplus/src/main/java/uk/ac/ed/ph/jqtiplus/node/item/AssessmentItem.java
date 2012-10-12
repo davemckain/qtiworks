@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseProcessingGro
 import uk.ac.ed.ph.jqtiplus.group.item.template.declaration.TemplateDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.template.processing.TemplateProcessingGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -105,7 +106,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public static final String VARIABLE_COMPLETION_STATUS = "completionStatus";
 
     /** Name of completion status built-in variable. */
-    public static final Identifier VARIABLE_COMPLETION_STATUS_IDENTIFIER = new Identifier("completionStatus");
+    public static final Identifier VARIABLE_COMPLETION_STATUS_IDENTIFIER = Identifier.assumedLegal("completionStatus");
 
     /** Value of completion status built-in variable. */
     public static final String VALUE_ITEM_IS_NOT_ATTEMPTED = "not_attempted";
@@ -122,12 +123,12 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /** Name of number of attempts built-in variable. */
     public static final String VARIABLE_NUMBER_OF_ATTEMPTS = "numAttempts";
 
-    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.parseString("numAttempts");
+    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.assumedLegal("numAttempts");
 
     /** Name of duration built-in variable. */
-    public static final String VARIABLE_DURATION_NAME = "duration";
+    public static final String VARIABLE_DURATION = "duration";
 
-    public static final Identifier VARIABLE_DURATION_NAME_IDENTIFIER = Identifier.parseString("duration");
+    public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal("duration");
 
     private URI systemId;
     private ModelRichness modelRichness;
@@ -178,7 +179,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
         //create a special declaration for the internal duration variable
         durationResponseDeclaration = new ResponseDeclaration(this);
-        durationResponseDeclaration.setIdentifier(VARIABLE_DURATION_NAME_IDENTIFIER);
+        durationResponseDeclaration.setIdentifier(VARIABLE_DURATION_IDENTIFIER);
         durationResponseDeclaration.setCardinality(Cardinality.SINGLE);
         durationResponseDeclaration.setBaseType(BaseType.FLOAT);
     }
@@ -401,6 +402,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     @Deprecated
     @Override
     public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
+        Assert.notNull(identifier);
         VariableDeclaration result = getResponseDeclaration(identifier);
         if (result == null) {
             result = getOutcomeDeclaration(identifier);
@@ -424,21 +426,12 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     @Override
     public OutcomeDeclaration getOutcomeDeclaration(final Identifier identifier) {
-        return getOutcomeDeclaration(identifier.toString());
-    }
-
-    /**
-     * Gets outcomeDeclaration with given identifier or null.
-     *
-     * @param identifier given identifier
-     * @return outcomeDeclaration with given identifier or null
-     */
-    public OutcomeDeclaration getOutcomeDeclaration(final String identifier) {
-        if (identifier.equals(VARIABLE_COMPLETION_STATUS)) {
+        Assert.notNull(identifier);
+        if (identifier.equals(VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
             return completionStatusOutcomeDeclaration;
         }
         for (final OutcomeDeclaration declaration : getOutcomeDeclarations()) {
-            if (identifier.equals(declaration.getIdentifier().toString())) {
+            if (identifier.equals(declaration.getIdentifier())) {
                 return declaration;
             }
         }
@@ -447,7 +440,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Gets responseDeclaration children.
-     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_DURATION_NAME} and {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variables.
+     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_DURATION} and {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variables.
      *
      * @return responseDeclaration children
      */
@@ -455,25 +448,22 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         return getNodeGroups().getResponseDeclarationGroup().getResponseDeclarations();
     }
 
-    public ResponseDeclaration getResponseDeclaration(final Identifier identifier) {
-        return getResponseDeclaration(identifier.toString());
-    }
-
     /**
-     * Gets responseDeclaration with given identifier or null.
+     * Gets (first) responseDeclaration with given identifier or null.
      *
      * @param identifier given identifier
      * @return responseDeclaration with given identifier or null
      */
-    public ResponseDeclaration getResponseDeclaration(final String identifier) {
-        if (identifier.equals(VARIABLE_NUMBER_OF_ATTEMPTS)) {
+    public ResponseDeclaration getResponseDeclaration(final Identifier identifier) {
+        Assert.notNull(identifier);
+        if (identifier.equals(VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
             return numAttemptsResponseDeclaration;
         }
-        else if (identifier.equals(VARIABLE_DURATION_NAME)) {
+        else if (identifier.equals(VARIABLE_DURATION_IDENTIFIER)) {
             return durationResponseDeclaration;
         }
         for (final ResponseDeclaration declaration : getResponseDeclarations()) {
-            if (identifier.equals(declaration.getIdentifier().toString())) {
+            if (identifier.equals(declaration.getIdentifier())) {
                 return declaration;
             }
         }
@@ -490,18 +480,9 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     public TemplateDeclaration getTemplateDeclaration(final Identifier identifier) {
-        return getTemplateDeclaration(identifier.toString());
-    }
-
-    /**
-     * Gets templateDeclaration with given identifier or null.
-     *
-     * @param identifier given identifier
-     * @return templateDeclaration with given identifier or null
-     */
-    public TemplateDeclaration getTemplateDeclaration(final String identifier) {
+        Assert.notNull(identifier);
         for (final TemplateDeclaration declaration : getTemplateDeclarations()) {
-            if (identifier.equals(declaration.getIdentifier().toString())) {
+            if (identifier.equals(declaration.getIdentifier())) {
                 return declaration;
             }
         }

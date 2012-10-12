@@ -74,17 +74,18 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
     }
 
     @Override
-    public final void validate(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         final E jqtiExtensionPackage = getOwningExtensionPackage(context);
         if (jqtiExtensionPackage!=null) {
-            validateCustomInteractionAttributes(jqtiExtensionPackage, context);
+            validateThis(jqtiExtensionPackage, context, responseDeclaration);
         }
         else {
             context.fireValidationError(this, "customInteraction with class " + getClassAttr() + " is not supported");
         }
     }
 
-    protected abstract void validateCustomInteractionAttributes(final E jqtiExtensionPackaage, final ValidationContext context);
+
+    protected abstract void validateThis(final E jqtiExtensionPackage, final ValidationContext context, final ResponseDeclaration responseDeclaration);
 
     @Override
     public final void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)

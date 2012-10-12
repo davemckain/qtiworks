@@ -142,21 +142,20 @@ public final class GapMatchInteraction extends BlockInteraction implements GapCh
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration!=null) {
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isDirectedPair()) {
+            if (responseDeclaration!=null) {
+                if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isDirectedPair()) {
                     context.fireValidationError(this, "Response variable must have directed pair base type");
                 }
 
                 if (countGaps() == 1 &&
-                        declaration.getCardinality() != null && !declaration.getCardinality().isSingle() &&
-                        !declaration.getCardinality().isMultiple()) {
+                        !responseDeclaration.getCardinality().isSingle() &&
+                        !responseDeclaration.getCardinality().isMultiple()) {
                     context.fireValidationError(this, "Response variable must have single or multiple cardinality");
                 }
 
-                if (countGaps() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
+                if (countGaps() != 1 && !responseDeclaration.getCardinality().isMultiple()) {
                     context.fireValidationError(this, "Response variable must have multiple cardinality");
                 }
             }

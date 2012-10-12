@@ -137,17 +137,14 @@ public final class InlineChoiceInteraction extends InlineInteraction implements 
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration!=null) {
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                    context.fireValidationError(this, "Response variable must have identifier base type");
-                }
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
+        if (responseDeclaration!=null) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isIdentifier()) {
+                context.fireValidationError(this, "Response variable must have identifier base type");
+            }
 
-                if (declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                    context.fireValidationError(this, "Response variable must have single cardinality");
-                }
+            if (!responseDeclaration.getCardinality().isSingle()) {
+                context.fireValidationError(this, "Response variable must have single cardinality");
             }
         }
     }

@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
+import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
@@ -63,7 +64,7 @@ public abstract class GraphicInteraction extends BlockInteraction {
 
 
     @Override
-    public void validateThis(final ValidationContext context) {
+    public void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         if (getObject() != null && getObject().getType() != null && !getObject().getType().startsWith("image/")) {
             context.fireValidationError(this, "Object child must have an image type");
         }

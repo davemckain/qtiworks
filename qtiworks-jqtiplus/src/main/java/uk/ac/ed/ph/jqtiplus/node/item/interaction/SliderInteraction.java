@@ -39,11 +39,13 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Orientation;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -173,18 +175,10 @@ public final class SliderInteraction extends BlockInteraction {
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = context.getSubjectItem().getResponseDeclaration(getResponseIdentifier());
-            if (declaration!=null) {
-                if (declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                    context.fireValidationError(this, "Response variable must have single cardinality");
-                }
-
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isNumeric()) {
-                    context.fireValidationError(this, "Response variable must have numeric base type");
-                }
-            }
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
+        if (responseDeclaration!=null) {
+            context.checkVariableType(this, responseDeclaration, VariableType.RESPONSE);
+            context.checkSignature(this, responseDeclaration, Signature.SINGLE_INTEGER, Signature.SINGLE_FLOAT);
         }
     }
 

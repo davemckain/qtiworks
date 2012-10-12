@@ -38,6 +38,7 @@ import static org.junit.Assert.assertEquals;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.PointValue;
@@ -107,7 +108,7 @@ public class MapResponsePointTest {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getItem();
 
-        if (item.getResponseDeclaration("RESPONSE").getCardinality().isMultiple() && response.getCardinality().isSingle()) {
+        if (item.getResponseDeclaration(Identifier.assumedLegal("RESPONSE")).getCardinality().isMultiple() && response.getCardinality().isSingle()) {
             response = MultipleValue.createMultipleValue((SingleValue) response);
         }
 

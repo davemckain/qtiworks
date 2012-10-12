@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
@@ -110,15 +111,9 @@ public final class EndAttemptInteraction extends InlineInteraction {
 
 
     @Override
-    protected void validateThis(final ValidationContext context) {
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isBoolean()) {
-                context.fireValidationError(this, "Response variable must have boolean base type");
-            }
-            if (declaration != null && declaration.getCardinality() != null && !declaration.getCardinality().isSingle()) {
-                context.fireValidationError(this, "Response variable must have single cardinality");
-            }
+    protected void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
+        if (responseDeclaration!=null) {
+            context.checkSignature(this, responseDeclaration, Signature.SINGLE_BOOLEAN);
         }
     }
 

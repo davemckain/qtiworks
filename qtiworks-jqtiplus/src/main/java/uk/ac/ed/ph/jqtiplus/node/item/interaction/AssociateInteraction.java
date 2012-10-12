@@ -154,24 +154,21 @@ public final class AssociateInteraction extends BlockInteraction implements Simp
     }
 
     @Override
-    public void validateThis(final ValidationContext context) {
+    public void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration) {
         if (getMinAssociations() > getMaxAssociations()) {
             context.fireValidationError(this, "Minimum number of associations must be less than or equal to maximum number of associations");
         }
 
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null) {
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isPair()) {
-                    context.fireValidationError(this, "Response variable must have pair base type");
-                }
+        if (responseDeclaration != null) {
+            if (responseDeclaration.getBaseType() != null && !responseDeclaration.getBaseType().isPair()) {
+                context.fireValidationError(this, "Response variable must have pair base type");
+            }
 
-                if (getMaxAssociations() != 1 && declaration.getCardinality() != null && !declaration.getCardinality().isMultiple()) {
-                    context.fireValidationError(this, "Response variable must have multiple cardinality when maxAssociations is not 1");
-                }
-                else if (declaration.getCardinality() != null && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                    context.fireValidationError(this, "Response variable must have single or multiple cardinality");
-                }
+            if (getMaxAssociations() != 1 && !responseDeclaration.getCardinality().isMultiple()) {
+                context.fireValidationError(this, "Response variable must have multiple cardinality when maxAssociations is not 1");
+            }
+            else if (!(responseDeclaration.getCardinality().isSingle() || responseDeclaration.getCardinality().isMultiple())) {
+                context.fireValidationError(this, "Response variable must have single or multiple cardinality");
             }
         }
     }

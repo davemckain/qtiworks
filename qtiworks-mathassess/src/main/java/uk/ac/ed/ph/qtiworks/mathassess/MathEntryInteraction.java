@@ -50,6 +50,8 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -59,6 +61,7 @@ import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.RecordValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -124,25 +127,19 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
     }
 
     @Override
-    protected void validateCustomInteractionAttributes(final MathAssessExtensionPackage jqtiExtensionPackaage, final ValidationContext context) {
-        if (getResponseIdentifier() != null) {
-            final ResponseDeclaration declaration = getResponseDeclaration();
-            if (declaration != null && declaration.getCardinality() != null
-                    && !declaration.getCardinality().isRecord()) {
+    protected void validateThis(final MathAssessExtensionPackage jqtiExtensionPackage, final ValidationContext context, final ResponseDeclaration responseDeclaration) {
+        if (responseDeclaration!=null) {
+            if (!responseDeclaration.getCardinality().isRecord()) {
                 context.fireValidationError(this, "Response variable must have record cardinality");
             }
         }
 
-        if (getPrintIdentifier() != null) {
-            final ResponseDeclaration declaration = getPrintIdentifierResponseDeclaration();
-            if (declaration != null && declaration.getCardinality() != null
-                    && !declaration.getCardinality().isSingle()) {
-                context.fireValidationError(this, "printIdentifier response variable must have record cardinality");
-            }
-
-            if (declaration != null && declaration.getBaseType() != null
-                    && !declaration.getBaseType().isString()) {
-                context.fireValidationError(this, "printIdentifier response variable must have string base type");
+        final Identifier printIdentifier = getPrintIdentifier();
+        if (printIdentifier!= null) {
+            final VariableDeclaration printDeclaration = context.checkVariableReference(this, printIdentifier);
+            if (printDeclaration!=null) {
+                context.checkVariableType(this, printDeclaration, VariableType.RESPONSE);
+                context.checkSignature(this, printDeclaration, Signature.SINGLE_STRING);
             }
         }
     }
