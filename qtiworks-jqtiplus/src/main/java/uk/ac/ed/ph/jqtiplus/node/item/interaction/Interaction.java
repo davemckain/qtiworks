@@ -120,12 +120,14 @@ public abstract class Interaction extends BodyElement {
     }
 
     /**
-     * Partial implementation of {@link #validateThis(ValidationContext)} that looks up the
-     * target {@link ResponseDeclaration} and checks that it is unique and of the correct type.
+     * Partial implementation of {@link #validateThis(ValidationContext)} that has already looked
+     * up the target {@link ResponseDeclaration} and checked whether it is unique and of the correct type.
      *
      * @param context {@link ValidationContext}
      * @param responseDeclaration resolved {@link ResponseDeclaration}, or null if
-     *   the interaction was not associated with a unique {@link ResponseDeclaration}
+     *   the {@link ResponseDeclaration} was not considered valid
+     *
+     * @see ValidationContext#checkVariableReference(QtiNode, Identifier)
      */
     protected abstract void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration);
 
