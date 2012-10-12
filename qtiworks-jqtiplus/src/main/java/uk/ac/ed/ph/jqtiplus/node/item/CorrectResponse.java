@@ -139,11 +139,8 @@ public class CorrectResponse extends AbstractNode implements FieldValueParent {
 
     @Override
     protected void validateThis(final ValidationContext context) {
-        final Cardinality cardinality = getParent().getCardinality();
-        if (cardinality != null) {
-            if (cardinality.isSingle() && getFieldValues().size() > 1) {
-                context.fireValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size());
-            }
+        if (getParent().hasCardinality(Cardinality.SINGLE) && getFieldValues().size() > 1) {
+            context.fireValidationError(this, "Invalid values count. Expected: " + 1 + ". Found: " + getFieldValues().size());
         }
     }
 

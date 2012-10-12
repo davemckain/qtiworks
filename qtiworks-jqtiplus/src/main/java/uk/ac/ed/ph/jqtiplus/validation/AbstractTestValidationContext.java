@@ -102,7 +102,8 @@ class AbstractTestValidationContext extends AbstractValidationContext<Assessment
         }
         else if (outcomeDeclarations.size()==1) {
             /* Found and unique which is what we want */
-            return outcomeDeclarations.get(0);
+            final OutcomeDeclaration outcomeDeclaration = outcomeDeclarations.get(0);
+            return outcomeDeclaration.getCardinality()!=null ? outcomeDeclaration : null;
         }
         if (outcomeDeclarations.isEmpty()) {
             /* No variable found */
@@ -125,7 +126,8 @@ class AbstractTestValidationContext extends AbstractValidationContext<Assessment
         }
         else if (resolvedReferences.size()==1) {
             /* Found and unique which is what we want */
-            return resolvedReferences.get(0).getVariableDeclaration();
+            final VariableDeclaration declaration = resolvedReferences.get(0).getVariableDeclaration();
+            return declaration.getCardinality()!=null ? declaration : null;
         }
         if (resolvedReferences.isEmpty()) {
             /* No variable found */

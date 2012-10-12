@@ -116,7 +116,7 @@ public interface ValidationContext extends NotificationFirer {
      * dereferenced. A {@link ValidationError} is recorded if this is unsuccessful.
      * <p>
      * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful,
-     * otherwise null.
+     * additionally checking that the result has non-null {@link Cardinality}, otherwise null.
      */
     VariableDeclaration checkVariableReference(QtiNode owner, Identifier variableDeclarationIdentifier);
 
@@ -125,7 +125,7 @@ public interface ValidationContext extends NotificationFirer {
      * dereferenced. A {@link ValidationError} is recorded if this is unsuccessful.
      * <p>
      * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful,
-     * otherwise null.
+     * additionally checking that the result has non-null {@link Cardinality}, otherwise null.
      */
     VariableDeclaration checkVariableReference(QtiNode owner, VariableReferenceIdentifier variableReferenceIdentifier);
 

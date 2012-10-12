@@ -177,7 +177,7 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Abs
             final Cardinality... allowedSignatures) {
         Assert.notNull(variableDeclaration);
         boolean result;
-        if (variableDeclaration.getCardinality().isOneOf(allowedSignatures)) {
+        if (variableDeclaration.hasCardinality(allowedSignatures)) {
             result = true;
         }
         else {

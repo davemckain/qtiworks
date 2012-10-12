@@ -87,6 +87,16 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
         return false;
     }
 
+    public boolean hasCardinality(final Cardinality... allowedCardinalities) {
+        final Cardinality cardinality = getCardinality();
+        return cardinality!=null && cardinality.isOneOf(allowedCardinalities);
+    }
+
+    public boolean hasBaseType(final BaseType... allowedBaseType) {
+        final BaseType baseType = getBaseType();
+        return baseType!=null && baseType.isOneOf(allowedBaseType);
+    }
+
     public boolean hasSignature(final Signature... allowedSignatures) {
         boolean matches = false;
         final Cardinality cardinality = getCardinality();

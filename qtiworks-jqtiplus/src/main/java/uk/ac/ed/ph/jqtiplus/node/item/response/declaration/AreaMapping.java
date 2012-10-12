@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.AreaMapEntryGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponsePoint;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.PointValue;
@@ -158,7 +159,7 @@ public final class AreaMapping extends AbstractNode {
              * to the calculated total just once.
              */
             final ResponseDeclaration parent = getParent();
-            if (parent.getCardinality().isSingle()) {
+            if (parent.hasCardinality(Cardinality.SINGLE)) {
                 for (final AreaMapEntry entry : getAreaMapEntries()) {
                     if (entry.getShape().isInside(convertCoordinates(entry.getCoordinates()), (PointValue) sourceValue)) {
                         return new FloatValue(applyConstraints(entry.getMappedValue()));

@@ -106,7 +106,8 @@ class AbstractItemValidationContext extends AbstractValidationContext<Assessment
         }
         else if (variableDeclarations.size()==1) {
             /* Found and unique, which is what we want */
-            return variableDeclarations.get(0);
+            final VariableDeclaration declaration = variableDeclarations.get(0);
+            return declaration.getCardinality()!=null ? declaration : null;
         }
         else if (variableDeclarations.isEmpty()) {
             /* No variable found */
