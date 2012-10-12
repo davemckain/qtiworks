@@ -36,11 +36,10 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 import uk.ac.ed.ph.jqtiplus.exception.QtiException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 /**
  * {@link Exception} thrown when an attempt to resolve a variable via a
- * {@link VariableReferenceIdentifier} fails to succeed.
+ * {@link Identifier} fails to succeed.
  *
  * @author David McKain
  */
@@ -93,21 +92,17 @@ public final class VariableResolutionException extends QtiException {
 
     }
 
-    private final VariableReferenceIdentifier variableReferenceIdentifier;
+    private final Identifier variableReferenceIdentifier;
     private final VariableResolutionFailureReason reason;
 
     public VariableResolutionException(final Identifier variableReferenceIdentifier, final VariableResolutionFailureReason reason) {
-        this(variableReferenceIdentifier.toVariableReferenceIdentifier(), reason);
-    }
-
-    public VariableResolutionException(final VariableReferenceIdentifier variableReferenceIdentifier, final VariableResolutionFailureReason reason) {
         super("Resolution of variable reference " + variableReferenceIdentifier
                 + " failed: " + reason.getDescription());
         this.variableReferenceIdentifier = variableReferenceIdentifier;
         this.reason = reason;
     }
 
-    public VariableReferenceIdentifier getVariableReferenceIdentifier() {
+    public Identifier getIdentifier() {
         return variableReferenceIdentifier;
     }
 

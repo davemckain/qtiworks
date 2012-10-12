@@ -170,7 +170,7 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
      * @return true if this feedback can be displayed; false otherwise
      */
     public boolean isVisible(final ItemProcessingContext itemContext) {
-        final Value outcomeValue = itemContext.evaluateVariableValue(getOutcomeIdentifier(), VariableType.OUTCOME);
+        final Value outcomeValue = itemContext.evaluateVariableValue(this, getOutcomeIdentifier(), VariableType.OUTCOME);
         final IdentifierValue identifierValue = new IdentifierValue(getIdentifier());
 
         boolean identifierCheck;

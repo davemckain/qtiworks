@@ -132,8 +132,8 @@ public final class AnyN extends AbstractExpression {
             }
         }
 
-        final int min = getMin().evaluateNotNull(context, this, "Computed value of minimum was NULL. Replacing with 0", 0);
-        final int max = getMax().evaluateNotNull(context, this, "Computed value of maximum was NULL. Replacing with 0", 0);
+        final int min = getMin().evaluateNotNull(this, context, "Computed value of minimum was NULL. Replacing with 0", 0);
+        final int max = getMax().evaluateNotNull(this, context, "Computed value of maximum was NULL. Replacing with 0", 0);
 
         if (min > max) {
             return BooleanValue.FALSE;

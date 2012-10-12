@@ -34,13 +34,11 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -82,21 +80,6 @@ public interface ProcessingContext extends NotificationFirer {
      * @param permittedTypes
      */
     Value evaluateVariableValue(QtiNode owner, Identifier identifier, VariableType... permittedTypes);
-
-    /**
-     * Convenience method to look up the value of the variable referenced by the
-     * given {@link VariableReferenceIdentifier} and having the given permitted types.
-     * <p>
-     * If permittedTypes is empty, then it looks up ANY type of variable.
-     *
-     * @throws QtiInvalidLookupException if no variable (of the permitted type) has
-     *   the given identifier, or if the given reference is not appropriate
-     *   (e.g. using a dotted reference within an item)
-     *
-     * @param identifier
-     * @param permittedTypes
-     */
-    Value evaluateVariableValue(VariableReferenceIdentifier variableReferenceIdentifier, VariableType... permittedTypes);
 
     Random getRandomGenerator();
 }

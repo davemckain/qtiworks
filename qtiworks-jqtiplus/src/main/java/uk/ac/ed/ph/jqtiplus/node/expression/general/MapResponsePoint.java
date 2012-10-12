@@ -103,7 +103,7 @@ public final class MapResponsePoint extends AbstractExpression {
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
         final ResponseDeclaration responseDeclaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
-        final Value responseValue = itemContext.evaluateVariableValue(getIdentifier(), VariableType.RESPONSE);
+        final Value responseValue = itemContext.evaluateVariableValue(this, getIdentifier(), VariableType.RESPONSE);
 
         return responseDeclaration.getAreaMapping().getTargetValue(responseValue);
     }

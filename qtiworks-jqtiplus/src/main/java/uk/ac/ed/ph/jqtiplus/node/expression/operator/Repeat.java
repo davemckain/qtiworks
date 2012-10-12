@@ -118,7 +118,7 @@ public final class Repeat extends AbstractExpression {
          */
 
         /* Check runtime value of numberRepeats */
-        final Value numberRepeatsValue = getNumberRepeats().evaluate(context);
+        final Value numberRepeatsValue = getNumberRepeats().evaluate(this, context);
         if (numberRepeatsValue.isNull()) {
             context.fireRuntimeWarning(this, "numberRepeats evaluated to NULL. Returning NULL");
             return NullValue.INSTANCE;

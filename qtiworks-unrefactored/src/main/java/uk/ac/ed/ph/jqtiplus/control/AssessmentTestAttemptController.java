@@ -75,7 +75,7 @@ import uk.ac.ed.ph.jqtiplus.state.legacy.ControlObjectState;
 import uk.ac.ed.ph.jqtiplus.state.legacy.SectionPartStateKey;
 import uk.ac.ed.ph.jqtiplus.state.legacy.TestPartState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -206,7 +206,7 @@ public final class AssessmentTestAttemptController {
      * more general than what is supported by {@link LookupExpression}.
      */
     public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
-            VariableReferenceIdentifier variableReferenceIdentifier) {
+            Identifier variableReferenceIdentifier) {
         Assert.notNull(variableReferenceIdentifier);
         final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
         final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
@@ -461,7 +461,7 @@ public final class AssessmentTestAttemptController {
             result.getItemVariables().add(variable);
         }
         result.getItemVariables().add(
-                new OutcomeVariable(result, AssessmentTest.VARIABLE_DURATION_IDENTIFIER.toVariableReferenceIdentifier(), new DurationValue(
+                new OutcomeVariable(result, AssessmentTest.VARIABLE_DURATION_IDENTIFIER.toIdentifier(), new DurationValue(
                         getDuration(testState) / 1000.0)));
 
         for (final TestPartState testPartState : testState.getTestPartStates()) {
@@ -472,7 +472,7 @@ public final class AssessmentTestAttemptController {
 
     private void processDuration(TestResult result, AbstractPartState parentState) {
         if (!(parentState instanceof AssessmentItemRefState)) {
-            final VariableReferenceIdentifier identifier = VariableReferenceIdentifier.parseString(parentState.getTestIdentifier() + "."
+            final Identifier identifier = Identifier.parseString(parentState.getTestIdentifier() + "."
                     + AssessmentTest.VARIABLE_DURATION_NAME);
             final DurationValue duration = new DurationValue(getDuration(parentState) / 1000.0);
 
@@ -725,7 +725,7 @@ public final class AssessmentTestAttemptController {
 
         @Override
         public Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
-                VariableReferenceIdentifier variableReferenceIdentifier) {
+                Identifier variableReferenceIdentifier) {
             return AssessmentTestAttemptController.this.resolveDottedVariableReference(variableReferenceIdentifier);
         }
 

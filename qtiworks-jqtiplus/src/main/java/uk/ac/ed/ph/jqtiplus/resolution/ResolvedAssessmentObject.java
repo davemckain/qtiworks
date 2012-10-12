@@ -38,11 +38,8 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 
 import java.io.Serializable;
@@ -91,18 +88,4 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
     @Deprecated
     public abstract VariableDeclaration resolveVariableReferenceOLD(Identifier variableDeclarationIdentifier)
             throws VariableResolutionException;
-
-    /**
-     * Resolves a referenced variable in the current {@link AssessmentItem}, or the current {@link AssessmentTest}
-     * and all referenced {@link AssessmentItem}s.
-     *
-     * @param variableReferenceIdentifier
-     * @return resulting {@link VariableDeclaration}, which will not be null.
-     * @throws VariableResolutionException if the variable be resolved. The Exception will contain specific
-     *   details about why this happened.
-     */
-    @Deprecated
-    public abstract VariableDeclaration resolveVariableReferenceOLD(VariableReferenceIdentifier variableReferenceIdentifier)
-            throws VariableResolutionException;
-
 }

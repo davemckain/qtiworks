@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
@@ -45,7 +45,7 @@ import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -80,7 +80,7 @@ public abstract class LookupExpression extends AbstractExpression {
      */
     public LookupExpression(final ExpressionParent parent, final String qtiClassName) {
         super(parent, qtiClassName);
-        getAttributes().add(new VariableReferenceIdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
     /**
@@ -89,8 +89,8 @@ public abstract class LookupExpression extends AbstractExpression {
      * @return value of identifier attribute
      * @see #setIdentifier
      */
-    public VariableReferenceIdentifier getIdentifier() {
-        return getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
+    public Identifier getIdentifier() {
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
     /**
@@ -99,8 +99,8 @@ public abstract class LookupExpression extends AbstractExpression {
      * @param identifier new value of identifier attribute
      * @see #getIdentifier
      */
-    public void setIdentifier(final VariableReferenceIdentifier identifier) {
-        getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
+    public void setIdentifier(final Identifier identifier) {
+        getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     //----------------------------------------------------------------------
@@ -108,7 +108,7 @@ public abstract class LookupExpression extends AbstractExpression {
     @Override
     protected final void validateThis(final ValidationContext context) {
         /* Check reference */
-        final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
+        final Identifier variableReferenceIdentifier = getIdentifier();
         final VariableDeclaration resolvedDeclaration = context.checkVariableReference(this, variableReferenceIdentifier);
 
         /* If reference was OK, let subclasses do any further validation as required */
@@ -118,7 +118,7 @@ public abstract class LookupExpression extends AbstractExpression {
         }
     }
 
-    protected abstract void validateResolvedVariableReference(ValidationContext context, VariableReferenceIdentifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
+    protected abstract void validateResolvedVariableReference(ValidationContext context, Identifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
 
     //----------------------------------------------------------------------
 
@@ -164,7 +164,7 @@ public abstract class LookupExpression extends AbstractExpression {
     protected final Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getQtiClassName(), getIdentifier() });
 
-        final VariableReferenceIdentifier variableReferenceIdentifier = getIdentifier();
+        final Identifier variableReferenceIdentifier = getIdentifier();
         final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
         Value result = null;
         if (context instanceof ItemProcessingContext) {

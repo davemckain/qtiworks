@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentTestState;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.List;
 import java.util.Map;
@@ -61,7 +61,7 @@ public interface TestProcessingContext extends ProcessingContext {
     AssessmentTestState getTestSessionState();
 
     Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
-            VariableReferenceIdentifier variableReferenceIdentifier);
+            Identifier variableReferenceIdentifier);
 
     AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState);
 

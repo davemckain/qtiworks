@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 import java.util.List;
 
@@ -149,11 +148,6 @@ class AbstractTestValidationContext extends AbstractValidationContext<Assessment
             fireValidationError(owner, resolvedReferences.size() + " matches were found for the test (or referenced item) variable having identifier " + variableReferenceIdentifier);
             return null;
         }
-    }
-
-    @Override
-    public VariableDeclaration checkVariableReference(final QtiNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
-        return checkVariableReference(owner, variableReferenceIdentifier.asIdentifier());
     }
 
     private QtiLogicException fail() {

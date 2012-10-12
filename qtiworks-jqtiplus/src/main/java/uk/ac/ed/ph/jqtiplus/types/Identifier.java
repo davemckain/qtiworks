@@ -58,7 +58,7 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
     /**
      * Parses the given Identifier String, making sure it follows the required syntax.
      * <p>
-     * Use this factory method fo
+     * Use this factory method for user-supplied identifiers.
      *
      * @throws QtiParseException if value is not a valid identifier
      */
@@ -78,10 +78,6 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
 
     private Identifier(final String value) {
         this.value = value;
-    }
-
-    public VariableReferenceIdentifier toVariableReferenceIdentifier() {
-        return new VariableReferenceIdentifier(this);
     }
 
     public boolean isDotted() {

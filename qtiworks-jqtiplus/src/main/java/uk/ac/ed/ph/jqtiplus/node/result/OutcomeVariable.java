@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.net.URI;
@@ -102,7 +102,7 @@ public final class OutcomeVariable extends ItemVariable implements FieldValuePar
     public OutcomeVariable(final AbstractResult parent, final OutcomeDeclaration declaration, final Value value) {
         this(parent);
         if (declaration != null) {
-            setIdentifier(declaration.getIdentifier().toVariableReferenceIdentifier());
+            setIdentifier(declaration.getIdentifier());
             setCardinality(declaration.getCardinality());
             setBaseType(declaration.getBaseType());
             getFieldValues().addAll(FieldValue.computeValues(this, value));
@@ -124,7 +124,7 @@ public final class OutcomeVariable extends ItemVariable implements FieldValuePar
      * @param identifier identifier of created outcomeVariable (may be null)
      * @param value of created outcomeVariable (may be null)
      */
-    public OutcomeVariable(final AbstractResult parent, final VariableReferenceIdentifier identifier, final Value value) {
+    public OutcomeVariable(final AbstractResult parent, final Identifier identifier, final Value value) {
         this(parent);
 
         setIdentifier(identifier);

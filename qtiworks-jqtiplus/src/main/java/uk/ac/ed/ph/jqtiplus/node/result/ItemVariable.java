@@ -35,9 +35,9 @@ package uk.ac.ed.ph.jqtiplus.node.result;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.CardinalityAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
@@ -65,17 +65,17 @@ public abstract class ItemVariable extends AbstractNode {
     public ItemVariable(final AbstractResult parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
-        getAttributes().add(new VariableReferenceIdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
         getAttributes().add(new CardinalityAttribute(this, ATTR_CARDINALITY_NAME));
         getAttributes().add(new BaseTypeAttribute(this, ATTR_BASE_TYPE_NAME, false));
     }
 
-    public VariableReferenceIdentifier getIdentifier() {
-        return getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
+    public Identifier getIdentifier() {
+        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    public void setIdentifier(final VariableReferenceIdentifier identifier) {
-        getAttributes().getVariableReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
+    public void setIdentifier(final Identifier identifier) {
+        getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
 
@@ -99,7 +99,7 @@ public abstract class ItemVariable extends AbstractNode {
 
     @Override
     public final String computeXPathComponent() {
-        final VariableReferenceIdentifier identifier = getIdentifier();
+        final Identifier identifier = getIdentifier();
         if (identifier != null) {
             return getQtiClassName() + "[@identifier=\"" + identifier + "\"]";
         }

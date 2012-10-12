@@ -67,7 +67,7 @@ public final class TemplateVariable extends ItemVariable implements FieldValuePa
     public TemplateVariable(final AbstractResult parent, final TemplateDeclaration declaration, final Value value) {
         this(parent);
         if (declaration != null) {
-            setIdentifier(declaration.getIdentifier().toVariableReferenceIdentifier());
+            setIdentifier(declaration.getIdentifier());
             setCardinality(declaration.getCardinality());
             setBaseType(declaration.getBaseType());
             getFieldValues().addAll(FieldValue.computeValues(this, value));

@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
@@ -100,7 +99,7 @@ public final class Variable extends LookupExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected void validateResolvedVariableReference(final ValidationContext context, final VariableReferenceIdentifier variableReferenceIdentifier,
+    protected void validateResolvedVariableReference(final ValidationContext context, final Identifier variableReferenceIdentifier,
             final VariableDeclaration resolvedDeclaration) {
         final Identifier weightIdentifier = getWeightIdentifier();
         if (weightIdentifier!=null) {
@@ -122,17 +121,17 @@ public final class Variable extends LookupExpression {
 
     @Override
     protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
-        return itemContext.evaluateVariableValue(itemVariableIdentifier);
+        return itemContext.evaluateVariableValue(this, itemVariableIdentifier);
     }
 
     @Override
     protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
-        return testContext.evaluateVariableValue(testVariableIdentifier);
+        return testContext.evaluateVariableValue(this, testVariableIdentifier);
     }
 
     @Override
     protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
-        Value result = itemRefController.getItemController().evaluateVariableValue(itemVariableIdentifier);
+        Value result = itemRefController.getItemController().evaluateVariableValue(this, itemVariableIdentifier);
 
         /* Maybe apply weight */
         final Identifier weightIdentifier = getWeightIdentifier();

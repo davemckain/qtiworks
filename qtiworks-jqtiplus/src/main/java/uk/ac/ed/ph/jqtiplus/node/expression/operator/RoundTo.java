@@ -109,9 +109,10 @@ public final class RoundTo extends AbstractExpression {
         }
         final double childNumber = ((NumberValue) childValue).doubleValue();
 
-        final Value computedFigures = getFigures().evaluate(context);
+        final Value computedFigures = getFigures().evaluate(this, context);
         if (computedFigures.isNull()) {
             context.fireRuntimeWarning(this, "Computed value of figures is NULL. Returning NULL");
+            return NullValue.INSTANCE;
         }
 
         final RoundingMode roundingMode = getRoundingMode();

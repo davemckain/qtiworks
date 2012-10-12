@@ -140,9 +140,9 @@ public class RandomInteger extends AbstractExpression {
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final Random randomGenerator = context.getRandomGenerator();
 
-        final int min = getMin().evaluateNotNull(context, this, "Computed value of min was NULL. Replacing with 0", 0);
-        final int max = getMax().evaluateNotNull(context, this, "Computed value of max was NULL. Replacing with min+1", min+1);
-        final int step = getStep().evaluateNotNull(context, this, "Computed value of step was NULL. Replacing with 1", 1);
+        final int min = getMin().evaluateNotNull(this, context, "Computed value of min was NULL. Replacing with 0", 0);
+        final int max = getMax().evaluateNotNull(this, context, "Computed value of max was NULL. Replacing with min+1", min+1);
+        final int step = getStep().evaluateNotNull(this, context, "Computed value of step was NULL. Replacing with 1", 1);
 
         /* Validate computed numbers */
         if (step < 1) {

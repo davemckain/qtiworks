@@ -72,7 +72,7 @@ public final class ResponseVariable extends ItemVariable implements ResultNode {
     public ResponseVariable(final AbstractResult parent, final ResponseDeclaration declaration, final Value value, final List<Identifier> shuffledInteractionChoiceIdentifiers) {
         this(parent);
         if (declaration != null) {
-            setIdentifier(declaration.getIdentifier().toVariableReferenceIdentifier());
+            setIdentifier(declaration.getIdentifier());
             setBaseType(declaration.getBaseType());
             setCardinality(declaration.getCardinality());
             setCorrectResponse(declaration.getCorrectResponse());

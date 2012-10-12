@@ -88,7 +88,7 @@ public final class PatternMatch extends AbstractExpression {
             return NullValue.INSTANCE;
         }
 
-        final Value computedPattern = getPattern().evaluate(context);
+        final Value computedPattern = getPattern().evaluate(this, context);
         if (computedPattern.isNull()) {
             context.fireRuntimeWarning(this, "Computed value of pattern was NULL. Returning NULL");
             return NullValue.INSTANCE;

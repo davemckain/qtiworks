@@ -65,7 +65,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.attribute.value.VariableReferenceIdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiAttributeException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
@@ -420,10 +419,6 @@ public final class AttributeList implements Serializable, Iterable<Attribute<?>>
 
     public TextFormatAttribute getTextFormatAttribute(final String name) {
         return (TextFormatAttribute) get(name);
-    }
-
-    public VariableReferenceIdentifierAttribute getVariableReferenceIdentifierAttribute(final String name) {
-        return (VariableReferenceIdentifierAttribute) get(name);
     }
 
     public IntegerOrVariableRefAttribute getIntegerOrVariableRefAttribute(final String name) {

@@ -47,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -108,16 +107,7 @@ public interface ValidationContext extends NotificationFirer {
      * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
      * otherwise null.
      */
-    VariableDeclaration checkVariableReference(QtiNode owner, Identifier variableDeclarationIdentifier);
-
-    /**
-     * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
-     * dereferenced. A {@link ValidationError} is recorded if this is unsuccessful.
-     * <p>
-     * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
-     * otherwise null.
-     */
-    VariableDeclaration checkVariableReference(QtiNode owner, VariableReferenceIdentifier variableReferenceIdentifier);
+    VariableDeclaration checkVariableReference(QtiNode owner, Identifier variableReferenceIdentifier);
 
     /**
      * Checks that the test (outcome) variable having the given {@link Identifier} can be

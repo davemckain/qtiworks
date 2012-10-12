@@ -34,9 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.types;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -55,7 +54,7 @@ public final class StringOrVariableRef implements Serializable {
     private static final long serialVersionUID = 5566424487613057171L;
 
     private final StringValue constantStringValue;
-    private final VariableReferenceIdentifier variableReferenceValue;
+    private final Identifier variableReferenceValue;
     private final String serializedValue;
 
     public StringOrVariableRef(final String stringValue) {
@@ -65,7 +64,7 @@ public final class StringOrVariableRef implements Serializable {
         this.serializedValue = "{" + stringValue + "}";
     }
 
-    public StringOrVariableRef(final VariableReferenceIdentifier variableReferenceIdentifier) {
+    public StringOrVariableRef(final Identifier variableReferenceIdentifier) {
         Assert.notNull(variableReferenceIdentifier, "variableReferenceIdentifier");
         this.constantStringValue = null;
         this.variableReferenceValue = variableReferenceIdentifier;
@@ -83,7 +82,7 @@ public final class StringOrVariableRef implements Serializable {
         }
         if (string.charAt(0)=='{' && string.charAt(string.length()-1)=='}') {
             /* It's a variable reference */
-            final VariableReferenceIdentifier variableReferenceIdentifier = VariableReferenceIdentifier.parseString(string.substring(1, string.length()-1));
+            final Identifier variableReferenceIdentifier = Identifier.parseString(string.substring(1, string.length()-1));
             return new StringOrVariableRef(variableReferenceIdentifier);
         }
         else {
@@ -104,7 +103,7 @@ public final class StringOrVariableRef implements Serializable {
         return constantStringValue;
     }
 
-    public VariableReferenceIdentifier getVariableReferenceIdentifier() {
+    public Identifier getIdentifier() {
         return variableReferenceValue;
     }
 
@@ -130,37 +129,38 @@ public final class StringOrVariableRef implements Serializable {
     /**
      * Evaluates this holder. If this holds an explicit integer then its value is returned as-is.
      * Otherwise, the given {@link ProcessingContext} is used to look up the value of the variable
-     * that this type refers to. The result will either be an {@link StringValue} or {@link NullValue}
-     *
-     * @throws QtiInvalidLookupException if the variable cannot be successfully resolved, or
-     *   resolves to something other than a single integer.
+     * that this type refers to. The result will either be an {@link StringValue} or {@link NullValue}.
+     * <p>
+     * If the variable cannot be successfully resolved or is of the wrong type then a runtime error
+     * is recorded and a {@link NullValue} will be returned.
      */
-    public Value evaluate(final ProcessingContext context) {
+    public Value evaluate(final Expression expression, final ProcessingContext context) {
         if (isConstantString()) {
             return constantStringValue;
         }
         else {
-            final Value result = context.evaluateVariableValue(variableReferenceValue);
+            final Value result = context.evaluateVariableValue(expression, variableReferenceValue);
             if (result.hasSignature(Signature.SINGLE_STRING)) {
                 return result;
             }
-            throw new QtiInvalidLookupException("Variable referenced by " + variableReferenceValue + " was expected to be a single string");
+            else {
+                context.fireRuntimeError(expression, "Variable referenced by " + variableReferenceValue
+                        + " was expected to be a single string - returning NULL");
+                return NullValue.INSTANCE;
+            }
         }
     }
 
     /**
      * Wrapper for {@link #evaluate(ProcessingContext)} that substitutes a replacement value and emits a
      * runtime warning if the result was NULL.
-     *
-     * @throws QtiInvalidLookupException if the variable cannot be successfully resolved, or
-     *   resolves to something other than a single integer.
      */
-    public String evaluateNotNull(final ProcessingContext context, final QtiNode owner,
+    public String evaluateNotNull(final Expression expression, final ProcessingContext context,
             final String messageOnNull, final String replacementOnNull) {
-        final Value evaluated = evaluate(context);
+        final Value evaluated = evaluate(expression, context);
         String result;
         if (evaluated.isNull()) {
-            context.fireRuntimeWarning(owner, messageOnNull);
+            context.fireRuntimeWarning(expression, messageOnNull);
             result = replacementOnNull;
         }
         else {

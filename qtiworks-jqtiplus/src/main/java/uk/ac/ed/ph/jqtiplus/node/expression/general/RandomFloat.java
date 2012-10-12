@@ -112,8 +112,8 @@ public class RandomFloat extends AbstractExpression {
 
     @Override
     protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final double min = getMin().evaluateNotNull(context, this, "Computed value of min was NULL. Replacing with 0", 0);
-        final double max = getMax().evaluateNotNull(context, this, "Computed value of max was NULL. Replacing with min+1", min+1);
+        final double min = getMin().evaluateNotNull(this, context, "Computed value of min was NULL. Replacing with 0", 0);
+        final double max = getMax().evaluateNotNull(this, context, "Computed value of max was NULL. Replacing with min+1", min+1);
 
         if (min > max) {
             /* Bad computed values */

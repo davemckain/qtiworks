@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException.VariableResolutionFailureReason;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -266,13 +265,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
 
 
     @Deprecated
-    public VariableDeclaration resolveItemVariableReferenceOLD(final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
-        final VariableReferenceIdentifier dottedVariableReference = new VariableReferenceIdentifier(itemRefIdentifier, itemVarIdentifier);
-        return resolveItemVariableReferenceOLD(dottedVariableReference, itemRefIdentifier, itemVarIdentifier);
-    }
-
-    @Deprecated
-    private VariableDeclaration resolveItemVariableReferenceOLD(final VariableReferenceIdentifier dottedVariableReference, final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
+    private VariableDeclaration resolveItemVariableReferenceOLD(final Identifier dottedVariableReference, final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
         if (!testLookup.wasSuccessful()) {
             throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.THIS_TEST_LOOKUP_FAILURE);
         }
@@ -300,19 +293,6 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
             if (result==null) {
                 throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.TEST_MAPPED_ITEM_VARIABLE_NOT_DECLARED);
             }
-        }
-        return result;
-    }
-
-    @Override
-    public VariableDeclaration resolveVariableReferenceOLD(final VariableReferenceIdentifier variableReferenceIdentifier) throws VariableResolutionException {
-        VariableDeclaration result;
-        if (variableReferenceIdentifier.isDotted()) {
-            result = resolveItemVariableReferenceOLD(variableReferenceIdentifier,
-                    variableReferenceIdentifier.getAssessmentItemRefIdentifier(), variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier());
-        }
-        else {
-            result = resolveVariableReferenceOLD(variableReferenceIdentifier.getLocalIdentifier());
         }
         return result;
     }

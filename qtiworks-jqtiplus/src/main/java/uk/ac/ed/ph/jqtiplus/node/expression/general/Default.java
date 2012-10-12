@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -65,7 +65,7 @@ public final class Default extends LookupExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected void validateResolvedVariableReference(final ValidationContext context, final VariableReferenceIdentifier variableReferenceIdentifier, final VariableDeclaration resolvedDeclaration) {
+    protected void validateResolvedVariableReference(final ValidationContext context, final Identifier variableReferenceIdentifier, final VariableDeclaration resolvedDeclaration) {
         /* Nothing to do */
     }
 

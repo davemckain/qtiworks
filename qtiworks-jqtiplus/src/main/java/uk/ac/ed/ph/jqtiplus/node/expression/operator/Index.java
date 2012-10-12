@@ -122,7 +122,7 @@ public final class Index extends AbstractExpression {
         }
 
         final OrderedValue childOrderedValue = (OrderedValue) childValues[0];
-        final Value computedIndex = getIndex().evaluate(context);
+        final Value computedIndex = getIndex().evaluate(this, context);
         if (computedIndex.isNull()) {
             return NullValue.INSTANCE;
         }

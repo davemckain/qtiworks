@@ -219,7 +219,7 @@ public final class Equal extends AbstractExpression {
 
         double firstTolerance = 0.0;
         if (firstToleranceComputer!=null) {
-            final Value firstToleranceValue = firstToleranceComputer.evaluate(context);
+            final Value firstToleranceValue = firstToleranceComputer.evaluate(this, context);
             if (firstToleranceValue.isNull()) {
                 context.fireRuntimeWarning(this, "Computed value of first tolerance is NULL. Returning NULL");
                 return NullValue.INSTANCE;
@@ -233,7 +233,7 @@ public final class Equal extends AbstractExpression {
 
         double secondTolerance = firstTolerance;
         if (secondToleranceComputer!=null) {
-            final Value secondToleranceValue = secondToleranceComputer.evaluate(context);
+            final Value secondToleranceValue = secondToleranceComputer.evaluate(this, context);
             if (secondToleranceValue.isNull()) {
                 context.fireRuntimeWarning(this, "Computed value of second tolerance is NULL. Returning NULL");
                 return NullValue.INSTANCE;

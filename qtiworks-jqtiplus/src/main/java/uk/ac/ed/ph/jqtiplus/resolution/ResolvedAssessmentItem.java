@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException.VariableResolutionFailureReason;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,14 +139,6 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
             throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.ITEM_VARIABLE_NOT_DECLARED);
         }
         return result;
-    }
-
-    @Override
-    @Deprecated
-    public VariableDeclaration resolveVariableReferenceOLD(final VariableReferenceIdentifier variableReferenceIdentifier)
-            throws VariableResolutionException {
-        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
-        return resolveVariableReferenceOLD(localIdentifier);
     }
 
     //-------------------------------------------------------------------

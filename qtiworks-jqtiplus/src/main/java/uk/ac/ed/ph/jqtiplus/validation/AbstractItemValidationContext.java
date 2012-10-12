@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 
 import java.util.List;
 
@@ -124,11 +123,6 @@ class AbstractItemValidationContext extends AbstractValidationContext<Assessment
             fireValidationError(owner, variableDeclarations.size() + " item variables have been declared with the same identifier '" + variableDeclarations + "'");
             return null;
         }
-    }
-
-    @Override
-    public final VariableDeclaration checkVariableReference(final QtiNode owner, final VariableReferenceIdentifier variableReferenceIdentifier) {
-        return checkVariableReference(owner, variableReferenceIdentifier.asIdentifier());
     }
 
     private QtiLogicException fail() {
