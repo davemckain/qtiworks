@@ -140,7 +140,7 @@ public final class StringOrVariableRef implements Serializable {
             return constantStringValue;
         }
         else {
-            final Value result = context.lookupVariableValue(variableReferenceValue);
+            final Value result = context.evaluateVariableValue(variableReferenceValue);
             if (result.hasSignature(Signature.SINGLE_STRING)) {
                 return result;
             }

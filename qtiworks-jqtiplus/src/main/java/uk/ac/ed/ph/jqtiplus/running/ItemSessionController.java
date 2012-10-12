@@ -37,12 +37,12 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
@@ -73,14 +73,13 @@ import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -189,7 +188,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     public void initialize(final List<TemplateDefault> templateDefaults) {
         /* (We only allow initialization once. This contrasts with the original JQTI.) */
         if (itemSessionState.isInitialized()) {
-            throw new IllegalStateException("Item state has already been initialized");
+            throw new IllegalStateException("ItemSessionState has already been initialized");
         }
 
         fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
@@ -468,16 +467,15 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
 
     //-------------------------------------------------------------------
 
-    @Override
-    public Value lookupVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
+    public Value getVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
+        if (!itemSessionState.isInitialized()) {
+            throw new IllegalStateException("ItemSessionState has not been initialized");
+        }
         Value value = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
             value = itemSessionState.getVariableValue(identifier);
-            if (value==null) {
-                throw new QtiInvalidLookupException("No variable declared with identifier " + identifier);
-            }
         }
         else {
             /* Only allows specified types of variables */
@@ -502,37 +500,28 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                     break CHECK_LOOP;
                 }
             }
-            if (value==null) {
-                throw new QtiInvalidLookupException("No variable declared with identifier " + identifier
-                        + " and permitted type(s) " + Arrays.toString(permittedTypes));
-            }
         }
         return value;
     }
 
     @Override
-    public Value lookupVariableValue(final VariableReferenceIdentifier variableReferenceIdentifier, final VariableType... permittedTypes) {
-        if (variableReferenceIdentifier.isDotted()) {
-            throw new QtiInvalidLookupException("Dotted variables cannot be used in items");
+    public Value evaluateVariableValue(final QtiNode owner, final Identifier identifier, final VariableType... permittedTypes) {
+        Assert.notNull(identifier);
+        if (!itemSessionState.isInitialized()) {
+            throw new IllegalStateException("ItemSessionState has not been initialized");
         }
-        final Identifier itemVariableIdentifier = variableReferenceIdentifier.getLocalIdentifier();
-        return lookupVariableValue(itemVariableIdentifier, permittedTypes);
-    }
-
-    public Value lookupVariableValue(final String identifierString, final VariableType... permittedTypes) {
-        Assert.notNull(identifierString);
-        return lookupVariableValue(Identifier.parseString(identifierString), permittedTypes);
+        final Value value = getVariableValue(identifier, permittedTypes);
+        if (value==null) {
+            fireRuntimeWarning(owner, "Failed to evaluate item variable with identifier '" + identifier + "' - returning NULL");
+            return NullValue.INSTANCE;
+        }
+        return value;
     }
 
     @Override
     public Value computeDefaultValue(final Identifier identifier) {
         Assert.notNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
-    }
-
-    public Value computeDefaultValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return computeDefaultValue(ensureVariableDeclaration(Identifier.parseString(identifierString)));
     }
 
     public Value computeDefaultValue(final VariableDeclaration declaration) {
@@ -550,6 +539,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         return result;
     }
 
+    @ToRefactor
     private VariableDeclaration ensureVariableDeclaration(final Identifier identifier) {
         Assert.notNull(identifier);
         final VariableDeclaration result = item.getVariableDeclaration(identifier);
@@ -559,6 +549,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         return result;
     }
 
+    @ToRefactor
     private ResponseDeclaration ensureResponseDeclaration(final Identifier responseIdentifier) {
         Assert.notNull(responseIdentifier);
         final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
@@ -572,11 +563,6 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     public Value computeCorrectResponse(final Identifier identifier) {
         Assert.notNull(identifier);
         return computeCorrectResponse(ensureResponseDeclaration(identifier));
-    }
-
-    public Value computeCorrectResponse(final String identifierString) {
-        Assert.notNull(identifierString);
-        return computeCorrectResponse(Identifier.parseString(identifierString));
     }
 
     public Value computeCorrectResponse(final ResponseDeclaration declaration) {

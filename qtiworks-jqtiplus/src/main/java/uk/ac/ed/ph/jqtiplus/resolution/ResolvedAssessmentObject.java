@@ -49,10 +49,10 @@ import java.io.Serializable;
 
 /**
  * Base class for the result of "resolving" an {@link AssessmentObject}.
- * 
+ *
  * @see AssessmentObjectManager
  * @see AssessmentObjectValidator
- * 
+ *
  * @author David McKain
  */
 public abstract class ResolvedAssessmentObject<E extends AssessmentObject> implements Serializable {
@@ -61,46 +61,48 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
 
     /** {@link AssessmentObject} lookup */
     protected final RootNodeLookup<E> rootNodeLookup;
-    
+
     protected final ModelRichness modelRichness;
 
     public ResolvedAssessmentObject(final ModelRichness modelRichness, final RootNodeLookup<E> rootNodeLookup) {
         this.rootNodeLookup = rootNodeLookup;
         this.modelRichness = modelRichness;
     }
-    
+
     public abstract AssessmentObjectType getType();
-    
+
     @ObjectDumperOptions(DumpMode.IGNORE)
     public RootNodeLookup<E> getRootNodeLookup() {
         return rootNodeLookup;
     }
-    
+
     public ModelRichness getModelRichness() {
         return modelRichness;
     }
-    
+
     /**
      * Resolves a declared variable in the current {@link AssessmentObject} having the given {@link Identifier}.
-     * 
+     *
      * @param variableDeclarationIdentifier
      * @return resulting {@link VariableDeclaration}, which will not be null.
      * @throws VariableResolutionException if the variable be resolved. The Exception will contain specific
      *   details about why this happened.
      */
+    @Deprecated
     public abstract VariableDeclaration resolveVariableReferenceOLD(Identifier variableDeclarationIdentifier)
             throws VariableResolutionException;
-    
+
     /**
      * Resolves a referenced variable in the current {@link AssessmentItem}, or the current {@link AssessmentTest}
      * and all referenced {@link AssessmentItem}s.
-     * 
+     *
      * @param variableReferenceIdentifier
      * @return resulting {@link VariableDeclaration}, which will not be null.
      * @throws VariableResolutionException if the variable be resolved. The Exception will contain specific
      *   details about why this happened.
      */
+    @Deprecated
     public abstract VariableDeclaration resolveVariableReferenceOLD(VariableReferenceIdentifier variableReferenceIdentifier)
             throws VariableResolutionException;
-    
+
 }

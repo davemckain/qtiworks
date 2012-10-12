@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
  *
  * @author David McKain
  */
+@Deprecated
 public final class QtiInvalidLookupException extends QtiRuntimeException {
 
     private static final long serialVersionUID = 2827334569953049498L;

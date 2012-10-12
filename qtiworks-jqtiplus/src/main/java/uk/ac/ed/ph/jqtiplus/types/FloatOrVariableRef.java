@@ -161,7 +161,7 @@ public final class FloatOrVariableRef implements Serializable {
             return constantFloatValue;
         }
         else {
-            final Value result = context.lookupVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
+            final Value result = context.evaluateVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
             if (result.hasSignature(Signature.SINGLE_FLOAT)) {
                 return result;
             }

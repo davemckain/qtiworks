@@ -122,17 +122,17 @@ public final class Variable extends LookupExpression {
 
     @Override
     protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
-        return itemContext.lookupVariableValue(itemVariableIdentifier);
+        return itemContext.evaluateVariableValue(itemVariableIdentifier);
     }
 
     @Override
     protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
-        return testContext.lookupVariableValue(testVariableIdentifier);
+        return testContext.evaluateVariableValue(testVariableIdentifier);
     }
 
     @Override
     protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
-        Value result = itemRefController.getItemController().lookupVariableValue(itemVariableIdentifier);
+        Value result = itemRefController.getItemController().evaluateVariableValue(itemVariableIdentifier);
 
         /* Maybe apply weight */
         final Identifier weightIdentifier = getWeightIdentifier();

@@ -36,10 +36,12 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Random;
@@ -67,18 +69,19 @@ public interface ProcessingContext extends NotificationFirer {
     AssessmentObject getSubject();
 
     /**
-     * Convenience method to look up the value of the variable having the
+     * Returns the current value of the variable having the
      * given {@link Identifier} and having the given permitted types.
      * <p>
      * If permittedTypes is empty, then it looks up ANY type of variable.
+     * <p>
+     * If the variable is not successfully referenced then a runtime warning
+     * will be fired and the {@link NullValue} will be returned.
      *
-     * @throws QtiInvalidLookupException if no variable (of the permitted type) has
-     *   the given identifier.
-     *
+     * @param owner
      * @param identifier
      * @param permittedTypes
      */
-    Value lookupVariableValue(Identifier identifier, VariableType... permittedTypes);
+    Value evaluateVariableValue(QtiNode owner, Identifier identifier, VariableType... permittedTypes);
 
     /**
      * Convenience method to look up the value of the variable referenced by the
@@ -93,7 +96,7 @@ public interface ProcessingContext extends NotificationFirer {
      * @param identifier
      * @param permittedTypes
      */
-    Value lookupVariableValue(VariableReferenceIdentifier variableReferenceIdentifier, VariableType... permittedTypes);
+    Value evaluateVariableValue(VariableReferenceIdentifier variableReferenceIdentifier, VariableType... permittedTypes);
 
     Random getRandomGenerator();
 }
