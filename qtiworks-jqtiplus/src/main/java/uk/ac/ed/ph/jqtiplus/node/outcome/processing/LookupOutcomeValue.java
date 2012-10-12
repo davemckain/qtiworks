@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -84,14 +85,15 @@ public final class LookupOutcomeValue extends ProcessOutcomeValue {
 
     @Override
     protected void validateThis(final ValidationContext context) {
-        if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
-            if (declaration != null && declaration.getLookupTable() == null) {
+        final Identifier outcomeIdentifier = getIdentifier();
+        if (outcomeIdentifier!=null) {
+            final OutcomeDeclaration declaration = context.checkTestVariableReference(this, outcomeIdentifier);
+            if (declaration!=null && declaration.getLookupTable() == null) {
                 context.fireValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
-                        + getIdentifier());
+                        + outcomeIdentifier);
             }
         }
     }

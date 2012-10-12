@@ -70,11 +70,15 @@ public interface AssessmentObject extends RootNode, IdentifiableNode<String> {
 
     List<OutcomeDeclaration> getOutcomeDeclarations();
 
+    /**
+     * Returns the (first declared) {@link OutcomeDeclaration} having the given {@link Identifier},
+     * or null.
+     */
     OutcomeDeclaration getOutcomeDeclaration(Identifier identifier);
 
     /**
-     * Convenience method to return the (first) appropriate {@link VariableDeclaration} with the given identifier
-     * within the {@link AssessmentItem} or {@link AssessmentTest}.
+     * Convenience method to return the (first) appropriate {@link VariableDeclaration} with the
+     * given identifier within the {@link AssessmentItem} or {@link AssessmentTest}, or null.
      */
     @Deprecated
     VariableDeclaration getVariableDeclaration(Identifier identifier);

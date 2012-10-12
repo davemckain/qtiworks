@@ -41,7 +41,8 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentTestState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -141,8 +142,12 @@ public final class TestFeedback extends AbstractNode {
 
     @Override
     protected void validateThis(final ValidationContext context) {
-        if (getOutcomeIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getOutcomeIdentifier()) == null) {
-            context.fireValidationWarning(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier());
+        final Identifier outcomeIdentifier = getOutcomeIdentifier();
+        if (outcomeIdentifier!=null) {
+            final VariableDeclaration declaration = context.checkVariableReference(this, outcomeIdentifier);
+            if (declaration!=null) {
+                context.checkVariableType(this, declaration, VariableType.OUTCOME);
+            }
         }
 
         if (getChildren().size() == 0) {

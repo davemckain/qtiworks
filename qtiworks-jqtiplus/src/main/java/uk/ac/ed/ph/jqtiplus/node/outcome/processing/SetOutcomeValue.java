@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -91,14 +92,15 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
 
     @Override
     public void validateThis(final ValidationContext context) {
-        if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
-            if (declaration != null && declaration.getLookupTable() != null) {
+        final Identifier variableReferenceIdentifier = getIdentifier();
+        if (variableReferenceIdentifier != null) {
+            final OutcomeDeclaration outcomeDeclaration = context.checkTestVariableReference(this, variableReferenceIdentifier);
+            if (outcomeDeclaration!=null && outcomeDeclaration.getLookupTable() != null) {
                 context.fireValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
-                        + getIdentifier());
+                        + variableReferenceIdentifier);
             }
         }
     }

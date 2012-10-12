@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -91,20 +92,30 @@ class AbstractItemValidationContext extends AbstractValidationContext<Assessment
     }
 
     @Override
+    public OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
+        /* No test variables here */
+        return null;
+    }
+
+    @Override
     public final VariableDeclaration checkVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
         final List<VariableDeclaration> variableDeclarations = resolvedAssessmentItem.resolveVariableReferenceNew(variableReferenceIdentifier);
-        if (variableDeclarations.size()==1) {
+        if (variableDeclarations==null) {
+            /* Item lookup failed, which is impossible here */
+            throw new QtiLogicException("Unexpected logic branch");
+        }
+        else if (variableDeclarations.size()==1) {
             /* Found and unique, which is what we want */
             return variableDeclarations.get(0);
         }
-        if (variableDeclarations.isEmpty()) {
+        else if (variableDeclarations.isEmpty()) {
             /* No variable found */
-            fireValidationError(owner, "Item variable referenced by identifier " + variableReferenceIdentifier + " has not been declared");
+            fireValidationError(owner, "Item variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
             return null;
         }
         else {
             /* Multiple matches for identifier */
-            fireValidationError(owner, variableDeclarations.size() + " item variables have been declared with the same identifier " + variableDeclarations);
+            fireValidationError(owner, variableDeclarations.size() + " item variables have been declared with the same identifier '" + variableDeclarations + "'");
             return null;
         }
     }

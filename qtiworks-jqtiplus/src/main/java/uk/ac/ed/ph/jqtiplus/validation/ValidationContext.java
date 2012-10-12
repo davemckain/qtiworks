@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -101,18 +102,30 @@ public interface ValidationContext extends NotificationFirer {
     //------------------------------------------------------
 
     /**
-     * Checks that the variable having the given {@link Identifier} can be correctly dereferenced.
-     * A {@link ValidationError} is recorded if this is unsuccessful.
+     * Checks that the test (outcome) variable having the given {@link Identifier} can be
+     * successfully and uniquely dereferenced. A {@link ValidationError} is recorded if this
+     * is unsuccessful.
      * <p>
-     * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.
+     * Returns a {@link OutcomeDeclaration} corresponding to the resulting test variable if successful,
+     * otherwise null.
+     */
+    OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier);
+
+    /**
+     * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
+     * dereferenced. A {@link ValidationError} is recorded if this is unsuccessful.
+     * <p>
+     * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful,
+     * otherwise null.
      */
     VariableDeclaration checkVariableReference(QtiNode owner, Identifier variableDeclarationIdentifier);
 
     /**
-     * Checks that the given {@link VariableReferenceIdentifier} can be correctly dereferenced.
-     * A {@link ValidationError} is recorded if this is unsuccessful.
+     * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
+     * dereferenced. A {@link ValidationError} is recorded if this is unsuccessful.
      * <p>
-     * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful, otherwise null.
+     * Returns a {@link VariableDeclaration} corresponding to the resulting variable if successful,
+     * otherwise null.
      */
     VariableDeclaration checkVariableReference(QtiNode owner, VariableReferenceIdentifier variableReferenceIdentifier);
 

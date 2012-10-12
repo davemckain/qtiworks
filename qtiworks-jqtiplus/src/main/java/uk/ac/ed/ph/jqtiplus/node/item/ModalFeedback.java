@@ -39,16 +39,17 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.FlowStaticGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
@@ -158,24 +159,14 @@ public class ModalFeedback extends AbstractNode {
 
     @Override
     public void validateThis(final ValidationContext context) {
-        if (getOutcomeIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
-
-            if (declaration == null) {
-                context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier());
-            }
-
-            if (declaration != null && declaration.getCardinality() != null
-                    && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
-                        + " or "
-                        + Cardinality.MULTIPLE
-                        + ", but found: "
-                        + declaration.getCardinality());
-            }
-
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                context.fireValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType());
+        final Identifier outcomeIdentifier = getOutcomeIdentifier();
+        if (outcomeIdentifier!=null) {
+            final VariableDeclaration declaration = context.checkVariableReference(this, getOutcomeIdentifier());
+            if (declaration!=null) {
+                context.checkVariableType(this, declaration, VariableType.OUTCOME);
+                if (!declaration.hasSignature(Signature.SINGLE_IDENTIFIER, Signature.MULTIPLE_IDENTIFIER)) {
+                    context.fireValidationError(this, "Expected outcome variable to be a single or multiple identifier");
+                }
             }
         }
     }

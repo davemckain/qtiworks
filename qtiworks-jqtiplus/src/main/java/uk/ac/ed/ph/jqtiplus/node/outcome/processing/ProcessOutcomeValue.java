@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
@@ -92,8 +91,9 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
 
     @Override
     protected void validateThis(final ValidationContext context) {
-        if (getIdentifier() != null && context.getSubjectTest().getOutcomeDeclaration(getIdentifier()) == null) {
-            context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+             context.checkVariableReference(this, referenceIdentifier);
         }
     }
 }

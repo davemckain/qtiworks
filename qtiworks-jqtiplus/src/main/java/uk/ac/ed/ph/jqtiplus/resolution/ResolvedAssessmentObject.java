@@ -88,7 +88,7 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
      * @throws VariableResolutionException if the variable be resolved. The Exception will contain specific
      *   details about why this happened.
      */
-    public abstract VariableDeclaration resolveVariableReference(Identifier variableDeclarationIdentifier)
+    public abstract VariableDeclaration resolveVariableReferenceOLD(Identifier variableDeclarationIdentifier)
             throws VariableResolutionException;
     
     /**
@@ -100,7 +100,7 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
      * @throws VariableResolutionException if the variable be resolved. The Exception will contain specific
      *   details about why this happened.
      */
-    public abstract VariableDeclaration resolveVariableReference(VariableReferenceIdentifier variableReferenceIdentifier)
+    public abstract VariableDeclaration resolveVariableReferenceOLD(VariableReferenceIdentifier variableReferenceIdentifier)
             throws VariableResolutionException;
     
 }

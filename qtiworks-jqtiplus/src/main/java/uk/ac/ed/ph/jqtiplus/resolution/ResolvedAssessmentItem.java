@@ -83,6 +83,15 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
         return resolvedResponseProcessingTemplateLookup;
     }
 
+    /**
+     * Returns the {@link VariableDeclaration}(s) having the given {@link Identifier}. This will
+     * return 0 or 1 items in a valid item, but can return more if the same identifier has been
+     * (incorrectly) declared multiple times.
+     * <p>
+     * Returns null if the item lookup was unsuccessful.
+     *
+     * @param variableReferenceIdentifier
+     */
     public List<VariableDeclaration> resolveVariableReferenceNew(final Identifier variableReferenceIdentifier) {
         if (!itemLookup.wasSuccessful()) {
             return null;
@@ -109,7 +118,7 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
 
     @Override
     @Deprecated
-    public VariableDeclaration resolveVariableReference(final Identifier variableReferenceIdentifier)
+    public VariableDeclaration resolveVariableReferenceOLD(final Identifier variableReferenceIdentifier)
             throws VariableResolutionException {
         if (!itemLookup.wasSuccessful()) {
             throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.THIS_ITEM_LOOKUP_FAILURE);
@@ -124,10 +133,10 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
 
     @Override
     @Deprecated
-    public VariableDeclaration resolveVariableReference(final VariableReferenceIdentifier variableReferenceIdentifier)
+    public VariableDeclaration resolveVariableReferenceOLD(final VariableReferenceIdentifier variableReferenceIdentifier)
             throws VariableResolutionException {
         final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
-        return resolveVariableReference(localIdentifier);
+        return resolveVariableReferenceOLD(localIdentifier);
     }
 
     //-------------------------------------------------------------------

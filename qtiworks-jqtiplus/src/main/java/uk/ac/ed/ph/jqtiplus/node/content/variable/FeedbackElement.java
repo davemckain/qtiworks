@@ -145,23 +145,18 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
     @Override
     public void validateThis(final ValidationContext context) {
         if (getOutcomeIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getOutcomeIdentifier());
-
-            if (declaration == null) {
-                context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getOutcomeIdentifier());
-            }
-
-            if (declaration != null && declaration.getCardinality() != null
-                    && !(declaration.getCardinality().isSingle() || declaration.getCardinality().isMultiple())) {
-                context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
-                        + " or "
-                        + Cardinality.MULTIPLE
-                        + ", but found: "
-                        + declaration.getCardinality());
-            }
-
-            if (declaration != null && declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                context.fireValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType());
+            final OutcomeDeclaration declaration = context.checkTestVariableReference(this, getOutcomeIdentifier());
+            if (declaration!=null) {
+                if (!declaration.getCardinality().isOneOf(Cardinality.SINGLE, Cardinality.MULTIPLE)) {
+                    context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
+                            + " or "
+                            + Cardinality.MULTIPLE
+                            + ", but found: "
+                            + declaration.getCardinality());
+                }
+                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
+                    context.fireValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType());
+                }
             }
         }
         if (!hasChildNodes()) {

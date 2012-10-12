@@ -37,13 +37,16 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.VariableReferenceIdentifier;
+
+import java.util.List;
 
 /**
  * FIXME: Document this type
@@ -90,17 +93,48 @@ class AbstractTestValidationContext extends AbstractValidationContext<Assessment
         return subject;
     }
 
-    /**
-     * FINISH ME!!!
-     */
+    @Override
+    public OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
+        final List<OutcomeDeclaration> outcomeDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
+        if (outcomeDeclarations==null) {
+            /* Test lookup failed, which is impossible here */
+            throw new QtiLogicException("Unexpected logic branch");
+        }
+        else if (outcomeDeclarations.size()==1) {
+            /* Found and unique which is what we want */
+            return outcomeDeclarations.get(0);
+        }
+        if (outcomeDeclarations.isEmpty()) {
+            /* No variable found */
+            fireValidationError(owner, "Test outcome variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
+            return null;
+        }
+        else {
+            /* Multiple matches for identifier */
+            fireValidationError(owner, outcomeDeclarations.size() + " matches were found for the test outcome variable having identifier '" + variableReferenceIdentifier + "'");
+            return null;
+        }
+    }
+
     @Override
     public VariableDeclaration checkVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
-        resolvedAssessmentTest.resolveVariableReferenceNew(variableReferenceIdentifier);
-        try {
-            return resolvedAssessmentObject.resolveVariableReference(variableReferenceIdentifier);
+        final List<ResolvedTestVariableReference> resolvedReferences = resolvedAssessmentTest.resolveVariableReference(variableReferenceIdentifier);
+        if (resolvedReferences==null) {
+            /* Test lookup failed, which is impossible here */
+            throw new QtiLogicException("Unexpected logic branch");
         }
-        catch (final VariableResolutionException e) {
-            fireValidationError(owner, e.getMessage());
+        else if (resolvedReferences.size()==1) {
+            /* Found and unique which is what we want */
+            return resolvedReferences.get(0).getVariableDeclaration();
+        }
+        if (resolvedReferences.isEmpty()) {
+            /* No variable found */
+            fireValidationError(owner, "Test (or referenced item) variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
+            return null;
+        }
+        else {
+            /* Multiple matches for identifier */
+            fireValidationError(owner, resolvedReferences.size() + " matches were found for the test (or referenced item) variable having identifier " + variableReferenceIdentifier);
             return null;
         }
     }

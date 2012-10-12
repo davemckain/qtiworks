@@ -155,7 +155,7 @@ public abstract class LookupExpression extends AbstractExpression {
     @ToRefactor
     public VariableDeclaration lookupTargetVariableDeclaration(final ValidationContext context)
             throws VariableResolutionException {
-        return context.getResolvedAssessmentObject().resolveVariableReference(getIdentifier());
+        return context.getResolvedAssessmentObject().resolveVariableReferenceOLD(getIdentifier());
     }
 
     //----------------------------------------------------------------------

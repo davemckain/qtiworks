@@ -136,7 +136,29 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         return systemId!=null ? resolvedAssessmentItemMap.get(systemId) : null;
     }
 
-    public List<ResolvedTestVariableReference> resolveVariableReferenceNew(final VariableReferenceIdentifier variableReferenceIdentifier) {
+    //-------------------------------------------------------------------
+
+    public List<OutcomeDeclaration> resolveTestVariable(final Identifier variableReferenceIdentifier) {
+        if (!testLookup.wasSuccessful()) {
+            return null;
+        }
+        return tryTestVariableDeclaration(variableReferenceIdentifier);
+    }
+
+    /**
+     * Resolves the given variable reference, supporting references to both test variables and
+     * referenced item variables using 'dotted' notation defined in the discussion of the
+     * <code>variable</code> class in the QTI information model.
+     * <p>
+     * The resolution is not guaranteed to return a single result, even if identifiers are all
+     * correctly unique, as the dotted notation is ambiguous. Therefore a List of matches is
+     * returned; the first of these being considered the "best" option if the test is valid.
+     * <p>
+     * Return null if the test lookup was unsuccessful.
+     *
+     * @param variableReferenceIdentifier
+     */
+    public List<ResolvedTestVariableReference> resolveVariableReference(final Identifier variableReferenceIdentifier) {
         if (!testLookup.wasSuccessful()) {
             return null;
         }
@@ -206,9 +228,6 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     }
 
     private List<OutcomeDeclaration> tryTestVariableDeclaration(final Identifier possibleTestVariableIdentifier) {
-        if (!testLookup.wasSuccessful()) {
-            return null;
-        }
         final AssessmentTest test = testLookup.extractAssumingSuccessful();
         final List<OutcomeDeclaration> result = new ArrayList<OutcomeDeclaration>();
         for (final OutcomeDeclaration outcomeDeclaration : test.getOutcomeDeclarations()) {
@@ -227,13 +246,13 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
 
     @Override
     @Deprecated
-    public VariableDeclaration resolveVariableReference(final Identifier variableDeclarationIdentifier) throws VariableResolutionException {
+    public VariableDeclaration resolveVariableReferenceOLD(final Identifier variableDeclarationIdentifier) throws VariableResolutionException {
         /* (These only ever reference variables within the current test) */
-        return resolveTestVariable(variableDeclarationIdentifier);
+        return resolveTestVariableOLD(variableDeclarationIdentifier);
     }
 
     @Deprecated
-    public VariableDeclaration resolveTestVariable(final Identifier variableDeclarationIdentifier) throws VariableResolutionException {
+    public VariableDeclaration resolveTestVariableOLD(final Identifier variableDeclarationIdentifier) throws VariableResolutionException {
         if (!testLookup.wasSuccessful()) {
             throw new VariableResolutionException(variableDeclarationIdentifier, VariableResolutionFailureReason.THIS_TEST_LOOKUP_FAILURE);
         }
@@ -247,13 +266,13 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
 
 
     @Deprecated
-    public VariableDeclaration resolveItemVariableReference(final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
+    public VariableDeclaration resolveItemVariableReferenceOLD(final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
         final VariableReferenceIdentifier dottedVariableReference = new VariableReferenceIdentifier(itemRefIdentifier, itemVarIdentifier);
-        return resolveItemVariableReference(dottedVariableReference, itemRefIdentifier, itemVarIdentifier);
+        return resolveItemVariableReferenceOLD(dottedVariableReference, itemRefIdentifier, itemVarIdentifier);
     }
 
     @Deprecated
-    private VariableDeclaration resolveItemVariableReference(final VariableReferenceIdentifier dottedVariableReference, final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
+    private VariableDeclaration resolveItemVariableReferenceOLD(final VariableReferenceIdentifier dottedVariableReference, final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
         if (!testLookup.wasSuccessful()) {
             throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.THIS_TEST_LOOKUP_FAILURE);
         }
@@ -286,14 +305,14 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     }
 
     @Override
-    public VariableDeclaration resolveVariableReference(final VariableReferenceIdentifier variableReferenceIdentifier) throws VariableResolutionException {
+    public VariableDeclaration resolveVariableReferenceOLD(final VariableReferenceIdentifier variableReferenceIdentifier) throws VariableResolutionException {
         VariableDeclaration result;
         if (variableReferenceIdentifier.isDotted()) {
-            result = resolveItemVariableReference(variableReferenceIdentifier,
+            result = resolveItemVariableReferenceOLD(variableReferenceIdentifier,
                     variableReferenceIdentifier.getAssessmentItemRefIdentifier(), variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier());
         }
         else {
-            result = resolveVariableReference(variableReferenceIdentifier.getLocalIdentifier());
+            result = resolveVariableReferenceOLD(variableReferenceIdentifier.getLocalIdentifier());
         }
         return result;
     }

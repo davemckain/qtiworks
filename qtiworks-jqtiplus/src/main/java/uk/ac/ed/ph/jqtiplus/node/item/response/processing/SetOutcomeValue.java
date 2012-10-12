@@ -37,7 +37,10 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -90,18 +93,18 @@ public final class SetOutcomeValue extends ProcessResponseValue {
 
     @Override
     public void validateThis(final ValidationContext context) {
-        if (getIdentifier() != null) {
-            if (context.getSubject().getOutcomeDeclaration(getIdentifier()) == null) {
-                context.fireValidationError(this, "Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
-            }
-
-            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
-            if (declaration != null && declaration.getLookupTable() != null) {
-                context.fireValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
-                        + " in "
-                        + OutcomeDeclaration.QTI_CLASS_NAME
-                        + ": "
-                        + getIdentifier());
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.checkVariableReference(this, referenceIdentifier);
+            if (declaration!=null) {
+                context.checkVariableType(this, declaration, VariableType.OUTCOME);
+                if (((OutcomeDeclaration) declaration).getLookupTable() != null) {
+                    context.fireValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
+                            + " in "
+                            + OutcomeDeclaration.QTI_CLASS_NAME
+                            + ": "
+                            + referenceIdentifier);
+                }
             }
         }
     }
