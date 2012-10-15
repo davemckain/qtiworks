@@ -33,11 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionStatus;
 
 /**
  * This is a (still somewhat experimental) attempt to provide more granular information
- * about the current rendering state than {@link CandidateSessionState}.
+ * about the current rendering state than {@link CandidateSessionStatus}.
  * <p>
  * (This is presently referred to as the "secondary session state" in the author debug mode
  * in rendered content.)

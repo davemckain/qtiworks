@@ -34,11 +34,11 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Encapsulates the various states for a {@link CandidateItemSession}
+ * Encapsulates the various statuses for a {@link CandidateItemSession}
  *
  * @author David McKain
  */
-public enum CandidateSessionState {
+public enum CandidateSessionStatus {
 
     /**
      * Candidate is still interacting and may make further attempts.
