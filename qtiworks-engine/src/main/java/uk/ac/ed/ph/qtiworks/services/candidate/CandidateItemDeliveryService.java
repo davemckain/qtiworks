@@ -291,47 +291,29 @@ public class CandidateItemDeliveryService {
     }
 
     private void renderInteractingPresentation(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateItemEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.AFTER_INITIALISATION);
-
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent, renderingOptions, RenderingMode.AFTER_INITIALISATION);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
     private void renderInteractingAfterAttempt(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenInteracting(candidateItemEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.AFTER_ATTEMPT);
-
-        final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateItemEvent);
-        if (attempt==null) {
-            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateItemEvent.getId());
-        }
-        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
-        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
-        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-        extractResponseDataForRendering(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
-
-        renderingRequest.setResponseInputs(responseDataBuilder);
-        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
-        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
-
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent, renderingOptions, RenderingMode.AFTER_ATTEMPT);
+        fillAttemptResponseData(renderingRequest, candidateItemEvent);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
-    private ItemRenderingRequest createItemRenderingRequestWhenInteracting(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions) {
+    private ItemRenderingRequest initItemRenderingRequestWhenInteracting(final CandidateItemEvent candidateItemEvent,
+            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
         final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
 
-        final ItemRenderingRequest renderingRequest = createPartialItemRenderingRequest(candidateItemEvent, renderingOptions);
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent, renderingOptions, renderingMode);
         renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
         renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
         renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
         renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenInteracting());
         renderingRequest.setResultAllowed(false);
         renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
-        renderingRequest.setBadResponseIdentifiers(null);
-        renderingRequest.setInvalidResponseIdentifiers(null);
-        renderingRequest.setResponseInputs(null);
         return renderingRequest;
     }
 
@@ -365,100 +347,34 @@ public class CandidateItemDeliveryService {
         }
     }
 
-    private ItemRenderingRequest createPartialItemRenderingRequest(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions) {
-        final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
-        final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
-
-        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setCandidateSessionState(candidateItemSessionState);
-        renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(candidateItemEvent));
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
-        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
-        return renderingRequest;
-    }
-
     private void renderClosedAfterAttempt(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateItemEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.AFTER_ATTEMPT);
-
-        /* FIXME: Cut & paste below! Refactor this! */
-        final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateItemEvent);
-        if (attempt==null) {
-            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateItemEvent.getId());
-        }
-        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
-        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
-        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-        extractResponseDataForRendering(attempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
-
-        renderingRequest.setResponseInputs(responseDataBuilder);
-        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
-        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
-
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
+                renderingOptions, RenderingMode.AFTER_ATTEMPT);
+        fillAttemptResponseData(renderingRequest, candidateItemEvent);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
     private void renderClosed(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateItemEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.CLOSED);
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
+                renderingOptions, RenderingMode.CLOSED);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
     private void renderSolution(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemRenderingRequest renderingRequest = createItemRenderingRequestWhenClosed(candidateItemEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.SOLUTION);
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
+                renderingOptions, RenderingMode.SOLUTION);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
     private void renderPlayback(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateItemEvent playbackEvent = candidateItemEvent.getPlaybackEvent();
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(playbackEvent,
+                renderingOptions, RenderingMode.PLAYBACK);
 
-        final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
-
-        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
-        renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
-        renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(playbackEvent));
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
-        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
-
-        renderingRequest.setCloseAllowed(false);
-        renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
-        renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenClosed());
-        renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenClosed());
-        renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
-        renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
-
-        /* If it's an attempt, pull out the raw response data */
+        /* If we're playing back an attempt, pull out the raw response data */
         final CandidateItemAttempt playbackAttempt = candidateItemAttemptDao.getForEvent(playbackEvent);
         if (playbackAttempt!=null) {
-            final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
-            final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
-            final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-            extractResponseDataForRendering(playbackAttempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
-
-            renderingRequest.setResponseInputs(responseDataBuilder);
-            renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
-            renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
-        }
-
-        /* Register playback events */
-        renderingRequest.setPlaybackAllowed(itemDeliverySettings.isAllowPlayback());
-        if (itemDeliverySettings.isAllowPlayback()) {
-            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateItemSession));
-            renderingRequest.setCurrentPlaybackEvent(playbackEvent);
+            fillAttemptResponseData(renderingRequest, playbackAttempt);
         }
 
         /* Record which event we're playing back */
@@ -468,22 +384,15 @@ public class CandidateItemDeliveryService {
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
-    private ItemRenderingRequest createItemRenderingRequestWhenClosed(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions) {
+    private ItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateItemEvent candidateItemEvent,
+            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
         final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
-        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent,
+                renderingOptions, renderingMode);
         renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
-        renderingRequest.setRenderingMode(RenderingMode.CLOSED);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(candidateItemEvent));
-        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
-        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
-
-        renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setCloseAllowed(false);
         renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
         renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenClosed());
@@ -499,14 +408,53 @@ public class CandidateItemDeliveryService {
     }
 
     private void renderTerminated(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemRenderingRequest renderingRequest = createPartialItemRenderingRequest(candidateItemEvent, renderingOptions);
-        renderingRequest.setRenderingMode(RenderingMode.TERMINATED);
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent,
+                renderingOptions, RenderingMode.TERMINATED);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
     private void doRendering(final CandidateItemEvent candidateItemEvent, final ItemRenderingRequest renderingRequest, final OutputStream resultStream) {
         logRendering(candidateItemEvent, renderingRequest);
         assessmentRenderer.renderItem(renderingRequest, resultStream);
+    }
+
+    private ItemRenderingRequest initItemRenderingRequest(final CandidateItemEvent candidateItemEvent,
+            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+        final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
+        final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
+        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
+        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+
+        final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
+        renderingRequest.setRenderingMode(renderingMode);
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setCandidateSessionState(candidateItemSessionState);
+        renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(candidateItemEvent));
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
+        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
+        return renderingRequest;
+    }
+
+    private void fillAttemptResponseData(final ItemRenderingRequest renderingRequest, final CandidateItemEvent candidateItemEvent) {
+        final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateItemEvent);
+        if (attempt==null) {
+            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateItemEvent.getId());
+        }
+        fillAttemptResponseData(renderingRequest, attempt);
+    }
+
+    private void fillAttemptResponseData(final ItemRenderingRequest renderingRequest, final CandidateItemAttempt candidateItemAttempt) {
+        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
+        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
+        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
+        extractResponseDataForRendering(candidateItemAttempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+
+        renderingRequest.setResponseInputs(responseDataBuilder);
+        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
+        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
     }
 
     private void extractResponseDataForRendering(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
