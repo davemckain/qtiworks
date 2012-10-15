@@ -1,0 +1,9 @@
+Record schema changes after milestones here so that we can update production DB safely
+======================================================================================
+
+Baseline: Milestone 1
+=====================
+
+candidate_item_session:
+  new column: creation_time
+  rename: state -> status
