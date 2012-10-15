@@ -44,9 +44,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.net.URI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * The custom operator provides an extension mechanism for defining operations not currently supported
  * by this specification.
@@ -62,8 +59,6 @@ import org.slf4j.LoggerFactory;
 public abstract class CustomOperator<E extends JqtiExtensionPackage<E>> extends AbstractExpression {
 
     private static final long serialVersionUID = -3800871694273961417L;
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomOperator.class);
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "customOperator";
@@ -105,7 +100,7 @@ public abstract class CustomOperator<E extends JqtiExtensionPackage<E>> extends 
             return evaluateSelf(jqtiExtensionPackage, context, childValues, depth);
         }
         else {
-            logger.debug("Extension package for this operator is not found - returning NULL");
+            context.fireRuntimeWarning(this, "Extension package for this operator is not found - returning NULL");
             return NullValue.INSTANCE;
         }
     }

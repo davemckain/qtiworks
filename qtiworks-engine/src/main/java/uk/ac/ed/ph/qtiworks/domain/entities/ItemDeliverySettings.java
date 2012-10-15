@@ -151,32 +151,32 @@ public class ItemDeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Column(name="allow_close")
     private boolean allowClose;
 
-    /** Allow candidate to reset attempt while in {@link CandidateSessionState#INTERACTING} state */
+    /** Allow candidate to reset attempt while in {@link CandidateSessionStatus#INTERACTING} state */
     @Basic(optional=false)
     @Column(name="allow_reset_when_interacting")
     private boolean allowResetWhenInteracting;
 
-    /** Allow candidate to reset attempt while in {@link CandidateSessionState#CLOSED} state */
+    /** Allow candidate to reset attempt while in {@link CandidateSessionStatus#CLOSED} state */
     @Basic(optional=false)
     @Column(name="allow_reset_when_closed")
     private boolean allowResetWhenClosed;
 
-    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionState#INTERACTING} state */
+    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionStatus#INTERACTING} state */
     @Basic(optional=false)
     @Column(name="allow_reinit_when_interacting")
     private boolean allowReinitWhenInteracting;
 
-    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionState#CLOSED} state */
+    /** Allow candidate to re-initialize attempt while in {@link CandidateSessionStatus#CLOSED} state */
     @Basic(optional=false)
     @Column(name="allow_reinit_when_closed")
     private boolean allowReinitWhenClosed;
 
-    /** Allow candidate to show solution when in {@link CandidateSessionState#INTERACTING} state */
+    /** Allow candidate to show solution when in {@link CandidateSessionStatus#INTERACTING} state */
     @Basic(optional=false)
     @Column(name="allow_solution_when_interacting")
     private boolean allowSolutionWhenInteracting;
 
-    /** Allow candidate to show solution when in {@link CandidateSessionState#CLOSED} state */
+    /** Allow candidate to show solution when in {@link CandidateSessionStatus#CLOSED} state */
     @Basic(optional=false)
     @Column(name="allow_solution_when_closed")
     private boolean allowSolutionWhenClosed;

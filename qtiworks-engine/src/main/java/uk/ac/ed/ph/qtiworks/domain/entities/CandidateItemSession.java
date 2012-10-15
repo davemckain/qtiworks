@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
+import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,6 +49,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Represents the "session" for a particular candidate {@link User} against a
@@ -57,7 +61,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="candidate_item_sessions")
 @SequenceGenerator(name="candidateItemSessionSequence", sequenceName="candidate_item_session_sequence", initialValue=1, allocationSize=50)
-public class CandidateItemSession implements BaseEntity {
+public class CandidateItemSession implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -3537558551866726398L;
 
@@ -65,6 +69,12 @@ public class CandidateItemSession implements BaseEntity {
     @GeneratedValue(generator="candidateItemSessionSequence")
     @Column(name="xid")
     private Long id;
+
+    /** Session creation timestamp */
+    @Basic(optional=false)
+    @Column(name="creation_time", updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
 
     /**
      * Randomly-generated token for this session. Used in conjunction with the <code>xid</code>
@@ -91,19 +101,22 @@ public class CandidateItemSession implements BaseEntity {
     @Column(name="exit_url", length=DomainConstants.CANDIDATE_SESSION_EXIT_URL_LENGTH)
     private String exitUrl;
 
+    /** {@link ItemDelivery} owning this session */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="did")
     private ItemDelivery itemDelivery;
 
+    /** Candidate running this session */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="uid")
     private User candidate;
 
-    /** Current state */
+
+    /** Current state (enumerated) */
     @Basic(optional=false)
-    @Column(name="state", length=11)
+    @Column(name="status", length=11)
     @Enumerated(EnumType.STRING)
-    private CandidateSessionState state;
+    private CandidateSessionStatus status;
 
     //------------------------------------------------------------
 
@@ -115,6 +128,17 @@ public class CandidateItemSession implements BaseEntity {
     @Override
     public void setId(final Long id) {
         this.id = id;
+    }
+
+
+    @Override
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    @Override
+    public void setCreationTime(final Date creationTime) {
+        this.creationTime = creationTime;
     }
 
 
@@ -154,12 +178,12 @@ public class CandidateItemSession implements BaseEntity {
     }
 
 
-    public CandidateSessionState getState() {
-        return state;
+    public CandidateSessionStatus getCandidateSessionStatus() {
+        return status;
     }
 
-    public void setState(final CandidateSessionState state) {
-        this.state = state;
+    public void setCandidateSessionStatus(final CandidateSessionStatus status) {
+        this.status = status;
     }
 
     //------------------------------------------------------------
@@ -168,7 +192,7 @@ public class CandidateItemSession implements BaseEntity {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
-                + ",state=" + state
+                + ",status=" + status
                 + ")";
     }
 }
