@@ -114,7 +114,7 @@ public class CandidateItemEvent implements BaseEntity {
     @Basic(optional=false)
     @Column(name="state", length=11)
     @Enumerated(EnumType.STRING)
-    private CandidateSessionState sessionState;
+    private CandidateSessionStatus sessionState;
 
     /** Value of the <code>completionStatus</code> item variable */
     @Basic(optional=false)
@@ -191,11 +191,11 @@ public class CandidateItemEvent implements BaseEntity {
     }
 
 
-    public CandidateSessionState getSessionState() {
+    public CandidateSessionStatus getSessionState() {
         return sessionState;
     }
 
-    public void setSessionState(final CandidateSessionState sessionState) {
+    public void setSessionState(final CandidateSessionStatus sessionState) {
         this.sessionState = sessionState;
     }
 

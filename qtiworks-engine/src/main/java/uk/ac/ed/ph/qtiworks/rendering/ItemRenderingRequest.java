@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionStatus;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -59,7 +59,7 @@ public final class ItemRenderingRequest {
 
     /** Current state of the candidate's session */
     @NotNull
-    private CandidateSessionState candidateSessionState;
+    private CandidateSessionStatus candidateSessionState;
 
     /** Selected {@link RenderingMode} */
     @NotNull
@@ -134,11 +134,11 @@ public final class ItemRenderingRequest {
     }
 
 
-    public CandidateSessionState getCandidateSessionState() {
+    public CandidateSessionStatus getCandidateSessionState() {
         return candidateSessionState;
     }
 
-    public void setCandidateSessionState(final CandidateSessionState candidateSessionState) {
+    public void setCandidateSessionState(final CandidateSessionStatus candidateSessionState) {
         this.candidateSessionState = candidateSessionState;
     }
 

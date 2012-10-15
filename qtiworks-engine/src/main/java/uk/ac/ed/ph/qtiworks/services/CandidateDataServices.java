@@ -120,7 +120,7 @@ public class CandidateDataServices {
         final CandidateItemEvent event = new CandidateItemEvent();
         event.setCandidateItemSession(candidateItemSession);
         event.setEventType(eventType);
-        event.setSessionState(candidateItemSession.getState());
+        event.setSessionState(candidateItemSession.getCandidateSessionStatus());
         event.setCompletionStatus(itemSessionState.getCompletionStatus());
         event.setDuration(itemSessionState.getDuration());
         event.setNumAttempts(itemSessionState.getNumAttempts());

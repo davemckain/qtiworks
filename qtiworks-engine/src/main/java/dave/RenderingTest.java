@@ -7,7 +7,7 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionState;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionStatus;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
@@ -72,7 +72,7 @@ public class RenderingTest {
             renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
 
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
-            renderingRequest.setCandidateSessionState(CandidateSessionState.CLOSED);
+            renderingRequest.setCandidateSessionState(CandidateSessionStatus.CLOSED);
             renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(inputUri);

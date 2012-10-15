@@ -72,7 +72,7 @@ public class CandidateItemSession implements BaseEntity, TimestampedOnCreation {
 
     /** Session creation timestamp */
     @Basic(optional=false)
-    @Column(name="start_time", updatable=false)
+    @Column(name="creation_time", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
@@ -114,9 +114,9 @@ public class CandidateItemSession implements BaseEntity, TimestampedOnCreation {
 
     /** Current state (enumerated) */
     @Basic(optional=false)
-    @Column(name="state", length=11)
+    @Column(name="status", length=11)
     @Enumerated(EnumType.STRING)
-    private CandidateSessionState state;
+    private CandidateSessionStatus status;
 
     //------------------------------------------------------------
 
@@ -178,12 +178,12 @@ public class CandidateItemSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public CandidateSessionState getState() {
-        return state;
+    public CandidateSessionStatus getCandidateSessionStatus() {
+        return status;
     }
 
-    public void setState(final CandidateSessionState state) {
-        this.state = state;
+    public void setCandidateSessionStatus(final CandidateSessionStatus status) {
+        this.status = status;
     }
 
     //------------------------------------------------------------
@@ -192,7 +192,7 @@ public class CandidateItemSession implements BaseEntity, TimestampedOnCreation {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
-                + ",state=" + state
+                + ",status=" + status
                 + ")";
     }
 }
