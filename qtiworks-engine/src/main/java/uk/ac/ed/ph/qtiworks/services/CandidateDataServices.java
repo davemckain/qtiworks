@@ -115,7 +115,8 @@ public class CandidateDataServices {
     }
 
     public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
-            final CandidateItemEventType eventType, final ItemSessionState itemSessionState, final CandidateItemEvent playbackEvent) {
+            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
+            final CandidateItemEvent playbackEvent) {
         final CandidateItemEvent event = new CandidateItemEvent();
         event.setCandidateItemSession(candidateItemSession);
         event.setEventType(eventType);
@@ -148,7 +149,7 @@ public class CandidateDataServices {
         return new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
     }
 
-    public ItemSessionState getCurrentItemSessionState(final CandidateItemSession candidateItemSession)  {
+    public ItemSessionState computeCurrentItemSessionState(final CandidateItemSession candidateItemSession)  {
         final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateItemSession);
         return unmarshalItemSessionState(mostRecentEvent);
     }

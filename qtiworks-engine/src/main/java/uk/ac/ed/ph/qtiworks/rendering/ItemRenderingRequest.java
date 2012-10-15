@@ -57,6 +57,11 @@ import javax.validation.constraints.NotNull;
  */
 public final class ItemRenderingRequest {
 
+    /** Current state of the candidate's session */
+    @NotNull
+    private CandidateSessionState candidateSessionState;
+
+    /** Selected {@link RenderingMode} */
     @NotNull
     private RenderingMode renderingMode;
 
@@ -70,10 +75,7 @@ public final class ItemRenderingRequest {
     @Valid
     private RenderingOptions renderingOptions;
 
-    /** Current state of the candidate's session */
-    @NotNull
-    private CandidateSessionState candidateSessionState;
-
+    /** Required {@link ItemSessionState} to be rendered */
     @NotNull
     private ItemSessionState itemSessionState;
 

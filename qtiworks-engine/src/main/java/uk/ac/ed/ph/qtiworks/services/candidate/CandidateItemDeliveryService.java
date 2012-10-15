@@ -307,7 +307,10 @@ public class CandidateItemDeliveryService {
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
 
-        final ItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent, renderingOptions, renderingMode);
+        /* Compute current value for 'duration' */
+        final double duration = computeItemSessionDuration(candidateItemSession);
+
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestCustomDuration(candidateItemEvent, renderingOptions, renderingMode, duration);
         renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
         renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
         renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
@@ -315,6 +318,22 @@ public class CandidateItemDeliveryService {
         renderingRequest.setResultAllowed(false);
         renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
         return renderingRequest;
+    }
+
+    /**
+     * Computes the current value for the <code>duration</code> variable for this session.
+     * <p>
+     * Currently, this is just the length of time since the session was first opened.
+     * We DO NOT yet support breaking sessions time-wise.
+     *
+     * @return computed value for <code>duration</code>, which will be non-negative.
+     */
+    private double computeItemSessionDuration(final CandidateItemSession candidateItemSession) {
+        final long startTime = candidateItemSession.getCreationTime().getTime();
+        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
+
+        final double duration = (currentTime - startTime) / 1000.0;
+        return duration;
     }
 
     private void renderEventWhenClosed(final CandidateItemEvent candidateItemEvent,
@@ -420,11 +439,24 @@ public class CandidateItemDeliveryService {
 
     private ItemRenderingRequest initItemRenderingRequest(final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+        return initItemRenderingRequestCustomDuration(candidateItemEvent, renderingOptions, renderingMode, -1.0);
+    }
+
+    private ItemRenderingRequest initItemRenderingRequestCustomDuration(final CandidateItemEvent candidateItemEvent,
+            final RenderingOptions renderingOptions, final RenderingMode renderingMode,
+            final double durationOverride) {
         final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
         final CandidateSessionState candidateItemSessionState = candidateItemSession.getState();
         final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
         final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+
+        /* Extract ItemSessionState XML for this event and override the value for duration if caller
+         * supplies a non-negative duration */
+        final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(candidateItemEvent);
+        if (durationOverride >= 0.0) {
+            itemSessionState.setDuration(durationOverride);
+        }
 
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
         renderingRequest.setRenderingMode(renderingMode);
@@ -596,11 +628,15 @@ public class CandidateItemDeliveryService {
             }
         }
 
+        /* Update duration */
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+        itemSessionState.setDuration(computeItemSessionDuration(candidateItemSession));
+
         /* Record resulting attempt and event */
         final CandidateItemEventType eventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
             : CandidateItemEventType.ATTEMPT_BAD;
-        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, eventType, itemSessionController.getItemSessionState());
+        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState);
 
         candidateItemAttempt.setEvent(candidateItemEvent);
         candidateItemAttemptDao.persist(candidateItemAttempt);
@@ -644,7 +680,8 @@ public class CandidateItemDeliveryService {
         }
 
         /* Record and log event */
-        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
+        final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateItemSession);
+        itemSessionState.setDuration(computeItemSessionDuration(candidateItemSession));
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.CLOSE, itemSessionState);
         logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
@@ -694,6 +731,7 @@ public class CandidateItemDeliveryService {
         itemSessionController.initialize();
 
         /* Record and log event */
+        itemSessionState.setDuration(computeItemSessionDuration(candidateItemSession));
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.REINIT, itemSessionState);
         logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
@@ -752,6 +790,7 @@ public class CandidateItemDeliveryService {
         final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(lastInitEvent);
 
         /* Record and event */
+        itemSessionState.setDuration(computeItemSessionDuration(candidateItemSession));
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.RESET, itemSessionState);
         logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
@@ -792,7 +831,8 @@ public class CandidateItemDeliveryService {
         }
 
         /* Record and log event */
-        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
+        final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateItemSession);
+        itemSessionState.setDuration(computeItemSessionDuration(candidateItemSession));
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.SOLUTION, itemSessionState);
         logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 
@@ -846,7 +886,8 @@ public class CandidateItemDeliveryService {
         }
 
         /* Record and event */
-        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
+        final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateItemSession);
+        itemSessionState.setDuration(computeItemSessionDuration(candidateItemSession));
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.PLAYBACK, itemSessionState, targetEvent);
         logPlaybackEvent(candidateItemSession, candidateItemEvent, targetEvent);
 
@@ -878,7 +919,8 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateItemSession);
 
         /* Record and log event */
-        final ItemSessionState itemSessionState = candidateDataServices.getCurrentItemSessionState(candidateItemSession);
+        final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateItemSession);
+        itemSessionState.setDuration(computeItemSessionDuration(candidateItemSession));
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateItemSession, CandidateItemEventType.TERMINATE, itemSessionState);
         logCandidateItemEvent(candidateItemSession, candidateItemEvent);
 

@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -120,15 +121,21 @@ public class CandidateItemEvent implements BaseEntity {
     @Column(name="completion_status", updatable=false, length=DomainConstants.QTI_COMPLETION_STATUS_MAX_LENGTH)
     private String completionStatus;
 
+    /** Value of the <code>duration</code> item variable (at the time this event was created) */
     @Basic(optional=false)
     @Column(name="duration", updatable=false)
     private double duration;
 
+    /** Value of the <code>numAttempts</code> item variable */
     @Basic(optional=false)
     @Column(name="num_attempts", updatable=false)
     private int numAttempts;
 
-    /** Serialized {@link ItemSessionState} */
+    /**
+     * {@link ItemSessionState} serialized in a custom XML format.
+     *
+     * @see ItemSesssionStateXmlMarshaller
+     */
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
