@@ -62,7 +62,7 @@ public class CandidateAuditLogger {
                     candidateItemSession.getId(),
                     candidateItemSession.getItemDelivery().getId(),
                     candidateItemSession.getItemDelivery().getAssessment().getId(),
-                    candidateItemSession.getState(),
+                    candidateItemSession.getCandidateSessionStatus(),
                     message
         });
     }
