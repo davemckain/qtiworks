@@ -39,8 +39,8 @@ import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
@@ -107,10 +107,10 @@ public final class FilespaceManager {
         return createDirectoryPath(filespaceUri);
     }
 
-    public File createCandidateUploadFile(final CandidateItemSession candidateItemSession, final User candidate) {
+    public File createCandidateUploadFile(final CandidateSession candidateItemSession, final User candidate) {
         Assert.notNull(candidateItemSession, "candidateItemSession");
         Assert.notNull(candidate, "candidate");
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 

@@ -52,7 +52,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * Represents a candidate attempt on a particular {@link ItemDelivery}
+ * Represents a candidate attempt on a particular {@link Delivery}
  *
  * @author David McKain
  */

@@ -42,15 +42,15 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionStatus;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 
@@ -96,7 +96,7 @@ public class CandidateSessionStarter {
     private AssessmentDao assessmentDao;
 
     @Resource
-    private ItemDeliveryDao itemDeliveryDao;
+    private DeliveryDao deliveryDao;
 
     @Resource
     private CandidateItemSessionDao candidateItemSessionDao;
@@ -104,10 +104,10 @@ public class CandidateSessionStarter {
     //-------------------------------------------------
     // System samples
 
-    public ItemDelivery lookupSystemSampleDelivery(final long aid)
+    public Delivery lookupSystemSampleDelivery(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Assessment assessment = lookupSampleAssessment(aid);
-        final List<ItemDelivery> systemDemoDeliveries = itemDeliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
+        final List<Delivery> systemDemoDeliveries = deliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
         if (systemDemoDeliveries.size()!=1) {
             throw new QtiWorksLogicException("Expected system sample Assessment with ID " + aid
                     + " to have exactly 1 system demo deliverable associated with it");
@@ -128,9 +128,9 @@ public class CandidateSessionStarter {
     //----------------------------------------------------
     // Candidate delivery access
 
-    public ItemDelivery lookupItemDelivery(final long did)
+    public Delivery lookupItemDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
+        final Delivery itemDelivery = deliveryDao.requireFindById(did);
         ensureCandidateMayAccess(itemDelivery);
         return itemDelivery;
     }
@@ -139,7 +139,7 @@ public class CandidateSessionStarter {
      * FIXME: Currently we're only allowing access to public or owned deliveries! This will need
      * to be relaxed in order to allow "real" deliveries to be done.
      */
-    private User ensureCandidateMayAccess(final ItemDelivery itemDelivery)
+    private User ensureCandidateMayAccess(final Delivery itemDelivery)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!itemDelivery.isOpen()) {
@@ -157,46 +157,46 @@ public class CandidateSessionStarter {
     //----------------------------------------------------
     // Session creation and initialisation
 
-    public CandidateItemSession createSystemSampleSession(final long aid, final String exitUrl)
+    public CandidateSession createSystemSampleSession(final long aid, final String exitUrl)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final ItemDelivery sampleItemDelivery = lookupSystemSampleDelivery(aid);
+        final Delivery sampleItemDelivery = lookupSystemSampleDelivery(aid);
         return createCandidateSession(sampleItemDelivery, exitUrl);
     }
 
     /**
-     * Starts a new {@link CandidateItemSession} for the {@link ItemDelivery}
+     * Starts a new {@link CandidateSession} for the {@link Delivery}
      * having the given ID (did).
      */
-    public CandidateItemSession createCandidateSession(final long did, final String exitUrl)
+    public CandidateSession createCandidateSession(final long did, final String exitUrl)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final ItemDelivery itemDelivery = lookupItemDelivery(did);
+        final Delivery itemDelivery = lookupItemDelivery(did);
         return createCandidateSession(itemDelivery, exitUrl);
     }
 
     /**
-     * Starts new {@link CandidateItemSession} for the given {@link ItemDelivery}
+     * Starts new {@link CandidateSession} for the given {@link Delivery}
      *
-     * @param itemDelivery
+     * @param delivery
      *
      * @return
      * @throws PrivilegeException
      */
-    public CandidateItemSession createCandidateSession(final ItemDelivery itemDelivery, final String exitUrl)
+    public CandidateSession createCandidateSession(final Delivery delivery, final String exitUrl)
             throws PrivilegeException {
-        Assert.notNull(itemDelivery, "itemDelivery");
+        Assert.notNull(delivery, "delivery");
 
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
 
         /* Make sure delivery is open */
         /* FIXME: This prevents instructors from trying out their own sessions! */
-        if (!itemDelivery.isOpen()) {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, itemDelivery);
+        if (!delivery.isOpen()) {
+            throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
         }
 
         /* Make sure underlying Assessment is valid */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         if (!assessmentPackage.isValid()) {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_INVALID_ASSESSMENT, itemDelivery);
+            throw new PrivilegeException(candidate, Privilege.LAUNCH_INVALID_ASSESSMENT, delivery);
         }
 
         /* Create fresh JQTI+ state Object */
@@ -206,20 +206,20 @@ public class CandidateSessionStarter {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Initialise state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState, notificationRecorder);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery, itemSessionState, notificationRecorder);
         itemSessionController.initialize();
 
         /* Check whether an attempt is allowed. This is a bit pathological here,
          * but it makes sense to be consistent.
          */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(delivery.getDeliverySettings().getMaxAttempts());
 
         /* Create new session and put into appropriate initial state */
-        final CandidateItemSession candidateSession = new CandidateItemSession();
+        final CandidateSession candidateSession = new CandidateSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidate(candidate);
-        candidateSession.setItemDelivery(itemDelivery);
+        candidateSession.setDelivery(delivery);
         candidateSession.setCandidateSessionStatus(attemptAllowed ? CandidateSessionStatus.INTERACTING : CandidateSessionStatus.CLOSED);
         candidateItemSessionDao.persist(candidateSession);
 
@@ -228,7 +228,7 @@ public class CandidateSessionStarter {
         candidateAuditLogger.logCandidateItemEvent(candidateSession, candidateItemEvent);
 
         auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
-                + " on ItemDelivery #" + itemDelivery.getId());
+                + " on ItemDelivery #" + delivery.getId());
         return candidateSession;
     }
 }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -43,19 +43,19 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link CandidateItemSession} entity.
+ * DAO implementation for the {@link CandidateSession} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateItemSessionDao extends GenericDao<CandidateItemSession> {
+public class CandidateItemSessionDao extends GenericDao<CandidateSession> {
 
     @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
     public CandidateItemSessionDao() {
-        super(CandidateItemSession.class);
+        super(CandidateSession.class);
     }
 }

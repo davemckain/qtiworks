@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.NotAllowedException;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import org.springframework.http.HttpStatus;
@@ -52,16 +52,16 @@ public final class CandidateForbiddenException extends NotAllowedException {
 
     private static final long serialVersionUID = 963799679125087234L;
 
-    private final CandidateItemSession candidateItemSession;
+    private final CandidateSession candidateItemSession;
     private final CandidatePrivilege privilege;
 
-    public CandidateForbiddenException(final CandidateItemSession candidateItemSession, final CandidatePrivilege privilege) {
+    public CandidateForbiddenException(final CandidateSession candidateItemSession, final CandidatePrivilege privilege) {
         super("Candidate does not have privilege " + privilege + " on CandidateItemSession xid=" + candidateItemSession);
         this.candidateItemSession = candidateItemSession;
         this.privilege = privilege;
     }
 
-    public CandidateItemSession getCandidateItemSession() {
+    public CandidateSession getCandidateItemSession() {
         return candidateItemSession;
     }
 

@@ -31,45 +31,42 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
+ * Specifies settings controlling the delivery of an {@link AssessmentTest} to a group of candidates.
  *
- * @see PrivilegeException
+ * @see DeliverySettings
  *
  * @author David McKain
  */
-public enum Privilege {
+@Entity
+@Table(name="test_delivery_settings")
+public class TestDeliverySettings extends DeliverySettings implements BaseEntity {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    private static final long serialVersionUID = -7998426124749508509L;
 
-    OWN_ASSESSMENT,
-    CREATE_ASSESSMENT,
-    VIEW_ASSESSMENT,
+    //------------------------------------------------------------
 
-    /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
-    MATCH_DELIVERY_SETTINGS,
+    public TestDeliverySettings() {
+        super(AssessmentObjectType.ASSESSMENT_TEST);
+    }
 
-    ACCESS_DELIVERY_SETTINGS,
+    //------------------------------------------------------------
 
-    /** FIXME: Rename this! */
-    OWN_DELIVERY_SETTINGS,
+    /* Stuff will go here soon */
 
-    /** FIXME: Rename this! */
-    CREATE_DELIVERY_SETTINGS,
+    //------------------------------------------------------------
 
-    LAUNCH_ASSESSMENT_AS_SAMPLE,
-    LAUNCH_INVALID_ASSESSMENT,
-    LAUNCH_DELIVERY,
-    LAUNCH_CLOSED_DELIVERY,
-
-    ;
-
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

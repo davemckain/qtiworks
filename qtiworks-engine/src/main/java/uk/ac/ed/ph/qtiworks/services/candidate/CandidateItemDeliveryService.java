@@ -48,10 +48,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionStatus;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
@@ -151,7 +151,7 @@ public class CandidateItemDeliveryService {
     // Session access
 
     /**
-     * Looks up the {@link CandidateItemSession} having the given ID (xid)
+     * Looks up the {@link CandidateSession} having the given ID (xid)
      * and checks the given sessionToken against that stored in the session as a means of
      * "authentication".
      *
@@ -161,17 +161,17 @@ public class CandidateItemDeliveryService {
      * @throws CandidateForbiddenException
      * @throws CandidateCandidatePrivilegeException
      */
-    public CandidateItemSession lookupCandidateItemSession(final long xid, final String sessionToken)
+    public CandidateSession lookupCandidateItemSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         Assert.notNull(sessionToken, "sessionToken");
-        final CandidateItemSession candidateItemSession = candidateItemSessionDao.requireFindById(xid);
+        final CandidateSession candidateItemSession = candidateItemSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateItemSession.getSessionToken())) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
         }
         return candidateItemSession;
     }
 
-    private void ensureSessionNotTerminated(final CandidateItemSession candidateItemSession) throws CandidateForbiddenException {
+    private void ensureSessionNotTerminated(final CandidateSession candidateItemSession) throws CandidateForbiddenException {
         if (candidateItemSession.getCandidateSessionStatus()==CandidateSessionStatus.TERMINATED) {
             /* No access when session has been is closed */
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_TERMINATED_SESSION);
@@ -182,18 +182,18 @@ public class CandidateItemDeliveryService {
     // Rendering
 
     /**
-     * Renders the current state of the {@link CandidateItemSession} having
+     * Renders the current state of the {@link CandidateSession} having
      * the given ID (xid).
      */
     public void renderCurrentState(final long xid, final String sessionToken,
             final RenderingOptions renderingOptions,
             final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         renderCurrentState(candidateItemSession, renderingOptions, outputStreamer);
     }
 
-    public void renderCurrentState(final CandidateItemSession candidateItemSession,
+    public void renderCurrentState(final CandidateSession candidateItemSession,
             final RenderingOptions renderingOptions,
             final OutputStreamer outputStreamer) throws IOException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
@@ -246,7 +246,7 @@ public class CandidateItemDeliveryService {
         }
     }
 
-    private void renderEvent(final CandidateItemSession candidateItemSession,
+    private void renderEvent(final CandidateSession candidateItemSession,
             final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateSessionStatus candidateItemSessionState = candidateItemSession.getCandidateSessionStatus();
@@ -304,9 +304,9 @@ public class CandidateItemDeliveryService {
 
     private ItemRenderingRequest initItemRenderingRequestWhenInteracting(final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-        final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final CandidateSession candidateItemSession = candidateItemEvent.getCandidateSession();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
+        final DeliverySettings itemDeliverySettings = itemDelivery.getDeliverySettings();
 
         /* Compute current value for 'duration' */
         final double duration = computeItemSessionDuration(candidateItemSession);
@@ -329,7 +329,7 @@ public class CandidateItemDeliveryService {
      *
      * @return computed value for <code>duration</code>, which will be non-negative.
      */
-    private double computeItemSessionDuration(final CandidateItemSession candidateItemSession) {
+    private double computeItemSessionDuration(final CandidateSession candidateItemSession) {
         final long startTime = candidateItemSession.getCreationTime().getTime();
         final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
 
@@ -406,9 +406,9 @@ public class CandidateItemDeliveryService {
 
     private ItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-        final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final CandidateSession candidateItemSession = candidateItemEvent.getCandidateSession();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
+        final DeliverySettings itemDeliverySettings = itemDelivery.getDeliverySettings();
 
         final ItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent,
                 renderingOptions, renderingMode);
@@ -447,10 +447,10 @@ public class CandidateItemDeliveryService {
     private ItemRenderingRequest initItemRenderingRequestCustomDuration(final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode,
             final double durationOverride) {
-        final CandidateItemSession candidateItemSession = candidateItemEvent.getCandidateItemSession();
+        final CandidateSession candidateItemSession = candidateItemEvent.getCandidateSession();
         final CandidateSessionStatus candidateItemSessionState = candidateItemSession.getCandidateSessionStatus();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
+        final DeliverySettings itemDeliverySettings = itemDelivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
         /* Extract ItemSessionState XML for this event and override the value for duration if caller
@@ -529,16 +529,16 @@ public class CandidateItemDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
     }
 
-    public CandidateItemAttempt handleAttempt(final CandidateItemSession candidateItemSession,
+    public CandidateItemAttempt handleAttempt(final CandidateSession candidateItemSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
 
         /* Make sure an attempt is allowed */
         if (candidateItemSession.getCandidateSessionStatus()!=CandidateSessionStatus.INTERACTING) {
@@ -651,7 +651,7 @@ public class CandidateItemDeliveryService {
         candidateAuditLogger.logCandidateItemAttempt(candidateItemSession, candidateItemAttempt);
 
         /* Finally update session state */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getItemDeliverySettings().getMaxAttempts());
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getDeliverySettings().getMaxAttempts());
         candidateItemSession.setCandidateSessionStatus(attemptAllowed ? CandidateSessionStatus.INTERACTING : CandidateSessionStatus.CLOSED);
         candidateItemSessionDao.update(candidateItemSession);
         return candidateItemAttempt;
@@ -661,23 +661,23 @@ public class CandidateItemDeliveryService {
     // Session close(by candidate)
 
     /**
-     * Closes the {@link CandidateItemSession} having the given ID (xid), moving it
+     * Closes the {@link CandidateSession} having the given ID (xid), moving it
      * into {@link CandidateSessionStatus#CLOSED} state.
      */
-    public CandidateItemSession closeCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession closeCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return closeCandidateSession(candidateItemSession);
     }
 
-    public CandidateItemSession closeCandidateSession(final CandidateItemSession candidateItemSession)
+    public CandidateSession closeCandidateSession(final CandidateSession candidateItemSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Check this is allowed in current state */
         ensureSessionNotTerminated(candidateItemSession);
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
+        final DeliverySettings itemDeliverySettings = itemDelivery.getDeliverySettings();
         if (candidateItemSession.getCandidateSessionStatus()==CandidateSessionStatus.CLOSED) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.CLOSE_SESSION_WHEN_CLOSED);
         }
@@ -701,25 +701,25 @@ public class CandidateItemDeliveryService {
     // Session reinit
 
     /**
-     * Re-initialises the {@link CandidateItemSession} having the given ID (xid), returning the
-     * updated {@link CandidateItemSession}. At QTI level, this reruns template processing, so
+     * Re-initialises the {@link CandidateSession} having the given ID (xid), returning the
+     * updated {@link CandidateSession}. At QTI level, this reruns template processing, so
      * randomised values will change as a result of this process.
      */
-    public CandidateItemSession reinitCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession reinitCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return reinitCandidateSession(candidateItemSession);
     }
 
-    public CandidateItemSession reinitCandidateSession(final CandidateItemSession candidateItemSession)
+    public CandidateSession reinitCandidateSession(final CandidateSession candidateItemSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may reinit the session */
         ensureSessionNotTerminated(candidateItemSession);
         final CandidateSessionStatus candidateItemSessionState = candidateItemSession.getCandidateSessionStatus();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
+        final DeliverySettings itemDeliverySettings = itemDelivery.getDeliverySettings();
         if (candidateItemSessionState==CandidateSessionStatus.INTERACTING && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.REINIT_SESSION_WHEN_INTERACTING);
         }
@@ -756,26 +756,26 @@ public class CandidateItemDeliveryService {
     // Session reset
 
     /**
-     * Resets the {@link CandidateItemSession} having the given ID (xid), returning the
-     * updated {@link CandidateItemSession}. This takes the session back to the state it
+     * Resets the {@link CandidateSession} having the given ID (xid), returning the
+     * updated {@link CandidateSession}. This takes the session back to the state it
      * was in immediately after the last {@link CandidateItemEvent#REINIT_WHEN_INTERACTING} (if applicable),
      * or after the original {@link CandidateItemEvent#INIT}.
      */
-    public CandidateItemSession resetCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession resetCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return resetCandidateSession(candidateItemSession);
     }
 
-    public CandidateItemSession resetCandidateSession(final CandidateItemSession candidateItemSession)
+    public CandidateSession resetCandidateSession(final CandidateSession candidateItemSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may reset the session */
         ensureSessionNotTerminated(candidateItemSession);
         final CandidateSessionStatus candidateItemSessionState = candidateItemSession.getCandidateSessionStatus();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
+        final DeliverySettings itemDeliverySettings = itemDelivery.getDeliverySettings();
         if (candidateItemSessionState==CandidateSessionStatus.INTERACTING && !itemDeliverySettings.isAllowResetWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
         }
@@ -816,23 +816,23 @@ public class CandidateItemDeliveryService {
     // Solution request
 
     /**
-     * Transitions the {@link CandidateItemSession} having the given ID (xid) into solution state.
+     * Transitions the {@link CandidateSession} having the given ID (xid) into solution state.
      */
-    public CandidateItemSession transitionCandidateSessionToSolutionState(final long xid, final String sessionToken)
+    public CandidateSession transitionCandidateSessionToSolutionState(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return transitionCandidateSessionToSolutionState(candidateItemSession);
     }
 
-    public CandidateItemSession transitionCandidateSessionToSolutionState(final CandidateItemSession candidateItemSession)
+    public CandidateSession transitionCandidateSessionToSolutionState(final CandidateSession candidateItemSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateItemSession);
         final CandidateSessionStatus candidateItemSessionState = candidateItemSession.getCandidateSessionStatus();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
+        final DeliverySettings itemDeliverySettings = itemDelivery.getDeliverySettings();
         if (candidateItemSessionState==CandidateSessionStatus.INTERACTING && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
         }
@@ -858,24 +858,24 @@ public class CandidateItemDeliveryService {
     // Playback request
 
     /**
-     * Updates the state of the {@link CandidateItemSession} having the given ID (xid)
+     * Updates the state of the {@link CandidateSession} having the given ID (xid)
      * so that it will play back the {@link CandidateItemEvent} having the given ID (xeid).
      */
-    public CandidateItemSession setPlaybackState(final long xid, final String sessionToken, final long xeid)
+    public CandidateSession setPlaybackState(final long xid, final String sessionToken, final long xeid)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return setPlaybackState(candidateItemSession, xeid);
     }
 
-    public CandidateItemSession setPlaybackState(final CandidateItemSession candidateItemSession, final long xeid)
+    public CandidateSession setPlaybackState(final CandidateSession candidateItemSession, final long xeid)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateItemSession);
         final CandidateSessionStatus candidateItemSessionState = candidateItemSession.getCandidateSessionStatus();
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
-        final ItemDeliverySettings itemDeliverySettings = itemDelivery.getItemDeliverySettings();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
+        final DeliverySettings itemDeliverySettings = itemDelivery.getDeliverySettings();
         if (candidateItemSessionState==CandidateSessionStatus.INTERACTING) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK_WHEN_INTERACTING);
         }
@@ -885,7 +885,7 @@ public class CandidateItemDeliveryService {
 
         /* Look up target event, make sure it belongs to this session and make sure it can be played back */
         final CandidateItemEvent targetEvent = candidateItemEventDao.requireFindById(xeid);
-        if (targetEvent.getCandidateItemSession().getId().longValue()!=candidateItemSession.getId().longValue()) {
+        if (targetEvent.getCandidateSession().getId().longValue()!=candidateItemSession.getId().longValue()) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.PLAYBACK_OTHER_SESSION);
         }
         final CandidateItemEventType targetEventType = targetEvent.getEventType();
@@ -908,20 +908,20 @@ public class CandidateItemDeliveryService {
     // Session termination (by candidate)
 
     /**
-     * Terminates the {@link CandidateItemSession} having the given ID (xid), moving it into
+     * Terminates the {@link CandidateSession} having the given ID (xid), moving it into
      * {@link CandidateSessionStatus#TERMINATED} state.
      * <p>
      * Currently we're always allowing this action to be made when in
      * {@link CandidateSessionStatus#INTERACTING} or {@link CandidateSessionStatus#CLOSED}
      * states.
      */
-    public CandidateItemSession terminateCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession terminateCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         return terminateCandidateSession(candidateItemSession);
     }
 
-    public CandidateItemSession terminateCandidateSession(final CandidateItemSession candidateItemSession)
+    public CandidateSession terminateCandidateSession(final CandidateSession candidateItemSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
 
@@ -943,7 +943,7 @@ public class CandidateItemDeliveryService {
     //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
 
-    public void streamAssessmentFile(final CandidateItemSession candidateItemSession, final String fileSystemIdString,
+    public void streamAssessmentFile(final CandidateSession candidateItemSession, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
@@ -951,7 +951,7 @@ public class CandidateItemDeliveryService {
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Make sure requested file is whitelisted for access */
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
         String resultingFileHref = null;
         for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
@@ -975,25 +975,25 @@ public class CandidateItemDeliveryService {
     public void streamAssessmentSource(final long xid, final String sessionToken, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException, DomainEntityNotFoundException {
         Assert.notNull(outputStreamer, "outputStreamer");
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         streamAssessmentSource(candidateItemSession, outputStreamer);
     }
 
-    public void streamAssessmentSource(final CandidateItemSession candidateItemSession, final OutputStreamer outputStreamer)
+    public void streamAssessmentSource(final CandidateSession candidateItemSession, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
         Assert.notNull(outputStreamer, "outputStreamer");
         ensureCallerMayViewSource(candidateItemSession);
-        final ItemDelivery itemDelivery = candidateItemSession.getItemDelivery();
+        final Delivery itemDelivery = candidateItemSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
 
         assessmentPackageFileService.streamAssessmentPackageSource(assessmentPackage, outputStreamer);
         candidateAuditLogger.logAction(candidateItemSession, "ACCESS_SOURCE");
     }
 
-    private void ensureCallerMayViewSource(final CandidateItemSession candidateItemSession)
+    private void ensureCallerMayViewSource(final CandidateSession candidateItemSession)
             throws CandidateForbiddenException {
-        final ItemDeliverySettings itemDeliverySettings = candidateItemSession.getItemDelivery().getItemDeliverySettings();
+        final DeliverySettings itemDeliverySettings = candidateItemSession.getDelivery().getDeliverySettings();
         if (!itemDeliverySettings.isAllowSource()) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.VIEW_ASSESSMENT_SOURCE);
         }
@@ -1005,11 +1005,11 @@ public class CandidateItemDeliveryService {
     public void streamItemResult(final long xid, final String sessionToken, final OutputStream outputStream)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         Assert.notNull(outputStream, "outputStream");
-        final CandidateItemSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateItemSession = lookupCandidateItemSession(xid, sessionToken);
         streamItemResult(candidateItemSession, outputStream);
     }
 
-    public void streamItemResult(final CandidateItemSession candidateItemSession, final OutputStream outputStream)
+    public void streamItemResult(final CandidateSession candidateItemSession, final OutputStream outputStream)
             throws CandidateForbiddenException {
         Assert.notNull(candidateItemSession, "candidateItemSession");
         Assert.notNull(outputStream, "outputStream");
@@ -1032,9 +1032,9 @@ public class CandidateItemDeliveryService {
         candidateAuditLogger.logAction(candidateItemSession, "ACCESS_RESULT");
     }
 
-    private void ensureCallerMayViewResult(final CandidateItemSession candidateItemSession)
+    private void ensureCallerMayViewResult(final CandidateSession candidateItemSession)
             throws CandidateForbiddenException {
-        final ItemDeliverySettings itemDeliverySettings = candidateItemSession.getItemDelivery().getItemDeliverySettings();
+        final DeliverySettings itemDeliverySettings = candidateItemSession.getDelivery().getDeliverySettings();
         if (!itemDeliverySettings.isAllowResult()) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.VIEW_ASSESSMENT_RESULT);
         }
@@ -1045,12 +1045,12 @@ public class CandidateItemDeliveryService {
 
     /**
      * Returns a List of IDs (xeid) of all {@link CandidateItemEvent}s in the given
-     * {@link CandidateItemSession} that a candidate may play back.
+     * {@link CandidateSession} that a candidate may play back.
      *
      * @param candidateItemSession
      * @return
      */
-    private List<CandidateItemEvent> getPlaybackEvents(final CandidateItemSession candidateItemSession) {
+    private List<CandidateItemEvent> getPlaybackEvents(final CandidateSession candidateItemSession) {
         final List<CandidateItemEvent> events = candidateItemEventDao.getForSession(candidateItemSession);
         final List<CandidateItemEvent> result = new ArrayList<CandidateItemEvent>(events.size());
         for (final CandidateItemEvent event : events) {

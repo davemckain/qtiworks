@@ -67,7 +67,7 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 
 /**
- * Represents each "event" generated during a {@link CandidateItemSession}
+ * Represents each "event" generated during a {@link CandidateSession}
  *
  * @author David McKain
  */
@@ -78,12 +78,12 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name="CandidateItemEvent.getForSession",
             query="SELECT e"
                 + "  FROM CandidateItemEvent e"
-                + "  WHERE e.candidateItemSession = :candidateItemSession"
+                + "  WHERE e.candidateSession = :candidateSession"
                 + "  ORDER BY e.id"),
     @NamedQuery(name="CandidateItemEvent.getForSessionReversed",
             query="SELECT e"
                 + "  FROM CandidateItemEvent e"
-                + "  WHERE e.candidateItemSession = :candidateItemSession"
+                + "  WHERE e.candidateSession = :candidateSession"
                 + "  ORDER BY e.id DESC")
 })
 public class CandidateItemEvent implements BaseEntity {
@@ -95,10 +95,10 @@ public class CandidateItemEvent implements BaseEntity {
     @Column(name="xeid")
     private Long id;
 
-    /** {@link CandidateItemSession} owning this event */
+    /** {@link CandidateSession} owning this event */
     @ManyToOne(optional=false)
     @JoinColumn(name="xid")
-    private CandidateItemSession candidateItemSession;
+    private CandidateSession candidateSession;
 
     /** Timestamp for this event */
     @Basic(optional=false)
@@ -113,13 +113,13 @@ public class CandidateItemEvent implements BaseEntity {
     private CandidateItemEventType eventType;
 
     /**
-     * State that the {@link CandidateItemSession} was in when (just before)
+     * Status that the {@link CandidateSession} had when (just before)
      * this event was performed.
      */
     @Basic(optional=false)
     @Column(name="state", length=11)
     @Enumerated(EnumType.STRING)
-    private CandidateSessionStatus sessionState;
+    private CandidateSessionStatus sessionStatus;
 
     /** Value of the <code>completionStatus</code> item variable */
     @Basic(optional=false)
@@ -173,12 +173,12 @@ public class CandidateItemEvent implements BaseEntity {
     }
 
 
-    public CandidateItemSession getCandidateItemSession() {
-        return candidateItemSession;
+    public CandidateSession getCandidateSession() {
+        return candidateSession;
     }
 
-    public void setCandidateItemSession(final CandidateItemSession candidateItemSession) {
-        this.candidateItemSession = candidateItemSession;
+    public void setCandidateItemSession(final CandidateSession candidateSession) {
+        this.candidateSession = candidateSession;
     }
 
 
@@ -200,12 +200,12 @@ public class CandidateItemEvent implements BaseEntity {
     }
 
 
-    public CandidateSessionStatus getSessionState() {
-        return sessionState;
+    public CandidateSessionStatus getSessionStatus() {
+        return sessionStatus;
     }
 
-    public void setSessionState(final CandidateSessionStatus sessionState) {
-        this.sessionState = sessionState;
+    public void setSessionStatus(final CandidateSessionStatus sessionState) {
+        this.sessionStatus = sessionState;
     }
 
 

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
@@ -43,23 +43,21 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Template for creating/editing an {@link ItemDelivery}
+ * Template for creating/editing an {@link TestDeliverySettings} entity
  *
  * @author David McKain
  */
-public final class ItemDeliveryTemplate {
+public final class TestDeliverySettingsTemplate {
 
     @NotNull
     @NotBlank
     @Size(min=1)
     private String title;
 
-    private long dsid;
+    private boolean isPublic;
+    private boolean authorMode;
 
-    private boolean open;
-
-    private boolean ltiEnabled;
-
+    //------------------------------------------------------------
 
     public String getTitle() {
         return title;
@@ -70,30 +68,21 @@ public final class ItemDeliveryTemplate {
     }
 
 
-    public long getDsid() {
-        return dsid;
+    public boolean isPublic() {
+        return isPublic;
     }
 
-    public void setDsid(final long dsid) {
-        this.dsid = dsid;
-    }
-
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(final boolean open) {
-        this.open = open;
+    public void setPublic(final boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
 
-    public boolean isLtiEnabled() {
-        return ltiEnabled;
+    public boolean isAuthorMode() {
+        return authorMode;
     }
 
-    public void setLtiEnabled(final boolean ltiEnabled) {
-        this.ltiEnabled = ltiEnabled;
+    public void setAuthorMode(final boolean authorMode) {
+        this.authorMode = authorMode;
     }
 
     //------------------------------------------------------------

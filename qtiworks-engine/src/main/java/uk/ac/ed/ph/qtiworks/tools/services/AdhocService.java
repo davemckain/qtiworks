@@ -36,7 +36,7 @@ package uk.ac.ed.ph.qtiworks.tools.services;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
@@ -96,7 +96,7 @@ public class AdhocService {
         final long did = 4L; /* ID of delivery to try out (choice.xml) */
         final String exitUrl = "/exit";
 
-        final CandidateItemSession candidateItemSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
+        final CandidateSession candidateItemSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
 
         /* Render initial state */
         final RenderingOptions renderingOptions = new RenderingOptions();

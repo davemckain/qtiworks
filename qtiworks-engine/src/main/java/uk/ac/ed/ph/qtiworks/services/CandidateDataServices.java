@@ -42,8 +42,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -120,24 +120,24 @@ public class CandidateDataServices {
         return ItemSesssionStateXmlMarshaller.unmarshal(doc);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateItemSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
         return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, null, null);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateItemSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
             final NotificationRecorder notificationRecorder) {
         return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, notificationRecorder, null);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateItemSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
             final CandidateItemEvent playbackEvent) {
         return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, null, playbackEvent);
     }
 
-    private CandidateItemEvent recordCandidateItemEvent(final CandidateItemSession candidateItemSession,
+    private CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateItemSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
             final NotificationRecorder notificationRecorder,
             final CandidateItemEvent playbackEvent) {
@@ -145,7 +145,7 @@ public class CandidateDataServices {
         final CandidateItemEvent event = new CandidateItemEvent();
         event.setCandidateItemSession(candidateItemSession);
         event.setEventType(eventType);
-        event.setSessionState(candidateItemSession.getCandidateSessionStatus());
+        event.setSessionStatus(candidateItemSession.getCandidateSessionStatus());
         event.setCompletionStatus(itemSessionState.getCompletionStatus());
         event.setDuration(itemSessionState.getDuration());
         event.setNumAttempts(itemSessionState.getNumAttempts());
@@ -201,12 +201,12 @@ public class CandidateDataServices {
             final NotificationRecorder notificationRecorder) {
         Assert.notNull(candidateItemEvent, "candidateItemEvent");
 
-        final ItemDelivery itemDelivery = candidateItemEvent.getCandidateItemSession().getItemDelivery();
+        final Delivery itemDelivery = candidateItemEvent.getCandidateSession().getDelivery();
         final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateItemEvent);
         return createItemSessionController(itemDelivery, itemSessionState, notificationRecorder);
     }
 
-    public ItemSessionController createItemSessionController(final ItemDelivery itemDelivery,
+    public ItemSessionController createItemSessionController(final Delivery itemDelivery,
             final ItemSessionState itemSessionState,  final NotificationRecorder notificationRecorder) {
         Assert.notNull(itemDelivery, "itemDelivery");
         Assert.notNull(itemSessionState, "itemSessionState");
@@ -224,12 +224,12 @@ public class CandidateDataServices {
         return result;
     }
 
-    public ItemSessionState computeCurrentItemSessionState(final CandidateItemSession candidateItemSession)  {
+    public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateItemSession)  {
         final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateItemSession);
         return unmarshalItemSessionState(mostRecentEvent);
     }
 
-    public CandidateItemEvent getMostRecentEvent(final CandidateItemSession candidateItemSession)  {
+    public CandidateItemEvent getMostRecentEvent(final CandidateSession candidateItemSession)  {
         final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateItemSession);
         if (mostRecentEvent==null) {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");

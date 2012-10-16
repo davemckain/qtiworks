@@ -40,9 +40,9 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.LtiUserDao;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
 
@@ -85,7 +85,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
     private RequestTimestampContext requestTimestampContext;
     private IdentityContext identityContext;
-    private ItemDeliveryDao itemDeliveryDao;
+    private DeliveryDao itemDeliveryDao;
     private LtiUserDao ltiUserDao;
 
     @Override
@@ -93,7 +93,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             throws Exception {
         requestTimestampContext = webApplicationContext.getBean(RequestTimestampContext.class);
         identityContext = webApplicationContext.getBean(IdentityContext.class);
-        itemDeliveryDao = webApplicationContext.getBean(ItemDeliveryDao.class);
+        itemDeliveryDao = webApplicationContext.getBean(DeliveryDao.class);
         ltiUserDao = webApplicationContext.getBean(LtiUserDao.class);
     }
 
@@ -134,7 +134,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             httpResponse.sendError(SC_BAD_REQUEST, "Bad request - consumer key is null");
             return;
         }
-        final ItemDelivery itemDelivery = lookupItemDelivery(consumerKey);
+        final Delivery itemDelivery = lookupItemDelivery(consumerKey);
         if (itemDelivery==null) {
             httpResponse.sendError(SC_FORBIDDEN, "Forbidden - bad consumer key");
             return;
@@ -173,7 +173,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         doFilterWithIdentity(httpRequest, httpResponse, chain, ltiLaunchData, ltiUser);
     }
 
-    private ItemDelivery lookupItemDelivery(final String consumerKey) {
+    private Delivery lookupItemDelivery(final String consumerKey) {
         final int separatorPos = consumerKey.indexOf('X');
         if (separatorPos==-1) {
             logger.info("Unsupported syntax in LTI consumer key {}", consumerKey);
@@ -190,7 +190,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             return null;
         }
         /* Look up delivery */
-        final ItemDelivery itemDelivery = itemDeliveryDao.findById(deliveryId);
+        final Delivery itemDelivery = itemDeliveryDao.findById(deliveryId);
         logger.info("Looked up {}", itemDelivery);
         if (itemDelivery==null) {
             logger.info("Delivery with ID {} extracted from LTI consumer key {} not found", deliveryId, consumerKey);
@@ -222,7 +222,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         return data;
     }
 
-    private LtiUser obtainLtiUser(final ItemDelivery itemDelivery, final LtiLaunchData ltiLaunchData) {
+    private LtiUser obtainLtiUser(final Delivery itemDelivery, final LtiLaunchData ltiLaunchData) {
         /* Create a unique key for this user. Uniqueness will be enforced within deliveries too */
         final String userId = ltiLaunchData.getUserId();
         final String contextId = ltiLaunchData.getContextId();

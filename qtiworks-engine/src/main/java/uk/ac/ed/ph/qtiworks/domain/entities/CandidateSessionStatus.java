@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Encapsulates the various statuses for a {@link CandidateItemSession}
+ * Encapsulates the various statuses for a {@link CandidateSession}
  *
  * @author David McKain
  */

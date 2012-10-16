@@ -31,45 +31,75 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Template for creating/editing an {@link Delivery}
  *
  * @author David McKain
  */
-public enum Privilege {
+public final class DeliveryTemplate {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    @NotNull
+    @NotBlank
+    @Size(min=1)
+    private String title;
 
-    OWN_ASSESSMENT,
-    CREATE_ASSESSMENT,
-    VIEW_ASSESSMENT,
+    private long dsid;
 
-    /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
-    MATCH_DELIVERY_SETTINGS,
+    private boolean open;
 
-    ACCESS_DELIVERY_SETTINGS,
+    private boolean ltiEnabled;
 
-    /** FIXME: Rename this! */
-    OWN_DELIVERY_SETTINGS,
 
-    /** FIXME: Rename this! */
-    CREATE_DELIVERY_SETTINGS,
+    public String getTitle() {
+        return title;
+    }
 
-    LAUNCH_ASSESSMENT_AS_SAMPLE,
-    LAUNCH_INVALID_ASSESSMENT,
-    LAUNCH_DELIVERY,
-    LAUNCH_CLOSED_DELIVERY,
+    public void setTitle(final String title) {
+        this.title = title;
+    }
 
-    ;
 
+    public long getDsid() {
+        return dsid;
+    }
+
+    public void setDsid(final long dsid) {
+        this.dsid = dsid;
+    }
+
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(final boolean open) {
+        this.open = open;
+    }
+
+
+    public boolean isLtiEnabled() {
+        return ltiEnabled;
+    }
+
+    public void setLtiEnabled(final boolean ltiEnabled) {
+        this.ltiEnabled = ltiEnabled;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

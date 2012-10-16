@@ -71,10 +71,10 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
     @Column(name="fid")
     private Long id;
 
-    /** {@link CandidateItemSession} in which this submission was made */
+    /** {@link CandidateSession} in which this submission was made */
     @ManyToOne(optional=false)
     @JoinColumn(name="xid")
-    private CandidateItemSession candidateItemSession;
+    private CandidateSession candidateItemSession;
 
     /** Time of submission */
     @Basic(optional=false)
@@ -114,11 +114,11 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
     }
 
 
-    public CandidateItemSession getCandidateItemSession() {
+    public CandidateSession getCandidateItemSession() {
         return candidateItemSession;
     }
 
-    public void setCandidateItemSession(final CandidateItemSession candidateItemSession) {
+    public void setCandidateItemSession(final CandidateSession candidateItemSession) {
         this.candidateItemSession = candidateItemSession;
     }
 

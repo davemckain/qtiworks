@@ -38,13 +38,13 @@ import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
@@ -80,10 +80,10 @@ public class EntityGraphService {
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
-    private ItemDeliveryDao itemDeliveryDao;
+    private DeliveryDao itemDeliveryDao;
 
     @Resource
-    private ItemDeliverySettingsDao itemDeliverySettingsDao;
+    private DeliverySettingsDao itemDeliverySettingsDao;
 
     //-------------------------------------------------
 
@@ -106,18 +106,18 @@ public class EntityGraphService {
     }
 
     /**
-     * Retrieves the current (=most recent) {@link AssessmentPackage} for the given {@link ItemDelivery}.
+     * Retrieves the current (=most recent) {@link AssessmentPackage} for the given {@link Delivery}.
      * <p>
      * This will return a non-null result.
      */
-    public AssessmentPackage getCurrentAssessmentPackage(final ItemDelivery delivery) {
+    public AssessmentPackage getCurrentAssessmentPackage(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
         return getCurrentAssessmentPackage(delivery.getAssessment());
     }
 
     //-------------------------------------------------
 
-    public List<ItemDelivery> getCallerDeliveries(final Assessment assessment) {
+    public List<Delivery> getCallerDeliveries(final Assessment assessment) {
         return itemDeliveryDao.getForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
     }
 
@@ -131,7 +131,7 @@ public class EntityGraphService {
         return itemDeliverySettingsDao.countForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
 
-    public List<ItemDeliverySettings> getCallerItemDeliverySettings() {
+    public List<DeliverySettings> getCallerItemDeliverySettings() {
         return itemDeliverySettingsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
 

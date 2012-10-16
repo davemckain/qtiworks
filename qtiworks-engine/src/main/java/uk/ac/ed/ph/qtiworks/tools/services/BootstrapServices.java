@@ -35,11 +35,14 @@ package uk.ac.ed.ph.qtiworks.tools.services;
 
 import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import javax.annotation.Resource;
 
@@ -67,7 +70,7 @@ public class BootstrapServices {
     private InstructorUserDao instructorUserDao;
 
     @Resource
-    private ItemDeliverySettingsDao itemDeliverySettingsDao;
+    private DeliverySettingsDao deliverySettingsDao;
 
     public InstructorUser createInternalSystemUser(final String loginName, final String firstName,
             final String lastName) {
@@ -111,12 +114,15 @@ public class BootstrapServices {
                 DomainConstants.QTI_DEFAULT_OWNER_FIRST_NAME, DomainConstants.QTI_DEFAULT_OWNER_LAST_NAME);
 
         /* Add some default delivery settings (if they don't already exist) */
-        if (itemDeliverySettingsDao.getFirstForOwner(systemDefaultUser)==null) {
-            importDefaultDeliverySettings(systemDefaultUser);
+        if (deliverySettingsDao.getFirstForOwner(systemDefaultUser, AssessmentObjectType.ASSESSMENT_ITEM)==null) {
+            importDefaultItemDeliverySettings(systemDefaultUser);
+        }
+        if (deliverySettingsDao.getFirstForOwner(systemDefaultUser, AssessmentObjectType.ASSESSMENT_TEST)==null) {
+            importDefaultTestDeliverySettings(systemDefaultUser);
         }
     }
 
-    private void importDefaultDeliverySettings(final InstructorUser systemDefaultUser) {
+    private void importDefaultItemDeliverySettings(final InstructorUser systemDefaultUser) {
         /* Full-featured settings */
         final ItemDeliverySettings fullSettings = new ItemDeliverySettings();
         fullSettings.setAllowClose(true);
@@ -138,7 +144,7 @@ public class BootstrapServices {
                 + "so might be very useful for debugging QTI items. "
                 + "Just remember that some features will only make sense if the item has been authored to support it, "
                 + "such as model solutions and re-initialisation.");
-        itemDeliverySettingsDao.persist(fullSettings);
+        deliverySettingsDao.persist(fullSettings);
 
         /* Summative example settings */
         final ItemDeliverySettings summativeSettings = new ItemDeliverySettings();
@@ -150,6 +156,17 @@ public class BootstrapServices {
         summativeSettings.setPrompt("These delivery settings allow the candidate to make only 1 attempt "
                 + "at the item, and lock down many of the optional features. You might use something like "
                 + "this for summative assessment.");
-        itemDeliverySettingsDao.persist(summativeSettings);
+        deliverySettingsDao.persist(summativeSettings);
+    }
+
+    /** FIXME: Add in some more examples later */
+    private void importDefaultTestDeliverySettings(final InstructorUser systemDefaultUser) {
+        /* Full-featured settings */
+        final TestDeliverySettings fullSettings = new TestDeliverySettings();
+        fullSettings.setAuthorMode(true);
+        fullSettings.setPublic(true);
+        fullSettings.setOwner(systemDefaultUser);
+        fullSettings.setTitle("Example QTI debugging settings for tests");
+        deliverySettingsDao.persist(fullSettings);
     }
 }

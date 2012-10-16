@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
  * Enumerates the types of {@link CandidateItemEvent}s that happen
- * on a {@link CandidateItemSession}
+ * on a {@link CandidateSession}
  *
  * @author David McKain
  */

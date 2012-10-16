@@ -33,13 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -47,37 +50,44 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link CandidateItemEvent} entity.
+ * DAO implementation for the {@link DeliverySettings} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateItemEventDao extends GenericDao<CandidateItemEvent> {
+public class DeliverySettingsDao extends GenericDao<DeliverySettings> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public CandidateItemEventDao() {
-        super(CandidateItemEvent.class);
+    public DeliverySettingsDao() {
+        super(DeliverySettings.class);
     }
 
-    public List<CandidateItemEvent> getForSession(final CandidateSession session) {
-        final TypedQuery<CandidateItemEvent> query = em.createNamedQuery("CandidateItemEvent.getForSession", CandidateItemEvent.class);
-        query.setParameter("candidateSession", session);
+    public long countForOwner(final User user) {
+        final Query query = em.createNamedQuery("DeliverySettings.countForOwner");
+        query.setParameter("user", user);
+        return extractCountResult(query);
+    }
+
+    public List<DeliverySettings> getAllPublicSettings() {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getAllPublicSettings", DeliverySettings.class);
         return query.getResultList();
     }
 
-    public List<CandidateItemEvent> getForSessionReversed(final CandidateSession session) {
-        final TypedQuery<CandidateItemEvent> query = em.createNamedQuery("CandidateItemEvent.getForSessionReversed", CandidateItemEvent.class);
-        query.setParameter("candidateSession", session);
+    public List<DeliverySettings> getForOwner(final User user) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwner", DeliverySettings.class);
+        query.setParameter("user", user);
         return query.getResultList();
     }
 
-    public CandidateItemEvent getNewestEventInSession(final CandidateSession session) {
-        final TypedQuery<CandidateItemEvent> query = em.createNamedQuery("CandidateItemEvent.getForSessionReversed", CandidateItemEvent.class);
-        query.setParameter("candidateSession", session);
+    public DeliverySettings getFirstForOwner(final User user, final AssessmentObjectType assessmentType) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerAndType", DeliverySettings.class);
+        query.setParameter("user", user);
+        query.setParameter("assessmentType", assessmentType);
         query.setMaxResults(1);
         return extractNullableFindResult(query);
     }
+
 }
