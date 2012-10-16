@@ -3,13 +3,13 @@
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
-Instructor upload assessment package form
+Shows information about a particular Assessment
 
 Model:
 
 assessment
 assessmentPackage (most recent)
-itemDeliverySettingsList (List<ItemDeliverySettings> - possibly empty)
+deliverySettingsList (List<DeliverySettings> - possibly empty)
 assessmentRouting (action -> URL)
 instructorAssessmentRouting (action -> URL)
 
@@ -101,13 +101,13 @@ instructorAssessmentRouting (action -> URL)
       <c:choose>
         <c:when test="${assessmentPackage.valid}">
         <c:choose>
-          <c:when test="${!empty itemDeliverySettingsList}">
+          <c:when test="${!empty deliverySettingsList}">
             Try out using:
             <ul>
-              <c:forEach var="itemDeliverySettings" items="${itemDeliverySettingsList}">
+              <c:forEach var="deliverySettings" items="${deliverySettingsList}">
                 <li>
-                  <form action="${utils:escapeLink(assessmentRouting['try'])}/${itemDeliverySettings.id}" method="post">
-                    <input type="submit" value="${fn:escapeXml(itemDeliverySettings.title)}" />
+                  <form action="${utils:escapeLink(assessmentRouting['try'])}/${deliverySettings.id}" method="post">
+                    <input type="submit" value="${fn:escapeXml(deliverySettings.title)}" />
                   </form>
                 </li>
               </c:forEach>

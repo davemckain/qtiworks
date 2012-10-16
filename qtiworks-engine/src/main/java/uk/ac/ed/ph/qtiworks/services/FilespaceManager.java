@@ -110,14 +110,14 @@ public final class FilespaceManager {
     public File createCandidateUploadFile(final CandidateSession candidateItemSession, final User candidate) {
         Assert.notNull(candidateItemSession, "candidateItemSession");
         Assert.notNull(candidate, "candidate");
-        final Delivery itemDelivery = candidateItemSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+        final Delivery delivery = candidateItemSession.getDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = filesystemBaseDirectory.toURI().toString()
                 + "/uploads/file_responses/assessment_" + assessment.getId()
                 + "/package_" + assessmentPackage.getId()
-                + "/delivery_" + itemDelivery.getId()
+                + "/delivery_" + delivery.getId()
                 + "/" + candidate.getBusinessKey()
                 + "/session_" + candidateItemSession.getId();
         final File candidateItemSessionFolder = createDirectoryPath(folderUri);

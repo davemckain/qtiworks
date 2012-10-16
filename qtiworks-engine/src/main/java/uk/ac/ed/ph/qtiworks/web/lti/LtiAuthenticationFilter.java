@@ -134,17 +134,17 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             httpResponse.sendError(SC_BAD_REQUEST, "Bad request - consumer key is null");
             return;
         }
-        final Delivery itemDelivery = lookupItemDelivery(consumerKey);
-        if (itemDelivery==null) {
+        final Delivery delivery = lookupDelivery(consumerKey);
+        if (delivery==null) {
             httpResponse.sendError(SC_FORBIDDEN, "Forbidden - bad consumer key");
             return;
         }
-        if (!itemDelivery.isLtiEnabled()) {
+        if (!delivery.isLtiEnabled()) {
             httpResponse.sendError(SC_FORBIDDEN, "Forbidden - delivery is not LTI enabled");
             return;
         }
 
-        final String consumerSecret = itemDelivery.getLtiConsumerSecret();
+        final String consumerSecret = delivery.getLtiConsumerSecret();
         final OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, consumerSecret, serviceProvider);
         final OAuthAccessor accessor = new OAuthAccessor(consumer);
         accessor.tokenSecret = "";
@@ -167,13 +167,13 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
         /* Extract launch data */
         final LtiLaunchData ltiLaunchData = extractLtiLaunchData(message);
-        final LtiUser ltiUser = obtainLtiUser(itemDelivery, ltiLaunchData);
+        final LtiUser ltiUser = obtainLtiUser(delivery, ltiLaunchData);
 
         /* Continue... */
         doFilterWithIdentity(httpRequest, httpResponse, chain, ltiLaunchData, ltiUser);
     }
 
-    private Delivery lookupItemDelivery(final String consumerKey) {
+    private Delivery lookupDelivery(final String consumerKey) {
         final int separatorPos = consumerKey.indexOf('X');
         if (separatorPos==-1) {
             logger.info("Unsupported syntax in LTI consumer key {}", consumerKey);
@@ -190,20 +190,20 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             return null;
         }
         /* Look up delivery */
-        final Delivery itemDelivery = deliveryDao.findById(deliveryId);
-        logger.info("Looked up {}", itemDelivery);
-        if (itemDelivery==null) {
+        final Delivery delivery = deliveryDao.findById(deliveryId);
+        logger.info("Looked up {}", delivery);
+        if (delivery==null) {
             logger.info("Delivery with ID {} extracted from LTI consumer key {} not found", deliveryId, consumerKey);
             return null;
         }
         /* Check its key token */
-        if (!tokenPart.equals(itemDelivery.getLtiConsumerKeyToken())) {
+        if (!tokenPart.equals(delivery.getLtiConsumerKeyToken())) {
             logger.info("Token part {} of LTI consumer key {} did not match {}",
-                    new Object[] { tokenPart, consumerKey, itemDelivery.getLtiConsumerKeyToken() });
+                    new Object[] { tokenPart, consumerKey, delivery.getLtiConsumerKeyToken() });
         }
 
         /* Successful verification */
-        return itemDelivery;
+        return delivery;
     }
 
     private LtiLaunchData extractLtiLaunchData(final OAuthMessage requestMessage) throws IOException {
@@ -222,18 +222,18 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         return data;
     }
 
-    private LtiUser obtainLtiUser(final Delivery itemDelivery, final LtiLaunchData ltiLaunchData) {
+    private LtiUser obtainLtiUser(final Delivery delivery, final LtiLaunchData ltiLaunchData) {
         /* Create a unique key for this user. Uniqueness will be enforced within deliveries too */
         final String userId = ltiLaunchData.getUserId();
         final String contextId = ltiLaunchData.getContextId();
         final String logicalKey;
         if (userId!=null && contextId!=null) {
             /* FIXME: Convince myself that this will be unique! */
-            logicalKey = itemDelivery.getId() + "/" + contextId + "/" + userId;
+            logicalKey = delivery.getId() + "/" + contextId + "/" + userId;
         }
         else {
             /* No userId specified, so we'll have to synthesise something that will be unique enough */
-            logicalKey = itemDelivery.getId() + "-" + Thread.currentThread().getId()
+            logicalKey = delivery.getId() + "-" + Thread.currentThread().getId()
                     + "-" + requestTimestampContext.getCurrentRequestTimestamp().getTime();
         }
 

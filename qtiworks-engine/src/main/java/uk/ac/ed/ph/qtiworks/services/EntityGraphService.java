@@ -132,8 +132,12 @@ public class EntityGraphService {
         return deliverySettingsDao.countForOwnerAndType(identityContext.getCurrentThreadEffectiveIdentity(), assessmentType);
     }
 
-    public List<DeliverySettings> getCallerItemDeliverySettings() {
+    public List<DeliverySettings> getCallerDeliverySettings() {
         return deliverySettingsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+    }
+
+    public List<DeliverySettings> getCallerDeliverySettingsForType(final AssessmentObjectType assessmentType) {
+        return deliverySettingsDao.getForOwnerAndType(identityContext.getCurrentThreadEffectiveIdentity(), assessmentType);
     }
 
 }

@@ -39,7 +39,6 @@ import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
@@ -158,6 +157,8 @@ public final class InstructorAssessmentManagementController {
     private void setupModelForAssessment(final Assessment assessment, final Model model) {
         model.addAttribute("assessment", assessment);
         model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
+        model.addAttribute("assessmentPackage", entityGraphService.getCurrentAssessmentPackage(assessment));
+        model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(assessment.getAssessmentType()));
     }
 
     //------------------------------------------------------
@@ -204,16 +205,10 @@ public final class InstructorAssessmentManagementController {
      * Shows the Assessment having the given ID (aid)
      */
     @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
-    public String showOwnAssessment(final Model model, @PathVariable final long aid)
+    public String showAssessment(final Model model, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
-        final List<DeliverySettings> itemDeliverySettingsList = entityGraphService.getCallerItemDeliverySettings();
-
-        model.addAttribute(assessment);
-        model.addAttribute(assessmentPackage);
-        model.addAttribute(itemDeliverySettingsList);
-        model.addAttribute("assessmentRouting", buildAssessmentRouting(aid));
+        setupModelForAssessment(assessment, model);
         return "showAssessment";
     }
 
@@ -455,7 +450,7 @@ public final class InstructorAssessmentManagementController {
         model.addAttribute(assessment);
         model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
         model.addAttribute("deliveryRouting", buildDeliveryRouting(delivery));
-        model.addAttribute(entityGraphService.getCallerItemDeliverySettings());
+        model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));
     }
 
     //------------------------------------------------------
@@ -463,7 +458,7 @@ public final class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
     public String listOwnDeliverySettings(final Model model) {
-        final List<DeliverySettings> deliverySettingsList = entityGraphService.getCallerItemDeliverySettings();
+        final List<DeliverySettings> deliverySettingsList = entityGraphService.getCallerDeliverySettings();
         model.addAttribute("deliverySettingsList", deliverySettingsList);
         model.addAttribute("deliverySettingsRouting", buildDeliverySettingsListRouting(deliverySettingsList));
         return "listDeliverySettings";

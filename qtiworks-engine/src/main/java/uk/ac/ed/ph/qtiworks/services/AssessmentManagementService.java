@@ -740,8 +740,8 @@ public class AssessmentManagementService {
 
     private void validateDeliveryTemplate(final DeliveryTemplate template)
             throws BindException {
-        Assert.notNull(template, "itemDeliveryTemplate");
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "itemDeliveryTemplate");
+        Assert.notNull(template, "deliveryTemplate");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "deliveryTemplate");
         jsr303Validator.validate(template, errors);
         if (errors.hasErrors()) {
             throw new BindException(errors);
