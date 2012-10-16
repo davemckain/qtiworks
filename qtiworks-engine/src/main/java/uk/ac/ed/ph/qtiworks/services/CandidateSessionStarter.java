@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
@@ -51,10 +52,13 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -69,7 +73,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * TODO: Document and possibly refactor?
+ * Helper service for launching new candidate sessions on an
+ * {@link AssessmentItem} or {@link AssessmentTest}
  *
  * @author David McKain
  */
@@ -184,7 +189,6 @@ public class CandidateSessionStarter {
     public CandidateSession createCandidateSession(final Delivery delivery, final String exitUrl)
             throws PrivilegeException {
         Assert.notNull(delivery, "delivery");
-
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
 
         /* Make sure delivery is open */
@@ -194,10 +198,29 @@ public class CandidateSessionStarter {
         }
 
         /* Make sure underlying Assessment is valid */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final Assessment assessment = delivery.getAssessment();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
         if (!assessmentPackage.isValid()) {
             throw new PrivilegeException(candidate, Privilege.LAUNCH_INVALID_ASSESSMENT, delivery);
         }
+
+        /* Now branch depending on whether this is an item or test */
+        switch (assessment.getAssessmentType()) {
+            case ASSESSMENT_ITEM:
+                return createCandidateItemSession(delivery, exitUrl);
+
+            case ASSESSMENT_TEST:
+                throw new QtiWorksRuntimeException("Launching a CandidateSession on a test has not been implemented yet");
+
+            default:
+                throw new QtiWorksLogicException("Unexpected switch case " + assessment.getAssessmentType());
+        }
+
+    }
+
+    private CandidateSession createCandidateItemSession(final Delivery delivery, final String exitUrl) {
+        final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
 
         /* Create fresh JQTI+ state Object */
         final ItemSessionState itemSessionState = new ItemSessionState();
@@ -212,7 +235,7 @@ public class CandidateSessionStarter {
         /* Check whether an attempt is allowed. This is a bit pathological here,
          * but it makes sense to be consistent.
          */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(delivery.getDeliverySettings().getMaxAttempts());
+        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
 
         /* Create new session and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();

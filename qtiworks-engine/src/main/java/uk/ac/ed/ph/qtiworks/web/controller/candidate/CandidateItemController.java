@@ -72,6 +72,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 /**
  * Controller for candidate item sessions
  *
+ * FIXME: This will need to be refactored to accommodate test sessions
+ *
  * @author David McKain
  */
 @Controller
@@ -321,7 +323,7 @@ public class CandidateItemController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
-        final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
+        final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateSession(xid, sessionToken);
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
