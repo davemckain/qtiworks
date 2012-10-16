@@ -45,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeInstanceKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.ArrayList;
@@ -59,19 +60,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Document this type!
+ * This class generates a {@link TestPlan} for the given {@link AssessmentTest}.
+ * <p>
+ * This is the first step in delivering a test to a candidate.
  *
  * Usage: use once and discard; not thread safe.
  *
  * @author David McKain
  */
-public final class AssessmentTestPlanner {
+public final class TestPlanner {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentTestPlanner.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestPlanner.class);
 
-    /**
-     * Private class used to build up a temporary tree structure below {@link TestPart}s.
-     */
+    /** Private class used to build up a temporary tree structure below {@link TestPart}s. */
     private static class BuildTreeNode {
 
         private final SectionPart sectionPart;
@@ -105,11 +106,11 @@ public final class AssessmentTestPlanner {
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
     private final TestPlanNode testPlanRootNode;
 
-    public AssessmentTestPlanner(final AssessmentTest test, final NotificationFirer notificationFirer) {
+    public TestPlanner(final AssessmentTest test, final NotificationFirer notificationFirer) {
         this.test = test;
         this.notificationFirer = notificationFirer;
         this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
-        this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, null, 0);
+        this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, null);
     }
 
     public TestPlan generateTestPlan() {
@@ -413,7 +414,8 @@ public final class AssessmentTestPlanner {
         final int instanceNumber = 1 + computeCurrentInstanceCount(identifier);
 
         /* Create resulting Node and add to tree */
-        final TestPlanNode result = new TestPlanNode(testNodeType, identifier, instanceNumber);
+        final TestPlanNodeInstanceKey testPlanNodeInstanceKey = new TestPlanNodeInstanceKey(identifier, instanceNumber);
+        final TestPlanNode result = new TestPlanNode(testNodeType, testPlanNodeInstanceKey);
         parent.addChild(result);
 
         /* Record nodes for this Identifier */

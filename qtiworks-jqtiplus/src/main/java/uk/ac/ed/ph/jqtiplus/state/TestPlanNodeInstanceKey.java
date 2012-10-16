@@ -35,27 +35,35 @@ package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
 
 /**
  * Pairing of an {@link Identifier} and an {@link Integer} used for
- * referring to instances of an {@link AssessmentItemRef} or similar
+ * referring to a specific instance of a {@link AbstractPart}
+ * within a {@link TestPlan}, which can happen because of selection
+ * with replacement (or identifier duplication).
  *
  * @author David McKain
  */
-public final class InstanceKey implements Serializable {
+public final class TestPlanNodeInstanceKey implements Serializable {
 
     private static final long serialVersionUID = 1928489721725826864L;
 
-    /** Identifier used to refer to this {@link AbstractPart} in the enclosing AssessmentTest */
+    /** Identifier used to refer to this {@link AbstractPart} in the enclosing {@link AssessmentTest} */
     private final Identifier identifier;
 
+    /**
+     * Instance number of this {@link Identifier} within the {@link TestPlan}, starting at 1.
+     * This can be greater than 1 in the following cases:
+     * (a) selection with replacement
+     * (b) identifiers being reused (which is invalid)
+     */
     private final int instanceNumber;
 
-    public InstanceKey(final Identifier identifier, final int instanceNumber) {
+    public TestPlanNodeInstanceKey(final Identifier identifier, final int instanceNumber) {
         this.identifier = identifier;
         this.instanceNumber = instanceNumber;
     }
@@ -80,10 +88,10 @@ public final class InstanceKey implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof InstanceKey)) {
+        if (!(obj instanceof TestPlanNodeInstanceKey)) {
             return false;
         }
-        final InstanceKey other = (InstanceKey) obj;
+        final TestPlanNodeInstanceKey other = (TestPlanNodeInstanceKey) obj;
         return ObjectUtilities.nullSafeEquals(identifier, other.identifier)
                 && instanceNumber==other.instanceNumber;
     }

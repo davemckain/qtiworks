@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
@@ -48,7 +47,7 @@ import java.util.List;
 
 /**
  * Represents an instance of a {@link TestPart}, {@link AssessmentSection}
- * or {@link AssessmentItemRef} in a {@link TestPlan}.
+ * or {@link AssessmentItemRef} within a {@link TestPlan}.
  *
  * @see TestPlan
  *
@@ -75,27 +74,22 @@ public final class TestPlanNode implements Serializable {
     /** Type of Node represented */
     private final TestNodeType testNodeType;
 
-    /** {@link Identifier} of the Node in the {@link AssessmentTest} model */
-    private final Identifier identifier;
-
     /**
-     * Instance number of this {@link Identifier} within the plan, starting at 1.
-     * This can be greater than 1 in the following cases:
-     * - selection with replacement
-     * - identifiers being reused (which is invalid)
+     * Computed {@link TestPlanNodeInstanceKey} for this node.
+     * <p>
+     * (This will be null for the {@link TestNodeType#ROOT} Node)
      */
-    private final int instanceNumber;
+    private final TestPlanNodeInstanceKey testPlanNodeInstanceKey;
 
     /** Children of this Node */
     private final List<TestPlanNode> children;
 
-    public TestPlanNode(final TestNodeType testNodeType, final Identifier identifier, final int instanceNumber) {
+    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeInstanceKey testPlanNodeInstanceKey) {
         super();
         this.parentNode = null;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
-        this.identifier = identifier;
-        this.instanceNumber = instanceNumber;
+        this.testPlanNodeInstanceKey = testPlanNodeInstanceKey;
         this.children = new ArrayList<TestPlanNode>();
     }
 
@@ -112,12 +106,16 @@ public final class TestPlanNode implements Serializable {
         return testNodeType;
     }
 
+    public TestPlanNodeInstanceKey getTestPlanNodeInstanceKey() {
+        return testPlanNodeInstanceKey;
+    }
+
     public Identifier getIdentifier() {
-        return identifier;
+        return testPlanNodeInstanceKey!=null ? testPlanNodeInstanceKey.getIdentifier() : null;
     }
 
     public int getInstanceNumber() {
-        return instanceNumber;
+        return testPlanNodeInstanceKey!=null ? testPlanNodeInstanceKey.getInstanceNumber() : 1;
     }
 
     public List<TestPlanNode> getChildren() {

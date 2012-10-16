@@ -52,7 +52,7 @@ public final class TestItemState implements Serializable {
 
     private static final long serialVersionUID = -1407010070268750764L;
 
-    private final InstanceKey instanceKey;
+    private final TestPlanNodeInstanceKey instanceKey;
     private final ItemSessionState itemSessionState;
 
     private boolean presented;
@@ -63,14 +63,14 @@ public final class TestItemState implements Serializable {
     private SessionStatus sessionStatus;
     private String candidateComment;
 
-    public TestItemState(final InstanceKey instanceKey, final ItemSessionState itemSessionState) {
+    public TestItemState(final TestPlanNodeInstanceKey instanceKey, final ItemSessionState itemSessionState) {
         Assert.notNull(instanceKey, "instanceKey");
         Assert.notNull(itemSessionState, "itemSessionState");
         this.instanceKey = instanceKey;
         this.itemSessionState = itemSessionState;
     }
 
-    public InstanceKey getInstanceKey() {
+    public TestPlanNodeInstanceKey getInstanceKey() {
         return instanceKey;
     }
 

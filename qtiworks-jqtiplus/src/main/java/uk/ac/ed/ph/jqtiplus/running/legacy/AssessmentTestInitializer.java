@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentTestPlanner;
+import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AbstractPartState;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
@@ -67,9 +67,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Helper that performs the selection and ordering of the underlying Objects in the {@link AssessmentTest}.
  *
- * FIXME: Part of the work done here is now done by {@link AssessmentTestPlanner}. Refactoring is required
+ * FIXME: Part of the work done here is now done by {@link TestPlanner}. Refactoring is required
  *
- * @see AssessmentTestPlanner
+ * @see TestPlanner
  *
  * @author David McKain
  */
