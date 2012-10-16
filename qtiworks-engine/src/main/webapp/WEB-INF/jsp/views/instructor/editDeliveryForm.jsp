@@ -3,13 +3,13 @@
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
-Form for editing Item Delivery properties
+Form for editing Delivery properties
 
 Model:
 
-itemDeliveryTemplate
-itemDelivery
-itemDeliverySettingsList
+deliveryTemplate
+delivery
+deliverySettingsList
 assessment
 assessmentRouting (action -> URL)
 deliveryRouting (action -> URL)
@@ -25,7 +25,7 @@ primaryRouting
     <a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a> &#xbb;
     <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a> &#xbb;
     <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
-    <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(itemDelivery.title)}'</a>
+    <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a>
   </nav>
   <h2>Edit Delivery Properties</h2>
 
@@ -35,7 +35,7 @@ primaryRouting
     </p>
   </div>
 
-  <form:form method="post" acceptCharset="UTF-8" commandName="itemDeliveryTemplate">
+  <form:form method="post" acceptCharset="UTF-8" commandName="deliveryTemplate">
 
     <%-- Show any form validation errors discovered --%>
     <form:errors element="div" cssClass="formErrors" path="*"/>
@@ -88,8 +88,8 @@ primaryRouting
         <div class="grid_11">
           Select delivery settings:
           <ul class="dsSelector">
-            <c:forEach var="ds" items="${itemDeliverySettingsList}">
-              <c:set var="checked" value="${itemDeliveryTemplate.dsid==ds.id}"/>
+            <c:forEach var="ds" items="${deliverySettingsList}">
+              <c:set var="checked" value="${deliveryTemplate.dsid==ds.id}"/>
               <li>
                 <input type="radio" id="dsid${ds.id}" name="dsid" value="${ds.id}"${checked ? ' checked="checked"' : ''} />
                 <label for="dsid${ds.id}" class="dsTitle">

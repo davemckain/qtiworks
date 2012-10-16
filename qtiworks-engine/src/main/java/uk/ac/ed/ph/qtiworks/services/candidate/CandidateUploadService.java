@@ -36,7 +36,7 @@ package uk.ac.ed.ph.qtiworks.services.candidate;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateFileSubmissionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 
@@ -67,7 +67,7 @@ public class CandidateUploadService {
     @Resource
     private CandidateFileSubmissionDao candidateFileSubmissionDao;
 
-    public CandidateFileSubmission importFileSubmission(final CandidateItemSession candidateItemSession,
+    public CandidateFileSubmission importFileSubmission(final CandidateSession candidateItemSession,
             final MultipartFile multipartFile) {
         Assert.notNull(candidateItemSession, "candidateItemSession");
         Assert.notNull(multipartFile, "multipartFile");

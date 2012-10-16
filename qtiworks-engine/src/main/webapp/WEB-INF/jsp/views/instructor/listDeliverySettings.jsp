@@ -7,18 +7,18 @@ Lists ItemDeliverySettings owned by caller
 
 Model:
 
-itemDeliverySettingsList
-itemDeliverySettingsRouting: dsid -> action -> URL
+deliverySettingsList
+deliverySettingsRouting: dsid -> action -> URL
 instructorAssessmentRouting
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Your Item Delivery Settings">
+<page:page title="Your Delivery Settings">
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
   </nav>
-  <h2>Your Item Delivery Settings</h2>
+  <h2>Your Delivery Settings</h2>
 
   <div class="hints">
     <p>
@@ -30,33 +30,37 @@ instructorAssessmentRouting
   </div>
 
   <c:choose>
-    <c:when test="${!empty itemDeliverySettingsList}">
+    <c:when test="${!empty deliverySettingsList}">
       <table class="assessmentList">
         <thead>
           <tr>
             <th></th>
             <th>Details</th>
+            <th>For</th>
             <th>Created</th>
           </tr>
         </thead>
         <tbody>
-          <c:forEach var="itemDeliverySettings" items="${itemDeliverySettingsList}" varStatus="loopStatus">
+          <c:forEach var="deliverySettings" items="${deliverySettingsList}" varStatus="loopStatus">
             <tr>
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
               <td>
                 <h4>
-                  <a href="${utils:escapeLink(itemDeliverySettingsRouting[itemDeliverySettings.id]['show'])}">
-                    <c:out value="${itemDeliverySettings.title}"/>
+                  <a href="${utils:escapeLink(deliverySettingsRouting[deliverySettings.id]['showOrEdit'])}">
+                    <c:out value="${deliverySettings.title}"/>
                   </a>
                 </h4>
-                <c:if test="${!empty itemDeliverySettings.prompt}">
-                  <span class="title">"${fn:escapeXml(utils:trimSentence(itemDeliverySettings.prompt, 200))}"</span>
+                <c:if test="${deliverySettings.prompt && !empty deliverySettings.prompt}">
+                  <span class="title">"${fn:escapeXml(utils:trimSentence(deliverySettings.prompt, 200))}"</span>
                 </c:if>
               </td>
+              <td align="center">
+                ${utils:formatAssessmentType(deliverySettings.assessmentType)}
+              </td>
               <td class="center">
-                <c:out value="${utils:formatDayDateAndTime(itemDeliverySettings.creationTime)}"/>
+                <c:out value="${utils:formatDayDateAndTime(deliverySettings.creationTime)}"/>
               </td>
             </tr>
           </c:forEach>
@@ -64,13 +68,14 @@ instructorAssessmentRouting
       </table>
     </c:when>
     <c:otherwise>
-      <p>You have not created any Item Delivery Settings yet.</p>
+      <p>You have not created any Delivery Settings yet.</p>
     </c:otherwise>
   </c:choose>
 
   <h4>Actions</h4>
   <ul>
     <li><a href="${utils:escapeLink(instructorAssessmentRouting['createItemDeliverySettings'])}">Create new Item Delivery Settings</a></li>
+    <li><a href="${utils:escapeLink(instructorAssessmentRouting['createTestDeliverySettings'])}">Create new Test Delivery Settings</a></li>
   </ul>
 
 </page:page>

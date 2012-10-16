@@ -33,7 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import static uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType.ASSESSMENT_TEST;
+import static uk.ac.ed.ph.qtiworks.samples.DeliveryStyle.TEST_WORK_IN_PROGRESS;
 
 /**
  * Sample assessmentTests used to test the implementation of tests.
@@ -44,7 +45,7 @@ public final class TestImplementationSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet("Test Implementation Test Samples",
             "Set of sample assessmentTests used to test our implementation",
-            new QtiSampleAssessment(AssessmentObjectType.ASSESSMENT_TEST, null, "testimplementation/WebDeveloperTest1/template_test1.xml",
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/WebDeveloperTest1/template_test1.xml",
                     new String[] { "question1.xml", "question2.xml", "question3.xml", "question4.xml", "question5.xml", "question6.xml", "question7.xml", "question8.xml", "question9.xml" },
                     new String[] { "directory.jpg" })
     );

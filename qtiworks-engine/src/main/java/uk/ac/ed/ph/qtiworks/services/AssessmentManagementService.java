@@ -43,20 +43,23 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliveryTemplate;
+import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
@@ -134,10 +137,10 @@ public class AssessmentManagementService {
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
-    private ItemDeliveryDao itemDeliveryDao;
+    private DeliveryDao deliveryDao;
 
     @Resource
-    private ItemDeliverySettingsDao itemDeliverySettingsDao;
+    private DeliverySettingsDao deliverySettingsDao;
 
     @Resource
     private QtiXmlReader qtiXmlReader;
@@ -434,26 +437,68 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-    // CRUD for ItemDeliverySettings
+    // Basic CRUD for DeliverySettings
 
-    public ItemDeliverySettings lookupOwnItemDeliverySettings(final long dsid)
+    public DeliverySettings lookupDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsDao.requireFindById(dsid);
-        ensureCallerOwns(itemDeliverySettings);
-        return itemDeliverySettings;
+        final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
+        ensureCallerMayAccess(deliverySettings);
+        return deliverySettings;
     }
+
+    public DeliverySettings lookupAndMatchDeliverySettings(final long dsid, final Assessment assessment)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
+        ensureCallerMayAccess(deliverySettings);
+        ensureCompatible(deliverySettings, assessment);
+        return deliverySettings;
+    }
+
+    private void ensureCallerMayAccess(final DeliverySettings deliverySettings)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!deliverySettings.isPublic() && !caller.equals(deliverySettings.getOwner())) {
+            throw new PrivilegeException(caller, Privilege.ACCESS_DELIVERY_SETTINGS, deliverySettings);
+        }
+    }
+
+    private void ensureCallerOwns(final DeliverySettings deliverySettings)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (!caller.equals(deliverySettings.getOwner())) {
+            throw new PrivilegeException(caller, Privilege.OWN_DELIVERY_SETTINGS, deliverySettings);
+        }
+    }
+
+    private void ensureCallerMayChange(final DeliverySettings deliverySettings)
+            throws PrivilegeException {
+        ensureCallerOwns(deliverySettings);
+    }
+
+    private User ensureCallerMayCreateDeliverySettings() throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (caller.getUserType()!=UserType.INSTRUCTOR) {
+            throw new PrivilegeException(caller, Privilege.CREATE_DELIVERY_SETTINGS);
+        }
+        return caller;
+    }
+
+    //-------------------------------------------------
+    // CRUD for ItemDeliverySettings
 
     public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final ItemDeliverySettings itemDeliverySettings = itemDeliverySettingsDao.requireFindById(dsid);
-        ensureCallerMayAccess(itemDeliverySettings);
-        return itemDeliverySettings;
+        final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
+        ensureCallerMayAccess(deliverySettings);
+        ensureCompatible(deliverySettings, AssessmentObjectType.ASSESSMENT_ITEM);
+
+        return (ItemDeliverySettings) deliverySettings;
     }
 
     public ItemDeliverySettings createItemDeliverySettings(final ItemDeliverySettingsTemplate template)
             throws PrivilegeException, BindException {
         /* Check caller privileges */
-        final User caller = ensureCallerMayCreateItemDeliverySettings();
+        final User caller = ensureCallerMayCreateDeliverySettings();
 
         /* Validate template */
         validateItemDeliverySettingsTemplate(template);
@@ -462,7 +507,7 @@ public class AssessmentManagementService {
         final ItemDeliverySettings result = new ItemDeliverySettings();
         result.setOwner(caller);
         mergeItemDeliverySettings(template, result);
-        itemDeliverySettingsDao.persist(result);
+        deliverySettingsDao.persist(result);
 
         auditor.recordEvent("Created ItemDeliverySettings #" + result.getId());
         return result;
@@ -489,7 +534,7 @@ public class AssessmentManagementService {
 
         /* Merge template into options and update */
         mergeItemDeliverySettings(template, itemDeliverySettings);
-        itemDeliverySettingsDao.update(itemDeliverySettings);
+        deliverySettingsDao.update(itemDeliverySettings);
 
         auditor.recordEvent("Updated ItemDeliverySettings #" + itemDeliverySettings.getId());
         return itemDeliverySettings;
@@ -529,79 +574,119 @@ public class AssessmentManagementService {
         target.setTitle(template.getTitle());
     }
 
-    private void ensureCallerMayAccess(final ItemDeliverySettings itemDeliverySettings)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!itemDeliverySettings.isPublic() && !caller.equals(itemDeliverySettings.getOwner())) {
-            throw new PrivilegeException(caller, Privilege.ACCESS_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
+    //-------------------------------------------------
+    // CRUD for TEstDeliverySettings
+
+    public TestDeliverySettings lookupTestDeliverySettings(final long dsid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
+        ensureCallerMayAccess(deliverySettings);
+        ensureCompatible(deliverySettings, AssessmentObjectType.ASSESSMENT_TEST);
+
+        return (TestDeliverySettings) deliverySettings;
+    }
+
+    public TestDeliverySettings createTestDeliverySettings(final TestDeliverySettingsTemplate template)
+            throws PrivilegeException, BindException {
+        /* Check caller privileges */
+        final User caller = ensureCallerMayCreateDeliverySettings();
+
+        /* Validate template */
+        validateTestDeliverySettingsTemplate(template);
+
+        /* Create and persist new options from template */
+        final TestDeliverySettings result = new TestDeliverySettings();
+        result.setOwner(caller);
+        mergeTestDeliverySettings(template, result);
+        deliverySettingsDao.persist(result);
+
+        auditor.recordEvent("Created TestDeliverySettings #" + result.getId());
+        return result;
+    }
+
+    private void validateTestDeliverySettingsTemplate(final TestDeliverySettingsTemplate template)
+            throws BindException {
+        Assert.notNull(template, "template");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "testDeliverySettingsTemplate");
+        jsr303Validator.validate(template, errors);
+        if (errors.hasErrors()) {
+            throw new BindException(errors);
         }
     }
 
-    private void ensureCallerOwns(final ItemDeliverySettings itemDeliverySettings)
-            throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!caller.equals(itemDeliverySettings.getOwner())) {
-            throw new PrivilegeException(caller, Privilege.OWN_ITEM_DELIVERY_OPTIONS, itemDeliverySettings);
-        }
+    public TestDeliverySettings updateTestDeliverySettings(final long dsid, final TestDeliverySettingsTemplate template)
+            throws PrivilegeException, DomainEntityNotFoundException, BindException {
+        /* Check caller privileges */
+        final TestDeliverySettings testDeliverySettings = lookupTestDeliverySettings(dsid);
+        ensureCallerMayChange(testDeliverySettings);
+
+        /* Validate template */
+        validateTestDeliverySettingsTemplate(template);
+
+        /* Merge template into options and update */
+        mergeTestDeliverySettings(template, testDeliverySettings);
+        deliverySettingsDao.update(testDeliverySettings);
+
+        auditor.recordEvent("Updated TestDeliverySettings #" + testDeliverySettings.getId());
+        return testDeliverySettings;
     }
 
-    private void ensureCallerMayChange(final ItemDeliverySettings itemDeliverySettings)
-            throws PrivilegeException {
-        ensureCallerOwns(itemDeliverySettings);
+    private void mergeTestDeliverySettings(final TestDeliverySettingsTemplate template, final TestDeliverySettings target) {
+        target.setAuthorMode(template.isAuthorMode());
+        target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
+        target.setTitle(template.getTitle().trim());
     }
 
-    private User ensureCallerMayCreateItemDeliverySettings() throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (caller.getUserType()!=UserType.INSTRUCTOR) {
-            throw new PrivilegeException(caller, Privilege.CREATE_ITEM_DELIVERY_OPTIONS);
-        }
-        return caller;
+    public void mergeTestDeliverySettings(final TestDeliverySettings template, final TestDeliverySettingsTemplate target) {
+        target.setAuthorMode(template.isAuthorMode());
+        target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
+        target.setTitle(template.getTitle());
     }
 
     //-------------------------------------------------
-    // CRUD for ItemDelivery
+    // CRUD for Delivery
     // (access controls are governed by owning Assessment)
 
-    public ItemDelivery lookupItemDelivery(final long did)
+    public Delivery lookupDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
-        ensureCallerMayAccess(itemDelivery.getAssessment());
-        return itemDelivery;
+        final Delivery delivery = deliveryDao.requireFindById(did);
+        ensureCallerMayAccess(delivery.getAssessment());
+        return delivery;
     }
 
-    public ItemDelivery lookupOwnItemDelivery(final long did)
+    public Delivery lookupOwnDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final ItemDelivery itemDelivery = itemDeliveryDao.requireFindById(did);
-        ensureCallerOwns(itemDelivery.getAssessment());
-        return itemDelivery;
+        final Delivery delivery = deliveryDao.requireFindById(did);
+        ensureCallerOwns(delivery.getAssessment());
+        return delivery;
     }
 
-    /** Creates a new {@link ItemDelivery} for the given Assignment using reasonable default values */
-    public ItemDelivery createItemDelivery(final long aid)
+    /** Creates a new {@link Delivery} for the given Assignment using reasonable default values */
+    public Delivery createDelivery(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Look up Assessment and check caller and change it */
         final Assessment assessment = lookupAssessment(aid);
         final User caller = ensureCallerMayChange(assessment);
 
-        /* Get first ItemDeliverySettings (creating if required) */
-        final ItemDeliverySettings itemDeliverySettings = requireFirstDeliverySettings(caller);
+        /* Get first DeliverySettings (creating if required) */
+        final DeliverySettings deliverySettings = requireFirstDeliverySettings(caller, assessment.getAssessmentType());
 
-        /* Create ItemDelivery template with reasonable defaults */
-        final ItemDeliveryTemplate template = new ItemDeliveryTemplate();
+        /* Create Delivery template with reasonable defaults */
+        final DeliveryTemplate template = new DeliveryTemplate();
         final long existingDeliveryCount = entityGraphService.countCallerDeliveries(assessment);
-        template.setTitle("Item Delivery #" + (existingDeliveryCount+1));
-        template.setDsid(itemDeliverySettings.getId());
+        template.setTitle("Delivery #" + (existingDeliveryCount+1));
+        template.setDsid(deliverySettings.getId());
         template.setOpen(false);
         template.setLtiEnabled(false);
 
         /* Create and return new entity */
-        return createItemDelivery(assessment, itemDeliverySettings, template);
+        return createDelivery(assessment, deliverySettings, template);
     }
 
-    public ItemDelivery createItemDelivery(final long aid, final ItemDeliveryTemplate template)
+    public Delivery createDelivery(final long aid, final DeliveryTemplate template)
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Validate template */
-        validateItemDeliveryTemplate(template);
+        validateDeliveryTemplate(template);
 
         /* Look up Assessment and check caller and change it */
         final Assessment assessment = lookupAssessment(aid);
@@ -609,53 +694,54 @@ public class AssessmentManagementService {
 
         /* Look up settings and check privileges */
         final long dsid = template.getDsid();
-        final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
+        final DeliverySettings deliverySettings = lookupAndMatchDeliverySettings(dsid, assessment);
 
         /* Create and return new entity */
-        return createItemDelivery(assessment, itemDeliverySettings, template);
+        return createDelivery(assessment, deliverySettings, template);
     }
 
-    private ItemDelivery createItemDelivery(final Assessment assessment,
-            final ItemDeliverySettings itemDeliverySettings, final ItemDeliveryTemplate template) {
-        final ItemDelivery delivery = new ItemDelivery();
+    private Delivery createDelivery(final Assessment assessment,
+            final DeliverySettings deliverySettings, final DeliveryTemplate template) {
+        final Delivery delivery = new Delivery();
         delivery.setAssessment(assessment);
-        delivery.setItemDeliverySettings(itemDeliverySettings);
+        delivery.setDeliverySettings(deliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_CREATED);
         delivery.setOpen(template.isOpen());
         delivery.setLtiEnabled(template.isLtiEnabled());
         delivery.setTitle(template.getTitle().trim());
         delivery.setLtiConsumerKeyToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
         delivery.setLtiConsumerSecret(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
-        itemDeliveryDao.persist(delivery);
+        deliveryDao.persist(delivery);
         return delivery;
     }
 
-    public ItemDelivery updateItemDelivery(final long did, final ItemDeliveryTemplate template)
+    public Delivery updateDelivery(final long did, final DeliveryTemplate template)
             throws BindException, PrivilegeException, DomainEntityNotFoundException {
         /* Validate template */
-        validateItemDeliveryTemplate(template);
+        validateDeliveryTemplate(template);
 
         /* Look up delivery and check privileges */
-        final ItemDelivery delivery = lookupOwnItemDelivery(did);
-        ensureCallerMayChange(delivery.getAssessment());
+        final Delivery delivery = lookupOwnDelivery(did);
+        final Assessment assessment = delivery.getAssessment();
+        ensureCallerMayChange(assessment);
 
         /* Look up settings and check privileges */
         final long dsid = template.getDsid();
-        final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
+        final DeliverySettings deliverySettings = lookupAndMatchDeliverySettings(dsid, assessment);
 
         /* Update data */
         delivery.setOpen(template.isOpen());
         delivery.setTitle(template.getTitle().trim());
         delivery.setLtiEnabled(template.isLtiEnabled());
-        delivery.setItemDeliverySettings(itemDeliverySettings);
-        itemDeliveryDao.update(delivery);
+        delivery.setDeliverySettings(deliverySettings);
+        deliveryDao.update(delivery);
         return delivery;
     }
 
-    private void validateItemDeliveryTemplate(final ItemDeliveryTemplate template)
+    private void validateDeliveryTemplate(final DeliveryTemplate template)
             throws BindException {
-        Assert.notNull(template, "itemDeliveryTemplate");
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "itemDeliveryTemplate");
+        Assert.notNull(template, "deliveryTemplate");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "deliveryTemplate");
         jsr303Validator.validate(template, errors);
         if (errors.hasErrors()) {
             throw new BindException(errors);
@@ -665,25 +751,26 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // Assessment trying
 
-    public ItemDelivery createDemoDelivery(final Assessment assessment)
+    public Delivery createDemoDelivery(final Assessment assessment)
             throws PrivilegeException {
         Assert.notNull(assessment, "assessment");
 
         /* Select suitable delivery settings */
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        ItemDeliverySettings deliverySettings = assessment.getDefaultDeliverySettings();
+        DeliverySettings deliverySettings = assessment.getDefaultDeliverySettings();
         if (deliverySettings==null) {
-            deliverySettings = requireFirstDeliverySettings(caller);
+            deliverySettings = requireFirstDeliverySettings(caller, assessment.getAssessmentType());
         }
 
         /* Now create demo delivery using these options */
         return createDemoDelivery(assessment, deliverySettings);
     }
 
-    public ItemDelivery createDemoDelivery(final Assessment assessment, final ItemDeliverySettings itemDeliverySettings)
+    public Delivery createDemoDelivery(final Assessment assessment, final DeliverySettings deliverySettings)
             throws PrivilegeException {
         Assert.notNull(assessment, "assessment");
-        Assert.notNull(itemDeliverySettings, "itemDeliverySettings");
+        Assert.notNull(deliverySettings, "deliverySettings");
+        ensureCompatible(deliverySettings, assessment);
 
         /* Make sure caller is allowed to run this Assessment */
         final User caller = ensureCallerMayAccess(assessment);
@@ -697,35 +784,60 @@ public class AssessmentManagementService {
         }
 
         /* Create demo Delivery */
-        final ItemDelivery delivery = new ItemDelivery();
+        final Delivery delivery = new Delivery();
         delivery.setAssessment(assessment);
-        delivery.setItemDeliverySettings(itemDeliverySettings);
+        delivery.setDeliverySettings(deliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_TRANSIENT);
         delivery.setOpen(true);
         delivery.setTitle("Temporary demo delivery");
-        itemDeliveryDao.persist(delivery);
+        deliveryDao.persist(delivery);
 
         /* That's it! */
         auditor.recordEvent("Created demo ItemDelivery #" + delivery.getId() + " for Assessment #" + assessment.getId());
         return delivery;
     }
 
-    public ItemDeliverySettings requireFirstDeliverySettings(final User owner) {
-        ItemDeliverySettings firstDeliverySettings = itemDeliverySettingsDao.getFirstForOwner(owner);
-        if (firstDeliverySettings==null) {
-            final ItemDeliverySettingsTemplate template = createItemDeliverySettingsTemplate();
-            firstDeliverySettings = new ItemDeliverySettings();
-            mergeItemDeliverySettings(template, firstDeliverySettings);
-            firstDeliverySettings.setOwner(owner);
-            firstDeliverySettings.setTitle("Default delivery settings");
-            firstDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
-                    + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
-                    + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
-                    + " which you can edit or remove to suit.");
-            itemDeliverySettingsDao.persist(firstDeliverySettings);
-            auditor.recordEvent("Created default ItemDeliverySettings for this user");
+    public DeliverySettings requireFirstDeliverySettings(final User owner, final AssessmentObjectType assessmentType) {
+        /* See if there are already suitable settings created */
+        final DeliverySettings firstDeliverySettings = deliverySettingsDao.getFirstForOwner(owner, assessmentType);
+        if (firstDeliverySettings!=null) {
+            return firstDeliverySettings;
         }
-        return firstDeliverySettings;
+
+        /* No luck, so set up some initial settings appropriate for this assessment */
+        switch (assessmentType) {
+            case ASSESSMENT_ITEM: {
+                final ItemDeliverySettingsTemplate template = createItemDeliverySettingsTemplate();
+                final ItemDeliverySettings itemDeliverySettings = new ItemDeliverySettings();
+                mergeItemDeliverySettings(template, itemDeliverySettings);
+                itemDeliverySettings.setOwner(owner);
+                itemDeliverySettings.setTitle("Default item delivery settings");
+                itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
+                        + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
+                        + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
+                        + " which you can edit or remove to suit.");
+
+                deliverySettingsDao.persist(itemDeliverySettings);
+                auditor.recordEvent("Created default ItemDeliverySettings for this user");
+                return itemDeliverySettings;
+            }
+
+            case ASSESSMENT_TEST: {
+                final TestDeliverySettingsTemplate template = createTestDeliverySettingsTemplate();
+                final TestDeliverySettings testDeliverySettings = new TestDeliverySettings();
+                mergeTestDeliverySettings(template, testDeliverySettings);
+                testDeliverySettings.setOwner(owner);
+                testDeliverySettings.setTitle("Default test delivery settings");
+
+                deliverySettingsDao.persist(testDeliverySettings);
+                auditor.recordEvent("Created default TestDeliverySettings for this user");
+                return testDeliverySettings;
+            }
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + assessmentType);
+        }
+
     }
 
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
@@ -747,8 +859,28 @@ public class AssessmentManagementService {
         return template;
     }
 
+    public TestDeliverySettingsTemplate createTestDeliverySettingsTemplate() {
+        final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
+        template.setAuthorMode(true);
+        template.setTitle("Item Delivery Settings");
+        return template;
+    }
+
     //-------------------------------------------------
     // Internal helpers
+
+    private void ensureCompatible(final DeliverySettings deliverySettings, final Assessment assessment)
+            throws PrivilegeException {
+        ensureCompatible(deliverySettings, assessment.getAssessmentType());
+    }
+
+    private void ensureCompatible(final DeliverySettings deliverySettings, final AssessmentObjectType assessmentObjectType)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        if (assessmentObjectType!=deliverySettings.getAssessmentType()) {
+            throw new PrivilegeException(caller, Privilege.MATCH_DELIVERY_SETTINGS, deliverySettings);
+        }
+    }
 
     /**
      * @throws QtiWorksLogicException if sandboxPath is already null

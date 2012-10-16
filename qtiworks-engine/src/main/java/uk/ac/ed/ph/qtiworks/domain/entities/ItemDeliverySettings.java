@@ -34,117 +34,34 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
-
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.Type;
 
 /**
  * Specifies settings controlling the delivery of an {@link AssessmentItem} to a group of candidates.
- * <p>
- * NB: This is also used a command/template, with separate validation.
- * <p>
- * TODO: We'll eventually need one of these for a test, and probably an entity superclass containing
- * the common aspects of both types of deliveries.
+ *
+ * @see DeliverySettings
  *
  * @author David McKain
  */
 @Entity
 @Table(name="item_delivery_settings")
-@SequenceGenerator(name="itemDeliverySettingsSequence", sequenceName="item_delivery_settings_sequence", initialValue=1, allocationSize=5)
-@NamedQueries({
-    @NamedQuery(name="ItemDeliverySettings.getAllPublicSettings",
-            query="SELECT ds"
-                + "  FROM ItemDeliverySettings ds"
-                + "  WHERE ds.isPublic IS TRUE"
-                + "  ORDER BY creationTime, id"),
-    @NamedQuery(name="ItemDeliverySettings.getForOwner",
-            query="SELECT ds"
-                + "  FROM ItemDeliverySettings ds"
-                + "  WHERE ds.owner = :user"
-                + "  ORDER BY creationTime, id"),
-    @NamedQuery(name="ItemDeliverySettings.countForOwner",
-            query="SELECT COUNT(ds)"
-                + "  FROM ItemDeliverySettings ds"
-                + "  WHERE ds.owner = :user")
-})
-public class ItemDeliverySettings implements BaseEntity, TimestampedOnCreation {
+public class ItemDeliverySettings extends DeliverySettings implements BaseEntity {
 
-    //------------------------------------------------------------
-    // These properties would probably apply to both items and tests
-
-    private static final long serialVersionUID = 2631174138240856511L;
-
-    @Id
-    @GeneratedValue(generator="itemDeliverySettingsSequence")
-    @Column(name="dsid")
-    private Long id;
-
-    /** {@link User} who owns these options */
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="owner_uid", updatable=false)
-    private User owner;
-
-    @Basic(optional=false)
-    @Column(name="creation_time", updatable=false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationTime;
-
-    /** Owner's title, must be unique within those created by owner */
-    @NotNull
-    @Size(min=1)
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=false)
-    @Column(name="title")
-    private String title;
-
-    /** Available to all users */
-    @Basic(optional=false)
-    @Column(name="public")
-    private boolean isPublic;
-
-    //------------------------------------------------------------
-    // Next ones are probably for items only
-
-    /** Optional prompt to show to candidates */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="prompt")
-    private String prompt;
+    private static final long serialVersionUID = 6573748787230595395L;
 
     /** Maximum number of attempts, as defined by {@link ItemSessionControl} */
     @Min(value=0)
     @Basic(optional=false)
     @Column(name="max_attempts")
     private Integer maxAttempts;
-
-    /** Author mode includes additional debugging information in the rendering */
-    @Basic(optional=false)
-    @Column(name="author_mode")
-    private boolean authorMode;
 
     /** Allow candidate to close session */
     @Basic(optional=false)
@@ -198,63 +115,11 @@ public class ItemDeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     //------------------------------------------------------------
 
-    @Override
-    public Long getId() {
-        return id;
+    public ItemDeliverySettings() {
+        super(AssessmentObjectType.ASSESSMENT_ITEM);
     }
 
-    @Override
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(final User owner) {
-        this.owner = owner;
-    }
-
-
-    @Override
-    public Date getCreationTime() {
-        return ObjectUtilities.safeClone(creationTime);
-    }
-
-    @Override
-    public void setCreationTime(final Date creationTime) {
-        this.creationTime = ObjectUtilities.safeClone(creationTime);
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(final String title) {
-        this.title = title;
-    }
-
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(final boolean isPublic) {
-        this.isPublic = isPublic;
-    }
-
-
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public void setPrompt(final String prompt) {
-        this.prompt = prompt;
-    }
-
+    //------------------------------------------------------------
 
     public Integer getMaxAttempts() {
         return maxAttempts;
@@ -262,15 +127,6 @@ public class ItemDeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     public void setMaxAttempts(final Integer maxAttempts) {
         this.maxAttempts = maxAttempts;
-    }
-
-
-    public boolean isAuthorMode() {
-        return authorMode;
-    }
-
-    public void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
     }
 
 
@@ -364,9 +220,6 @@ public class ItemDeliverySettings implements BaseEntity, TimestampedOnCreation {
     }
 
     //------------------------------------------------------------
-
-
-
 
     @Override
     public String toString() {

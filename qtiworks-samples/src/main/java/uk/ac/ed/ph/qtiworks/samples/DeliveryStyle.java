@@ -41,6 +41,8 @@ package uk.ac.ed.ph.qtiworks.samples;
  */
 public enum DeliveryStyle {
 
+    /* Items */
+    
     IMS_ADAPTIVE,
     IMS_STANDARD,
     IMS_STANDARD_TEMPLATED,
@@ -48,6 +50,10 @@ public enum DeliveryStyle {
     IMS_FEEDBACK,
     MATHASSESS_STANDARD,
     MATHASSESS_TEMPLATED,
-    LANGUAGE_STANDARD
+    LANGUAGE_STANDARD,
+   
+    /* Tests */
+    
+    TEST_WORK_IN_PROGRESS
     ;
 }

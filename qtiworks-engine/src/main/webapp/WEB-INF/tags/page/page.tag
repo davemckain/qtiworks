@@ -46,6 +46,12 @@ All Rights Reserved
           </c:otherwise>
         </c:choose>
       </header>
+      <%-- Maybe show flash message --%>
+      <c:if test="${!empty flashMessage}">
+        <div class="flashMessage">
+          <c:out value="${flashMessage}"/>
+        </div>
+      </c:if>
       <jsp:doBody/>
       <div class="clear"></div>
       <footer>

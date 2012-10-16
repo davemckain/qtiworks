@@ -36,11 +36,11 @@ package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
-import uk.ac.ed.ph.qtiworks.domain.dao.ItemDeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -82,11 +82,11 @@ public class AnonymousStandaloneItemRunner {
     private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
-    private ItemDeliverySettingsDao itemDeliverySettingsDao;
+    private DeliverySettingsDao deliverySettingsDao;
 
     @ModelAttribute
     public void setupDeliverySettings(final Model model) {
-        final List<ItemDeliverySettings> itemDeliverySettingsList = itemDeliverySettingsDao.getAllPublicSettings();
+        final List<DeliverySettings> itemDeliverySettingsList = deliverySettingsDao.getAllPublicSettingsForType(AssessmentObjectType.ASSESSMENT_ITEM);
         model.addAttribute("itemDeliverySettingsList", itemDeliverySettingsList);
     }
 
@@ -97,7 +97,7 @@ public class AnonymousStandaloneItemRunner {
         final StandaloneRunCommand command = new StandaloneRunCommand();
 
         @SuppressWarnings("unchecked")
-        final List<ItemDeliverySettings> itemDeliverySettingsList = (List<ItemDeliverySettings>) model.asMap().get("itemDeliverySettingsList");
+        final List<DeliverySettings> itemDeliverySettingsList = (List<DeliverySettings>) model.asMap().get("itemDeliverySettingsList");
         command.setDsid(itemDeliverySettingsList.get(0).getId());
 
         model.addAttribute(command);
@@ -115,7 +115,7 @@ public class AnonymousStandaloneItemRunner {
         /* FIXME: Delete the uploaded data if there is an Exception here! */
         try {
             /* Make sure the required ItemDeliverySettings exists */
-            final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(command.getDsid());
+            final DeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(command.getDsid());
 
             /* Now upload the Assessment and validate it */
             final Assessment assessment;
@@ -132,9 +132,9 @@ public class AnonymousStandaloneItemRunner {
             }
 
             /* If still here, start new delivery and get going */
-            final ItemDelivery delivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
+            final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
             final String exitUrl = "/web/anonymous/standalonerunner";
-            final CandidateItemSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
+            final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
 
             /* Redirect to candidate dispatcher */
             return "redirect:/candidate/session/" + candidateSession.getId().longValue() + "/" + candidateSession.getSessionToken();

@@ -33,58 +33,29 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
-
-import java.util.List;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link ItemDeliverySettings} entity.
+ * DAO implementation for the {@link CandidateSession} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class ItemDeliverySettingsDao extends GenericDao<ItemDeliverySettings> {
+public class CandidateSessionDao extends GenericDao<CandidateSession> {
 
+    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
-    public ItemDeliverySettingsDao() {
-        super(ItemDeliverySettings.class);
+    public CandidateSessionDao() {
+        super(CandidateSession.class);
     }
-
-    public long countForOwner(final User user) {
-        final Query query = em.createNamedQuery("ItemDeliverySettings.countForOwner");
-        query.setParameter("user", user);
-        return extractCountResult(query);
-    }
-
-    public List<ItemDeliverySettings> getAllPublicSettings() {
-        final TypedQuery<ItemDeliverySettings> query = em.createNamedQuery("ItemDeliverySettings.getAllPublicSettings", ItemDeliverySettings.class);
-        return query.getResultList();
-    }
-
-    public List<ItemDeliverySettings> getForOwner(final User user) {
-        final TypedQuery<ItemDeliverySettings> query = em.createNamedQuery("ItemDeliverySettings.getForOwner", ItemDeliverySettings.class);
-        query.setParameter("user", user);
-        return query.getResultList();
-    }
-
-    public ItemDeliverySettings getFirstForOwner(final User user) {
-        final TypedQuery<ItemDeliverySettings> query = em.createNamedQuery("ItemDeliverySettings.getForOwner", ItemDeliverySettings.class);
-        query.setParameter("user", user);
-        query.setMaxResults(1);
-        return extractNullableFindResult(query);
-    }
-
 }

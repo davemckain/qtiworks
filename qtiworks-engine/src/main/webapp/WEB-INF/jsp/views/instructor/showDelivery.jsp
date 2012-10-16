@@ -7,7 +7,7 @@ Shows a Delivery
 
 Model:
 
-itemDelivery
+delivery
 assessment
 assessmentRouting (action -> URL)
 deliveryRouting (action -> URL)
@@ -23,26 +23,26 @@ instructorAssessmentRouting (action -> URL)
     <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a> &#xbb;
     <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a>
   </nav>
-  <h2>Delivery '${fn:escapeXml(itemDelivery.title)}'</h2>
+  <h2>Delivery '${fn:escapeXml(delivery.title)}'</h2>
 
   <div class="grid_4">
     <div class="infoBox">
       <div class="cat">Title</div>
-      <div class="value">${fn:escapeXml(itemDelivery.title)}</div>
+      <div class="value">${fn:escapeXml(delivery.title)}</div>
     </div>
   </div>
 
   <div class="grid_4">
     <div class="infoBox">
       <div class="cat">Delivery Settings used</div>
-      <div class="value">${fn:escapeXml(itemDelivery.itemDeliverySettings.title)}</div>
+      <div class="value">${fn:escapeXml(delivery.deliverySettings.title)}</div>
     </div>
   </div>
 
   <div class="grid_4">
     <div class="infoBox">
       <div class="cat">Created</div>
-      <div class="value">${utils:formatDayDateAndTime(itemDelivery.creationTime)}</div>
+      <div class="value">${utils:formatDayDateAndTime(delivery.creationTime)}</div>
     </div>
   </div>
 
@@ -51,14 +51,14 @@ instructorAssessmentRouting (action -> URL)
   <div class="grid_2">
     <div class="infoBox">
       <div class="cat">Open to candidates?</div>
-      <div class="value">${itemDelivery.open ? 'Yes' : 'No'}</div>
+      <div class="value">${delivery.open ? 'Yes' : 'No'}</div>
     </div>
   </div>
 
   <div class="grid_10">
     <div class="infoBox">
       <div class="cat">LTI enabled?</div>
-      <div class="value">${itemDelivery.ltiEnabled ? 'Yes' : 'No'}</div>
+      <div class="value">${delivery.ltiEnabled ? 'Yes' : 'No'}</div>
     </div>
   </div>
 
@@ -66,11 +66,11 @@ instructorAssessmentRouting (action -> URL)
 
   <h4>LTI launch details</h4>
   <c:choose>
-    <c:when test="${itemDelivery.ltiEnabled}">
+    <c:when test="${delivery.ltiEnabled}">
       <ul>
         <li><b>Launch URL</b>: ${fn:escapeXml(deliveryRouting['ltiLaunch'])}</li>
-        <li><b>Consumer Key</b>: <code>${itemDelivery.id}X${itemDelivery.ltiConsumerKeyToken}</code></li>
-        <li><b>Consumer Secret</b>: <code>${itemDelivery.ltiConsumerSecret}</code></li>
+        <li><b>Consumer Key</b>: <code>${delivery.id}X${delivery.ltiConsumerKeyToken}</code></li>
+        <li><b>Consumer Secret</b>: <code>${delivery.ltiConsumerSecret}</code></li>
       </ul>
     </c:when>
     <c:otherwise>

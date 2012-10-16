@@ -31,31 +31,75 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * DAO implementation for the {@link CandidateItemSession} entity.
+ * Template for creating/editing an {@link Delivery}
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateItemSessionDao extends GenericDao<CandidateItemSession> {
+public final class DeliveryTemplate {
 
-    @SuppressWarnings("unused")
-    @PersistenceContext
-    private EntityManager em;
+    private long dsid;
 
-    public CandidateItemSessionDao() {
-        super(CandidateItemSession.class);
+    @NotNull
+    @NotBlank
+    @Size(min=1)
+    private String title;
+
+    private boolean open;
+
+    private boolean ltiEnabled;
+
+
+    public long getDsid() {
+        return dsid;
+    }
+
+    public void setDsid(final long dsid) {
+        this.dsid = dsid;
+    }
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(final boolean open) {
+        this.open = open;
+    }
+
+
+    public boolean isLtiEnabled() {
+        return ltiEnabled;
+    }
+
+    public void setLtiEnabled(final boolean ltiEnabled) {
+        this.ltiEnabled = ltiEnabled;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public final String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

@@ -31,35 +31,23 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.group.result;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.result.Context;
-import uk.ac.ed.ph.jqtiplus.node.result.Identification;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 /**
- * Group of identification child.
+ * Template for creating/editing an {@link TestDeliverySettings} entity
  *
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public final class IdentificationGroup extends SimpleSingleNodeGroup<Context,Identification> {
+public final class TestDeliverySettingsTemplate extends DeliverySettingsTemplate {
 
-    private static final long serialVersionUID = 3185024329320657981L;
-
-    public IdentificationGroup(final Context parent) {
-        super(parent, Identification.QTI_CLASS_NAME, false);
+    public TestDeliverySettingsTemplate() {
+        super(AssessmentObjectType.ASSESSMENT_TEST);
     }
 
-    public Identification getIdentification() {
-        return getChild();
-    }
+    /* Nothing extra in here yet */
 
-    public void setIdentification(final Identification identification) {
-        setChild(identification);
-    }
-
-    @Override
-    public Identification create() {
-        return new Identification(getParent());
-    }
 }

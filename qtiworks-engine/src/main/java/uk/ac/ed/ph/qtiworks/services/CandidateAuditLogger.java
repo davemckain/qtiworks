@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidatePrivilege;
@@ -55,40 +55,40 @@ public class CandidateAuditLogger {
     /** Special logger for auditing candidate actions */
     private static final Logger candidateLogger = LoggerFactory.getLogger("CandidateAuditor");
 
-    private void logEvent(final CandidateItemSession candidateItemSession, final String message) {
+    private void logEvent(final CandidateSession candidateItemSession, final String message) {
         candidateLogger.info("user={} xid={} did={} aid={} state={} {}",
                 new Object[] {
                     candidateItemSession.getCandidate().getBusinessKey(),
                     candidateItemSession.getId(),
-                    candidateItemSession.getItemDelivery().getId(),
-                    candidateItemSession.getItemDelivery().getAssessment().getId(),
+                    candidateItemSession.getDelivery().getId(),
+                    candidateItemSession.getDelivery().getAssessment().getId(),
                     candidateItemSession.getCandidateSessionStatus(),
                     message
         });
     }
 
     public void logRendering(final CandidateItemEvent candidateItemEvent, final ItemRenderingRequest renderingRequest) {
-        logEvent(candidateItemEvent.getCandidateItemSession(), "action=RENDER mode=" + renderingRequest.getRenderingMode());
+        logEvent(candidateItemEvent.getCandidateSession(), "action=RENDER mode=" + renderingRequest.getRenderingMode());
     }
 
-    public void logAction(final CandidateItemSession candidateItemSession, final String actionName) {
+    public void logAction(final CandidateSession candidateItemSession, final String actionName) {
         logEvent(candidateItemSession, "action=" + actionName);
     }
 
-    public void logCandidateItemEvent(final CandidateItemSession candidateItemSession, final CandidateItemEvent candidateItemEvent) {
+    public void logCandidateItemEvent(final CandidateSession candidateItemSession, final CandidateItemEvent candidateItemEvent) {
         logEvent(candidateItemSession, "action=CANDIDATE_ITEM_EVENT xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getEventType()
                 + " notifications=" + candidateItemEvent.getNotifications().size());
     }
 
-    public void logPlaybackEvent(final CandidateItemSession candidateItemSession, final CandidateItemEvent candidateItemEvent,
+    public void logPlaybackEvent(final CandidateSession candidateItemSession, final CandidateItemEvent candidateItemEvent,
             final CandidateItemEvent targetEvent) {
         logEvent(candidateItemSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getEventType()
                 + " target_xeid=" + targetEvent.getId());
     }
 
-    public void logCandidateItemAttempt(final CandidateItemSession candidateItemSession, final CandidateItemAttempt candidateItemAttempt) {
+    public void logCandidateItemAttempt(final CandidateSession candidateItemSession, final CandidateItemAttempt candidateItemAttempt) {
         final CandidateItemEvent candidateItemEvent = candidateItemAttempt.getEvent();
         logEvent(candidateItemSession, "action=CANDIDATE_ITEM_ATTEMPT xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getEventType()
@@ -96,7 +96,7 @@ public class CandidateAuditLogger {
                 + " notifications=" + candidateItemEvent.getNotifications().size());
     }
 
-    public void logAndForbid(final CandidateItemSession candidateItemSession, final CandidatePrivilege privilege)
+    public void logAndForbid(final CandidateSession candidateItemSession, final CandidatePrivilege privilege)
             throws CandidateForbiddenException {
         logEvent(candidateItemSession, "forbid=" + privilege);
         throw new CandidateForbiddenException(candidateItemSession, privilege);

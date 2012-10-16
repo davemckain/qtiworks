@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Encapsulates the various types of {@link ItemDelivery}
+ * Encapsulates the various types of {@link Delivery}
  *
  * @author David McKain
  */

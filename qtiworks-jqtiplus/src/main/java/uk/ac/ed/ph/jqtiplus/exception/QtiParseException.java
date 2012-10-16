@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 
 /**
  * This exception is used for propagating errors when parsing/converting literal Strings
- * into QTI types, allowed attribute valuess etc.
+ * into QTI types, allowed attribute values etc.
  *
  * @author Jiri Kajaba
  */

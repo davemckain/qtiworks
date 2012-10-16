@@ -3,13 +3,13 @@
 Copyright (c) 2012, The University of Edinburgh.
 All Rights Reserved
 
-Instructor upload assessment package form
+Shows information about a particular Assessment
 
 Model:
 
 assessment
 assessmentPackage (most recent)
-itemDeliverySettingsList (List<ItemDeliverySettings> - possibly empty)
+deliverySettingsList (List<DeliverySettings> - possibly empty)
 assessmentRouting (action -> URL)
 instructorAssessmentRouting (action -> URL)
 
@@ -33,12 +33,7 @@ instructorAssessmentRouting (action -> URL)
   <div class="grid_2">
     <div class="infoBox">
       <div class="cat">Assessment Type</div>
-      <div class="value">
-        <c:choose>
-          <c:when test="${assessment.assessmentType=='ASSESSMENT_ITEM'}">Item</c:when>
-          <c:otherwise>Test</c:otherwise>
-        </c:choose>
-      </div>
+      <div class="value">${utils:formatAssessmentType(assessment.assessmentType)}</div>
     </div>
   </div>
 
@@ -106,13 +101,13 @@ instructorAssessmentRouting (action -> URL)
       <c:choose>
         <c:when test="${assessmentPackage.valid}">
         <c:choose>
-          <c:when test="${!empty itemDeliverySettingsList}">
+          <c:when test="${!empty deliverySettingsList}">
             Try out using:
             <ul>
-              <c:forEach var="itemDeliverySettings" items="${itemDeliverySettingsList}">
+              <c:forEach var="deliverySettings" items="${deliverySettingsList}">
                 <li>
-                  <form action="${utils:escapeLink(assessmentRouting['try'])}/${itemDeliverySettings.id}" method="post">
-                    <input type="submit" value="${fn:escapeXml(itemDeliverySettings.title)}" />
+                  <form action="${utils:escapeLink(assessmentRouting['try'])}/${deliverySettings.id}" method="post">
+                    <input type="submit" value="${fn:escapeXml(deliverySettings.title)}" />
                   </form>
                 </li>
               </c:forEach>

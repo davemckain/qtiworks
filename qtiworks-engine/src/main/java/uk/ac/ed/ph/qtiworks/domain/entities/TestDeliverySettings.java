@@ -31,70 +31,37 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.domain;
-
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotBlank;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
- * Template for creating/editing an {@link ItemDelivery}
+ * Specifies settings controlling the delivery of an {@link AssessmentTest} to a group of candidates.
+ *
+ * @see DeliverySettings
  *
  * @author David McKain
  */
-public final class ItemDeliveryTemplate {
+@Entity
+@Table(name="test_delivery_settings")
+public class TestDeliverySettings extends DeliverySettings implements BaseEntity {
 
-    @NotNull
-    @NotBlank
-    @Size(min=1)
-    private String title;
+    private static final long serialVersionUID = -7998426124749508509L;
 
-    private long dsid;
+    //------------------------------------------------------------
 
-    private boolean open;
-
-    private boolean ltiEnabled;
-
-
-    public String getTitle() {
-        return title;
+    public TestDeliverySettings() {
+        super(AssessmentObjectType.ASSESSMENT_TEST);
     }
 
-    public void setTitle(final String title) {
-        this.title = title;
-    }
+    //------------------------------------------------------------
 
-
-    public long getDsid() {
-        return dsid;
-    }
-
-    public void setDsid(final long dsid) {
-        this.dsid = dsid;
-    }
-
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(final boolean open) {
-        this.open = open;
-    }
-
-
-    public boolean isLtiEnabled() {
-        return ltiEnabled;
-    }
-
-    public void setLtiEnabled(final boolean ltiEnabled) {
-        this.ltiEnabled = ltiEnabled;
-    }
+    /* Stuff will go here soon */
 
     //------------------------------------------------------------
 

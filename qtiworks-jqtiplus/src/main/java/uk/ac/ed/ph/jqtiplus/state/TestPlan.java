@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
-import uk.ac.ed.ph.jqtiplus.running.AssessmentTestPlanner;
+import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
@@ -52,7 +52,7 @@ import java.util.Map;
  * An instance of this class should be consider immutable once created.
  *
  * @see TestPlanNode
- * @see AssessmentTestPlanner
+ * @see TestPlanner
  */
 @ObjectDumperOptions(DumpMode.DEEP)
 public final class TestPlan implements Serializable {
@@ -103,11 +103,8 @@ public final class TestPlan implements Serializable {
                 result.append("  ");
             }
             result.append(testPlanNode.getTestNodeType())
-                    .append('[')
-                    .append(testPlanNode.getIdentifier())
-                    .append('/')
-                    .append(testPlanNode.getInstanceNumber())
-                    .append("]\n");
+                    .append(testPlanNode.getTestPlanNodeInstanceKey())
+                    .append("\n");
             buildStructure(result, testPlanNode.getChildren(), indent + 1);
         }
     }

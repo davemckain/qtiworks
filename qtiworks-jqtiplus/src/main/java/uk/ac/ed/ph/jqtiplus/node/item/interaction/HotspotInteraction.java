@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -161,13 +162,11 @@ public final class HotspotInteraction extends GraphicInteraction implements Hots
                 context.fireValidationError(this, "Response variable must have identifier base type");
             }
 
-            if (maxChoices == 1 &&
-                    !responseDeclaration.getCardinality().isSingle() &&
-                    !responseDeclaration.getCardinality().isMultiple()) {
+            if (maxChoices == 1 && !responseDeclaration.hasCardinality(Cardinality.SINGLE, Cardinality.MULTIPLE)) {
                 context.fireValidationError(this, "Response variable must have single or multiple cardinality");
             }
 
-            if (maxChoices != 1 && responseDeclaration.getCardinality().isMultiple()) {
+            if (maxChoices != 1 && !responseDeclaration.hasCardinality(Cardinality.MULTIPLE)) {
                 context.fireValidationError(this, "Response variable must have multiple cardinality");
             }
         }

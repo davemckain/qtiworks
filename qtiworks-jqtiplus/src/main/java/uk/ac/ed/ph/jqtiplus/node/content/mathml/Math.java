@@ -113,11 +113,6 @@ public final class Math extends AbstractFlowBodyElement implements BlockStatic, 
     }
 
     @Override
-    public void load(final Element sourceElement, final LoadingContext context) {
-        super.load(sourceElement, context);
-    }
-
-    @Override
     protected void validateThis(final ValidationContext context) {
         /* Do nothing here - we rely on schema validation */
     }

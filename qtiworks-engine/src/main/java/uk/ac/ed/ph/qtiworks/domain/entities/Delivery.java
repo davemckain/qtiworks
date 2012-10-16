@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.util.Date;
 
@@ -65,35 +66,33 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Type;
 
 /**
- * Corresponds to a particular "delivery" of an {@link AssessmentItem} to a group of candidates.
+ * Corresponds to a particular "delivery" of an {@link AssessmentItem} or
+ * {@link AssessmentTest} to a group of candidates.
  * <p>
  * This is going to be very simple in the first instance, but will get more complicated in future.
- *
- * TODO: We'll eventually need one of these for a test, and probably an entity superclass containing
- * the common aspects of both types of deliveries.
  *
  * @author David McKain
  */
 @Entity
-@Table(name="item_deliveries")
-@SequenceGenerator(name="itemDeliverySequence", sequenceName="item_delivery_sequence", initialValue=1, allocationSize=5)
+@Table(name="deliveries")
+@SequenceGenerator(name="deliverySequence", sequenceName="delivery_sequence", initialValue=1, allocationSize=5)
 @NamedQueries({
-    @NamedQuery(name="ItemDelivery.getForAssessment",
+    @NamedQuery(name="Delivery.getForAssessment",
             query="SELECT d"
-                + "  FROM ItemDelivery d"
+                + "  FROM Delivery d"
                 + "  WHERE d.assessment = :assessment"),
-    @NamedQuery(name="ItemDelivery.getForAssessmentAndType",
+    @NamedQuery(name="Delivery.getForAssessmentAndType",
             query="SELECT d"
-                + "  FROM ItemDelivery d"
+                + "  FROM Delivery d"
                 + "  WHERE d.assessment = :assessment"
                 + "    AND d.deliveryType = :deliveryType"),
-    @NamedQuery(name="ItemDelivery.countForAssessmentAndType",
+    @NamedQuery(name="Delivery.countForAssessmentAndType",
             query="SELECT COUNT(*)"
-                + "  FROM ItemDelivery d"
+                + "  FROM Delivery d"
                 + "  WHERE d.assessment = :assessment"
                 + "    AND d.deliveryType = :deliveryType")
 })
-public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
+public class Delivery implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = 7693569112981982946L;
 
@@ -101,7 +100,7 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
     // These properties would probably apply to both items and tests
 
     @Id
-    @GeneratedValue(generator="itemDeliverySequence")
+    @GeneratedValue(generator="deliverySequence")
     @Column(name="did")
     private Long id;
 
@@ -116,7 +115,7 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="dsid")
-    private ItemDeliverySettings itemDeliverySettings;
+    private DeliverySettings deliverySettings;
 
     @Basic(optional=false)
     @Column(name="type", updatable=false, length=15)
@@ -190,12 +189,12 @@ public class ItemDelivery implements BaseEntity, TimestampedOnCreation {
 
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
-    public ItemDeliverySettings getItemDeliverySettings() {
-        return itemDeliverySettings;
+    public DeliverySettings getDeliverySettings() {
+        return deliverySettings;
     }
 
-    public void setItemDeliverySettings(final ItemDeliverySettings itemDeliverySettings) {
-        this.itemDeliverySettings = itemDeliverySettings;
+    public void setDeliverySettings(final DeliverySettings deliverySettings) {
+        this.deliverySettings = deliverySettings;
     }
 
 

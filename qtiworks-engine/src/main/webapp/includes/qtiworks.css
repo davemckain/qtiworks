@@ -44,6 +44,14 @@ header h1 a:hover {
   color: #66455e;
 }
 
+.flashMessage {
+  background-color: #ffffcc;
+  margin: 0.5em 0;
+  padding: 0.5em;
+  border: 1px solid #999999;
+  border-radius: 0.5em;
+}
+
 /* ========== Footer ========== */
 
 footer {

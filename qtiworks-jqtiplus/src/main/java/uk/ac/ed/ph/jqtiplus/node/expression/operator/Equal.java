@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
+import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -224,7 +224,7 @@ public final class Equal extends AbstractExpression {
                 context.fireRuntimeWarning(this, "Computed value of first tolerance is NULL. Returning NULL");
                 return NullValue.INSTANCE;
             }
-            firstTolerance = ((IntegerValue) firstToleranceValue).doubleValue();
+            firstTolerance = ((FloatValue) firstToleranceValue).doubleValue();
             if (firstTolerance <= 0.0) {
                 context.fireRuntimeWarning(this, "Computed value of first tolerance " + firstTolerance + " is negative. Returning NULL");
                 return NullValue.INSTANCE;
@@ -238,7 +238,7 @@ public final class Equal extends AbstractExpression {
                 context.fireRuntimeWarning(this, "Computed value of second tolerance is NULL. Returning NULL");
                 return NullValue.INSTANCE;
             }
-            secondTolerance = ((IntegerValue) secondToleranceValue).doubleValue();
+            secondTolerance = ((FloatValue) secondToleranceValue).doubleValue();
             if (secondTolerance <= 0.0) {
                 context.fireRuntimeWarning(this, "Computed value of second tolerance " + secondTolerance + " is negative. Returning NULL");
                 return NullValue.INSTANCE;

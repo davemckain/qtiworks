@@ -38,8 +38,8 @@ import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 
@@ -91,19 +91,19 @@ public class AnonymousSamplesController {
     }
 
     /**
-     * Starts a new {@link CandidateItemSession} on the given sample, using the special
-     * {@link ItemDelivery} created when bootstrapping the samples.
+     * Starts a new {@link CandidateSession} on the given sample, using the special
+     * {@link Delivery} created when bootstrapping the samples.
      */
     @RequestMapping(value="/samples/{aid}", method=RequestMethod.POST)
     public String startItemSession(@PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/list");
 
-        final CandidateItemSession candidateItemSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
+        final CandidateSession candidateItemSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
         return redirectToCandidateSession(candidateItemSession);
     }
 
-    private String redirectToCandidateSession(final CandidateItemSession candidateItemSession) {
+    private String redirectToCandidateSession(final CandidateSession candidateItemSession) {
         return "redirect:/candidate/session/" + candidateItemSession.getId()
                 + "/" + candidateItemSession.getSessionToken();
     }

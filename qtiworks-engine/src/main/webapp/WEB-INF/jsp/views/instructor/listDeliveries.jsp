@@ -8,7 +8,7 @@ Lists Deliveries for a given Assignment
 Model:
 
 assessment
-itemDeliveryList
+deliveryList
 assessmentRouting: action -> URL
 deliveryListRouting: did -> action -> URL
 instructorAssessmentRouting
@@ -25,7 +25,7 @@ instructorAssessmentRouting
   <h2>Assessment Deliveries</h2>
 
   <c:choose>
-    <c:when test="${!empty itemDeliveryList}">
+    <c:when test="${!empty deliveryList}">
       <table class="assessmentList">
         <thead>
           <th></th>
@@ -34,19 +34,19 @@ instructorAssessmentRouting
           <th>Delivery Settings</th>
         </thead>
         <tbody>
-          <c:forEach var="itemDelivery" items="${itemDeliveryList}" varStatus="loopStatus">
+          <c:forEach var="delivery" items="${deliveryList}" varStatus="loopStatus">
             <tr>
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
               <td>
-                <a href="${utils:escapeLink(deliveryListRouting[itemDelivery.id]['show'])}"><c:out value="${itemDelivery.title}"/></a>
+                <a href="${utils:escapeLink(deliveryListRouting[delivery.id]['show'])}"><c:out value="${delivery.title}"/></a>
               </td>
               <td>
-                ${itemDelivery.open ? 'Yes' : 'No' }
+                ${delivery.open ? 'Yes' : 'No' }
               </td>
               <td>
-                ${fn:escapeXml(itemDelivery.itemDeliverySettings.title)}
+                ${fn:escapeXml(delivery.deliverySettings.title)}
               </td>
             </tr>
           </c:forEach>

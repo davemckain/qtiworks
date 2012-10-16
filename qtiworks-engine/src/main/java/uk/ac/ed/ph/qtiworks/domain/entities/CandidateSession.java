@@ -35,6 +35,9 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -54,19 +57,19 @@ import javax.persistence.TemporalType;
 
 /**
  * Represents the "session" for a particular candidate {@link User} against a
- * particular {@link ItemDelivery}
+ * particular {@link Delivery} of an {@link AssessmentItem} or {@link AssessmentTest}
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_sessions")
-@SequenceGenerator(name="candidateItemSessionSequence", sequenceName="candidate_item_session_sequence", initialValue=1, allocationSize=50)
-public class CandidateItemSession implements BaseEntity, TimestampedOnCreation {
+@Table(name="candidate_sessions")
+@SequenceGenerator(name="candidateSessionSequence", sequenceName="candidate_session_sequence", initialValue=1, allocationSize=50)
+public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -3537558551866726398L;
 
     @Id
-    @GeneratedValue(generator="candidateItemSessionSequence")
+    @GeneratedValue(generator="candidateSessionSequence")
     @Column(name="xid")
     private Long id;
 
@@ -101,18 +104,17 @@ public class CandidateItemSession implements BaseEntity, TimestampedOnCreation {
     @Column(name="exit_url", length=DomainConstants.CANDIDATE_SESSION_EXIT_URL_LENGTH)
     private String exitUrl;
 
-    /** {@link ItemDelivery} owning this session */
+    /** {@link Delivery} owning this session */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="did")
-    private ItemDelivery itemDelivery;
+    private Delivery delivery;
 
     /** Candidate running this session */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="uid")
     private User candidate;
 
-
-    /** Current state (enumerated) */
+    /** Current status (enumerated) */
     @Basic(optional=false)
     @Column(name="status", length=11)
     @Enumerated(EnumType.STRING)
@@ -160,12 +162,13 @@ public class CandidateItemSession implements BaseEntity, TimestampedOnCreation {
         this.exitUrl = exitUrl;
     }
 
-    public ItemDelivery getItemDelivery() {
-        return itemDelivery;
+
+    public Delivery getDelivery() {
+        return delivery;
     }
 
-    public void setItemDelivery(final ItemDelivery itemDelivery) {
-        this.itemDelivery = itemDelivery;
+    public void setDelivery(final Delivery delivery) {
+        this.delivery = delivery;
     }
 
 

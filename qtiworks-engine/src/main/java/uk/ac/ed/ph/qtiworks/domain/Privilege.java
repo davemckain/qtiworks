@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 /**
@@ -52,9 +53,17 @@ public enum Privilege {
     OWN_ASSESSMENT,
     CREATE_ASSESSMENT,
     VIEW_ASSESSMENT,
-    ACCESS_ITEM_DELIVERY_OPTIONS,
-    OWN_ITEM_DELIVERY_OPTIONS,
-    CREATE_ITEM_DELIVERY_OPTIONS,
+
+    /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
+    MATCH_DELIVERY_SETTINGS,
+
+    ACCESS_DELIVERY_SETTINGS,
+
+    /** FIXME: Rename this! */
+    OWN_DELIVERY_SETTINGS,
+
+    /** FIXME: Rename this! */
+    CREATE_DELIVERY_SETTINGS,
 
     LAUNCH_ASSESSMENT_AS_SAMPLE,
     LAUNCH_INVALID_ASSESSMENT,

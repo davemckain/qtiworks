@@ -140,10 +140,10 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Column(name="title", length=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
     private String title;
 
-    /** Default {@link ItemDeliverySettings} to use when trying package out */
+    /** Default {@link DeliverySettings} to use when trying package out */
     @ManyToOne(optional=true)
     @JoinColumn(name="default_dsid")
-    private ItemDeliverySettings defaultDeliverySettings;
+    private DeliverySettings defaultDeliverySettings;
 
     /**
      * For sample items, this specifies the category it belongs to. This should be set to null
@@ -242,11 +242,11 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public ItemDeliverySettings getDefaultDeliverySettings() {
+    public DeliverySettings getDefaultDeliverySettings() {
         return defaultDeliverySettings;
     }
 
-    public void setDefaultDeliverySettings(final ItemDeliverySettings defaultDeliverySettings) {
+    public void setDefaultDeliverySettings(final DeliverySettings defaultDeliverySettings) {
         this.defaultDeliverySettings = defaultDeliverySettings;
     }
 
