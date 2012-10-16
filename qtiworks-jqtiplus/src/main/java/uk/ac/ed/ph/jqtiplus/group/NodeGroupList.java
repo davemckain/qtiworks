@@ -100,7 +100,6 @@ import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.CandidateCommentGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.CandidateResponseGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.ContextGroup;
-import uk.ac.ed.ph.jqtiplus.group.result.IdentificationGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.ItemResultGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.ItemVariableGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.SessionIdentifierGroup;
@@ -187,7 +186,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRule;
 import uk.ac.ed.ph.jqtiplus.node.result.CandidateComment;
 import uk.ac.ed.ph.jqtiplus.node.result.CandidateResponse;
 import uk.ac.ed.ph.jqtiplus.node.result.Context;
-import uk.ac.ed.ph.jqtiplus.node.result.Identification;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionIdentifier;
@@ -549,16 +547,6 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
      */
     public ContextGroup getContextGroup() {
         return (ContextGroup) get(Context.QTI_CLASS_NAME);
-    }
-
-    /**
-     * Gets identification group.
-     *
-     * @return identification group
-     * @throws QtiNodeGroupException if group is not found
-     */
-    public IdentificationGroup getIdentificationGroup() {
-        return (IdentificationGroup) get(Identification.QTI_CLASS_NAME);
     }
 
     /**
