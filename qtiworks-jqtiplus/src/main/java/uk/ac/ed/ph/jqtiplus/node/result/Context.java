@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.result;
 
-import uk.ac.ed.ph.jqtiplus.group.result.IdentificationGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.SessionIdentifierGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 
@@ -55,20 +54,9 @@ public final class Context extends AbstractNode implements ResultNode {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new SessionIdentifierGroup(this));
-        getNodeGroups().add(new IdentificationGroup(this));
     }
-
 
     public List<SessionIdentifier> getSessionIdentifiers() {
         return getNodeGroups().getSessionIdentifierGroup().getSessionIdentifiers();
-    }
-
-
-    public Identification getIdentification() {
-        return getNodeGroups().getIdentificationGroup().getIdentification();
-    }
-
-    public void setIdentification(final Identification identification) {
-        getNodeGroups().getIdentificationGroup().setIdentification(identification);
     }
 }
