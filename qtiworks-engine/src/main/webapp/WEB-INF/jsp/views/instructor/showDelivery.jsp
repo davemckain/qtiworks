@@ -35,7 +35,7 @@ instructorAssessmentRouting (action -> URL)
   <div class="grid_4">
     <div class="infoBox">
       <div class="cat">Delivery Settings used</div>
-      <div class="value">${fn:escapeXml(itemDelivery.itemDeliverySettings.title)}</div>
+      <div class="value">${fn:escapeXml(itemDelivery.deliverySettings.title)}</div>
     </div>
   </div>
 

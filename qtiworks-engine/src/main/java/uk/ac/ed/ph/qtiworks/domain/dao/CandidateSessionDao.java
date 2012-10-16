@@ -33,54 +33,29 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDelivery;
-
-import java.util.List;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link ItemDelivery} entity.
+ * DAO implementation for the {@link CandidateSession} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class ItemDeliveryDao extends GenericDao<ItemDelivery> {
+public class CandidateSessionDao extends GenericDao<CandidateSession> {
 
+    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
-    public ItemDeliveryDao() {
-        super(ItemDelivery.class);
-    }
-
-    public List<ItemDelivery> getForAssessment(final Assessment assessment) {
-        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessment", ItemDelivery.class);
-        query.setParameter("assessment", assessment);
-        return query.getResultList();
-    }
-
-    public List<ItemDelivery> getForAssessmentAndType(final Assessment assessment, final DeliveryType deliveryType) {
-        final TypedQuery<ItemDelivery> query = em.createNamedQuery("ItemDelivery.getForAssessmentAndType", ItemDelivery.class);
-        query.setParameter("assessment", assessment);
-        query.setParameter("deliveryType", deliveryType);
-        return query.getResultList();
-    }
-
-    public long countForAssessmentAndType(final Assessment assessment, final DeliveryType deliveryType) {
-        final Query query = em.createNamedQuery("ItemDelivery.countForAssessmentAndType");
-        query.setParameter("assessment", assessment);
-        query.setParameter("deliveryType", deliveryType);
-        return extractCountResult(query);
+    public CandidateSessionDao() {
+        super(CandidateSession.class);
     }
 }

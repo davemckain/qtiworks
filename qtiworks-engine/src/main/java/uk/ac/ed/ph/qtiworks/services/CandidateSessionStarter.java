@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
@@ -99,7 +99,7 @@ public class CandidateSessionStarter {
     private DeliveryDao deliveryDao;
 
     @Resource
-    private CandidateItemSessionDao candidateItemSessionDao;
+    private CandidateSessionDao candidateSessionDao;
 
     //-------------------------------------------------
     // System samples
@@ -221,7 +221,7 @@ public class CandidateSessionStarter {
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
         candidateSession.setCandidateSessionStatus(attemptAllowed ? CandidateSessionStatus.INTERACTING : CandidateSessionStatus.CLOSED);
-        candidateItemSessionDao.persist(candidateSession);
+        candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);

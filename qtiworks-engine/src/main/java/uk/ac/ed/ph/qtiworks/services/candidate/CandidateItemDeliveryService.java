@@ -40,7 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemSessionDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
@@ -139,7 +139,7 @@ public class CandidateItemDeliveryService {
     private CandidateUploadService candidateUploadService;
 
     @Resource
-    private CandidateItemSessionDao candidateItemSessionDao;
+    private CandidateSessionDao candidateSessionDao;
 
     @Resource
     private CandidateItemEventDao candidateItemEventDao;
@@ -164,7 +164,7 @@ public class CandidateItemDeliveryService {
     public CandidateSession lookupCandidateItemSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         Assert.notNull(sessionToken, "sessionToken");
-        final CandidateSession candidateItemSession = candidateItemSessionDao.requireFindById(xid);
+        final CandidateSession candidateItemSession = candidateSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateItemSession.getSessionToken())) {
             candidateAuditLogger.logAndForbid(candidateItemSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
         }
@@ -653,7 +653,7 @@ public class CandidateItemDeliveryService {
         /* Finally update session state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDelivery.getDeliverySettings().getMaxAttempts());
         candidateItemSession.setCandidateSessionStatus(attemptAllowed ? CandidateSessionStatus.INTERACTING : CandidateSessionStatus.CLOSED);
-        candidateItemSessionDao.update(candidateItemSession);
+        candidateSessionDao.update(candidateItemSession);
         return candidateItemAttempt;
     }
 
@@ -693,7 +693,7 @@ public class CandidateItemDeliveryService {
 
         /* Update state */
         candidateItemSession.setCandidateSessionStatus(CandidateSessionStatus.CLOSED);
-        candidateItemSessionDao.update(candidateItemSession);
+        candidateSessionDao.update(candidateItemSession);
         return candidateItemSession;
     }
 
@@ -748,7 +748,7 @@ public class CandidateItemDeliveryService {
         /* Update state */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
         candidateItemSession.setCandidateSessionStatus(attemptAllowed ? CandidateSessionStatus.INTERACTING : CandidateSessionStatus.CLOSED);
-        candidateItemSessionDao.update(candidateItemSession);
+        candidateSessionDao.update(candidateItemSession);
         return candidateItemSession;
     }
 
@@ -808,7 +808,7 @@ public class CandidateItemDeliveryService {
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(itemDelivery, itemSessionState, null);
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
         candidateItemSession.setCandidateSessionStatus(attemptAllowed ? CandidateSessionStatus.INTERACTING : CandidateSessionStatus.CLOSED);
-        candidateItemSessionDao.update(candidateItemSession);
+        candidateSessionDao.update(candidateItemSession);
         return candidateItemSession;
     }
 
@@ -849,7 +849,7 @@ public class CandidateItemDeliveryService {
         /* Change session state to CLOSED if it's not already there */
         if (candidateItemSessionState==CandidateSessionStatus.INTERACTING) {
             candidateItemSession.setCandidateSessionStatus(CandidateSessionStatus.CLOSED);
-            candidateItemSessionDao.update(candidateItemSession);
+            candidateSessionDao.update(candidateItemSession);
         }
         return candidateItemSession;
     }
@@ -936,7 +936,7 @@ public class CandidateItemDeliveryService {
 
         /* Update state */
         candidateItemSession.setCandidateSessionStatus(CandidateSessionStatus.TERMINATED);
-        candidateItemSessionDao.update(candidateItemSession);
+        candidateSessionDao.update(candidateItemSession);
         return candidateItemSession;
     }
 

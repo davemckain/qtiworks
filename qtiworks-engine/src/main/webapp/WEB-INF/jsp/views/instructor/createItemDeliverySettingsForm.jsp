@@ -15,7 +15,7 @@ itemDeliverySettingsTemplate - form backing template
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}">Your Item Delivery Settings</a> &#xbb;
+    <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}">Your Delivery Settings</a> &#xbb;
   </nav>
   <h2>Create Item Delivery Settings</h2>
 

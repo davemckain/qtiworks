@@ -69,6 +69,14 @@ All Rights Reserved.
       java.util.Date
     )</function-signature>
   </function>
+  <function>
+    <description>Assessmnet type formatting</description>
+    <name>formatAssessmentType</name>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
+    <function-signature>String formatAssessmentType(
+      uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType
+    )</function-signature>
+  </function>
 
 </taglib>
 

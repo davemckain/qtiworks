@@ -33,12 +33,7 @@ instructorAssessmentRouting (action -> URL)
   <div class="grid_2">
     <div class="infoBox">
       <div class="cat">Assessment Type</div>
-      <div class="value">
-        <c:choose>
-          <c:when test="${assessment.assessmentType=='ASSESSMENT_ITEM'}">Item</c:when>
-          <c:otherwise>Test</c:otherwise>
-        </c:choose>
-      </div>
+      <div class="value">${utils:formatAssessmentType(assessment.assessmentType)}</div>
     </div>
   </div>
 

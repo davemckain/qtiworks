@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 
 import java.net.URI;
@@ -106,5 +107,13 @@ public final class ElFunctions {
 
     public static String formatDayDateAndTime(final Date time) {
         return ViewUtilities.getDayDateAndTimeFormat().format(time);
+    }
+
+    public static String formatAssessmentType(final AssessmentObjectType assessmentType) {
+        switch (assessmentType) {
+            case ASSESSMENT_ITEM: return "Item";
+            case ASSESSMENT_TEST: return "Test";
+            default: return "";
+        }
     }
 }

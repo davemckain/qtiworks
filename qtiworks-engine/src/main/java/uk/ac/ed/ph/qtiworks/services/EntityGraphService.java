@@ -42,11 +42,12 @@ import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import java.util.List;
 
@@ -80,10 +81,10 @@ public class EntityGraphService {
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
-    private DeliveryDao itemDeliveryDao;
+    private DeliveryDao deliveryDao;
 
     @Resource
-    private DeliverySettingsDao itemDeliverySettingsDao;
+    private DeliverySettingsDao deliverySettingsDao;
 
     //-------------------------------------------------
 
@@ -118,21 +119,21 @@ public class EntityGraphService {
     //-------------------------------------------------
 
     public List<Delivery> getCallerDeliveries(final Assessment assessment) {
-        return itemDeliveryDao.getForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
+        return deliveryDao.getForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
     }
 
     public long countCallerDeliveries(final Assessment assessment) {
-        return itemDeliveryDao.countForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
+        return deliveryDao.countForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
     }
 
     //-------------------------------------------------
 
-    public long countCallerItemDeliverySettings() {
-        return itemDeliverySettingsDao.countForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+    public long countCallerDeliverySettings(final AssessmentObjectType assessmentType) {
+        return deliverySettingsDao.countForOwnerAndType(identityContext.getCurrentThreadEffectiveIdentity(), assessmentType);
     }
 
     public List<DeliverySettings> getCallerItemDeliverySettings() {
-        return itemDeliverySettingsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+        return deliverySettingsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
     }
 
 }

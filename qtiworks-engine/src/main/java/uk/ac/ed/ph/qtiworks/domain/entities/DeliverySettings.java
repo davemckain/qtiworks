@@ -75,10 +75,11 @@ import org.hibernate.annotations.Type;
 @Table(name="delivery_settings")
 @SequenceGenerator(name="deliverySettingsSequence", sequenceName="delivery_settings_sequence", initialValue=1, allocationSize=5)
 @NamedQueries({
-    @NamedQuery(name="DeliverySettings.getAllPublicSettings",
+    @NamedQuery(name="DeliverySettings.getAllPublicSettingsForType",
             query="SELECT ds"
                 + "  FROM DeliverySettings ds"
                 + "  WHERE ds.isPublic IS TRUE"
+                + "  AND ds.assessmentType = :assessmentType"
                 + "  ORDER BY creationTime, id"),
     @NamedQuery(name="DeliverySettings.getForOwner",
             query="SELECT ds"
@@ -91,10 +92,11 @@ import org.hibernate.annotations.Type;
                 + "  WHERE ds.owner = :user"
                 + "  AND ds.assessmentType = :assessmentType"
                 + "  ORDER BY creationTime, id"),
-    @NamedQuery(name="DeliverySettings.countForOwner",
+    @NamedQuery(name="DeliverySettings.countForOwnerAndType",
             query="SELECT COUNT(ds)"
                 + "  FROM DeliverySettings ds"
-                + "  WHERE ds.owner = :user")
+                + "  WHERE ds.owner = :user"
+                + "  AND ds.assessmentType = :assessmentType")
 })
 public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
@@ -140,6 +142,13 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     //------------------------------------------------------------
     // Settings common to both items and tests
+
+    /** Optional prompt to show to candidates */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="prompt")
+    private String prompt;
 
     /** Author mode includes additional debugging information in the rendering */
     @Basic(optional=false)
@@ -214,6 +223,16 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     public void setPublic(final boolean isPublic) {
         this.isPublic = isPublic;
+    }
+
+    //------------------------------------------------------------
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(final String prompt) {
+        this.prompt = prompt;
     }
 
 

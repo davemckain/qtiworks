@@ -110,10 +110,10 @@ public class SampleResourceImporter {
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
-    private DeliveryDao itemDeliveryDao;
+    private DeliveryDao deliveryDao;
 
     @Resource
-    private DeliverySettingsDao itemDeliverySettingsDao;
+    private DeliverySettingsDao deliverySettingsDao;
 
     //-------------------------------------------------
 
@@ -155,20 +155,20 @@ public class SampleResourceImporter {
 
     private Map<DeliveryStyle, DeliverySettings> importDeliverySettings(final InstructorUser sampleOwner) {
         final Map<String, DeliverySettings> deliverySettingsByTitleMap = new HashMap<String, DeliverySettings>();
-        for (final DeliverySettings existingOptions : itemDeliverySettingsDao.getForOwner(sampleOwner)) {
+        for (final DeliverySettings existingOptions : deliverySettingsDao.getForOwner(sampleOwner)) {
             deliverySettingsByTitleMap.put(existingOptions.getTitle(), existingOptions);
         }
 
         /* Go through all sample options, persisting any that aren't yet in the DB.
          * NB: This does not update existing options!
          */
-        final Map<DeliveryStyle, DeliverySettings> deliverySettingsMap = buildItemDeliverySettingsMap();
+        final Map<DeliveryStyle, DeliverySettings> deliverySettingsMap = buildDeliverySettingsMap();
         for (final DeliverySettings options : deliverySettingsMap.values()) {
             if (!deliverySettingsByTitleMap.containsKey(options.getTitle())) {
                 /* New options */
                 options.setOwner(sampleOwner);
                 options.setPublic(true);
-                itemDeliverySettingsDao.persist(options);
+                deliverySettingsDao.persist(options);
                 logger.info("Created ItemDeliverySettings {}", options);
                 deliverySettingsByTitleMap.put(options.getTitle(), options);
             }
@@ -181,7 +181,7 @@ public class SampleResourceImporter {
         return result;
     }
 
-    private Map<DeliveryStyle, DeliverySettings> buildItemDeliverySettingsMap() {
+    private Map<DeliveryStyle, DeliverySettings> buildDeliverySettingsMap() {
         final Map<DeliveryStyle, DeliverySettings> result = new HashMap<DeliveryStyle, DeliverySettings>();
         /* Yes, the next bit is not efficient but it's readable! */
         for (final DeliveryStyle deliveryStyle : DeliveryStyle.values()) {
@@ -389,7 +389,7 @@ public class SampleResourceImporter {
             assessmentDao.update(assessment);
 
             /* Create a Delivery using these options (if there isn't one already) */
-            final List<Delivery> demoDeliveries = itemDeliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
+            final List<Delivery> demoDeliveries = deliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
             if (demoDeliveries.isEmpty()) {
                 final Delivery defaultDelivery = new Delivery();
                 defaultDelivery.setAssessment(assessment);
@@ -397,7 +397,7 @@ public class SampleResourceImporter {
                 defaultDelivery.setDeliverySettings(itemDeliverySettings);
                 defaultDelivery.setOpen(true);
                 defaultDelivery.setTitle("System demo delivery");
-                itemDeliveryDao.persist(defaultDelivery);
+                deliveryDao.persist(defaultDelivery);
             }
         }
         return assessment;

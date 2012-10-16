@@ -65,20 +65,29 @@ public class DeliverySettingsDao extends GenericDao<DeliverySettings> {
         super(DeliverySettings.class);
     }
 
-    public long countForOwner(final User user) {
-        final Query query = em.createNamedQuery("DeliverySettings.countForOwner");
+    public long countForOwnerAndType(final User user, final AssessmentObjectType assessmentType) {
+        final Query query = em.createNamedQuery("DeliverySettings.countForOwnerAndType");
         query.setParameter("user", user);
+        query.setParameter("assessmentType", assessmentType);
         return extractCountResult(query);
     }
 
-    public List<DeliverySettings> getAllPublicSettings() {
-        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getAllPublicSettings", DeliverySettings.class);
+    public List<DeliverySettings> getAllPublicSettingsForType(final AssessmentObjectType assessmentType) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getAllPublicSettingsForType", DeliverySettings.class);
+        query.setParameter("assessmentType", assessmentType);
         return query.getResultList();
     }
 
     public List<DeliverySettings> getForOwner(final User user) {
         final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwner", DeliverySettings.class);
         query.setParameter("user", user);
+        return query.getResultList();
+    }
+
+    public List<DeliverySettings> getForOwnerAndType(final User user, final AssessmentObjectType assessmentType) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerAndType", DeliverySettings.class);
+        query.setParameter("user", user);
+        query.setParameter("assessmentType", assessmentType);
         return query.getResultList();
     }
 
@@ -89,5 +98,4 @@ public class DeliverySettingsDao extends GenericDao<DeliverySettings> {
         query.setMaxResults(1);
         return extractNullableFindResult(query);
     }
-
 }

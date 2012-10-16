@@ -33,21 +33,86 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
-
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotBlank;
+
 /**
- * Template for creating/editing an {@link TestDeliverySettings} entity
+ * Base for {@link ItemDeliverySettingsTemplate} and {@link TestDeliverySettingsTemplate}
  *
  * @author David McKain
  */
-public final class TestDeliverySettingsTemplate extends DeliverySettingsTemplate {
+public abstract class DeliverySettingsTemplate {
 
-    public TestDeliverySettingsTemplate() {
-        super(AssessmentObjectType.ASSESSMENT_TEST);
+    private final AssessmentObjectType assessmentType;
+
+    @NotNull
+    @NotBlank
+    @Size(min=1)
+    private String title;
+
+    private boolean isPublic;
+
+    private boolean authorMode;
+    private String prompt;
+
+    //------------------------------------------------------------
+
+    protected DeliverySettingsTemplate(final AssessmentObjectType assessmentType) {
+        this.assessmentType = assessmentType;
     }
 
-    /* Nothing extra in here yet */
+    //------------------------------------------------------------
 
+
+    public AssessmentObjectType getAssessmentType() {
+        return assessmentType;
+    }
+
+
+    public final String getTitle() {
+        return title;
+    }
+
+    public final void setTitle(final String title) {
+        this.title = title;
+    }
+
+
+    public final boolean isPublic() {
+        return isPublic;
+    }
+
+    public final void setPublic(final boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(final String prompt) {
+        this.prompt = prompt;
+    }
+
+
+    public final boolean isAuthorMode() {
+        return authorMode;
+    }
+
+    public final void setAuthorMode(final boolean authorMode) {
+        this.authorMode = authorMode;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public final String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

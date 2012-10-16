@@ -85,7 +85,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
     private RequestTimestampContext requestTimestampContext;
     private IdentityContext identityContext;
-    private DeliveryDao itemDeliveryDao;
+    private DeliveryDao deliveryDao;
     private LtiUserDao ltiUserDao;
 
     @Override
@@ -93,7 +93,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             throws Exception {
         requestTimestampContext = webApplicationContext.getBean(RequestTimestampContext.class);
         identityContext = webApplicationContext.getBean(IdentityContext.class);
-        itemDeliveryDao = webApplicationContext.getBean(DeliveryDao.class);
+        deliveryDao = webApplicationContext.getBean(DeliveryDao.class);
         ltiUserDao = webApplicationContext.getBean(LtiUserDao.class);
     }
 
@@ -190,7 +190,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             return null;
         }
         /* Look up delivery */
-        final Delivery itemDelivery = itemDeliveryDao.findById(deliveryId);
+        final Delivery itemDelivery = deliveryDao.findById(deliveryId);
         logger.info("Looked up {}", itemDelivery);
         if (itemDelivery==null) {
             logger.info("Delivery with ID {} extracted from LTI consumer key {} not found", deliveryId, consumerKey);

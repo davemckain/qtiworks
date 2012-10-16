@@ -82,11 +82,11 @@ public class AnonymousStandaloneItemRunner {
     private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
-    private DeliverySettingsDao itemDeliverySettingsDao;
+    private DeliverySettingsDao deliverySettingsDao;
 
     @ModelAttribute
     public void setupDeliverySettings(final Model model) {
-        final List<DeliverySettings> itemDeliverySettingsList = itemDeliverySettingsDao.getAllPublicSettings();
+        final List<DeliverySettings> itemDeliverySettingsList = deliverySettingsDao.getAllPublicSettingsForType(AssessmentObjectType.ASSESSMENT_ITEM);
         model.addAttribute("itemDeliverySettingsList", itemDeliverySettingsList);
     }
 

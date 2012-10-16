@@ -35,33 +35,16 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.NotBlank;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 /**
  * Template for creating/editing an {@link ItemDeliverySettings} entity
  *
  * @author David McKain
  */
-public final class ItemDeliverySettingsTemplate {
-
-    @NotNull
-    @NotBlank
-    @Size(min=1)
-    private String title;
-
-    private boolean isPublic;
-
-    private String prompt;
+public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate {
 
     private int maxAttempts;
-
-    private boolean authorMode;
-
     private boolean allowClose;
     private boolean allowResetWhenInteracting;
     private boolean allowResetWhenClosed;
@@ -75,31 +58,12 @@ public final class ItemDeliverySettingsTemplate {
 
     //------------------------------------------------------------
 
-    public String getTitle() {
-        return title;
+    public ItemDeliverySettingsTemplate() {
+        super(AssessmentObjectType.ASSESSMENT_ITEM);
     }
 
-    public void setTitle(final String title) {
-        this.title = title;
-    }
+    //------------------------------------------------------------
 
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(final boolean isPublic) {
-        this.isPublic = isPublic;
-    }
-
-
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public void setPrompt(final String prompt) {
-        this.prompt = prompt;
-    }
 
 
     public Integer getMaxAttempts() {
@@ -108,15 +72,6 @@ public final class ItemDeliverySettingsTemplate {
 
     public void setMaxAttempts(final Integer maxAttempts) {
         this.maxAttempts = maxAttempts;
-    }
-
-
-    public boolean isAuthorMode() {
-        return authorMode;
-    }
-
-    public void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
     }
 
 
@@ -207,12 +162,5 @@ public final class ItemDeliverySettingsTemplate {
 
     public void setAllowPlayback(final boolean allowPlayback) {
         this.allowPlayback = allowPlayback;
-    }
-
-    //------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
     }
 }

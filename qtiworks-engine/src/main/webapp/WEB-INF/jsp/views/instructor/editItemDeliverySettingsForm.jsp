@@ -16,7 +16,7 @@ itemDeliverySettingsTemplate - form backing template
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}">Your Item Delivery Settings</a> &#xbb;
+    <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}">Your Delivery Settings</a> &#xbb;
   </nav>
   <h2>Item Delivery Settings '${fn:escapeXml(itemDeliverySettings.title)}'</h2>
 
@@ -25,7 +25,7 @@ itemDeliverySettingsTemplate - form backing template
       The current values for these settings are shown below. You can make changes to these if required.
     </p>
     <p>
-      (Functionily for deleting these settings will appear shortly!)
+      (Functionality for deleting these settings will appear shortly!)
     </p>
   </div>
 

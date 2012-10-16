@@ -49,25 +49,16 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 public final class DeliveryTemplate {
 
+    private long dsid;
+
     @NotNull
     @NotBlank
     @Size(min=1)
     private String title;
 
-    private long dsid;
-
     private boolean open;
 
     private boolean ltiEnabled;
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(final String title) {
-        this.title = title;
-    }
 
 
     public long getDsid() {
@@ -76,6 +67,15 @@ public final class DeliveryTemplate {
 
     public void setDsid(final long dsid) {
         this.dsid = dsid;
+    }
+
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
     }
 
 
@@ -99,7 +99,7 @@ public final class DeliveryTemplate {
     //------------------------------------------------------------
 
     @Override
-    public String toString() {
+    public final String toString() {
         return ObjectUtilities.beanToString(this);
     }
 }
