@@ -39,7 +39,7 @@ import java.util.Map;
 import javax.xml.transform.Templates;
 
 /**
- * Trivial implementation of {@link XsltCache} that simply uses a {@link HashMap}.
+ * Trivial implementation of {@link XsltStylesheetCache} that simply uses a {@link HashMap}.
  * <p>
  * (This is probably a good fit for QTI systems, as they'll support a small and known set of
  * schemas.)
@@ -47,23 +47,23 @@ import javax.xml.transform.Templates;
  * @author David McKain
  */
 public class SimpleXsltStylesheetCache implements XsltStylesheetCache {
-    
+
     private final Map<String, Templates> cacheData;
-    
+
     public SimpleXsltStylesheetCache() {
         this.cacheData = new HashMap<String, Templates>();
     }
-    
+
     @Override
-    public Templates getStylesheet(String key) {
+    public Templates getStylesheet(final String key) {
         return cacheData.get(key);
     }
-    
+
     @Override
-    public void putStylesheet(String key, Templates stylesheet) {
+    public void putStylesheet(final String key, final Templates stylesheet) {
         cacheData.put(key, stylesheet);
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
