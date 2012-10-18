@@ -97,13 +97,13 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
         final AssessmentItem item = itemLookup.extractAssumingSuccessful();
         final List<VariableDeclaration> result = new ArrayList<VariableDeclaration>();
         if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER)) {
-            result.add(item.getResponseDeclaration(AssessmentItem.VARIABLE_DURATION_IDENTIFIER));
+            result.add(item.getDurationResponseDeclaration());
         }
         else if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
-            result.add(item.getResponseDeclaration(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER));
+            result.add(item.getNumAttemptsResponseDeclaration());
         }
         else if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
-            result.add(item.getOutcomeDeclaration(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER));
+            result.add(item.getCompletionStatusOutcomeDeclaration());
         }
         else {
             for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {

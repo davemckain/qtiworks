@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -41,12 +42,18 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * FIXME: Document this type
+ * FIXME: Document this type!
+ * <p>
+ * Usage: an instance of this class can be safely used by multiple Threads
+ *
  *
  * @author David McKain
  */
@@ -58,13 +65,23 @@ public final class ItemRunMap implements Serializable {
     private final Map<Identifier, TemplateDeclaration> validTemplateDeclarationMap;
     private final Map<Identifier, ResponseDeclaration> validResponseDeclarationMap;
     private final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMap;
+    private final List<Interaction> interactions;
+    private final Map<Identifier, Interaction> interactionByResponseIdentifierMap;
 
     public ItemRunMap(final ResolvedAssessmentItem resolvedAssessmentItem, final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder,
-            final Map<Identifier, ResponseDeclaration> responseDeclarationMapBuilder, final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder) {
+            final Map<Identifier, ResponseDeclaration> responseDeclarationMapBuilder, final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder,
+            final List<Interaction> interactionsBuilder) {
         this.resolvedAssessmentItem = resolvedAssessmentItem;
-        this.validTemplateDeclarationMap = Collections.synchronizedMap(Collections.unmodifiableMap(templateDeclarationMapBuilder));
-        this.validResponseDeclarationMap = Collections.synchronizedMap(Collections.unmodifiableMap(responseDeclarationMapBuilder));
-        this.validOutcomeDeclarationMap = Collections.synchronizedMap(Collections.unmodifiableMap(outcomeDeclarationMapBuilder));
+        this.validTemplateDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, TemplateDeclaration>(templateDeclarationMapBuilder));
+        this.validResponseDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, ResponseDeclaration>(responseDeclarationMapBuilder));
+        this.validOutcomeDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, OutcomeDeclaration>(outcomeDeclarationMapBuilder));
+        this.interactions = Collections.unmodifiableList(new ArrayList<Interaction>(interactionsBuilder));
+
+        final Map<Identifier, Interaction> interactionMapBuilder = new HashMap<Identifier, Interaction>();
+        for (final Interaction interaction : interactions) {
+            interactionMapBuilder.put(interaction.getResponseIdentifier(), interaction);
+        }
+        this.interactionByResponseIdentifierMap = Collections.unmodifiableMap(interactionMapBuilder);
     }
 
     public ResolvedAssessmentItem getResolvedAssessmentItem() {
@@ -81,6 +98,14 @@ public final class ItemRunMap implements Serializable {
 
     public Map<Identifier, OutcomeDeclaration> getValidOutcomeDeclarationMap() {
         return validOutcomeDeclarationMap;
+    }
+
+    public List<Interaction> getInteractions() {
+        return interactions;
+    }
+
+    public Map<Identifier, Interaction> getInteractionByResponseIdentifierMap() {
+        return interactionByResponseIdentifierMap;
     }
 
     @Override

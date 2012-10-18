@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -71,9 +72,9 @@ public final class ItemRunInitializer {
         final AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
 
         /* We will always use the built-in variables in their expected way, even if their identifiers end up non-unique */
-        responseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_DURATION_IDENTIFIER, item.getResponseDeclaration(AssessmentItem.VARIABLE_DURATION_IDENTIFIER));
-        responseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, item.getResponseDeclaration(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER));
-        outcomeDeclarationMapBuilder.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, item.getOutcomeDeclaration(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER));
+        responseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_DURATION_IDENTIFIER, item.getDurationResponseDeclaration());
+        responseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, item.getNumAttemptsResponseDeclaration());
+        outcomeDeclarationMapBuilder.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, item.getCompletionStatusOutcomeDeclaration());
 
         /* Then go through rest of variables, rejecting ones whose identifiers are non-unique */
         for (final TemplateDeclaration declaration : item.getTemplateDeclarations()) {
@@ -86,9 +87,12 @@ public final class ItemRunInitializer {
             doOutcomeVariable(declaration);
         }
 
+        /* Record all interactions */
+        final List<Interaction> interactions = item.getItemBody().findInteractions();
+
         /* That's it! */
         return new ItemRunMap(resolvedAssessmentItem, templateDeclarationMapBuilder,
-                responseDeclarationMapBuilder, outcomeDeclarationMapBuilder);
+                responseDeclarationMapBuilder, outcomeDeclarationMapBuilder, interactions);
     }
 
     private void doTemplateVariable(final TemplateDeclaration declaration) {

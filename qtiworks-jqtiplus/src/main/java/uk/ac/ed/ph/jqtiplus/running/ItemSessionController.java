@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.EndAttemptInteraction;
@@ -74,7 +73,6 @@ import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -261,8 +259,8 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
             itemSessionState.setNumAttempts(0);
             itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
 
-            /* Initialize all interactions in the itemBody */
-            for (final Interaction interaction : item.getItemBody().getInteractions()) {
+            /* Initialize all interactions */
+            for (final Interaction interaction : itemRunMap.getInteractions()) {
                 interaction.initialize(this);
             }
 
@@ -344,22 +342,20 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
          * (The spec seems to indicate that ALL responses bound to these interactions
          * should be set, which is why we have this special code here.)
          */
-        final ItemBody itemBody = item.getItemBody();
-        for (final EndAttemptInteraction endAttemptInteraction : QueryUtils.search(EndAttemptInteraction.class, itemBody)) {
-            itemSessionState.setResponseValue(endAttemptInteraction, BooleanValue.FALSE);
+        for (final Interaction interaction : itemRunMap.getInteractions()) {
+            if (interaction instanceof EndAttemptInteraction) {
+                itemSessionState.setResponseValue(interaction, BooleanValue.FALSE);
+            }
         }
 
-        /* Now bind response values for each incoming response. (Note that this may be a subset
-         * of all responses, since adaptive items will only present certain interactions at certain
-         * times.) */
-        final Map<Identifier, Interaction> interactionMap = itemBody.getInteractionMap();
+        final Map<Identifier, Interaction> interactionByResponseIdentifierMap = itemRunMap.getInteractionByResponseIdentifierMap();
         final Set<Identifier> badResponses = new HashSet<Identifier>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
             Assert.notNull(responseData, "responseMap entry for key " + responseIdentifier);
             try {
-                final Interaction interaction = interactionMap.get(responseIdentifier);
+                final Interaction interaction = interactionByResponseIdentifierMap.get(responseIdentifier);
                 if (interaction != null) {
                     interaction.bindResponse(this, responseData);
                 }
@@ -384,7 +380,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         logger.debug("Validating responses");
         ensureInitialized();
         final Set<Identifier> invalidResponseIdentifiers = new HashSet<Identifier>();
-        for (final Interaction interaction : item.getItemBody().getInteractions()) {
+        for (final Interaction interaction : itemRunMap.getInteractions()) {
             final Value responseValue = itemSessionState.getResponseValue(interaction);
             if (!interaction.validateResponse(this, responseValue)) {
                 invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
@@ -406,7 +402,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
              * with countAttempt set to false.
              */
             boolean countAttempt = true;
-            for (final Interaction interaction : item.getItemBody().getInteractions()) {
+            for (final Interaction interaction : item.getItemBody().findInteractions()) {
                 if (interaction instanceof EndAttemptInteraction) {
                     final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
                     final BooleanValue value = (BooleanValue) itemSessionState.getResponseValue(interaction);
@@ -703,7 +699,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                 itemVariables.add(variable);
             }
         }
-        final Map<Identifier, Interaction> interactionMap = item.getItemBody().getInteractionMap();
+        final Map<Identifier, Interaction> interactionMap = itemRunMap.getInteractionByResponseIdentifierMap();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
             final ResponseDeclaration declaration = itemRunMap.getValidResponseDeclarationMap().get(mapEntry.getKey());
             if (declaration!=null) {

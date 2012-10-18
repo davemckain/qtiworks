@@ -44,12 +44,11 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The item body contains the text, graphics, media objects, and interactions that describe
@@ -90,18 +89,64 @@ public final class ItemBody extends BodyElement {
         getNodeGroups().add(new BlockGroup(this));
     }
 
+    public List<Block> getBlocks() {
+        return getNodeGroups().getBlockGroup().getBlocks();
+    }
+
+    /**
+     * Computes a snapshot of all the interactions within this itemBody.
+     * The returned list cannot be used for adding new interactions to the itemBody.
+     * <p>
+     * (This performs a deep search.)
+     *
+     * @return list of interactions in the itemBody.
+     */
+    public List<Interaction> findInteractions() {
+        return QueryUtils.search(Interaction.class, getBlocks());
+    }
+
+    /**
+     * Computes a snapshot of all the templates within this itemBody.
+     * The returned list is unmodifiable and cannot be used for adding
+     * new templates to the itemBody.
+     *
+     * @return unmodifiable list of interactions in the itemBody.
+     */
+    @ToRefactor
+    public List<TemplateElement> findTemplateElements() {
+        return QueryUtils.search(TemplateElement.class, getBlocks());
+    }
+
+    /**
+     * Get the templates for a given templateIdentifier.
+     *
+     * @param templateIdentifier templateIdentifier to search with.
+     * @return unmodifiable list of templates with matching templateIdentifier, or null if not found.
+     */
+    @ToRefactor
+    public List<TemplateElement> findTemplateElements(final Identifier templateIdentifier) {
+        final List<TemplateElement> templates = new ArrayList<TemplateElement>();
+        for (final TemplateElement template : findTemplateElements()) {
+            if (template.getTemplateIdentifier() != null && template.getTemplateIdentifier().equals(templateIdentifier)) {
+                templates.add(template);
+            }
+        }
+    
+        return Collections.unmodifiableList(templates);
+    }
+
     /**
      * Determine whether any feedback should be shown.
      *
      * @return true if any feedback should be shown; false otherwise;
      */
     public boolean willShowFeedback(final ItemProcessingContext itemContext) {
-        for (final FeedbackElement feedbackElement : getFeedbackInline()) {
+        for (final FeedbackElement feedbackElement : findFeedbackInlines()) {
             if (feedbackElement.isVisible(itemContext)) {
                 return true;
             }
         }
-        for (final FeedbackElement feedbackElement : getFeedbackBlock()) {
+        for (final FeedbackElement feedbackElement : findFeedbackBlocks()) {
             if (feedbackElement.isVisible(itemContext)) {
                 return true;
             }
@@ -115,114 +160,34 @@ public final class ItemBody extends BodyElement {
      * @return true if the item has inline or block feedback; false otherwise;
      */
     public boolean hasFeedback() {
-        if (getFeedbackInline().size() > 0) {
+        if (findFeedbackInlines().size() > 0) {
             return true;
         }
-        if (getFeedbackBlock().size() > 0) {
+        if (findFeedbackBlocks().size() > 0) {
             return true;
         }
         return false;
     }
 
     /**
-     * Get A snapshot of all the feedbackInline elements within this itemBody.
+     * Computes a snapshot of all the feedbackInline elements within this itemBody.
      * The returned list cannot be used for adding
      * new feedbackInline elements to the itemBody.
      *
      * @return list of feedbackInline elements in the itemBody.
      */
-    private List<FeedbackInline> getFeedbackInline() {
+    private List<FeedbackInline> findFeedbackInlines() {
         return QueryUtils.search(FeedbackInline.class, getBlocks());
     }
 
     /**
-     * Get A snapshot of all the feedbackBlock elements within this itemBody.
+     * Computes a snapshot of all the feedbackBlock elements within this itemBody.
      * The returned list cannot be used for adding
      * new feedbackBlock elements to the itemBody.
      *
      * @return list of feedbackBlock elements in the itemBody.
      */
-    private List<FeedbackBlock> getFeedbackBlock() {
+    private List<FeedbackBlock> findFeedbackBlocks() {
         return QueryUtils.search(FeedbackBlock.class, getBlocks());
-    }
-
-    /**
-     * Get a snapshot of all the interactions within this itemBody.
-     * The returned list cannot be used for adding
-     * new interactions to the itemBody.
-     *
-     * @return list of interactions in the itemBody.
-     */
-    public List<Interaction> getInteractions() {
-        return QueryUtils.search(Interaction.class, getBlocks());
-    }
-
-
-    /**
-     * Get a snapshot of all the interactions within this itemBody, as a
-     * Map keyed on responseIdentifier.
-     * <p>
-     * The returned {@link Map} cannot be used for adding new interactions to the itemBody.
-     *
-     * @return Map of interactions in the itemBody, keyed on responseIdentifier.
-     */
-    public Map<Identifier, Interaction> getInteractionMap() {
-        final Map<Identifier, Interaction> result = new HashMap<Identifier, Interaction>();
-        for (final Interaction interaction : getInteractions()) {
-            result.put(interaction.getResponseIdentifier(), interaction);
-        }
-        return result;
-    }
-
-    /**
-     * Get the interaction for a given responseIdentifier.
-     * <p>
-     * NB: This performs a deep search of the item body. If you need to find multiple interactions
-     * at once, use {@link #getInteractionMap()}.
-     *
-     * @see #getInteractionMap()
-     *
-     * @param responseIdentifier responseIdentifier to search with.
-     * @return interaction with matching responseIdentifier, or null if not found.
-     */
-    public Interaction getInteraction(final Identifier responseIdentifier) {
-        for (final Interaction interaction : getInteractions()) {
-            if (interaction.getResponseIdentifier() != null && interaction.getResponseIdentifier().equals(responseIdentifier)) {
-                return interaction;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get a snapshot of all the templates within this itemBody.
-     * The returned list is unmodifiable and cannot be used for adding
-     * new templates to the itemBody.
-     *
-     * @return unmodifiable list of interactions in the itemBody.
-     */
-    public List<TemplateElement> getTemplates() {
-        return QueryUtils.search(TemplateElement.class, getBlocks());
-    }
-
-    /**
-     * Get the templates for a given templateIdentifier.
-     *
-     * @param templateIdentifier templateIdentifier to search with.
-     * @return unmodifiable list of templates with matching templateIdentifier, or null if not found.
-     */
-    public List<TemplateElement> getTemplates(final Identifier templateIdentifier) {
-        final List<TemplateElement> templates = new ArrayList<TemplateElement>();
-        for (final TemplateElement template : getTemplates()) {
-            if (template.getTemplateIdentifier() != null && template.getTemplateIdentifier().equals(templateIdentifier)) {
-                templates.add(template);
-            }
-        }
-
-        return Collections.unmodifiableList(templates);
-    }
-
-    public List<Block> getBlocks() {
-        return getNodeGroups().getBlockGroup().getBlocks();
     }
 }

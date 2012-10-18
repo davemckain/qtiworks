@@ -398,6 +398,33 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     //---------------------------------------------------------------
+    // Built-in variables
+
+    /**
+     * Returns {@link ResponseDeclaration} for the implicitly-defined
+     * {@link #VARIABLE_DURATION_IDENTIFIER} variable
+     */
+    public ResponseDeclaration getDurationResponseDeclaration() {
+        return durationResponseDeclaration;
+    }
+
+    /**
+     * Returns {@link ResponseDeclaration} for the implicitly-defined
+     * {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variable
+     */
+    public ResponseDeclaration getNumAttemptsResponseDeclaration() {
+        return numAttemptsResponseDeclaration;
+    }
+
+    /**
+     * Returns {@link OutcomeDeclaration} for the implicitly-defined
+     * {@link #VARIABLE_COMPLETION_STATUS_IDENTIFIER} variable
+     */
+    public OutcomeDeclaration getCompletionStatusOutcomeDeclaration() {
+        return completionStatusOutcomeDeclaration;
+    }
+
+    //---------------------------------------------------------------
 
     @Deprecated
     @Override
@@ -414,7 +441,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     /**
-     * Gets outcomeDeclaration children.
+     * Gets all explicitly-defined outcomeDeclaration children.
      * NB: Doesn't include the implicitly-defined {@link #VARIABLE_COMPLETION_STATUS} variable
      *
      * @return outcomeDeclaration children
@@ -424,12 +451,19 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         return getNodeGroups().getOutcomeDeclarationGroup().getOutcomeDeclarations();
     }
 
+    /**
+     * Gets (first) explicitly-defined outcomeDeclaration with given identifier,
+     * or null if no such declaration exists.
+     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_COMPLETION_STATUS} variable
+     *
+     * @param identifier given identifier
+     * @return outcomeDeclaration with given identifier or null
+     *
+     * @see #getCompletionStatusOutcomeDeclaration()
+     */
     @Override
     public OutcomeDeclaration getOutcomeDeclaration(final Identifier identifier) {
         Assert.notNull(identifier);
-        if (identifier.equals(VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
-            return completionStatusOutcomeDeclaration;
-        }
         for (final OutcomeDeclaration declaration : getOutcomeDeclarations()) {
             if (identifier.equals(declaration.getIdentifier())) {
                 return declaration;
@@ -439,8 +473,9 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     /**
-     * Gets responseDeclaration children.
-     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_DURATION} and {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variables.
+     * Gets all responseDeclaration children.
+     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_DURATION}
+     * and {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variables.
      *
      * @return responseDeclaration children
      */
@@ -449,19 +484,17 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     /**
-     * Gets (first) responseDeclaration with given identifier or null.
+     * Gets (first) explicitly-defined responseDeclaration with given identifier,
+     * or null if no such variable is defined.
+     * <p>
+     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_DURATION}
+     * and {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variables.
      *
      * @param identifier given identifier
      * @return responseDeclaration with given identifier or null
      */
     public ResponseDeclaration getResponseDeclaration(final Identifier identifier) {
         Assert.notNull(identifier);
-        if (identifier.equals(VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
-            return numAttemptsResponseDeclaration;
-        }
-        else if (identifier.equals(VARIABLE_DURATION_IDENTIFIER)) {
-            return durationResponseDeclaration;
-        }
         for (final ResponseDeclaration declaration : getResponseDeclarations()) {
             if (identifier.equals(declaration.getIdentifier())) {
                 return declaration;
@@ -471,7 +504,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     }
 
     /**
-     * Gets templateDeclaration children.
+     * Gets all templateDeclaration children.
      *
      * @return templateDeclaration children
      */
@@ -479,6 +512,14 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         return getNodeGroups().getTemplateDeclarationGroup().getTemplateDeclarations();
     }
 
+
+    /**
+     * Gets (first) templateDeclaration with given identifier,
+     * or null if no such variable is defined.
+     *
+     * @param identifier given identifier
+     * @return templateDeclaration with given identifier or null
+     */
     public TemplateDeclaration getTemplateDeclaration(final Identifier identifier) {
         Assert.notNull(identifier);
         for (final TemplateDeclaration declaration : getTemplateDeclarations()) {
