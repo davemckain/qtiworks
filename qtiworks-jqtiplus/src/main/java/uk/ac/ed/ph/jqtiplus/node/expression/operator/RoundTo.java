@@ -108,6 +108,9 @@ public final class RoundTo extends AbstractExpression {
             return NullValue.INSTANCE;
         }
         final double childNumber = ((NumberValue) childValue).doubleValue();
+        if (Double.isInfinite(childNumber) || Double.isNaN(childNumber)) {
+            return childValue;
+        }
 
         final Value computedFigures = getFigures().evaluate(this, context);
         if (computedFigures.isNull()) {
