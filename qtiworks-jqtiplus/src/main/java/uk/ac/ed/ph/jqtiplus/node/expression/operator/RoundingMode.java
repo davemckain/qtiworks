@@ -91,7 +91,7 @@ public enum RoundingMode implements Stringifiable {
 
             /* Now do a shift, round, then shift back */
             return numberDecimal.movePointLeft(requiredShift)
-                    .setScale(Math.min(1, figures), java.math.RoundingMode.HALF_UP)
+                    .setScale(Math.max(1, figures), java.math.RoundingMode.HALF_UP)
                     .movePointRight(requiredShift);
         }
     },
