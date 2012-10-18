@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -49,6 +50,15 @@ public interface ItemProcessingContext extends ProcessingContext {
 
     ItemSessionState getItemSessionState();
 
+    /**
+     * Returns the computed default value of the variable having
+     * the given identifier.
+     * <p>
+     * If the variable is not successfully referenced then a runtime warning
+     * will be fired and the {@link NullValue} will be returned.
+     *
+     * @param owner
+     */
     Value computeDefaultValue(Identifier identifier);
 
     Value computeCorrectResponse(Identifier responseIdentifier);

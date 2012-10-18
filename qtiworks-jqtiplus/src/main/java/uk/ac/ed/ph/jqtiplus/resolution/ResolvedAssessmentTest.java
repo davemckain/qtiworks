@@ -243,7 +243,6 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         return resolvedItem.resolveVariableReference(possibleMappedItemVarIdentifier);
     }
 
-    @Override
     @Deprecated
     public VariableDeclaration resolveVariableReferenceOLD(final Identifier variableDeclarationIdentifier) throws VariableResolutionException {
         /* (These only ever reference variables within the current test) */

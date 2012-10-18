@@ -38,8 +38,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 
 import java.io.Serializable;
@@ -76,16 +74,4 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
     public ModelRichness getModelRichness() {
         return modelRichness;
     }
-
-    /**
-     * Resolves a declared variable in the current {@link AssessmentObject} having the given {@link Identifier}.
-     *
-     * @param variableDeclarationIdentifier
-     * @return resulting {@link VariableDeclaration}, which will not be null.
-     * @throws VariableResolutionException if the variable be resolved. The Exception will contain specific
-     *   details about why this happened.
-     */
-    @Deprecated
-    public abstract VariableDeclaration resolveVariableReferenceOLD(Identifier variableDeclarationIdentifier)
-            throws VariableResolutionException;
 }

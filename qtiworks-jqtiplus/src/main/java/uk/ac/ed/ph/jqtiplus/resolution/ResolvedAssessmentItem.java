@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException.VariableResolutionFailureReason;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.ArrayList;
@@ -122,21 +121,6 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
                     result.add(putcomeDeclaration);
                 }
             }
-        }
-        return result;
-    }
-
-    @Override
-    @Deprecated
-    public VariableDeclaration resolveVariableReferenceOLD(final Identifier variableReferenceIdentifier)
-            throws VariableResolutionException {
-        if (!itemLookup.wasSuccessful()) {
-            throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.THIS_ITEM_LOOKUP_FAILURE);
-        }
-        final AssessmentItem item = itemLookup.extractIfSuccessful();
-        final VariableDeclaration result = item.getVariableDeclaration(variableReferenceIdentifier);
-        if (result==null) {
-            throw new VariableResolutionException(variableReferenceIdentifier, VariableResolutionFailureReason.ITEM_VARIABLE_NOT_DECLARED);
         }
         return result;
     }

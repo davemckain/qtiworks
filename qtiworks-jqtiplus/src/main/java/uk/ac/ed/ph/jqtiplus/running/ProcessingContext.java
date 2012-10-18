@@ -67,6 +67,12 @@ public interface ProcessingContext extends NotificationFirer {
     AssessmentObject getSubject();
 
     /**
+     * Returns a generator that should be obtained to create random
+     * numbers if required.
+     */
+    Random getRandomGenerator();
+
+    /**
      * Returns the current value of the variable having the
      * given {@link Identifier} and having the given permitted types.
      * <p>
@@ -80,6 +86,4 @@ public interface ProcessingContext extends NotificationFirer {
      * @param permittedTypes
      */
     Value evaluateVariableValue(QtiNode owner, Identifier identifier, VariableType... permittedTypes);
-
-    Random getRandomGenerator();
 }

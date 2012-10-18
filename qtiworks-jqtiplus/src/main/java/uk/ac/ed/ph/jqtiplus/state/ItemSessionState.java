@@ -103,6 +103,25 @@ public final class ItemSessionState implements Serializable {
         this.outcomeValues = new HashMap<Identifier, Value>();
 
         /* Set built-in variables */
+        resetBuiltinVariables();
+    }
+
+    //----------------------------------------------------------------
+
+    public void reset() {
+        this.isInitialized = false;
+        this.shuffledInteractionChoiceOrders.clear();
+        this.overriddenTemplateDefaultValues.clear();
+        this.overriddenResponseDefaultValues.clear();
+        this.overriddenOutcomeDefaultValues.clear();
+        this.overriddenCorrectResponseValues.clear();
+        this.templateValues.clear();
+        this.responseValues.clear();
+        this.outcomeValues.clear();
+        resetBuiltinVariables();
+    }
+
+    public void resetBuiltinVariables() {
         setDuration(0);
         setNumAttempts(0);
         setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);

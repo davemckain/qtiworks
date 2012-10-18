@@ -70,6 +70,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
+import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -106,6 +107,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     public static final int MAX_TEMPLATE_PROCESSING_TRIES = 100;
 
     private final JqtiExtensionManager jqtiExtensionManager;
+    private final ItemRunMap itemRunMap;
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final AssessmentItem item;
     private final ItemSessionState itemSessionState;
@@ -113,11 +115,14 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     private Long randomSeed;
     private Random randomGenerator;
 
-    public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedAssessmentItem, final ItemSessionState itemSessionState) {
-        Assert.notNull(resolvedAssessmentItem, "resolvedAssessmentItem");
+    public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ItemRunMap itemRunMap,
+            final ItemSessionState itemSessionState) {
+        Assert.notNull(jqtiExtensionManager, "jqtiExtensionManager");
+        Assert.notNull(itemRunMap, "itemRunMap");
         Assert.notNull(itemSessionState, "itemSessionState");
         this.jqtiExtensionManager = jqtiExtensionManager;
-        this.resolvedAssessmentItem = resolvedAssessmentItem;
+        this.itemRunMap = itemRunMap;
+        this.resolvedAssessmentItem = itemRunMap.getResolvedAssessmentItem();
         this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
         this.itemSessionState = itemSessionState;
         this.randomSeed = null;
@@ -174,14 +179,35 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     //-------------------------------------------------------------------
     // Initialization & template processing
 
+    /**
+     * Sets all (valid) variables to NULL values, with the exception of the
+     * built-in variables which are set to their stated initial values
+     */
+    public void reset() {
+        itemSessionState.reset();
+        for (final Identifier identifier : itemRunMap.getValidTemplateDeclarationMap().keySet()) {
+            itemSessionState.setTemplateValue(identifier, NullValue.INSTANCE);
+        }
+        for (final Identifier identifier : itemRunMap.getValidResponseDeclarationMap().keySet()) {
+            itemSessionState.setResponseValue(identifier, NullValue.INSTANCE);
+        }
+        for (final Identifier identifier : itemRunMap.getValidOutcomeDeclarationMap().keySet()) {
+            itemSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
+        }
+        itemSessionState.resetBuiltinVariables();
+    }
+
+    /**
+     * FIXME: Document this!
+     *
+     * @param templateDefaults given templateDefaults values
+     */
     public void initialize() {
         initialize(null);
     }
 
     /**
-     * Initialise the item by setting the template defaults, resetting variables,
-     * and performing templateProcessing.
-     * An item should only be initialised if it is going to be rendered/presented
+     * FIXME: Document this!
      *
      * @param templateDefaults given templateDefaults values
      */
@@ -197,10 +223,14 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
             if (templateDefaults != null) {
                 logger.trace("Setting template default values");
                 for (final TemplateDefault templateDefault : templateDefaults) {
-                    final TemplateDeclaration declaration = item.getTemplateDeclaration(templateDefault.getTemplateIdentifier());
-                    if (declaration != null) {
+                    final TemplateDeclaration templateDeclaration = itemRunMap.getValidTemplateDeclarationMap().get(templateDefault.getTemplateIdentifier());
+                    if (templateDeclaration!=null) {
                         final Value defaultValue = templateDefault.evaluate(this);
-                        itemSessionState.setOverriddenTemplateDefaultValue(declaration.getIdentifier(), defaultValue);
+                        itemSessionState.setOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier(), defaultValue);
+                    }
+                    else {
+                        fireRuntimeWarning(templateDefault, "Ignoring templateDefault '" + templateDefault.getTemplateIdentifier()
+                                + "' as variable identifier is not unique");
                     }
                 }
             }
@@ -215,18 +245,19 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                 fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
             }
 
-            /* Initialise all outcome variables */
-            for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
+            /* Initialise all outcome variables (except duration) */
+            for (final OutcomeDeclaration outcomeDeclaration : itemRunMap.getValidOutcomeDeclarationMap().values()) {
                 initValue(outcomeDeclaration);
             }
 
             /* Initialise all response variables */
-            for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-                initValue(responseDeclaration);
+            for (final ResponseDeclaration responseDeclaration : itemRunMap.getValidResponseDeclarationMap().values()) {
+                if (!responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER)) {
+                    initValue(responseDeclaration);
+                }
             }
 
-            /* Set special built-in variables */
-            itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
+            /* Set special built-in response and outcome variables */
             itemSessionState.setNumAttempts(0);
             itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
 
@@ -248,7 +279,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
 
         /* Initialise template values. */
         final TemplateProcessing templateProcessing = item.getTemplateProcessing();
-        for (final TemplateDeclaration templateDeclaration : item.getTemplateDeclarations()) {
+        for (final TemplateDeclaration templateDeclaration : itemRunMap.getValidTemplateDeclarationMap().values()) {
             initValue(templateDeclaration);
         }
 
@@ -391,7 +422,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
             }
 
             if (!item.getAdaptive()) {
-                for (final OutcomeDeclaration outcomeDeclaration : item.getOutcomeDeclarations()) {
+                for (final OutcomeDeclaration outcomeDeclaration : itemRunMap.getValidOutcomeDeclarationMap().values()) {
                     initValue(outcomeDeclaration);
                 }
             }
@@ -469,9 +500,9 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
 
     public Value getVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
-        if (!itemSessionState.isInitialized()) {
-            throw new IllegalStateException("ItemSessionState has not been initialized");
-        }
+//        if (!itemSessionState.isInitialized()) {
+//            throw new IllegalStateException("ItemSessionState has not been initialized");
+//        }
         Value value = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
@@ -507,9 +538,10 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     @Override
     public Value evaluateVariableValue(final QtiNode owner, final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
-        if (!itemSessionState.isInitialized()) {
-            throw new IllegalStateException("ItemSessionState has not been initialized");
-        }
+// This doesn't work currently as this method may get called during template processing!
+//        if (!itemSessionState.isInitialized()) {
+//            throw new IllegalStateException("ItemSessionState has not been initialized");
+//        }
         final Value value = getVariableValue(identifier, permittedTypes);
         if (value==null) {
             fireRuntimeWarning(owner, "Failed to evaluate item variable with identifier '" + identifier + "' - returning NULL");
@@ -518,12 +550,26 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         return value;
     }
 
+    /**
+     * Returns the current default value of the variable having the
+     * given {@link Identifier}, returning null if no such variable exists.
+     *
+     * @param declaration declaration of the required variable, which must not be null.
+     * @return computed default value, which will not be null.
+     */
     @Override
     public Value computeDefaultValue(final Identifier identifier) {
         Assert.notNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
     }
 
+    /**
+     * Returns the current default value of the given variable.
+     * The result will be not null (though may be a {@link NullValue}).
+     *
+     * @param declaration declaration of the required variable, which must not be null.
+     * @return computed default value, which will not be null.
+     */
     public Value computeDefaultValue(final VariableDeclaration declaration) {
         Assert.notNull(declaration);
         Value result = itemSessionState.getOverriddenDefaultValue(declaration);
@@ -646,28 +692,34 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         final List<ItemVariable> itemVariables = result.getItemVariables();
         itemVariables.clear();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
-            final OutcomeDeclaration declaration = item.getOutcomeDeclaration(mapEntry.getKey());
-            final Value value = mapEntry.getValue();
-            final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
-            itemVariables.add(variable);
+            final OutcomeDeclaration declaration = itemRunMap.getValidOutcomeDeclarationMap().get(mapEntry.getKey());
+            if (declaration!=null) {
+                final Value value = mapEntry.getValue();
+                final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
+                itemVariables.add(variable);
+            }
         }
         final Map<Identifier, Interaction> interactionMap = item.getItemBody().getInteractionMap();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
-            final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(mapEntry.getKey());
-            final Value value = mapEntry.getValue();
-            List<Identifier> interactionChoiceOrder = null;
-            final Interaction interaction = interactionMap.get(responseDeclaration.getIdentifier());
-            if (interaction != null && interaction instanceof Shuffleable) {
-                interactionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
+            final ResponseDeclaration declaration = itemRunMap.getValidResponseDeclarationMap().get(mapEntry.getKey());
+            if (declaration!=null) {
+                final Value value = mapEntry.getValue();
+                List<Identifier> interactionChoiceOrder = null;
+                final Interaction interaction = interactionMap.get(declaration.getIdentifier());
+                if (interaction != null && interaction instanceof Shuffleable) {
+                    interactionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
+                }
+                final ResponseVariable variable = new ResponseVariable(result, declaration, value, interactionChoiceOrder);
+                itemVariables.add(variable);
             }
-            final ResponseVariable variable = new ResponseVariable(result, responseDeclaration, value, interactionChoiceOrder);
-            itemVariables.add(variable);
         }
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getTemplateValues().entrySet()) {
-            final TemplateDeclaration declaration = item.getTemplateDeclaration(mapEntry.getKey());
-            final Value value = mapEntry.getValue();
-            final TemplateVariable variable = new TemplateVariable(result, declaration, value);
-            itemVariables.add(variable);
+            final TemplateDeclaration declaration = itemRunMap.getValidTemplateDeclarationMap().get(mapEntry.getKey());
+            if (declaration!=null) {
+                final Value value = mapEntry.getValue();
+                final TemplateVariable variable = new TemplateVariable(result, declaration, value);
+                itemVariables.add(variable);
+            }
         }
     }
 
