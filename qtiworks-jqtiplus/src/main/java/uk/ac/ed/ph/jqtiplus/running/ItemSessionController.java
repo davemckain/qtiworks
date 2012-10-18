@@ -494,6 +494,10 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                 itemSessionState.setShuffledInteractionChoiceOrder(interaction, null);
             }
         }
+        else {
+            throw new IllegalStateException("Interaction '" + interaction.getQtiClassName()
+                    + "' attempted shuffling but does not implement Shuffleable interface");
+        }
     }
 
     //-------------------------------------------------------------------

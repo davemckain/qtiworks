@@ -132,7 +132,8 @@ public abstract class Interaction extends BodyElement {
     protected abstract void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration);
 
     /**
-     * Initialize the interaction.
+     * Initializes the interaction. (E.g. shuffling choices)
+     * <p>
      * Subclasses should override this method as required.
      */
     public void initialize(@SuppressWarnings("unused") final ItemSessionController itemSessionController) {
