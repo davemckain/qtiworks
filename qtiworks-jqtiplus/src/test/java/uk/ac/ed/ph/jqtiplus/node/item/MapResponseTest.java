@@ -118,6 +118,6 @@ public class MapResponseTest {
         itemSessionState.setResponseValue(responseIdentifier, response);
         itemSessionController.processResponses();
 
-        assertEquals(expectedOutcome, ((FloatValue) itemSessionState.getOutcomeValue("OUTCOME")).doubleValue(), 0.1);
+        assertEquals(expectedOutcome, ((FloatValue) itemSessionState.getOutcomeValue(Identifier.assumedLegal("OUTCOME"))).doubleValue(), 0.1);
     }
 }

@@ -147,11 +147,6 @@ public final class ItemSessionState implements Serializable {
         return shuffledInteractionChoiceOrders.get(responseIdentifier);
     }
 
-    public List<Identifier> getShuffledInteractionChoiceOrder(final String responseIdentifierString) {
-        Assert.notNull(responseIdentifierString);
-        return getShuffledInteractionChoiceOrder(Identifier.parseString(responseIdentifierString));
-    }
-
     public List<Identifier> getShuffledInteractionChoiceOrder(final Interaction interaction) {
         Assert.notNull(interaction);
         return getShuffledInteractionChoiceOrder(interaction.getResponseIdentifier());
@@ -165,11 +160,6 @@ public final class ItemSessionState implements Serializable {
         else {
             shuffledInteractionChoiceOrders.put(responseIdentifier, shuffleOrders);
         }
-    }
-
-    public void setShuffledInteractionChoiceOrder(final String responseIdentifierString, final List<Identifier> shuffleOrders) {
-        Assert.notNull(responseIdentifierString);
-        setShuffledInteractionChoiceOrder(Identifier.parseString(responseIdentifierString), shuffleOrders);
     }
 
     public void setShuffledInteractionChoiceOrder(final Interaction interaction, final List<Identifier> shuffleOrders) {
@@ -258,11 +248,6 @@ public final class ItemSessionState implements Serializable {
         return result;
     }
 
-    public Value getOverriddenDefaultValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return getOverriddenDefaultValue(Identifier.parseString(identifierString));
-    }
-
     public Value getOverriddenDefaultValue(final VariableDeclaration declaration) {
         return getOverriddenDefaultValue(declaration.getIdentifier());
     }
@@ -274,11 +259,6 @@ public final class ItemSessionState implements Serializable {
         return overriddenTemplateDefaultValues.get(identifier);
     }
 
-    public Value getOverriddenTemplateDefaultValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return getOverriddenTemplateDefaultValue(Identifier.parseString(identifierString));
-    }
-
     public Value getOverriddenTemplateDefaultValue(final TemplateDeclaration templateDeclaration) {
         Assert.notNull(templateDeclaration);
         return getOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier());
@@ -288,11 +268,6 @@ public final class ItemSessionState implements Serializable {
         Assert.notNull(identifier);
         Assert.notNull(value);
         overriddenTemplateDefaultValues.put(identifier, value);
-    }
-
-    public void setOverriddenTemplateDefaultValue(final String identifierString, final Value value) {
-        Assert.notNull(identifierString);
-        setOverriddenTemplateDefaultValue(Identifier.parseString(identifierString), value);
     }
 
     public void setOverriddenTemplateDefaultValue(final TemplateDeclaration templateDeclaration, final Value value) {
@@ -311,11 +286,6 @@ public final class ItemSessionState implements Serializable {
         return overriddenResponseDefaultValues.get(identifier);
     }
 
-    public Value getOverriddenResponseDefaultValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return overriddenResponseDefaultValues.get(Identifier.parseString(identifierString));
-    }
-
     public Value getOverriddenResponseDefaultValue(final ResponseDeclaration responseDeclaration) {
         Assert.notNull(responseDeclaration);
         return getOverriddenResponseDefaultValue(responseDeclaration.getIdentifier());
@@ -325,11 +295,6 @@ public final class ItemSessionState implements Serializable {
         Assert.notNull(identifier);
         Assert.notNull(value);
         overriddenResponseDefaultValues.put(identifier, value);
-    }
-
-    public void setOverriddenResponseDefaultValue(final String identifierString, final Value value) {
-        Assert.notNull(identifierString);
-        setOverriddenResponseDefaultValue(Identifier.parseString(identifierString), value);
     }
 
     public void setOverriddenResponseDefaultValue(final ResponseDeclaration responseDeclaration, final Value value) {
@@ -347,11 +312,6 @@ public final class ItemSessionState implements Serializable {
     public Value getOverriddenOutcomeDefaultValue(final Identifier identifier) {
         Assert.notNull(identifier);
         return overriddenOutcomeDefaultValues.get(identifier);
-    }
-
-    public Value getOverriddenOutcomeDefaultValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return getOverriddenOutcomeDefaultValue(Identifier.parseString(identifierString));
     }
 
     public Value getOverriddenOutcomeDefaultValue(final OutcomeDeclaration outcomeDeclaration) {
@@ -381,11 +341,6 @@ public final class ItemSessionState implements Serializable {
         return overriddenCorrectResponseValues.get(identifier);
     }
 
-    public Value getOverriddenCorrectResponseValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return getOverriddenCorrectResponseValue(Identifier.parseString(identifierString));
-    }
-
     public Value getOverriddenCorrectResponseValue(final ResponseDeclaration responseDeclaration) {
         Assert.notNull(responseDeclaration);
         return getOverriddenCorrectResponseValue(responseDeclaration.getIdentifier());
@@ -395,11 +350,6 @@ public final class ItemSessionState implements Serializable {
         Assert.notNull(identifier);
         Assert.notNull(value);
         overriddenCorrectResponseValues.put(identifier, value);
-    }
-
-    public void setOverriddenCorrectResponseValue(final String identifierString, final Value value) {
-        Assert.notNull(identifierString);
-        setOverriddenOutcomeDefaultValue(Identifier.parseString(identifierString), value);
     }
 
     public void setOverriddenCorrectResponseValue(final ResponseDeclaration responseDeclaration, final Value value) {
@@ -455,11 +405,6 @@ public final class ItemSessionState implements Serializable {
         return responseValues.get(identifier);
     }
 
-    public Value getResponseValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return getResponseValue(Identifier.parseString(identifierString));
-    }
-
     public Value getResponseValue(final ResponseDeclaration responseDeclaration) {
         Assert.notNull(responseDeclaration);
         return getResponseValue(responseDeclaration.getIdentifier());
@@ -474,11 +419,6 @@ public final class ItemSessionState implements Serializable {
         Assert.notNull(identifier);
         Assert.notNull(value);
         responseValues.put(identifier, value);
-    }
-
-    public void setResponseValue(final String identifierString, final Value value) {
-        Assert.notNull(identifierString);
-        setResponseValue(Identifier.parseString(identifierString), value);
     }
 
     public void setResponseValue(final ResponseDeclaration responseDeclaration, final Value value) {
@@ -504,11 +444,6 @@ public final class ItemSessionState implements Serializable {
         return outcomeValues.get(identifier);
     }
 
-    public Value getOutcomeValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return getOutcomeValue(Identifier.parseString(identifierString));
-    }
-
     public Value getOutcomeValue(final OutcomeDeclaration outcomeDeclaration) {
         Assert.notNull(outcomeDeclaration);
         return getOutcomeValue(outcomeDeclaration.getIdentifier());
@@ -519,12 +454,6 @@ public final class ItemSessionState implements Serializable {
         Assert.notNull(identifier);
         Assert.notNull(value);
         outcomeValues.put(identifier, value);
-    }
-
-    /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
-    public void setOutcomeValue(final String identifierString, final Value value) {
-        Assert.notNull(identifierString);
-        setOutcomeValue(Identifier.parseString(identifierString), value);
     }
 
     /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
@@ -566,11 +495,6 @@ public final class ItemSessionState implements Serializable {
             result = getOutcomeValue(identifier);
         }
         return result;
-    }
-
-    public Value getTemplateOrOutcomeValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return getTemplateOrOutcomeValue(Identifier.parseString(identifierString));
     }
 
     public Value getVariableValue(final Identifier identifier) {

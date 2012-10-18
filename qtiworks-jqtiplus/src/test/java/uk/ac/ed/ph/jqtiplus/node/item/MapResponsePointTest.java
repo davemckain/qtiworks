@@ -108,13 +108,15 @@ public class MapResponsePointTest {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getItem();
 
-        if (item.getResponseDeclaration(Identifier.assumedLegal("RESPONSE")).getCardinality().isMultiple() && response.getCardinality().isSingle()) {
+        final Identifier responseIdentifier = Identifier.assumedLegal("RESPONSE");
+
+        if (item.getResponseDeclaration(responseIdentifier).getCardinality().isMultiple() && response.getCardinality().isSingle()) {
             response = MultipleValue.createMultipleValue((SingleValue) response);
         }
 
-        itemSessionState.setResponseValue("RESPONSE", response);
+        itemSessionState.setResponseValue(responseIdentifier, response);
         itemSessionController.processResponses();
 
-        assertEquals(expectedOutcome, ((FloatValue) itemSessionState.getOutcomeValue("OUTCOME")).doubleValue(), 0.1);
+        assertEquals(expectedOutcome, ((FloatValue) itemSessionState.getOutcomeValue(Identifier.assumedLegal("OUTCOME"))).doubleValue(), 0.1);
     }
 }
