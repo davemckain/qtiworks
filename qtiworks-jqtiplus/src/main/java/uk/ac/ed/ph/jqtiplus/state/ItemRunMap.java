@@ -45,9 +45,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * FIXME: Document this type!
@@ -62,6 +64,7 @@ public final class ItemRunMap implements Serializable {
     private static final long serialVersionUID = -823440766463296396L;
 
     private final ResolvedAssessmentItem resolvedAssessmentItem;
+    private final Set<Identifier> validVariableIdentifierSet;
     private final Map<Identifier, TemplateDeclaration> validTemplateDeclarationMap;
     private final Map<Identifier, ResponseDeclaration> validResponseDeclarationMap;
     private final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMap;
@@ -82,10 +85,24 @@ public final class ItemRunMap implements Serializable {
             interactionMapBuilder.put(interaction.getResponseIdentifier(), interaction);
         }
         this.interactionByResponseIdentifierMap = Collections.unmodifiableMap(interactionMapBuilder);
+
+        final Set<Identifier> variableIdentifierSetBuilder = new HashSet<Identifier>();
+        variableIdentifierSetBuilder.addAll(validTemplateDeclarationMap.keySet());
+        variableIdentifierSetBuilder.addAll(validResponseDeclarationMap.keySet());
+        variableIdentifierSetBuilder.addAll(validOutcomeDeclarationMap.keySet());
+        this.validVariableIdentifierSet = Collections.unmodifiableSet(variableIdentifierSetBuilder);
     }
 
     public ResolvedAssessmentItem getResolvedAssessmentItem() {
         return resolvedAssessmentItem;
+    }
+
+    public Set<Identifier> getValidVariableIdentifierSet() {
+        return validVariableIdentifierSet;
+    }
+
+    public boolean isValidVariableIdentifier(final Identifier identifier) {
+        return validVariableIdentifierSet.contains(identifier);
     }
 
     public Map<Identifier, TemplateDeclaration> getValidTemplateDeclarationMap() {

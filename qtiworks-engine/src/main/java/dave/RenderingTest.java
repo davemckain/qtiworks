@@ -55,7 +55,7 @@ public class RenderingTest {
             final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
 
             System.out.println("\nInitialising");
-            itemSessionController.initialize();
+            itemSessionController.performTemplateProcessing();
             System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");

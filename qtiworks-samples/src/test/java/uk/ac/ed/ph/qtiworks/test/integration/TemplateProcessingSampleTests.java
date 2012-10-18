@@ -83,7 +83,7 @@ public class TemplateProcessingSampleTests extends AbstractIntegrationTest {
         
         Assert.assertFalse(itemSessionState.isInitialized());
         Assert.assertTrue(itemSessionState.getTemplateValues().isEmpty());
-        itemSessionController.initialize();
+        itemSessionController.performTemplateProcessing();
         Assert.assertTrue(itemSessionState.isInitialized());
     }
 }

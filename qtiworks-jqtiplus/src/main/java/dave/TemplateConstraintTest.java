@@ -44,7 +44,7 @@ public class TemplateConstraintTest {
         final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, itemRunMap, itemState);
 
         System.out.println("\nInitialising");
-        itemController.initialize();
+        itemController.performTemplateProcessing();
         System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
     }
 }

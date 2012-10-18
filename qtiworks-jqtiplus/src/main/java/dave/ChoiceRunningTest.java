@@ -48,7 +48,7 @@ public class ChoiceRunningTest {
         final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, itemRunMap, itemState);
 
         System.out.println("\nInitialising");
-        itemController.initialize();
+        itemController.performTemplateProcessing();
         System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
 
         System.out.println("\nBinding & validating responses");
@@ -60,7 +60,7 @@ public class ChoiceRunningTest {
         System.out.println("Invalid responses:" + invalidResponses);
 
         System.out.println("\nInvoking response processing");
-        itemController.processResponses();
+        itemController.performResponseProcessing();
         System.out.println("Item state after RP1: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
     }
 }

@@ -630,7 +630,7 @@ public class CandidateItemDeliveryService {
 
             /* Invoke response processing (only if responses are valid) */
             if (allResponsesValid) {
-                itemSessionController.processResponses();
+                itemSessionController.performResponseProcessing();
             }
         }
 
@@ -739,7 +739,7 @@ public class CandidateItemDeliveryService {
                 itemSessionState, notificationRecorder);
 
         /* Initialise state */
-        itemSessionController.initialize();
+        itemSessionController.performTemplateProcessing();
 
         /* Record and log event */
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));

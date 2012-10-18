@@ -178,10 +178,10 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     // Initialization & template processing
 
     /**
-     * Sets all (valid) variables to NULL values, with the exception of the
-     * built-in variables which are set to their stated initial values
+     * Sets all explcitly-defined (valid) variables to NULL, and the
+     * built-in variables to their initial values.
      */
-    public void reset() {
+    public void initialize() {
         itemSessionState.reset();
         for (final Identifier identifier : itemRunMap.getValidTemplateDeclarationMap().keySet()) {
             itemSessionState.setTemplateValue(identifier, NullValue.INSTANCE);
@@ -200,8 +200,8 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
      *
      * @param templateDefaults given templateDefaults values
      */
-    public void initialize() {
-        initialize(null);
+    public void performTemplateProcessing() {
+        performTemplateProcessing(null);
     }
 
     /**
@@ -209,12 +209,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
      *
      * @param templateDefaults given templateDefaults values
      */
-    public void initialize(final List<TemplateDefault> templateDefaults) {
-        /* (We only allow initialization once. This contrasts with the original JQTI.) */
-        if (itemSessionState.isInitialized()) {
-            throw new IllegalStateException("ItemSessionState has already been initialized");
-        }
-
+    public void performTemplateProcessing(final List<TemplateDefault> templateDefaults) {
         fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
         try {
             /* Initialise template defaults with any externally provided defaults */
@@ -243,12 +238,12 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                 fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
             }
 
-            /* Initialise all outcome variables (except duration) */
+            /* Initialise all outcome variables to default values (except duration) */
             for (final OutcomeDeclaration outcomeDeclaration : itemRunMap.getValidOutcomeDeclarationMap().values()) {
                 initValue(outcomeDeclaration);
             }
 
-            /* Initialise all response variables */
+            /* Initialise all response variables to default values */
             for (final ResponseDeclaration responseDeclaration : itemRunMap.getValidResponseDeclarationMap().values()) {
                 if (!responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER)) {
                     initValue(responseDeclaration);
@@ -263,8 +258,6 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
             for (final Interaction interaction : itemRunMap.getInteractions()) {
                 interaction.initialize(this);
             }
-
-            itemSessionState.setInitialized(true);
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_FINISHED);
@@ -317,9 +310,8 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     //-------------------------------------------------------------------
     // Response processing
 
-
     /**
-     * Binds response variables for this assessmentItem, returning a List of response
+     * Binds response variables for this assessmentItem, returning a Set of response
      * variable identifiers for whom the given data could not be successfully bound.
      * <p>
      * This will modify {@link #itemSessionState}
@@ -334,7 +326,6 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
     public Set<Identifier> bindResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
-        ensureInitialized();
 
         /* First set all responses bound to <endAttemptInteractions> to false initially.
          * These may be overridden for responses to the presented interactions below.
@@ -367,7 +358,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                 badResponses.add(responseIdentifier);
             }
         }
-        return badResponses;
+        return Collections.unmodifiableSet(badResponses);
     }
 
     /**
@@ -378,7 +369,6 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
      */
     public Set<Identifier> validateResponses() {
         logger.debug("Validating responses");
-        ensureInitialized();
         final Set<Identifier> invalidResponseIdentifiers = new HashSet<Identifier>();
         for (final Interaction interaction : itemRunMap.getInteractions()) {
             final Value responseValue = itemSessionState.getResponseValue(interaction);
@@ -386,23 +376,22 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                 invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
             }
         }
-        return invalidResponseIdentifiers;
+        return Collections.unmodifiableSet(invalidResponseIdentifiers);
     }
 
     /**
      * Runs response processing on the currently bound responses, changing {@link #itemSessionState}
      * as appropriate.
      */
-    public void processResponses() {
+    public void performResponseProcessing() {
         logger.debug("Response processing starting");
-        ensureInitialized();
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
             /* We always count the attempt, unless the response was to an endAttemptInteraction
              * with countAttempt set to false.
              */
             boolean countAttempt = true;
-            for (final Interaction interaction : item.getItemBody().findInteractions()) {
+            for (final Interaction interaction : itemRunMap.getInteractions()) {
                 if (interaction instanceof EndAttemptInteraction) {
                     final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
                     final BooleanValue value = (BooleanValue) itemSessionState.getResponseValue(interaction);
@@ -417,6 +406,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                 itemSessionState.setNumAttempts(oldAttempts + 1);
             }
 
+            /* For non-adaptive items, reset outcome variables to default values */
             if (!item.getAdaptive()) {
                 for (final OutcomeDeclaration outcomeDeclaration : itemRunMap.getValidOutcomeDeclarationMap().values()) {
                     initValue(outcomeDeclaration);
@@ -432,6 +422,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
                 responseProcessing = item.getResponseProcessing();
             }
 
+            /* Invoke response processing */
             if (responseProcessing != null) {
                 responseProcessing.evaluate(this);
             }
@@ -498,11 +489,28 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
 
     //-------------------------------------------------------------------
 
+    @Override
+    public Value evaluateVariableValue(final QtiNode owner, final Identifier identifier, final VariableType... permittedTypes) {
+        Assert.notNull(identifier);
+        if (!itemRunMap.isValidVariableIdentifier(identifier)) {
+            fireRuntimeWarning(owner, "Variable with identifier '" + identifier + "' is not declared (or not unique) - returning NULL");
+        }
+        final Value value = getVariableValue(identifier, permittedTypes);
+        if (value==null) {
+            return NullValue.INSTANCE;
+        }
+        return value;
+    }
+
+    /**
+     * TODO: Keep this method or merge with above? It doesn't handle invalid identifiers very well.
+     *
+     * @param identifier
+     * @param permittedTypes
+     * @return
+     */
     public Value getVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
-//        if (!itemSessionState.isInitialized()) {
-//            throw new IllegalStateException("ItemSessionState has not been initialized");
-//        }
         Value value = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
@@ -535,20 +543,6 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         return value;
     }
 
-    @Override
-    public Value evaluateVariableValue(final QtiNode owner, final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.notNull(identifier);
-// This doesn't work currently as this method may get called during template processing!
-//        if (!itemSessionState.isInitialized()) {
-//            throw new IllegalStateException("ItemSessionState has not been initialized");
-//        }
-        final Value value = getVariableValue(identifier, permittedTypes);
-        if (value==null) {
-            fireRuntimeWarning(owner, "Failed to evaluate item variable with identifier '" + identifier + "' - returning NULL");
-            return NullValue.INSTANCE;
-        }
-        return value;
-    }
 
     /**
      * Returns the current default value of the variable having the
@@ -659,14 +653,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         return computeInitialValue(declaration.getIdentifier());
     }
 
-
     //-------------------------------------------------------------------
-
-    private void ensureInitialized() {
-        if (!itemSessionState.isInitialized()) {
-            throw new IllegalStateException("Item session has not been initialized");
-        }
-    }
 
     private void fireLifecycleEvent(final LifecycleEventType eventType) {
         if (jqtiExtensionManager!=null) {

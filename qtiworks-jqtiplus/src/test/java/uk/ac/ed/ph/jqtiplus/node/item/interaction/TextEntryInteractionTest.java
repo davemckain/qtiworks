@@ -124,7 +124,7 @@ public class TextEntryInteractionTest {
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TextEntryInteractionTest.class);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        itemSessionController.initialize();
+        itemSessionController.performTemplateProcessing();
 
         final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
         responses.put(Identifier.parseString(RESPONSE_NAME), new StringResponseData(stringResponse));

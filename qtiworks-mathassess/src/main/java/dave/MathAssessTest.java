@@ -112,7 +112,7 @@ public class MathAssessTest {
             final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
 
             System.out.println("\n\nInitialising");
-            itemController.initialize(null);
+            itemController.performTemplateProcessing(null);
             System.out.println("\nTemplate Values: " + itemSessionState.getTemplateValues());
             System.out.println("\nResponse Values: " + itemSessionState.getResponseValues());
             System.out.println("\nOutcome Values: " + itemSessionState.getOutcomeValues());
@@ -127,7 +127,7 @@ public class MathAssessTest {
             System.out.println("Response Values: " + itemSessionState.getResponseValues());
 
             System.out.println("\n\nStarting response processiong");
-            itemController.processResponses();
+            itemController.performResponseProcessing();
             System.out.println("Response processing finished");
             System.out.println("Outcome Values: " + itemSessionState.getOutcomeValues());
         }

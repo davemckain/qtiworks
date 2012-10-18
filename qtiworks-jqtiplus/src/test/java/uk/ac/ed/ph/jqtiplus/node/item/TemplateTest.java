@@ -68,7 +68,7 @@ public class TemplateTest {
         assertEquals("initial", item.getTemplateDeclaration(template2Identifier).getDefaultValue().evaluate().toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue(template2Identifier).toQtiString());
 
-        itemSessionController.initialize();
+        itemSessionController.performTemplateProcessing();
 
         assertEquals("incorrect", itemSessionState.getResponseValue(responseIdentifier).toQtiString());
         assertEquals("incorrect", itemSessionController.computeDefaultValue(responseIdentifier).toQtiString());

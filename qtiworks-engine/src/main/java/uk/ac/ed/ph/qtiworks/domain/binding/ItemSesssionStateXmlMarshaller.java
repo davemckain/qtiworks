@@ -83,7 +83,6 @@ public final class ItemSesssionStateXmlMarshaller {
         /* Create document element */
         final Element documentElement = document.createElementNS(QTIWORKS_NAMESPACE, "itemSessionState");
         documentElement.setAttribute("modelVersion", "1");
-        documentElement.setAttribute("initialized", StringUtilities.toTrueFalse(itemSessionState.isInitialized()));
         document.appendChild(documentElement);
 
         /* Output shuffled choice orders */
@@ -204,12 +203,6 @@ public final class ItemSesssionStateXmlMarshaller {
         }
         if (!"1".equals(documentElement.getAttribute("modelVersion"))) {
             throw new MarshallingException("Expected modelVersion to be 1");
-        }
-        try {
-            result.setInitialized(StringUtilities.fromTrueFalse(documentElement.getAttribute("initialized")));
-        }
-        catch (final IllegalArgumentException e) {
-            throw new MarshallingException("Expected initialized attribute to be 'true' or 'false'");
         }
 
         final List<Element> childElements = expectElementChildren(documentElement);

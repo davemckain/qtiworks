@@ -103,7 +103,7 @@ public class MapResponsePointTest {
     @Test
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, MapResponseTest.class);
-        itemSessionController.initialize();
+        itemSessionController.performTemplateProcessing();
 
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getItem();
@@ -115,7 +115,7 @@ public class MapResponsePointTest {
         }
 
         itemSessionState.setResponseValue(responseIdentifier, response);
-        itemSessionController.processResponses();
+        itemSessionController.performResponseProcessing();
 
         assertEquals(expectedOutcome, ((FloatValue) itemSessionState.getOutcomeValue(Identifier.assumedLegal("OUTCOME"))).doubleValue(), 0.1);
     }
