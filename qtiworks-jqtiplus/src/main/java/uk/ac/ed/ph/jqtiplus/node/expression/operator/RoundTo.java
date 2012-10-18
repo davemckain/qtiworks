@@ -130,12 +130,14 @@ public class RoundTo extends AbstractExpression {
             return NullValue.INSTANCE;
         }
         final double childNumber = ((NumberValue) childValue).doubleValue();
+        if (Double.isInfinite(childNumber) || Double.isNaN(childNumber)) {
+            return childValue;
+        }
         final int computedFigures = getFigures().evaluate(context);
         if (computedFigures < 1) {
             return NullValue.INSTANCE;
         }
         final BigDecimal rounded = getRoundingMode().round(childNumber, computedFigures);
-
         return new FloatValue(rounded.doubleValue());
     }
 }

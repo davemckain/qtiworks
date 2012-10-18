@@ -135,13 +135,16 @@ public class EqualRounded extends AbstractExpression {
         final double firstNumber = ((NumberValue) childValues[0]).doubleValue();
         final double secondNumber = ((NumberValue) childValues[1]).doubleValue();
 
+        /* Handle NaN or infinite cases by just doing normal double comparison */
+        if (RoundingMode.isNaNOrInfinite(firstNumber) || RoundingMode.isNaNOrInfinite(secondNumber)) {
+            return BooleanValue.valueOf(firstNumber==secondNumber);
+        }
+
         final int computedFigures = getFigures().evaluate(context);
         if (computedFigures<1) {
             return NullValue.INSTANCE;
         }
 
-        final boolean result = getRoundingMode().isEqual(firstNumber, secondNumber, computedFigures);
-
-        return BooleanValue.valueOf(result);
+        return BooleanValue.valueOf(getRoundingMode().isEqual(firstNumber, secondNumber, computedFigures));
     }
 }

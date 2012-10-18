@@ -45,9 +45,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Enumeration for equalRounded expression.
+ * Rounding modes for {@link EqualRounded} and {@link RoundTo}
  *
  * @see EqualRounded
+ * @see RoundTo
+ *
  * @author Jiri Kajaba
  */
 public enum RoundingMode implements Stringifiable {
@@ -63,7 +65,10 @@ public enum RoundingMode implements Stringifiable {
 
         @Override
         public BigDecimal round(final double number, final int figures) {
-            if (number == 0) {
+            if (isNaNOrInfinite(number)) {
+                throw new IllegalArgumentException("This method must not be called for NaN or infinity");
+            }
+            if (number==0) {
                 return BigDecimal.ZERO;
             }
 
@@ -108,8 +113,10 @@ public enum RoundingMode implements Stringifiable {
 
         @Override
         public BigDecimal round(final double number, final int figures) {
+            if (isNaNOrInfinite(number)) {
+                throw new IllegalArgumentException("This method must not be called for NaN or infinity");
+            }
             final BigDecimal numberDecimal = new BigDecimal(Double.toString(number));
-
             return numberDecimal.setScale(Math.max(1,figures), java.math.RoundingMode.HALF_UP);
         }
     };
@@ -143,6 +150,8 @@ public enum RoundingMode implements Stringifiable {
 
     /**
      * Rounds given number for given number of figures.
+     * <p>
+     * NB: This MUST NOT be called with NaN or infinity.
      *
      * @param number number
      * @param figures number of figures
@@ -197,5 +206,9 @@ public enum RoundingMode implements Stringifiable {
         }
 
         return result;
+    }
+
+    public static boolean isNaNOrInfinite(final double d) {
+        return Double.isInfinite(d) || Double.isNaN(d);
     }
 }
