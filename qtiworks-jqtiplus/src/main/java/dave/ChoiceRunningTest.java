@@ -39,7 +39,7 @@ public class ChoiceRunningTest {
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
 
-        final ItemRunMap itemRunMap = new ItemRunInitializer(resolvedAssessmentItem).initialize();
+        final ItemRunMap itemRunMap = new ItemRunInitializer(resolvedAssessmentItem, false).initialize();
         System.out.println("Run map is: " + ObjectDumper.dumpObject(itemRunMap, DumpMode.DEEP));
 
         final ItemSessionState itemState = new ItemSessionState();

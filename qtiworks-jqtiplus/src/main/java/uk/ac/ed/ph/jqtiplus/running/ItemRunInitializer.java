@@ -54,12 +54,14 @@ import java.util.List;
 public final class ItemRunInitializer {
 
     private final ResolvedAssessmentItem resolvedAssessmentItem;
+    private final boolean isValid;
     private final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder;
     private final LinkedHashMap<Identifier, ResponseDeclaration> responseDeclarationMapBuilder;
     private final LinkedHashMap<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder;
 
-    public ItemRunInitializer(final ResolvedAssessmentItem resolvedAssessmentItem) {
+    public ItemRunInitializer(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid) {
         this.resolvedAssessmentItem = resolvedAssessmentItem;
+        this.isValid = isValid;
         this.templateDeclarationMapBuilder = new LinkedHashMap<Identifier, TemplateDeclaration>();
         this.responseDeclarationMapBuilder = new LinkedHashMap<Identifier, ResponseDeclaration>();
         this.outcomeDeclarationMapBuilder = new LinkedHashMap<Identifier, OutcomeDeclaration>();
@@ -91,7 +93,7 @@ public final class ItemRunInitializer {
         final List<Interaction> interactions = item.getItemBody().findInteractions();
 
         /* That's it! */
-        return new ItemRunMap(resolvedAssessmentItem, templateDeclarationMapBuilder,
+        return new ItemRunMap(resolvedAssessmentItem, isValid, templateDeclarationMapBuilder,
                 responseDeclarationMapBuilder, outcomeDeclarationMapBuilder, interactions);
     }
 

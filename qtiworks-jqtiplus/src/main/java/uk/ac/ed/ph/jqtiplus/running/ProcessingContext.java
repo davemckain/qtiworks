@@ -53,6 +53,8 @@ import java.util.Random;
  */
 public interface ProcessingContext extends ValidationContext {
 
+    boolean isSubjectValid();
+
     /**
      * Returns a generator that should be obtained to create random
      * numbers if required.

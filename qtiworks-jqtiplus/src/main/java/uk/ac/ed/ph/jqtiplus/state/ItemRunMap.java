@@ -63,6 +63,7 @@ public final class ItemRunMap implements Serializable {
     private static final long serialVersionUID = -823440766463296396L;
 
     private final ResolvedAssessmentItem resolvedAssessmentItem;
+    private final boolean isValid;
     private final Set<Identifier> validVariableIdentifierSet;
     private final Map<Identifier, TemplateDeclaration> validTemplateDeclarationMap;
     private final Map<Identifier, ResponseDeclaration> validResponseDeclarationMap;
@@ -70,10 +71,11 @@ public final class ItemRunMap implements Serializable {
     private final List<Interaction> interactions;
     private final Map<Identifier, Interaction> interactionByResponseIdentifierMap;
 
-    public ItemRunMap(final ResolvedAssessmentItem resolvedAssessmentItem, final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder,
+    public ItemRunMap(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid, final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder,
             final Map<Identifier, ResponseDeclaration> responseDeclarationMapBuilder, final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder,
             final List<Interaction> interactionsBuilder) {
         this.resolvedAssessmentItem = resolvedAssessmentItem;
+        this.isValid = isValid;
         this.validTemplateDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, TemplateDeclaration>(templateDeclarationMapBuilder));
         this.validResponseDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, ResponseDeclaration>(responseDeclarationMapBuilder));
         this.validOutcomeDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, OutcomeDeclaration>(outcomeDeclarationMapBuilder));
@@ -90,6 +92,10 @@ public final class ItemRunMap implements Serializable {
         variableIdentifierSetBuilder.addAll(validResponseDeclarationMap.keySet());
         variableIdentifierSetBuilder.addAll(validOutcomeDeclarationMap.keySet());
         this.validVariableIdentifierSet = Collections.unmodifiableSet(variableIdentifierSetBuilder);
+    }
+
+    public boolean isValid() {
+        return isValid;
     }
 
     public ResolvedAssessmentItem getResolvedAssessmentItem() {

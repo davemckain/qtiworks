@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -320,7 +321,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     /**
-     * Evaluates this Expression.
+     * Evaluates this Expression (and its children)
      */
     @Override
     public final Value evaluate(final ProcessingContext context) {
@@ -336,12 +337,12 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @return result of evaluation
      * @see #evaluate(ProcessingContext)
      */
-    private Value evaluate(final ProcessingContext context, final int depth) {
+    protected Value evaluate(final ProcessingContext context, final int depth) {
         if (getChildren().size() > 0) {
-            logger.debug("{}{}", formatIndent(depth), getClass().getSimpleName());
+            logger.debug("{}{}", formatIndent(depth), getQtiClassName());
         }
 
-        // (1) Evaluates all children (recursively)
+        /* Evaluate all children (recursively) */
         final List<Expression> children = getChildren();
         final Value[] childValues = new Value[children.size()];
         for (int i=0; i<children.size(); i++) {
@@ -357,17 +358,22 @@ public abstract class AbstractExpression extends AbstractNode implements Express
             childValues[i] = childValue;
         }
 
-// DM: I think we should be able to catch all validation errors before runtime now, but haven't implemented this yet.
-// I have commented out the check here as the context interfaces aren't linked like they used to be.
-//      // 2) Validates this expression (but not its children, since they will have been done in 1 above).
-//        validateThis(context);
+        /* Work out whether this expression is valid */
+        final boolean thisIsValid = context.isSubjectValid() || isThisExpressionValid(context);
 
-        // 3) Evaluates this expression.
-        final Value value = evaluateSelf(context, childValues, depth);
+        /* Evaluates this expression (if valid) or return NULL */
+        Value result;
+        if (thisIsValid) {
+            result = evaluateSelf(context, childValues, depth);
+        }
+        else {
+            context.fireRuntimeWarning(this, "Expression is not valid and will not be evaluated. Returning NULL instead");
+            result = NullValue.INSTANCE;
+        }
 
-        // Logs result of evaluation.
+        /* Logs result of evaluation. */
         final String format = "{}{} -> {}({})";
-        final Object[] arguments = new Object[] { formatIndent(depth), getClass().getSimpleName(), value.getBaseType(), value };
+        final Object[] arguments = new Object[] { formatIndent(depth), getClass().getSimpleName(), result.getBaseType(), result };
         if (!(getParent() instanceof Expression)) {
             logger.debug(format, arguments);
         }
@@ -375,7 +381,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
             logger.trace(format, arguments);
         }
 
-        return value;
+        return result;
     }
 
     protected static String formatIndent(final int depth) {

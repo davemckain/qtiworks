@@ -109,8 +109,8 @@ public final class ItemSessionController extends ItemValidationContext implement
     private Long randomSeed;
     private Random randomGenerator;
 
-    public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ItemRunMap itemRunMap,
-            final ItemSessionState itemSessionState) {
+    public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager,
+            final ItemRunMap itemRunMap, final ItemSessionState itemSessionState) {
         super(jqtiExtensionManager, itemRunMap!=null ? itemRunMap.getResolvedAssessmentItem() : null);
         Assert.notNull(itemSessionState, "itemSessionState");
         this.itemRunMap = itemRunMap;
@@ -132,6 +132,11 @@ public final class ItemSessionController extends ItemValidationContext implement
     @Override
     public ItemSessionState getItemSessionState() {
         return itemSessionState;
+    }
+
+    @Override
+    public boolean isSubjectValid() {
+        return itemRunMap.isValid();
     }
 
     //-------------------------------------------------------------------
