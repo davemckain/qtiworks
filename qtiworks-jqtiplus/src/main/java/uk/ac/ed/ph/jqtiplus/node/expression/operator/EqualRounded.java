@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.RoundingModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
@@ -56,7 +56,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class EqualRounded extends AbstractExpression {
+public final class EqualRounded extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 8925002756918753453L;
 
@@ -106,7 +106,7 @@ public final class EqualRounded extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

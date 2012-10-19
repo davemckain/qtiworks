@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author David McKain
  */
-public final class StatsOperator extends AbstractFunctionalExpression {
+public final class StatsOperator extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
@@ -80,7 +80,7 @@ public final class StatsOperator extends AbstractFunctionalExpression {
     }
 
     @Override
-    public final Value evaluateSelf(final Value[] childValues) {
+    public final Value evaluateValidSelf(final Value[] childValues) {
         final ListValue containerValue = (ListValue) childValues[0];
         if (containerValue.isNull()) {
             return NullValue.INSTANCE;

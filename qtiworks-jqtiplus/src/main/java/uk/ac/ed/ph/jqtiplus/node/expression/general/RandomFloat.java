@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
@@ -54,7 +54,7 @@ import java.util.Random;
  *
  * @author Jiri Kajaba
  */
-public class RandomFloat extends AbstractExpression {
+public class RandomFloat extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 3837760238885597058L;
 
@@ -112,7 +112,7 @@ public class RandomFloat extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final double min = getMin().evaluateNotNull(this, context, "Computed value of min was NULL. Replacing with 0", 0);
         final double max = getMax().evaluateNotNull(this, context, "Computed value of max was NULL. Replacing with min+1", min+1);
 

@@ -36,26 +36,37 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+
 /**
- * Convenience superclass for "purely functional" {@link Expression} which
- * return an output based only on input values and perform no side effects.
- * 
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
- * @author Jiri Kajaba
+ * Abstract base class for "functional" expressions, which evaluate their
+ * children ONCE and generate an output based on this.
+ *
+ * @author David McKain
  */
 public abstract class AbstractFunctionalExpression extends AbstractExpression {
 
-    private static final long serialVersionUID = 2619103475550131247L;
+    private static final long serialVersionUID = 1243786975156274796L;
 
-    public AbstractFunctionalExpression(ExpressionParent parent, String qtiClassName) {
+    public AbstractFunctionalExpression(final ExpressionParent parent, final String qtiClassName) {
         super(parent, qtiClassName);
     }
 
     @Override
-    protected final Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth) {
-        return evaluateSelf(childValues);
+    protected final Value evaluateValidSelfAndChildren(final ProcessingContext context, final int depth) {
+        /* Evaluate all children (recursively) */
+        final Value[] childValues = evaluateChildren(context, depth);
+
+        /* Evaluate self using child values */
+        return evaluateValidSelf(context, childValues, depth);
     }
-    
-    protected abstract Value evaluateSelf(Value[] childValues);
+
+    /**
+     * Evaluates this expression, using the given calculated child values
+     *
+     * @param childValues
+     * @param depth depth of this expression in expression tree (root's depth = 0)
+     *
+     * @return result of evaluation, which must not be null
+     */
+    protected abstract Value evaluateValidSelf(ProcessingContext context, Value[] childValues, int depth);
 }

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringOrVariableRefAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.StringOrVariableRef;
@@ -57,7 +57,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class PatternMatch extends AbstractExpression {
+public final class PatternMatch extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 2422777906725885061L;
 
@@ -83,7 +83,7 @@ public final class PatternMatch extends AbstractExpression {
 
 
     @Override
-    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

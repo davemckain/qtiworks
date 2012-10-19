@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author David McKain
  */
-public final class MathConstant extends AbstractExpression {
+public final class MathConstant extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
@@ -76,7 +76,7 @@ public final class MathConstant extends AbstractExpression {
     }
 
     @Override
-    public final Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    public final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final MathConstantTarget constant = getConstant();
         return constant != null ? new FloatValue(getConstant().getValue()) : NullValue.INSTANCE;
     }

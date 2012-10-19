@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ToleranceModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatOrVariableRefMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.FloatOrVariableRef;
@@ -86,7 +86,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class Equal extends AbstractExpression {
+public final class Equal extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 2741395727993314516L;
 
@@ -207,7 +207,7 @@ public final class Equal extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -50,7 +50,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author David McKain
  */
-public abstract class MathMapExpression extends AbstractFunctionalExpression {
+public abstract class MathMapExpression extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = 5311729106818194456L;
 
@@ -64,7 +64,7 @@ public abstract class MathMapExpression extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected final Value evaluateSelf(final Value[] childValues) {
+    protected final Value evaluateValidSelf(final Value[] childValues) {
         BaseType baseType = BaseType.INTEGER;
         double running = initialValue();
 

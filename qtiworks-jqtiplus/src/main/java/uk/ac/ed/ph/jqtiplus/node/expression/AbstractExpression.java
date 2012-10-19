@@ -53,10 +53,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract super class for all expressions.
+ * <p>
+ * Most expressions will want to override either {@link AbstractFunctionalExpression}
+ * or {@link AbstractSimpleFunctionalExpression}.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
- * @author Jiri Kajaba
+ * @author Jiri Kajaba (original)
+ * @author David McKain (refactored)
  */
 public abstract class AbstractExpression extends AbstractNode implements Expression {
 
@@ -342,36 +344,19 @@ public abstract class AbstractExpression extends AbstractNode implements Express
             logger.debug("{}{}", formatIndent(depth), getQtiClassName());
         }
 
-        /* Evaluate all children (recursively) */
-        final List<Expression> children = getChildren();
-        final Value[] childValues = new Value[children.size()];
-        for (int i=0; i<children.size(); i++) {
-            final Expression child = children.get(i);
-            Value childValue;
-            if (child instanceof AbstractExpression) {
-                childValue = ((AbstractExpression) child).evaluate(context, depth + 1);
-            }
-            else {
-                /* (This only happens if an extension implements Expression directly) */
-                childValue = child.evaluate(context);
-            }
-            childValues[i] = childValue;
-        }
-
         /* Work out whether this expression is valid */
         final boolean thisIsValid = context.isSubjectValid() || isThisExpressionValid(context);
 
-        /* Evaluates this expression (if valid) or return NULL */
         Value result;
         if (thisIsValid) {
-            result = evaluateSelf(context, childValues, depth);
+            result =  evaluateValidSelfAndChildren(context, depth);
         }
         else {
             context.fireRuntimeWarning(this, "Expression is not valid and will not be evaluated. Returning NULL instead");
             result = NullValue.INSTANCE;
         }
 
-        /* Logs result of evaluation. */
+        /* Log result of evaluation. */
         final String format = "{}{} -> {}({})";
         final Object[] arguments = new Object[] { formatIndent(depth), getClass().getSimpleName(), result.getBaseType(), result };
         if (!(getParent() instanceof Expression)) {
@@ -380,21 +365,38 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         else {
             logger.trace(format, arguments);
         }
-
         return result;
+    }
+
+    /**
+     * Subclasses should fill in to evaluate the children and produce a result from this.
+     *
+     * @param context
+     * @param depth
+     * @return
+     */
+    protected abstract Value evaluateValidSelfAndChildren(final ProcessingContext context, final int depth);
+
+    protected Value[] evaluateChildren(final ProcessingContext context, final int depth) {
+        final List<Expression> children = getChildren();
+        final Value[] childValues = new Value[children.size()];
+        for (int i=0; i<children.size(); i++) {
+            final Expression child = children.get(i);
+            Value childValue;
+            if (child instanceof AbstractFunctionalExpression) {
+                childValue = ((AbstractFunctionalExpression) child).evaluate(context, depth + 1);
+            }
+            else {
+                /* (This only happens if an extension implements Expression directly) */
+                childValue = child.evaluate(context);
+            }
+            childValues[i] = childValue;
+        }
+        return childValues;
     }
 
     protected static String formatIndent(final int depth) {
         return "(" + depth + ") ";
     }
 
-    /**
-     * Evaluates this expression.
-     *
-     * @param childValues
-     * @param depth depth of this expression in expression tree (root's depth = 0)
-     *
-     * @return result of evaluation, which must not be null
-     */
-    protected abstract Value evaluateSelf(ProcessingContext context, Value[] childValues, int depth);
 }

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  */
-public abstract class ItemSubset extends AbstractExpression {
+public abstract class ItemSubset extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -773393912325015078L;
 

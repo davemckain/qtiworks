@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -49,7 +49,7 @@ import java.math.BigInteger;
  *
  * @author David McKain
  */
-public final class Lcm extends AbstractFunctionalExpression {
+public final class Lcm extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = 4387596452540364752L;
 
@@ -66,7 +66,7 @@ public final class Lcm extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected final Value evaluateSelf(final Value[] childValues) {
+    protected final Value evaluateValidSelf(final Value[] childValues) {
         BigInteger runningLcm = BigInteger.valueOf(1L);
         for (final Value childValue : childValues) {
             /* (Spec says any NULL -> NULL) */

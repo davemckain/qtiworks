@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
@@ -51,9 +52,10 @@ import java.util.List;
 
 /**
  * Implementation of the <code>repeat</code> expression.
- *
- * FIXME: I'm temporarily adding a requirement for all child expressions to have the same baseType
- * while the spec gets clarified.
+ * <p>
+ * Note that this implements {@link AbstractExpression} rather than {@link AbstractFunctionalExpression},
+ * as we need to re-evaluate the child elements over and over, rather than evaluating them once and reusing
+ * their values.
  *
  * @author David McKain
  */
@@ -109,15 +111,7 @@ public final class Repeat extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        if (isAnyChildNull(childValues)) {
-            return NullValue.INSTANCE;
-        }
-
-        /* FIXME!!!! This needs to recompute the child values on each run, rather than simply
-         * reuse them. Or does it? That needs clarified!
-         */
-
+    protected Value evaluateValidSelfAndChildren(final ProcessingContext context, final int depth) {
         /* Check runtime value of numberRepeats */
         final Value numberRepeatsValue = getNumberRepeats().evaluate(this, context);
         if (numberRepeatsValue.isNull()) {
@@ -130,8 +124,13 @@ public final class Repeat extends AbstractExpression {
             return NullValue.INSTANCE;
         }
 
+        /* Now evaluate child expression repeatedly and build up result */
         final List<SingleValue> resultList = new ArrayList<SingleValue>();
         for (int i=0; i<numberRepeats; i++) {
+            final Value[] childValues = evaluateChildren(context, depth);
+            if (isAnyChildNull(childValues)) {
+                return NullValue.INSTANCE;
+            }
             for (int j=0; j<childValues.length; j++) {
                 resultList.add((SingleValue) childValues[j]);
             }

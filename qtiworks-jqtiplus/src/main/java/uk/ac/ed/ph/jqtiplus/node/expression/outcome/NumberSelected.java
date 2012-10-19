@@ -65,7 +65,7 @@ public final class NumberSelected extends ItemSubset {
     }
 
     @Override
-    protected IntegerValue evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected IntegerValue evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final TestProcessingContext testContext = (TestProcessingContext) context;
         final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
 

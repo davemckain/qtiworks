@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.LoadingContext;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -57,7 +57,7 @@ import org.xml.sax.SAXException;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class BaseValue extends AbstractFunctionalExpression {
+public final class BaseValue extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = -8675475225499495315L;
 
@@ -151,7 +151,7 @@ public final class BaseValue extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected SingleValue evaluateSelf(final Value[] childValues) {
+    protected SingleValue evaluateValidSelf(final Value[] childValues) {
         return singleValue;
     }
 

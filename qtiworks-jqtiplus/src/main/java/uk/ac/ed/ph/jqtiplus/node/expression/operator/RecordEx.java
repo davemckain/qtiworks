@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierMultipleAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -60,7 +60,7 @@ import java.util.Map;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class RecordEx extends AbstractFunctionalExpression {
+public final class RecordEx extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = -3277492769483531993L;
 
@@ -130,7 +130,7 @@ public final class RecordEx extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final Value[] childValues) {
+    protected Value evaluateValidSelf(final Value[] childValues) {
         final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
 
         for (int i=0; i<childValues.length; i++) {

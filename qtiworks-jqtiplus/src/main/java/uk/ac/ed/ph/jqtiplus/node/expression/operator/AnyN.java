@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerOrVariableRefAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
@@ -58,7 +58,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class AnyN extends AbstractExpression {
+public final class AnyN extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -2513872740143850055L;
 
@@ -120,7 +120,7 @@ public final class AnyN extends AbstractExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         int numberOfNull = 0;
         int numberOfTrue = 0;
 

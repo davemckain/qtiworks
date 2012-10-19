@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -49,7 +49,7 @@ import java.math.BigInteger;
  *
  * @author David McKain
  */
-public final class Gcd extends AbstractFunctionalExpression {
+public final class Gcd extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = -3567164808598142551L;
 
@@ -66,7 +66,7 @@ public final class Gcd extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected final Value evaluateSelf(final Value[] childValues) {
+    protected final Value evaluateValidSelf(final Value[] childValues) {
         BigInteger runningGcd = null; /* (Will become non-null whenever first non-NULL descendant is found) */
         for (final Value childValue : childValues) {
             /* (Spec says any NULL -> NULL) */

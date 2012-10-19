@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -56,7 +56,7 @@ import java.net.URI;
  *
  * @author Jonathon Hare
  */
-public abstract class CustomOperator<E extends JqtiExtensionPackage<E>> extends AbstractExpression {
+public abstract class CustomOperator<E extends JqtiExtensionPackage<E>> extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = -3800871694273961417L;
 
@@ -94,7 +94,7 @@ public abstract class CustomOperator<E extends JqtiExtensionPackage<E>> extends 
     }
 
     @Override
-    protected final Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final E jqtiExtensionPackage = getOwningExtensionPackage(context);
         if (jqtiExtensionPackage!=null) {
             return evaluateSelf(jqtiExtensionPackage, context, childValues, depth);
@@ -111,7 +111,7 @@ public abstract class CustomOperator<E extends JqtiExtensionPackage<E>> extends 
 
     /**
      * customOperators should implement this to evaluate themselves. This is the same as
-     * {@link #evaluateSelf(ProcessingContext, Value[], int)}, but is also passed the
+     * {@link #evaluateValidSelf(ProcessingContext, Value[], int)}, but is also passed the
      * owning {@link JqtiExtensionPackage}
      */
     protected abstract Value evaluateSelf(E jqtiExtensionPackage, ProcessingContext context, Value[] childValues, int depth);

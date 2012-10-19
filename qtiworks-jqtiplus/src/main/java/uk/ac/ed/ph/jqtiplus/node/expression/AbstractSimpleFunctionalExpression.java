@@ -31,51 +31,29 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
+package uk.ac.ed.ph.jqtiplus.node.expression;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.List;
-
 /**
- * This expression, which can only be used in outcomes processing, calculates the number of items in
- * A given sub-set that have been attempted (at least once) and for which A response was given.
- * In other words, items for which at least one declared response has A value that differs from its
- * declared default (typically NULL).
- * <p>
- * The result is an integer with single cardinality.
+ * Convenience superclass for "purely functional" {@link Expression} which
+ * return an output based only on input values and perform no side effects.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public final class NumberResponded extends ItemSubset {
+public abstract class AbstractSimpleFunctionalExpression extends AbstractFunctionalExpression {
 
-    private static final long serialVersionUID = 5232907668517997814L;
+    private static final long serialVersionUID = 2619103475550131247L;
 
-    /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "numberResponded";
-
-    public NumberResponded(final ExpressionParent parent) {
-        super(parent, QTI_CLASS_NAME);
+    public AbstractSimpleFunctionalExpression(final ExpressionParent parent, final String qtiClassName) {
+        super(parent, qtiClassName);
     }
 
     @Override
-    protected IntegerValue evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final TestProcessingContext testContext = (TestProcessingContext) context;
-        final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
-
-        int respondedCount = 0;
-        for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            if (itemRefState.isResponded()) {
-                respondedCount++;
-            }
-        }
-        return new IntegerValue(respondedCount);
+    protected final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+        return evaluateValidSelf(childValues);
     }
+
+    protected abstract Value evaluateValidSelf(Value[] childValues);
 }

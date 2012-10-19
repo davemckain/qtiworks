@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -65,7 +65,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class Delete extends AbstractFunctionalExpression {
+public final class Delete extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = -3347943030791068562L;
 
@@ -111,7 +111,7 @@ public final class Delete extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final Value[] childValues) {
+    protected Value evaluateValidSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

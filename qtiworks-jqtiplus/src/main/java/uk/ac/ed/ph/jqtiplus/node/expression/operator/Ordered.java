@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -64,7 +64,7 @@ import java.util.List;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class Ordered extends AbstractFunctionalExpression {
+public final class Ordered extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = -1785588795962181470L;
 
@@ -100,7 +100,7 @@ public final class Ordered extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final Value[] childValues) {
+    protected Value evaluateValidSelf(final Value[] childValues) {
         final List<SingleValue> flattenedChildren = new ArrayList<SingleValue>();
         for (final Value childValue : childValues) {
             if (!childValue.isNull()) {

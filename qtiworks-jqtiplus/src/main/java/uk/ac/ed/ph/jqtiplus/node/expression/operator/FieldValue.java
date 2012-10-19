@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -53,7 +53,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class FieldValue extends AbstractFunctionalExpression {
+public final class FieldValue extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = 5076276250973789782L;
 
@@ -112,7 +112,7 @@ public final class FieldValue extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected Value evaluateSelf(final Value[] childValues) {
+    protected Value evaluateValidSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

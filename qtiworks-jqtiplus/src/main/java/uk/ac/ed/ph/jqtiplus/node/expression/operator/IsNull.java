@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
-public final class IsNull extends AbstractFunctionalExpression {
+public final class IsNull extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = 2510627886708118311L;
 
@@ -59,7 +59,7 @@ public final class IsNull extends AbstractFunctionalExpression {
     }
 
     @Override
-    protected BooleanValue evaluateSelf(final Value[] childValues) {
+    protected BooleanValue evaluateValidSelf(final Value[] childValues) {
         return BooleanValue.valueOf(childValues[0].isNull());
     }
 }

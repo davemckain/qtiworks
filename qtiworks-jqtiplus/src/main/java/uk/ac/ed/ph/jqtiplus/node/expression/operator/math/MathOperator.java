@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractSimpleFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionType;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -46,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author David McKain
  */
-public final class MathOperator extends AbstractFunctionalExpression {
+public final class MathOperator extends AbstractSimpleFunctionalExpression {
 
     private static final long serialVersionUID = 709298090798424712L;
 
@@ -76,7 +76,7 @@ public final class MathOperator extends AbstractFunctionalExpression {
     }
 
     @Override
-    public final Value evaluateSelf(final Value[] childValues) {
+    public final Value evaluateValidSelf(final Value[] childValues) {
         if (isAnyChildNull(childValues)) {
             return NullValue.INSTANCE;
         }

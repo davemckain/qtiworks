@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
-import uk.ac.ed.ph.jqtiplus.node.expression.AbstractExpression;
+import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
-public abstract class LookupExpression extends AbstractExpression {
+public abstract class LookupExpression extends AbstractFunctionalExpression {
 
     private static final long serialVersionUID = 1803604885120254713L;
 
@@ -162,7 +162,7 @@ public abstract class LookupExpression extends AbstractExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected final Value evaluateSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+    protected final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getQtiClassName(), getIdentifier() });
 
         final Identifier variableReferenceIdentifier = getIdentifier();
