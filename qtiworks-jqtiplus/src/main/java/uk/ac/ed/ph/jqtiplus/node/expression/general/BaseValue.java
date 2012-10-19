@@ -138,6 +138,7 @@ public final class BaseValue extends AbstractFunctionalExpression {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (singleValue == null) {
             context.fireValidationError(this, "Value is not defined.");
         }

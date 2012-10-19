@@ -97,6 +97,7 @@ public final class Repeat extends AbstractExpression {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final IntegerOrVariableRef numberRepeatsTemplate = getNumberRepeats();
         if (numberRepeatsTemplate.isConstantInteger()) {
             final int numberRepeats = numberRepeatsTemplate.getConstantIntegerValue().intValue();

@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -53,11 +52,6 @@ public final class UnsupportedCustomOperator extends CustomOperator<JqtiExtensio
 
     public UnsupportedCustomOperator(final ExpressionParent parent) {
         super(parent);
-    }
-
-    @Override
-    public void validateThis(final ValidationContext context) {
-        /* Nothing to do */
     }
 
     @Override

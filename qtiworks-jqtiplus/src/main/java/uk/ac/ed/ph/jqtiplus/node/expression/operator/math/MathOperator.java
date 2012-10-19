@@ -98,6 +98,7 @@ public final class MathOperator extends AbstractFunctionalExpression {
 
     @Override
     public void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         /* Make sure number of children is correct */
         final MathOperatorTarget operation = getTarget();
         if (operation != null && getChildren().size() != operation.getArgumentCount()) {

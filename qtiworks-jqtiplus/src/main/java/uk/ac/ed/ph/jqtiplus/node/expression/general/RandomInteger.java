@@ -113,6 +113,7 @@ public class RandomInteger extends AbstractExpression {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final IntegerOrVariableRef maxComputer = getMax();
         final IntegerOrVariableRef minComputer = getMin();
         final IntegerOrVariableRef stepComputer = getStep();

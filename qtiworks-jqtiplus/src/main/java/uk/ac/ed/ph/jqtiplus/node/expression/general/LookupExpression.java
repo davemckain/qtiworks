@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -107,6 +106,8 @@ public abstract class LookupExpression extends AbstractExpression {
 
     @Override
     protected final void validateThis(final ValidationContext context) {
+        super.validateThis(context);
+
         /* Check reference */
         final Identifier variableReferenceIdentifier = getIdentifier();
         final VariableDeclaration resolvedDeclaration = context.checkVariableReference(this, variableReferenceIdentifier);

@@ -96,6 +96,7 @@ public class RandomFloat extends AbstractExpression {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final FloatOrVariableRef maxComputer = getMax();
         final FloatOrVariableRef minComputer = getMin();
 

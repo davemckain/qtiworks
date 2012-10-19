@@ -193,6 +193,7 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
 
     @Override
     public final void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         /* First make sure that variable names are all acceptable */
         for (final VariableDeclaration decl : getAllReadableVariableDeclarations()) {
             final String ident = decl.getIdentifier().toString();

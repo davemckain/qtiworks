@@ -96,6 +96,7 @@ public final class Index extends AbstractExpression {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         final IntegerOrVariableRef indexComputer = getIndex();
         if (indexComputer.isConstantInteger()) {
             final int index = indexComputer.getConstantIntegerValue().intValue();

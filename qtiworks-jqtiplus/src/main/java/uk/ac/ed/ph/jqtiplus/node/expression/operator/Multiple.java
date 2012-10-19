@@ -94,6 +94,7 @@ public final class Multiple extends AbstractFunctionalExpression {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getChildren().size() == 0) {
             context.fireValidationWarning(this, "Container should contain some children.");
         }

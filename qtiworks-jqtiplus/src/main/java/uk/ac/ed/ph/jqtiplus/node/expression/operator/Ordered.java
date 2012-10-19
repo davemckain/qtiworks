@@ -93,6 +93,7 @@ public final class Ordered extends AbstractFunctionalExpression {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        super.validateThis(context);
         if (getChildren().size() == 0) {
             context.fireValidationWarning(this, "Container should contain some children.");
         }

@@ -36,11 +36,13 @@ package uk.ac.ed.ph.jqtiplus.node.expression;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,6 +80,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         return ExpressionType.getType(getQtiClassName());
     }
 
+    @ToRefactor
     @Override
     public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         return getType().getRequiredCardinalities(index);
@@ -94,6 +97,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @return list of all acceptable cardinalities which can child expression at given position produce
      * @see #getRequiredCardinalities
      */
+    @ToRefactor
     protected Cardinality[] getRequiredSameCardinalities(final ValidationContext context, final int index, final boolean includeParent) {
         Cardinality[] required = getType().getRequiredCardinalities(index);
 
@@ -116,6 +120,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
+    @ToRefactor
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         return getType().getRequiredBaseTypes(index);
     }
@@ -131,6 +136,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @return list of all acceptable baseTypes which can child expression at given position produce
      * @see #getRequiredBaseTypes
      */
+    @ToRefactor
     protected BaseType[] getRequiredSameBaseTypes(final ValidationContext context, final int index, final boolean includeParent) {
         BaseType[] required = getType().getRequiredBaseTypes(index);
 
@@ -153,11 +159,13 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     }
 
     @Override
+    @ToRefactor
     public Cardinality[] getProducedCardinalities(final ValidationContext context) {
         return getType().getProducedCardinalities();
     }
 
     @Override
+    @ToRefactor
     public BaseType[] getProducedBaseTypes(final ValidationContext context) {
         return getType().getProducedBaseTypes();
     }
@@ -177,6 +185,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @return list of all possible produced baseTypes after evaluation (possible baseTypes of evaluated result)
      * @see #getProducedBaseTypes
      */
+    @ToRefactor
     protected BaseType[] getProducedNumericalBaseTypes(final ValidationContext context) {
         boolean floatFound = false;
         for (final Expression child : getChildren()) {
@@ -239,6 +248,21 @@ public abstract class AbstractExpression extends AbstractNode implements Express
         return BaseType.values();
     }
 
+    public boolean isThisExpressionValid(final ValidationContext context) {
+        context.setCheckpoint(NotificationLevel.ERROR);
+        validateThis(context);
+        return context.clearCheckpoint() > 0;
+    }
+
+    /**
+     * Partial implementation of {@link #validateThis(ValidationContext)} that checks the
+     * input/output variable signatures.
+     * <p>
+     * Subclasses should override this to do additional validation.
+     * <p>
+     * NB: I'm not currently keen on the way this bit of logic works so it is subject to
+     * change in future, but overridden methods in subclasses should be safe enough.
+     */
     @Override
     protected void validateThis(final ValidationContext context) {
         final Cardinality[] requiredCardinalities = getParentRequiredCardinalities(context);
