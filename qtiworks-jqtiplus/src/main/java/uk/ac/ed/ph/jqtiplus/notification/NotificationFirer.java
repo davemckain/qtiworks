@@ -41,6 +41,9 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 /**
  * Convenience API for firing off {@link Notification}s. Most of this is filled
  * in by {@link AbstractNotificationFirer} so it's easy to implement.
+ * <p>
+ * An instance of this will only ever be used by a single thread so implementations
+ * do NOT need to be thread-safe.
  *
  * @see AbstractNotificationFirer
  *
@@ -67,6 +70,26 @@ public interface NotificationFirer {
     void fireBaseTypeValidationError(QtiNode owner, BaseType[] requiredBaseTypes, BaseType[] actualBaseTypes);
 
     void fireCardinalityValidationError(QtiNode owner, Cardinality[] requiredCardinalities, Cardinality[] actualCardinalities);
+
+    /**
+     * Sets a "checkpoint" for counting notifications. Notifications fired from
+     * this point on at the given level or higher will be counted until
+     * {@link #clearCheckpoint()} is called,
+     * which will return the number of notifications fired since this checkpoint.
+     * <p>
+     * This can be useful when book-ending bits of logic to see if they fire off
+     * any notifications.
+     * <p>
+     * Checkpoints may NOT be nested.
+     */
+    void setCheckpoint(NotificationLevel baseLevel);
+
+    /**
+     * Clears a checkpoint set previously by {@link #setCheckpoint(NotificationLevel)},
+     * returning the number of notifications fired at the prescribed level (or higher)
+     * since then.
+     */
+    int clearCheckpoint();
 
 
 }

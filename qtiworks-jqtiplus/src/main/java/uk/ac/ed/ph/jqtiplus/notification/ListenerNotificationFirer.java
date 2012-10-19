@@ -61,7 +61,7 @@ public class ListenerNotificationFirer extends AbstractNotificationFirer {
     }
 
     @Override
-    public final void fireNotification(final Notification notification) {
+    protected final void doFireNotification(final Notification notification) {
         for (final NotificationListener listener : notificationListeners) {
             listener.onNotification(notification);
         }

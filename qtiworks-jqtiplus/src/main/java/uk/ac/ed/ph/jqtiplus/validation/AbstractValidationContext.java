@@ -67,7 +67,7 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Abs
     }
 
     @Override
-    public void fireNotification(final Notification notification) {
+    public void doFireNotification(final Notification notification) {
         validationResult.add(notification);
     }
 

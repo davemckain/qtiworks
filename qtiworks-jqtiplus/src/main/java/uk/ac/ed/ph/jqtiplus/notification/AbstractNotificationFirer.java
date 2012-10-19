@@ -48,6 +48,40 @@ import java.util.Arrays;
  */
 public abstract class AbstractNotificationFirer implements NotificationFirer {
 
+    private boolean isChecking;
+    private NotificationLevel checkpointLevel;
+    private int checkCount;
+
+    @Override
+    public void setCheckpoint(final NotificationLevel baseLevel) {
+        if (isChecking) {
+            throw new IllegalStateException("Checkpoint has already been set - they cannot be nested");
+        }
+        checkCount = 0;
+        isChecking = true;
+        checkpointLevel = baseLevel;
+    }
+
+    @Override
+    public int clearCheckpoint() {
+        if (!isChecking) {
+            throw new IllegalStateException("Checkpoint has not been set");
+        }
+        final int result = checkCount;
+        checkCount = 0;
+        return result;
+    }
+
+    @Override
+    public final void fireNotification(final Notification notification) {
+        if (isChecking && notification.getNotificationLevel().compareTo(checkpointLevel) >= 0) {
+            ++checkCount;
+        }
+        doFireNotification(notification);
+    }
+
+    protected abstract void doFireNotification(Notification notification);
+
     @Override
     public final void fireValidationError(final QtiNode owner, final String message) {
         final Notification notification = new Notification(owner, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR, message);
