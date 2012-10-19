@@ -39,8 +39,7 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.notification.AbstractNotificationFirer;
-import uk.ac.ed.ph.jqtiplus.notification.Notification;
+import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -51,24 +50,17 @@ import uk.ac.ed.ph.jqtiplus.value.Signature;
  *
  * @author David McKain
  */
-abstract class AbstractValidationContext<E extends AssessmentObject> extends AbstractNotificationFirer
+abstract class AbstractValidationContext<E extends AssessmentObject> extends ListenerNotificationFirer
         implements ValidationContext {
 
     protected final JqtiExtensionManager jqtiExtensionManager;
-    protected final AbstractValidationResult validationResult;
     protected final ResolvedAssessmentObject<E> resolvedAssessmentObject;
     protected final E subject;
 
-    AbstractValidationContext(final JqtiExtensionManager jqtiExtensionManager, final AbstractValidationResult validationResult, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
+    public AbstractValidationContext(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
         this.jqtiExtensionManager = jqtiExtensionManager;
-        this.validationResult = validationResult;
         this.resolvedAssessmentObject = resolvedAssessmentObject;
         this.subject = resolvedAssessmentObject.getRootNodeLookup().extractAssumingSuccessful();
-    }
-
-    @Override
-    public void doFireNotification(final Notification notification) {
-        validationResult.add(notification);
     }
 
     @Override

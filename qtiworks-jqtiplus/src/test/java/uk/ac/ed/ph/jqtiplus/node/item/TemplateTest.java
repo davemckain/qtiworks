@@ -51,7 +51,7 @@ public class TemplateTest {
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TemplateTest.class);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        final AssessmentItem item = itemSessionController.getItem();
+        final AssessmentItem item = itemSessionController.getSubjectItem();
 
         final Identifier responseIdentifier = Identifier.parseString("response");
         assertNull(itemSessionState.getResponseValue(responseIdentifier));

@@ -41,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
@@ -66,13 +65,13 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
-import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -97,17 +96,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public final class ItemSessionController extends ListenerNotificationFirer implements ItemProcessingContext {
+public final class ItemSessionController extends ItemValidationContext implements ItemProcessingContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 
     /** TODO: Make this settable! */
     public static final int MAX_TEMPLATE_PROCESSING_TRIES = 100;
 
-    private final JqtiExtensionManager jqtiExtensionManager;
     private final ItemRunMap itemRunMap;
-    private final ResolvedAssessmentItem resolvedAssessmentItem;
-    private final AssessmentItem item;
     private final ItemSessionState itemSessionState;
 
     private Long randomSeed;
@@ -115,34 +111,17 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
 
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager, final ItemRunMap itemRunMap,
             final ItemSessionState itemSessionState) {
-        Assert.notNull(jqtiExtensionManager, "jqtiExtensionManager");
-        Assert.notNull(itemRunMap, "itemRunMap");
+        super(jqtiExtensionManager, itemRunMap!=null ? itemRunMap.getResolvedAssessmentItem() : null);
         Assert.notNull(itemSessionState, "itemSessionState");
-        this.jqtiExtensionManager = jqtiExtensionManager;
         this.itemRunMap = itemRunMap;
-        this.resolvedAssessmentItem = itemRunMap.getResolvedAssessmentItem();
-        this.item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
         this.itemSessionState = itemSessionState;
         this.randomSeed = null;
         this.randomGenerator = null;
     }
 
     @Override
-    public JqtiExtensionManager getJqtiExtensionManager() {
-        return jqtiExtensionManager;
-    }
-
     public ResolvedAssessmentItem getResolvedAssessmentItem() {
         return resolvedAssessmentItem;
-    }
-
-    @Override
-    public AssessmentObject getSubject() {
-        return item;
-    }
-
-    public AssessmentItem getItem() {
-        return item;
     }
 
     @Override

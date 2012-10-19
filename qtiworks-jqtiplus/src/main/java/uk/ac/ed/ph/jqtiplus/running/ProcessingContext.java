@@ -33,12 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -53,18 +51,7 @@ import java.util.Random;
  *
  * @author David McKain
  */
-public interface ProcessingContext extends NotificationFirer {
-
-    /**
-     * Provides access to the owning {@link JqtiExtensionManager} so that extensions
-     * can access their package's logic.
-     */
-    JqtiExtensionManager getJqtiExtensionManager();
-
-    /**
-     * NB: This is guaranteed to return non-null
-     */
-    AssessmentObject getSubject();
+public interface ProcessingContext extends ValidationContext {
 
     /**
      * Returns a generator that should be obtained to create random

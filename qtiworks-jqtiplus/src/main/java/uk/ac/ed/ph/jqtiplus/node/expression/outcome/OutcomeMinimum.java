@@ -74,7 +74,7 @@ public final class OutcomeMinimum extends OutcomeMinMax {
         final List<SingleValue> resultValues = new ArrayList<SingleValue>();
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
             final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
-            final OutcomeDeclaration outcomeDeclaration = itemRefController.getItemController().getItem().getOutcomeDeclaration(getOutcomeIdentifier());
+            final OutcomeDeclaration outcomeDeclaration = itemRefController.getItemController().getSubjectItem().getOutcomeDeclaration(getOutcomeIdentifier());
             if (outcomeDeclaration != null && outcomeDeclaration.getCardinality().isSingle()) {
                 if (!outcomeDeclaration.getBaseType().isNumeric() || outcomeDeclaration.getNormalMaximum() == null) {
                     return NullValue.INSTANCE;

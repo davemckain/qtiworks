@@ -109,7 +109,7 @@ public class MapResponseTest {
         itemSessionController.performTemplateProcessing();
 
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        final AssessmentItem item = itemSessionController.getItem();
+        final AssessmentItem item = itemSessionController.getSubjectItem();
 
         final Identifier responseIdentifier = Identifier.assumedLegal("RESPONSE");
         if (item.getResponseDeclaration(responseIdentifier).getCardinality().isMultiple() && response.getCardinality().isSingle()) {

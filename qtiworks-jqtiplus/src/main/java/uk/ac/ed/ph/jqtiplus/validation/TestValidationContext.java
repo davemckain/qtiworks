@@ -52,12 +52,12 @@ import java.util.List;
  *
  * @author David McKain
  */
-class AbstractTestValidationContext extends AbstractValidationContext<AssessmentTest> {
+class TestValidationContext extends AbstractValidationContext<AssessmentTest> {
 
     private final ResolvedAssessmentTest resolvedAssessmentTest;
 
-    AbstractTestValidationContext(final JqtiExtensionManager jqtiExtensionManager, final TestValidationResult result, final ResolvedAssessmentTest resolvedAssessmentTest) {
-        super(jqtiExtensionManager, result, resolvedAssessmentTest);
+    TestValidationContext(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentTest resolvedAssessmentTest) {
+        super(jqtiExtensionManager, resolvedAssessmentTest);
         this.resolvedAssessmentTest = resolvedAssessmentTest;
     }
 

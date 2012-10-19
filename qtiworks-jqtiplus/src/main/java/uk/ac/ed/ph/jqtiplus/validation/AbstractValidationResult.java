@@ -37,7 +37,9 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationListener;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
 
 import java.io.Serializable;
 import java.util.List;
@@ -48,7 +50,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author David McKain
  */
-public abstract class AbstractValidationResult implements Serializable {
+public abstract class AbstractValidationResult implements NotificationListener, Serializable {
 
     private static final long serialVersionUID = 7987550924957601153L;
 
@@ -99,18 +101,24 @@ public abstract class AbstractValidationResult implements Serializable {
         return getNotificationsAtLevel(NotificationLevel.INFO);
     }
 
-    public void add(final Notification notification) {
-        notificationRecorder.onNotification(notification);
-        final NotificationLevel notificationLevel = notification.getNotificationLevel();
-        if (!hasErrors && notificationLevel==NotificationLevel.ERROR) {
-            hasErrors = true;
-        }
-        else if (!hasWarnings && notificationLevel==NotificationLevel.WARNING) {
-            hasWarnings = true;
-        }
-        else if (!hasInfos && notificationLevel==NotificationLevel.INFO) {
-            hasInfos = true;
-        }
+    @Override
+    public void onNotification(final Notification notification) {
+        add(notification);
     }
 
+    public void add(final Notification notification) {
+        if (notification.getNotificationType()==NotificationType.MODEL_VALIDATION) {
+            notificationRecorder.onNotification(notification);
+            final NotificationLevel notificationLevel = notification.getNotificationLevel();
+            if (!hasErrors && notificationLevel==NotificationLevel.ERROR) {
+                hasErrors = true;
+            }
+            else if (!hasWarnings && notificationLevel==NotificationLevel.WARNING) {
+                hasWarnings = true;
+            }
+            else if (!hasInfos && notificationLevel==NotificationLevel.INFO) {
+                hasInfos = true;
+            }
+        }
+    }
 }

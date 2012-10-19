@@ -46,8 +46,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  */
 public interface ItemProcessingContext extends ProcessingContext {
 
-    AssessmentItem getSubjectItem();
-
     ItemSessionState getItemSessionState();
 
     /**

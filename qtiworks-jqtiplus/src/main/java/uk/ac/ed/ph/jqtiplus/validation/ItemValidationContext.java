@@ -51,13 +51,15 @@ import java.util.List;
  *
  * @author David McKain
  */
-class AbstractItemValidationContext extends AbstractValidationContext<AssessmentItem> {
+public class ItemValidationContext extends AbstractValidationContext<AssessmentItem> {
 
-    private final ResolvedAssessmentItem resolvedAssessmentItem;
+    protected final ResolvedAssessmentItem resolvedAssessmentItem;
+    protected final AssessmentItem item;
 
-    public AbstractItemValidationContext(final JqtiExtensionManager jqtiExtensionManager, final ItemValidationResult validationResult, final ResolvedAssessmentItem resolvedAssessmentItem) {
-        super(jqtiExtensionManager, validationResult, resolvedAssessmentItem);
+    public ItemValidationContext(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentItem resolvedAssessmentItem) {
+        super(jqtiExtensionManager, resolvedAssessmentItem);
         this.resolvedAssessmentItem = resolvedAssessmentItem;
+        this.item = subject;
     }
 
     @Override
@@ -82,7 +84,7 @@ class AbstractItemValidationContext extends AbstractValidationContext<Assessment
 
     @Override
     public AssessmentItem getSubjectItem() {
-        return subject;
+        return item;
     }
 
     @Override
