@@ -56,7 +56,6 @@ import java.util.Set;
  * <p>
  * Usage: an instance of this class can be safely used by multiple Threads
  *
- *
  * @author David McKain
  */
 public final class ItemRunMap implements Serializable {

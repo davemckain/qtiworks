@@ -497,20 +497,13 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         }
         final Value value = getVariableValue(identifier, permittedTypes);
         if (value==null) {
+            logger.warn("ItemSessionState lookup of variable {} failed - state should have been kept in sync. Returning NULL", identifier);
             return NullValue.INSTANCE;
         }
         return value;
     }
 
-    /**
-     * TODO: Keep this method or merge with above? It doesn't handle invalid identifiers very well.
-     *
-     * @param identifier
-     * @param permittedTypes
-     * @return
-     */
-    public Value getVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.notNull(identifier);
+    private Value getVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         Value value = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
@@ -543,6 +536,26 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         return value;
     }
 
+    //-------------------------------------------------------------------
+
+    @ToRefactor
+    public VariableDeclaration ensureVariableDeclaration(final Identifier identifier) {
+        Assert.notNull(identifier);
+        final VariableDeclaration result = item.getVariableDeclaration(identifier);
+        if (result == null) {
+            throw new QtiEvaluationException("Item variable with identifier " + identifier + " is not defined");
+        }
+        return result;
+    }
+
+    public ResponseDeclaration ensureResponseDeclaration(final Identifier responseIdentifier) {
+        Assert.notNull(responseIdentifier);
+        final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
+        if (result == null) {
+            throw new QtiEvaluationException("Response variable with identifier " + responseIdentifier + " is not defined");
+        }
+        return result;
+    }
 
     /**
      * Returns the current default value of the variable having the
@@ -579,25 +592,7 @@ public final class ItemSessionController extends ListenerNotificationFirer imple
         return result;
     }
 
-    @ToRefactor
-    private VariableDeclaration ensureVariableDeclaration(final Identifier identifier) {
-        Assert.notNull(identifier);
-        final VariableDeclaration result = item.getVariableDeclaration(identifier);
-        if (result == null) {
-            throw new QtiEvaluationException("Item variable with identifier " + identifier + " is not defined");
-        }
-        return result;
-    }
 
-    @ToRefactor
-    private ResponseDeclaration ensureResponseDeclaration(final Identifier responseIdentifier) {
-        Assert.notNull(responseIdentifier);
-        final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
-        if (result == null) {
-            throw new QtiEvaluationException("Response variable with identifier " + responseIdentifier + " is not defined");
-        }
-        return result;
-    }
 
     @Override
     public Value computeCorrectResponse(final Identifier identifier) {
