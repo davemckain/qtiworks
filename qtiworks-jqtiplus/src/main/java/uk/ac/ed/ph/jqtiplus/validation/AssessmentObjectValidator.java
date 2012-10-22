@@ -112,11 +112,18 @@ public final class AssessmentObjectValidator {
                 final ResolvedAssessmentItem itemHolder = entry.getValue();
                 final StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")
                     .append(itemSystemId)
-                    .append(" referenced by identifiers ");
+                    .append(" referenced by ");
                 final List<AssessmentItemRef> itemRefs = resolvedAssessmentTest.getItemRefsBySystemIdMap().get(itemSystemId);
-                for (int i=0,size=itemRefs.size(); i<size; i++) {
-                    messageBuilder.append(itemRefs.get(i).getIdentifier());
-                    messageBuilder.append((i<size-1) ? ", " : " and ");
+                if (itemRefs.size()>1) {
+                    messageBuilder.append("identifiers ");
+                    for (int i=0,size=itemRefs.size(); i<size; i++) {
+                        messageBuilder.append(itemRefs.get(i).getIdentifier());
+                        messageBuilder.append((i<size-2) ? ", " : " and ");
+                    }
+                }
+                else {
+                    messageBuilder.append("identifier ")
+                        .append(itemRefs.get(0).getIdentifier());
                 }
 
                 if (itemHolder.getItemLookup().wasSuccessful()) {
