@@ -36,11 +36,16 @@ package uk.ac.ed.ph.jqtiplus.state;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +66,7 @@ public final class TestSessionState implements Serializable {
 
     private final TestPlan testPlan;
     private final Map<Identifier, Value> outcomeValues;
-    private Value durationValue;
+    private FloatValue durationValue;
     private final Map<TestPlanNodeInstanceKey, TestItemState> testItemStates;
 
     public TestSessionState(final TestPlan testPlan) {
@@ -69,18 +74,88 @@ public final class TestSessionState implements Serializable {
         this.testPlan = testPlan;
         this.outcomeValues = new HashMap<Identifier, Value>();
         this.testItemStates = new HashMap<TestPlanNodeInstanceKey, TestItemState>();
+
+        /* Set built-in variables */
+        resetBuiltinVariables();
+    }
+
+    //----------------------------------------------------------------
+
+    public void reset() {
+        this.outcomeValues.clear();
+        resetBuiltinVariables();
+    }
+
+    public void resetBuiltinVariables() {
+        setDuration(0);
     }
 
     public TestPlan getTestPlan() {
         return testPlan;
     }
 
-    public Map<Identifier, Value> getOutcomeValues() {
-        return outcomeValues;
-    }
 
     public Map<TestPlanNodeInstanceKey, TestItemState> getTestItemStates() {
         return testItemStates;
+    }
+
+    //----------------------------------------------------------------
+
+    public Value getOutcomeValue(final Identifier identifier) {
+        Assert.notNull(identifier);
+        return outcomeValues.get(identifier);
+    }
+
+    public Value getOutcomeValue(final OutcomeDeclaration outcomeDeclaration) {
+        Assert.notNull(outcomeDeclaration);
+        return getOutcomeValue(outcomeDeclaration.getIdentifier());
+    }
+
+    public void setOutcomeValue(final Identifier identifier, final Value value) {
+        Assert.notNull(identifier);
+        Assert.notNull(value);
+        outcomeValues.put(identifier, value);
+    }
+
+    public void setOutcomeValue(final OutcomeDeclaration outcomeDeclaration, final Value value) {
+        Assert.notNull(outcomeDeclaration);
+        Assert.notNull(value);
+        setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
+    }
+
+    public void setOutcomeValueFromLookupTable(final OutcomeDeclaration outcomeDeclaration, final NumberValue value) {
+        Assert.notNull(outcomeDeclaration);
+        Assert.notNull(value);
+        Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value.doubleValue());
+        if (targetValue == null) {
+            targetValue = NullValue.INSTANCE;
+        }
+        setOutcomeValue(outcomeDeclaration.getIdentifier(), targetValue);
+    }
+
+    public Map<Identifier, Value> getOutcomeValues() {
+        return Collections.unmodifiableMap(outcomeValues);
+    }
+
+    //----------------------------------------------------------------
+    // Built-in variable manipulation
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public FloatValue getDurationValue() {
+        return durationValue;
+    }
+
+    public void setDurationValue(final FloatValue value) {
+        Assert.notNull(value);
+        this.durationValue = value;
+    }
+
+    public double getDuration() {
+        return getDurationValue().doubleValue();
+    }
+
+    public void setDuration(final double duration) {
+        setDurationValue(new FloatValue(duration));
     }
 
     //----------------------------------------------------------------

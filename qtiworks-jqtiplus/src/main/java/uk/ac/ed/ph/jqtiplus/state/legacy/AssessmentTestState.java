@@ -145,41 +145,7 @@ public final class AssessmentTestState extends ControlObjectState<String> {
 
     //---------------------------------------------------------------
 
-    public Value getOutcomeValue(final Identifier identifier) {
-        Assert.notNull(identifier);
-        return outcomeValues.get(identifier);
-    }
-
-    public Value getOutcomeValue(final OutcomeDeclaration outcomeDeclaration) {
-        Assert.notNull(outcomeDeclaration);
-        return getOutcomeValue(outcomeDeclaration.getIdentifier());
-    }
-
-    public void setOutcomeValue(final Identifier identifier, final Value value) {
-        Assert.notNull(identifier);
-        Assert.notNull(value);
-        outcomeValues.put(identifier, value);
-    }
-
-    public void setOutcomeValue(final OutcomeDeclaration outcomeDeclaration, final Value value) {
-        Assert.notNull(outcomeDeclaration);
-        Assert.notNull(value);
-        setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
-    }
-
-    public void setOutcomeValueFromLookupTable(final OutcomeDeclaration outcomeDeclaration, final NumberValue value) {
-        Assert.notNull(outcomeDeclaration);
-        Assert.notNull(value);
-        Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value.doubleValue());
-        if (targetValue == null) {
-            targetValue = NullValue.INSTANCE;
-        }
-        setOutcomeValue(outcomeDeclaration.getIdentifier(), targetValue);
-    }
-
-    public Map<Identifier, Value> getOutcomeValues() {
-        return Collections.unmodifiableMap(outcomeValues);
-    }
+    
 
     //-------------------------------------------------------------------
 

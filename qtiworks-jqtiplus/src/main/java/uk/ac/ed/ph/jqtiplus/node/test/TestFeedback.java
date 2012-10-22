@@ -43,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.FlowStatic;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentTestState;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -165,14 +165,14 @@ public final class TestFeedback extends AbstractNode {
      * @param requestedAccess given requested access
      * @return true if this feedback can be displayed for given requested access; false otherwise
      */
-    public boolean isVisible(final AssessmentTestState testState, final TestFeedbackAccess requestedAccess) {
+    public boolean isVisible(final TestSessionState testSessionState, final TestFeedbackAccess requestedAccess) {
         if (getTestFeedbackAccess() != requestedAccess) {
             return false;
         }
 
         boolean match = false;
 
-        final Value outcomeValue = testState.getOutcomeValue(getOutcomeIdentifier());
+        final Value outcomeValue = testSessionState.getOutcomeValue(getOutcomeIdentifier());
         if (outcomeValue != null && !outcomeValue.isNull() && outcomeValue.getBaseType().isIdentifier()) {
             if (outcomeValue.getCardinality() == Cardinality.SINGLE &&
                     ((IdentifierValue) outcomeValue).identifierValue().equals(getOutcomeValue())) {
