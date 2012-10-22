@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
+import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 
@@ -48,11 +48,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
- * FIXME: Document this type
+ * This helper class analyses a {@link ResolvedAssessmentItem} and generates an
+ * {@link ItemProcessingMap} that can be reused by {@link ItemSessionController}s.
+ *
+ * @see ItemProcessingMap
+ * @see ItemSessionController
  *
  * @author David McKain
  */
-public final class ItemRunInitializer {
+public final class ItemProcessingInitializer {
 
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final boolean isValid;
@@ -60,11 +64,11 @@ public final class ItemRunInitializer {
     private final LinkedHashMap<Identifier, ResponseDeclaration> responseDeclarationMapBuilder;
     private final LinkedHashMap<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder;
 
-    public ItemRunInitializer(final ItemValidationResult itemValidationResult) {
+    public ItemProcessingInitializer(final ItemValidationResult itemValidationResult) {
         this(itemValidationResult.getResolvedAssessmentItem(), itemValidationResult.isValid());
     }
 
-    public ItemRunInitializer(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid) {
+    public ItemProcessingInitializer(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid) {
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.isValid = isValid;
         this.templateDeclarationMapBuilder = new LinkedHashMap<Identifier, TemplateDeclaration>();
@@ -72,7 +76,7 @@ public final class ItemRunInitializer {
         this.outcomeDeclarationMapBuilder = new LinkedHashMap<Identifier, OutcomeDeclaration>();
     }
 
-    public ItemRunMap initialize() {
+    public ItemProcessingMap initialize() {
         if (!resolvedAssessmentItem.getItemLookup().wasSuccessful()) {
             throw new IllegalStateException("Item lookup did not succeed, so item cannot be run");
         }
@@ -98,8 +102,8 @@ public final class ItemRunInitializer {
         final List<Interaction> interactions = item.getItemBody().findInteractions();
 
         /* That's it! */
-        return new ItemRunMap(resolvedAssessmentItem, isValid, templateDeclarationMapBuilder,
-                responseDeclarationMapBuilder, outcomeDeclarationMapBuilder, interactions);
+        return new ItemProcessingMap(resolvedAssessmentItem, isValid, interactions,
+                templateDeclarationMapBuilder, responseDeclarationMapBuilder, outcomeDeclarationMapBuilder);
     }
 
     private void doTemplateVariable(final TemplateDeclaration declaration) {

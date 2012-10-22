@@ -34,11 +34,13 @@
 package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
@@ -52,41 +54,48 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * FIXME: Document this type!
+ * Encapsulates the key information about an {@link AssessmentItem} used during processing.
  * <p>
  * Usage: an instance of this class can be safely used by multiple Threads
  *
+ * @see ItemProcessingInitializer
+ *
  * @author David McKain
  */
-public final class ItemRunMap implements Serializable {
+public final class ItemProcessingMap implements Serializable {
 
     private static final long serialVersionUID = -823440766463296396L;
 
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final boolean isValid;
+    private final List<Interaction> interactions;
+    private final Map<Identifier, Interaction> interactionByResponseIdentifierMap;
     private final Set<Identifier> validVariableIdentifierSet;
     private final Map<Identifier, TemplateDeclaration> validTemplateDeclarationMap;
     private final Map<Identifier, ResponseDeclaration> validResponseDeclarationMap;
     private final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMap;
-    private final List<Interaction> interactions;
-    private final Map<Identifier, Interaction> interactionByResponseIdentifierMap;
 
-    public ItemRunMap(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid, final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder,
-            final Map<Identifier, ResponseDeclaration> responseDeclarationMapBuilder, final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder,
-            final List<Interaction> interactionsBuilder) {
+
+    public ItemProcessingMap(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid, final List<Interaction> interactionsBuilder,
+            final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder, final Map<Identifier, ResponseDeclaration> responseDeclarationMapBuilder,
+            final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder) {
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.isValid = isValid;
-        this.validTemplateDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, TemplateDeclaration>(templateDeclarationMapBuilder));
-        this.validResponseDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, ResponseDeclaration>(responseDeclarationMapBuilder));
-        this.validOutcomeDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, OutcomeDeclaration>(outcomeDeclarationMapBuilder));
-        this.interactions = Collections.unmodifiableList(new ArrayList<Interaction>(interactionsBuilder));
 
+        /* Record interactions and build helper map */
+        this.interactions = Collections.unmodifiableList(new ArrayList<Interaction>(interactionsBuilder));
         final Map<Identifier, Interaction> interactionMapBuilder = new HashMap<Identifier, Interaction>();
         for (final Interaction interaction : interactions) {
             interactionMapBuilder.put(interaction.getResponseIdentifier(), interaction);
         }
         this.interactionByResponseIdentifierMap = Collections.unmodifiableMap(interactionMapBuilder);
 
+        /* Record (valid) variable declarations */
+        this.validTemplateDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, TemplateDeclaration>(templateDeclarationMapBuilder));
+        this.validResponseDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, ResponseDeclaration>(responseDeclarationMapBuilder));
+        this.validOutcomeDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, OutcomeDeclaration>(outcomeDeclarationMapBuilder));
+
+        /* Build set of all variable declarations */
         final Set<Identifier> variableIdentifierSetBuilder = new HashSet<Identifier>();
         variableIdentifierSetBuilder.addAll(validTemplateDeclarationMap.keySet());
         variableIdentifierSetBuilder.addAll(validResponseDeclarationMap.keySet());

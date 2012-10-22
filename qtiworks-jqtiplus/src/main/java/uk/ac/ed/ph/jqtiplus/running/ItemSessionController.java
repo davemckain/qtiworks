@@ -66,7 +66,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
-import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
+import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -101,17 +101,17 @@ public final class ItemSessionController extends ItemValidationController implem
     /** TODO: Make this settable! */
     public static final int MAX_TEMPLATE_PROCESSING_TRIES = 100;
 
-    private final ItemRunMap itemRunMap;
+    private final ItemProcessingMap itemProcessingMap;
     private final ItemSessionState itemSessionState;
 
     private Long randomSeed;
     private Random randomGenerator;
 
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager,
-            final ItemRunMap itemRunMap, final ItemSessionState itemSessionState) {
-        super(jqtiExtensionManager, itemRunMap!=null ? itemRunMap.getResolvedAssessmentItem() : null);
+            final ItemProcessingMap itemProcessingMap, final ItemSessionState itemSessionState) {
+        super(jqtiExtensionManager, itemProcessingMap!=null ? itemProcessingMap.getResolvedAssessmentItem() : null);
         Assert.notNull(itemSessionState, "itemSessionState");
-        this.itemRunMap = itemRunMap;
+        this.itemProcessingMap = itemProcessingMap;
         this.itemSessionState = itemSessionState;
         this.randomSeed = null;
         this.randomGenerator = null;
@@ -134,7 +134,7 @@ public final class ItemSessionController extends ItemValidationController implem
 
     @Override
     public boolean isSubjectValid() {
-        return itemRunMap.isValid();
+        return itemProcessingMap.isValid();
     }
 
     //-------------------------------------------------------------------
@@ -165,13 +165,13 @@ public final class ItemSessionController extends ItemValidationController implem
      */
     public void initialize() {
         itemSessionState.reset();
-        for (final Identifier identifier : itemRunMap.getValidTemplateDeclarationMap().keySet()) {
+        for (final Identifier identifier : itemProcessingMap.getValidTemplateDeclarationMap().keySet()) {
             itemSessionState.setTemplateValue(identifier, NullValue.INSTANCE);
         }
-        for (final Identifier identifier : itemRunMap.getValidResponseDeclarationMap().keySet()) {
+        for (final Identifier identifier : itemProcessingMap.getValidResponseDeclarationMap().keySet()) {
             itemSessionState.setResponseValue(identifier, NullValue.INSTANCE);
         }
-        for (final Identifier identifier : itemRunMap.getValidOutcomeDeclarationMap().keySet()) {
+        for (final Identifier identifier : itemProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
             itemSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
         }
         itemSessionState.resetBuiltinVariables();
@@ -198,7 +198,7 @@ public final class ItemSessionController extends ItemValidationController implem
             if (templateDefaults != null) {
                 logger.trace("Setting template default values");
                 for (final TemplateDefault templateDefault : templateDefaults) {
-                    final TemplateDeclaration templateDeclaration = itemRunMap.getValidTemplateDeclarationMap().get(templateDefault.getTemplateIdentifier());
+                    final TemplateDeclaration templateDeclaration = itemProcessingMap.getValidTemplateDeclarationMap().get(templateDefault.getTemplateIdentifier());
                     if (templateDeclaration!=null) {
                         final Value defaultValue = templateDefault.evaluate(this);
                         itemSessionState.setOverriddenTemplateDefaultValue(templateDeclaration.getIdentifier(), defaultValue);
@@ -229,7 +229,7 @@ public final class ItemSessionController extends ItemValidationController implem
             itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
 
             /* Initialize all interactions */
-            for (final Interaction interaction : itemRunMap.getInteractions()) {
+            for (final Interaction interaction : itemProcessingMap.getInteractions()) {
                 interaction.initialize(this);
             }
         }
@@ -306,13 +306,13 @@ public final class ItemSessionController extends ItemValidationController implem
          * (The spec seems to indicate that ALL responses bound to these interactions
          * should be set, which is why we have this special code here.)
          */
-        for (final Interaction interaction : itemRunMap.getInteractions()) {
+        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
             if (interaction instanceof EndAttemptInteraction) {
                 itemSessionState.setResponseValue(interaction, BooleanValue.FALSE);
             }
         }
 
-        final Map<Identifier, Interaction> interactionByResponseIdentifierMap = itemRunMap.getInteractionByResponseIdentifierMap();
+        final Map<Identifier, Interaction> interactionByResponseIdentifierMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
         final Set<Identifier> badResponses = new HashSet<Identifier>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
@@ -343,7 +343,7 @@ public final class ItemSessionController extends ItemValidationController implem
     public Set<Identifier> validateResponses() {
         logger.debug("Validating responses");
         final Set<Identifier> invalidResponseIdentifiers = new HashSet<Identifier>();
-        for (final Interaction interaction : itemRunMap.getInteractions()) {
+        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
             final Value responseValue = itemSessionState.getResponseValue(interaction);
             if (!interaction.validateResponse(this, responseValue)) {
                 invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
@@ -364,7 +364,7 @@ public final class ItemSessionController extends ItemValidationController implem
              * with countAttempt set to false.
              */
             boolean countAttempt = true;
-            for (final Interaction interaction : itemRunMap.getInteractions()) {
+            for (final Interaction interaction : itemProcessingMap.getInteractions()) {
                 if (interaction instanceof EndAttemptInteraction) {
                     final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
                     final BooleanValue value = (BooleanValue) itemSessionState.getResponseValue(interaction);
@@ -474,12 +474,12 @@ public final class ItemSessionController extends ItemValidationController implem
         VariableDeclaration result = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
-            result = itemRunMap.getValidTemplateDeclarationMap().get(identifier);
+            result = itemProcessingMap.getValidTemplateDeclarationMap().get(identifier);
             if (result==null) {
-                result = itemRunMap.getValidResponseDeclarationMap().get(identifier);
+                result = itemProcessingMap.getValidResponseDeclarationMap().get(identifier);
             }
             if (result==null) {
-                result = itemRunMap.getValidOutcomeDeclarationMap().get(identifier);
+                result = itemProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
             }
         }
         else {
@@ -487,15 +487,15 @@ public final class ItemSessionController extends ItemValidationController implem
             CHECK_LOOP: for (final VariableType type : permittedTypes) {
                 switch (type) {
                     case TEMPLATE:
-                        result = itemRunMap.getValidTemplateDeclarationMap().get(identifier);
+                        result = itemProcessingMap.getValidTemplateDeclarationMap().get(identifier);
                         break;
 
                     case RESPONSE:
-                        result = itemRunMap.getValidResponseDeclarationMap().get(identifier);
+                        result = itemProcessingMap.getValidResponseDeclarationMap().get(identifier);
                         break;
 
                     case OUTCOME:
-                        result = itemRunMap.getValidOutcomeDeclarationMap().get(identifier);
+                        result = itemProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
                         break;
 
                     default:
@@ -514,7 +514,7 @@ public final class ItemSessionController extends ItemValidationController implem
     @Override
     public Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
-        if (!itemRunMap.isValidVariableIdentifier(identifier)) {
+        if (!itemProcessingMap.isValidVariableIdentifier(identifier)) {
             throw new QtiInvalidLookupException(identifier);
         }
         final Value value = getVariableValue(identifier, permittedTypes);
@@ -636,13 +636,13 @@ public final class ItemSessionController extends ItemValidationController implem
     //-------------------------------------------------------------------
 
     private void resetTemplateVariables() {
-        for (final TemplateDeclaration templateDeclaration : itemRunMap.getValidTemplateDeclarationMap().values()) {
+        for (final TemplateDeclaration templateDeclaration : itemProcessingMap.getValidTemplateDeclarationMap().values()) {
             initValue(templateDeclaration);
         }
     }
 
     private void resetResponseVariables() {
-        for (final ResponseDeclaration responseDeclaration : itemRunMap.getValidResponseDeclarationMap().values()) {
+        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
             if (!responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER) &&
                     !responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
                 initValue(responseDeclaration);
@@ -651,7 +651,7 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     private void resetOutcomeVariables() {
-        for (final OutcomeDeclaration outcomeDeclaration : itemRunMap.getValidOutcomeDeclarationMap().values()) {
+        for (final OutcomeDeclaration outcomeDeclaration : itemProcessingMap.getValidOutcomeDeclarationMap().values()) {
             if (!outcomeDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
                 initValue(outcomeDeclaration);
             }
@@ -698,16 +698,16 @@ public final class ItemSessionController extends ItemValidationController implem
         final List<ItemVariable> itemVariables = result.getItemVariables();
         itemVariables.clear();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
-            final OutcomeDeclaration declaration = itemRunMap.getValidOutcomeDeclarationMap().get(mapEntry.getKey());
+            final OutcomeDeclaration declaration = itemProcessingMap.getValidOutcomeDeclarationMap().get(mapEntry.getKey());
             if (declaration!=null) {
                 final Value value = mapEntry.getValue();
                 final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
                 itemVariables.add(variable);
             }
         }
-        final Map<Identifier, Interaction> interactionMap = itemRunMap.getInteractionByResponseIdentifierMap();
+        final Map<Identifier, Interaction> interactionMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
-            final ResponseDeclaration declaration = itemRunMap.getValidResponseDeclarationMap().get(mapEntry.getKey());
+            final ResponseDeclaration declaration = itemProcessingMap.getValidResponseDeclarationMap().get(mapEntry.getKey());
             if (declaration!=null) {
                 final Value value = mapEntry.getValue();
                 List<Identifier> interactionChoiceOrder = null;
@@ -720,7 +720,7 @@ public final class ItemSessionController extends ItemValidationController implem
             }
         }
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getTemplateValues().entrySet()) {
-            final TemplateDeclaration declaration = itemRunMap.getValidTemplateDeclarationMap().get(mapEntry.getKey());
+            final TemplateDeclaration declaration = itemProcessingMap.getValidTemplateDeclarationMap().get(mapEntry.getKey());
             if (declaration!=null) {
                 final Value value = mapEntry.getValue();
                 final TemplateVariable variable = new TemplateVariable(result, declaration, value);

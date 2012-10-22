@@ -13,9 +13,9 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.running.ItemRunInitializer;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
-import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
+import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -39,13 +39,13 @@ public class ChoiceRunningTest {
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
         final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
 
-        final ItemRunMap itemRunMap = new ItemRunInitializer(resolvedAssessmentItem, false).initialize();
-        System.out.println("Run map is: " + ObjectDumper.dumpObject(itemRunMap, DumpMode.DEEP));
+        final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, false).initialize();
+        System.out.println("Run map is: " + ObjectDumper.dumpObject(itemProcessingMap, DumpMode.DEEP));
 
         final ItemSessionState itemState = new ItemSessionState();
         System.out.println("Item state before init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
 
-        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, itemRunMap, itemState);
+        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemState);
 
         System.out.println("\nInitialising");
         itemController.performTemplateProcessing();
