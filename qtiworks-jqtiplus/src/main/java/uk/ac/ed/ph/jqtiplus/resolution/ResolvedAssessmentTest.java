@@ -197,8 +197,8 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
              */
             for (final AssessmentItemRef itemRef : itemRefs) { /*  (1) above */
                 final Identifier itemRefIdentifier = itemRef.getIdentifier();
-                final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\d+)\\.(\\p{L}.+)$");
-                final Matcher matcher = pattern.matcher(itemRefIdentifier.toString());
+                final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\d+)\\.(\\p{L}.*)$");
+                final Matcher matcher = pattern.matcher(reference);
                 if (matcher.matches()) {
                     final Integer instanceNumber = Integer.valueOf(matcher.group(1));
                     final Identifier possibleItemVariableIdentifier = Identifier.assumedLegal(matcher.group(2));
@@ -213,8 +213,8 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
             }
             for (final AssessmentItemRef itemRef : itemRefs) { /*  (2) above */
                 final Identifier itemRefIdentifier = itemRef.getIdentifier();
-                final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\p{L}.+)$");
-                final Matcher matcher = pattern.matcher(itemRefIdentifier.toString());
+                final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\p{L}.*)$");
+                final Matcher matcher = pattern.matcher(reference);
                 if (matcher.matches()) {
                     final Identifier possibleItemVariableIdentifier = Identifier.assumedLegal(matcher.group(1));
 
