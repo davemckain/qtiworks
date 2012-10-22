@@ -39,8 +39,8 @@ import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.state.legacy.TimeRecord;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
@@ -57,16 +57,16 @@ public final class AssessmentItemRefAttemptController {
     private final AssessmentItemRef itemRef;
     private final AssessmentItemRefState itemRefState;
 
-    AssessmentItemRefAttemptController(AssessmentTestAttemptController testAttemptController,
-            ResolvedAssessmentItem resolvedAssessmentItem, AssessmentItemRef itemRef,
-            AssessmentItemRefState itemRefState) {
+    AssessmentItemRefAttemptController(final AssessmentTestAttemptController testAttemptController,
+            final ItemProcessingMap itemProcessingMap, final AssessmentItemRef itemRef,
+            final AssessmentItemRefState itemRefState) {
         Assert.notNull(testAttemptController, "testAttemptController");
-        Assert.notNull(resolvedAssessmentItem, "resolvedAssessmentItem");
+        Assert.notNull(itemProcessingMap, "itemProcessingMap");
         Assert.notNull(itemRef, "itemRef");
         Assert.notNull(itemRefState, "assessmentItemRefState");
         this.testAttemptController = testAttemptController;
         this.itemAttemptController = new ItemSessionController(testAttemptController.getJqtiExtensionManager(),
-                resolvedAssessmentItem, itemRefState.getItemState());
+                itemProcessingMap, itemRefState.getItemState());
         this.itemRef = itemRef;
         this.itemRefState = itemRefState;
     }
@@ -131,7 +131,7 @@ public final class AssessmentItemRefAttemptController {
 
     /**
      * Skips this item reference and sets state to finished.
-     * 
+     *
      * @throws QtiItemFlowException if this item reference if already finished or skipping is not allowed
      * @see #isSkipped
      */
@@ -152,7 +152,7 @@ public final class AssessmentItemRefAttemptController {
      * Times out this item reference and sets state to finished.
      * <p>
      * This method should be called when user submits answer but time was already out.
-     * 
+     *
      * @throws QtiItemFlowException if this item reference is already finished
      * @see AssessmentItemRefState#isTimedOut()
      */
@@ -177,7 +177,7 @@ public final class AssessmentItemRefAttemptController {
     // The next used to be in AssessmentItemRef. It previously added results for each "state"
     // recorded, but we're not doing this any more.
 
-    public ItemResult computeItemResult(AssessmentResult parent, Integer sequenceIndex, SessionStatus sessionStatus) {
+    public ItemResult computeItemResult(final AssessmentResult parent, final Integer sequenceIndex, final SessionStatus sessionStatus) {
         final ItemResult result = new ItemResult(parent);
         result.setIdentifier(itemRef.getIdentifier().toString());
         result.setDateStamp(new Date());
@@ -192,12 +192,12 @@ public final class AssessmentItemRefAttemptController {
 
     /**
      * Enter new start time.
-     * 
+     *
      * @param time start time
      */
     @ToRefactor
     /* Rename this as setEnterTime() */
-    public void enter(long time) {
+    public void enter(final long time) {
         final TimeRecord timeRecord = itemRefState.getTimeRecord();
         assert timeRecord.getEntered().size() == timeRecord.getExited().size() : "Cannot enter item reference twice: "
                 + itemRefState;
@@ -210,12 +210,12 @@ public final class AssessmentItemRefAttemptController {
 
     /**
      * Enter new exit time.
-     * 
+     *
      * @param time exit time
      */
     @ToRefactor
     /* Rename this */
-    public void exit(long time) {
+    public void exit(final long time) {
         final TimeRecord timeRecord = itemRefState.getTimeRecord();
         assert timeRecord.getEntered().size() == timeRecord.getExited().size() + 1 : "Cannot exit item reference prior to enter: " + itemRefState;
 
@@ -230,12 +230,12 @@ public final class AssessmentItemRefAttemptController {
 
     /**
      * Enter new submit time.
-     * 
+     *
      * @param time submit time
      */
     @ToRefactor
     /* Rename this */
-    public void submit(long time) {
+    public void submit(final long time) {
         final TimeRecord timeRecord = itemRefState.getTimeRecord();
         assert timeRecord.getSkipped() == null : "Cannot submit timeRecord.getSkipped() item reference: " + itemRefState;
         assert timeRecord.getTimedOut() == null : "Cannot submit timed out item reference: " + itemRefState;
@@ -248,12 +248,12 @@ public final class AssessmentItemRefAttemptController {
 
     /**
      * Enter new skip time
-     * 
+     *
      * @param time skip time
      */
     @ToRefactor
     /* Rename this */
-    public void skip(long time) {
+    public void skip(final long time) {
         final TimeRecord timeRecord = itemRefState.getTimeRecord();
         assert timeRecord.getSkipped() == null : "Cannot skip item reference twice: " + itemRefState;
         assert timeRecord.getTimedOut() == null : "Cannot skip timed out item reference: " + itemRefState;
@@ -266,10 +266,10 @@ public final class AssessmentItemRefAttemptController {
 
     /**
      * Enter new timeout time
-     * 
+     *
      * @param time timeout time
      */
-    public void setTimeOutTime(long time) {
+    public void setTimeOutTime(final long time) {
         final TimeRecord timeRecord = itemRefState.getTimeRecord();
         assert timeRecord.getSkipped() == null : "Cannot timeout timeRecord.getSkipped() item reference: " + itemRefState;
         assert timeRecord.getTimedOut() == null : "Cannot time out item reference twice: " + itemRefState;
