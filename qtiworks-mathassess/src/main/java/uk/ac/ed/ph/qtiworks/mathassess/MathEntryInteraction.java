@@ -136,7 +136,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
 
         final Identifier printIdentifier = getPrintIdentifier();
         if (printIdentifier!= null) {
-            final VariableDeclaration printDeclaration = context.checkVariableReference(this, printIdentifier);
+            final VariableDeclaration printDeclaration = context.checkLocalVariableReference(this, printIdentifier);
             if (printDeclaration!=null) {
                 context.checkVariableType(this, printDeclaration, VariableType.RESPONSE);
                 context.checkSignature(this, printDeclaration, Signature.SINGLE_STRING);

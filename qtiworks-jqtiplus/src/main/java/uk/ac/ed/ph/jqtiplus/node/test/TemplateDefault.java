@@ -102,7 +102,7 @@ public final class TemplateDefault extends AbstractNode implements ExpressionPar
     public final Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         final Identifier templateIdentifier = getTemplateIdentifier();
         if (templateIdentifier!=null) {
-            final VariableDeclaration declaration = context.isValidVariableReference(templateIdentifier);
+            final VariableDeclaration declaration = context.isValidLocalVariableReference(templateIdentifier);
             if (declaration!=null && declaration.getVariableType()==VariableType.TEMPLATE) {
                 return new Cardinality[] {  declaration.getCardinality() };
             }
@@ -114,7 +114,7 @@ public final class TemplateDefault extends AbstractNode implements ExpressionPar
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         final Identifier templateIdentifier = getTemplateIdentifier();
         if (templateIdentifier!=null) {
-            final VariableDeclaration declaration = context.isValidVariableReference(templateIdentifier);
+            final VariableDeclaration declaration = context.isValidLocalVariableReference(templateIdentifier);
             if (declaration!=null && declaration.getVariableType()==VariableType.TEMPLATE && declaration.getBaseType()!=null) {
                 return new BaseType[] {  declaration.getBaseType() };
             }

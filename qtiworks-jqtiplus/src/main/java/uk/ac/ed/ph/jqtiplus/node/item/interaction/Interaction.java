@@ -110,7 +110,7 @@ public abstract class Interaction extends BodyElement {
         final Identifier responseIdentifier = getResponseIdentifier();
         ResponseDeclaration responseDeclaration = null;
         if (responseIdentifier!=null) {
-            final VariableDeclaration declaration = context.checkVariableReference(this, responseIdentifier);
+            final VariableDeclaration declaration = context.checkLocalVariableReference(this, responseIdentifier);
             if (declaration!=null && declaration.getCardinality()!=null
                     && context.checkVariableType(this, declaration, VariableType.RESPONSE)) {
                 responseDeclaration = (ResponseDeclaration) declaration;
@@ -127,7 +127,7 @@ public abstract class Interaction extends BodyElement {
      * @param responseDeclaration resolved {@link ResponseDeclaration}, or null if
      *   the {@link ResponseDeclaration} was not considered valid
      *
-     * @see ValidationContext#checkVariableReference(QtiNode, Identifier)
+     * @see ValidationContext#checkLocalVariableReference(QtiNode, Identifier)
      */
     protected abstract void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration);
 

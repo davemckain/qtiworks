@@ -46,12 +46,12 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
  */
 public final class ResolvedTestVariableReference {
 
-    private final VariableDeclaration variableDeclaration;
+    private final VariableDeclaration targetVariableDeclaration;
     private final AssessmentItemRef assessmentItemRef;
     private final Integer instanceNumber;
 
     public ResolvedTestVariableReference(final VariableDeclaration testVariableDeclaration) {
-        this.variableDeclaration = testVariableDeclaration;
+        this.targetVariableDeclaration = testVariableDeclaration;
         this.assessmentItemRef = null;
         this.instanceNumber = null;
     }
@@ -61,7 +61,7 @@ public final class ResolvedTestVariableReference {
     }
 
     public ResolvedTestVariableReference(final AssessmentItemRef assessmentItemRef, final VariableDeclaration itemVariableDeclaration, final Integer instanceNumber) {
-        this.variableDeclaration = itemVariableDeclaration;
+        this.targetVariableDeclaration = itemVariableDeclaration;
         this.assessmentItemRef = assessmentItemRef;
         this.instanceNumber = instanceNumber;
     }
@@ -75,7 +75,7 @@ public final class ResolvedTestVariableReference {
     }
 
     public VariableDeclaration getVariableDeclaration() {
-        return variableDeclaration;
+        return targetVariableDeclaration;
     }
 
     public AssessmentItemRef getAssessmentItemRef() {
@@ -89,7 +89,7 @@ public final class ResolvedTestVariableReference {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(variableDeclaration=" + variableDeclaration
+                + "(variableDeclaration=" + targetVariableDeclaration
                 + ",assessmentItemRef=" + assessmentItemRef
                 + ",instanceNumber=" + instanceNumber
                 + ")";

@@ -72,7 +72,7 @@ public final class StringOrVariableRefAttribute extends SingleAttribute<StringOr
         /* If variable reference, make sure it refers to the right type of variable */
         if (value.isVariableRef()) {
             final Identifier variableReferenceIdentifier = value.getIdentifier();
-            final VariableDeclaration variableDeclaration = context.checkVariableReference(owner, variableReferenceIdentifier);
+            final VariableDeclaration variableDeclaration = context.checkLocalVariableReference(owner, variableReferenceIdentifier);
             if (variableDeclaration!=null) {
                 context.checkVariableType(owner, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
                 context.checkSignature(owner, variableDeclaration, Signature.SINGLE_STRING);

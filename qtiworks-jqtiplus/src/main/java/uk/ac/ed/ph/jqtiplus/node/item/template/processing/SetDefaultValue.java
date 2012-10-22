@@ -61,7 +61,7 @@ public final class SetDefaultValue extends ProcessTemplateValue {
     protected void validateThis(final ValidationContext context) {
         final Identifier identifier = getIdentifier();
         if (identifier != null) {
-            final VariableDeclaration declaration = context.checkVariableReference(this, identifier);
+            final VariableDeclaration declaration = context.checkLocalVariableReference(this, identifier);
             context.checkVariableType(this, declaration, VariableType.RESPONSE, VariableType.TEMPLATE);
         }
     }

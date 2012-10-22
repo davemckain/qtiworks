@@ -72,7 +72,7 @@ public abstract class ProcessTemplateValue extends TemplateRule implements Expre
     public final Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
-            final VariableDeclaration declaration = context.isValidVariableReference(referenceIdentifier);
+            final VariableDeclaration declaration = context.isValidLocalVariableReference(referenceIdentifier);
             if (declaration!=null) {
                 return new Cardinality[] {  declaration.getCardinality() };
             }
@@ -84,7 +84,7 @@ public abstract class ProcessTemplateValue extends TemplateRule implements Expre
     public final BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
-            final VariableDeclaration declaration = context.isValidVariableReference(referenceIdentifier);
+            final VariableDeclaration declaration = context.isValidLocalVariableReference(referenceIdentifier);
             if (declaration!=null && declaration.getBaseType()!=null) {
                 return new BaseType[] { declaration.getBaseType() };
             }

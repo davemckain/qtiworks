@@ -161,7 +161,7 @@ public class ModalFeedback extends AbstractNode {
     public void validateThis(final ValidationContext context) {
         final Identifier outcomeIdentifier = getOutcomeIdentifier();
         if (outcomeIdentifier!=null) {
-            final VariableDeclaration declaration = context.checkVariableReference(this, getOutcomeIdentifier());
+            final VariableDeclaration declaration = context.checkLocalVariableReference(this, getOutcomeIdentifier());
             if (declaration!=null) {
                 context.checkVariableType(this, declaration, VariableType.OUTCOME);
                 if (!declaration.hasSignature(Signature.SINGLE_IDENTIFIER, Signature.MULTIPLE_IDENTIFIER)) {

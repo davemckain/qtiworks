@@ -270,7 +270,7 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
 
         final Identifier stringIdentifier = getStringIdentifier();
         if (stringIdentifier != null) {
-            final VariableDeclaration stringDeclaration = context.checkVariableReference(this, stringIdentifier);
+            final VariableDeclaration stringDeclaration = context.checkLocalVariableReference(this, stringIdentifier);
             if (stringDeclaration!=null) {
                 context.checkVariableType(this, stringDeclaration, VariableType.RESPONSE);
                 if ((getMinStrings() > 1 || (getMaxStrings() != null && getMaxStrings() > 1))

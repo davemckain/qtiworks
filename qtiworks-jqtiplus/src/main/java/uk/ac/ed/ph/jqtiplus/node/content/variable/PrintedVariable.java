@@ -183,7 +183,7 @@ public final class PrintedVariable extends AbstractFlowBodyElement implements Fl
     public void validateThis(final ValidationContext context) {
         if (getIdentifier() != null) {
             final Identifier identifier = getIdentifier();
-            final VariableDeclaration variableDeclaration = context.checkVariableReference(this, identifier);
+            final VariableDeclaration variableDeclaration = context.checkLocalVariableReference(this, identifier);
             if (variableDeclaration!=null) {
                 context.checkVariableType(this, variableDeclaration, VariableType.TEMPLATE, VariableType.OUTCOME);
 

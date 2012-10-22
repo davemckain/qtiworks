@@ -144,7 +144,7 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
     @Override
     public void validateThis(final ValidationContext context) {
         if (getOutcomeIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.checkTestVariableReference(this, getOutcomeIdentifier());
+            final OutcomeDeclaration declaration = context.checkSimpleTestVariableReference(this, getOutcomeIdentifier());
             if (declaration!=null) {
                 if (!declaration.hasSignature(Signature.SINGLE_IDENTIFIER, Signature.MULTIPLE_IDENTIFIER)) {
                     context.fireValidationError(this, "Expected outcomeIdentifier to be "

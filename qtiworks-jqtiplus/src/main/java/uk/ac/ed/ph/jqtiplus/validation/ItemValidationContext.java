@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -93,7 +92,7 @@ public class ItemValidationContext extends AbstractValidationContext<AssessmentI
     }
 
     @Override
-    public VariableDeclaration isValidVariableReference(final Identifier variableReferenceIdentifier) {
+    public VariableDeclaration isValidLocalVariableReference(final Identifier variableReferenceIdentifier) {
         final List<VariableDeclaration> variableDeclarations = resolvedAssessmentItem.resolveVariableReference(variableReferenceIdentifier);
         if (variableDeclarations==null) {
             /* Item lookup failed, which is impossible here */
@@ -110,13 +109,7 @@ public class ItemValidationContext extends AbstractValidationContext<AssessmentI
     }
 
     @Override
-    public OutcomeDeclaration isValidTestVariableReference(final Identifier variableReferenceIdentifier) {
-        /* No test variables here */
-        return null;
-    }
-
-    @Override
-    public final VariableDeclaration checkVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
+    public final VariableDeclaration checkLocalVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
         final List<VariableDeclaration> variableDeclarations = resolvedAssessmentItem.resolveVariableReference(variableReferenceIdentifier);
         if (variableDeclarations==null) {
             /* Item lookup failed, which is impossible here */
@@ -142,12 +135,6 @@ public class ItemValidationContext extends AbstractValidationContext<AssessmentI
             fireValidationError(owner, variableDeclarations.size() + " item variables have been declared with the same identifier '" + variableDeclarations + "'");
             return null;
         }
-    }
-
-    @Override
-    public OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
-        fail();
-        return null;
     }
 
     private QtiLogicException fail() {

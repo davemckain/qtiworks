@@ -80,10 +80,6 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
         this.value = value;
     }
 
-    public boolean isDotted() {
-        return value.indexOf('.') != -1;
-    }
-
     @Override
     public String toString() {
         return value;

@@ -144,7 +144,7 @@ public final class TestFeedback extends AbstractNode {
     protected void validateThis(final ValidationContext context) {
         final Identifier outcomeIdentifier = getOutcomeIdentifier();
         if (outcomeIdentifier!=null) {
-            final VariableDeclaration declaration = context.checkVariableReference(this, outcomeIdentifier);
+            final VariableDeclaration declaration = context.checkLocalVariableReference(this, outcomeIdentifier);
             if (declaration!=null) {
                 context.checkVariableType(this, declaration, VariableType.OUTCOME);
             }

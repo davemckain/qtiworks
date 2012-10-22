@@ -34,23 +34,13 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
-import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.Value;
-
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +98,7 @@ public abstract class LookupExpression extends AbstractFunctionalExpression {
 
         /* Check reference */
         final Identifier variableReferenceIdentifier = getIdentifier();
-        final VariableDeclaration resolvedDeclaration = context.checkVariableReference(this, variableReferenceIdentifier);
+        final VariableDeclaration resolvedDeclaration = context.checkLocalVariableReference(this, variableReferenceIdentifier);
 
         /* If reference was OK, let subclasses do any further validation as required */
         if (resolvedDeclaration!=null) {
@@ -146,61 +136,61 @@ public abstract class LookupExpression extends AbstractFunctionalExpression {
 
     public final VariableDeclaration lookupTargetVariableDeclaration(final ValidationContext context) {
         final Identifier referenceIdentifier = getIdentifier();
-        return context.isValidVariableReference(referenceIdentifier);
+        return context.isValidLocalVariableReference(referenceIdentifier);
     }
 
     //----------------------------------------------------------------------
 
-    @Override
-    protected final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getQtiClassName(), getIdentifier() });
-
-        final Identifier variableReferenceIdentifier = getIdentifier();
-        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
-        Value result = null;
-        if (context instanceof ItemProcessingContext) {
-            /* Refers to a variable within this item */
-            final ItemProcessingContext itemContext = (ItemProcessingContext) context;
-            result = evaluateInThisItem(itemContext, localIdentifier);
-        }
-        else {
-            final TestProcessingContext testContext = (TestProcessingContext) context;
-            if (localIdentifier != null) {
-                /* Refers to a variable within this test */
-                result = evaluateInThisTest(testContext, localIdentifier);
-            }
-            else {
-                /* It's a special ITEM.VAR reference */
-                final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
-                final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
-                final Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolved = testContext
-                        .resolveDottedVariableReference(variableReferenceIdentifier);
-                if (resolved == null) {
-                    logger.error("Cannot find assessmentItemRef with identifier {}. Returning NULL value.", itemRefIdentifier);
-                }
-                else {
-                    final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllerMap = resolved.getSecond();
-                    if (itemRefControllerMap.size() != 1) {
-                        logger.error("Lookup of variable {} with identifier in assessmentItemRef with identifier {} resulted in {} matches. "
-                                + "The '.' notation in QTI only supports assessmentItemRefs that are selected exactly one. Returning NULL value.",
-                                new Object[] { itemVarIdentifier, itemRefIdentifier, itemRefControllerMap.size() });
-                    }
-                    else {
-                        final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.values().iterator().next();
-                        result = evaluateInReferencedItem(depth, itemRefController, itemVarIdentifier);
-                    }
-                }
-
-
-            }
-        }
-        return result != null ? result : NullValue.INSTANCE;
-    }
-
-    protected abstract Value evaluateInThisItem(ItemProcessingContext itemContext, Identifier itemVariableIdentifier);
-
-    protected abstract Value evaluateInThisTest(TestProcessingContext testContext, Identifier testVariableIdentifier);
-
-    protected abstract Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier);
+//    @Override
+//    protected final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+//        logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getQtiClassName(), getIdentifier() });
+//
+//        final Identifier variableReferenceIdentifier = getIdentifier();
+//        final Identifier localIdentifier = variableReferenceIdentifier.getLocalIdentifier();
+//        Value result = null;
+//        if (context instanceof ItemProcessingContext) {
+//            /* Refers to a variable within this item */
+//            final ItemProcessingContext itemContext = (ItemProcessingContext) context;
+//            result = evaluateInThisItem(itemContext, localIdentifier);
+//        }
+//        else {
+//            final TestProcessingContext testContext = (TestProcessingContext) context;
+//            if (localIdentifier != null) {
+//                /* Refers to a variable within this test */
+//                result = evaluateInThisTest(testContext, localIdentifier);
+//            }
+//            else {
+//                /* It's a special ITEM.VAR reference */
+//                final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
+//                final Identifier itemVarIdentifier = variableReferenceIdentifier.getAssessmentItemItemVariableIdentifier();
+//                final Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolved = testContext
+//                        .resolveDottedVariableReference(variableReferenceIdentifier);
+//                if (resolved == null) {
+//                    logger.error("Cannot find assessmentItemRef with identifier {}. Returning NULL value.", itemRefIdentifier);
+//                }
+//                else {
+//                    final Map<AssessmentItemRefState, AssessmentItemRefAttemptController> itemRefControllerMap = resolved.getSecond();
+//                    if (itemRefControllerMap.size() != 1) {
+//                        logger.error("Lookup of variable {} with identifier in assessmentItemRef with identifier {} resulted in {} matches. "
+//                                + "The '.' notation in QTI only supports assessmentItemRefs that are selected exactly one. Returning NULL value.",
+//                                new Object[] { itemVarIdentifier, itemRefIdentifier, itemRefControllerMap.size() });
+//                    }
+//                    else {
+//                        final AssessmentItemRefAttemptController itemRefController = itemRefControllerMap.values().iterator().next();
+//                        result = evaluateInReferencedItem(depth, itemRefController, itemVarIdentifier);
+//                    }
+//                }
+//
+//
+//            }
+//        }
+//        return result != null ? result : NullValue.INSTANCE;
+//    }
+//
+//    protected abstract Value evaluateInThisItem(ItemProcessingContext itemContext, Identifier itemVariableIdentifier);
+//
+//    protected abstract Value evaluateInThisTest(TestProcessingContext testContext, Identifier testVariableIdentifier);
+//
+//    protected abstract Value evaluateInReferencedItem(int depth, AssessmentItemRefAttemptController itemRefController, Identifier itemVariableIdentifier);
 
 }

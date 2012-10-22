@@ -102,18 +102,13 @@ public interface ValidationContext extends NotificationFirer {
     /**
      * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
      * dereferenced. Returns the resulting {@link VariableDeclaration} if successful, otherwise null.
+     * <p>
+     * NOTE: If the subject is an {@link AssessmentTest} then this only does a "local" reference
+     * to an {@link OutcomeDeclaration} defined within the test.
      *
-     * @see #checkVariableReference(QtiNode, Identifier)
+     * @see #checkLocalVariableReference(QtiNode, Identifier)
      */
-    VariableDeclaration isValidVariableReference(Identifier variableReferenceIdentifier);
-
-    /**
-     * Checks that the test (outcome) variable having the given {@link Identifier} can be successfully and uniquely
-     * dereferenced. Returns the resulting {@link VariableDeclaration} if successful, otherwise null.
-     *
-     * @see #checkTestVariableReference(QtiNode, Identifier)
-     */
-    OutcomeDeclaration isValidTestVariableReference(Identifier variableReferenceIdentifier);
+    VariableDeclaration isValidLocalVariableReference(Identifier variableReferenceIdentifier);
 
     /**
      * Checks that the variable reference {@link Identifier} resolves successfully and uniquely.
@@ -121,22 +116,15 @@ public interface ValidationContext extends NotificationFirer {
      * <p>
      * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
      * otherwise null.
+     * <p>
+     * NOTE: If the subject is an {@link AssessmentTest} then this only does a "local" reference
+     * to an {@link OutcomeDeclaration} defined within the test.
      *
      * @see #isValidVariableReference(QtiNode, Identifier)
      */
-    VariableDeclaration checkVariableReference(QtiNode owner, Identifier variableReferenceIdentifier);
+    VariableDeclaration checkLocalVariableReference(QtiNode owner, Identifier variableReferenceIdentifier);
 
-    /**
-     * Checks that the test (outcome) variable having the given {@link Identifier} can be
-     * successfully and uniquely dereferenced. A validation error is recorded and {@link NullValue}
-     * is returned if this is unsuccessful.
-     * <p>
-     * Returns a valid {@link OutcomeDeclaration} corresponding to the resulting test variable if successful,
-     * otherwise null.
-     *
-     * @see #isValidTestVariableReference(Identifier)
-     */
-    OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier);
+    //------------------------------------------------------
 
     /**
      * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s,

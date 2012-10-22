@@ -90,7 +90,7 @@ public final class MapResponse extends AbstractFunctionalExpression {
         super.validateThis(context);
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
-            final VariableDeclaration declaration = context.checkVariableReference(this, referenceIdentifier);
+            final VariableDeclaration declaration = context.checkLocalVariableReference(this, referenceIdentifier);
             if (declaration!=null) {
                 if (context.checkVariableType(this, declaration, VariableType.RESPONSE)) {
                     if (declaration.getCardinality().isRecord()) {

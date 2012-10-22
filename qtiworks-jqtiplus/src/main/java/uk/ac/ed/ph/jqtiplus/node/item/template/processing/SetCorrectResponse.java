@@ -60,7 +60,7 @@ public final class SetCorrectResponse extends ProcessTemplateValue {
     protected void validateThis(final ValidationContext context) {
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
-            final VariableDeclaration variableDeclaration = context.checkVariableReference(this, referenceIdentifier);
+            final VariableDeclaration variableDeclaration = context.checkLocalVariableReference(this, referenceIdentifier);
             context.checkVariableType(this, variableDeclaration, VariableType.RESPONSE);
         }
     }

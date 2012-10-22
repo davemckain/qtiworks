@@ -74,7 +74,7 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
-            final VariableDeclaration declaration = context.isValidVariableReference(referenceIdentifier);
+            final VariableDeclaration declaration = context.isValidLocalVariableReference(referenceIdentifier);
             if (declaration!=null && declaration.getVariableType()==VariableType.OUTCOME) {
                 final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) declaration;
                 if (outcomeDeclaration.getLookupTable()!=null) {
@@ -89,7 +89,7 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
     protected void validateThis(final ValidationContext context) {
         final Identifier outcomeIdentifier = getIdentifier();
         if (outcomeIdentifier!=null) {
-            final VariableDeclaration declaration = context.checkVariableReference(this, outcomeIdentifier);
+            final VariableDeclaration declaration = context.checkLocalVariableReference(this, outcomeIdentifier);
             if (context.checkVariableType(this, declaration, VariableType.OUTCOME)) {
                 if (((OutcomeDeclaration) declaration).getLookupTable() == null) {
                     context.fireValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME

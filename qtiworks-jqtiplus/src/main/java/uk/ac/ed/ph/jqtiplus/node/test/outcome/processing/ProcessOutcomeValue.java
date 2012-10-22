@@ -93,7 +93,7 @@ public abstract class ProcessOutcomeValue extends OutcomeRule implements Express
     protected void validateThis(final ValidationContext context) {
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
-             context.checkVariableReference(this, referenceIdentifier);
+             context.checkLocalVariableReference(this, referenceIdentifier);
         }
     }
 }
