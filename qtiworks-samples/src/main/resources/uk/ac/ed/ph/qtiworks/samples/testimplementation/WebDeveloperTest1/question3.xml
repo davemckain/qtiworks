@@ -8,7 +8,7 @@
             <value>ChoiceC</value>
         </correctResponse>
     </responseDeclaration>
-    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="integer">
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
         <defaultValue>
             <value>0</value>
         </defaultValue>
