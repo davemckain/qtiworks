@@ -54,7 +54,7 @@ public class TestValidationController extends AbstractValidationContext<Assessme
 
     private final ResolvedAssessmentTest resolvedAssessmentTest;
 
-    TestValidationController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentTest resolvedAssessmentTest) {
+    public TestValidationController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentTest resolvedAssessmentTest) {
         super(jqtiExtensionManager, resolvedAssessmentTest);
         this.resolvedAssessmentTest = resolvedAssessmentTest;
     }

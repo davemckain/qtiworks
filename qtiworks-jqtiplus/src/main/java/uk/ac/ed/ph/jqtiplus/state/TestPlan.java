@@ -42,6 +42,8 @@ import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,15 +62,36 @@ public final class TestPlan implements Serializable {
     private static final long serialVersionUID = 5176553452095038589L;
 
     private final TestPlanNode testPlanRootNode;
+    private final Map<TestPlanNodeInstanceKey, TestPlanNode> testPlanNodeMap;
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
 
     public TestPlan(final TestPlanNode testPlanRootNode, final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap) {
         this.testPlanRootNode = testPlanRootNode;
         this.testPlanNodesByIdentifierMap = testPlanNodesByIdentifierMap;
+
+        final Map<TestPlanNodeInstanceKey, TestPlanNode> testPlanNodeMapBuilder = new LinkedHashMap<TestPlanNodeInstanceKey, TestPlanNode>();
+        for (final List<TestPlanNode> testPlanNodeList : testPlanNodesByIdentifierMap.values()) {
+            for (final TestPlanNode testPlanNode : testPlanNodeList) {
+                testPlanNodeMapBuilder.put(testPlanNode.getTestPlanNodeInstanceKey(), testPlanNode);
+            }
+        }
+        this.testPlanNodeMap = Collections.unmodifiableMap(testPlanNodeMapBuilder);
+    }
+
+    public Map<TestPlanNodeInstanceKey, TestPlanNode> getTestPlanNodeMap() {
+        return testPlanNodeMap;
     }
 
     public TestPlanNode getTestPlanRootNode() {
         return testPlanRootNode;
+    }
+
+    public List<TestPlanNode> getNodes(final Identifier identifier) {
+        final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
+        if (nodesForIdentifier==null) {
+            return null;
+        }
+        return Collections.unmodifiableList(nodesForIdentifier);
     }
 
     public TestPlanNode getNodeInstance(final Identifier identifier, final int instanceNumber) {

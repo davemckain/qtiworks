@@ -34,8 +34,19 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
+import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,31 +56,117 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public final class TestSessionController {
+public final class TestSessionController extends TestValidationController implements TestProcessingContext {
 
     private static final Logger logger = LoggerFactory.getLogger(TestSessionController.class);
 
-    private final JqtiExtensionManager jqtiExtensionManager;
-    private final ResolvedAssessmentTest resolvedAssessmentTest;
+    private final TestProcessingMap testProcessingMap;
     private final TestSessionState testSessionState;
 
+    private Long randomSeed;
+    private Random randomGenerator;
+
     public TestSessionController(final JqtiExtensionManager jqtiExtensionManager,
-            final ResolvedAssessmentTest resolvedAssessmentTest,
+            final TestProcessingMap testProcessingMap,
             final TestSessionState testSessionState) {
-        this.jqtiExtensionManager = jqtiExtensionManager;
-        this.resolvedAssessmentTest = resolvedAssessmentTest;
+        super(jqtiExtensionManager, testProcessingMap!=null ? testProcessingMap.getResolvedAssessmentTest() : null);
+        this.testProcessingMap = testProcessingMap;
         this.testSessionState = testSessionState;
+        this.randomSeed = null;
+        this.randomGenerator = null;
     }
 
-    public JqtiExtensionManager getJqtiExtensionManager() {
-        return jqtiExtensionManager;
+    public TestProcessingMap getTestProcessingMap() {
+        return testProcessingMap;
     }
 
-    public ResolvedAssessmentTest getResolvedAssessmentTest() {
-        return resolvedAssessmentTest;
-    }
-
+    @Override
     public TestSessionState getTestSessionState() {
         return testSessionState;
+    }
+
+    @Override
+    public boolean isSubjectValid() {
+        return testProcessingMap.isValid();
+    }
+
+    //-------------------------------------------------------------------
+
+    public Long getRandomSeed() {
+        return randomSeed;
+    }
+
+    public void setRandomSeed(final Long randomSeed) {
+        this.randomSeed = randomSeed;
+        this.randomGenerator = null;
+    }
+
+    @Override
+    public Random getRandomGenerator() {
+        if (randomGenerator==null) {
+            randomGenerator = randomSeed!=null ? new Random(randomSeed) : new Random();
+        }
+        return randomGenerator;
+    }
+
+    //-------------------------------------------------------------------
+
+    @Override
+    public VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
+        Assert.notNull(identifier);
+        final VariableDeclaration result = getVariableDeclaration(identifier, permittedTypes);
+        if (result==null) {
+            throw new QtiInvalidLookupException(identifier);
+        }
+        return result;
+    }
+
+    private VariableDeclaration getVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
+        Assert.notNull(identifier);
+        VariableDeclaration result = null;
+        if (permittedTypes.length==0) {
+            /* No types specified, so allow any variable */
+            if (identifier.equals(AssessmentTest.VARIABLE_DURATION_IDENTIFIER)) {
+                result = testProcessingMap.getDurationResponseDeclaration();
+            }
+            else {
+                result = testProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
+            }
+        }
+        else {
+            /* Only allows specified types of variables */
+            CHECK_LOOP: for (final VariableType type : permittedTypes) {
+                switch (type) {
+                    case TEMPLATE:
+                        /* No template variables in tests */
+                        break;
+
+                    case RESPONSE:
+                        /* Only response variable is duration */
+                        if (identifier.equals(AssessmentTest.VARIABLE_DURATION_IDENTIFIER)) {
+                            result = testProcessingMap.getDurationResponseDeclaration();
+                        }
+                        break;
+
+                    case OUTCOME:
+                        result = testProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
+                        break;
+
+                    default:
+                        throw new QtiLogicException("Unexpected switch case: " + type);
+                }
+                if (result!=null) {
+                    break CHECK_LOOP;
+                }
+            }
+        }
+        return result;
+    }
+
+    //-------------------------------------------------------------------
+
+    @Override
+    public Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
+        return null;
     }
 }

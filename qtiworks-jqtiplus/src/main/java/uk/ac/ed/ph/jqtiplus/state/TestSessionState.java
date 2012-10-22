@@ -74,9 +74,17 @@ public final class TestSessionState implements Serializable {
         this.testPlan = testPlan;
         this.outcomeValues = new HashMap<Identifier, Value>();
         this.testItemStates = new HashMap<TestPlanNodeInstanceKey, TestItemState>();
+        reset();
+    }
 
-        /* Set built-in variables */
-        resetBuiltinVariables();
+    //----------------------------------------------------------------
+
+    public TestPlan getTestPlan() {
+        return testPlan;
+    }
+
+    public Map<TestPlanNodeInstanceKey, TestItemState> getTestItemStates() {
+        return testItemStates;
     }
 
     //----------------------------------------------------------------
@@ -88,15 +96,6 @@ public final class TestSessionState implements Serializable {
 
     public void resetBuiltinVariables() {
         setDuration(0);
-    }
-
-    public TestPlan getTestPlan() {
-        return testPlan;
-    }
-
-
-    public Map<TestPlanNodeInstanceKey, TestItemState> getTestItemStates() {
-        return testItemStates;
     }
 
     //----------------------------------------------------------------

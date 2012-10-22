@@ -33,8 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
@@ -93,6 +96,7 @@ public final class TestPlanNode implements Serializable {
         this.children = new ArrayList<TestPlanNode>();
     }
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     @ObjectDumperOptions(DumpMode.IGNORE)
     public TestPlanNode getParent() {
         return parentNode;
@@ -118,6 +122,7 @@ public final class TestPlanNode implements Serializable {
         return testPlanNodeInstanceKey!=null ? testPlanNodeInstanceKey.getInstanceNumber() : 1;
     }
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public List<TestPlanNode> getChildren() {
         return Collections.unmodifiableList(children);
     }
@@ -126,5 +131,10 @@ public final class TestPlanNode implements Serializable {
         childNode.siblingIndex = children.size();
         childNode.parentNode = this;
         children.add(childNode);
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

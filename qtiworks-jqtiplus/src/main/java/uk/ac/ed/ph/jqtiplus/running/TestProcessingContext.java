@@ -33,19 +33,9 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Extension of {@link ProcessingContext} passed when running an {@link AssessmentTest}
@@ -56,21 +46,21 @@ public interface TestProcessingContext extends ProcessingContext, TestValidation
 
     TestSessionState getTestSessionState();
 
-    @Deprecated
-    Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
-            Identifier variableReferenceIdentifier);
-
-    @Deprecated
-    AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState);
-
-    @Deprecated
-    Map<AssessmentItemRefState, AssessmentItemRefAttemptController> getItemRefControllers(AssessmentItemRef itemRef);
-
-    @Deprecated
-    List<AssessmentItemRefState> lookupItemRefStates();
-
-    /** Called during outcome processing when there's a {@link QtiProcessingInterrupt} */
-    @Deprecated
-    void terminate();
+//    @Deprecated
+//    Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
+//            Identifier variableReferenceIdentifier);
+//
+//    @Deprecated
+//    AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState);
+//
+//    @Deprecated
+//    Map<AssessmentItemRefState, AssessmentItemRefAttemptController> getItemRefControllers(AssessmentItemRef itemRef);
+//
+//    @Deprecated
+//    List<AssessmentItemRefState> lookupItemRefStates();
+//
+//    /** Called during outcome processing when there's a {@link QtiProcessingInterrupt} */
+//    @Deprecated
+//    void terminate();
 
 }
