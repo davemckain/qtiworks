@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException.VariableResolutionFailureReason;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.net.URI;
@@ -137,6 +136,16 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
 
     //-------------------------------------------------------------------
 
+    /**
+     * Resolves the given variable reference, within this test only.
+     * <p>
+     * The resolution returns a {@link List} of matching {@link OutcomeDeclaration}s, or null if the
+     * test lookup was unsuccessful. The List will ideally contain 1 element, but may contain 0
+     * elements (if no match is found) or more than 1 element (if there are multiple {@link OutcomeDeclaration}s
+     * having the same identifier.
+     *
+     * @param variableReferenceIdentifier
+     */
     public List<OutcomeDeclaration> resolveTestVariable(final Identifier variableReferenceIdentifier) {
         if (!testLookup.wasSuccessful()) {
             return null;
@@ -241,59 +250,6 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         final Identifier possibleMappedItemVarIdentifier = itemRef.resolveVariableMapping(possibleItemVariableIdentifier);
         final ResolvedAssessmentItem resolvedItem = getResolvedAssessmentItem(itemRef);
         return resolvedItem.resolveVariableReference(possibleMappedItemVarIdentifier);
-    }
-
-    @Deprecated
-    public VariableDeclaration resolveVariableReferenceOLD(final Identifier variableDeclarationIdentifier) throws VariableResolutionException {
-        /* (These only ever reference variables within the current test) */
-        return resolveTestVariableOLD(variableDeclarationIdentifier);
-    }
-
-    @Deprecated
-    public VariableDeclaration resolveTestVariableOLD(final Identifier variableDeclarationIdentifier) throws VariableResolutionException {
-        if (!testLookup.wasSuccessful()) {
-            throw new VariableResolutionException(variableDeclarationIdentifier, VariableResolutionFailureReason.THIS_TEST_LOOKUP_FAILURE);
-        }
-        final AssessmentTest test = testLookup.extractIfSuccessful();
-        final VariableDeclaration result = test.getVariableDeclaration(variableDeclarationIdentifier);
-        if (result==null) {
-            throw new VariableResolutionException(variableDeclarationIdentifier, VariableResolutionFailureReason.TEST_VARIABLE_NOT_DECLARED);
-        }
-        return result;
-    }
-
-
-    @Deprecated
-    private VariableDeclaration resolveItemVariableReferenceOLD(final Identifier dottedVariableReference, final Identifier itemRefIdentifier, final Identifier itemVarIdentifier) throws VariableResolutionException {
-        if (!testLookup.wasSuccessful()) {
-            throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.THIS_TEST_LOOKUP_FAILURE);
-        }
-        VariableDeclaration result = null;
-        final List<AssessmentItemRef> itemRefs = itemRefsByIdentifierMap.get(itemRefIdentifier);
-        if (itemRefs==null) {
-            /* FAIL: No assessmenetItemRef having this identifier */
-            throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.UNMATCHED_ASSESSMENT_ITEM_REF_IDENTIFIER);
-        }
-        else if (itemRefs.size()>1) {
-            /* FAIL: Multiple item refs matching identifier */
-            throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.NON_UNIQUE_ASSESSMENT_ITEM_REF_IDENTIFIER);
-
-        }
-        else {
-            final AssessmentItemRef itemRef = itemRefs.get(0);
-            final ResolvedAssessmentItem resolvedItem = getResolvedAssessmentItem(itemRef);
-            final RootNodeLookup<AssessmentItem> itemLookup = resolvedItem.getItemLookup();
-            if (!itemLookup.wasSuccessful()) {
-                throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.TEST_ITEM_LOOKUP_FAILURE);
-            }
-            final AssessmentItem item = itemLookup.extractIfSuccessful();
-            final Identifier mappedItemVarIdentifier = itemRef.resolveVariableMapping(itemVarIdentifier);
-            result = item.getVariableDeclaration(mappedItemVarIdentifier);
-            if (result==null) {
-                throw new VariableResolutionException(dottedVariableReference, VariableResolutionFailureReason.TEST_MAPPED_ITEM_VARIABLE_NOT_DECLARED);
-            }
-        }
-        return result;
     }
 
     //-------------------------------------------------------------------

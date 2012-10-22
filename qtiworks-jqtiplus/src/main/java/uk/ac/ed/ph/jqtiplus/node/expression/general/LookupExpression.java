@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
@@ -50,7 +49,6 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.Map;
 
@@ -119,44 +117,36 @@ public abstract class LookupExpression extends AbstractFunctionalExpression {
         }
     }
 
-    protected abstract void validateResolvedVariableReference(ValidationContext context, Identifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
+    /**
+     * Subclasses should implement this to perform additional validation on the resolved
+     * {@link VariableDeclaration}.
+     */
+    protected abstract void validateResolvedVariableReference(ValidationContext context,
+            Identifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
 
     //----------------------------------------------------------------------
 
     @Override
-    public BaseType[] getProducedBaseTypes(final ValidationContext context) {
-        VariableDeclaration declaration;
-        try {
-            declaration = lookupTargetVariableDeclaration(context);
-            if (declaration != null && declaration.getBaseType() != null) {
-                return new BaseType[] { declaration.getBaseType() };
-            }
-        }
-        catch (final VariableResolutionException e) {
-            logger.warn("Refactor this:", e);
+    public final BaseType[] getProducedBaseTypes(final ValidationContext context) {
+        final VariableDeclaration declaration = lookupTargetVariableDeclaration(context);
+        if (declaration != null && declaration.getBaseType() != null) {
+            return new BaseType[] { declaration.getBaseType() };
         }
         return super.getProducedBaseTypes(context);
     }
 
     @Override
-    public Cardinality[] getProducedCardinalities(final ValidationContext context) {
-        VariableDeclaration declaration;
-        try {
-            declaration = lookupTargetVariableDeclaration(context);
-            if (declaration != null && declaration.getCardinality() != null) {
-                return new Cardinality[] { declaration.getCardinality() };
-            }
-        }
-        catch (final VariableResolutionException e) {
-            logger.warn("Refactor this:", e);
+    public final Cardinality[] getProducedCardinalities(final ValidationContext context) {
+        final VariableDeclaration declaration = lookupTargetVariableDeclaration(context);
+        if (declaration != null) {
+            return new Cardinality[] { declaration.getCardinality() };
         }
         return super.getProducedCardinalities(context);
     }
 
-    @ToRefactor
-    public VariableDeclaration lookupTargetVariableDeclaration(final ValidationContext context)
-            throws VariableResolutionException {
-        return context.getResolvedAssessmentObject().resolveVariableReferenceOLD(getIdentifier());
+    public final VariableDeclaration lookupTargetVariableDeclaration(final ValidationContext context) {
+        final Identifier referenceIdentifier = getIdentifier();
+        return context.isValidVariableReference(referenceIdentifier);
     }
 
     //----------------------------------------------------------------------

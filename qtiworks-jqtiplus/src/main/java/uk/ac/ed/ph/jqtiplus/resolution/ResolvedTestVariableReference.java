@@ -35,9 +35,12 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 /**
- * FIXME: Document this type
+ * Encapsulates a resolved variable reference within an {@link AssessmentTest}, which
+ * might be a reference to a test variable or an item variable within a particular instance
+ * of an {@link AssessmentItemRef}.
  *
  * @author David McKain
  */

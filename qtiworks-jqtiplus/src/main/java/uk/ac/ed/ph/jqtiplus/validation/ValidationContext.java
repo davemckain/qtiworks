@@ -116,8 +116,8 @@ public interface ValidationContext extends NotificationFirer {
     OutcomeDeclaration isValidTestVariableReference(Identifier variableReferenceIdentifier);
 
     /**
-     * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
-     * dereferenced. A validation error is recorded and {@link NullValue} is returned if this is unsuccessful.
+     * Checks that the variable reference {@link Identifier} resolves successfully and uniquely.
+     * A validation error is recorded and {@link NullValue} is returned if this is unsuccessful.
      * <p>
      * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
      * otherwise null.
@@ -145,8 +145,8 @@ public interface ValidationContext extends NotificationFirer {
      * A validation error is recorded and false is returned if unsuccessful.
      *
      * @param owner {@link QtiNode} being validated
-     * @param variableDeclaration declaration to check. This may be null, in which case no check is
-     *   performed and false is returned.
+     * @param variableDeclaration declaration to check. This is allowed to be null,
+     *   in which case no check is performed and false is returned.
      * @param allowedTypes array of allowed {@link VariableType}s
      */
     boolean checkVariableType(QtiNode owner, VariableDeclaration variableDeclaration, VariableType... allowedTypes);
@@ -158,8 +158,8 @@ public interface ValidationContext extends NotificationFirer {
      * A validation error  is recorded and false is returned if unsuccessful.
      *
      * @param owner {@link QtiNode} being validated
-     * @param variableDeclaration declaration to check. This may be null, in which case no check is
-     *   performed and false is returned
+     * @param variableDeclaration declaration to check. This is allowed to be null,
+     *   in which case no check is performed and false is returned
      * @param allowedSignatures array of allowed {@link Signature}s
      */
     boolean checkSignature(QtiNode owner, VariableDeclaration variableDeclaration, Signature... allowedSignatures);

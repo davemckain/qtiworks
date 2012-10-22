@@ -40,15 +40,12 @@ import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * This expression looks up the declaration of A response variable and returns the associated correctResponse or NULL
- * if no correct value was declared. When used in outcomes processing item identifier prefixing (see variable) may be
- * used to obtain the correct response from an individual item.
+ * Implementation of <code>correct</code>.
  *
  * @author Jiri Kajaba
  * @author Jonathon Hare
@@ -60,11 +57,6 @@ public final class Correct extends LookupExpression {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "correct";
 
-    /**
-     * Constructs expression.
-     *
-     * @param parent parent of this expression
-     */
     public Correct(final ExpressionParent parent) {
         super(parent, QTI_CLASS_NAME);
     }
@@ -75,9 +67,7 @@ public final class Correct extends LookupExpression {
     protected void validateResolvedVariableReference(final ValidationContext context, final Identifier variableReferenceIdentifier,
             final VariableDeclaration resolvedDeclaration) {
         /* Ensure that the referenced variable is a response variable. */
-        if (resolvedDeclaration.getVariableType() != VariableType.RESPONSE) {
-            context.fireAttributeValidationError(getAttributes().get(ATTR_IDENTIFIER_NAME), "Target variable " + getIdentifier() + " must be a response variable");
-        }
+        context.checkVariableType(this, resolvedDeclaration, VariableType.RESPONSE);
     }
 
     //----------------------------------------------------------------------
