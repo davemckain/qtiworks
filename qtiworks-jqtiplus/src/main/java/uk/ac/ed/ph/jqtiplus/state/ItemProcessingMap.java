@@ -75,7 +75,6 @@ public final class ItemProcessingMap implements Serializable {
     private final Map<Identifier, ResponseDeclaration> validResponseDeclarationMap;
     private final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMap;
 
-
     public ItemProcessingMap(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid, final List<Interaction> interactionsBuilder,
             final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder, final Map<Identifier, ResponseDeclaration> responseDeclarationMapBuilder,
             final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder) {

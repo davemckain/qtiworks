@@ -13,7 +13,7 @@ Selection and ordering examples
     <assessmentSection identifier="s" title="section" visible="false">
       <selection select="10" withReplacement="true"/>
       <ordering shuffle="true"/>
-      <assessmentItemRef href="questions/choice.xml" identifier="c1" fixed="true"/>
+      <assessmentItemRef href="questions2/choice.xml" identifier="c1" fixed="true"/>
       <assessmentItemRef href="questions/choice.xml" identifier="c2"/>
       <assessmentItemRef href="questions/choice.xml" identifier="c3" fixed="true"/>
     </assessmentSection>

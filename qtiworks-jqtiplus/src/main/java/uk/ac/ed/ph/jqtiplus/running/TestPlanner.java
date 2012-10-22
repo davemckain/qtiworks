@@ -42,12 +42,15 @@ import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeInstanceKey;
+import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -100,20 +103,27 @@ public final class TestPlanner {
         }
     }
 
+    private final TestProcessingMap testProcessingMap;
+    private final ResolvedAssessmentTest resolvedAssessmentTest;
     private final AssessmentTest test;
     private final NotificationFirer notificationFirer;
 
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
     private final TestPlanNode testPlanRootNode;
 
-    public TestPlanner(final AssessmentTest test, final NotificationFirer notificationFirer) {
-        this.test = test;
+    public TestPlanner(final TestProcessingMap testProcessingMap, final NotificationFirer notificationFirer) {
+        this.testProcessingMap = testProcessingMap;
+        this.resolvedAssessmentTest = testProcessingMap.getResolvedAssessmentTest();
+        this.test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         this.notificationFirer = notificationFirer;
         this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
         this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, null);
     }
 
     public TestPlan generateTestPlan() {
+        if (test==null) {
+            throw new IllegalStateException("Test lookup did not succeed, so test cannot be run");
+        }
         logger.debug("Creating a test plan for test {}", test.getIdentifier());
         testPlanNodesByIdentifierMap.clear();
 
@@ -152,20 +162,6 @@ public final class TestPlanner {
         return runtimeChildNodes;
     }
 
-    private BuildTreeNode doSectionPart(final SectionPart sectionPart) {
-        BuildTreeNode result;
-        if (sectionPart instanceof AssessmentSection) {
-            result = doAssessmentSection((AssessmentSection) sectionPart);
-        }
-        else if (sectionPart instanceof AssessmentItemRef) {
-            result = doAssessmentItemRef((AssessmentItemRef) sectionPart);
-        }
-        else {
-            throw new QtiLogicException("Unexpected logic branch: sectionPart=" + sectionPart);
-        }
-        return result;
-    }
-
     private BuildTreeNode doAssessmentSection(final AssessmentSection section) {
         logger.debug("Handling assessmentSection {}", section.getIdentifier());
 
@@ -183,7 +179,10 @@ public final class TestPlanner {
         /* Handle each selected child */
         final List<BuildTreeNode> childNodes = new ArrayList<BuildTreeNode>();
         for (final SectionPart sectionPart : afterSelection) {
-            childNodes.add(doSectionPart(sectionPart));
+            final BuildTreeNode selectedSectionPart = doSectionPart(sectionPart);
+            if (selectedSectionPart!=null) {
+                childNodes.add(selectedSectionPart);
+            }
         }
         logger.debug("Initialisation of child Nodes for section {} resulted in {}", section, childNodes);
 
@@ -218,9 +217,33 @@ public final class TestPlanner {
         return new BuildTreeNode(section, afterFlattening);
     }
 
+    private BuildTreeNode doSectionPart(final SectionPart sectionPart) {
+        BuildTreeNode result;
+        if (sectionPart instanceof AssessmentSection) {
+            result = doAssessmentSection((AssessmentSection) sectionPart);
+        }
+        else if (sectionPart instanceof AssessmentItemRef) {
+            result = doAssessmentItemRef((AssessmentItemRef) sectionPart);
+        }
+        else {
+            throw new QtiLogicException("Unexpected logic branch: sectionPart=" + sectionPart);
+        }
+        return result;
+    }
+
+
     private BuildTreeNode doAssessmentItemRef(final AssessmentItemRef itemRef) {
         logger.debug("Handling assessmentItemRef {}", itemRef.getIdentifier());
-        return new BuildTreeNode(itemRef, Collections.<BuildTreeNode> emptyList());
+        final URI itemSystemId = resolvedAssessmentTest.getSystemIdByItemRefMap().get(itemRef);
+        if (testProcessingMap.getItemProcessingMapMap().containsKey(itemSystemId)) {
+            return new BuildTreeNode(itemRef, Collections.<BuildTreeNode> emptyList());
+        }
+        else {
+            notificationFirer.fireRuntimeWarning(itemRef,
+                    "This item referred by identifier " + itemRef.getIdentifier()
+                    + " was not successfully resolved so is being dropped from the test plan");
+        }
+        return null;
     }
 
     private List<SectionPart> selectSectionParts(final AssessmentSection assessmentSection) {

@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Base class describing the state of a {@link ControlObject}
- * 
+ *
  * @param <E> type of the identifier of the underlying {@link ControlObject}
  * @author David McKain
  */
@@ -55,7 +55,7 @@ public abstract class ControlObjectState<E> implements Serializable {
 
     protected boolean finished;
 
-    protected ControlObjectState(E testIdentifier) {
+    protected ControlObjectState(final E testIdentifier) {
         this.testIdentifier = testIdentifier;
         this.finished = false;
     }
@@ -68,7 +68,7 @@ public abstract class ControlObjectState<E> implements Serializable {
         return finished;
     }
 
-    public void setFinished(boolean finished) {
+    public void setFinished(final boolean finished) {
         this.finished = finished;
     }
 
@@ -80,7 +80,7 @@ public abstract class ControlObjectState<E> implements Serializable {
         return resultBuilder;
     }
 
-    private void lookupItemRefStates(ControlObjectState<?> start, List<AssessmentItemRefState> resultBuilder) {
+    private void lookupItemRefStates(final ControlObjectState<?> start, final List<AssessmentItemRefState> resultBuilder) {
         if (start instanceof AssessmentTestState) {
             final AssessmentTestState testState = (AssessmentTestState) start;
             for (final TestPartState testPartState : testState.getTestPartStates()) {

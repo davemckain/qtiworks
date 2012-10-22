@@ -8,10 +8,8 @@ package dave;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
@@ -47,11 +45,9 @@ public final class TestTest {
         final TestProcessingMap testProcessingMap = new TestProcessingInitializer(testValidationResult).initialize();
         System.out.println("Test processing map: " + ObjectDumper.dumpObject(testProcessingMap, DumpMode.DEEP));
 
-        final AssessmentTest test = testValidationResult.getResolvedAssessmentTest().getTestLookup().getRootNodeHolder().getRootNode();
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ListenerNotificationFirer notificationFirer = new ListenerNotificationFirer();
-        notificationFirer.addNotificationListener(notificationRecorder);
-        final TestPlanner testPlanner = new TestPlanner(test, notificationFirer);
+        notificationFirer.addNotificationListener(new NotificationLogListener());
+        final TestPlanner testPlanner = new TestPlanner(testProcessingMap, notificationFirer);
         final TestPlan testPlan = testPlanner.generateTestPlan();
         System.out.println(testPlan.debugStructure());
     }
