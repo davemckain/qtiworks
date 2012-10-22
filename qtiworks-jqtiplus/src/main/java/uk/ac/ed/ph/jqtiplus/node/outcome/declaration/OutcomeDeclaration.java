@@ -37,26 +37,15 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.FloatAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
-import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
-import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.LookupTableGroup;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.block.ContainerBlock;
-import uk.ac.ed.ph.jqtiplus.node.content.variable.PrintedVariable;
-import uk.ac.ed.ph.jqtiplus.node.expression.general.LookupExpression;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
-import uk.ac.ed.ph.jqtiplus.resolution.VariableResolutionException;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.net.URI;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Outcome variables are declared by outcome declarations.
@@ -66,8 +55,6 @@ import org.slf4j.LoggerFactory;
 public final class OutcomeDeclaration extends VariableDeclaration {
 
     private static final long serialVersionUID = -5519664280437668195L;
-
-    private static final Logger logger = LoggerFactory.getLogger(OutcomeDeclaration.class);
 
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "outcomeDeclaration";
@@ -222,64 +209,5 @@ public final class OutcomeDeclaration extends VariableDeclaration {
                     + " cannot be lower than attribute "
                     + ATTR_NORMAL_MINIMUM_NAME);
         }
-
-        // DM: I've commented this out, since I don't think a warning should be given if test variables are not read;
-        // which would be comment in summative assessment scenarios
-        //        if (context instanceof TestValidationContext && !isRead(context, getParentRoot())) {
-        //            context.fireAttributeValidationWarning(this, "Outcome declaration is never read.");
-        //        }
-    }
-
-    /**
-     * Returns true if this outcomeDeclaration is read by given node or its children; false otherwise.
-     *
-     * @param xmlNode node
-     * @return true if this outcomeDeclaration is read by given node or its children; false otherwise
-     */
-    private boolean isRead(final ValidationContext context, final QtiNode xmlNode) {
-        if (xmlNode instanceof PrintedVariable) {
-            final PrintedVariable printedVariable = (PrintedVariable) xmlNode;
-            if (printedVariable.getIdentifier() != null && printedVariable.getIdentifier().equals(getIdentifier())) {
-                return true;
-            }
-        }
-        else if (xmlNode instanceof LookupExpression) {
-            final LookupExpression expression = (LookupExpression) xmlNode;
-            VariableDeclaration targetVariableDeclaration;
-            try {
-                targetVariableDeclaration = expression.lookupTargetVariableDeclaration(context);
-                if (targetVariableDeclaration != null && targetVariableDeclaration.equals(this)) {
-                    return true;
-                }
-            }
-            catch (final VariableResolutionException e) {
-                logger.warn("Refactor this:", e);
-            }
-        }
-        else if (xmlNode instanceof TestFeedback) {
-            final TestFeedback feedback = (TestFeedback) xmlNode;
-            if (feedback.getOutcomeIdentifier() != null && feedback.getOutcomeIdentifier().equals(getIdentifier())) {
-                return true;
-            }
-        }
-        if (xmlNode instanceof ContainerBlock) {
-            final ContainerBlock container = (ContainerBlock) xmlNode;
-            for (final QtiNode block : container.getChildren()) {
-                if (isRead(context, block)) {
-                    return true;
-                }
-            }
-        }
-
-        final NodeGroupList groups = xmlNode.getNodeGroups();
-        for (int i = 0; i < groups.size(); i++) {
-            final NodeGroup<?,?> group = groups.get(i);
-            for (final QtiNode child : group.getChildren()) {
-                if (isRead(context, child)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
