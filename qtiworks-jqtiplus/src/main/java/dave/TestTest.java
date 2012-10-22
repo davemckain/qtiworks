@@ -8,9 +8,15 @@ package dave;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
+import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
@@ -36,12 +42,12 @@ public final class TestTest {
         final TestValidationResult result = objectManager.resolveAndValidateTest(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
 
-//        final AssessmentTest test = result.getResolvedAssessmentTest().getTestLookup().getRootNodeHolder().getRootNode();
-//        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-//        final ListenerNotificationFirer notificationFirer = new ListenerNotificationFirer();
-//        notificationFirer.addNotificationListener(notificationRecorder);
-//        final AssessmentTestPlanner testPlanner = new AssessmentTestPlanner(test, notificationFirer);
-//        final TestPlan testPlan = testPlanner.generateTestPlan();
-//        System.out.println(testPlan.debugStructure());
+        final AssessmentTest test = result.getResolvedAssessmentTest().getTestLookup().getRootNodeHolder().getRootNode();
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final ListenerNotificationFirer notificationFirer = new ListenerNotificationFirer();
+        notificationFirer.addNotificationListener(notificationRecorder);
+        final TestPlanner testPlanner = new TestPlanner(test, notificationFirer);
+        final TestPlan testPlan = testPlanner.generateTestPlan();
+        System.out.println(testPlan.debugStructure());
     }
 }
