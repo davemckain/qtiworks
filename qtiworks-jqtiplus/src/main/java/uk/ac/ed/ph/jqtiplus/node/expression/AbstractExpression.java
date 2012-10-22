@@ -254,7 +254,7 @@ public abstract class AbstractExpression extends AbstractNode implements Express
     public boolean isThisExpressionValid(final ValidationContext context) {
         context.setCheckpoint(NotificationLevel.ERROR);
         validateThis(context);
-        return context.clearCheckpoint() > 0;
+        return context.clearCheckpoint()==0;
     }
 
     /**

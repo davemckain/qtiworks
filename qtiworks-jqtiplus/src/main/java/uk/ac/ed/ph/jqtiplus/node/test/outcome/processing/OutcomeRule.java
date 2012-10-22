@@ -59,7 +59,7 @@ public abstract class OutcomeRule extends AbstractNode {
     public boolean isThisRuleValid(final ValidationContext context) {
         context.setCheckpoint(NotificationLevel.ERROR);
         validateThis(context);
-        return context.clearCheckpoint() > 0;
+        return context.clearCheckpoint()==0;
     }
 
     /**
