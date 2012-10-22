@@ -93,7 +93,24 @@ public class ItemValidationContext extends AbstractValidationContext<AssessmentI
     }
 
     @Override
-    public OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
+    public VariableDeclaration isValidVariableReference(final Identifier variableReferenceIdentifier) {
+        final List<VariableDeclaration> variableDeclarations = resolvedAssessmentItem.resolveVariableReference(variableReferenceIdentifier);
+        if (variableDeclarations==null) {
+            /* Item lookup failed, which is impossible here */
+            throw new QtiLogicException("Unexpected logic branch");
+        }
+        else if (variableDeclarations.size()==1) {
+            /* Found and unique, which is what we want */
+            final VariableDeclaration declaration = variableDeclarations.get(0);
+            if (declaration.hasValidSignature()) {
+                return declaration;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public OutcomeDeclaration isValidTestVariableReference(final Identifier variableReferenceIdentifier) {
         /* No test variables here */
         return null;
     }
@@ -125,6 +142,12 @@ public class ItemValidationContext extends AbstractValidationContext<AssessmentI
             fireValidationError(owner, variableDeclarations.size() + " item variables have been declared with the same identifier '" + variableDeclarations + "'");
             return null;
         }
+    }
+
+    @Override
+    public OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
+        fail();
+        return null;
     }
 
     private QtiLogicException fail() {

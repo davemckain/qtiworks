@@ -36,7 +36,9 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
  * Abstract parent of all outcome rules.
@@ -52,6 +54,12 @@ public abstract class OutcomeRule extends AbstractNode {
 
     public OutcomeRule(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
+    }
+
+    public boolean isThisRuleValid(final ValidationContext context) {
+        context.setCheckpoint(NotificationLevel.ERROR);
+        validateThis(context);
+        return context.clearCheckpoint() > 0;
     }
 
     /**

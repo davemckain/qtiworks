@@ -33,14 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -64,46 +63,24 @@ public final class SetTemplateValue extends ProcessTemplateValue {
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
-        if (getIdentifier() != null) {
-            final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
-            if (declaration != null && declaration.getCardinality() != null) {
-                return new Cardinality[] { declaration.getCardinality() };
-            }
+    protected void validateThis(final ValidationContext context) {
+        final Identifier identifier = getIdentifier();
+        if (identifier!=null) {
+            final VariableDeclaration variableDeclaration = context.checkVariableReference(this, identifier);
+            context.checkVariableType(this, variableDeclaration, VariableType.TEMPLATE);
         }
-
-        return Cardinality.values();
-    }
-
-    @Override
-    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
-        if (getIdentifier() != null) {
-            final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
-            if (declaration != null && declaration.getBaseType() != null) {
-                return new BaseType[] { declaration.getBaseType() };
-            }
-        }
-
-        return BaseType.values();
     }
 
     @Override
     public void evaluate(final ItemProcessingContext context) {
         final Value value = getExpression().evaluate(context);
-
-        final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getIdentifier());
-        if (declaration == null) {
-            throw new QtiEvaluationException("Cannot find " + TemplateDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
+        if (isThisRuleValid(context)) {
+            final TemplateDeclaration templateDeclaration = (TemplateDeclaration) context.ensureVariableDeclaration(getIdentifier(), VariableType.TEMPLATE);
+            context.getItemSessionState().setTemplateValue(templateDeclaration, value);
         }
-
-        context.getItemSessionState().setVariableValue(declaration, value);
-    }
-
-    @Override
-    protected void validateThis(final ValidationContext context) {
-        final Identifier identifier = getIdentifier();
-        if (identifier!=null) {
-            context.checkVariableReference(this, identifier);
+        else {
+            context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());
         }
     }
+
 }

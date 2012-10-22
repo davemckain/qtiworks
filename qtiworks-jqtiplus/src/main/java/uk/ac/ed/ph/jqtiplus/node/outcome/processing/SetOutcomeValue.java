@@ -33,11 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -67,40 +67,40 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
-        if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = getRootNode(AssessmentTest.class).getOutcomeDeclaration(getIdentifier());
-            if (declaration != null && declaration.getCardinality() != null) {
-                return new Cardinality[] { declaration.getCardinality() };
+    public final Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.isValidVariableReference(referenceIdentifier);
+            if (declaration!=null) {
+                return new Cardinality[] {  declaration.getCardinality() };
             }
         }
-
         return Cardinality.values();
     }
 
     @Override
-    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
-        if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
-            if (declaration != null && declaration.getBaseType() != null) {
+    public final BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.isValidVariableReference(referenceIdentifier);
+            if (declaration!=null && declaration.getBaseType()!=null) {
                 return new BaseType[] { declaration.getBaseType() };
             }
         }
-
         return BaseType.values();
     }
 
     @Override
     public void validateThis(final ValidationContext context) {
-        final Identifier variableReferenceIdentifier = getIdentifier();
-        if (variableReferenceIdentifier != null) {
-            final OutcomeDeclaration outcomeDeclaration = context.checkTestVariableReference(this, variableReferenceIdentifier);
-            if (outcomeDeclaration!=null && outcomeDeclaration.getLookupTable() != null) {
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.checkTestVariableReference(this, referenceIdentifier);
+            if (((OutcomeDeclaration) declaration).getLookupTable() != null) {
                 context.fireValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME
                         + ": "
-                        + variableReferenceIdentifier);
+                        + referenceIdentifier);
             }
         }
     }
@@ -108,11 +108,12 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
     @Override
     public void evaluate(final TestProcessingContext context) {
         final Value value = getExpression().evaluate(context);
-
-        final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
-        if (declaration == null) {
-            throw new QtiEvaluationException("Cannot find " + OutcomeDeclaration.QTI_CLASS_NAME + ": " + getIdentifier());
+        if (isThisRuleValid(context)) {
+            final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) context.ensureVariableDeclaration(getIdentifier(), VariableType.OUTCOME);
+            context.getTestSessionState().setOutcomeValue(outcomeDeclaration, value);
         }
-        context.getTestSessionState().setOutcomeValue(declaration, value);
+        else {
+            context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());
+        }
     }
 }

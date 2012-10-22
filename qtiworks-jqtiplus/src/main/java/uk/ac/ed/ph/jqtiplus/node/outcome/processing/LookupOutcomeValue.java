@@ -35,8 +35,9 @@ package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -71,15 +72,16 @@ public final class LookupOutcomeValue extends ProcessOutcomeValue {
 
     @Override
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
-        if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
-            if (declaration != null && declaration.getLookupTable() != null) {
-                if (declaration.getLookupTable() instanceof MatchTable) {
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.isValidTestVariableReference(referenceIdentifier);
+            if (declaration!=null && declaration.getVariableType()==VariableType.OUTCOME) {
+                final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) declaration;
+                if (outcomeDeclaration.getLookupTable()!=null) {
                     return new BaseType[] { BaseType.INTEGER };
                 }
             }
         }
-
         return new BaseType[] { BaseType.INTEGER, BaseType.FLOAT, BaseType.DURATION };
     }
 
@@ -101,14 +103,20 @@ public final class LookupOutcomeValue extends ProcessOutcomeValue {
     @Override
     public void evaluate(final TestProcessingContext context) {
         Value value = getExpression().evaluate(context);
-        NumberValue numberValue = null;
-        if (!value.isNull()) {
-            if (value.getBaseType().isDuration()) {
-                value = new FloatValue(((DurationValue) value).doubleValue());
+        if (isThisRuleValid(context)) {
+            NumberValue numberValue = null;
+            if (!value.isNull()) {
+                if (value.getBaseType().isDuration()) {
+                    value = new FloatValue(((DurationValue) value).doubleValue());
+                }
+                numberValue = (NumberValue) value;
             }
-            numberValue = (NumberValue) value;
+
+            final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) context.ensureVariableDeclaration(getIdentifier(), VariableType.OUTCOME);
+            context.getTestSessionState().setOutcomeValueFromLookupTable(outcomeDeclaration, numberValue);
         }
-        final OutcomeDeclaration declaration = context.getSubjectTest().getOutcomeDeclaration(getIdentifier());
-        context.getTestSessionState().setOutcomeValueFromLookupTable(declaration, numberValue);
+        else {
+            context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());
+        }
     }
 }

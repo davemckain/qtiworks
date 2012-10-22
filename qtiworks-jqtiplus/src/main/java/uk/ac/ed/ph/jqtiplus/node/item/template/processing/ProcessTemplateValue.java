@@ -38,11 +38,19 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
- * Abstract parent for setTemplateValue class.
- * 
+ * Abstract parent for mutator rules
+ *
+ * @see SetCorrectResponse
+ * @see SetDefaultValue
+ * @see SetTemplateValue
+ *
  * @author Jonathon Hare
  */
 public abstract class ProcessTemplateValue extends TemplateRule implements ExpressionParent {
@@ -52,12 +60,36 @@ public abstract class ProcessTemplateValue extends TemplateRule implements Expre
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    public ProcessTemplateValue(QtiNode parent, String qtiClassName) {
+    public ProcessTemplateValue(final QtiNode parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
 
         getNodeGroups().add(new ExpressionGroup(this, 1, 1));
+    }
+
+    @Override
+    public final Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.isValidVariableReference(referenceIdentifier);
+            if (declaration!=null) {
+                return new Cardinality[] {  declaration.getCardinality() };
+            }
+        }
+        return Cardinality.values();
+    }
+
+    @Override
+    public final BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.isValidVariableReference(referenceIdentifier);
+            if (declaration!=null && declaration.getBaseType()!=null) {
+                return new BaseType[] { declaration.getBaseType() };
+            }
+        }
+        return BaseType.values();
     }
 
     @Override
@@ -69,43 +101,20 @@ public abstract class ProcessTemplateValue extends TemplateRule implements Expre
         return super.computeXPathComponent();
     }
 
-    /**
-     * Gets value of identifier attribute.
-     * 
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     * 
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
-    public void setIdentifier(Identifier identifier) {
+    public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets expression child.
-     * 
-     * @return expression child
-     * @see #setExpression
-     */
+
     public Expression getExpression() {
         return getNodeGroups().getExpressionGroup().getExpression();
     }
 
-    /**
-     * Sets new expression child.
-     * 
-     * @param expression new expression child
-     * @see #getExpression
-     */
-    public void setExpression(Expression expression) {
+    public void setExpression(final Expression expression) {
         getNodeGroups().getExpressionGroup().setExpression(expression);
     }
 }

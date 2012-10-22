@@ -36,7 +36,9 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
  * Abstract parent of all response rules.
@@ -54,11 +56,12 @@ public abstract class ResponseRule extends AbstractNode {
         super(parent, qtiClassName);
     }
 
-    /**
-     * Evaluates this rule and all its children.
-     *
-     * @throws QtiProcessingInterrupt
-     */
+    public boolean isThisRuleValid(final ValidationContext context) {
+        context.setCheckpoint(NotificationLevel.ERROR);
+        validateThis(context);
+        return context.clearCheckpoint() > 0;
+    }
+
     public abstract void evaluate(ItemProcessingContext context)
             throws QtiProcessingInterrupt;
 }

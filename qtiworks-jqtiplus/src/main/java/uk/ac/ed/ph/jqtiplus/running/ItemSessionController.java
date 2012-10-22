@@ -471,6 +471,7 @@ public final class ItemSessionController extends ItemValidationContext implement
 
     //-------------------------------------------------------------------
 
+    @Override
     public VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
         final VariableDeclaration result = getVariableDeclaration(identifier, permittedTypes);

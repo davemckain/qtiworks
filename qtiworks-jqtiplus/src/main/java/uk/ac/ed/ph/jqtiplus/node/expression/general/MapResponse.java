@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -107,9 +106,9 @@ public final class MapResponse extends AbstractFunctionalExpression {
 
     @Override
     protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final ItemProcessingContext itemContext = (ItemProcessingContext) context;
-        final ResponseDeclaration responseDeclaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
-        final Value responseValue = itemContext.evaluateVariableValue(getIdentifier(), VariableType.RESPONSE);
+        final Identifier referenceIdentifier = getIdentifier();
+        final ResponseDeclaration responseDeclaration = (ResponseDeclaration) context.ensureVariableDeclaration(referenceIdentifier, VariableType.RESPONSE);
+        final Value responseValue = context.evaluateVariableValue(referenceIdentifier, VariableType.RESPONSE);
 
         return responseDeclaration.getMapping().getTargetValue(responseValue);
     }

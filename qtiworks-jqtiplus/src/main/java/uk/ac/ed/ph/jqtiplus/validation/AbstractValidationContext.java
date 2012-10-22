@@ -34,15 +34,12 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 /**
@@ -81,9 +78,11 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Lis
     @Override
     public boolean checkVariableType(final QtiNode owner, final VariableDeclaration variableDeclaration,
             final VariableType... allowedTypes) {
-        Assert.notNull(variableDeclaration);
+        if (variableDeclaration==null) {
+            return false;
+        }
         if (allowedTypes.length==0) {
-            throw new IllegalArgumentException("Expected at leas one VariableType to be specified");
+            throw new IllegalArgumentException("Expected at least one VariableType to be specified");
         }
         boolean result;
         if (variableDeclaration.isType(allowedTypes)) {
@@ -109,7 +108,12 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Lis
     @Override
     public boolean checkSignature(final QtiNode owner, final VariableDeclaration variableDeclaration,
             final Signature... allowedSignatures) {
-        Assert.notNull(variableDeclaration);
+        if (variableDeclaration==null) {
+            return false;
+        }
+        if (allowedSignatures.length==0) {
+            throw new IllegalArgumentException("Expected at least one Signature to be specified");
+        }
         boolean found = false;
         for (final Signature signature : allowedSignatures) {
             if (variableDeclaration.hasSignature(signature)) {
@@ -132,59 +136,5 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Lis
             found = false;
         }
         return found;
-    }
-
-    @Override
-    public boolean checkBaseType(final QtiNode owner, final VariableDeclaration variableDeclaration,
-            final BaseType... allowedBaseTypes) {
-        Assert.notNull(variableDeclaration);
-        if (allowedBaseTypes.length==0) {
-            throw new IllegalArgumentException("Expected at least one baseType to be specified");
-        }
-        boolean result;
-        final BaseType baseType = variableDeclaration.getBaseType();
-        if (baseType!=null && baseType.isOneOf(allowedBaseTypes)) {
-            result = true;
-        }
-        else {
-            final StringBuilder messageBuilder = new StringBuilder("Variable ")
-                .append(variableDeclaration)
-                .append(" must have baseType ");
-            for (int i=0; i<allowedBaseTypes.length; i++) {
-                messageBuilder.append(allowedBaseTypes[i].toQtiString())
-                    .append(i < allowedBaseTypes.length-1 ? ", " : " or ");
-            }
-            if (baseType!=null) {
-                messageBuilder.append(" but has baseType ")
-                    .append(variableDeclaration.getBaseType().toQtiString());
-            }
-            fireValidationError(owner, messageBuilder.toString());
-            result = false;
-        }
-        return result;
-    }
-
-    @Override
-    public boolean checkCardinality(final QtiNode owner, final VariableDeclaration variableDeclaration,
-            final Cardinality... allowedSignatures) {
-        Assert.notNull(variableDeclaration);
-        boolean result;
-        if (variableDeclaration.hasCardinality(allowedSignatures)) {
-            result = true;
-        }
-        else {
-            final StringBuilder messageBuilder = new StringBuilder("Variable ")
-                .append(variableDeclaration)
-                .append(" must have cardinality ");
-            for (int i=0; i<allowedSignatures.length; i++) {
-                messageBuilder.append(allowedSignatures[i].toQtiString())
-                    .append(i < allowedSignatures.length-1 ? ", " : " or ");
-            }
-            messageBuilder.append(" but has cardinality ")
-                .append(variableDeclaration.getCardinality().toQtiString());
-            fireValidationError(owner, messageBuilder.toString());
-            result = false;
-        }
-        return result;
     }
 }

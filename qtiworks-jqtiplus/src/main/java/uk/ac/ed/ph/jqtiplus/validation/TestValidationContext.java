@@ -93,6 +93,40 @@ class TestValidationContext extends AbstractValidationContext<AssessmentTest> {
     }
 
     @Override
+    public OutcomeDeclaration isValidTestVariableReference(final Identifier variableReferenceIdentifier) {
+        final List<OutcomeDeclaration> outcomeDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
+        if (outcomeDeclarations==null) {
+            /* Test lookup failed, which is impossible here */
+            throw new QtiLogicException("Unexpected logic branch");
+        }
+        else if (outcomeDeclarations.size()==1) {
+            /* Found and unique which is what we want */
+            final OutcomeDeclaration outcomeDeclaration = outcomeDeclarations.get(0);
+            if (outcomeDeclaration.hasValidSignature()) {
+                return outcomeDeclaration;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public VariableDeclaration isValidVariableReference(final Identifier variableReferenceIdentifier) {
+        final List<ResolvedTestVariableReference> resolvedReferences = resolvedAssessmentTest.resolveVariableReference(variableReferenceIdentifier);
+        if (resolvedReferences==null) {
+            /* Test lookup failed, which is impossible here */
+            throw new QtiLogicException("Unexpected logic branch");
+        }
+        else if (resolvedReferences.size()==1) {
+            /* Found and unique which is what we want */
+            final VariableDeclaration declaration = resolvedReferences.get(0).getVariableDeclaration();
+            if (declaration.hasValidSignature()) {
+                return declaration;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
         final List<OutcomeDeclaration> outcomeDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
         if (outcomeDeclarations==null) {

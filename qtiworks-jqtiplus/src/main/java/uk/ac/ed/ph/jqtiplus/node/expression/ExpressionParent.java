@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression;
 
-
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -42,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 /**
  * Every object which contains expression(s) must implement this interface.
  * Expression contains (in general case) other expressions, so it must implement this interface too.
- * 
+ *
  * @author Jiri Kajaba
  */
 public interface ExpressionParent extends QtiNode {
@@ -57,7 +56,7 @@ public interface ExpressionParent extends QtiNode {
      * Static example is expression or. Expression or accepts only single cardinality for any index.
      * <p>
      * Dynamic example is expression match. Expression match accepts any cardinality of its children, but this cardinality must be same for all its children.
-     * 
+     *
      * @param context TODO
      * @param index position of child expression in this parent
      * @return list of all possible cardinalities which can child expression at given position produce
@@ -72,7 +71,7 @@ public interface ExpressionParent extends QtiNode {
      * Static example is expression or. Expression or accepts only boolean baseType for any index.
      * <p>
      * Dynamic example is expression match. Expression match accepts any baseType of its children. but this baseType must be same for all its children.
-     * 
+     *
      * @param context TODO
      * @param index position of child expression in this parent
      * @return list of all acceptable baseTypes which can child expression at given position produce

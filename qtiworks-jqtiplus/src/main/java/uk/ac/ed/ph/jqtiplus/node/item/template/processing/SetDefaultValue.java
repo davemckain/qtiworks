@@ -33,19 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -63,58 +58,38 @@ public final class SetDefaultValue extends ProcessTemplateValue {
     }
 
     @Override
-    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
-        if (getIdentifier() != null) {
-            final ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getIdentifier());
-            if (declaration != null && declaration.getCardinality() != null) {
-                return new Cardinality[] { declaration.getCardinality() };
-            }
+    protected void validateThis(final ValidationContext context) {
+        final Identifier identifier = getIdentifier();
+        if (identifier != null) {
+            final VariableDeclaration declaration = context.checkVariableReference(this, identifier);
+            context.checkVariableType(this, declaration, VariableType.RESPONSE, VariableType.TEMPLATE);
         }
-
-        return Cardinality.values();
-    }
-
-    @Override
-    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
-        if (getIdentifier() != null) {
-            final ResponseDeclaration declaration = getRootNode(AssessmentItem.class).getResponseDeclaration(getIdentifier());
-            if (declaration != null && declaration.getBaseType() != null) {
-                return new BaseType[] { declaration.getBaseType() };
-            }
-        }
-
-        return BaseType.values();
     }
 
     @Override
     public void evaluate(final ItemProcessingContext context) {
         final Value value = getExpression().evaluate(context);
-        final AssessmentItem item = context.getSubjectItem();
-        final ItemSessionState itemSessionState = context.getItemSessionState();
+        if (isThisRuleValid(context)) {
+            final Identifier identifier = getIdentifier();
+            final VariableDeclaration variableDeclaration = context.ensureVariableDeclaration(identifier, VariableType.RESPONSE, VariableType.TEMPLATE);
+            final ItemSessionState itemSessionState = context.getItemSessionState();
+            switch (variableDeclaration.getVariableType()) {
+                case RESPONSE:
+                    itemSessionState.setOverriddenResponseDefaultValue(identifier, value);
+                    break;
 
-        final ResponseDeclaration responseDeclaration = item.getResponseDeclaration(getIdentifier());
-        if (responseDeclaration != null) {
-            itemSessionState.setOverriddenResponseDefaultValue(responseDeclaration, value);
+                case TEMPLATE:
+                    itemSessionState.setOverriddenTemplateDefaultValue(identifier, value);
+                    break;
+
+                default:
+                    throw new QtiLogicException("Unexpected switch case " + variableDeclaration.getVariableType());
+            }
         }
         else {
-            final OutcomeDeclaration outcomeDeclaration = item.getOutcomeDeclaration(getIdentifier());
-            if (outcomeDeclaration != null) {
-                itemSessionState.setOverriddenOutcomeDefaultValue(outcomeDeclaration, value);
-            }
-            else {
-                throw new QtiEvaluationException("Cannot find response or outcome declaration " + getIdentifier());
-            }
+            context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());
         }
+
     }
 
-    @Override
-    protected void validateThis(final ValidationContext context) {
-        final Identifier identifier = getIdentifier();
-        if (identifier != null) {
-            final VariableDeclaration declaration = context.checkVariableReference(this, identifier);
-            if (declaration!=null) {
-                context.checkVariableType(this, declaration, VariableType.RESPONSE, VariableType.TEMPLATE);
-            }
-        }
-    }
 }

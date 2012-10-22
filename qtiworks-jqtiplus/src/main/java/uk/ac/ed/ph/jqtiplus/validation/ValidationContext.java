@@ -47,8 +47,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 /**
@@ -102,28 +101,53 @@ public interface ValidationContext extends NotificationFirer {
 
     /**
      * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
-     * dereferenced. A {@link ValidationError} is recorded if this is unsuccessful.
+     * dereferenced. Returns the resulting {@link VariableDeclaration} if successful, otherwise null.
+     *
+     * @see #checkVariableReference(QtiNode, Identifier)
+     */
+    VariableDeclaration isValidVariableReference(Identifier variableReferenceIdentifier);
+
+    /**
+     * Checks that the test (outcome) variable having the given {@link Identifier} can be successfully and uniquely
+     * dereferenced. Returns the resulting {@link VariableDeclaration} if successful, otherwise null.
+     *
+     * @see #checkTestVariableReference(QtiNode, Identifier)
+     */
+    OutcomeDeclaration isValidTestVariableReference(Identifier variableReferenceIdentifier);
+
+    /**
+     * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
+     * dereferenced. A validation error is recorded and {@link NullValue} is returned if this is unsuccessful.
      * <p>
      * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
      * otherwise null.
+     *
+     * @see #isValidVariableReference(QtiNode, Identifier)
      */
     VariableDeclaration checkVariableReference(QtiNode owner, Identifier variableReferenceIdentifier);
 
     /**
      * Checks that the test (outcome) variable having the given {@link Identifier} can be
-     * successfully and uniquely dereferenced. A {@link ValidationError} is recorded if this
-     * is unsuccessful.
+     * successfully and uniquely dereferenced. A validation error is recorded and {@link NullValue}
+     * is returned if this is unsuccessful.
      * <p>
      * Returns a valid {@link OutcomeDeclaration} corresponding to the resulting test variable if successful,
      * otherwise null.
+     *
+     * @see #isValidTestVariableReference(Identifier)
      */
     OutcomeDeclaration checkTestVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier);
 
     /**
-     * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s, returning
-     * true if successful.
+     * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s,
+     * returning true if successful.
      * <p>
-     * A {@link ValidationError} is recorded and false is returned if unsuccessful.
+     * A validation error is recorded and false is returned if unsuccessful.
+     *
+     * @param owner {@link QtiNode} being validated
+     * @param variableDeclaration declaration to check. This may be null, in which case no check is
+     *   performed and false is returned.
+     * @param allowedTypes array of allowed {@link VariableType}s
      */
     boolean checkVariableType(QtiNode owner, VariableDeclaration variableDeclaration, VariableType... allowedTypes);
 
@@ -131,25 +155,12 @@ public interface ValidationContext extends NotificationFirer {
      * Checks that the given {@link VariableDeclaration} has one of the given {@link Signature}s,
      * returning true if successful.
      * <p>
-     * A {@link ValidationError} is recorded and false is returned if unsuccessful.
+     * A validation error  is recorded and false is returned if unsuccessful.
+     *
+     * @param owner {@link QtiNode} being validated
+     * @param variableDeclaration declaration to check. This may be null, in which case no check is
+     *   performed and false is returned
+     * @param allowedSignatures array of allowed {@link Signature}s
      */
     boolean checkSignature(QtiNode owner, VariableDeclaration variableDeclaration, Signature... allowedSignatures);
-
-    /**
-     * Checks that the given {@link VariableDeclaration} is of the given {@link BaseType}s, returning true
-     * if successful.
-     * <p>
-     * A {@link ValidationError} is recorded and false is returned if unsuccessful.
-     */
-    boolean checkBaseType(QtiNode owner, VariableDeclaration variableDeclaration, BaseType... allowedBaseTypes);
-
-    /**
-     * Checks that the given {@link VariableDeclaration} is of one of the stated items in the given
-     * {@link Cardinality} array, returning true if successful.
-     * <p>
-     * A {@link ValidationError} is recorded and false is returned if unsuccessful.
-     */
-    boolean checkCardinality(QtiNode owner, VariableDeclaration variableDeclaration, Cardinality... allowedCardinalities);
-
-
 }

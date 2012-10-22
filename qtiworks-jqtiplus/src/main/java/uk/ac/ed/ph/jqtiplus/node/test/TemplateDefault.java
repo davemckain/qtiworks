@@ -38,7 +38,8 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -47,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * The default value of A template variable in an item can be overridden based on the test context in which the template
+ * The default value of a template variable in an item can be overridden based on the test context in which the template
  * is instantiated. The value is obtained by evaluating an expression defined within the reference to the item at test
  * level and which may therefore depend on the values of variables taken from other items in the test or from outcomes
  * defined at test level itself.
@@ -98,11 +99,12 @@ public final class TemplateDefault extends AbstractNode implements ExpressionPar
 
 
     @Override
-    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
-        if (getTemplateIdentifier() != null) {
-            final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getTemplateIdentifier());
-            if (declaration != null && declaration.getCardinality() != null) {
-                return new Cardinality[] { declaration.getCardinality() };
+    public final Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
+        final Identifier templateIdentifier = getTemplateIdentifier();
+        if (templateIdentifier!=null) {
+            final VariableDeclaration declaration = context.isValidVariableReference(templateIdentifier);
+            if (declaration!=null && declaration.getVariableType()==VariableType.TEMPLATE) {
+                return new Cardinality[] {  declaration.getCardinality() };
             }
         }
         return Cardinality.values();
@@ -110,20 +112,16 @@ public final class TemplateDefault extends AbstractNode implements ExpressionPar
 
     @Override
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
-        if (getTemplateIdentifier() != null) {
-            final TemplateDeclaration declaration = context.getSubjectItem().getTemplateDeclaration(getTemplateIdentifier());
-            if (declaration != null && declaration.getBaseType() != null) {
-                return new BaseType[] { declaration.getBaseType() };
+        final Identifier templateIdentifier = getTemplateIdentifier();
+        if (templateIdentifier!=null) {
+            final VariableDeclaration declaration = context.isValidVariableReference(templateIdentifier);
+            if (declaration!=null && declaration.getVariableType()==VariableType.TEMPLATE && declaration.getBaseType()!=null) {
+                return new BaseType[] {  declaration.getBaseType() };
             }
         }
         return BaseType.values();
     }
 
-    /**
-     * Evaluates this object.
-     *
-     * @return result of evaluation
-     */
     public Value evaluate(final ProcessingContext context) {
         return getExpression().evaluate(context);
     }

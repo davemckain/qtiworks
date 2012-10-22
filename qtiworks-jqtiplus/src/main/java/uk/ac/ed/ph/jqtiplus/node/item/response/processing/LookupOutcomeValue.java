@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.processing;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.MatchTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
@@ -73,15 +72,16 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
 
     @Override
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
-        if (getIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
-            if (declaration != null && declaration.getLookupTable() != null) {
-                if (declaration.getLookupTable() instanceof MatchTable) {
+        final Identifier referenceIdentifier = getIdentifier();
+        if (referenceIdentifier!=null) {
+            final VariableDeclaration declaration = context.isValidVariableReference(referenceIdentifier);
+            if (declaration!=null && declaration.getVariableType()==VariableType.OUTCOME) {
+                final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) declaration;
+                if (outcomeDeclaration.getLookupTable()!=null) {
                     return new BaseType[] { BaseType.INTEGER };
                 }
             }
         }
-
         return new BaseType[] { BaseType.INTEGER, BaseType.FLOAT, BaseType.DURATION };
     }
 
@@ -90,15 +90,13 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
         final Identifier outcomeIdentifier = getIdentifier();
         if (outcomeIdentifier!=null) {
             final VariableDeclaration declaration = context.checkVariableReference(this, outcomeIdentifier);
-            if (declaration!=null) {
-                if (context.checkVariableType(this, declaration, VariableType.OUTCOME)) {
-                    if (((OutcomeDeclaration) declaration).getLookupTable() == null) {
-                        context.fireValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
-                                + " in "
-                                + OutcomeDeclaration.QTI_CLASS_NAME
-                                + ": "
-                                + outcomeIdentifier);
-                    }
+            if (context.checkVariableType(this, declaration, VariableType.OUTCOME)) {
+                if (((OutcomeDeclaration) declaration).getLookupTable() == null) {
+                    context.fireValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
+                            + " in "
+                            + OutcomeDeclaration.QTI_CLASS_NAME
+                            + ": "
+                            + outcomeIdentifier);
                 }
             }
         }
@@ -107,15 +105,20 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
     @Override
     public void evaluate(final ItemProcessingContext context) {
         Value value = getExpression().evaluate(context);
-        NumberValue numberValue = null;
-        if (!value.isNull()) {
-            if (value.getBaseType().isDuration()) {
-                value = new FloatValue(((DurationValue) value).doubleValue());
+        if (isThisRuleValid(context)) {
+            NumberValue numberValue = null;
+            if (!value.isNull()) {
+                if (value.getBaseType().isDuration()) {
+                    value = new FloatValue(((DurationValue) value).doubleValue());
+                }
+                numberValue = (NumberValue) value;
             }
-            numberValue = (NumberValue) value;
-        }
 
-        final OutcomeDeclaration declaration = context.getSubject().getOutcomeDeclaration(getIdentifier());
-        context.getItemSessionState().setOutcomeValueFromLookupTable(declaration, numberValue);
+            final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) context.ensureVariableDeclaration(getIdentifier(), VariableType.OUTCOME);
+            context.getItemSessionState().setOutcomeValueFromLookupTable(outcomeDeclaration, numberValue);
+        }
+        else {
+            context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());
+        }
     }
 }

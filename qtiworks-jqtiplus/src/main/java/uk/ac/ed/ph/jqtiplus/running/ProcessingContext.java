@@ -34,7 +34,10 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -52,6 +55,9 @@ import java.util.Random;
  */
 public interface ProcessingContext extends ValidationContext {
 
+    /**
+     * Returns whether or not the subject {@link AssessmentItem} or {@link AssessmentTest} is valid
+     */
     boolean isSubjectValid();
 
     /**
@@ -59,6 +65,8 @@ public interface ProcessingContext extends ValidationContext {
      * numbers if required.
      */
     Random getRandomGenerator();
+
+    VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes);
 
     /**
      * Returns the current value of the variable having the
