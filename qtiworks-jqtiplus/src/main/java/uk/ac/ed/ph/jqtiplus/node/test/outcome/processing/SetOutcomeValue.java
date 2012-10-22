@@ -95,7 +95,7 @@ public class SetOutcomeValue extends ProcessOutcomeValue {
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
             final OutcomeDeclaration declaration = (OutcomeDeclaration) context.checkLocalVariableReference(this, referenceIdentifier);
-            if (declaration.getLookupTable() != null) {
+            if (declaration!=null && declaration.getLookupTable() != null) {
                 context.fireValidationWarning(this, "Never used " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME
