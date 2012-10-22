@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeCondition;
-import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeElse;
+import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeCondition;
+import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeElse;
 
 /**
  * Group of outcomeElse child.

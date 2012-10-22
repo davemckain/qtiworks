@@ -31,41 +31,21 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
-
-import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
-import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+package uk.ac.ed.ph.jqtiplus.node.test.outcome.processing;
 
 /**
- * Abstract parent of all outcome rules.
+ * Implementation of IF outcomeCondition child.
  *
  * @author Jiri Kajaba
  */
-public abstract class OutcomeRule extends AbstractNode {
+public final class OutcomeIf extends OutcomeConditionExpressionChild {
 
-    private static final long serialVersionUID = -3607422796688416928L;
+    private static final long serialVersionUID = 5878128682073023533L;
 
-    /** Display name of this class. */
-    public static final String DISPLAY_NAME = "outcomeRule";
+    /** Name of this class in xml schema. */
+    public static final String QTI_CLASS_NAME = "outcomeIf";
 
-    public OutcomeRule(final QtiNode parent, final String qtiClassName) {
-        super(parent, qtiClassName);
+    public OutcomeIf(final OutcomeCondition parent) {
+        super(parent, QTI_CLASS_NAME);
     }
-
-    public boolean isThisRuleValid(final ValidationContext context) {
-        context.setCheckpoint(NotificationLevel.ERROR);
-        validateThis(context);
-        return context.clearCheckpoint() > 0;
-    }
-
-    /**
-     * Evaluates this rule and all its children.
-     *
-     * @throws QtiProcessingInterrupt
-     */
-    public abstract void evaluate(TestProcessingContext context) throws QtiProcessingInterrupt;
 }

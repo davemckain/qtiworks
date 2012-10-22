@@ -31,21 +31,30 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
+package uk.ac.ed.ph.jqtiplus.node.test.outcome.processing;
+
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 
 /**
- * Implementation of IF outcomeCondition child.
+ * Force processing to stop and the text to exit
  *
- * @author Jiri Kajaba
+ * @author Jonathon Hare
  */
-public final class OutcomeIf extends OutcomeConditionExpressionChild {
+public final class ExitTest extends OutcomeRule {
 
-    private static final long serialVersionUID = 5878128682073023533L;
+    private static final long serialVersionUID = 1431851586138265131L;
 
     /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "outcomeIf";
+    public static final String QTI_CLASS_NAME = "exitTest";
 
-    public OutcomeIf(final OutcomeCondition parent) {
+    public ExitTest(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
+    }
+
+    @Override
+    public void evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt {
+        throw new QtiProcessingInterrupt();
     }
 }

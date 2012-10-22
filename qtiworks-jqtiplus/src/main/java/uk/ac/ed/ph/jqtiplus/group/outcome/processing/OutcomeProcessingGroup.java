@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.SimpleSingleNodeGroup;
-import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
 
 /**
  * Group of outcomeProcessing child.

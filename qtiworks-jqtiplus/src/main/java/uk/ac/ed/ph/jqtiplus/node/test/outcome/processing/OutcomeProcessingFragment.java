@@ -31,21 +31,50 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
+package uk.ac.ed.ph.jqtiplus.node.test.outcome.processing;
+
+import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+
+import java.util.List;
 
 /**
- * Implementation of ELSE-IF outcomeCondition child.
+ * An outcomeProcessingFragment is A simple group of outcomeRules which are grouped together in order to allow them
+ * to be managed as A separate resource. It should not be used for any other purpose.
  *
  * @author Jiri Kajaba
  */
-public final class OutcomeElseIf extends OutcomeConditionExpressionChild {
+public final class OutcomeProcessingFragment extends OutcomeRule {
 
-    private static final long serialVersionUID = 1315729870633785646L;
+    private static final long serialVersionUID = 4189180798268332071L;
 
     /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "outcomeElseIf";
+    public static final String QTI_CLASS_NAME = "outcomeProcessingFragment";
 
-    public OutcomeElseIf(final OutcomeCondition parent) {
+    public OutcomeProcessingFragment(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
+
+        getNodeGroups().add(new OutcomeRuleGroup(this));
+    }
+
+    public List<OutcomeRule> getOutcomeRules() {
+        return getNodeGroups().getOutcomeRuleGroup().getOutcomeRules();
+    }
+
+    @Override
+    protected void validateThis(final ValidationContext context) {
+        if (getOutcomeRules().size() == 0) {
+            context.fireValidationWarning(this, "Node " + QTI_CLASS_NAME + " should contain some rules.");
+        }
+    }
+
+    @Override
+    public void evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt {
+        for (final OutcomeRule outcomeRule : getOutcomeRules()) {
+            outcomeRule.evaluate(context);
+        }
     }
 }

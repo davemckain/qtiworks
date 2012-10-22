@@ -45,8 +45,8 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.net.URI;

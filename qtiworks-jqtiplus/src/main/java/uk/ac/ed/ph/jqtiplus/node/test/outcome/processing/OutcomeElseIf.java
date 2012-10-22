@@ -31,21 +31,21 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
+package uk.ac.ed.ph.jqtiplus.node.test.outcome.processing;
 
 /**
- * Implementation of ELSE outcomeCondition child.
+ * Implementation of ELSE-IF outcomeCondition child.
  *
  * @author Jiri Kajaba
  */
-public final class OutcomeElse extends OutcomeConditionChild {
+public final class OutcomeElseIf extends OutcomeConditionExpressionChild {
 
-    private static final long serialVersionUID = -7354013424656238553L;
+    private static final long serialVersionUID = 1315729870633785646L;
 
     /** Name of this class in xml schema. */
-    public static final String QTI_CLASS_NAME = "outcomeElse";
+    public static final String QTI_CLASS_NAME = "outcomeElseIf";
 
-    public OutcomeElse(final OutcomeCondition parent) {
+    public OutcomeElseIf(final OutcomeCondition parent) {
         super(parent, QTI_CLASS_NAME);
     }
 }

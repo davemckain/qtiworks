@@ -35,8 +35,8 @@ package uk.ac.ed.ph.jqtiplus.group.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRule;
-import uk.ac.ed.ph.jqtiplus.node.outcome.processing.OutcomeRuleType;
+import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeRule;
+import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeRuleType;
 
 import java.util.List;
 

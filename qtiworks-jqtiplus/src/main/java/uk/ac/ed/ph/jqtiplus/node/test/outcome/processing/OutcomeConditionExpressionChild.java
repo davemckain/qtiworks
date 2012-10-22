@@ -31,53 +31,64 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.outcome.processing;
+package uk.ac.ed.ph.jqtiplus.node.test.outcome.processing;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeRuleGroup;
-import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
+import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
+import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
+import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-
-import java.util.List;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * Abstract parent for all outcomeCondition children (IF, ELSE-IF, ELSE).
+ * Abstract parent for all outcomeCondition children with condition (IF, ELSE-IF).
  *
  * @author Jiri Kajaba
  */
-public abstract class OutcomeConditionChild extends AbstractNode {
+public abstract class OutcomeConditionExpressionChild extends OutcomeConditionChild implements ExpressionParent {
 
-    private static final long serialVersionUID = 8228195924310740729L;
+    private static final long serialVersionUID = -3203987096888772050L;
 
-    public OutcomeConditionChild(final OutcomeCondition parent, final String qtiClassName) {
+    public OutcomeConditionExpressionChild(final OutcomeCondition parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
-        getNodeGroups().add(new OutcomeRuleGroup(this));
+        getNodeGroups().add(0, new ExpressionGroup(this, 1, 1));
     }
 
-    public List<OutcomeRule> getOutcomeRules() {
-        return getNodeGroups().getOutcomeRuleGroup().getOutcomeRules();
+
+    public Expression getExpression() {
+        return getNodeGroups().getExpressionGroup().getExpression();
+    }
+
+    public void setExpression(final Expression expression) {
+        getNodeGroups().getExpressionGroup().setExpression(expression);
+    }
+
+
+    @Override
+    public Cardinality[] getRequiredCardinalities(final ValidationContext context, final int index) {
+        return new Cardinality[] { Cardinality.SINGLE };
     }
 
     @Override
-    protected void validateThis(final ValidationContext context) {
-        if (getOutcomeRules().size() == 0) {
-            context.fireValidationWarning(this, "Node " + getQtiClassName() + " should contain some rules.");
-        }
+    public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
+        return new BaseType[] { BaseType.BOOLEAN };
     }
 
-    /**
-     * Evaluates all child outcomeRules and returns true.
-     *
-     * @return true
-     * @throws QtiProcessingInterrupt
-     * @throws RuntimeValidationException
-     */
+    @Override
     public boolean evaluate(final TestProcessingContext context) throws QtiProcessingInterrupt {
-        for (final OutcomeRule outcomeRule : getOutcomeRules()) {
-            outcomeRule.evaluate(context);
+        final Value value = getExpression().evaluate(context);
+
+        if (value == null || value.isNull() || !((BooleanValue) value).booleanValue()) {
+            return false;
         }
+
+        super.evaluate(context);
+
         return true;
     }
 }
