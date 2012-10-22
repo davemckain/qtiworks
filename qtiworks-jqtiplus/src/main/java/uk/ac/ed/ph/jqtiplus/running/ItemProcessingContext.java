@@ -33,7 +33,9 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -46,19 +48,31 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  */
 public interface ItemProcessingContext extends ProcessingContext {
 
+    /**
+     * Returns the {@link ItemSessionState} attached to this context.
+     */
     ItemSessionState getItemSessionState();
 
     /**
-     * Returns the computed default value of the variable having
-     * the given identifier.
-     * <p>
-     * If the variable is not successfully referenced then a runtime warning
-     * will be fired and the {@link NullValue} will be returned.
+     * Computes the current default value of the variable having the
+     * given {@link Identifier}. The result will be not null (though may be a {@link NullValue}).
      *
-     * @param owner
+     * @param identifier identifier of the required variable, which must not be null
+     * @return computed default value, which will not be null.
+     *
+     * @throws QtiInvalidLookupException
      */
     Value computeDefaultValue(Identifier identifier);
 
+    /**
+     * Computes the current correct response for the {@link ResponseDeclaration} having the
+     * given {@link Identifier}. The result will be not null (though may be a {@link NullValue}).
+     *
+     * @param identifier identifier of the required variable, which must not be null
+     * @return computed correct response value, which will not be null.
+     *
+     * @throws QtiInvalidLookupException
+     */
     Value computeCorrectResponse(Identifier responseIdentifier);
 
 }

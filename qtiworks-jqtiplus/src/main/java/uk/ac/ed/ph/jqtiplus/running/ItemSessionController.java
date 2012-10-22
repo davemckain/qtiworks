@@ -572,11 +572,13 @@ public final class ItemSessionController extends ItemValidationContext implement
     //-------------------------------------------------------------------
 
     /**
-     * Returns the current default value of the variable having the
-     * given {@link Identifier}, returning null if no such variable exists.
+     * Computes the current default value of the variable having the
+     * given {@link Identifier}. The result will be not null (though may be a {@link NullValue}).
      *
-     * @param declaration declaration of the required variable, which must not be null.
+     * @param identifier identifier of the required variable, which must not be null
      * @return computed default value, which will not be null.
+     *
+     * @throws QtiInvalidLookupException
      */
     @Override
     public Value computeDefaultValue(final Identifier identifier) {
@@ -585,7 +587,7 @@ public final class ItemSessionController extends ItemValidationContext implement
     }
 
     /**
-     * Returns the current default value of the given variable.
+     * Computes the current default value of the given {@link VariableDeclaration}.
      * The result will be not null (though may be a {@link NullValue}).
      *
      * @param declaration declaration of the required variable, which must not be null.
@@ -594,7 +596,7 @@ public final class ItemSessionController extends ItemValidationContext implement
     public Value computeDefaultValue(final VariableDeclaration declaration) {
         Assert.notNull(declaration);
         Value result = itemSessionState.getOverriddenDefaultValue(declaration);
-        if (result == null) {
+        if (result==null) {
             final DefaultValue defaultValue = declaration.getDefaultValue();
             if (defaultValue != null) {
                 result = defaultValue.evaluate();
@@ -606,12 +608,28 @@ public final class ItemSessionController extends ItemValidationContext implement
         return result;
     }
 
+    /**
+     * Computes the current correct response for the {@link ResponseDeclaration} having the
+     * given {@link Identifier}. The result will be not null (though may be a {@link NullValue}).
+     *
+     * @param identifier identifier of the required variable, which must not be null
+     * @return computed correct response value, which will not be null.
+     *
+     * @throws QtiInvalidLookupException
+     */
     @Override
     public Value computeCorrectResponse(final Identifier identifier) {
         Assert.notNull(identifier);
         return computeCorrectResponse((ResponseDeclaration) ensureVariableDeclaration(identifier, VariableType.RESPONSE));
     }
 
+    /**
+     * Computes the current correct response for the {@link ResponseDeclaration} having the
+     * given {@link Identifier}. The result will be not null (though may be a {@link NullValue}).
+     *
+     * @param identifier identifier of the required variable, which must not be null
+     * @return computed correct response value, which will not be null.
+     */
     public Value computeCorrectResponse(final ResponseDeclaration declaration) {
         Assert.notNull(declaration);
         Value result = itemSessionState.getOverriddenCorrectResponseValue(declaration);
