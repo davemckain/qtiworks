@@ -155,7 +155,7 @@ public final class QtiContentPackageExtractor {
         final XmlReadResult xmlReadResult = xmlResourceReader.read(manifestSystemId, packageResourceLocator, packageResourceLocator, false);
         final XmlParseResult xmlParseResult = xmlReadResult.getXmlParseResult();
 
-        /* If successful, extract debugrmation from the DOM */
+        /* If successful, extract information from the DOM */
         if (!xmlParseResult.isParsed()) {
             logger.debug("XML parse of IMS manifest at System ID {} failed: {}", manifestSystemId, xmlParseResult);
             throw new ImsManifestException("XML parse of IMS manifest file at " + manifestHref + " failed", xmlParseResult);

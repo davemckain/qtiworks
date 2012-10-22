@@ -125,12 +125,12 @@ public final class AssessmentObjectValidator {
                     if (itemValidationResult.hasErrors()) {
                         result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                                 messageBuilder.toString()
-                                + " has errors. Please see the attached validation result for this item for further debugrmation."));
+                                + " has errors. Please see the attached validation result for this item for further information"));
                     }
                     if (itemValidationResult.hasWarnings()) {
                         result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
                                 messageBuilder.toString()
-                                + " has warnings. Please see the attached validation result for this item for further debugrmation."));
+                                + " has warnings. Please see the attached validation result for this item for further information"));
                     }
                 }
                 else {
