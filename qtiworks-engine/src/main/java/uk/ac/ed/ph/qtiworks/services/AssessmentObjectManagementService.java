@@ -45,6 +45,8 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
+import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
@@ -58,7 +60,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
- * Middle layer service responsible for instantiating and caching {@link ResolvedAssessmentObject}s
+ * Middle layer service responsible for instantiating and caching {@link ItemProcessingMap}s
  * <p>
  * TODO: For the time being, we'll use an {@link LruHashMap}, though this is probably not the best choice.
  *
@@ -78,27 +80,28 @@ public class AssessmentObjectManagementService {
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
 
-    private final LruHashMap<Long, ResolvedAssessmentItem> resolvedassessmentItemCache;
+    private final LruHashMap<Long, ItemProcessingMap> resolvedassessmentItemCache;
 
     public AssessmentObjectManagementService() {
-        this.resolvedassessmentItemCache = new LruHashMap<Long, ResolvedAssessmentItem>();
+        this.resolvedassessmentItemCache = new LruHashMap<Long, ItemProcessingMap>();
         this.cacheMissCount = 0;
         this.cacheHitCount = 0;
     }
 
-    public ResolvedAssessmentItem getResolvedAssessmentItem(final AssessmentPackage assessmentPackage) {
+    public ItemProcessingMap getItemProcessingMap(final AssessmentPackage assessmentPackage) {
         final Long assessmentPackageId = assessmentPackage.getId();
-        ResolvedAssessmentItem result;
+        ItemProcessingMap result;
         synchronized (resolvedassessmentItemCache) {
             result = resolvedassessmentItemCache.get(assessmentPackageId);
             if (result!=null) {
-                logger.debug("ResolvedAssessmentObject cache HIT for package {}", assessmentPackage);
+                logger.debug("{} cache HIT for package {}", ItemProcessingMap.class.getSimpleName(), assessmentPackage);
                 cacheHitCount++;
             }
             else {
-                logger.debug("ResolvedAssessmentObject cache MISS for package {}. Reading and resolving XML", assessmentPackage);
+                logger.debug("{} cache MISS for package {}. Reading and resolving XML", ItemProcessingMap.class.getSimpleName(), assessmentPackage);
                 cacheMissCount++;
-                result = resolveAssessmentObject(assessmentPackage);
+                final ResolvedAssessmentItem resolvedAssessmentItem = resolveAssessmentObject(assessmentPackage);
+                result = new ItemProcessingInitializer(resolvedAssessmentItem, assessmentPackage.isValid()).initialize();
                 resolvedassessmentItemCache.put(assessmentPackageId, result);
             }
         }
@@ -149,7 +152,7 @@ public class AssessmentObjectManagementService {
         return resolvedassessmentItemCache.getPurgeCount();
     }
 
-    public Map<Long, ResolvedAssessmentItem> getCacheView() {
+    public Map<Long, ItemProcessingMap> getCacheView() {
         return Collections.unmodifiableMap(resolvedassessmentItemCache);
     }
 

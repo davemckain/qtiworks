@@ -25,7 +25,9 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
@@ -51,8 +53,9 @@ public class RenderingTest {
 
             final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
             final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
+            final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, true).initialize();
             final ItemSessionState itemSessionState = new ItemSessionState();
-            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
 
             System.out.println("\nInitialising");
             itemSessionController.performTemplateProcessing();

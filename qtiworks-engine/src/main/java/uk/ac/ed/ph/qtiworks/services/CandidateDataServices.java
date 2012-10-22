@@ -51,8 +51,8 @@ import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 
@@ -211,12 +211,12 @@ public class CandidateDataServices {
         Assert.notNull(itemDelivery, "itemDelivery");
         Assert.notNull(itemSessionState, "itemSessionState");
 
-        /* Get the resolved JQTI+ Object for the underlying package */
+        /* Resolve the underlying JQTI+ object */
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
-        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectManagementService.getResolvedAssessmentItem(assessmentPackage);
+        final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
 
         /* Create controller and wire up notification recorder (if passed) */
-        final ItemSessionController result = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+        final ItemSessionController result = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
         if (notificationRecorder!=null) {
             result.addNotificationListener(notificationRecorder);
         }
