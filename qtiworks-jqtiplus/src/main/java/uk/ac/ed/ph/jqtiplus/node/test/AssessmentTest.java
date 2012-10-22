@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeProcessingGroup;
@@ -44,10 +43,13 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.net.URI;
 import java.util.List;
@@ -83,16 +85,8 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     private URI systemId;
     private ModelRichness modelRichness;
 
-    //    /**
-    //     * Provides current time.
-    //     * This approach is because of testing. Timer for automated testing purposes can return discrete values
-    //     * instead of real time. You do not need to modify timer in real test.
-    //     */
-    //    private Timer timer;
+    private final ResponseDeclaration durationResponseDeclaration;
 
-    /**
-     * Constructs assessmentTest.
-     */
     public AssessmentTest() {
         super(null, QTI_CLASS_NAME); // Test doesn't have any parent.
 
@@ -107,24 +101,11 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         getNodeGroups().add(new OutcomeProcessingGroup(this));
         getNodeGroups().add(new TestFeedbackGroup(this));
 
-        //        timer = new Timer();
-    }
-
-    /**
-     * Convenience constructor for assessmentTest.
-     * Sets the JQTI toolName and toolVersion automatically
-     *
-     * @param identifier Value of identifier attribute
-     * @param title Value of title attribute
-     */
-    public AssessmentTest(final String identifier, final String title) {
-        this();
-
-        setIdentifier(identifier);
-        setTitle(title);
-
-        setToolName(JqtiPlus.TOOL_NAME);
-        setToolVersion(JqtiPlus.TOOL_VERSION);
+        /* create a special declaration for the internal duration variable */
+        durationResponseDeclaration = new ResponseDeclaration(this);
+        durationResponseDeclaration.setIdentifier(VARIABLE_DURATION_IDENTIFIER);
+        durationResponseDeclaration.setCardinality(Cardinality.SINGLE);
+        durationResponseDeclaration.setBaseType(BaseType.FLOAT);
     }
 
     @Override
@@ -223,21 +204,6 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         return null;
     }
 
-
-    //    /**
-    //     * Gets value of outcomeDeclaration with given identifier or null.
-    //     *
-    //     * @param identifier given identifier
-    //     * @return value of outcomeDeclaration with given identifier or null
-    //     */
-    //    @ToRemove
-    //    public Value getOutcomeValue(String identifier)
-    //    {
-    //        OutcomeDeclaration declaration = getOutcomeDeclaration(identifier);
-    //
-    //        return (declaration != null) ? declaration.getValue() : null;
-    //    }
-
     public List<TestPart> getTestParts() {
         return getNodeGroups().getTestPartGroup().getTestParts();
     }
@@ -256,46 +222,18 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }
 
-    //    /**
-    //     * Gets all viewable testFeedbacks with given access.
-    //     * Tests if feedbacks can be displayed.
-    //     *
-    //     * @param requestedAccess given access
-    //     * @return all testFeedbacks with given access
-    //     */
-    //    public List<TestFeedback> getTestFeedbacks(TestFeedbackAccess requestedAccess)
-    //    {
-    //        List<TestFeedback> result = new ArrayList<TestFeedback>();
-    //
-    //        for (TestFeedback feedback : getTestFeedbacks())
-    //            if (feedback.isVisible(requestedAccess))
-    //                result.add(feedback);
-    //
-    //        return result;
-    //    }
+    //---------------------------------------------------------------
+    // Built-in variables
 
-    // timer has moved to AssessmentTestController
-    //    /**
-    //     * Gets current timer.
-    //     *
-    //     * @return current timer
-    //     * @see #setTimer
-    //     */
-    //    public Timer getTimer()
-    //    {
-    //        return timer;
-    //    }
-    //
-    //    /**
-    //     * Sets new timer.
-    //     *
-    //     * @param timer new timer
-    //     * @see #getTimer
-    //     */
-    //    public void setTimer(Timer timer)
-    //    {
-    //        this.timer = timer;
-    //    }
+    /**
+     * Returns {@link ResponseDeclaration} for the implicitly-defined
+     * {@link #VARIABLE_DURATION_IDENTIFIER} variable
+     */
+    public ResponseDeclaration getDurationResponseDeclaration() {
+        return durationResponseDeclaration;
+    }
+
+    //---------------------------------------------------------------
 
     @Override
     public String toString() {
@@ -304,68 +242,4 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
                 + ",modelRichness=" + modelRichness
                 + ")";
     }
-
-    // (These have all moved to AssessmentTestController)
-    //    /**
-    //     * Returns current result of this test (only test itself, no items).
-    //     *
-    //     * @param parent parent of created result
-    //     * @return current result of this test (only test itself, no items)
-    //     */
-    //    @ToRefactor
-    //    public TestResult getTestResult(AssessmentResult parent)
-    //    {
-    //        TestResult result = new TestResult(parent);
-    //
-    //        result.setIdentifier(getIdentifier());
-    //        result.setDateStamp(new Date());
-    //
-    //        for (OutcomeDeclaration declaration : getOutcomeDeclarations())
-    //        {
-    //            OutcomeVariable variable = new OutcomeVariable(result, declaration, null);
-    //            result.getItemVariables().add(variable);
-    //        }
-    //
-    //        result.getItemVariables().add(new OutcomeVariable(result, VARIABLE_DURATION_NAME, new DurationValue(getDuration() / 1000.0)));
-    //
-    //        for (TestPart testPart : getTestParts())
-    //            processDuration(result, testPart);
-    //
-    //        return result;
-    //    }
-    //
-    //    @ToRefactor
-    //    private void processDuration(TestResult result, AbstractPart parent)
-    //    {
-    //        if (!(parent instanceof AssessmentItemRef))
-    //        {
-    //            String identifier = parent.getIdentifier() + "." + VARIABLE_DURATION_NAME;
-    //            DurationValue duration = new DurationValue(parent.getDuration() / 1000.0);
-    //
-    //            result.getItemVariables().add(new OutcomeVariable(result, identifier, duration));
-    //        }
-    //
-    //        for (AbstractPart child : parent.getChildren())
-    //            processDuration(result, child);
-    //    }
-    //
-    //    /**
-    //     * Returns current result of whole assessment (test and all its items).
-    //     *
-    //     * @return current result of whole assessment (test and all its items)
-    //     */
-    //    @ToRefactor
-    //    public AssessmentResult getAssessmentResult()
-    //    {
-    //        AssessmentResult result = new AssessmentResult();
-    //
-    //        result.setTestResult(getTestResult(result));
-    //
-    //        List<AssessmentItemRef> itemRefs = lookupItemRefs(null);
-    //        int sequenceIndex = 1;
-    //        for (AssessmentItemRef itemRef : itemRefs)
-    //            result.getItemResults().addAll(itemRef.getItemResult(result, sequenceIndex++, null));
-    //
-    //        return result;
-    //    }
 }

@@ -36,7 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.item.response.declaration;
 import uk.ac.ed.ph.jqtiplus.group.item.CorrectResponseGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.AreaMappingGroup;
 import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.MappingGroup;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
@@ -54,7 +54,7 @@ public final class ResponseDeclaration extends VariableDeclaration {
     /** Name of this class in xml schema. */
     public static final String QTI_CLASS_NAME = "responseDeclaration";
 
-    public ResponseDeclaration(final AssessmentItem parent) {
+    public ResponseDeclaration(final AssessmentObject parent) {
         super(parent, QTI_CLASS_NAME);
 
         getNodeGroups().add(new CorrectResponseGroup(this));

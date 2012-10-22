@@ -123,12 +123,12 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /** Name of number of attempts built-in variable. */
     public static final String VARIABLE_NUMBER_OF_ATTEMPTS = "numAttempts";
 
-    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.assumedLegal("numAttempts");
+    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.assumedLegal(VARIABLE_NUMBER_OF_ATTEMPTS);
 
     /** Name of duration built-in variable. */
     public static final String VARIABLE_DURATION = "duration";
 
-    public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal("duration");
+    public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal(VARIABLE_DURATION);
 
     private URI systemId;
     private ModelRichness modelRichness;
@@ -165,19 +165,19 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
         getNodeGroups().add(new ResponseProcessingGroup(this)); // responseProcessing [0..1]
         getNodeGroups().add(new ModalFeedbackGroup(this));         // modalFeedback [*]
 
-        //create a special declaration for the internal completionStatus variable
+        /* create a special declaration for the internal completionStatus variable */
         completionStatusOutcomeDeclaration = new OutcomeDeclaration(this);
         completionStatusOutcomeDeclaration.setIdentifier(VARIABLE_COMPLETION_STATUS_IDENTIFIER);
         completionStatusOutcomeDeclaration.setCardinality(Cardinality.SINGLE);
         completionStatusOutcomeDeclaration.setBaseType(BaseType.IDENTIFIER);
 
-        //create a special declaration for the internal numAttempts variable
+        /* create a special declaration for the internal numAttempts variable */
         numAttemptsResponseDeclaration = new ResponseDeclaration(this);
         numAttemptsResponseDeclaration.setIdentifier(VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
         numAttemptsResponseDeclaration.setCardinality(Cardinality.SINGLE);
         numAttemptsResponseDeclaration.setBaseType(BaseType.INTEGER);
 
-        //create a special declaration for the internal duration variable
+        /* create a special declaration for the internal duration variable */
         durationResponseDeclaration = new ResponseDeclaration(this);
         durationResponseDeclaration.setIdentifier(VARIABLE_DURATION_IDENTIFIER);
         durationResponseDeclaration.setCardinality(Cardinality.SINGLE);

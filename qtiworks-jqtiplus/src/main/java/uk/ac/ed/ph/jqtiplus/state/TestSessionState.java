@@ -34,6 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -52,12 +54,14 @@ import java.util.Map;
  *
  * @author David McKain
  */
+@ObjectDumperOptions(DumpMode.DEEP)
 public final class TestSessionState implements Serializable {
 
     private static final long serialVersionUID = 9006603629987329773L;
 
     private final TestPlan testPlan;
     private final Map<Identifier, Value> outcomeValues;
+    private Value durationValue;
     private final Map<TestPlanNodeInstanceKey, TestItemState> testItemStates;
 
     public TestSessionState(final TestPlan testPlan) {

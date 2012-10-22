@@ -16,7 +16,9 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
@@ -39,10 +41,13 @@ public final class TestTest {
 
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
 
-        final TestValidationResult result = objectManager.resolveAndValidateTest(inputUri);
-        System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
+        final TestValidationResult testValidationResult = objectManager.resolveAndValidateTest(inputUri);
+        System.out.println("Validation result: " + ObjectDumper.dumpObject(testValidationResult, DumpMode.DEEP));
 
-        final AssessmentTest test = result.getResolvedAssessmentTest().getTestLookup().getRootNodeHolder().getRootNode();
+        final TestProcessingMap testProcessingMap = new TestProcessingInitializer(testValidationResult).initialize();
+        System.out.println("Test processing map: " + ObjectDumper.dumpObject(testProcessingMap, DumpMode.DEEP));
+
+        final AssessmentTest test = testValidationResult.getResolvedAssessmentTest().getTestLookup().getRootNodeHolder().getRootNode();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ListenerNotificationFirer notificationFirer = new ListenerNotificationFirer();
         notificationFirer.addNotificationListener(notificationRecorder);
