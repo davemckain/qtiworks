@@ -37,7 +37,9 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -46,10 +48,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Parent of correct, default and variable expression.
+ * Parent of <code>correct</code>, <code>default</code> and <code>variable</code> expression.
+ * <p>
+ * These ones are fairly complex in that they allow deep references in tests.
  *
  * @author Jiri Kajaba
  * @author Jonathon Hare
+ * @author David McKain (refactored)
  */
 public abstract class LookupExpression extends AbstractFunctionalExpression {
 
@@ -60,50 +65,45 @@ public abstract class LookupExpression extends AbstractFunctionalExpression {
     /** Name of identifier attribute in xml schema. */
     public static final String ATTR_IDENTIFIER_NAME = "identifier";
 
-    /**
-     * Constructs expression.
-     *
-     * @param parent parent of this expression
-     */
     public LookupExpression(final ExpressionParent parent, final String qtiClassName) {
         super(parent, qtiClassName);
         getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
     public Identifier getIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
     public void setIdentifier(final Identifier identifier) {
         getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     //----------------------------------------------------------------------
+    // Validation
 
     @Override
     protected final void validateThis(final ValidationContext context) {
         super.validateThis(context);
-
-        /* Check reference */
         final Identifier variableReferenceIdentifier = getIdentifier();
-        final VariableDeclaration resolvedDeclaration = context.checkLocalVariableReference(this, variableReferenceIdentifier);
 
-        /* If reference was OK, let subclasses do any further validation as required */
-        if (resolvedDeclaration!=null) {
-            validateResolvedVariableReference(context, variableReferenceIdentifier, resolvedDeclaration);
+        if (context.isSubjectItem()) {
+            /* Check reference within this item */
+            final VariableDeclaration resolvedDeclaration = context.checkLocalVariableReference(this, variableReferenceIdentifier);
 
+            /* If reference was OK, let subclasses do any further validation as required */
+            if (resolvedDeclaration!=null) {
+                validateResolvedItemVariableReference(context, variableReferenceIdentifier, resolvedDeclaration);
+            }
+        }
+        else {
+            /* Check reference within this test OR within referenced item */
+            final TestValidationContext testValidationContext = (TestValidationContext) context;
+            final ResolvedTestVariableReference resolvedReference = testValidationContext.checkDeepVariableReference(this, variableReferenceIdentifier);
+
+            /* If reference was OK, let subclasses do any further validation as required */
+            if (resolvedReference!=null) {
+                validateResolvedTestVariableReference(context, variableReferenceIdentifier, resolvedReference);
+            }
         }
     }
 
@@ -111,8 +111,11 @@ public abstract class LookupExpression extends AbstractFunctionalExpression {
      * Subclasses should implement this to perform additional validation on the resolved
      * {@link VariableDeclaration}.
      */
-    protected abstract void validateResolvedVariableReference(ValidationContext context,
+    protected abstract void validateResolvedItemVariableReference(ValidationContext context,
             Identifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
+
+    protected abstract void validateResolvedTestVariableReference(ValidationContext context,
+            Identifier variableReferenceIdentifier, ResolvedTestVariableReference resolvedReference);
 
     //----------------------------------------------------------------------
 

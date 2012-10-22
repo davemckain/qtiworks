@@ -36,13 +36,13 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * Implementation of <code>correct</code>.
@@ -64,27 +64,42 @@ public final class Correct extends LookupExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected void validateResolvedVariableReference(final ValidationContext context, final Identifier variableReferenceIdentifier,
-            final VariableDeclaration resolvedDeclaration) {
+    protected void validateResolvedItemVariableReference(final ValidationContext context,
+            final Identifier variableReferenceIdentifier, final VariableDeclaration resolvedDeclaration) {
         /* Ensure that the referenced variable is a response variable. */
         context.checkVariableType(this, resolvedDeclaration, VariableType.RESPONSE);
     }
 
+    @Override
+    protected void validateResolvedTestVariableReference(final ValidationContext context,
+            final Identifier variableReferenceIdentifier, final ResolvedTestVariableReference resolvedReference) {
+        context.checkVariableType(this, resolvedReference.getVariableDeclaration(), VariableType.RESPONSE);
+    }
+
     //----------------------------------------------------------------------
 
+    /** FIXME: Finish this for tests */
+    @ToRefactor
     @Override
-    protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
-        return itemContext.computeCorrectResponse(itemVariableIdentifier);
+    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+        final Identifier referenceIdentifier = getIdentifier();
+        final ItemProcessingContext itemProcessingContext = (ItemProcessingContext) context;
+        return itemProcessingContext.computeCorrectResponse(referenceIdentifier);
     }
 
-    @Override
-    protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
-        /* Tests do not contain response variables, so the result here is always null */
-        return NullValue.INSTANCE;
-    }
-
-    @Override
-    protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
-        return itemRefController.getItemController().computeCorrectResponse(itemVariableIdentifier);
-    }
+//    @Override
+//    protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
+//        return itemContext.computeCorrectResponse(itemVariableIdentifier);
+//    }
+//
+//    @Override
+//    protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
+//        /* Tests do not contain response variables, so the result here is always null */
+//        return NullValue.INSTANCE;
+//    }
+//
+//    @Override
+//    protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
+//        return itemRefController.getItemController().computeCorrectResponse(itemVariableIdentifier);
+//    }
 }

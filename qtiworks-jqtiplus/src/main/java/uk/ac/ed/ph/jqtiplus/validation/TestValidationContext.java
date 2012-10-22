@@ -33,10 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
  * Callback interface to enable {@link QtiNode} to validate themselves.
@@ -46,12 +47,17 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 public interface TestValidationContext extends ValidationContext {
 
     /**
-     * Returns the {@link AssessmentTest} being handling, if this is the case.
-     *
-     * @throws QtiLogicException if not handling a test
+     * Returns the {@link AssessmentTest} being handled
      */
     AssessmentTest getSubjectTest();
 
+    /**
+     * Returns the {@link ResolvedAssessmentTest} being handled
+     */
     ResolvedAssessmentTest getResolvedAssessmentTest();
+
+    ResolvedTestVariableReference isValidDeepVariableReference(final Identifier variableReferenceIdentifier);
+
+    ResolvedTestVariableReference checkDeepVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier);
 
 }

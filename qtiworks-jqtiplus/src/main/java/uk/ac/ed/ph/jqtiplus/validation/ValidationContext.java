@@ -73,8 +73,6 @@ public interface ValidationContext extends NotificationFirer {
      */
     AssessmentObject getSubject();
 
-    //------------------------------------------------------
-
     /**
      * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
      * dereferenced. Returns the resulting {@link VariableDeclaration} if successful, otherwise null.
@@ -99,8 +97,6 @@ public interface ValidationContext extends NotificationFirer {
      * @see #isValidVariableReference(QtiNode, Identifier)
      */
     VariableDeclaration checkLocalVariableReference(QtiNode owner, Identifier variableReferenceIdentifier);
-
-    //------------------------------------------------------
 
     /**
      * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s,

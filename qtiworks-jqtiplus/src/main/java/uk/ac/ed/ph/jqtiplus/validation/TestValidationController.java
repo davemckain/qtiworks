@@ -50,7 +50,7 @@ import java.util.List;
  *
  * @author David McKain
  */
-class TestValidationController extends AbstractValidationContext<AssessmentTest> implements TestValidationContext {
+public class TestValidationController extends AbstractValidationContext<AssessmentTest> implements TestValidationContext {
 
     private final ResolvedAssessmentTest resolvedAssessmentTest;
 
@@ -104,7 +104,7 @@ class TestValidationController extends AbstractValidationContext<AssessmentTest>
             /* Test lookup failed, which is impossible here */
             throw new QtiLogicException("Unexpected logic branch");
         }
-        else if (outcomeDeclarations.size()==1) {
+        if (outcomeDeclarations.size()==1) {
             /* Found and unique which is what we want */
             final OutcomeDeclaration outcomeDeclaration = outcomeDeclarations.get(0);
             if (!outcomeDeclaration.hasValidSignature()) {
@@ -114,7 +114,7 @@ class TestValidationController extends AbstractValidationContext<AssessmentTest>
             }
             return outcomeDeclaration;
         }
-        if (outcomeDeclarations.isEmpty()) {
+        else if (outcomeDeclarations.isEmpty()) {
             /* No variable found */
             fireValidationError(owner, "Test outcome variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
             return null;
@@ -126,46 +126,50 @@ class TestValidationController extends AbstractValidationContext<AssessmentTest>
         }
     }
 
-    public VariableDeclaration isValidDeepVariableReference(final Identifier variableReferenceIdentifier) {
+    @Override
+    public ResolvedTestVariableReference isValidDeepVariableReference(final Identifier variableReferenceIdentifier) {
         final List<ResolvedTestVariableReference> resolvedReferences = resolvedAssessmentTest.resolveVariableReference(variableReferenceIdentifier);
         if (resolvedReferences==null) {
             /* Test lookup failed, which is impossible here */
             throw new QtiLogicException("Unexpected logic branch");
         }
-        else if (resolvedReferences.size()==1) {
+        if (resolvedReferences.size()==1) {
             /* Found and unique which is what we want */
-            final VariableDeclaration declaration = resolvedReferences.get(0).getVariableDeclaration();
+            final ResolvedTestVariableReference resolvedReference = resolvedReferences.get(0);
+            final VariableDeclaration declaration = resolvedReference.getVariableDeclaration();
             if (declaration.hasValidSignature()) {
-                return declaration;
+                return resolvedReference;
             }
         }
         return null;
     }
 
-    public VariableDeclaration checkDeepVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
+    @Override
+    public ResolvedTestVariableReference checkDeepVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
         final List<ResolvedTestVariableReference> resolvedReferences = resolvedAssessmentTest.resolveVariableReference(variableReferenceIdentifier);
         if (resolvedReferences==null) {
             /* Test lookup failed, which is impossible here */
             throw new QtiLogicException("Unexpected logic branch");
         }
-        else if (resolvedReferences.size()==1) {
+        if (resolvedReferences.size()==1) {
             /* Found and unique which is what we want */
-            final VariableDeclaration declaration = resolvedReferences.get(0).getVariableDeclaration();
+            final ResolvedTestVariableReference resolvedReference = resolvedReferences.get(0);
+            final VariableDeclaration declaration = resolvedReference.getVariableDeclaration();
             if (!declaration.hasValidSignature()) {
-                fireValidationWarning(owner, "Test (or referenced item) variable referenced by identifier '" + variableReferenceIdentifier
+                fireValidationWarning(owner, "Test or referenced item variable referenced by identifier '" + variableReferenceIdentifier
                         + "' has an invalid cardinality/baseType combination so no further validation will be performed on this reference");
                 return null;
             }
-            return declaration;
+            return resolvedReference;
         }
-        if (resolvedReferences.isEmpty()) {
+        else if (resolvedReferences.isEmpty()) {
             /* No variable found */
-            fireValidationError(owner, "Test (or referenced item) variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
+            fireValidationError(owner, "Test or referenced item variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
             return null;
         }
         else {
             /* Multiple matches for identifier */
-            fireValidationError(owner, resolvedReferences.size() + " matches were found for the test (or referenced item) variable having identifier " + variableReferenceIdentifier);
+            fireValidationError(owner, resolvedReferences.size() + " matches were found for the test or referenced item variable having identifier " + variableReferenceIdentifier);
             return null;
         }
     }

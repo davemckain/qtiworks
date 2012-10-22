@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -46,12 +45,13 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 public interface ItemValidationContext extends ValidationContext {
 
     /**
-     * Returns the {@link AssessmentItem} being handled, if this is the case.
-     *
-     * @throws QtiLogicException if not handling an item
+     * Returns the {@link ResolvedAssessmentItem} being handled.
+     */
+    ResolvedAssessmentItem getResolvedAssessmentItem();
+
+    /**
+     * Returns the {@link AssessmentItem} being handled.
      */
     AssessmentItem getSubjectItem();
-
-    ResolvedAssessmentItem getResolvedAssessmentItem();
 
 }

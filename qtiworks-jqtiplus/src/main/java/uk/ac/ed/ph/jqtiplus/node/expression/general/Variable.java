@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -50,23 +50,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This expression looks up the value of an itemVariable that has been declared in A corresponding
- * variableDeclaration or is one of the built-in variables. The result has the base-type and cardinality
- * declared for the variable subject to the type promotion of weighted outcomes (see below).
- * <p>
- * During outcomes processing, values taken from an individual item session can be looked up by prefixing the name of the item variable with the identifier
- * assigned to the item in the assessmentItemRef, separated by A period character.
- * <p>
- * For example, to obtain the value of the SCORE variable in the item referred to as Q01 you would use A variable instance with identifier Q01.SCORE.
- * <p>
- * When looking up the value of A response variable it always takes the value assigned to it by the candidate's last submission. Unsubmitted responses are not
- * available during expression evaluation.
- * <p>
- * The value of an item variable taken from an item instantiated multiple times from the same assessmentItemRef (through the use of selection withReplacement)
- * is taken from the last instance submitted if submission is simultaneous, otherwise it is undefined.
+ * Implementation of <code>variable</code>
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
  */
 public final class Variable extends LookupExpression {
@@ -98,21 +83,27 @@ public final class Variable extends LookupExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected void validateResolvedVariableReference(final ValidationContext context,
+    protected void validateResolvedItemVariableReference(final ValidationContext context,
             final Identifier variableReferenceIdentifier,
             final VariableDeclaration resolvedDeclaration) {
         final Identifier weightIdentifier = getWeightIdentifier();
         if (weightIdentifier!=null) {
-            if (context.isSubjectTest() && variableReferenceIdentifier.isDotted()) {
-                final Identifier itemRefIdentifier = variableReferenceIdentifier.getAssessmentItemRefIdentifier();
-                final ResolvedAssessmentTest resolvedAssessmentTest = context.getResolvedAssessmentTest();
-                final AssessmentItemRef itemRef = resolvedAssessmentTest.getItemRefsByIdentifierMap().get(itemRefIdentifier).get(0);
-                if (itemRef.getWeight(weightIdentifier) == null) {
-                    context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Cannot find weight " + weightIdentifier);
+            context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME),
+                    "Weights may only be used when referencing item variables from tests");
+        }
+    }
+
+    @Override
+    protected void validateResolvedTestVariableReference(final ValidationContext context, final Identifier variableReferenceIdentifier,
+            final ResolvedTestVariableReference resolvedReference) {
+        final Identifier weightIdentifier = getWeightIdentifier();
+        if (weightIdentifier!=null) {
+            if (resolvedReference.isItemVariableReference()) {
+                final AssessmentItemRef assessmentItemRef = resolvedReference.getAssessmentItemRef();
+                if (assessmentItemRef.getWeight(weightIdentifier)==null) {
+                    context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME),
+                            "Cannot find weight " + weightIdentifier);
                 }
-            }
-            else if (context.isSubjectItem()) {
-                context.fireAttributeValidationError(getAttributes().get(ATTR_WEIGHT_IDENTIFIER_NAME), "Weights may only be used when referencing item variables from tests");
             }
         }
     }
