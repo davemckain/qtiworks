@@ -42,9 +42,11 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.running.ItemRunInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
+import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -86,13 +88,13 @@ public class MathAssessTest {
             final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
             final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
 
-            final ItemValidationResult validationResult = objectManager.resolveAndValidateItem(inputUri);
-            final ResolvedAssessmentItem resolvedAssessmentItem = validationResult.getResolvedAssessmentItem();
-            System.out.println("Validation result: " + ObjectDumper.dumpObject(validationResult, DumpMode.DEEP));
+            final ItemValidationResult itemValidationResult = objectManager.resolveAndValidateItem(inputUri);
+            final ResolvedAssessmentItem resolvedAssessmentItem = itemValidationResult.getResolvedAssessmentItem();
+            System.out.println("Validation result: " + ObjectDumper.dumpObject(itemValidationResult, DumpMode.DEEP));
             System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(jqtiExtensionManager, resolvedAssessmentItem));
             System.out.println("Foreign namespaces: " + QueryUtils.findForeignNamespaces(resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful()));
 
-            assert validationResult.isValid();
+            assert itemValidationResult.isValid();
 
             final XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
             serializationOptions.setIndenting(true);
@@ -109,7 +111,8 @@ public class MathAssessTest {
             System.out.println("\n\nSerailized XML:\n" + serializedXmlWriter.toString());
 
             final ItemSessionState itemSessionState = new ItemSessionState();
-            final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, resolvedAssessmentItem, itemSessionState);
+            final ItemRunMap itemRunMap = new ItemRunInitializer(itemValidationResult).initialize();
+            final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, itemRunMap, itemSessionState);
 
             System.out.println("\n\nInitialising");
             itemController.performTemplateProcessing(null);

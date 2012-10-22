@@ -62,7 +62,7 @@ public class IdentifierValueRefuseTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "" }, { " " }, { "-identifier" }, { ".identifier" }, { "iden.tifier" }, { "1identifier" },
+                { "" }, { " " }, { "-identifier" }, { ".identifier" }, { "1identifier" },
                 { "identifier:identifier" }, { "`A" }, { "A`" }, { "�A" }, { "A�" }, { "!A" }, { "A!" }, { "\"A" }, { "A\"" }, { "�A" }, { "A�" }, { "$A" },
                 { "A$" }, { "%A" }, { "A%" }, { "^A" }, { "A^" }, { "&A" }, { "A&" }, { "*A" }, { "A*" }, { "(A" }, { "A(" }, { ")A" }, { "A)" }, { "=A" },
                 { "A=" }, { "+A" }, { "A+" }, { "[A" }, { "A[" }, { "{A" }, { "A{" }, { "]A" }, { "A]" }, { "}A" }, { "A}" }, { ";A" }, { "A;" }, { ":A" },

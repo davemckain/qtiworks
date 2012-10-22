@@ -121,11 +121,10 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
 
         /* Rest of characters. */
         for (int i = 1; i < value.length(); i++) {
-            if (!Character.isLetterOrDigit(value.codePointAt(i)) && value.charAt(i) != '_' && value.charAt(i) != '-') {
+            if (!Character.isLetterOrDigit(value.codePointAt(i)) && value.charAt(i) != '_' && value.charAt(i) != '-'
+                    && value.charAt(i) != '.') {
                 throw new QtiParseException("Invalid identifier '" + value + "': Character '" + value.charAt(i) + "' at position " + (i + 1) + " is not valid");
             }
         }
     }
-
-
 }

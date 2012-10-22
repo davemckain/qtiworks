@@ -49,7 +49,7 @@ public class TemplateTest {
 
     @Test
     public void test() throws Exception {
-        final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TemplateTest.class);
+        final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TemplateTest.class, true);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getSubjectItem();
 

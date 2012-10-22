@@ -50,6 +50,7 @@ import org.junit.runners.Parameterized.Parameters;
  * <p>
  * This test contains only valid <code>String</code> representations.
  *
+ * @see Identifier
  * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
  */
 @RunWith(Parameterized.class)
@@ -63,25 +64,24 @@ public class IdentifierValueAcceptTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "identifier", "identifier" }, { "Identifier", "Identifier" }, { "IdenTifier", "IdenTifier" },
-                { "IDENTIFIER", "IDENTIFIER" }, { "identifier-123_A", "identifier-123_A" }, { "_identifier", "_identifier" }, { "_Identifier", "_Identifier" },
-                { "_IdenTifier", "_IdenTifier" }, { "_IDENTIFIER", "_IDENTIFIER" }, { "_identifier-123_A", "_identifier-123_A" },
+                { "identifier" },
+                { "ident.ifier" },
+                { "Identifier" },
+                { "IdenTifier" },
+                { "IDENTIFIER" },
+                { "identifier-123_A" },
+                { "_identifier" },
+                { "_Identifier" },
+                { "_IdenTifier" },
+                { "_IDENTIFIER" },
+                { "_identifier-123_A"},
         });
     }
 
     private final String string;
 
-    private final String expectedIdentifier;
-
-    /**
-     * Constructs this test.
-     *
-     * @param string parsed <code>String</code>
-     * @param expectedIdentifier expected parsed value
-     */
-    public IdentifierValueAcceptTest(final String string, final String expectedIdentifier) {
+    public IdentifierValueAcceptTest(final String string) {
         this.string = string;
-        this.expectedIdentifier = expectedIdentifier;
     }
 
     /**
@@ -89,6 +89,6 @@ public class IdentifierValueAcceptTest {
      */
     @Test
     public void testParseIdentifier() {
-        assertEquals(expectedIdentifier, new IdentifierValue(Identifier.parseString(string)).toQtiString());
+        assertEquals(string, new IdentifierValue(Identifier.parseString(string)).toQtiString());
     }
 }
