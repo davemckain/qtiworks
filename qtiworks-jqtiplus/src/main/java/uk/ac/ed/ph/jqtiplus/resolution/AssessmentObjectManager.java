@@ -48,7 +48,7 @@ import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -167,10 +167,10 @@ public final class AssessmentObjectManager {
 
     private ResolvedAssessmentTest initResolvedAssessmentTest(final RootNodeLookup<AssessmentTest> testLookup, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
         final List<AssessmentItemRef> assessmentItemRefs = new ArrayList<AssessmentItemRef>();
-        final Map<AssessmentItemRef, URI> systemIdByItemRefMap = new HashMap<AssessmentItemRef, URI>();
-        final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap = new HashMap<Identifier, List<AssessmentItemRef>>();
-        final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new HashMap<URI, List<AssessmentItemRef>>();
-        final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap = new HashMap<URI, ResolvedAssessmentItem>();
+        final Map<AssessmentItemRef, URI> systemIdByItemRefMap = new LinkedHashMap<AssessmentItemRef, URI>();
+        final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap = new LinkedHashMap<Identifier, List<AssessmentItemRef>>();
+        final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new LinkedHashMap<URI, List<AssessmentItemRef>>();
+        final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap = new LinkedHashMap<URI, ResolvedAssessmentItem>();
 
         /* Look up test */
         if (testLookup.wasSuccessful()) {
