@@ -5,6 +5,7 @@
     xmlns:m="http://www.w3.org/1998/Math/MathML"
     xmlns:apip="http://www.imsglobal.org/xsd/apip/apipv1p0/imsapip_qtiv1p0"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:sch="http://purl.oclc.org/dsdl/schematron"
     version="IMS QTI 2.1"
     elementFormDefault="qualified"
     attributeFormDefault="unqualified">
@@ -16,9 +17,9 @@
         <xs:documentation>
             XSD Data File Information
             -------------------------
-            Author:         Colin Smythe
+            Author:         Colin Smythe (IMS Global)
             Date:           31st July, 2012
-            Version:        1.0
+            Version:        2.1
             Status:         Final Release
             Description:    This is the Platform Specific Model of the IMS QTI v2.1 Specification Information Model.
                             It is this representation that is used to produce the XSD binding for IMS QTI v2.1.
@@ -117,6 +118,174 @@
 
             Tool Copyright:  2005-2012 (c) IMS Global Learning Consortium Inc.  All Rights Reserved.
         </xs:documentation>
+    </xs:annotation>
+
+    <xs:annotation>
+        <xs:documentation>
+            Definition of Schematron Validation Rules
+            -----------------------------------------
+            Author:         Colin Smythe (IMS Global)
+            Date:           31st October, 2012
+            Version:        1.0
+            Status:         Final Release
+
+            Description:    This is the set of Schematron Rules to further enforce the QTIv2.1 Information Model. The rule sets that have been defined are:
+                            [RULE SET GENERAL 1] Ensure that certain expressions are NOT used for Response Processing.
+                            [RULE SET GENERAL 2] Ensure that the Item, Section, Test and TestPart identifiers are unique.
+                            [RULE SET GENERAL 3] Ensure that AssessmentItem Response Declarations are correct.
+                            [RULE SET INTERACTION 1] Enforce the correct use the TextEntryInteraction attributes.
+
+            RULE SET GENERAL 1:     Ensure that certain expressions are NOT used for Response Processing. The set of rules are:
+                            *RULE GENERAL 1a-Assertion 3 :- The expression numberPresented must NOT be used in Response Processing.
+                            *RULE GENERAL 1a-Assertion 4 :- The expression numberResponded must NOT be used in Response Processing.
+                            *RULE GENERAL 1a-Assertion 5 :- The expression numberSelected must NOT be used in Response Processing.
+                            *RULE GENERAL 1a-Assertion 1 :- The expression numberCorrect must NOT be used in Response Processing.
+                            *RULE GENERAL 1a-Assertion 2 :- The expression numberIncorrect must NOT be used in Response Processing.
+                            *RULE GENERAL 1a-Assertion 6 :- The expression outcomeMinimum must NOT be used in Response Processing.
+                            *RULE GENERAL 1a-Assertion 7 :- The expression outcomeMaximum must NOT be used in Response Processing.
+                            *RULE GENERAL 1a-Assertion 8 :- The expression testVariables must NOT be used in Response Processing.
+
+            RULE SET GENERAL 2:     Ensure that the Item, Section, Test and TestPart identifiers are unique. The set of rules are:
+                            *RULE GENERAL 2a-Assertion 1 :- The AssessmentTest and a TestPart must not have the same unique identifier.
+                            *RULE GENERAL 2a-Assertion 2 :- The AssessmentTest and an AssessmentSection must not have the same unique identifier.
+                            *RULE GENERAL 2a-Assertion 3 :- The AssessmentTest and a direct child AssessmentSectionRef must not have the same unique identifier.
+                            *RULE GENERAL 2a-Assertion 4 :- The AssessmentTest and a descendant AssessmentSectionRef must not have the same unique identifier.
+                            *RULE GENERAL 2a-Assertion 5 :- The AssessmentTest and a descendant AssessmentItemRef must not have the same unique identifier.
+                            *RULE GENERAL 2b-Assertion 2 :- The TestPart and an AssessmentSection must not have the same unique identifier.
+                            *RULE GENERAL 2b-Assertion 3 :- The TestPart and a direct child AssessmentSectionRef must not have the same unique identifier.
+                            *RULE GENERAL 2b-Assertion 4 :- The TestPart and a descendant AssessmentSectionRef must not have the same unique identifier.
+                            *RULE GENERAL 2b-Assertion 5 :- The TestPart and a descendant AssessmentItemRef must not have the same unique identifier.
+                            *RULE GENERAL 2b-Assertion 1 :- Two TestParts must not have the same unique identifier.
+                            *RULE GENERAL 2c-Assertion 2 :- The AssessmentSection and a descendant AssessmentSection must not have the same unique identifier.
+                            *RULE GENERAL 2c-Assertion 3 :- The AssessmentSection and a descendant AssessmentSectionRef must not have the same unique identifier.
+                            *RULE GENERAL 2c-Assertion 4 :- The AssessmentSection and a descendant AssessmentItemRef must not have the same unique identifier.
+                            *RULE GENERAL 2c-Assertion 1 :- Two AssessmentSection children of a TestPart must not have the same unique identifier.
+
+            RULE SET GENERAL 3:     Ensure that AssessmentItem Response Declarations are correct. The set of rules are:
+
+            RULE SET INTERACTION 1:     Enforce the correct use the TextEntryInteraction attributes. The set of rules are:
+                            *RULE INTERACTION 1a-Assertion 1 :- The StringIdentifier and ResponseIdentifier attribute values must not be the same.
+
+            History:        Version 1.0: The first set of schematron rules for the IMS Global QTIv2.1 specification.
+        </xs:documentation>
+
+        <xs:appinfo>
+            <sch:ns uri="http://www.imsglobal.org/xsd/imsqti_v2p1" prefix="qti"/>
+            <sch:title>Schematron Validation Rules for QTI Specification v2.1.</sch:title>
+
+                <!-- RULESET ******************************************************************* -->
+                <sch:pattern abstract="false" name="RULE SET GENERAL 1">
+                    <sch:title>Ensure that certain expressions are NOT used for Response Processing.</sch:title>
+
+                    <sch:rule abstract="false" context="//qti:assessmentItem/qti:responseProcessing">
+                        <sch:assert test="count(descendant::qti:numberPresented) = 0">
+                            [RULE GENERAL 1a:Assertion 3] The expression numberPresented must NOT be used in Response Processing.<sch:value-of select="concat('The Assessment Item identifier is:', ../@identifier)" />
+                        </sch:assert>
+                        <sch:assert test="count(descendant::qti:numberResponded) = 0">
+                            [RULE GENERAL 1a:Assertion 4] The expression numberResponded must NOT be used in Response Processing.<sch:value-of select="concat('The Assessment Item identifier is:', ../@identifier)" />
+                        </sch:assert>
+                        <sch:assert test="count(descendant::qti:numberSelected) = 0">
+                            [RULE GENERAL 1a:Assertion 5] The expression numberSelected must NOT be used in Response Processing.<sch:value-of select="concat('The Assessment Item identifier is:', ../@identifier)" />
+                        </sch:assert>
+                        <sch:assert test="count(descendant::qti:numberCorrect) = 0">
+                            [RULE GENERAL 1a:Assertion 1] The expression numberCorrect must NOT be used in Response Processing.<sch:value-of select="concat('The Assessment Item identifier is:', ../@identifier)" />
+                        </sch:assert>
+                        <sch:assert test="count(descendant::qti:numberIncorrect) = 0">
+                            [RULE GENERAL 1a:Assertion 2] The expression numberIncorrect must NOT be used in Response Processing.<sch:value-of select="concat('The Assessment Item identifier is:', ../@identifier)" />
+                        </sch:assert>
+                        <sch:assert test="count(descendant::qti:outcomeMinimum) = 0">
+                            [RULE GENERAL 1a:Assertion 6] The expression outcomeMinimum must NOT be used in Response Processing.<sch:value-of select="concat('The Assessment Item identifier is:', ../@identifier)" />
+                        </sch:assert>
+                        <sch:assert test="count(descendant::qti:outcomeMaximum) = 0">
+                            [RULE GENERAL 1a:Assertion 7] The expression outcomeMaximum must NOT be used in Response Processing.<sch:value-of select="concat('The Assessment Item identifier is:', ../@identifier)" />
+                        </sch:assert>
+                        <sch:assert test="count(descendant::qti:testVariables) = 0">
+                            [RULE GENERAL 1a:Assertion 8] The expression testVariables must NOT be used in Response Processing.<sch:value-of select="concat('The Assessment Item identifier is:', ../@identifier)" />
+                        </sch:assert>
+                    </sch:rule>
+
+                </sch:pattern>
+                <!-- *************************************************************************** -->
+
+                <!-- RULESET ******************************************************************* -->
+                <sch:pattern abstract="false" name="RULE SET GENERAL 2">
+                    <sch:title>Ensure that the Item, Section, Test and TestPart identifiers are unique.</sch:title>
+
+                    <sch:rule abstract="false" context="//qti:assessmentTest">
+                        <sch:assert test="not(@identifier=qti:testPart/@identifier)">
+                            [RULE GENERAL 2a:Assertion 1] The AssessmentTest and a TestPart must not have the same unique identifier.<sch:value-of select="concat('The AssessmentTest identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=qti:testPart/descendant::qti:assessmentSection/@identifier)">
+                            [RULE GENERAL 2a:Assertion 2] The AssessmentTest and an AssessmentSection must not have the same unique identifier.<sch:value-of select="concat('The AssessmentTest identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=qti:testPart/qti:assessmentSectionRef/@identifier)">
+                            [RULE GENERAL 2a:Assertion 3] The AssessmentTest and a direct child AssessmentSectionRef must not have the same unique identifier.<sch:value-of select="concat('The AssessmentTest identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=qti:testPart/descendant::qti:assessmentSection/qti:assessmentSectionRef/@identifier)">
+                            [RULE GENERAL 2a:Assertion 4] The AssessmentTest and a descendant AssessmentSectionRef must not have the same unique identifier.<sch:value-of select="concat('The AssessmentTest identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=qti:testPart/descendant::qti:assessmentSection/qti:assessmentItemRef/@identifier)">
+                            [RULE GENERAL 2a:Assertion 5] The AssessmentTest and a descendant AssessmentItemRef must not have the same unique identifier.<sch:value-of select="concat('The AssessmentTest identifier is:', @identifier)" />
+                        </sch:assert>
+                    </sch:rule>
+
+                    <sch:rule abstract="false" context="//qti:assessmentTest/qti:testPart">
+                        <sch:assert test="not(@identifier=descendant::qti:assessmentSection/@identifier)">
+                            [RULE GENERAL 2b:Assertion 2] The TestPart and an AssessmentSection must not have the same unique identifier.<sch:value-of select="concat('The TestPart identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=qti:assessmentSectionRef/@identifier)">
+                            [RULE GENERAL 2b:Assertion 3] The TestPart and a direct child AssessmentSectionRef must not have the same unique identifier.<sch:value-of select="concat('The TestPart identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=descendant::qti:assessmentSection/qti:assessmentSectionRef/@identifier)">
+                            [RULE GENERAL 2b:Assertion 4] The TestPart and a descendant AssessmentSectionRef must not have the same unique identifier.<sch:value-of select="concat('The TestPart identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=descendant::qti:assessmentSection/qti:assessmentItemRef/@identifier)">
+                            [RULE GENERAL 2b:Assertion 5] The TestPart and a descendant AssessmentItemRef must not have the same unique identifier.<sch:value-of select="concat('The TestPart identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=preceding-sibling::qti:testPart/@identifier)">
+                            [RULE GENERAL 2b:Assertion 1] Two TestParts must not have the same unique identifier.<sch:value-of select="concat('The TestPart identifier is:', @identifier)" />
+                        </sch:assert>
+                    </sch:rule>
+
+                    <sch:rule abstract="false" context="//qti:assessmentTest/qti:testPart/qti:assessmentSection">
+                        <sch:assert test="not(@identifier=descendant::qti:assessmentSection/@identifier)">
+                            [RULE GENERAL 2c:Assertion 2] The AssessmentSection and a descendant AssessmentSection must not have the same unique identifier.<sch:value-of select="concat('The AssessmentSection identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=descendant::qti:assessmentSectionRef/@identifier)">
+                            [RULE GENERAL 2c:Assertion 3] The AssessmentSection and a descendant AssessmentSectionRef must not have the same unique identifier.<sch:value-of select="concat('The TestPart identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=descendant::qti:assessmentItemRef/@identifier)">
+                            [RULE GENERAL 2c:Assertion 4] The AssessmentSection and a descendant AssessmentItemRef must not have the same unique identifier.<sch:value-of select="concat('The TestPart identifier is:', @identifier)" />
+                        </sch:assert>
+                        <sch:assert test="not(@identifier=preceding-sibling::qti:assessmentSection/@identifier)">
+                            [RULE GENERAL 2c:Assertion 1] Two AssessmentSection children of a TestPart must not have the same unique identifier.<sch:value-of select="concat('The AssessmentSection identifier is:', @identifier)" />
+                        </sch:assert>
+                    </sch:rule>
+
+                </sch:pattern>
+                <!-- *************************************************************************** -->
+
+                <!-- RULESET ******************************************************************* -->
+                <sch:pattern abstract="false" name="RULE SET GENERAL 3">
+                    <sch:title>Ensure that AssessmentItem Response Declarations are correct.</sch:title>
+
+                </sch:pattern>
+                <!-- *************************************************************************** -->
+
+                <!-- RULESET ******************************************************************* -->
+                <sch:pattern abstract="false" name="RULE SET INTERACTION 1">
+                    <sch:title>Enforce the correct use the TextEntryInteraction attributes.</sch:title>
+
+                    <sch:rule abstract="false" context="//qti:textEntryInteraction[@stringIdentifier]">
+                        <sch:assert test="not(@stringIdentifier=@responseIdentifier)">
+                            [RULE INTERACTION 1a:Assertion 1] The StringIdentifier and ResponseIdentifier attribute values must not be the same.<sch:value-of select="concat('The StringIdentifier value is:', @stringIdentifier)" />
+                        </sch:assert>
+                    </sch:rule>
+
+                </sch:pattern>
+                <!-- *************************************************************************** -->
+
+        </xs:appinfo>
     </xs:annotation>
 
     <!-- Generate Global Attributes *********************************************************************** -->
@@ -307,7 +476,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="identifier.ResponseDeclaration.Attr">
-        <xs:attribute name="identifier" use="required" type="Identifier.Type"/>
+        <xs:attribute name="identifier" use="required" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="cardinality.ResponseDeclaration.Attr">
@@ -622,7 +791,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="identifier.AssessmentItemRef.Attr">
-        <xs:attribute name="identifier" use="required" type="Identifier.Type"/>
+        <xs:attribute name="identifier" use="required" type="xs:normalizedString"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="required.AssessmentItemRef.Attr">
@@ -682,7 +851,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="identifier.AssessmentSection.Attr">
-        <xs:attribute name="identifier" use="required" type="Identifier.Type"/>
+        <xs:attribute name="identifier" use="required" type="xs:normalizedString"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="required.AssessmentSection.Attr">
@@ -726,7 +895,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="identifier.AssessmentSectionRef.Attr">
-        <xs:attribute name="identifier" use="required" type="Identifier.Type"/>
+        <xs:attribute name="identifier" use="required" type="xs:normalizedString"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="href.AssessmentSectionRef.Attr">
@@ -750,7 +919,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="identifier.TestPart.Attr">
-        <xs:attribute name="identifier" use="required" type="Identifier.Type"/>
+        <xs:attribute name="identifier" use="required" type="xs:normalizedString"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="navigationMode.TestPart.Attr">
@@ -776,7 +945,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.HTMLText.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.HTMLText.Attr">
@@ -800,7 +969,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Q.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Q.Attr">
@@ -832,7 +1001,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.InlineChoiceInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.InlineChoiceInteraction.Attr">
@@ -864,7 +1033,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.InlineChoice.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.InlineChoice.Attr">
@@ -911,7 +1080,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.ChoiceInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.ChoiceInteraction.Attr">
@@ -958,7 +1127,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Prompt.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Prompt.Attr">
@@ -978,7 +1147,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.SimpleChoice.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.SimpleChoice.Attr">
@@ -1025,7 +1194,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.EndAttemptInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.EndAttemptInteraction.Attr">
@@ -1330,7 +1499,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.DL.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.DL.Attr">
@@ -1354,7 +1523,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.DD.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.DD.Attr">
@@ -1378,7 +1547,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.DT.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.DT.Attr">
@@ -1402,7 +1571,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.OUL.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.OUL.Attr">
@@ -1426,7 +1595,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.LI.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.LI.Attr">
@@ -1544,7 +1713,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.TextEntryInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.TextEntryInteraction.Attr">
@@ -1564,7 +1733,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="responseIdentifier.TextEntryInteraction.Attr">
-        <xs:attribute name="responseIdentifier" use="required" type="Identifier.Type"/>
+        <xs:attribute name="responseIdentifier" use="required" type="UniqueIdentifierRef.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="base.TextEntryInteraction.Attr">
@@ -1572,7 +1741,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="stringIdentifier.TextEntryInteraction.Attr">
-        <xs:attribute name="stringIdentifier" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="stringIdentifier" use="optional" type="UniqueIdentifierRef.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="expectedLength.TextEntryInteraction.Attr">
@@ -1592,7 +1761,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.HotTextInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.HotTextInteraction.Attr">
@@ -1624,7 +1793,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.HotText.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.HotText.Attr">
@@ -1675,7 +1844,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.ExtendedTextInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.ExtendedTextInteraction.Attr">
@@ -1743,7 +1912,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.HR.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.HR.Attr">
@@ -1767,7 +1936,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.BR.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.BR.Attr">
@@ -1791,7 +1960,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.BlockQuote.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.BlockQuote.Attr">
@@ -1819,7 +1988,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Img.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Img.Attr">
@@ -1863,7 +2032,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.A.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.A.Attr">
@@ -1895,7 +2064,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Div.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Div.Attr">
@@ -1919,7 +2088,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Table.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Table.Attr">
@@ -1947,7 +2116,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Caption.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Caption.Attr">
@@ -1967,7 +2136,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Col.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Col.Attr">
@@ -1991,7 +2160,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.TR.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.TR.Attr">
@@ -2011,7 +2180,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.ColGroup.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.ColGroup.Attr">
@@ -2035,7 +2204,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.TablePart.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.TablePart.Attr">
@@ -2055,7 +2224,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.TDH.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.TDH.Attr">
@@ -2139,7 +2308,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.GraphicOrderInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.GraphicOrderInteraction.Attr">
@@ -2175,7 +2344,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.SelectPointInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.SelectPointInteraction.Attr">
@@ -2211,7 +2380,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.GraphicGapMatchInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.GraphicGapMatchInteraction.Attr">
@@ -2271,7 +2440,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.AssociableHotspot.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.AssociableHotspot.Attr">
@@ -2380,7 +2549,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Object.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Object.Attr">
@@ -2447,7 +2616,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.HotspotInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.HotspotInteraction.Attr">
@@ -2479,7 +2648,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.HotspotChoice.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.HotspotChoice.Attr">
@@ -2544,7 +2713,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.Gap.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.Gap.Attr">
@@ -2599,7 +2768,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.GapImg.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.GapImg.Attr">
@@ -2666,7 +2835,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.GapMatchInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.GapMatchInteraction.Attr">
@@ -2694,7 +2863,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.GapText.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.GapText.Attr">
@@ -2757,7 +2926,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.MatchInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.MatchInteraction.Attr">
@@ -2793,7 +2962,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.SimpleAssociableChoice.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.SimpleAssociableChoice.Attr">
@@ -2856,7 +3025,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.AssociateInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.AssociateInteraction.Attr">
@@ -2896,7 +3065,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.CustomInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.CustomInteraction.Attr">
@@ -2928,7 +3097,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.UploadInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.UploadInteraction.Attr">
@@ -2956,7 +3125,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.PositionObjectInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.PositionObjectInteraction.Attr">
@@ -3000,7 +3169,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.SliderInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.SliderInteraction.Attr">
@@ -3059,7 +3228,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.OrderInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.OrderInteraction.Attr">
@@ -3110,7 +3279,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="id.MediaInteraction.Attr">
-        <xs:attribute name="id" use="optional" type="Identifier.Type"/>
+        <xs:attribute name="id" use="optional" type="UniqueIdentifier.Type"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="class.MediaInteraction.Attr">
@@ -3719,6 +3888,14 @@
         <xs:restriction base="xs:string">
             <xs:pattern value="[0-9]+%?"/>
         </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="UniqueIdentifier.Type">
+        <xs:restriction base="xs:ID"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="UniqueIdentifierRef.Type">
+        <xs:restriction base="xs:IDREF"/>
     </xs:simpleType>
 
     <xs:simpleType name="EncVariableString.Type">
