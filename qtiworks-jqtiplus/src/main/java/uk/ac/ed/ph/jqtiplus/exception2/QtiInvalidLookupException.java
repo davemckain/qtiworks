@@ -34,23 +34,30 @@
 package uk.ac.ed.ph.jqtiplus.exception2;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
- * This runtime Exception is thrown during evaluation (e.g. template, response
- * or outcome processing) when an invalid variable lookup is performed.
+ * This runtime Exception is thrown by {@link ItemSessionController} when an invalid variable
+ * lookup or dereference is performed.
+ * <p>
+ * This should not occur during normal processing as validation checks should prevent
+ * such lookups being performed.
  *
  * @author David McKain
  */
-@Deprecated
 public final class QtiInvalidLookupException extends QtiRuntimeException {
 
     private static final long serialVersionUID = 2827334569953049498L;
 
-    public QtiInvalidLookupException(final String message) {
-        super(message);
+    private final Identifier identifier;
+
+    public QtiInvalidLookupException(final Identifier identifier) {
+        super("Invalid variable lookup: " + identifier);
+        this.identifier = identifier;
     }
 
-    public QtiInvalidLookupException(final String message, final Throwable cause) {
-        super(message, cause);
+    public Identifier getIdentifier() {
+        return identifier;
     }
 }

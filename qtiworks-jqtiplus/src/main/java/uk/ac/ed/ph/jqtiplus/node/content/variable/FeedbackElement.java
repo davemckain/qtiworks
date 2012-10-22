@@ -43,10 +43,9 @@ import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
@@ -147,15 +146,10 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
         if (getOutcomeIdentifier() != null) {
             final OutcomeDeclaration declaration = context.checkTestVariableReference(this, getOutcomeIdentifier());
             if (declaration!=null) {
-                if (!declaration.getCardinality().isOneOf(Cardinality.SINGLE, Cardinality.MULTIPLE)) {
-                    context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE
-                            + " or "
-                            + Cardinality.MULTIPLE
-                            + ", but found: "
-                            + declaration.getCardinality());
-                }
-                if (declaration.getBaseType() != null && !declaration.getBaseType().isIdentifier()) {
-                    context.fireValidationError(this, "Invalid basetype. Expected: " + BaseType.IDENTIFIER + ", but found: " + declaration.getBaseType());
+                if (!declaration.hasSignature(Signature.SINGLE_IDENTIFIER, Signature.MULTIPLE_IDENTIFIER)) {
+                    context.fireValidationError(this, "Expected outcomeIdentifier to be "
+                            + Signature.SINGLE_IDENTIFIER + " or " + Signature.MULTIPLE_IDENTIFIER
+                            + " but got " + declaration.computeSignature());
                 }
             }
         }
@@ -170,7 +164,7 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
      * @return true if this feedback can be displayed; false otherwise
      */
     public boolean isVisible(final ItemProcessingContext itemContext) {
-        final Value outcomeValue = itemContext.evaluateVariableValue(this, getOutcomeIdentifier(), VariableType.OUTCOME);
+        final Value outcomeValue = itemContext.evaluateVariableValue(getOutcomeIdentifier(), VariableType.OUTCOME);
         final IdentifierValue identifierValue = new IdentifierValue(getIdentifier());
 
         boolean identifierCheck;

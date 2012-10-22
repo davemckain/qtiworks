@@ -33,11 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Random;
@@ -66,13 +65,11 @@ public interface ProcessingContext extends ValidationContext {
      * given {@link Identifier} and having the given permitted types.
      * <p>
      * If permittedTypes is empty, then it looks up ANY type of variable.
-     * <p>
-     * If the variable is not successfully referenced then a runtime warning
-     * will be fired and the {@link NullValue} will be returned.
-     *
-     * @param owner
      * @param identifier
      * @param permittedTypes
+     *
+     * @throws QtiInvalidLookupException if the identifier could not be successfully dereferenced
+     * @throws IllegalStateException if the current item/test state does not appear to be in sync
      */
-    Value evaluateVariableValue(QtiNode owner, Identifier identifier, VariableType... permittedTypes);
+    Value evaluateVariableValue(Identifier identifier, VariableType... permittedTypes);
 }

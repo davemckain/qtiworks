@@ -109,7 +109,7 @@ public final class MapResponse extends AbstractFunctionalExpression {
     protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         final ItemProcessingContext itemContext = (ItemProcessingContext) context;
         final ResponseDeclaration responseDeclaration = itemContext.getSubjectItem().getResponseDeclaration(getIdentifier());
-        final Value responseValue = itemContext.evaluateVariableValue(this, getIdentifier(), VariableType.RESPONSE);
+        final Value responseValue = itemContext.evaluateVariableValue(getIdentifier(), VariableType.RESPONSE);
 
         return responseDeclaration.getMapping().getTargetValue(responseValue);
     }

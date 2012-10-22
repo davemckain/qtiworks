@@ -160,7 +160,7 @@ public final class IntegerOrVariableRef implements Serializable {
             return constantIntegerValue;
         }
         else {
-            final Value result = context.evaluateVariableValue(owner, variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
+            final Value result = context.evaluateVariableValue(variableReferenceValue, VariableType.TEMPLATE, VariableType.OUTCOME);
             if (result.hasSignature(Signature.SINGLE_INTEGER)) {
                 return result;
             }

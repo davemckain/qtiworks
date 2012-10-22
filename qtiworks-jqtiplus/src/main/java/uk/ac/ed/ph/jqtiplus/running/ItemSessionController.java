@@ -36,12 +36,11 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.EndAttemptInteraction;
@@ -75,7 +74,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -473,16 +471,66 @@ public final class ItemSessionController extends ItemValidationContext implement
 
     //-------------------------------------------------------------------
 
+    public VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
+        Assert.notNull(identifier);
+        final VariableDeclaration result = getVariableDeclaration(identifier, permittedTypes);
+        if (result==null) {
+            throw new QtiInvalidLookupException(identifier);
+        }
+        return result;
+    }
+
+    private VariableDeclaration getVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
+        Assert.notNull(identifier);
+        VariableDeclaration result = null;
+        if (permittedTypes.length==0) {
+            /* No types specified, so allow any variable */
+            result = itemRunMap.getValidTemplateDeclarationMap().get(identifier);
+            if (result==null) {
+                result = itemRunMap.getValidResponseDeclarationMap().get(identifier);
+            }
+            if (result==null) {
+                result = itemRunMap.getValidOutcomeDeclarationMap().get(identifier);
+            }
+        }
+        else {
+            /* Only allows specified types of variables */
+            CHECK_LOOP: for (final VariableType type : permittedTypes) {
+                switch (type) {
+                    case TEMPLATE:
+                        result = itemRunMap.getValidTemplateDeclarationMap().get(identifier);
+                        break;
+
+                    case RESPONSE:
+                        result = itemRunMap.getValidResponseDeclarationMap().get(identifier);
+                        break;
+
+                    case OUTCOME:
+                        result = itemRunMap.getValidOutcomeDeclarationMap().get(identifier);
+                        break;
+
+                    default:
+                        throw new QtiLogicException("Unexpected switch case: " + type);
+                }
+                if (result!=null) {
+                    break CHECK_LOOP;
+                }
+            }
+        }
+        return result;
+    }
+
+    //-------------------------------------------------------------------
+
     @Override
-    public Value evaluateVariableValue(final QtiNode owner, final Identifier identifier, final VariableType... permittedTypes) {
+    public Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
         if (!itemRunMap.isValidVariableIdentifier(identifier)) {
-            fireRuntimeWarning(owner, "Variable with identifier '" + identifier + "' is not declared (or not unique) - returning NULL");
+            throw new QtiInvalidLookupException(identifier);
         }
         final Value value = getVariableValue(identifier, permittedTypes);
         if (value==null) {
-            logger.warn("ItemSessionState lookup of variable {} failed - state should have been kept in sync. Returning NULL", identifier);
-            return NullValue.INSTANCE;
+            throw new IllegalStateException("ItemSessionState lookup of variable " + identifier + " returned NULL, indicating state is not in sync");
         }
         return value;
     }
@@ -510,7 +558,7 @@ public final class ItemSessionController extends ItemValidationContext implement
                         break;
 
                     default:
-                        throw new QtiLogicException("Unexpected switch case");
+                        throw new QtiLogicException("Unexpected switch case: " + type);
                 }
                 if (value!=null) {
                     break CHECK_LOOP;
@@ -521,25 +569,6 @@ public final class ItemSessionController extends ItemValidationContext implement
     }
 
     //-------------------------------------------------------------------
-
-    @ToRefactor
-    public VariableDeclaration ensureVariableDeclaration(final Identifier identifier) {
-        Assert.notNull(identifier);
-        final VariableDeclaration result = item.getVariableDeclaration(identifier);
-        if (result == null) {
-            throw new QtiEvaluationException("Item variable with identifier " + identifier + " is not defined");
-        }
-        return result;
-    }
-
-    public ResponseDeclaration ensureResponseDeclaration(final Identifier responseIdentifier) {
-        Assert.notNull(responseIdentifier);
-        final ResponseDeclaration result = item.getResponseDeclaration(responseIdentifier);
-        if (result == null) {
-            throw new QtiEvaluationException("Response variable with identifier " + responseIdentifier + " is not defined");
-        }
-        return result;
-    }
 
     /**
      * Returns the current default value of the variable having the
@@ -576,12 +605,10 @@ public final class ItemSessionController extends ItemValidationContext implement
         return result;
     }
 
-
-
     @Override
     public Value computeCorrectResponse(final Identifier identifier) {
         Assert.notNull(identifier);
-        return computeCorrectResponse(ensureResponseDeclaration(identifier));
+        return computeCorrectResponse((ResponseDeclaration) ensureVariableDeclaration(identifier, VariableType.RESPONSE));
     }
 
     public Value computeCorrectResponse(final ResponseDeclaration declaration) {
@@ -597,23 +624,6 @@ public final class ItemSessionController extends ItemValidationContext implement
             }
         }
         return result;
-    }
-
-    /**
-     * FIXME: Returning Boolean is dodgy. Fix this API!
-     *
-     * Returns true if this declarations value matches its correctValue.
-     * Returns null if there is no correct value
-     * NOTE: This only tests for "the" "correct" response, not "a" correct response.
-     *
-     * @return true if the associated correctResponse matches the value; false or null otherwise.
-     */
-    public Boolean isCorrectResponse(final ResponseDeclaration responseDeclaration) {
-        final Value correctResponseValue = computeCorrectResponse(responseDeclaration);
-        if (correctResponseValue.isNull()) {
-            return null;
-        }
-        return Boolean.valueOf(correctResponseValue.equals(itemSessionState.getVariableValue(responseDeclaration)));
     }
 
     //-------------------------------------------------------------------
@@ -690,6 +700,23 @@ public final class ItemSessionController extends ItemValidationContext implement
     }
 
     //-------------------------------------------------------------------
+
+    /**
+     * FIXME: Returning Boolean is dodgy. Fix this API!
+     *
+     * Returns true if this declarations value matches its correctValue.
+     * Returns null if there is no correct value
+     * NOTE: This only tests for "the" "correct" response, not "a" correct response.
+     *
+     * @return true if the associated correctResponse matches the value; false or null otherwise.
+     */
+    public Boolean isCorrectResponse(final ResponseDeclaration responseDeclaration) {
+        final Value correctResponseValue = computeCorrectResponse(responseDeclaration);
+        if (correctResponseValue.isNull()) {
+            return null;
+        }
+        return Boolean.valueOf(correctResponseValue.equals(itemSessionState.getVariableValue(responseDeclaration)));
+    }
 
     /**
      * Determines whether a further attempt is allowed on this item.

@@ -126,7 +126,7 @@ public abstract class TemplateElement extends AbstractFlowBodyElement {
      * @return true if this feedback can be displayed; false otherwise
      */
     public boolean isVisible(final ItemProcessingContext itemContext) {
-        final Value templateValue = itemContext.evaluateVariableValue(this, getTemplateIdentifier(), VariableType.TEMPLATE);
+        final Value templateValue = itemContext.evaluateVariableValue(getTemplateIdentifier(), VariableType.TEMPLATE);
         final IdentifierValue identifierValue = new IdentifierValue(getIdentifier());
 
         boolean identifierCheck;
