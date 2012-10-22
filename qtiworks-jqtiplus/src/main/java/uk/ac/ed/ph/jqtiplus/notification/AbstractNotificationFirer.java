@@ -69,6 +69,8 @@ public abstract class AbstractNotificationFirer implements NotificationFirer {
         }
         final int result = checkCount;
         checkCount = 0;
+        isChecking = false;
+        checkpointLevel = null;
         return result;
     }
 
