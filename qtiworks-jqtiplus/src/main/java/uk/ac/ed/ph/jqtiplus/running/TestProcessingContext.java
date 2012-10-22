@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
 import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentTestState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ import java.util.Map;
  *
  * @author David McKain
  */
-public interface TestProcessingContext extends ProcessingContext {
+public interface TestProcessingContext extends ProcessingContext, TestValidationContext {
 
     AssessmentTestState getTestSessionState();
 

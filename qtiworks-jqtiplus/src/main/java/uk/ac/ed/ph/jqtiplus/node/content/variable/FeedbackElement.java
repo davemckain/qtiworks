@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.AbstractFlowBodyElement;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.VisibilityMode;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
@@ -143,9 +143,10 @@ public abstract class FeedbackElement extends AbstractFlowBodyElement {
 
     @Override
     public void validateThis(final ValidationContext context) {
-        if (getOutcomeIdentifier() != null) {
-            final OutcomeDeclaration declaration = context.checkSimpleTestVariableReference(this, getOutcomeIdentifier());
-            if (declaration!=null) {
+        final Identifier outcomeIdentifier = getOutcomeIdentifier();
+        if (outcomeIdentifier != null) {
+            final VariableDeclaration declaration = context.checkLocalVariableReference(this, outcomeIdentifier);
+            if (context.checkVariableType(this, declaration, VariableType.OUTCOME)) {
                 if (!declaration.hasSignature(Signature.SINGLE_IDENTIFIER, Signature.MULTIPLE_IDENTIFIER)) {
                     context.fireValidationError(this, "Expected outcomeIdentifier to be "
                             + Signature.SINGLE_IDENTIFIER + " or " + Signature.MULTIPLE_IDENTIFIER

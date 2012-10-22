@@ -86,9 +86,9 @@ public final class AssessmentObjectValidator {
                 result.add(new Notification(item.getResponseProcessing(), null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                         "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
-            final ItemValidationContext itemValidationContext = new ItemValidationContext(rootNodeProvider.getJqtiExtensionManager(), resolvedAssessmentItem);
-            itemValidationContext.addNotificationListener(result);
-            item.validate(itemValidationContext);
+            final ItemValidationController itemValidationController = new ItemValidationController(rootNodeProvider.getJqtiExtensionManager(), resolvedAssessmentItem);
+            itemValidationController.addNotificationListener(result);
+            item.validate(itemValidationController);
         }
         else {
             result.add(new Notification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
@@ -141,9 +141,9 @@ public final class AssessmentObjectValidator {
             }
 
             /* Then validate the test itself */
-            final TestValidationContext testValidationContext = new TestValidationContext(rootNodeProvider.getJqtiExtensionManager(), resolvedAssessmentTest);
-            testValidationContext.addNotificationListener(result);
-            test.validate(testValidationContext);
+            final TestValidationController testValidationController = new TestValidationController(rootNodeProvider.getJqtiExtensionManager(), resolvedAssessmentTest);
+            testValidationController.addNotificationListener(result);
+            test.validate(testValidationController);
         }
         else {
             result.add(new Notification(null, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
@@ -151,10 +151,6 @@ public final class AssessmentObjectValidator {
         }
         return result;
     }
-
-    //-------------------------------------------------------------------
-
-
 
     //-------------------------------------------------------------------
 

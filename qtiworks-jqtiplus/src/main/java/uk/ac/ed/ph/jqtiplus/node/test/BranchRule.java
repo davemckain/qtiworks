@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
@@ -162,6 +163,8 @@ public final class BranchRule extends AbstractJump {
     @Override
     protected void validateThis(final ValidationContext context) {
         super.validateThis(context);
+        final AssessmentTest assessmentTest = ((TestValidationContext) context).getSubjectTest();
+
         final Identifier target = getTarget();
         final TestPart parentTestPart = getParent().getParentTestPart();
         if (target != null && parentTestPart.areJumpsEnabled()) {
@@ -178,7 +181,7 @@ public final class BranchRule extends AbstractJump {
                 }
             }
             else {
-                final AbstractPart targetPart = context.getSubjectTest().lookupDescendantOrSelf(target);
+                final AbstractPart targetPart = assessmentTest.lookupDescendantOrSelf(target);
 
                 if (targetPart == null) {
                     context.fireValidationError(this, "Cannot find target: " + target);

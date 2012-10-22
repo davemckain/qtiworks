@@ -70,7 +70,7 @@ import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationController;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -94,7 +94,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public final class ItemSessionController extends ItemValidationContext implements ItemProcessingContext {
+public final class ItemSessionController extends ItemValidationController implements ItemProcessingContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 

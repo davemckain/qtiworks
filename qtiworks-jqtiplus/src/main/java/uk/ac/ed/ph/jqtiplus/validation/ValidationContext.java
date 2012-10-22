@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -43,9 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -76,26 +72,6 @@ public interface ValidationContext extends NotificationFirer {
      * Returns the {@link AssessmentObject} being handled, which will not be null.
      */
     AssessmentObject getSubject();
-
-    /**
-     * Returns the {@link AssessmentItem} being handled, if this is the case.
-     *
-     * @throws QtiLogicException if not handling an item
-     */
-    AssessmentItem getSubjectItem();
-
-    /**
-     * Returns the {@link AssessmentTest} being handling, if this is the case.
-     *
-     * @throws QtiLogicException if not handling a test
-     */
-    AssessmentTest getSubjectTest();
-
-    ResolvedAssessmentObject<?> getResolvedAssessmentObject();
-
-    ResolvedAssessmentItem getResolvedAssessmentItem();
-
-    ResolvedAssessmentTest getResolvedAssessmentTest();
 
     //------------------------------------------------------
 

@@ -27,162 +27,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTITools and MathAssessEngine.
- * QTITools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-
-import java.util.List;
 
 /**
- * FIXME: Document this type
+ * Callback interface to enable {@link QtiNode} to validate themselves.
  *
  * @author David McKain
  */
-class TestValidationContext extends AbstractValidationContext<AssessmentTest> {
+public interface TestValidationContext extends ValidationContext {
 
-    private final ResolvedAssessmentTest resolvedAssessmentTest;
+    /**
+     * Returns the {@link AssessmentTest} being handling, if this is the case.
+     *
+     * @throws QtiLogicException if not handling a test
+     */
+    AssessmentTest getSubjectTest();
 
-    TestValidationContext(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentTest resolvedAssessmentTest) {
-        super(jqtiExtensionManager, resolvedAssessmentTest);
-        this.resolvedAssessmentTest = resolvedAssessmentTest;
-    }
+    ResolvedAssessmentTest getResolvedAssessmentTest();
 
-    @Override
-    public ResolvedAssessmentItem getResolvedAssessmentItem() {
-        throw fail();
-    }
-
-    @Override
-    public ResolvedAssessmentTest getResolvedAssessmentTest() {
-        return resolvedAssessmentTest;
-    }
-
-
-    @Override
-    public boolean isSubjectItem() {
-        return false;
-    }
-
-    @Override
-    public boolean isSubjectTest() {
-        return true;
-    }
-
-    @Override
-    public AssessmentItem getSubjectItem() {
-        throw fail();
-    }
-
-    @Override
-    public AssessmentTest getSubjectTest() {
-        return subject;
-    }
-
-    @Override
-    public OutcomeDeclaration isValidLocalVariableReference(final Identifier variableReferenceIdentifier) {
-        final List<OutcomeDeclaration> outcomeDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
-        if (outcomeDeclarations==null) {
-            /* Test lookup failed, which is impossible here */
-            throw new QtiLogicException("Unexpected logic branch");
-        }
-        else if (outcomeDeclarations.size()==1) {
-            /* Found and unique which is what we want */
-            final OutcomeDeclaration outcomeDeclaration = outcomeDeclarations.get(0);
-            if (outcomeDeclaration.hasValidSignature()) {
-                return outcomeDeclaration;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public OutcomeDeclaration checkLocalVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
-        final List<OutcomeDeclaration> outcomeDeclarations = resolvedAssessmentTest.resolveTestVariable(variableReferenceIdentifier);
-        if (outcomeDeclarations==null) {
-            /* Test lookup failed, which is impossible here */
-            throw new QtiLogicException("Unexpected logic branch");
-        }
-        else if (outcomeDeclarations.size()==1) {
-            /* Found and unique which is what we want */
-            final OutcomeDeclaration outcomeDeclaration = outcomeDeclarations.get(0);
-            if (!outcomeDeclaration.hasValidSignature()) {
-                fireValidationWarning(owner, "Test (or referenced item) variable referenced by identifier '" + variableReferenceIdentifier
-                        + "' has an invalid cardinality/baseType combination so no further validation will be performed on this reference");
-                return null;
-            }
-            return outcomeDeclaration;
-        }
-        if (outcomeDeclarations.isEmpty()) {
-            /* No variable found */
-            fireValidationError(owner, "Test outcome variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
-            return null;
-        }
-        else {
-            /* Multiple matches for identifier */
-            fireValidationError(owner, outcomeDeclarations.size() + " matches were found for the test outcome variable having identifier '" + variableReferenceIdentifier + "'");
-            return null;
-        }
-    }
-
-    public VariableDeclaration isValidDeepVariableReference(final Identifier variableReferenceIdentifier) {
-        final List<ResolvedTestVariableReference> resolvedReferences = resolvedAssessmentTest.resolveVariableReference(variableReferenceIdentifier);
-        if (resolvedReferences==null) {
-            /* Test lookup failed, which is impossible here */
-            throw new QtiLogicException("Unexpected logic branch");
-        }
-        else if (resolvedReferences.size()==1) {
-            /* Found and unique which is what we want */
-            final VariableDeclaration declaration = resolvedReferences.get(0).getVariableDeclaration();
-            if (declaration.hasValidSignature()) {
-                return declaration;
-            }
-        }
-        return null;
-    }
-
-    public VariableDeclaration checkDeepVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
-        final List<ResolvedTestVariableReference> resolvedReferences = resolvedAssessmentTest.resolveVariableReference(variableReferenceIdentifier);
-        if (resolvedReferences==null) {
-            /* Test lookup failed, which is impossible here */
-            throw new QtiLogicException("Unexpected logic branch");
-        }
-        else if (resolvedReferences.size()==1) {
-            /* Found and unique which is what we want */
-            final VariableDeclaration declaration = resolvedReferences.get(0).getVariableDeclaration();
-            if (!declaration.hasValidSignature()) {
-                fireValidationWarning(owner, "Test (or referenced item) variable referenced by identifier '" + variableReferenceIdentifier
-                        + "' has an invalid cardinality/baseType combination so no further validation will be performed on this reference");
-                return null;
-            }
-            return declaration;
-        }
-        if (resolvedReferences.isEmpty()) {
-            /* No variable found */
-            fireValidationError(owner, "Test (or referenced item) variable referenced by identifier '" + variableReferenceIdentifier + "' has not been declared");
-            return null;
-        }
-        else {
-            /* Multiple matches for identifier */
-            fireValidationError(owner, resolvedReferences.size() + " matches were found for the test (or referenced item) variable having identifier " + variableReferenceIdentifier);
-            return null;
-        }
-    }
-
-    private QtiLogicException fail() {
-        return new QtiLogicException("Current ValidationContext is for a test, not an item");
-    }
 }

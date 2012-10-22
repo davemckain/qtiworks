@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -46,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author David McKain
  */
-public interface ItemProcessingContext extends ProcessingContext {
+public interface ItemProcessingContext extends ProcessingContext, ItemValidationContext {
 
     /**
      * Returns the {@link ItemSessionState} attached to this context.

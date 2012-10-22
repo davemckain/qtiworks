@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.node.test.outcome.processing;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.LookupTable;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -74,9 +73,9 @@ public final class LookupOutcomeValue extends ProcessOutcomeValue {
     public BaseType[] getRequiredBaseTypes(final ValidationContext context, final int index) {
         final Identifier referenceIdentifier = getIdentifier();
         if (referenceIdentifier!=null) {
-            final VariableDeclaration declaration = context.isValidLocalVariableReference(referenceIdentifier);
-            if (declaration!=null && declaration.getVariableType()==VariableType.OUTCOME) {
-                final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) declaration;
+            final OutcomeDeclaration declaration = (OutcomeDeclaration) context.isValidLocalVariableReference(referenceIdentifier);
+            if (declaration!=null) {
+                final OutcomeDeclaration outcomeDeclaration = declaration;
                 if (outcomeDeclaration.getLookupTable()!=null) {
                     return new BaseType[] { BaseType.INTEGER };
                 }
@@ -89,8 +88,8 @@ public final class LookupOutcomeValue extends ProcessOutcomeValue {
     protected void validateThis(final ValidationContext context) {
         final Identifier outcomeIdentifier = getIdentifier();
         if (outcomeIdentifier!=null) {
-            final OutcomeDeclaration declaration = context.checkSimpleTestVariableReference(this, outcomeIdentifier);
-            if (declaration!=null && declaration.getLookupTable() == null) {
+            final OutcomeDeclaration declaration = (OutcomeDeclaration) context.checkLocalVariableReference(this, outcomeIdentifier);
+            if (declaration!=null && declaration.getLookupTable()==null) {
                 context.fireValidationError(this, "Cannot find any " + LookupTable.DISPLAY_NAME
                         + " in "
                         + OutcomeDeclaration.QTI_CLASS_NAME

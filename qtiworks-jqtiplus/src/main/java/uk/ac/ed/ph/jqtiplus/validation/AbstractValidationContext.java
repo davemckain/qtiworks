@@ -60,7 +60,6 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Lis
         this.subject = resolvedAssessmentObject.getRootNodeLookup().extractAssumingSuccessful();
     }
 
-    @Override
     public final ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
         return resolvedAssessmentObject;
     }

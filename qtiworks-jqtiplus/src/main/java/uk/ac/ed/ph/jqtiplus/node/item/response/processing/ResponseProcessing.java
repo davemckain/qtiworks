@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.net.URI;
@@ -133,6 +134,7 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
 
     @Override
     protected void validateThis(final ValidationContext context) {
+        final ItemValidationContext itemValidationContext = (ItemValidationContext) context;
         final List<ResponseRule> responseRules = getResponseRules();
         if (!responseRules.isEmpty()) {
             /* ResponseRules exist, so we'll validate these */
@@ -140,7 +142,7 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
         }
         else {
             /* No ResponseRules, so we'll use any template that will have been resolved for us by caller */
-            final ResolvedAssessmentItem resolvedAssessmentItem = context.getResolvedAssessmentItem();
+            final ResolvedAssessmentItem resolvedAssessmentItem = itemValidationContext.getResolvedAssessmentItem();
             final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplateLookup!=null && resolvedResponseProcessingTemplateLookup.wasSuccessful()) {
                 resolvedResponseProcessingTemplateLookup.extractIfSuccessful().validate(context);
@@ -155,7 +157,7 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
             }
         }
         catch (final QtiProcessingInterrupt interrupt) {
-            //do nothing
+            /* Do nothing */
         }
     }
 
