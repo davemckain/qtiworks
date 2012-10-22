@@ -78,12 +78,10 @@ public class TemplateProcessingSampleTests extends AbstractIntegrationTest {
     
     @Test
     public void test() throws Exception {
-        final ItemSessionController itemSessionController = createItemSessionController();
+        final ItemSessionController itemSessionController = createItemSessionController(true);
         ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         
-        Assert.assertFalse(itemSessionState.isInitialized());
         Assert.assertTrue(itemSessionState.getTemplateValues().isEmpty());
         itemSessionController.performTemplateProcessing();
-        Assert.assertTrue(itemSessionState.isInitialized());
     }
 }
