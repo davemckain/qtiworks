@@ -36,7 +36,9 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
@@ -109,11 +111,15 @@ public abstract class LookupExpression extends AbstractFunctionalExpression {
 
     /**
      * Subclasses should implement this to perform additional validation on the resolved
-     * {@link VariableDeclaration}.
+     * {@link VariableDeclaration} within an {@link AssessmentItem}
      */
     protected abstract void validateResolvedItemVariableReference(ValidationContext context,
             Identifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
 
+    /**
+     * Subclasses should implement this to perform additional validation on the given
+     * {@link ResolvedTestVariableReference} within an {@link AssessmentTest}
+     */
     protected abstract void validateResolvedTestVariableReference(ValidationContext context,
             Identifier variableReferenceIdentifier, ResolvedTestVariableReference resolvedReference);
 
@@ -139,7 +145,16 @@ public abstract class LookupExpression extends AbstractFunctionalExpression {
 
     public final VariableDeclaration lookupTargetVariableDeclaration(final ValidationContext context) {
         final Identifier referenceIdentifier = getIdentifier();
-        return context.isValidLocalVariableReference(referenceIdentifier);
+
+        if (context.isSubjectItem()) {
+            return context.isValidLocalVariableReference(referenceIdentifier);
+        }
+        else {
+            /* Check reference within this test OR within referenced item */
+            final TestValidationContext testValidationContext = (TestValidationContext) context;
+            final ResolvedTestVariableReference resolvedTestVariableReference = testValidationContext.isValidDeepVariableReference(referenceIdentifier);
+            return (resolvedTestVariableReference!=null) ? resolvedTestVariableReference.getVariableDeclaration() : null;
+        }
     }
 
     //----------------------------------------------------------------------
