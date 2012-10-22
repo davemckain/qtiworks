@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemRunMap;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,6 +59,10 @@ public final class ItemRunInitializer {
     private final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder;
     private final LinkedHashMap<Identifier, ResponseDeclaration> responseDeclarationMapBuilder;
     private final LinkedHashMap<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder;
+
+    public ItemRunInitializer(final ItemValidationResult itemValidationResult) {
+        this(itemValidationResult.getResolvedAssessmentItem(), itemValidationResult.isValid());
+    }
 
     public ItemRunInitializer(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid) {
         this.resolvedAssessmentItem = resolvedAssessmentItem;

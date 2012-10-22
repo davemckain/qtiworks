@@ -62,5 +62,7 @@ public class ChoiceRunningTest {
         System.out.println("\nInvoking response processing");
         itemController.performResponseProcessing();
         System.out.println("Item state after RP1: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
+
+        System.out.println(itemState.getCompletionStatus());
     }
 }

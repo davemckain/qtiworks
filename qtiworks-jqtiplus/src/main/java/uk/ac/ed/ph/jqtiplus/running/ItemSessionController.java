@@ -220,17 +220,9 @@ public final class ItemSessionController extends ItemValidationController implem
                 fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
             }
 
-            /* Initialise all outcome variables to default values (except duration) */
-            for (final OutcomeDeclaration outcomeDeclaration : itemRunMap.getValidOutcomeDeclarationMap().values()) {
-                initValue(outcomeDeclaration);
-            }
-
-            /* Initialise all response variables to default values */
-            for (final ResponseDeclaration responseDeclaration : itemRunMap.getValidResponseDeclarationMap().values()) {
-                if (!responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER)) {
-                    initValue(responseDeclaration);
-                }
-            }
+            /* Initialise all outcome and response variables to their default values */
+            resetOutcomeVariables();
+            resetResponseVariables();
 
             /* Set special built-in response and outcome variables */
             itemSessionState.setNumAttempts(0);
@@ -246,15 +238,13 @@ public final class ItemSessionController extends ItemValidationController implem
         }
     }
 
+
+
     private boolean doTemplateProcessingRun(final int attemptNumber) {
         logger.debug("Template Processing attempt #{} starting", attemptNumber);
 
-
-        /* Initialise template values. */
-        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
-        for (final TemplateDeclaration templateDeclaration : itemRunMap.getValidTemplateDeclarationMap().values()) {
-            initValue(templateDeclaration);
-        }
+        /* Reset template variables */
+        resetTemplateVariables();
 
         if (attemptNumber > MAX_TEMPLATE_PROCESSING_TRIES) {
             fireRuntimeWarning(item, "Exceeded maximum number " + MAX_TEMPLATE_PROCESSING_TRIES + " of template processing retries - leaving variables at default values");
@@ -262,6 +252,7 @@ public final class ItemSessionController extends ItemValidationController implem
         }
 
         /* Perform templateProcessing. */
+        final TemplateProcessing templateProcessing = item.getTemplateProcessing();
         if (templateProcessing != null) {
             logger.trace("Evaluating template processing rules");
             try {
@@ -390,9 +381,7 @@ public final class ItemSessionController extends ItemValidationController implem
 
             /* For non-adaptive items, reset outcome variables to default values */
             if (!item.getAdaptive()) {
-                for (final OutcomeDeclaration outcomeDeclaration : itemRunMap.getValidOutcomeDeclarationMap().values()) {
-                    initValue(outcomeDeclaration);
-                }
+                resetOutcomeVariables();
             }
 
             ResponseProcessing responseProcessing = null;
@@ -417,7 +406,6 @@ public final class ItemSessionController extends ItemValidationController implem
             fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
         }
     }
-
 
     //-------------------------------------------------------------------
     // Shuffle callbacks (from interactions)
@@ -647,18 +635,41 @@ public final class ItemSessionController extends ItemValidationController implem
 
     //-------------------------------------------------------------------
 
+    private void resetTemplateVariables() {
+        for (final TemplateDeclaration templateDeclaration : itemRunMap.getValidTemplateDeclarationMap().values()) {
+            initValue(templateDeclaration);
+        }
+    }
+
+    private void resetResponseVariables() {
+        for (final ResponseDeclaration responseDeclaration : itemRunMap.getValidResponseDeclarationMap().values()) {
+            if (!responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER) &&
+                    !responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
+                initValue(responseDeclaration);
+            }
+        }
+    }
+
+    private void resetOutcomeVariables() {
+        for (final OutcomeDeclaration outcomeDeclaration : itemRunMap.getValidOutcomeDeclarationMap().values()) {
+            if (!outcomeDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
+                initValue(outcomeDeclaration);
+            }
+        }
+    }
+
     private void initValue(final VariableDeclaration declaration) {
         Assert.notNull(declaration);
         itemSessionState.setVariableValue(declaration, computeInitialValue(declaration));
     }
 
-    private Value computeInitialValue(final Identifier identifier) {
-        return computeDefaultValue(identifier);
-    }
-
     private Value computeInitialValue(final VariableDeclaration declaration) {
         Assert.notNull(declaration);
         return computeInitialValue(declaration.getIdentifier());
+    }
+
+    private Value computeInitialValue(final Identifier identifier) {
+        return computeDefaultValue(identifier);
     }
 
     //-------------------------------------------------------------------
