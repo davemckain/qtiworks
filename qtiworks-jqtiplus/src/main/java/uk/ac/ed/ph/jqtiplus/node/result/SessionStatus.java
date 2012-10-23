@@ -43,36 +43,36 @@ import java.util.Map;
  * The session status is used to keep track of the status of the item variables in an item session.
  * <p>
  * Possible values: initial, pendingSubmission, pendingResponseProcessing, final
- * 
+ *
  * @author Jiri Kajaba
  */
 public enum SessionStatus implements Stringifiable {
     /**
-     * The value to use for sessions in the initial state, as described above. This value can only be used to describe
+     * "The value to use for sessions in the initial state, as described above. This value can only be used to describe
      * sessions for which the response variable numAttempts is 0. The values of the variables are set according to the
-     * rules defined in the appropriate declarations (see responseDeclaration, outcomeDeclaration and templateDeclaration).
+     * rules defined in the appropriate declarations (see responseDeclaration, outcomeDeclaration and templateDeclaration)."
      */
     INITIAL("initial"),
 
     /**
-     * The value to use when the item variables represent A snapshot of the current values during an attempt (in other
+     * "The value to use when the item variables represent a snapshot of the current values during an attempt (in other
      * words, while interacting or suspended). The values of the response variables represent work in progress that has
      * not yet been submitted for response processing by the candidate. The values of the outcome variables represent
      * the values assigned during response processing at the end of the previous attempt or, in the case of the first
-     * attempt, the default values given in the variable declarations.
+     * attempt, the default values given in the variable declarations."
      */
     PENDING_SUBMISSION("pendingSubmission"),
 
     /**
-     * The value to use when the item variables represent the values of the response variables after submission but before
+     * "The value to use when the item variables represent the values of the response variables after submission but before
      * response processing has taken place. Again, the outcomes are those assigned at the end of the previous attempt as
-     * they are awaiting response processing.
+     * they are awaiting response processing."
      */
     PENDING_RESPONSE_PROCESSING("pendingResponseProcessing"),
 
     /**
-     * The value to use when the item variables represent the values at the end of an attempt after response processing
-     * has taken place. In other words, after the outcome values have been updated to reflect the values of the response variables.
+     * "The value to use when the item variables represent the values at the end of an attempt after response processing
+     * has taken place. In other words, after the outcome values have been updated to reflect the values of the response variables."
      */
     FINAL("final");
 
@@ -91,7 +91,7 @@ public enum SessionStatus implements Stringifiable {
 
     private String sessionStatus;
 
-    private SessionStatus(String sessionStatus) {
+    private SessionStatus(final String sessionStatus) {
         this.sessionStatus = sessionStatus;
     }
 
@@ -102,12 +102,12 @@ public enum SessionStatus implements Stringifiable {
 
     /**
      * Returns parsed <code>SessionStatus</code> from given <code>String</code>.
-     * 
+     *
      * @param sessionStatus <code>String</code> representation of <code>SessionStatus</code>
      * @return parsed <code>SessionStatus</code> from given <code>String</code>
      * @throws QtiParseException if given <code>String</code> is not valid <code>SessionStatus</code>
      */
-    public static SessionStatus parseSessionStatus(String sessionStatus) {
+    public static SessionStatus parseSessionStatus(final String sessionStatus) {
         final SessionStatus result = sessionStatuses.get(sessionStatus);
 
         if (result == null) {

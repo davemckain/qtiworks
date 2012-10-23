@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -92,6 +93,8 @@ public final class ItemSessionState implements Serializable {
     private final Map<Identifier, Value> responseValues;
     private final Map<Identifier, Value> outcomeValues;
 
+    private SessionStatus sessionStatus;
+
     public ItemSessionState() {
         this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
         this.overriddenTemplateDefaultValues = new HashMap<Identifier, Value>();
@@ -101,6 +104,7 @@ public final class ItemSessionState implements Serializable {
         this.templateValues = new HashMap<Identifier, Value>();
         this.responseValues = new HashMap<Identifier, Value>();
         this.outcomeValues = new HashMap<Identifier, Value>();
+        this.sessionStatus = SessionStatus.INITIAL;
 
         /* Set built-in variables */
         resetBuiltinVariables();
@@ -117,6 +121,7 @@ public final class ItemSessionState implements Serializable {
         this.templateValues.clear();
         this.responseValues.clear();
         this.outcomeValues.clear();
+        this.sessionStatus = SessionStatus.INITIAL;
         resetBuiltinVariables();
     }
 
@@ -156,6 +161,16 @@ public final class ItemSessionState implements Serializable {
     public void setShuffledInteractionChoiceOrder(final Interaction interaction, final List<Identifier> shuffleOrders) {
         Assert.notNull(interaction);
         setShuffledInteractionChoiceOrder(interaction.getResponseIdentifier(), shuffleOrders);
+    }
+
+    //----------------------------------------------------------------
+
+    public SessionStatus getSessionStatus() {
+        return sessionStatus;
+    }
+
+    public void setSessionStatus(final SessionStatus sessionStatus) {
+        this.sessionStatus = sessionStatus;
     }
 
     //----------------------------------------------------------------
@@ -530,7 +545,8 @@ public final class ItemSessionState implements Serializable {
             return false;
         }
         final ItemSessionState other = (ItemSessionState) obj;
-        return shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
+        return sessionStatus.equals(other.sessionStatus)
+                && shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
                 && overriddenTemplateDefaultValues.equals(other.overriddenCorrectResponseValues)
                 && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
                 && overriddenOutcomeDefaultValues.equals(other.overriddenOutcomeDefaultValues)
@@ -543,6 +559,7 @@ public final class ItemSessionState implements Serializable {
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
+                sessionStatus,
                 shuffledInteractionChoiceOrders,
                 overriddenTemplateDefaultValues,
                 overriddenResponseDefaultValues,
@@ -557,7 +574,8 @@ public final class ItemSessionState implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
+                + "(sessionStatus=" + sessionStatus
+                + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues
                 + ",overriddenOutcomeDefaultValues=" + overriddenOutcomeDefaultValues

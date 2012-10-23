@@ -60,6 +60,7 @@ import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
@@ -106,6 +107,8 @@ import org.springframework.web.multipart.MultipartFile;
  * NOTE: Remember there is no {@link IdentityContext} for candidates.
  *
  * @author David McKain
+ *
+ * @see CandidateSessionStarter
  */
 @Service
 @Transactional(propagation=Propagation.REQUIRED)

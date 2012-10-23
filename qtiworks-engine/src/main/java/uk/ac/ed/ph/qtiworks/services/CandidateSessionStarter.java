@@ -55,6 +55,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -75,6 +76,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Helper service for launching new candidate sessions on an
  * {@link AssessmentItem} or {@link AssessmentTest}
+ *
+ * @see CandidateItemDeliveryService
  *
  * @author David McKain
  */
@@ -237,6 +240,10 @@ public class CandidateSessionStarter {
          * but it makes sense to be consistent.
          */
         final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
+
+        /* Set SessionStatus */
+        /* FIXME: This doesn't really make sense if attemptAllowed==false */
+        itemSessionController.setPendingSubmission();
 
         /* Create new session and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();

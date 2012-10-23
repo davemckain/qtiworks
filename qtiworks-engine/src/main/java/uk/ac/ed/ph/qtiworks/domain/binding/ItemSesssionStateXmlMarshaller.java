@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -83,6 +84,7 @@ public final class ItemSesssionStateXmlMarshaller {
         /* Create document element */
         final Element documentElement = document.createElementNS(QTIWORKS_NAMESPACE, "itemSessionState");
         documentElement.setAttribute("modelVersion", "1");
+        documentElement.setAttribute("sessionStatus", itemSessionState.getSessionStatus().toQtiString());
         document.appendChild(documentElement);
 
         /* Output shuffled choice orders */
@@ -203,6 +205,15 @@ public final class ItemSesssionStateXmlMarshaller {
         }
         if (!"1".equals(documentElement.getAttribute("modelVersion"))) {
             throw new MarshallingException("Expected modelVersion to be 1");
+        }
+        final String sessionStatusAttr = documentElement.getAttribute("sessionStatus");
+        if (sessionStatusAttr!=null) {
+            try {
+                result.setSessionStatus(SessionStatus.parseSessionStatus(sessionStatusAttr));
+            }
+            catch (final IllegalArgumentException e) {
+                throw new MarshallingException("Unexpected value for sessionStatus: " + sessionStatusAttr);
+            }
         }
 
         final List<Element> childElements = expectElementChildren(documentElement);

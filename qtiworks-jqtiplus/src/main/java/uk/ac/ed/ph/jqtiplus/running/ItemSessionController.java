@@ -92,6 +92,15 @@ import org.slf4j.LoggerFactory;
  * Usage: one-shot, not thread safe.
  * FIXME: Document this!
  *
+ * Current lifecycle is:
+ *
+ * {@link #initialize()}
+ * {@link #performTemplateProcessing()}
+ * {@link #setPendingSubmission()}
+ * {@link #bindResponses(Map)}
+ * {@link #validateResponses()}
+ * {@link #performResponseProcessing()}
+ *
  * @author David McKain
  */
 public final class ItemSessionController extends ItemValidationController implements ItemProcessingContext {
@@ -185,6 +194,7 @@ public final class ItemSessionController extends ItemValidationController implem
             itemSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
         }
         itemSessionState.resetBuiltinVariables();
+        itemSessionState.setSessionStatus(SessionStatus.INITIAL);
     }
 
     /**
@@ -240,13 +250,14 @@ public final class ItemSessionController extends ItemValidationController implem
             for (final Interaction interaction : itemProcessingMap.getInteractions()) {
                 interaction.initialize(this);
             }
+
+            /* Reset SessionStatus */
+            itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
         }
     }
-
-
 
     private boolean doTemplateProcessingRun(final int attemptNumber) {
         logger.debug("Template Processing attempt #{} starting", attemptNumber);
@@ -289,6 +300,13 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     //-------------------------------------------------------------------
+    // Interacting
+
+    public void setPendingSubmission() {
+        itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
+    }
+
+    //-------------------------------------------------------------------
     // Response processing
 
     /**
@@ -320,6 +338,7 @@ public final class ItemSessionController extends ItemValidationController implem
             }
         }
 
+        /* Now bind responses */
         final Map<Identifier, Interaction> interactionByResponseIdentifierMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
         final Set<Identifier> badResponses = new HashSet<Identifier>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
@@ -339,6 +358,10 @@ public final class ItemSessionController extends ItemValidationController implem
                 badResponses.add(responseIdentifier);
             }
         }
+
+        /* Update session status */
+        itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
+
         return Collections.unmodifiableSet(badResponses);
     }
 
@@ -392,6 +415,7 @@ public final class ItemSessionController extends ItemValidationController implem
                 resetOutcomeVariables();
             }
 
+            /* Work out which RP logic to perform */
             ResponseProcessing responseProcessing = null;
             final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = resolvedAssessmentItem.getResolvedResponseProcessingTemplateLookup();
             if (resolvedResponseProcessingTemplateLookup!=null) {
@@ -408,6 +432,9 @@ public final class ItemSessionController extends ItemValidationController implem
             else {
                 logger.debug("No responseProcessing rules or responseProcessing template exists, so no response processing will be performed");
             }
+
+            /* Set SessionStatus */
+            itemSessionState.setSessionStatus(SessionStatus.FINAL);
         }
         finally {
             logger.debug("Response processing finished");

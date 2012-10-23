@@ -36,8 +36,6 @@ package uk.ac.ed.ph.jqtiplus.state;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -60,7 +58,6 @@ public final class TestItemSessionState implements Serializable {
     private boolean finished;
     private boolean skipped;
     private boolean timedOut;
-    private SessionStatus sessionStatus;
     private String candidateComment;
 
     public TestItemSessionState(final TestPlanNodeInstanceKey instanceKey, final ItemSessionState itemSessionState) {
@@ -125,15 +122,6 @@ public final class TestItemSessionState implements Serializable {
     }
 
 
-    public SessionStatus getSessionStatus() {
-        return sessionStatus;
-    }
-
-    public void setSessionStatus(final SessionStatus sessionStatus) {
-        this.sessionStatus = sessionStatus;
-    }
-
-
     public String getCandidateComment() {
         return candidateComment;
     }
@@ -158,7 +146,6 @@ public final class TestItemSessionState implements Serializable {
                 && finished==other.finished
                 && skipped==other.skipped
                 && timedOut==other.timedOut
-                && ObjectUtilities.nullSafeEquals(sessionStatus, other.sessionStatus)
                 && candidateComment.equals(other.candidateComment);
     }
 
@@ -172,7 +159,6 @@ public final class TestItemSessionState implements Serializable {
                 Boolean.valueOf(finished),
                 Boolean.valueOf(skipped),
                 Boolean.valueOf(timedOut),
-                sessionStatus,
                 candidateComment
         });
     }
@@ -187,7 +173,6 @@ public final class TestItemSessionState implements Serializable {
                 + ",finished=" + finished
                 + ",skipped=" + skipped
                 + ",timedOut=" + timedOut
-                + ",sessionStatus=" + sessionStatus
                 + ",candidateComment=" + candidateComment
                 + ")";
     }
