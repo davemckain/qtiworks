@@ -276,7 +276,7 @@ public class ItemFlowJumpTest {
      * @param target target of jump
      */
     private void addBranchRule(AssessmentTest test, String source, String target) {
-        final AbstractPart node = (AbstractPart) test.lookupDescendantOrSelf(source);
+        final AbstractPart node = (AbstractPart) test.lookupFirstDescendantOrSelf(source);
 
         final BranchRule rule = new BranchRule(node);
         node.getBranchRules().add(rule);
@@ -295,7 +295,7 @@ public class ItemFlowJumpTest {
      * @param source source of jump
      */
     private void removeBranchRule(AssessmentTest test, String source) {
-        final AbstractPart node = (AbstractPart) test.lookupDescendantOrSelf(source);
+        final AbstractPart node = (AbstractPart) test.lookupFirstDescendantOrSelf(source);
         node.getBranchRules().clear();
     }
 

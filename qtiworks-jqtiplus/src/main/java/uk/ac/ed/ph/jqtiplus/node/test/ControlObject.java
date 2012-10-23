@@ -178,52 +178,21 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     }
 
     /**
-     * Returns the child {@link AbstractPart} having the given {@link Identifier}, null if not found.
-     *
-     * @param identifier identifier of requested object
-     * @return object with given identifier or null
-     */
-    public final AbstractPart getChildPart(final Identifier identifier) {
-        for (final AbstractPart child : getChildren()) {
-            if (identifier.equals(child.getIdentifier())) {
-                return child;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Searches descendants of this Object for the {@link AbstractPart} having the
+     * Searches descendants of this Object for the first {@link AbstractPart} having the
      * given {@link Identifier}, or null if not found.
      *
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public final AbstractPart lookupDescendant(final Identifier identifier) {
+    public final AbstractPart lookupFirstDescendant(final Identifier identifier) {
         AbstractPart result;
         for (final AbstractPart child : getChildren()) {
-            result = child.lookupDescendantOrSelf(identifier);
+            result = child.lookupFirstDescendantOrSelf(identifier);
             if (result != null) {
                 return result;
             }
         }
         return null;
-    }
-
-    /**
-     * Searches this Object and its descendants for the {@link ControlObject} having the
-     * given {@link Identifier}, returning null if not found.
-     * <p>
-     * (Note that this will never return "self" for an {@link AssessmentTest}, since its identifier is a String).
-     *
-     * @param identifier identifier of requested object
-     * @return object with given identifier or null
-     */
-    public final AbstractPart lookupDescendantOrSelf(final Identifier identifier) {
-        if (identifier.equals(getIdentifier())) {
-            return (AbstractPart) this;
-        }
-        return lookupDescendant(identifier);
     }
 
     /**
@@ -234,8 +203,9 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      *         to an {@link AssessmentItemRef}
      */
     @ToCheck
+    @Deprecated
     public final AssessmentItemRef lookupItemRef(final Identifier identifier) {
-        final AbstractPart descendent = lookupDescendant(identifier);
+        final AbstractPart descendent = lookupFirstDescendant(identifier);
         if (descendent instanceof AssessmentItemRef) {
             return (AssessmentItemRef) descendent;
         }

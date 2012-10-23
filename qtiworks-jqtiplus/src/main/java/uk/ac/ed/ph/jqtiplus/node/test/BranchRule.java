@@ -118,7 +118,7 @@ public final class BranchRule extends AbstractJump {
             }
         }
         else {
-            result = getRootNode(AssessmentTest.class).lookupDescendantOrSelf(getTarget());
+            result = getRootNode(AssessmentTest.class).lookupFirstDescendant(getTarget());
         }
         return result;
     }
@@ -181,7 +181,7 @@ public final class BranchRule extends AbstractJump {
                 }
             }
             else {
-                final AbstractPart targetPart = assessmentTest.lookupDescendantOrSelf(target);
+                final AbstractPart targetPart = assessmentTest.lookupFirstDescendant(target);
 
                 if (targetPart == null) {
                     context.fireValidationError(this, "Cannot find target: " + target);

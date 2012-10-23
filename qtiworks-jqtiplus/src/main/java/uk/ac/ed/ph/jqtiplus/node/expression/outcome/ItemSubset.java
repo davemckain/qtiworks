@@ -37,7 +37,8 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -45,10 +46,10 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import java.util.List;
 
 /**
- * This class defines the concept of A sub-set of the items selected in an assessmentTest.
+ * This class defines the concept of a sub-set of the items selected in an assessmentTest.
  * The attributes define criteria that must be matched by all members of the sub-set.
- * It is used to control A number of expressions in outcomeProcessing for returning information about
- * the test as A whole, or arbitrary subsets of it.
+ * It is used to control a number of expressions in outcomeProcessing for returning information about
+ * the test as a whole, or arbitrary subsets of it.
  *
  * @author Jiri Kajaba
  */
@@ -65,11 +66,6 @@ public abstract class ItemSubset extends AbstractFunctionalExpression {
     /** Name of excludeCategory attribute in xml schema. */
     public static final String ATTR_EXCLUDE_CATEGORIES_NAME = "excludeCategory";
 
-    /**
-     * Constructs expression.
-     *
-     * @param parent parent of this expression
-     */
     public ItemSubset(final ExpressionParent parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
@@ -108,11 +104,22 @@ public abstract class ItemSubset extends AbstractFunctionalExpression {
     @Override
     protected void validateThis(final ValidationContext context) {
         super.validateThis(context);
-        if (getSectionIdentifier() != null && ((TestValidationContext) context).getSubjectTest().lookupDescendantOrSelf(getSectionIdentifier()) == null) {
-            context.fireValidationWarning(this, "Cannot find control object: " + getSectionIdentifier());
+        if (context instanceof TestValidationContext) {
+            final TestValidationContext testValidationContext = (TestValidationContext) context;
+            final Identifier sectionIdentifier = getSectionIdentifier();
+            if (sectionIdentifier!=null) {
+                final AbstractPart target = testValidationContext.getSubjectTest().lookupFirstDescendant(sectionIdentifier);
+                if (target!=null) {
+                    if (!(target instanceof AssessmentSection)) {
+                        context.fireValidationError(this, "Target of " + sectionIdentifier + " is not an assessmentSection");
+                    }
+                }
+                else {
+                    context.fireValidationError(this, "Cannot find target of sectionIdentifier " + sectionIdentifier);
+                }
+            }
         }
-
-        if (getNearestAncestor(OutcomeProcessing.class)==null) {
+        else {
             context.fireValidationError(this, "Outcome expression can be used only in outcome processing.");
         }
     }

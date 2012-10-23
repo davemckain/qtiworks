@@ -518,7 +518,7 @@ public final class AssessmentTestAttemptController {
         }
         else {
             final Identifier identifier = (Identifier) state.getTestIdentifier();
-            result = test.lookupDescendantOrSelf(identifier);
+            result = test.lookupFirstDescendantOrSelf(identifier);
         }
         return result;
     }

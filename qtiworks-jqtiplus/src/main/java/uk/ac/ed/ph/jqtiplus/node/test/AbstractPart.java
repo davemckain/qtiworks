@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 import uk.ac.ed.ph.jqtiplus.group.test.BranchRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.ItemSessionControlGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.PreConditionGroup;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -84,6 +85,22 @@ public abstract class AbstractPart extends UniqueControlObject {
      */
     public TestPart getParentTestPart() {
         return getNearestAncestorOrSelf(TestPart.class);
+    }
+
+    /**
+     * Searches this node and its descendants for the first {@link AbstractPart} having the
+     * given {@link Identifier}, returning null if not found.
+     * <p>
+     * (Note that this will never return "self" for an {@link AssessmentTest}, since its identifier is a String).
+     *
+     * @param identifier identifier of requested object
+     * @return object with given identifier or null
+     */
+    public final AbstractPart lookupFirstDescendantOrSelf(final Identifier identifier) {
+        if (identifier.equals(getIdentifier())) {
+            return this;
+        }
+        return lookupFirstDescendant(identifier);
     }
 
     /**
