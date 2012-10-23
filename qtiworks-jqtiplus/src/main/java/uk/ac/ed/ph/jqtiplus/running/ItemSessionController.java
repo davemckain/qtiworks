@@ -170,7 +170,7 @@ public final class ItemSessionController extends ItemValidationController implem
     // Initialization & template processing
 
     /**
-     * Sets all explcitly-defined (valid) variables to NULL, and the
+     * Sets all explicitly-defined (valid) variables to NULL, and the
      * built-in variables to their initial values.
      */
     public void initialize() {
@@ -188,21 +188,19 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     /**
-     * FIXME: Document this!
-     *
-     * @param templateDefaults given templateDefaults values
+     * Performs template processing, with no <code>templateDefaults</code>.
      */
     public void performTemplateProcessing() {
         performTemplateProcessing(null);
     }
 
     /**
-     * FIXME: Document this!
+     * Performs template processing using the given <code>templateDefaults</code>.
      *
-     * @param templateDefaults given templateDefaults values
+     * @param templateDefaults List of {@link TemplateDefault}s, which may be null or empty.
      */
     public void performTemplateProcessing(final List<TemplateDefault> templateDefaults) {
-        fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_STARTING);
+        fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
         try {
             /* Initialise template defaults with any externally provided defaults */
             if (templateDefaults != null) {
@@ -244,7 +242,7 @@ public final class ItemSessionController extends ItemValidationController implem
             }
         }
         finally {
-            fireLifecycleEvent(LifecycleEventType.ITEM_INITIALISATION_FINISHED);
+            fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
         }
     }
 

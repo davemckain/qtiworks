@@ -230,6 +230,7 @@ public class CandidateSessionStarter {
 
         /* Initialise state */
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery, itemSessionState, notificationRecorder);
+        itemSessionController.initialize();
         itemSessionController.performTemplateProcessing();
 
         /* Check whether an attempt is allowed. This is a bit pathological here,

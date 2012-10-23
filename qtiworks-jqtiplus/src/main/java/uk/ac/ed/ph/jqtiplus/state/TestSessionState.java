@@ -68,13 +68,13 @@ public final class TestSessionState implements Serializable {
     private final TestPlan testPlan;
     private final Map<Identifier, Value> outcomeValues;
     private FloatValue durationValue;
-    private final Map<TestPlanNodeInstanceKey, TestItemState> testItemStates;
+    private final Map<TestPlanNodeInstanceKey, TestItemSessionState> testItemStates;
 
     public TestSessionState(final TestPlan testPlan) {
         Assert.notNull(testPlan, "testPlan");
         this.testPlan = testPlan;
         this.outcomeValues = new HashMap<Identifier, Value>();
-        this.testItemStates = new HashMap<TestPlanNodeInstanceKey, TestItemState>();
+        this.testItemStates = new HashMap<TestPlanNodeInstanceKey, TestItemSessionState>();
         reset();
     }
 
@@ -84,7 +84,7 @@ public final class TestSessionState implements Serializable {
         return testPlan;
     }
 
-    public Map<TestPlanNodeInstanceKey, TestItemState> getTestItemStates() {
+    public Map<TestPlanNodeInstanceKey, TestItemSessionState> getTestItemStates() {
         return testItemStates;
     }
 

@@ -48,7 +48,7 @@ import java.util.Arrays;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class TestItemState implements Serializable {
+public final class TestItemSessionState implements Serializable {
 
     private static final long serialVersionUID = -1407010070268750764L;
 
@@ -63,7 +63,7 @@ public final class TestItemState implements Serializable {
     private SessionStatus sessionStatus;
     private String candidateComment;
 
-    public TestItemState(final TestPlanNodeInstanceKey instanceKey, final ItemSessionState itemSessionState) {
+    public TestItemSessionState(final TestPlanNodeInstanceKey instanceKey, final ItemSessionState itemSessionState) {
         Assert.notNull(instanceKey, "instanceKey");
         Assert.notNull(itemSessionState, "itemSessionState");
         this.instanceKey = instanceKey;
@@ -146,11 +146,11 @@ public final class TestItemState implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof TestItemState)) {
+        if (!(obj instanceof TestItemSessionState)) {
             return false;
         }
 
-        final TestItemState other = (TestItemState) obj;
+        final TestItemSessionState other = (TestItemSessionState) obj;
         return instanceKey.equals(other.instanceKey)
                 && itemSessionState.equals(other.itemSessionState)
                 && presented==other.presented

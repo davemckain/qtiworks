@@ -15,8 +15,11 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
@@ -34,7 +37,8 @@ public final class TestTest {
         final URI inputUri = URI.create("classpath:/testimplementation/selection.xml");
 
         System.out.println("Reading and validating");
-        final QtiXmlReader qtiXmlReader = new QtiXmlReader(new JqtiExtensionManager());
+        final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
+        final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
         final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
 
         final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
@@ -52,5 +56,11 @@ public final class TestTest {
         System.out.println(testPlan.debugStructure());
 
         System.out.println("Test plan: " + ObjectDumper.dumpObject(testPlan, DumpMode.DEEP));
+
+        final TestSessionState testSessionState = new TestSessionState(testPlan);
+        final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testProcessingMap, testSessionState);
+        testSessionController.initialize();
+        System.out.println("Test state after init: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+        System.out.println("TC test: " + testSessionController.evaluateVariableValue(Identifier.assumedLegal("SCORE")));
     }
 }

@@ -42,10 +42,15 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Random;
@@ -117,6 +122,30 @@ public final class TestSessionController extends TestValidationController implem
         if (jqtiExtensionManager!=null) {
             for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
                 extensionPackage.lifecycleEvent(this, eventType);
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------
+    // Initialization
+
+    /**
+     * Sets all explicitly-defined (valid) variables to NULL, and the
+     * <code>duration</code> variable to 0.
+     */
+    public void initialize() {
+        testSessionState.reset();
+        for (final Identifier identifier : testProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
+            testSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
+        }
+        testSessionState.resetBuiltinVariables();
+
+        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
+            if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
+                final ItemSessionState itemSessionState = new ItemSessionState();
+                itemSessionState.reset();
+                final TestItemSessionState testItemSessionState = new TestItemSessionState(testPlanNode.getTestPlanNodeInstanceKey(), itemSessionState);
+                testSessionState.getTestItemStates().put(testPlanNode.getTestPlanNodeInstanceKey(), testItemSessionState);
             }
         }
     }

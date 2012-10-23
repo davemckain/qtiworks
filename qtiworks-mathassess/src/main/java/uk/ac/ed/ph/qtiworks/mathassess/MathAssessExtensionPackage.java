@@ -192,14 +192,14 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
                 closeMaximaPool();
                 break;
 
-            case ITEM_INITIALISATION_STARTING:
+            case ITEM_TEMPLATE_PROCESSING_STARTING:
             case ITEM_RESPONSE_PROCESSING_STARTING:
                 /* Rather than creating a Maxima process at this point that may
                  * not be used,
                  * we'll wait until it is first needed. */
                 break;
 
-            case ITEM_INITIALISATION_FINISHED:
+            case ITEM_TEMPLATE_PROCESSING_FINISHED:
             case ITEM_RESPONSE_PROCESSING_FINISHED:
                 releaseMaximaSessionForThread();
                 break;
