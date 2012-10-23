@@ -53,7 +53,7 @@ public final class TestTest {
         notificationFirer.addNotificationListener(new NotificationLogListener());
         final TestPlanner testPlanner = new TestPlanner(testProcessingMap, notificationFirer);
         final TestPlan testPlan = testPlanner.generateTestPlan();
-        System.out.println(testPlan.debugStructure());
+        System.out.println("Test plan structure:\n" + testPlan.debugStructure());
 
         System.out.println("Test plan: " + ObjectDumper.dumpObject(testPlan, DumpMode.DEEP));
 

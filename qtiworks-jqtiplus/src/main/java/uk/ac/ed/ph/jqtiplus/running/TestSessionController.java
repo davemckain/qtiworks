@@ -41,8 +41,8 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
@@ -55,7 +55,6 @@ import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.List;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -130,20 +129,13 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode) {
-        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
-            throw new IllegalStateException("Expected TestPlanNode " + itemRefNode + " to correspond to an assessmentItemRef");
-        }
-        final Identifier identifier = itemRefNode.getIdentifier();
-        final List<AssessmentItemRef> itemRefs = testProcessingMap.getResolvedAssessmentTest().getItemRefsByIdentifierMap().get(identifier);
+        final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
+        final TestItemSessionState testItemSessionState = getTestItemSessionState(itemRefNode);
+        return new ItemSessionController(jqtiExtensionManager, itemProcessingMap, testItemSessionState.getItemState());
     }
 
-    private ItemSessionController createItemSessionController(final TestPlanNodeInstanceKey key) {
-        final TestItemSessionState testItemSessionState = testSessionState.getTestItemStates().get(key);
-        if (testItemSessionState==null) {
-            throw new QtiLogicException("Failed to find TestItemSessionState for key " + key);
-        }
-        testProcessingMap.getItemProcessingMapMap().get(uri);
-        return new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+    private TestItemSessionState getTestItemSessionState(final TestPlanNode itemRefNode) {
+        return testSessionState.getTestItemStates().get(itemRefNode.getTestPlanNodeInstanceKey());
     }
 
     //-------------------------------------------------------------------
@@ -151,7 +143,8 @@ public final class TestSessionController extends TestValidationController implem
 
     /**
      * Sets all explicitly-defined (valid) variables to NULL, and the
-     * <code>duration</code> variable to 0.
+     * <code>duration</code> variable to 0, and calls {@link #initialize()} on each item in the
+     * test plan.
      */
     public void initialize() {
         testSessionState.reset();
@@ -162,10 +155,15 @@ public final class TestSessionController extends TestValidationController implem
 
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
-                final ItemSessionState itemSessionState = new ItemSessionState();
-                itemSessionState.reset();
-                final TestItemSessionState testItemSessionState = new TestItemSessionState(testPlanNode.getTestPlanNodeInstanceKey(), itemSessionState);
-                testSessionState.getTestItemStates().put(testPlanNode.getTestPlanNodeInstanceKey(), testItemSessionState);
+                final TestPlanNodeInstanceKey instanceKey = testPlanNode.getTestPlanNodeInstanceKey();
+                TestItemSessionState testItemSessionState = getTestItemSessionState(testPlanNode);
+                if (testItemSessionState==null) {
+                    final ItemSessionState itemSessionState = new ItemSessionState();
+                    testItemSessionState = new TestItemSessionState(instanceKey, itemSessionState);
+                    testSessionState.getTestItemStates().put(instanceKey, testItemSessionState);
+                }
+                final ItemSessionController itemSessionController = createItemSessionController(testPlanNode);
+                itemSessionController.initialize();
             }
         }
     }

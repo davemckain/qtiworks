@@ -34,9 +34,11 @@
 package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
@@ -74,6 +76,11 @@ public final class TestProcessingMap implements Serializable {
     private final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMap;
     private final ResponseDeclaration durationResponseDeclaration;
 
+    /**
+     * Map of {@link ItemProcessingMap}s for each {@link AssessmentItem} that was successfully
+     * looked up (but not necessarily valid), keyed on the resolved System ID of the
+     * {@link AssessmentItemRef} referring to it.
+     */
     private final Map<URI, ItemProcessingMap> itemProcessingMapMap;
 
     public TestProcessingMap(final ResolvedAssessmentTest resolvedAssessmentTest, final boolean isValid,
@@ -141,6 +148,28 @@ public final class TestProcessingMap implements Serializable {
             throw new IllegalStateException("Global index of " + testPlanNode + " is out of bounds");
         }
         return abstractPartList.get(abstractPartGlobalIndex);
+    }
+
+    public ItemProcessingMap resolveItemProcessingMap(final TestPlanNode testPlanNode) {
+        if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
+            throw new IllegalArgumentException("Expected " + TestNodeType.ASSESSMENT_ITEM_REF + " but got " + testPlanNode.getTestNodeType());
+        }
+        final AbstractPart abstractPart = resolveAbstractPart(testPlanNode);
+        if (!(abstractPart instanceof AssessmentItemRef)) {
+            throw new IllegalStateException("Expected" + testPlanNode
+                    + " to resolve to an " + AssessmentItemRef.class.getSimpleName()
+                    + " but got " + abstractPart);
+        }
+        final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) abstractPart;
+        final URI resolvedUri = resolvedAssessmentTest.getSystemIdByItemRefMap().get(assessmentItemRef);
+        if (resolvedUri==null) {
+            throw new IllegalStateException("System ID resolution lookup failed for " + assessmentItemRef + " resolved from " + testPlanNode);
+        }
+        final ItemProcessingMap itemProcessingMap = itemProcessingMapMap.get(resolvedUri);
+        if (itemProcessingMap==null) {
+            throw new IllegalStateException("ItemProcessingMap lookup failed for " + resolvedUri + " resolved from " + testPlanNode);
+        }
+        return itemProcessingMap;
     }
 
     @Override

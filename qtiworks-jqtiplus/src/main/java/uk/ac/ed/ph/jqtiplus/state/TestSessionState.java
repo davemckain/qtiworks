@@ -92,6 +92,7 @@ public final class TestSessionState implements Serializable {
 
     public void reset() {
         this.outcomeValues.clear();
+        this.testItemStates.clear();
         resetBuiltinVariables();
     }
 

@@ -265,6 +265,7 @@ public final class TestPlanner {
             notificationFirer.fireRuntimeWarning(itemRef,
                     "The item referred by identifier " + itemRef.getIdentifier()
                     + " was not successfully resolved so is being dropped from the test plan");
+            return null;
         }
 
         /* Item is usable */

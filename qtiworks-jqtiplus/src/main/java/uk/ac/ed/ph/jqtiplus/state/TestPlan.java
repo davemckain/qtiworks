@@ -135,7 +135,9 @@ public final class TestPlan implements Serializable {
             }
             result.append(testPlanNode.getTestNodeType())
                     .append(testPlanNode.getTestPlanNodeInstanceKey())
-                    .append("\n");
+                    .append('@')
+                    .append(testPlanNode.getAbstractPartGlobalIndex())
+                    .append('\n');
             buildStructure(result, testPlanNode.getChildren(), indent + 1);
         }
     }
