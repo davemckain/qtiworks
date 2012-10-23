@@ -65,38 +65,30 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     /** {@link AssessmentTest} lookup */
     private final RootNodeLookup<AssessmentTest> testLookup;
 
-    /** List of all{@link AssessmentItemRef}s in the test, in test order. */
-    private final List<AssessmentItemRef> itemRefs;
-
-    /**
-     * Lookup map for {@link AssessmentItemRef} by identifier. Valid tests should have one
-     * entry in the value per key, but invalid tests might have multiple entries.
-     */
-    private final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap;
+    /** List of all {@link AssessmentItemRef}s in the test, in test order */
+    private final List<AssessmentItemRef> assessmentItemRefs;
 
     /** Resolved System ID for each {@link AssessmentItemRef} */
     private final Map<AssessmentItemRef, URI> systemIdByItemRefMap;
 
-    /** List of {@link AssessmentItemRef}s corresponding to each unique resolved item System ID */
+    /** Maps resolved System ID to applicable {@link AssessmentItemRef} */
     private final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap;
 
     /** {@link ResolvedAssessmentItem} for each unique item System ID. */
-    private final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap;
+    private final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemBySystemIdMap;
 
     public ResolvedAssessmentTest(final ModelRichness modelRichness,
             final RootNodeLookup<AssessmentTest> testLookup,
-            final List<AssessmentItemRef> itemRefs,
-            final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap,
+            final List<AssessmentItemRef> assessmentItemRefs,
             final Map<AssessmentItemRef, URI> systemIdByItemRefMap,
             final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap,
             final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap) {
         super(modelRichness, testLookup);
         this.testLookup = testLookup;
-        this.itemRefs = Collections.unmodifiableList(itemRefs);
-        this.itemRefsByIdentifierMap = Collections.unmodifiableMap(itemRefsByIdentifierMap);
+        this.assessmentItemRefs = Collections.unmodifiableList(assessmentItemRefs);
         this.systemIdByItemRefMap = Collections.unmodifiableMap(systemIdByItemRefMap);
         this.itemRefsBySystemIdMap = Collections.unmodifiableMap(itemRefsBySystemIdMap);
-        this.resolvedAssessmentItemMap = Collections.unmodifiableMap(resolvedAssessmentItemMap);
+        this.resolvedAssessmentItemBySystemIdMap = Collections.unmodifiableMap(resolvedAssessmentItemMap);
     }
 
     @Override
@@ -108,16 +100,12 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         return testLookup;
     }
 
-    public List<AssessmentItemRef> getItemRefs() {
-        return itemRefs;
+    public List<AssessmentItemRef> getAssessmentItemRefs() {
+        return assessmentItemRefs;
     }
 
     public Map<AssessmentItemRef, URI> getSystemIdByItemRefMap() {
         return systemIdByItemRefMap;
-    }
-
-    public Map<Identifier, List<AssessmentItemRef>> getItemRefsByIdentifierMap() {
-        return itemRefsByIdentifierMap;
     }
 
     public Map<URI, List<AssessmentItemRef>> getItemRefsBySystemIdMap() {
@@ -125,13 +113,13 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     }
 
     @ObjectDumperOptions(DumpMode.TO_STRING)
-    public Map<URI, ResolvedAssessmentItem> getResolvedAssessmentItemMap() {
-        return resolvedAssessmentItemMap;
+    public Map<URI, ResolvedAssessmentItem> getResolvedAssessmentItemBySystemIdMap() {
+        return resolvedAssessmentItemBySystemIdMap;
     }
 
     public ResolvedAssessmentItem getResolvedAssessmentItem(final AssessmentItemRef itemRef) {
         final URI systemId = systemIdByItemRefMap.get(itemRef);
-        return systemId!=null ? resolvedAssessmentItemMap.get(systemId) : null;
+        return systemId!=null ? resolvedAssessmentItemBySystemIdMap.get(systemId) : null;
     }
 
     //-------------------------------------------------------------------
@@ -195,7 +183,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
              * (2) All successful matches of the form ITEMREF.ITEMVAR, running through all ITEMREFS in the order listed in the test and checking for an item variable with identifier ITEMVAR
              * (3) All successful matches of the form TESTVAR, checking for a test variable with identifier TESTVAR (containing a dot)
              */
-            for (final AssessmentItemRef itemRef : itemRefs) { /*  (1) above */
+            for (final AssessmentItemRef itemRef : assessmentItemRefs) { /*  (1) above */
                 final Identifier itemRefIdentifier = itemRef.getIdentifier();
                 final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\d+)\\.(\\p{L}.*)$");
                 final Matcher matcher = pattern.matcher(reference);
@@ -211,7 +199,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
                     }
                 }
             }
-            for (final AssessmentItemRef itemRef : itemRefs) { /*  (2) above */
+            for (final AssessmentItemRef itemRef : assessmentItemRefs) { /*  (2) above */
                 final Identifier itemRefIdentifier = itemRef.getIdentifier();
                 final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\p{L}.*)$");
                 final Matcher matcher = pattern.matcher(reference);
@@ -259,10 +247,9 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(modelRichness=" + modelRichness
                 + ",testLookup=" + testLookup
-                + ",itemRefsByIdentifierMap=" + itemRefsByIdentifierMap
                 + ",systemIdByItemRefMap=" + systemIdByItemRefMap
                 + ",itemRefsBySystemIdMap=" + itemRefsBySystemIdMap
-                + ",resolvedAssessmentItemMap=" + resolvedAssessmentItemMap
+                + ",resolvedAssessmentItemMap=" + resolvedAssessmentItemBySystemIdMap
                 + ")";
     }
 }

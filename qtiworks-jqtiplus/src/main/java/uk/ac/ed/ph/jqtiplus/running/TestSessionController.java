@@ -41,11 +41,13 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeInstanceKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -53,6 +55,7 @@ import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.List;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -124,6 +127,23 @@ public final class TestSessionController extends TestValidationController implem
                 extensionPackage.lifecycleEvent(this, eventType);
             }
         }
+    }
+
+    private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode) {
+        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
+            throw new IllegalStateException("Expected TestPlanNode " + itemRefNode + " to correspond to an assessmentItemRef");
+        }
+        final Identifier identifier = itemRefNode.getIdentifier();
+        final List<AssessmentItemRef> itemRefs = testProcessingMap.getResolvedAssessmentTest().getItemRefsByIdentifierMap().get(identifier);
+    }
+
+    private ItemSessionController createItemSessionController(final TestPlanNodeInstanceKey key) {
+        final TestItemSessionState testItemSessionState = testSessionState.getTestItemStates().get(key);
+        if (testItemSessionState==null) {
+            throw new QtiLogicException("Failed to find TestItemSessionState for key " + key);
+        }
+        testProcessingMap.getItemProcessingMapMap().get(uri);
+        return new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
     }
 
     //-------------------------------------------------------------------

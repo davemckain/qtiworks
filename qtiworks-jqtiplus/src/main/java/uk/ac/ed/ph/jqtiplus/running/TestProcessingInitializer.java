@@ -36,12 +36,14 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 
@@ -78,6 +80,9 @@ public final class TestProcessingInitializer {
         }
         final AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful();
 
+        /* Extract all usable AbstractParts. (Currently, usable == all but this may change) */
+        final List<AbstractPart> abstractParts = QueryUtils.search(AbstractPart.class, test);
+
         /* Extract test's duration variable declaration */
         final ResponseDeclaration durationResponseDeclaration = test.getDurationResponseDeclaration();
 
@@ -98,7 +103,8 @@ public final class TestProcessingInitializer {
 
         /* That's it! */
         return new TestProcessingMap(resolvedAssessmentTest, testValidationResult.isValid(),
-                outcomeDeclarationMapBuilder, durationResponseDeclaration, itemProcessingMapBuilder);
+                abstractParts, outcomeDeclarationMapBuilder,
+                durationResponseDeclaration, itemProcessingMapBuilder);
     }
 
     private void doOutcomeVariable(final OutcomeDeclaration declaration) {

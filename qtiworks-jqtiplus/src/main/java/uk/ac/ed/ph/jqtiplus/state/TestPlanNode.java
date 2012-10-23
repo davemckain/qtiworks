@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
@@ -71,6 +72,9 @@ public final class TestPlanNode implements Serializable {
     /** Parent Node (set internally) */
     private TestPlanNode parentNode;
 
+    /** Global index of the corresponding {@link AbstractPart} in the test, starting at 0 */
+    private final int abstractPartGlobalIndex;
+
     /** Index within siblings, starting at 0 */
     private int siblingIndex;
 
@@ -87,9 +91,11 @@ public final class TestPlanNode implements Serializable {
     /** Children of this Node */
     private final List<TestPlanNode> children;
 
-    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeInstanceKey testPlanNodeInstanceKey) {
+    public TestPlanNode(final TestNodeType testNodeType, final int abstractPartGlobalIndex,
+            final TestPlanNodeInstanceKey testPlanNodeInstanceKey) {
         super();
         this.parentNode = null;
+        this.abstractPartGlobalIndex = abstractPartGlobalIndex;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
         this.testPlanNodeInstanceKey = testPlanNodeInstanceKey;
@@ -100,6 +106,10 @@ public final class TestPlanNode implements Serializable {
     @ObjectDumperOptions(DumpMode.IGNORE)
     public TestPlanNode getParent() {
         return parentNode;
+    }
+
+    public int getAbstractPartGlobalIndex() {
+        return abstractPartGlobalIndex;
     }
 
     public int getSiblingIndex() {

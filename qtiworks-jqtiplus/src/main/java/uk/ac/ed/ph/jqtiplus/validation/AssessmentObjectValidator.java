@@ -107,7 +107,7 @@ public final class AssessmentObjectValidator {
         final AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         if (test!=null) {
             /* Validate each unique item first */
-            for (final Entry<URI, ResolvedAssessmentItem> entry : resolvedAssessmentTest.getResolvedAssessmentItemMap().entrySet()) {
+            for (final Entry<URI, ResolvedAssessmentItem> entry : resolvedAssessmentTest.getResolvedAssessmentItemBySystemIdMap().entrySet()) {
                 final URI itemSystemId = entry.getKey();
                 final ResolvedAssessmentItem itemHolder = entry.getValue();
                 final StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")

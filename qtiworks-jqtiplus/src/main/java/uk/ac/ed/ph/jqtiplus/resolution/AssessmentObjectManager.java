@@ -40,7 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
@@ -168,25 +167,16 @@ public final class AssessmentObjectManager {
     private ResolvedAssessmentTest initResolvedAssessmentTest(final RootNodeLookup<AssessmentTest> testLookup, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
         final List<AssessmentItemRef> assessmentItemRefs = new ArrayList<AssessmentItemRef>();
         final Map<AssessmentItemRef, URI> systemIdByItemRefMap = new LinkedHashMap<AssessmentItemRef, URI>();
-        final Map<Identifier, List<AssessmentItemRef>> itemRefsByIdentifierMap = new LinkedHashMap<Identifier, List<AssessmentItemRef>>();
         final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new LinkedHashMap<URI, List<AssessmentItemRef>>();
         final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap = new LinkedHashMap<URI, ResolvedAssessmentItem>();
 
         /* Look up test */
         if (testLookup.wasSuccessful()) {
-            /* Resolve the system ID of each assessmentItemRef */
             final AssessmentTest test = testLookup.extractIfSuccessful();
+
+            /* Resolve the system ID of each assessmentItemRef */
             assessmentItemRefs.addAll(QueryUtils.search(AssessmentItemRef.class, test));
             for (final AssessmentItemRef itemRef : assessmentItemRefs) {
-                final Identifier identifier = itemRef.getIdentifier();
-                if (identifier!=null) {
-                    List<AssessmentItemRef> itemRefsByIdentifier = itemRefsByIdentifierMap.get(identifier);
-                    if (itemRefsByIdentifier==null) {
-                        itemRefsByIdentifier = new ArrayList<AssessmentItemRef>();
-                        itemRefsByIdentifierMap.put(identifier, itemRefsByIdentifier);
-                    }
-                    itemRefsByIdentifier.add(itemRef);
-                }
                 final URI itemHref = itemRef.getHref();
                 if (itemHref!=null) {
                     final URI itemSystemId = resolveUri(test, itemHref);
@@ -206,8 +196,10 @@ public final class AssessmentObjectManager {
             }
         }
         return new ResolvedAssessmentTest(modelRichness, testLookup, assessmentItemRefs,
-                itemRefsByIdentifierMap, systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
+                systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
     }
+
+    //-------------------------------------------------------------------
 
     public TestValidationResult resolveAndValidateTest(final URI systemId) {
         return new AssessmentObjectValidator(resourceProvider).validateTest(resolveAssessmentTest(systemId, ModelRichness.FOR_VALIDATION));

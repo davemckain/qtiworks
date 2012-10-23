@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -78,16 +79,22 @@ public final class TestPlanner {
     /** Private class used to build up a temporary tree structure below {@link TestPart}s. */
     private static class BuildTreeNode {
 
-        private final SectionPart sectionPart;
+        private final AbstractPart abstractPart;
+        private final int abstractPartGlobalIndex;
         private final List<BuildTreeNode> childNodes;
 
-        public BuildTreeNode(final SectionPart sectionPart, final List<BuildTreeNode> childNodes) {
-            this.sectionPart = sectionPart;
+        public BuildTreeNode(final AbstractPart abstractPart, final int abstractPartGlobalIndex, final List<BuildTreeNode> childNodes) {
+            this.abstractPart = abstractPart;
+            this.abstractPartGlobalIndex = abstractPartGlobalIndex;
             this.childNodes = childNodes;
         }
 
-        public SectionPart getSectionPart() {
-            return sectionPart;
+        public AbstractPart getAbstractPart() {
+            return abstractPart;
+        }
+
+        public int getAbstractPartGlobalIndex() {
+            return abstractPartGlobalIndex;
         }
 
         public List<BuildTreeNode> getChildNodes() {
@@ -97,7 +104,8 @@ public final class TestPlanner {
         @Override
         public String toString() {
             return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                    + "(sectionPart=" + sectionPart
+                    + "(abstractPart=" + abstractPart
+                    + ",abstractPartGlobalIndex=" + abstractPartGlobalIndex
                     + ",childNodes=" + childNodes
                     + ")";
         }
@@ -117,7 +125,7 @@ public final class TestPlanner {
         this.test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         this.notificationFirer = notificationFirer;
         this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
-        this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, null);
+        this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, -1, null);
     }
 
     public TestPlan generateTestPlan() {
@@ -130,42 +138,63 @@ public final class TestPlanner {
         final List<TestPlanNode> testPlanNodes = new ArrayList<TestPlanNode>();
         for (final TestPart testPart : test.getTestParts()) {
             /* Process test part */
-            final List<BuildTreeNode> runtimeChildNodes = doTestPart(testPart);
-            logger.debug("Result of processing testPart {} is {}", testPart.getIdentifier(), runtimeChildNodes);
+            final BuildTreeNode treeNode = doTestPart(testPart);
+            if (treeNode!=null) {
+                logger.trace("Result of processing testPart {} is {}", testPart.getIdentifier(), treeNode);
 
-            /* Build up tree */
-            final TestPlanNode testPlanNode = recordTestPartPlan(testPart, runtimeChildNodes);
-            testPlanNodes.add(testPlanNode);
+                /* Build up tree */
+                final TestPlanNode testPlanNode = recordTestPartPlan(treeNode);
+                testPlanNodes.add(testPlanNode);
+            }
         }
 
         final TestPlan result = new TestPlan(testPlanRootNode, testPlanNodesByIdentifierMap);
-        logger.info("Computed test plan for test {} is {}", test.getIdentifier(), result);
+        logger.debug("Computed test plan for test {} is {}", test.getIdentifier(), result);
         return result;
     }
 
-    private List<BuildTreeNode> doTestPart(final TestPart testPart) {
-        logger.debug("Handling testPart {}", testPart.getIdentifier());
+    private BuildTreeNode doTestPart(final TestPart testPart) {
+        logger.trace("Handling testPart {}", testPart.getIdentifier());
+
+        /* Make sure part is usable */
+        final int abstractPartGlobalIndex = testProcessingMap.getAbstractPartGlobalIndex(testPart);
+        if (abstractPartGlobalIndex==-1) {
+            notificationFirer.fireRuntimeWarning(testPart,
+                    "The testPart with identifier " + testPart
+                    + " is too invalid to be used, so is being ignored");
+            return null;
+        }
 
         /* Process each AssessmentSection */
         final List<BuildTreeNode> runtimeChildNodes = new ArrayList<BuildTreeNode>();
         for (final AssessmentSection section : testPart.getAssessmentSections()) {
             final BuildTreeNode sectionNode = doAssessmentSection(section);
-
-            /* Flatten out invisible AssessmentSections */
-            if (section.getVisible()) {
-                runtimeChildNodes.add(sectionNode);
-            }
-            else {
-                runtimeChildNodes.addAll(sectionNode.getChildNodes());
+            if (sectionNode!=null) {
+                /* Flatten out invisible AssessmentSections */
+                if (section.getVisible()) {
+                    runtimeChildNodes.add(sectionNode);
+                }
+                else {
+                    runtimeChildNodes.addAll(sectionNode.getChildNodes());
+                }
             }
         }
-        return runtimeChildNodes;
+        return new BuildTreeNode(testPart, abstractPartGlobalIndex, runtimeChildNodes);
     }
 
     private BuildTreeNode doAssessmentSection(final AssessmentSection section) {
-        logger.debug("Handling assessmentSection {}", section.getIdentifier());
+        logger.trace("Handling assessmentSection {}", section.getIdentifier());
 
-        /* We first need to select which children we're going to have */
+        /* Make sure section is usable */
+        final int abstractPartIndex = testProcessingMap.getAbstractPartGlobalIndex(section);
+        if (abstractPartIndex==-1) {
+            notificationFirer.fireRuntimeWarning(section,
+                    "The section with identifier " + section
+                    + " is too invalid to be used, so is being ignored");
+            return null;
+        }
+
+        /* Select which children we're going to have */
         List<SectionPart> afterSelection;
         if (section.getSelection() != null) {
             /* Perform requested selection */
@@ -184,7 +213,7 @@ public final class TestPlanner {
                 childNodes.add(selectedSectionPart);
             }
         }
-        logger.debug("Initialisation of child Nodes for section {} resulted in {}", section, childNodes);
+        logger.trace("Initialisation of child Nodes for section {} resulted in {}", section, childNodes);
 
         /* Then we do ordering, if requested */
         List<BuildTreeNode> afterOrdering;
@@ -195,13 +224,13 @@ public final class TestPlanner {
         else {
             afterOrdering = childNodes;
         }
-        logger.info("Ordering of child Nodes for section {} resulted in {}", section, afterOrdering);
+        logger.trace("Ordering of child Nodes for section {} resulted in {}", section, afterOrdering);
 
         /* Flatten invisible child assessmentSections */
         final List<BuildTreeNode> afterFlattening = new ArrayList<BuildTreeNode>();
         for (final BuildTreeNode childNode : afterOrdering) {
-            if (childNode.getSectionPart() instanceof AssessmentSection) {
-                final AssessmentSection childSection = (AssessmentSection) childNode.getSectionPart();
+            if (childNode.getAbstractPart() instanceof AssessmentSection) {
+                final AssessmentSection childSection = (AssessmentSection) childNode.getAbstractPart();
                 if (childSection.getVisible()) {
                     afterFlattening.add(childNode);
                 }
@@ -214,7 +243,32 @@ public final class TestPlanner {
             }
         }
 
-        return new BuildTreeNode(section, afterFlattening);
+        return new BuildTreeNode(section, abstractPartIndex, afterFlattening);
+    }
+
+    private BuildTreeNode doAssessmentItemRef(final AssessmentItemRef itemRef) {
+        final Identifier itemRefIdentifier = itemRef.getIdentifier();
+        logger.trace("Handling assessmentItemRef {}", itemRefIdentifier);
+
+        /* Make sure item is usable */
+        final int abstractPartIndex = testProcessingMap.getAbstractPartGlobalIndex(itemRef);
+        if (abstractPartIndex==-1) {
+            notificationFirer.fireRuntimeWarning(itemRef,
+                    "The item referenced with identifier " + itemRef
+                    + " is too invalid to be used, so is being ignored");
+            return null;
+        }
+
+        /* Make sure the item was successfully resolved */
+        final URI itemSystemId = resolvedAssessmentTest.getSystemIdByItemRefMap().get(itemRef);
+        if (!testProcessingMap.getItemProcessingMapMap().containsKey(itemSystemId)) {
+            notificationFirer.fireRuntimeWarning(itemRef,
+                    "The item referred by identifier " + itemRef.getIdentifier()
+                    + " was not successfully resolved so is being dropped from the test plan");
+        }
+
+        /* Item is usable */
+        return new BuildTreeNode(itemRef, abstractPartIndex, Collections.<BuildTreeNode> emptyList());
     }
 
     private BuildTreeNode doSectionPart(final SectionPart sectionPart) {
@@ -232,19 +286,6 @@ public final class TestPlanner {
     }
 
 
-    private BuildTreeNode doAssessmentItemRef(final AssessmentItemRef itemRef) {
-        logger.debug("Handling assessmentItemRef {}", itemRef.getIdentifier());
-        final URI itemSystemId = resolvedAssessmentTest.getSystemIdByItemRefMap().get(itemRef);
-        if (testProcessingMap.getItemProcessingMapMap().containsKey(itemSystemId)) {
-            return new BuildTreeNode(itemRef, Collections.<BuildTreeNode> emptyList());
-        }
-        else {
-            notificationFirer.fireRuntimeWarning(itemRef,
-                    "This item referred by identifier " + itemRef.getIdentifier()
-                    + " was not successfully resolved so is being dropped from the test plan");
-        }
-        return null;
-    }
 
     private List<SectionPart> selectSectionParts(final AssessmentSection assessmentSection) {
         final List<SectionPart> children = assessmentSection.getSectionParts();
@@ -334,7 +375,7 @@ public final class TestPlanner {
         /* Merge all invisible assessmentSections with keepTogether=false now */
         final List<BuildTreeNode> beforeShuffle = new ArrayList<BuildTreeNode>();
         for (final BuildTreeNode item : childNodes) {
-            final SectionPart sectionPart = item.getSectionPart();
+            final SectionPart sectionPart = (SectionPart) item.getAbstractPart();
             if (sectionPart instanceof AssessmentSection) {
                 final AssessmentSection section = (AssessmentSection) sectionPart;
                 if (!section.getVisible() && !section.getKeepTogether()) {
@@ -352,7 +393,8 @@ public final class TestPlanner {
         /* Extract the entries to be shuffled */
         final List<BuildTreeNode> toShuffle = new ArrayList<BuildTreeNode>();
         for (final BuildTreeNode item : beforeShuffle) {
-            if (!item.getSectionPart().getFixed()) {
+            final SectionPart sectionPart = (SectionPart) item.getAbstractPart();
+            if (!sectionPart.getFixed()) {
                 toShuffle.add(item);
             }
         }
@@ -364,7 +406,8 @@ public final class TestPlanner {
         final List<BuildTreeNode> afterShuffle = new ArrayList<BuildTreeNode>();
         final Iterator<BuildTreeNode> shuffledIterator = toShuffle.iterator();
         for (final BuildTreeNode item : beforeShuffle) {
-            if (!item.getSectionPart().getFixed()) {
+            final SectionPart sectionPart = (SectionPart) item.getAbstractPart();
+            if (!sectionPart.getFixed()) {
                 afterShuffle.add(shuffledIterator.next());
             }
             else {
@@ -375,7 +418,7 @@ public final class TestPlanner {
         /* Finally, merge remaining invisible assessmentSections with keepTogether=true */
         final List<BuildTreeNode> result = new ArrayList<BuildTreeNode>();
         for (final BuildTreeNode item : afterShuffle) {
-            final SectionPart sectionPart = item.getSectionPart();
+            final SectionPart sectionPart = (SectionPart) item.getAbstractPart();
             if (sectionPart instanceof AssessmentSection) {
                 final AssessmentSection section = (AssessmentSection) sectionPart;
                 if (!section.getVisible() && section.getKeepTogether()) {
@@ -396,9 +439,9 @@ public final class TestPlanner {
 
     //------------------------------------------------------
 
-    private TestPlanNode recordTestPartPlan(final TestPart testPart, final List<BuildTreeNode> runtimeChildNodes) {
-        final TestPlanNode result = recordTestPlanNode(testPlanRootNode, TestNodeType.TEST_PART, testPart.getIdentifier());
-        recordChildPlans(result, runtimeChildNodes);
+    private TestPlanNode recordTestPartPlan(final BuildTreeNode buildTreeNode) {
+        final TestPlanNode result = recordTestPlanNode(testPlanRootNode, TestNodeType.TEST_PART, buildTreeNode);
+        recordChildPlans(result, buildTreeNode.getChildNodes());
         return result;
     }
 
@@ -411,13 +454,13 @@ public final class TestPlanner {
     }
 
     private TestPlanNode recordChildPlans(final TestPlanNode targetParent, final BuildTreeNode treeNode) {
-        final SectionPart sectionPart = treeNode.getSectionPart();
+        final AbstractPart sectionPart = treeNode.getAbstractPart();
         TestPlanNode result;
         if (sectionPart instanceof AssessmentSection) {
-            result = recordTestPlanNode(targetParent, TestNodeType.ASSESSMENT_SECTION, sectionPart.getIdentifier());
+            result = recordTestPlanNode(targetParent, TestNodeType.ASSESSMENT_SECTION, treeNode);
         }
         else if (sectionPart instanceof AssessmentItemRef) {
-            result = recordTestPlanNode(targetParent, TestNodeType.ASSESSMENT_ITEM_REF, sectionPart.getIdentifier());
+            result = recordTestPlanNode(targetParent, TestNodeType.ASSESSMENT_ITEM_REF, treeNode);
         }
         else {
             throw new QtiLogicException("Unexpected logic branch: sectionPart=" + sectionPart);
@@ -426,19 +469,16 @@ public final class TestPlanner {
         return result;
     }
 
-    private int computeCurrentInstanceCount(final Identifier identifier) {
-        final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
-        return nodesForIdentifier!=null ? nodesForIdentifier.size() : 0;
-    }
-
     private TestPlanNode recordTestPlanNode(final TestPlanNode parent, final TestNodeType testNodeType,
-            final Identifier identifier) {
+            final BuildTreeNode buildTreeNode) {
         /* Compute instance number for this identifier */
+        final Identifier identifier = buildTreeNode.getAbstractPart().getIdentifier();
+        final int abstractPartGlobalIndex = buildTreeNode.getAbstractPartGlobalIndex();
         final int instanceNumber = 1 + computeCurrentInstanceCount(identifier);
 
         /* Create resulting Node and add to tree */
         final TestPlanNodeInstanceKey testPlanNodeInstanceKey = new TestPlanNodeInstanceKey(identifier, instanceNumber);
-        final TestPlanNode result = new TestPlanNode(testNodeType, testPlanNodeInstanceKey);
+        final TestPlanNode result = new TestPlanNode(testNodeType, abstractPartGlobalIndex, testPlanNodeInstanceKey);
         parent.addChild(result);
 
         /* Record nodes for this Identifier */
@@ -450,5 +490,10 @@ public final class TestPlanner {
         nodesForIdentifier.add(result);
 
         return result;
+    }
+
+    private int computeCurrentInstanceCount(final Identifier identifier) {
+        final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
+        return nodesForIdentifier!=null ? nodesForIdentifier.size() : 0;
     }
 }

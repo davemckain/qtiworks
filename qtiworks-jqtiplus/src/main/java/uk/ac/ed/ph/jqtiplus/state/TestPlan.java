@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
@@ -50,6 +51,13 @@ import java.util.Map;
 /**
  * Represents the shape of an {@link AssessmentTest} once
  * {@link Ordering} and {@link Selection} have been applied.
+ * <p>
+ * Nodes corresponding to {@link AssessmentItemRef}s in the plan will satisfy
+ * the following properties:
+ * <ul>
+ *   <li>Their identifier is unique amongst other such Nodes</li>
+ *   <li>The resulting item was successfully looked up</li>
+ * </ul>
  * <p>
  * An instance of this class should be consider immutable once created.
  *

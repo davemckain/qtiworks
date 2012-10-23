@@ -36,15 +36,19 @@ package uk.ac.ed.ph.jqtiplus.state;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,16 +67,29 @@ public final class TestProcessingMap implements Serializable {
 
     private final ResolvedAssessmentTest resolvedAssessmentTest;
     private final boolean isValid;
+
+    private final List<AbstractPart> abstractPartList;
+    private final Map<AbstractPart, Integer> abstractPartToGlobalIndexMap;
+
     private final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMap;
     private final ResponseDeclaration durationResponseDeclaration;
+
     private final Map<URI, ItemProcessingMap> itemProcessingMapMap;
 
     public TestProcessingMap(final ResolvedAssessmentTest resolvedAssessmentTest, final boolean isValid,
+            final List<AbstractPart> abstractPartListBuilder,
             final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder,
             final ResponseDeclaration durationResponseDeclaration, final Map<URI, ItemProcessingMap> itemProcessingMapMapBuilder) {
         this.resolvedAssessmentTest = resolvedAssessmentTest;
         this.durationResponseDeclaration = durationResponseDeclaration;
         this.isValid = isValid;
+
+        /* Record AbstractParts */
+        this.abstractPartList = Collections.unmodifiableList(abstractPartListBuilder);
+        this.abstractPartToGlobalIndexMap = new HashMap<AbstractPart, Integer>();
+        for (int i=0; i<abstractPartListBuilder.size(); i++) {
+            abstractPartToGlobalIndexMap.put(abstractPartListBuilder.get(i), Integer.valueOf(i));
+        }
 
         /* Record (valid) outcome variables in test */
         this.validOutcomeDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, OutcomeDeclaration>(outcomeDeclarationMapBuilder));
@@ -87,6 +104,15 @@ public final class TestProcessingMap implements Serializable {
 
     public ResolvedAssessmentTest getResolvedAssessmentTest() {
         return resolvedAssessmentTest;
+    }
+
+    public List<AbstractPart> getAbstractPartList() {
+        return abstractPartList;
+    }
+
+    public int getAbstractPartGlobalIndex(final AbstractPart abstractPart) {
+        final Integer result = abstractPartToGlobalIndexMap.get(abstractPart);
+        return result!=null ? result.intValue() : -1;
     }
 
     public boolean isValidVariableIdentifier(final Identifier identifier) {
@@ -104,6 +130,17 @@ public final class TestProcessingMap implements Serializable {
 
     public Map<URI, ItemProcessingMap> getItemProcessingMapMap() {
         return itemProcessingMapMap;
+    }
+
+    public AbstractPart resolveAbstractPart(final TestPlanNode testPlanNode) {
+        if (testPlanNode.getTestNodeType()==TestNodeType.ROOT) {
+            throw new IllegalArgumentException("This method should not be called for " + testPlanNode.getTestNodeType());
+        }
+        final int abstractPartGlobalIndex = testPlanNode.getAbstractPartGlobalIndex();
+        if (abstractPartGlobalIndex<0 || abstractPartGlobalIndex>=abstractPartList.size()) {
+            throw new IllegalStateException("Global index of " + testPlanNode + " is out of bounds");
+        }
+        return abstractPartList.get(abstractPartGlobalIndex);
     }
 
     @Override
