@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -99,6 +100,28 @@ public final class TestSessionState implements Serializable {
     }
 
     //----------------------------------------------------------------
+    // Built-in variable manipulation
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public FloatValue getDurationValue() {
+        return durationValue;
+    }
+
+    public void setDurationValue(final FloatValue value) {
+        Assert.notNull(value);
+        this.durationValue = value;
+    }
+
+    public double getDuration() {
+        return getDurationValue().doubleValue();
+    }
+
+    public void setDuration(final double duration) {
+        setDurationValue(new FloatValue(duration));
+    }
+
+    //----------------------------------------------------------------
+    // Outcome variables
 
     public Value getOutcomeValue(final Identifier identifier) {
         Assert.notNull(identifier);
@@ -137,24 +160,17 @@ public final class TestSessionState implements Serializable {
     }
 
     //----------------------------------------------------------------
-    // Built-in variable manipulation
 
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public FloatValue getDurationValue() {
-        return durationValue;
-    }
-
-    public void setDurationValue(final FloatValue value) {
-        Assert.notNull(value);
-        this.durationValue = value;
-    }
-
-    public double getDuration() {
-        return getDurationValue().doubleValue();
-    }
-
-    public void setDuration(final double duration) {
-        setDurationValue(new FloatValue(duration));
+    public Value getVariableValue(final Identifier identifier) {
+        Assert.notNull(identifier);
+        Value result;
+        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
+            result = durationValue;
+        }
+        else {
+            result = getOutcomeValue(identifier);
+        }
+        return result;
     }
 
     //----------------------------------------------------------------

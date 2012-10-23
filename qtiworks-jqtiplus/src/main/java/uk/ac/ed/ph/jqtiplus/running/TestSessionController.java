@@ -149,19 +149,19 @@ public final class TestSessionController extends TestValidationController implem
             /* Only allows specified types of variables */
             CHECK_LOOP: for (final VariableType type : permittedTypes) {
                 switch (type) {
-                    case TEMPLATE:
-                        /* No template variables in tests */
+                    case OUTCOME:
+                        result = testProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
                         break;
 
                     case RESPONSE:
                         /* Only response variable is duration */
-                        if (identifier.equals(AssessmentTest.VARIABLE_DURATION_IDENTIFIER)) {
+                        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
                             result = testProcessingMap.getDurationResponseDeclaration();
                         }
                         break;
 
-                    case OUTCOME:
-                        result = testProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
+                    case TEMPLATE:
+                        /* No template variables in tests */
                         break;
 
                     default:
@@ -179,6 +179,49 @@ public final class TestSessionController extends TestValidationController implem
 
     @Override
     public Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
-        return null;
+        Assert.notNull(identifier);
+        if (!testProcessingMap.isValidVariableIdentifier(identifier)) {
+            throw new QtiInvalidLookupException(identifier);
+        }
+        final Value value = getVariableValue(identifier, permittedTypes);
+        if (value==null) {
+            throw new IllegalStateException("TestSessionState lookup of variable " + identifier + " returned NULL, indicating state is not in sync");
+        }
+        return value;
+    }
+
+    private Value getVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
+        Value value = null;
+        if (permittedTypes.length==0) {
+            /* No types specified, so allow any variable */
+            value = testSessionState.getVariableValue(identifier);
+        }
+        else {
+            /* Only allows specified types of variables */
+            CHECK_LOOP: for (final VariableType type : permittedTypes) {
+                switch (type) {
+                    case OUTCOME:
+                        value = testSessionState.getOutcomeValue(identifier);
+                        break;
+
+                    case RESPONSE:
+                        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
+                            value = testSessionState.getDurationValue();
+                        }
+                        break;
+
+                    case TEMPLATE:
+                        /* Nothing to do */
+                        break;
+
+                    default:
+                        throw new QtiLogicException("Unexpected switch case: " + type);
+                }
+                if (value!=null) {
+                    break CHECK_LOOP;
+                }
+            }
+        }
+        return value;
     }
 }

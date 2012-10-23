@@ -89,6 +89,11 @@ public final class TestProcessingMap implements Serializable {
         return resolvedAssessmentTest;
     }
 
+    public boolean isValidVariableIdentifier(final Identifier identifier) {
+        return validOutcomeDeclarationMap.containsKey(identifier) ||
+                AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier);
+    }
+
     public Map<Identifier, OutcomeDeclaration> getValidOutcomeDeclarationMap() {
         return validOutcomeDeclarationMap;
     }

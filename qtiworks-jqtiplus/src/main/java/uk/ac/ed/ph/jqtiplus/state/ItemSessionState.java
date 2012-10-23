@@ -470,6 +470,8 @@ public final class ItemSessionState implements Serializable {
     //---------------------------------------------------------------
 
     /**
+     * FIXME: Is this still necessary?
+     *
      * Gets A template or outcome variable with given identifier or null.
      * DM: This used to be called getValue() in JQTI, but I've renamed it to be
      * clearer
@@ -495,11 +497,6 @@ public final class ItemSessionState implements Serializable {
             result = getTemplateOrOutcomeValue(identifier);
         }
         return result;
-    }
-
-    public Value getVariableValue(final String identifierString) {
-        Assert.notNull(identifierString);
-        return getVariableValue(Identifier.parseString(identifierString));
     }
 
     public Value getVariableValue(final VariableDeclaration variableDeclaration) {
