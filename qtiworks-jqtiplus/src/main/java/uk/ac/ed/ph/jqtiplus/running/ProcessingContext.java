@@ -66,18 +66,34 @@ public interface ProcessingContext extends ValidationContext {
      */
     Random getRandomGenerator();
 
+    /**
+     * Looks up the variable defined in the subject item or test having the given {@link Identifier}
+     * and having the given permitted variable types.
+     * <p>
+     * If successful, then the resulting {@link VariableDeclaration} is returned.
+     * <p>
+     * If no {@link VariableDeclaration} is found satisfying the specified conditions then a
+     * {@link QtiInvalidLookupException} is thrown.
+     *
+     * @param identifier required variable Identifier, which must not be null
+     * @param permittedTypes permitted variable types. An empty array is treated as "any type allowed"
+     * @return {@link VariableDeclaration} satisfying the given criteria.
+     *
+     * @throws QtiInvalidLookupException
+     * @throws {@link IllegalArgumentException} if identifier is null
+     */
     VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes);
 
     /**
      * Returns the current value of the variable having the
-     * given {@link Identifier} and having the given permitted types.
-     * <p>
-     * If permittedTypes is empty, then it looks up ANY type of variable.
-     * @param identifier
-     * @param permittedTypes
+     * given {@link Identifier} and having the given permitted variable types.
+     *
+     * @param identifier required variable Identifier, which must not be null
+     * @param permittedTypes permitted variable types. An empty array is treated as "any type allowed"
      *
      * @throws QtiInvalidLookupException if the identifier could not be successfully dereferenced
      * @throws IllegalStateException if the current item/test state does not appear to be in sync
+     * @throws IllegalArgumentException if identifier is null
      */
     Value evaluateVariableValue(Identifier identifier, VariableType... permittedTypes);
 }

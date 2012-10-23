@@ -34,6 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
+import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -107,6 +109,16 @@ public final class TestSessionController extends TestValidationController implem
             randomGenerator = randomSeed!=null ? new Random(randomSeed) : new Random();
         }
         return randomGenerator;
+    }
+
+    //-------------------------------------------------------------------
+
+    private void fireLifecycleEvent(final LifecycleEventType eventType) {
+        if (jqtiExtensionManager!=null) {
+            for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
+                extensionPackage.lifecycleEvent(this, eventType);
+            }
+        }
     }
 
     //-------------------------------------------------------------------

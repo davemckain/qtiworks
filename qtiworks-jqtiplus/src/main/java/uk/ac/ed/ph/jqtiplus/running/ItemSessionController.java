@@ -157,6 +157,16 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     //-------------------------------------------------------------------
+
+    private void fireLifecycleEvent(final LifecycleEventType eventType) {
+        if (jqtiExtensionManager!=null) {
+            for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
+                extensionPackage.lifecycleEvent(this, eventType);
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------
     // Initialization & template processing
 
     /**
@@ -670,16 +680,6 @@ public final class ItemSessionController extends ItemValidationController implem
 
     private Value computeInitialValue(final Identifier identifier) {
         return computeDefaultValue(identifier);
-    }
-
-    //-------------------------------------------------------------------
-
-    private void fireLifecycleEvent(final LifecycleEventType eventType) {
-        if (jqtiExtensionManager!=null) {
-            for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
-                extensionPackage.lifecycleEvent(this, eventType);
-            }
-        }
     }
 
     //-------------------------------------------------------------------
