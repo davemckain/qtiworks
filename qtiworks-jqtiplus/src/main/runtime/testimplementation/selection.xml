@@ -16,6 +16,9 @@ Selection and ordering examples
       <assessmentItemRef href="questions2/choice.xml" identifier="c1" fixed="true"/>
       <assessmentItemRef href="questions/choice.xml" identifier="c2"/>
       <assessmentItemRef href="questions/choice.xml" identifier="c3" fixed="true"/>
+      <assessmentSection identifier="subsection" title="subsection" visible="true">
+        <assessmentItemRef href="questions/choice.xml" identifier="sub4" fixed="true"/>
+      </assessmentSection>
     </assessmentSection>
   </testPart>
 

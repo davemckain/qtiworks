@@ -52,9 +52,10 @@ import java.util.List;
  */
 public class TestValidationController extends AbstractValidationContext<AssessmentTest> implements TestValidationContext {
 
-    private final ResolvedAssessmentTest resolvedAssessmentTest;
+    protected final ResolvedAssessmentTest resolvedAssessmentTest;
 
-    public TestValidationController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentTest resolvedAssessmentTest) {
+    public TestValidationController(final JqtiExtensionManager jqtiExtensionManager,
+            final ResolvedAssessmentTest resolvedAssessmentTest) {
         super(jqtiExtensionManager, resolvedAssessmentTest);
         this.resolvedAssessmentTest = resolvedAssessmentTest;
     }

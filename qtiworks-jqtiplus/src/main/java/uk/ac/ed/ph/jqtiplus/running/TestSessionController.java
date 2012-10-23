@@ -39,12 +39,16 @@ import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeInstanceKey;
@@ -55,6 +59,7 @@ import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.List;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -270,5 +275,86 @@ public final class TestSessionController extends TestValidationController implem
             }
         }
         return value;
+    }
+
+    //-------------------------------------------------------------------
+
+    public Value evaluateVariableReference(final QtiNode caller, final Identifier referenceIdentifier) {
+        Assert.notNull(referenceIdentifier);
+        final List<ResolvedTestVariableReference> resolvedVariableReferences = resolvedAssessmentTest.resolveVariableReference(referenceIdentifier);
+        if (resolvedVariableReferences==null) {
+            throw new QtiLogicException("Did not expect null result here");
+        }
+        if (resolvedVariableReferences.size()==0) {
+            throw new QtiInvalidLookupException(referenceIdentifier);
+        }
+        final ResolvedTestVariableReference resultingVariableReference = resolvedVariableReferences.get(0);
+        if (resolvedVariableReferences.size()>1) {
+            fireRuntimeWarning(caller, "Complex variable reference " + referenceIdentifier
+                    + " within test could be derefenced in " + resolvedVariableReferences + " ways. Using the first of these");
+        }
+        return evaluateVariableReference(caller, resultingVariableReference);
+    }
+
+    public Value evaluateVariableReference(final QtiNode caller, final ResolvedTestVariableReference resolvedTestVariableReference) {
+        Assert.notNull(resolvedTestVariableReference);
+
+        final VariableDeclaration targetVariableDeclaration = resolvedTestVariableReference.getVariableDeclaration();
+        final Identifier targetVariableIdentifier = targetVariableDeclaration.getIdentifier();
+        if (resolvedTestVariableReference.isTestVariableReference()) {
+            /* Refers to a variable within this test */
+            return evaluateVariableValue(targetVariableIdentifier);
+        }
+        else {
+            /* Refers to a variable within a referenced item */
+            final TestPlan testPlan = testSessionState.getTestPlan();
+            final AssessmentItemRef assessmentItemRef = resolvedTestVariableReference.getAssessmentItemRef();
+            final Integer instanceNumber = resolvedTestVariableReference.getInstanceNumber();
+            TestPlanNode testPlanNode = null;
+            if (instanceNumber!=null) {
+                /* Referring to a particular instance */
+                testPlanNode = testPlan.getNodeInstance(assessmentItemRef.getIdentifier(), instanceNumber.intValue());
+                if (testPlanNode==null) {
+                    fireRuntimeWarning(caller,
+                            "Reference to variable " + targetVariableIdentifier
+                            + " in instance " + instanceNumber
+                            + " of assessmentItemRef " + assessmentItemRef
+                            + " yielded no result. Returning NULL");
+                    return NullValue.INSTANCE;
+                }
+                if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
+                    fireRuntimeWarning(caller,
+                            "Reference to instance " + instanceNumber
+                            + " of assessmentItemRef " + assessmentItemRef
+                            + " yielded something other than an assessmentItemRef. Returning NULL");
+                    return NullValue.INSTANCE;
+                }
+            }
+            else {
+                /* No instance number specified, so assume we mean 1 */
+                final List<TestPlanNode> testPlanNodes = testPlan.getNodes(assessmentItemRef.getIdentifier());
+                if (testPlanNodes==null || testPlanNodes.isEmpty()) {
+                    fireRuntimeWarning(caller,
+                            "Reference to variable " + targetVariableIdentifier
+                            + " in assessmentItemRef " + assessmentItemRef
+                            + " yielded no result. Returning NULL");
+                    return NullValue.INSTANCE;
+                }
+                testPlanNode = testPlanNodes.get(0);
+                if (testPlanNodes.size()>1) {
+                    fireRuntimeWarning(caller,
+                            "Reference to assessmentItemRef " + assessmentItemRef
+                            + " yielded " + testPlanNodes.size() + " possible instances. Returning the value of the first of these");
+                }
+                if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
+                    fireRuntimeWarning(caller,
+                            "Reference to assessmentItemRef " + assessmentItemRef
+                            + " yielded something other than an assessmentItemRef. Returning NULL");
+                    return NullValue.INSTANCE;
+                }
+            }
+            final ItemSessionController itemSessionController = createItemSessionController(testPlanNode);
+            return itemSessionController.evaluateVariableValue(targetVariableIdentifier);
+        }
     }
 }

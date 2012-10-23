@@ -50,7 +50,8 @@ public final class TestTest {
         System.out.println("Test processing map: " + ObjectDumper.dumpObject(testProcessingMap, DumpMode.DEEP));
 
         final ListenerNotificationFirer notificationFirer = new ListenerNotificationFirer();
-        notificationFirer.addNotificationListener(new NotificationLogListener());
+        final NotificationLogListener notificationLogListener = new NotificationLogListener();
+        notificationFirer.addNotificationListener(notificationLogListener);
         final TestPlanner testPlanner = new TestPlanner(testProcessingMap, notificationFirer);
         final TestPlan testPlan = testPlanner.generateTestPlan();
         System.out.println("Test plan structure:\n" + testPlan.debugStructure());
@@ -59,8 +60,15 @@ public final class TestTest {
 
         final TestSessionState testSessionState = new TestSessionState(testPlan);
         final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testProcessingMap, testSessionState);
+        testSessionController.addNotificationListener(notificationLogListener);
+
         testSessionController.initialize();
         System.out.println("Test state after init: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
-        System.out.println("TC test: " + testSessionController.evaluateVariableValue(Identifier.assumedLegal("SCORE")));
+
+        System.out.println("TC test var lookup: " + testSessionController.evaluateVariableValue(Identifier.assumedLegal("SCORE")));
+        System.out.println("TC test var ref: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("SCORE")));
+        System.out.println("TC item var ref: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.SCORE")));
+        System.out.println("TC item var ref 1: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.1.SCORE")));
+        System.out.println("TC item var ref 99: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.99.SCORE")));
     }
 }
