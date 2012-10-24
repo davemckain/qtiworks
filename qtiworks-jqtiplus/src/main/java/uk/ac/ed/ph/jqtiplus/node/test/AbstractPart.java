@@ -70,11 +70,11 @@ public abstract class AbstractPart extends UniqueControlObject {
     }
 
 
-    public ItemSessionControl getItemSessionControlNode() {
+    public ItemSessionControl getItemSessionControl() {
         return getNodeGroups().getItemSessionControlGroup().getItemSessionControl();
     }
 
-    public void setItemSessionControlNode(final ItemSessionControl itemSessionControl) {
+    public void setItemSessionControl(final ItemSessionControl itemSessionControl) {
         getNodeGroups().getItemSessionControlGroup().setItemSessionControl(itemSessionControl);
     }
 
@@ -112,7 +112,8 @@ public abstract class AbstractPart extends UniqueControlObject {
      * @return itemSessionControl object for this part
      */
     @ToRefactor
-    public abstract ItemSessionControl getItemSessionControl();
+    @Deprecated
+    public abstract ItemSessionControl computeItemSessionControl();
 
     /**
      * Returns true if it is safe to jump from this object; false otherwise.

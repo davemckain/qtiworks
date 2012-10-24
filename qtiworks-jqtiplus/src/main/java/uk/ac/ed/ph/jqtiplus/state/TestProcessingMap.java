@@ -73,6 +73,8 @@ public final class TestProcessingMap implements Serializable {
     private final List<AbstractPart> abstractPartList;
     private final Map<AbstractPart, Integer> abstractPartToGlobalIndexMap;
 
+    private final Map<AbstractPart, EffectiveItemSessionControl> effectiveItemSessionControlMap;
+
     private final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMap;
     private final ResponseDeclaration durationResponseDeclaration;
 
@@ -85,8 +87,10 @@ public final class TestProcessingMap implements Serializable {
 
     public TestProcessingMap(final ResolvedAssessmentTest resolvedAssessmentTest, final boolean isValid,
             final List<AbstractPart> abstractPartListBuilder,
+            final Map<AbstractPart, EffectiveItemSessionControl> effectiveItemSessionControlMap,
             final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder,
-            final ResponseDeclaration durationResponseDeclaration, final Map<URI, ItemProcessingMap> itemProcessingMapMapBuilder) {
+            final ResponseDeclaration durationResponseDeclaration,
+            final Map<URI, ItemProcessingMap> itemProcessingMapMapBuilder) {
         this.resolvedAssessmentTest = resolvedAssessmentTest;
         this.durationResponseDeclaration = durationResponseDeclaration;
         this.isValid = isValid;
@@ -97,6 +101,9 @@ public final class TestProcessingMap implements Serializable {
         for (int i=0; i<abstractPartListBuilder.size(); i++) {
             abstractPartToGlobalIndexMap.put(abstractPartListBuilder.get(i), Integer.valueOf(i));
         }
+
+        /* Record the EffectiveItemSessionControl for each Node */
+        this.effectiveItemSessionControlMap = Collections.unmodifiableMap(effectiveItemSessionControlMap);
 
         /* Record (valid) outcome variables in test */
         this.validOutcomeDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, OutcomeDeclaration>(outcomeDeclarationMapBuilder));
@@ -120,6 +127,11 @@ public final class TestProcessingMap implements Serializable {
     public int getAbstractPartGlobalIndex(final AbstractPart abstractPart) {
         final Integer result = abstractPartToGlobalIndexMap.get(abstractPart);
         return result!=null ? result.intValue() : -1;
+    }
+
+
+    public Map<AbstractPart, EffectiveItemSessionControl> getEffectiveItemSessionControlMap() {
+        return effectiveItemSessionControlMap;
     }
 
     public boolean isValidVariableIdentifier(final Identifier identifier) {

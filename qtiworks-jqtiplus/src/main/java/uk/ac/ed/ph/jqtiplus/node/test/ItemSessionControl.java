@@ -44,6 +44,8 @@ import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
  * This is significantly different from the implementation of this class
  * in the orignal JQTI.
  *
+ * @see EffectiveItemSessionControl
+ *
  * @author Jiri Kajaba (original)
  * @author David McKain (refactored)
  */
@@ -173,130 +175,5 @@ public final class ItemSessionControl extends AbstractNode {
 
     public void setValidateResponses(final Boolean validateResponses) {
         getAttributes().getBooleanAttribute(ATTR_VALIDATE_RESPONSES_NAME).setValue(validateResponses);
-    }
-
-    //------------------------------------------------------
-
-    public EffectiveItemSessionControl computeEffectiveValue() {
-        final EffectiveItemSessionControl result = new EffectiveItemSessionControl();
-        result.setMaxAttempts(computeEffectiveMaxAttempts());
-        result.setShowFeedback(computeEffectiveShowFeedback());
-        result.setAllowReview(computeEffectiveAllowReview());
-        result.setShowSolution(computeEffectiveShowSolution());
-        result.setAllowComment(computeEffectiveAllowComment());
-        result.setAllowSkipping(computeEffectiveAllowSkipping());
-        return result;
-    }
-
-    public int computeEffectiveMaxAttempts() {
-        ItemSessionControl current = this;
-        Integer maxAttempts;
-        for (;;) {
-            maxAttempts = current.getMaxAttempts();
-            if (maxAttempts!=null) {
-                return maxAttempts.intValue();
-            }
-            final AbstractPart owner = getParent();
-            if (owner instanceof TestPart) {
-                return MAX_ATTEMPTS_DEFAULT_VALUE;
-            }
-            current = ((SectionPart) owner).getParent().getItemSessionControl();
-        }
-    }
-
-    public boolean computeEffectiveShowFeedback() {
-        ItemSessionControl current = this;
-        Boolean showFeedback;
-        for (;;) {
-            showFeedback = current.getShowFeedback();
-            if (showFeedback!=null) {
-                return showFeedback.booleanValue();
-            }
-            final AbstractPart owner = getParent();
-            if (owner instanceof TestPart) {
-                return SHOW_FEEDBACK_DEFAULT_VALUE;
-            }
-            current = ((SectionPart) owner).getParent().getItemSessionControl();
-        }
-    }
-
-    public boolean computeEffectiveAllowReview() {
-        ItemSessionControl current = this;
-        Boolean allowReview;
-        for (;;) {
-            allowReview = current.getAllowReview();
-            if (allowReview!=null) {
-                return allowReview.booleanValue();
-            }
-            final AbstractPart owner = getParent();
-            if (owner instanceof TestPart) {
-                return ALLOW_REVIEW_DEFAULT_VALUE;
-            }
-            current = ((SectionPart) owner).getParent().getItemSessionControl();
-        }
-    }
-
-    public boolean computeEffectiveShowSolution() {
-        ItemSessionControl current = this;
-        Boolean showSolution;
-        for (;;) {
-            showSolution = current.getShowSolution();
-            if (showSolution!=null) {
-                return showSolution.booleanValue();
-            }
-            final AbstractPart owner = getParent();
-            if (owner instanceof TestPart) {
-                return SHOW_SOLUTION_DEFAULT_VALUE;
-            }
-            current = ((SectionPart) owner).getParent().getItemSessionControl();
-        }
-    }
-
-    public boolean computeEffectiveAllowComment() {
-        ItemSessionControl current = this;
-        Boolean allowComment;
-        for (;;) {
-            allowComment = current.getAllowComment();
-            if (allowComment!=null) {
-                return allowComment.booleanValue();
-            }
-            final AbstractPart owner = getParent();
-            if (owner instanceof TestPart) {
-                return ALLOW_COMMENT_DEFAULT_VALUE;
-            }
-            current = ((SectionPart) owner).getParent().getItemSessionControl();
-        }
-    }
-
-    public boolean computeEffectiveAllowSkipping() {
-        ItemSessionControl current = this;
-        Boolean allowSkipping;
-        for (;;) {
-            allowSkipping = current.getAllowSkipping();
-            if (allowSkipping!=null) {
-                return allowSkipping.booleanValue();
-            }
-            final AbstractPart owner = getParent();
-            if (owner instanceof TestPart) {
-                return ALLOW_SKIPPING_DEFAULT_VALUE;
-            }
-            current = ((SectionPart) owner).getParent().getItemSessionControl();
-        }
-    }
-
-    public boolean computeEffectiveValidateResponses() {
-        ItemSessionControl current = this;
-        Boolean validateResponses;
-        for (;;) {
-            validateResponses = current.getValidateResponses();
-            if (validateResponses!=null) {
-                return validateResponses.booleanValue();
-            }
-            final AbstractPart owner = getParent();
-            if (owner instanceof TestPart) {
-                return VALIDATE_RESPONSES_DEFAULT_VALUE;
-            }
-            current = ((SectionPart) owner).getParent().getItemSessionControl();
-        }
     }
 }

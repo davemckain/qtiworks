@@ -33,12 +33,23 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
+
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Represents the "effective" values of <code>itemSessionControl</code>
  * after any explicitly-provided values have been merged together and
  * defaults applied.
+ * <p>
+ * Instances of this class should be created using the static factory
+ * methods only and should be considered immutable once created.
+ *
+ * @see TestProcessingInitializer
+ * @see TestProcessingMap
  *
  * @author David McKain
  */
@@ -54,65 +65,104 @@ public final class EffectiveItemSessionControl implements Serializable {
     private boolean allowSkipping;
     private boolean validateResponses;
 
+    private EffectiveItemSessionControl() {
+        /* No public constructor */
+    }
+
+    public static EffectiveItemSessionControl createDefault() {
+        final EffectiveItemSessionControl defaultSessionControl = new EffectiveItemSessionControl();
+        defaultSessionControl.maxAttempts = ItemSessionControl.MAX_ATTEMPTS_DEFAULT_VALUE;
+        defaultSessionControl.showFeedback = ItemSessionControl.SHOW_FEEDBACK_DEFAULT_VALUE;
+        defaultSessionControl.allowReview = ItemSessionControl.ALLOW_REVIEW_DEFAULT_VALUE;
+        defaultSessionControl.showSolution = ItemSessionControl.SHOW_SOLUTION_DEFAULT_VALUE;
+        defaultSessionControl.allowComment = ItemSessionControl.ALLOW_COMMENT_DEFAULT_VALUE;
+        defaultSessionControl.allowSkipping = ItemSessionControl.ALLOW_SKIPPING_DEFAULT_VALUE;
+        defaultSessionControl.validateResponses = ItemSessionControl.VALIDATE_RESPONSES_DEFAULT_VALUE;
+        return defaultSessionControl;
+    }
+
+    public static EffectiveItemSessionControl override(final EffectiveItemSessionControl parent, final ItemSessionControl child) {
+        if (child==null) {
+            return parent;
+        }
+        final EffectiveItemSessionControl result = new EffectiveItemSessionControl();
+        result.maxAttempts = mergeInt(parent.getMaxAttempts(), child.getMaxAttempts());
+        result.showFeedback = mergeBoolean(parent.isShowFeedback(), child.getShowFeedback());
+        result.allowReview = mergeBoolean(parent.isAllowReview(), child.getAllowReview());
+        result.showSolution = mergeBoolean(parent.isShowSolution(), child.getShowSolution());
+        result.allowComment = mergeBoolean(parent.isAllowComment(), child.getAllowComment());
+        result.allowSkipping = mergeBoolean(parent.isAllowSkipping(), child.getAllowSkipping());
+        result.validateResponses = mergeBoolean(parent.isValidateResponses(), child.getValidateResponses());
+        return result;
+    }
+
+    private static int mergeInt(final int parentValue, final Integer maybeChildValue) {
+        return maybeChildValue!=null ? maybeChildValue.intValue() : parentValue;
+    }
+
+    private static boolean mergeBoolean(final boolean parentValue, final Boolean maybeChildValue) {
+        return maybeChildValue!=null ? maybeChildValue.booleanValue() : parentValue;
+    }
+
+
     public int getMaxAttempts() {
         return maxAttempts;
     }
-
-    public void setMaxAttempts(final int maxAttempts) {
-        this.maxAttempts = maxAttempts;
-    }
-
 
     public boolean isShowFeedback() {
         return showFeedback;
     }
 
-    public void setShowFeedback(final boolean showFeedback) {
-        this.showFeedback = showFeedback;
-    }
-
-
     public boolean isAllowReview() {
         return allowReview;
     }
-
-    public void setAllowReview(final boolean allowReview) {
-        this.allowReview = allowReview;
-    }
-
 
     public boolean isShowSolution() {
         return showSolution;
     }
 
-    public void setShowSolution(final boolean showSolution) {
-        this.showSolution = showSolution;
-    }
-
-
     public boolean isAllowComment() {
         return allowComment;
     }
-
-    public void setAllowComment(final boolean allowComment) {
-        this.allowComment = allowComment;
-    }
-
 
     public boolean isAllowSkipping() {
         return allowSkipping;
     }
 
-    public void setAllowSkipping(final boolean allowSkipping) {
-        this.allowSkipping = allowSkipping;
-    }
-
-
     public boolean isValidateResponses() {
         return validateResponses;
     }
 
-    public void setValidateResponses(final boolean validateResponses) {
-        this.validateResponses = validateResponses;
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof EffectiveItemSessionControl)) {
+            return false;
+        }
+        final EffectiveItemSessionControl other = (EffectiveItemSessionControl) obj;
+        return maxAttempts==other.maxAttempts
+                && showFeedback==other.showFeedback
+                && allowReview==other.allowReview
+                && showSolution==other.showSolution
+                && allowComment==other.allowComment
+                && allowSkipping==other.allowSkipping
+                && validateResponses==other.validateResponses;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[] {
+                Integer.valueOf(maxAttempts),
+                Boolean.valueOf(showFeedback),
+                Boolean.valueOf(allowReview),
+                Boolean.valueOf(showSolution),
+                Boolean.valueOf(allowComment),
+                Boolean.valueOf(allowSkipping),
+                Boolean.valueOf(validateResponses)
+        });
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

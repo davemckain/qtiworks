@@ -37,9 +37,14 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
+import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -48,24 +53,27 @@ import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * This helper class analyses a {@link ResolvedAssessmentTest} and generates an
- * {@link TestProcessingMap} that can be reused by {@link TestSessionController}s.
+ * {@link TestProcessingMap} that can be reused by {@link TestSessionController}
+ * s.
  *
  * @see TestProcessingMap
  * @see ItemProcessingInitializer
  * @see TestSessionController
- *
  * @author David McKain
  */
 public final class TestProcessingInitializer {
 
     private final TestValidationResult testValidationResult;
+
     private final ResolvedAssessmentTest resolvedAssessmentTest;
+
     private final LinkedHashMap<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder;
 
     public TestProcessingInitializer(final TestValidationResult testValidationResult) {
@@ -82,6 +90,10 @@ public final class TestProcessingInitializer {
 
         /* Extract all usable AbstractParts. (Currently, usable == all but this may change) */
         final List<AbstractPart> abstractParts = QueryUtils.search(AbstractPart.class, test);
+
+        /* Compute effective values for ItemSessionControl for each AbstractPart */
+        final Map<AbstractPart, EffectiveItemSessionControl> effectiveItemSessionControlMap = computeEffectiveItemSessionControlMap(test);
+
 
         /* Extract test's duration variable declaration */
         final ResponseDeclaration durationResponseDeclaration = test.getDurationResponseDeclaration();
@@ -103,15 +115,66 @@ public final class TestProcessingInitializer {
 
         /* That's it! */
         return new TestProcessingMap(resolvedAssessmentTest, testValidationResult.isValid(),
-                abstractParts, outcomeDeclarationMapBuilder,
+                abstractParts, effectiveItemSessionControlMap, outcomeDeclarationMapBuilder,
                 durationResponseDeclaration, itemProcessingMapBuilder);
     }
 
     private void doOutcomeVariable(final OutcomeDeclaration declaration) {
         final List<OutcomeDeclaration> declarations = resolvedAssessmentTest.resolveTestVariable(declaration.getIdentifier());
-        if (declarations.size()==1) {
+        if (declarations.size() == 1) {
             outcomeDeclarationMapBuilder.put(declaration.getIdentifier(), declaration);
         }
     }
 
+    private Map<AbstractPart, EffectiveItemSessionControl> computeEffectiveItemSessionControlMap(final AssessmentTest test) {
+        return new EffectiveItemSessionControlBuilder(test).run();
+    }
+
+    /**
+     * Helper class to compute the {@link EffectiveItemSessionControl} for each {@link AbstractPart}
+     * in the {@link AssessmentTest};
+     *
+     * @author David McKain
+     */
+    private static class EffectiveItemSessionControlBuilder {
+
+        private final AssessmentTest test;
+
+        private final Map<AbstractPart, EffectiveItemSessionControl> resultBuilder;
+
+        public EffectiveItemSessionControlBuilder(final AssessmentTest test) {
+            this.test = test;
+            this.resultBuilder = new HashMap<AbstractPart, EffectiveItemSessionControl>();
+        }
+
+        public Map<AbstractPart, EffectiveItemSessionControl> run() {
+            final EffectiveItemSessionControl defaultControl = EffectiveItemSessionControl.createDefault();
+            for (final TestPart testPart : test.getTestParts()) {
+                handleTestPart(testPart, defaultControl);
+            }
+            return resultBuilder;
+        }
+
+        private void handleTestPart(final TestPart testPart, final EffectiveItemSessionControl defaultControl) {
+            final ItemSessionControl itemSessionControl = testPart.getItemSessionControl();
+            final EffectiveItemSessionControl controlForTestPart = EffectiveItemSessionControl.override(defaultControl, itemSessionControl);
+            resultBuilder.put(testPart, controlForTestPart);
+
+            for (final AssessmentSection assessmentSection : testPart.getAssessmentSections()) {
+                handleSectionPart(assessmentSection, controlForTestPart);
+            }
+        }
+
+        private void handleSectionPart(final SectionPart sectionPart, final EffectiveItemSessionControl currentControl) {
+            final EffectiveItemSessionControl controlForSectionPart = EffectiveItemSessionControl.override(currentControl, sectionPart.getItemSessionControl());
+            resultBuilder.put(sectionPart, controlForSectionPart);
+
+            if (sectionPart instanceof AssessmentSection) {
+                final AssessmentSection assessmentSection = (AssessmentSection) sectionPart;
+                for (final SectionPart childPart : assessmentSection.getSectionParts()) {
+                    handleSectionPart(childPart, controlForSectionPart);
+                }
+            }
+        }
+    }
 }

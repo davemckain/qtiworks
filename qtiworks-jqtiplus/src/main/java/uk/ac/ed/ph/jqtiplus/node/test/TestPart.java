@@ -108,8 +108,8 @@ public final class TestPart extends AbstractPart {
      * @return itemSessionControl child if specified; defaultItemSessionControl otherwise
      */
     @Override
-    public ItemSessionControl getItemSessionControl() {
-        final ItemSessionControl itemSessionControl = getItemSessionControlNode();
+    public ItemSessionControl computeItemSessionControl() {
+        final ItemSessionControl itemSessionControl = getItemSessionControl();
 
         return itemSessionControl != null ? itemSessionControl : defaultItemSessionControl;
     }

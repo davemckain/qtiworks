@@ -100,18 +100,19 @@ public abstract class SectionPart extends AbstractPart {
 
 
     @Override
-    public ItemSessionControl getItemSessionControl() {
-        final ItemSessionControl itemSessionControl = getItemSessionControlNode();
+    @Deprecated
+    public ItemSessionControl computeItemSessionControl() {
+        final ItemSessionControl itemSessionControl = getItemSessionControl();
         if (itemSessionControl != null) {
             return itemSessionControl;
         }
 
         final SectionPart parentSection = getParentSection();
         if (parentSection != null) {
-            return parentSection.getItemSessionControl();
+            return parentSection.computeItemSessionControl();
         }
 
-        return getParentTestPart().getItemSessionControl();
+        return getParentTestPart().computeItemSessionControl();
     }
 
     @Override
