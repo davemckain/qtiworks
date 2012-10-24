@@ -98,9 +98,8 @@ public abstract class SectionPart extends AbstractPart {
         getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).setValue(fixed);
     }
 
-
-    @Override
     @Deprecated
+    @Override
     public ItemSessionControl computeItemSessionControl() {
         final ItemSessionControl itemSessionControl = getItemSessionControl();
         if (itemSessionControl != null) {
@@ -115,6 +114,7 @@ public abstract class SectionPart extends AbstractPart {
         return getParentTestPart().computeItemSessionControl();
     }
 
+    @Deprecated
     @Override
     public boolean isJumpSafeSource() {
         final AssessmentSection parent = getParentSection();

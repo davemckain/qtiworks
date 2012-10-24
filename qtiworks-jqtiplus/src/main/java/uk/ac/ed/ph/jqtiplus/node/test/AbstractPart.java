@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.test.BranchRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.ItemSessionControlGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.PreConditionGroup;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
@@ -106,7 +105,7 @@ public abstract class AbstractPart extends UniqueControlObject {
     /**
      * Gets itemSessionControl object for this part.
      * <p>
-     * Use this method instead of {@code getItemSessionControlNode}, because returned object of this method contains all fields (they are inherited from parent
+     * Use this method instead of {@code getItemSessionControl}, because returned object of this method contains all fields (they are inherited from parent
      * if they are not defined in this part).
      *
      * @return itemSessionControl object for this part
@@ -123,7 +122,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      *
      * @return true if it is safe to jump from this object; false otherwise
      */
-    @ToCheck
+    @ToRefactor
     public boolean isJumpSafeSource() {
         return true;
     }
@@ -139,7 +138,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      *
      * @return true if this object is safe target of jump; false otherwise
      */
-    @ToCheck
+    @ToRefactor
     public boolean isJumpSafeTarget() {
         return true;
     }
