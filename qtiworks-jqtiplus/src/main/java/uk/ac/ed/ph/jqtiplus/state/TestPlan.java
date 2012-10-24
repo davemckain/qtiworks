@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
@@ -111,6 +112,10 @@ public final class TestPlan implements Serializable {
             return null;
         }
         return nodesForIdentifier.get(instanceNumber);
+    }
+
+    public List<TestPlanNode> searchNodes(final TestNodeType testNodeType) {
+        return testPlanRootNode.searchDescendants(testNodeType);
     }
 
     //-------------------------------------------------------------------

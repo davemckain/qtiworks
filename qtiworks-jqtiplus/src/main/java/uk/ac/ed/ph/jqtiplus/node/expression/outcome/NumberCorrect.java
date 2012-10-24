@@ -67,12 +67,12 @@ public final class NumberCorrect extends ItemSubset {
 
     @Override
     protected IntegerValue evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final TestProcessingContext testContext = (TestProcessingContext) context;
-        final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
+        final TestProcessingContext testProcessingContext = (TestProcessingContext) context;
+        final List<AssessmentItemRefState> itemRefStates = testProcessingContext.lookupItemRefStates();
 
         int correctCount = 0;
         for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
+            final AssessmentItemRefAttemptController itemRefController = testProcessingContext.getItemRefController(itemRefState);
             final Boolean correct = itemRefController.isCorrect();
             if (correct!=null && correct.booleanValue()) {
                 correctCount++;

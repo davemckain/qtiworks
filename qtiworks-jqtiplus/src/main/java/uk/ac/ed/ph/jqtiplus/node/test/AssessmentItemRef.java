@@ -318,41 +318,6 @@ public final class AssessmentItemRef extends SectionPart {
         return result;
     }
 
-//    @Override
-//    @ToRefactor
-//    /* NB: Maybe this needs to account for selection/ordering? */
-//    public List<AssessmentItemRef> lookupItemRefs(String identifier, List<String> includeCategories, List<String> excludeCategories) {
-//        if (getIdentifier() != null && getIdentifier().equals(identifier)) {
-//            identifier = null;
-//        }
-//
-//        final List<AssessmentItemRef> items = new ArrayList<AssessmentItemRef>();
-//
-//        if (identifier != null) {
-//            return items;
-//        }
-//
-//        if (excludeCategories != null) {
-//            for (final String excludeCategory : excludeCategories) {
-//                if (getCategories().contains(excludeCategory)) {
-//                    return items;
-//                }
-//            }
-//        }
-//
-//        if (includeCategories == null || includeCategories.size() == 0) {
-//            items.add(this);
-//        }
-//        else {
-//            for (final String includeCategory : includeCategories) {
-//                if (getCategories().contains(includeCategory)) {
-//                    items.add(this);
-//                }
-//            }
-//        }
-//        return items;
-//    }
-
     @Override
     @ToCheck
     public boolean isBuiltInVariable(final Identifier identifier) {

@@ -137,6 +137,29 @@ public final class TestPlanNode implements Serializable {
         return Collections.unmodifiableList(children);
     }
 
+    public List<TestPlanNode> searchDescendantsOrSelf(final TestNodeType testNodeType) {
+        final ArrayList<TestPlanNode> resultBuilder = new ArrayList<TestPlanNode>();
+        buildDescendantsOrSelf(resultBuilder, this, testNodeType);
+        return Collections.unmodifiableList(resultBuilder);
+    }
+
+    public List<TestPlanNode> searchDescendants(final TestNodeType testNodeType) {
+        final ArrayList<TestPlanNode> resultBuilder = new ArrayList<TestPlanNode>();
+        for (final TestPlanNode childNode : getChildren()) {
+            buildDescendantsOrSelf(resultBuilder, childNode, testNodeType);
+        }
+        return Collections.unmodifiableList(resultBuilder);
+    }
+
+    private void buildDescendantsOrSelf(final List<TestPlanNode> resultBuilder, final TestPlanNode testPlanNode, final TestNodeType testNodeType) {
+        if (testPlanNode.getTestNodeType()==testNodeType) {
+            resultBuilder.add(testPlanNode);
+        }
+        for (final TestPlanNode childNode : testPlanNode.getChildren()) {
+            buildDescendantsOrSelf(resultBuilder, childNode, testNodeType);
+        }
+    }
+
     public void addChild(final TestPlanNode childNode) {
         childNode.siblingIndex = children.size();
         childNode.parentNode = this;

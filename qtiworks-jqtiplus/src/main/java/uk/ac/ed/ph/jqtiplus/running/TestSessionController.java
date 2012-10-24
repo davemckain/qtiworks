@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
@@ -55,10 +56,13 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeInstanceKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
+import uk.ac.ed.ph.jqtiplus.utils.TreeWalkNodeHandler;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -310,6 +314,8 @@ public final class TestSessionController extends TestValidationController implem
     public Value dereferenceVariable(final QtiNode caller, final Identifier referenceIdentifier,
             final DereferencedTestVariableHandler dereferencedTestVariableHandler) {
         Assert.notNull(referenceIdentifier);
+        Assert.notNull(dereferencedTestVariableHandler);
+
         final List<ResolvedTestVariableReference> resolvedVariableReferences = resolvedAssessmentTest.resolveVariableReference(referenceIdentifier);
         if (resolvedVariableReferences==null) {
             throw new QtiLogicException("Did not expect null result here");
@@ -328,6 +334,7 @@ public final class TestSessionController extends TestValidationController implem
     public Value dereferenceVariable(final QtiNode caller, final ResolvedTestVariableReference resolvedTestVariableReference,
             final DereferencedTestVariableHandler deferencedTestVariableHandler) {
         Assert.notNull(resolvedTestVariableReference);
+        Assert.notNull(deferencedTestVariableHandler);
 
         final VariableDeclaration targetVariableDeclaration = resolvedTestVariableReference.getVariableDeclaration();
         final Identifier targetVariableIdentifier = targetVariableDeclaration.getIdentifier();
@@ -387,5 +394,90 @@ public final class TestSessionController extends TestValidationController implem
             return deferencedTestVariableHandler.evaluateInReferencedItem(itemSessionController,
                     assessmentItemRef, testPlanNode, targetVariableIdentifier);
         }
+    }
+
+    //-------------------------------------------------------------------
+
+    public List<TestPlanNode> thingy(final Identifier sectionIdentifier, final List<String> includeCategories, final List<String> excludeCategories) {
+        final TestPlan testPlan = testSessionState.getTestPlan();
+
+        final List<TestPlanNode> itemRefNodes = new ArrayList<TestPlanNode>();
+        if (sectionIdentifier!=null) {
+            /* Search all AssessmentItemRef instances in the TestPlan that are descendants
+             * of the AssessmentSection(s) having the given identifier in the ORIGINAL test
+             * structure.
+             */
+            final List<AssessmentItemRef> assessmentItemRefs = findAssessmentItemRefsInSections(sectionIdentifier);
+            for (final AssessmentItemRef assessmentItemRef : assessmentItemRefs) {
+                itemRefNodes.addAll(testPlan.getNodes(assessmentItemRef.getIdentifier()));
+            }
+        }
+        else {
+            /* Take all AssessmentItemRef instances */
+            itemRefNodes.addAll(testPlan.searchNodes(TestNodeType.ASSESSMENT_ITEM_REF));
+        }
+
+        /* Now apply includes/excludes */
+        for (int i=itemRefNodes.size()-1; i>=0; i--) { /* Easiest to move backwards, removing elements as required */
+            final TestPlanNode itemRefNode = itemRefNodes.get(i);
+            final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
+            final List<String> categories = assessmentItemRef.getCategories();
+            boolean keep;
+            if (includeCategories!=null) {
+                keep = false;
+                for (final String includeCategory : includeCategories) {
+                    if (categories.contains(includeCategory)) {
+                        keep = true;
+                        break;
+                    }
+                }
+            }
+            else {
+                keep = true;
+            }
+
+            if (keep && excludeCategories!=null) {
+                for (final String excludeCategory : excludeCategories) {
+                    if (categories.contains(excludeCategory)) {
+                        keep = false;
+                        break;
+                    }
+                }
+            }
+            if (!keep) {
+                itemRefNodes.remove(i);
+            }
+        }
+        return itemRefNodes;
+    }
+
+    /**
+     * Helper method to find all {@link AssessmentItemRef}s living below the {@link AssessmentSection}(s)
+     * with given identifier.
+     * <p>
+     * IMPORTANT: This must search the *original* test structure. We need to do this as invisible
+     * sections may have been removed by the time the {@link TestPlan} gets computed.
+     *
+     * @param sectionIdentifier
+     * @return
+     */
+    private final List<AssessmentItemRef> findAssessmentItemRefsInSections(final Identifier sectionIdentifier) {
+        Assert.notNull(sectionIdentifier);
+        final List<AssessmentItemRef> result = new ArrayList<AssessmentItemRef>();
+        QueryUtils.walkTree(new TreeWalkNodeHandler() {
+            @Override
+            public boolean handleNode(final QtiNode node) {
+                if (node instanceof AssessmentSection) {
+                    final AssessmentSection assessmentSection = (AssessmentSection) node;
+                    if (assessmentSection.getIdentifier().equals(sectionIdentifier)) {
+                        /* Found matching section, so search for all assessmentItemRefs below this */
+                        result.addAll(QueryUtils.search(AssessmentItemRef.class, assessmentSection));
+                    }
+                }
+                /* Keep searching */
+                return true;
+            }
+        }, getSubjectTest());
+        return result;
     }
 }

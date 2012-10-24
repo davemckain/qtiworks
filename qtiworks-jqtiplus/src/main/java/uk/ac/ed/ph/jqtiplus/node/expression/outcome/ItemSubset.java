@@ -39,9 +39,12 @@ import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
+import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
 
@@ -122,5 +125,15 @@ public abstract class ItemSubset extends AbstractFunctionalExpression {
         else {
             context.fireValidationError(this, "Outcome expression can be used only in outcome processing.");
         }
+    }
+
+    @Override
+    protected final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
+        final TestProcessingContext testProcessingContext = (TestProcessingContext) context;
+
+        /* TODO: Filter out the required assessmentItemRef instances and get the subclass to
+         * process them in some suitable way.
+         */
+
     }
 }
