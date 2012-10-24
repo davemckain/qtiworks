@@ -280,6 +280,35 @@ public final class TestSessionController extends TestValidationController implem
     //-------------------------------------------------------------------
 
     public Value evaluateVariableReference(final QtiNode caller, final Identifier referenceIdentifier) {
+        return dereferenceVariable(caller, referenceIdentifier, variableEvaluator);
+    }
+
+    public Value evaluateVariableReference(final QtiNode caller, final ResolvedTestVariableReference resolvedTestVariableReference) {
+        return dereferenceVariable(caller, resolvedTestVariableReference, variableEvaluator);
+    }
+
+    /**
+     * Shareable instance of a {@link DereferencedTestVariableHandler} that simply evaluates
+     * the resulting variables.
+     */
+    public static final DereferencedTestVariableHandler variableEvaluator = new DereferencedTestVariableHandler() {
+
+        @Override
+        public Value evaluateInThisTest(final TestProcessingContext testProcessingContext, final Identifier testVariableIdentifier) {
+            return testProcessingContext.evaluateVariableValue(testVariableIdentifier);
+        }
+
+        @Override
+        public Value evaluateInReferencedItem(final ItemProcessingContext itemProcessingContext,
+                final AssessmentItemRef assessmentItemRef, final TestPlanNode testPlanNode,
+                final Identifier itemVariableIdentifier) {
+            return itemProcessingContext.evaluateVariableValue(itemVariableIdentifier);
+        }
+    };
+
+    @Override
+    public Value dereferenceVariable(final QtiNode caller, final Identifier referenceIdentifier,
+            final DereferencedTestVariableHandler dereferencedTestVariableHandler) {
         Assert.notNull(referenceIdentifier);
         final List<ResolvedTestVariableReference> resolvedVariableReferences = resolvedAssessmentTest.resolveVariableReference(referenceIdentifier);
         if (resolvedVariableReferences==null) {
@@ -293,17 +322,18 @@ public final class TestSessionController extends TestValidationController implem
             fireRuntimeWarning(caller, "Complex variable reference " + referenceIdentifier
                     + " within test could be derefenced in " + resolvedVariableReferences + " ways. Using the first of these");
         }
-        return evaluateVariableReference(caller, resultingVariableReference);
+        return dereferenceVariable(caller, resultingVariableReference, dereferencedTestVariableHandler);
     }
 
-    public Value evaluateVariableReference(final QtiNode caller, final ResolvedTestVariableReference resolvedTestVariableReference) {
+    public Value dereferenceVariable(final QtiNode caller, final ResolvedTestVariableReference resolvedTestVariableReference,
+            final DereferencedTestVariableHandler deferencedTestVariableHandler) {
         Assert.notNull(resolvedTestVariableReference);
 
         final VariableDeclaration targetVariableDeclaration = resolvedTestVariableReference.getVariableDeclaration();
         final Identifier targetVariableIdentifier = targetVariableDeclaration.getIdentifier();
         if (resolvedTestVariableReference.isTestVariableReference()) {
             /* Refers to a variable within this test */
-            return evaluateVariableValue(targetVariableIdentifier);
+            return deferencedTestVariableHandler.evaluateInThisTest(this, targetVariableIdentifier);
         }
         else {
             /* Refers to a variable within a referenced item */
@@ -354,7 +384,8 @@ public final class TestSessionController extends TestValidationController implem
                 }
             }
             final ItemSessionController itemSessionController = createItemSessionController(testPlanNode);
-            return itemSessionController.evaluateVariableValue(targetVariableIdentifier);
+            return deferencedTestVariableHandler.evaluateInReferencedItem(itemSessionController,
+                    assessmentItemRef, testPlanNode, targetVariableIdentifier);
         }
     }
 }

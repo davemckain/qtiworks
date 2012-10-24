@@ -33,9 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Extension of {@link ProcessingContext} passed when running an {@link AssessmentTest}
@@ -44,12 +49,42 @@ import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
  */
 public interface TestProcessingContext extends ProcessingContext, TestValidationContext {
 
+    /**
+     * Returns the {@link TestSessionState} attached to this context.
+     */
     TestSessionState getTestSessionState();
 
-//    @Deprecated
-//    Pair<VariableDeclaration, Map<AssessmentItemRefState, AssessmentItemRefAttemptController>> resolveDottedVariableReference(
-//            Identifier variableReferenceIdentifier);
-//
+    /**
+     * Callback used to handle dereferenced variables in tests.
+     */
+    public static interface DereferencedTestVariableHandler {
+
+        /**
+         * Called when a variable reference is dereferenced to a variable within the current test.
+         *
+         * @param testProcessingContext provides access to calling {@link TestProcessingContext}
+         * @param testVariableIdentifier identifier of the resolved test variable
+         */
+        Value evaluateInThisTest(TestProcessingContext testProcessingContext, Identifier testVariableIdentifier);
+
+        /**
+         * Called when a variable reference is dereferenced to an item variable within a
+         * referenced item.
+         *
+         * @param itemProcessingContext provides access to the {@link ItemProcessingContext} of
+         *   the resulting instance of the referenced item
+         * @param assessmentItemRef the {@link AssessmentItemRef} referencing the item
+         * @param testPlanNode instance of the resulting {@link AssessmentItemRef} in the test plan
+         * @param itemVariableIdentifier identifier of the item variable within the referenced item
+         */
+        Value evaluateInReferencedItem(final ItemProcessingContext itemProcessingContext,
+                AssessmentItemRef assessmentItemRef, TestPlanNode testPlanNode,
+                Identifier itemVariableIdentifier);
+    }
+
+    Value dereferenceVariable(QtiNode caller, Identifier referenceIdentifier,
+            DereferencedTestVariableHandler dereferencedVariableHandler);
+
 //    @Deprecated
 //    AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState);
 //

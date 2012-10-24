@@ -38,13 +38,14 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,36 +111,31 @@ public final class Variable extends LookupExpression {
 
     //----------------------------------------------------------------------
 
-    /** FIXME: Need to handle tests (which might involve weights) */
-    @ToRefactor
     @Override
-    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final Identifier referenceIdentifier = getIdentifier();
-        return context.evaluateVariableValue(referenceIdentifier);
+    protected Value evaluateInThisItem(final ItemProcessingContext itemProcessingContext, final Identifier itemVariableIdentifier) {
+        return itemProcessingContext.evaluateVariableValue(itemVariableIdentifier);
     }
 
-//    @Override
-//    protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
-//        return itemContext.evaluateVariableValue(itemVariableIdentifier);
-//    }
-//
-//    @Override
-//    protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
-//        return testContext.evaluateVariableValue(testVariableIdentifier);
-//    }
-//
-//    @Override
-//    protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
-//        Value result = itemRefController.getItemController().evaluateVariableValue(itemVariableIdentifier);
-//
-//        /* Maybe apply weight */
-//        final Identifier weightIdentifier = getWeightIdentifier();
-//        if (weightIdentifier != null && result instanceof NumberValue) {
-//            result = applyWeight(itemRefController.getItemRef(), (NumberValue) result, weightIdentifier);
-//        }
-//
-//        return result;
-//    }
+    @Override
+    public Value evaluateInThisTest(final TestProcessingContext testProcessingContext, final Identifier testVariableIdentifier) {
+        return testProcessingContext.evaluateVariableValue(testVariableIdentifier);
+    }
+
+    @Override
+    public Value evaluateInReferencedItem(final ItemProcessingContext itemProcessingContext,
+            final AssessmentItemRef assessmentItemRef, final TestPlanNode testPlanNode,
+            final Identifier itemVariableIdentifier) {
+        Value result = itemProcessingContext.evaluateVariableValue(itemVariableIdentifier);
+
+        /* Maybe apply weight */
+        final Identifier weightIdentifier = getWeightIdentifier();
+        if (weightIdentifier != null && result instanceof NumberValue) {
+            result = applyWeight(assessmentItemRef, (NumberValue) result, weightIdentifier);
+        }
+
+        return result;
+    }
+
 
     private FloatValue applyWeight(final AssessmentItemRef itemRef, final NumberValue value, final Identifier weightIdentifier) {
         final double number = value.doubleValue();

@@ -36,13 +36,15 @@ package uk.ac.ed.ph.jqtiplus.node.expression.general;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * Implementation of <code>default</code>.
@@ -76,30 +78,21 @@ public final class Default extends LookupExpression {
 
     //----------------------------------------------------------------------
 
-    /** FIXME: Finish this for tests */
-    @ToRefactor
     @Override
-    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final Identifier referenceIdentifier = getIdentifier();
-        final ItemProcessingContext itemProcessingContext = (ItemProcessingContext) context;
-        return itemProcessingContext.computeDefaultValue(referenceIdentifier);
+    protected Value evaluateInThisItem(final ItemProcessingContext itemProcessingContext, final Identifier itemVariableIdentifier) {
+        return itemProcessingContext.computeDefaultValue(itemVariableIdentifier);
     }
 
-//    @Override
-//    protected Value evaluateInThisItem(final ItemProcessingContext itemContext, final Identifier itemVariableIdentifier) {
-//        return itemContext.computeDefaultValue(itemVariableIdentifier);
-//    }
-//
-//    @Override
-//    protected Value evaluateInThisTest(final TestProcessingContext testContext, final Identifier testVariableIdentifier) {
-//        /* Default don't get overridden in tests */
-//        /* FIXME: Should we even be allowed to access test variables here? */
-//        final VariableDeclaration variableDeclaration = testContext.getSubjectTest().getVariableDeclaration(testVariableIdentifier);
-//        return variableDeclaration != null ? variableDeclaration.getDefaultValue().evaluate() : NullValue.INSTANCE;
-//    }
-//
-//    @Override
-//    protected Value evaluateInReferencedItem(final int depth, final AssessmentItemRefAttemptController itemRefController, final Identifier itemVariableIdentifier) {
-//        return itemRefController.getItemController().computeDefaultValue(itemVariableIdentifier);
-//    }
+    @Override
+    public Value evaluateInThisTest(final TestProcessingContext testProcessingContext, final Identifier testVariableIdentifier) {
+        /* Default don't get overridden in tests */
+        final VariableDeclaration variableDeclaration = testProcessingContext.checkLocalVariableReference(this, testVariableIdentifier);
+        return variableDeclaration != null ? variableDeclaration.getDefaultValue().evaluate() : NullValue.INSTANCE;
+    }
+
+    @Override
+    public Value evaluateInReferencedItem(final ItemProcessingContext itemProcessingContext, final AssessmentItemRef assessmentItemRef, final TestPlanNode testPlanNode,
+            final Identifier itemVariableIdentifier) {
+        return itemProcessingContext.computeDefaultValue(itemVariableIdentifier);
+    }
 }
