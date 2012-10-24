@@ -48,7 +48,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.state.TestItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -139,12 +138,12 @@ public final class TestSessionController extends TestValidationController implem
 
     private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode) {
         final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
-        final TestItemSessionState testItemSessionState = getTestItemSessionState(itemRefNode);
-        return new ItemSessionController(jqtiExtensionManager, itemProcessingMap, testItemSessionState.getItemState());
+        final ItemSessionState itemSessionState = getItemSessionState(itemRefNode);
+        return new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
     }
 
-    private TestItemSessionState getTestItemSessionState(final TestPlanNode itemRefNode) {
-        return testSessionState.getTestItemStates().get(itemRefNode.getTestPlanNodeInstanceKey());
+    private ItemSessionState getItemSessionState(final TestPlanNode itemRefNode) {
+        return testSessionState.getItemSessionStates().get(itemRefNode.getTestPlanNodeInstanceKey());
     }
 
     //-------------------------------------------------------------------
@@ -165,11 +164,10 @@ public final class TestSessionController extends TestValidationController implem
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
                 final TestPlanNodeInstanceKey instanceKey = testPlanNode.getTestPlanNodeInstanceKey();
-                TestItemSessionState testItemSessionState = getTestItemSessionState(testPlanNode);
-                if (testItemSessionState==null) {
-                    final ItemSessionState itemSessionState = new ItemSessionState();
-                    testItemSessionState = new TestItemSessionState(instanceKey, itemSessionState);
-                    testSessionState.getTestItemStates().put(instanceKey, testItemSessionState);
+                ItemSessionState itemSessionState = getItemSessionState(testPlanNode);
+                if (itemSessionState==null) {
+                    itemSessionState = new ItemSessionState();
+                    testSessionState.getItemSessionStates().put(instanceKey, itemSessionState);
                 }
                 final ItemSessionController itemSessionController = createItemSessionController(testPlanNode);
                 itemSessionController.initialize();

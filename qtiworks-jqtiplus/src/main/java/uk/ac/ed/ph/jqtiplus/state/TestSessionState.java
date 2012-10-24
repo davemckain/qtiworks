@@ -68,13 +68,13 @@ public final class TestSessionState implements Serializable {
     private final TestPlan testPlan;
     private final Map<Identifier, Value> outcomeValues;
     private FloatValue durationValue;
-    private final Map<TestPlanNodeInstanceKey, TestItemSessionState> testItemStates;
+    private final Map<TestPlanNodeInstanceKey, ItemSessionState> itemSessionStates;
 
     public TestSessionState(final TestPlan testPlan) {
         Assert.notNull(testPlan, "testPlan");
         this.testPlan = testPlan;
         this.outcomeValues = new HashMap<Identifier, Value>();
-        this.testItemStates = new HashMap<TestPlanNodeInstanceKey, TestItemSessionState>();
+        this.itemSessionStates = new HashMap<TestPlanNodeInstanceKey, ItemSessionState>();
         reset();
     }
 
@@ -84,15 +84,15 @@ public final class TestSessionState implements Serializable {
         return testPlan;
     }
 
-    public Map<TestPlanNodeInstanceKey, TestItemSessionState> getTestItemStates() {
-        return testItemStates;
+    public Map<TestPlanNodeInstanceKey, ItemSessionState> getItemSessionStates() {
+        return itemSessionStates;
     }
 
     //----------------------------------------------------------------
 
     public void reset() {
         this.outcomeValues.clear();
-        this.testItemStates.clear();
+        this.itemSessionStates.clear();
         resetBuiltinVariables();
     }
 
@@ -185,7 +185,7 @@ public final class TestSessionState implements Serializable {
         final TestSessionState other = (TestSessionState) obj;
         return testPlan.equals(other.testPlan)
                 && outcomeValues.equals(other.outcomeValues)
-                && testItemStates.equals(other.testItemStates);
+                && itemSessionStates.equals(other.itemSessionStates);
     }
 
     @Override
@@ -193,7 +193,7 @@ public final class TestSessionState implements Serializable {
         return Arrays.hashCode(new Object[] {
                 testPlan,
                 outcomeValues,
-                testItemStates
+                itemSessionStates
         });
     }
 
@@ -202,7 +202,7 @@ public final class TestSessionState implements Serializable {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testPlan=" + testPlan
                 + ",outcomeValues=" + outcomeValues
-                + ",testItemStates=" + testItemStates
+                + ",itemSessionStates=" + itemSessionStates
                 + ")";
     }
 }

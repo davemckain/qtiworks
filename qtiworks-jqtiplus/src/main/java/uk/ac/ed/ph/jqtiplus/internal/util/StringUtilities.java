@@ -247,7 +247,8 @@ public final class StringUtilities {
                 return false;
             }
         }
-        throw new IllegalArgumentException("Argument must be "
+        throw new IllegalArgumentException("Argument '" + value
+                + "' must be "
         		+ trueValue + " or " + falseValue);
     }
 

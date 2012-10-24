@@ -84,8 +84,18 @@ public final class ItemSesssionStateXmlMarshaller {
         /* Create document element */
         final Element documentElement = document.createElementNS(QTIWORKS_NAMESPACE, "itemSessionState");
         documentElement.setAttribute("modelVersion", "1");
-        documentElement.setAttribute("sessionStatus", itemSessionState.getSessionStatus().toQtiString());
+        final SessionStatus sessionStatus = itemSessionState.getSessionStatus();
+        if (sessionStatus!=null) {
+            documentElement.setAttribute("sessionStatus", sessionStatus.toQtiString());
+        }
+        documentElement.setAttribute("finished", StringUtilities.toTrueFalse(itemSessionState.isFinished()));
+        documentElement.setAttribute("presented", StringUtilities.toTrueFalse(itemSessionState.isPresented()));
+        documentElement.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
+        documentElement.setAttribute("skipped", StringUtilities.toTrueFalse(itemSessionState.isSkipped()));
         document.appendChild(documentElement);
+
+        /* Output candidate comment */
+        maybeAppendTextElement(documentElement, "candidateComment", itemSessionState.getCandidateComment());
 
         /* Output shuffled choice orders */
         for (final Entry<Identifier, List<Identifier>> entry : itemSessionState.getShuffledInteractionChoiceOrders().entrySet()) {
@@ -119,6 +129,14 @@ public final class ItemSesssionStateXmlMarshaller {
             appendValueToElement(valueElement, value);
 
             parentElement.appendChild(valueElement);
+        }
+    }
+
+    private static void maybeAppendTextElement(final Element parentElement, final String elementName, final String content) {
+        if (content!=null) {
+            final Element element = parentElement.getOwnerDocument().createElementNS(QTIWORKS_NAMESPACE, elementName);
+            element.appendChild(parentElement.getOwnerDocument().createTextNode(content));
+            parentElement.appendChild(element);
         }
     }
 
@@ -206,8 +224,12 @@ public final class ItemSesssionStateXmlMarshaller {
         if (!"1".equals(documentElement.getAttribute("modelVersion"))) {
             throw new MarshallingException("Expected modelVersion to be 1");
         }
-        final String sessionStatusAttr = documentElement.getAttribute("sessionStatus");
-        if (sessionStatusAttr!=null) {
+        result.setFinished(parseOptionalBooleanAttribute(documentElement, "finished", false));
+        result.setPresented(parseOptionalBooleanAttribute(documentElement, "presented", false));
+        result.setResponded(parseOptionalBooleanAttribute(documentElement, "responded", false));
+        result.setSkipped(parseOptionalBooleanAttribute(documentElement, "skipped", false));
+        if (documentElement.hasAttribute("sessionStatus")) {
+            final String sessionStatusAttr = documentElement.getAttribute("sessionStatus");
             try {
                 result.setSessionStatus(SessionStatus.parseSessionStatus(sessionStatusAttr));
             }
@@ -219,7 +241,10 @@ public final class ItemSesssionStateXmlMarshaller {
         final List<Element> childElements = expectElementChildren(documentElement);
         for (final Element childElement : childElements) {
             final String elementName = childElement.getLocalName();
-            if (elementName.equals("shuffledInteractionChoiceOrder")) {
+            if (elementName.equals("candidateComment")) {
+                result.setCandidateComment(expectTextContent(childElement));
+            }
+            else if (elementName.equals("shuffledInteractionChoiceOrder")) {
                 final Identifier responseIdentifier = parseIdentifierAttribute(childElement, "responseIdentifier");
                 final List<Identifier> choiceIdentifiers = parseIdentifierAttributeList(childElement, "choiceSequence");
                 result.setShuffledInteractionChoiceOrder(responseIdentifier, choiceIdentifiers);
@@ -265,6 +290,11 @@ public final class ItemSesssionStateXmlMarshaller {
         }
 
         return result;
+    }
+
+    private static boolean parseOptionalBooleanAttribute(final Element element, final String attrName, final boolean defaultValue) {
+        final String attrValue = element.getAttribute(attrName);
+        return attrValue!=null ? StringUtilities.fromTrueFalse(attrValue) : defaultValue;
     }
 
     private static Identifier parseIdentifierAttribute(final Element element, final String identifierAttrName) {

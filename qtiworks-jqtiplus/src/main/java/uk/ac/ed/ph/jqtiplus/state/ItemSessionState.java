@@ -94,6 +94,11 @@ public final class ItemSessionState implements Serializable {
     private final Map<Identifier, Value> outcomeValues;
 
     private SessionStatus sessionStatus;
+    private boolean presented;
+    private boolean responded;
+    private boolean finished;
+    private boolean skipped;
+    private String candidateComment;
 
     public ItemSessionState() {
         this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
@@ -104,7 +109,7 @@ public final class ItemSessionState implements Serializable {
         this.templateValues = new HashMap<Identifier, Value>();
         this.responseValues = new HashMap<Identifier, Value>();
         this.outcomeValues = new HashMap<Identifier, Value>();
-        this.sessionStatus = SessionStatus.INITIAL;
+        this.sessionStatus = null;
 
         /* Set built-in variables */
         resetBuiltinVariables();
@@ -132,7 +137,7 @@ public final class ItemSessionState implements Serializable {
     }
 
     //----------------------------------------------------------------
-    // Initialisation-related mutators
+    // Interaction init helpers
 
     public Map<Identifier, List<Identifier>> getShuffledInteractionChoiceOrders() {
         return Collections.unmodifiableMap(shuffledInteractionChoiceOrders);
@@ -171,6 +176,51 @@ public final class ItemSessionState implements Serializable {
 
     public void setSessionStatus(final SessionStatus sessionStatus) {
         this.sessionStatus = sessionStatus;
+    }
+
+
+    public boolean isPresented() {
+        return presented;
+    }
+
+    public void setPresented(final boolean presented) {
+        this.presented = presented;
+    }
+
+
+    public boolean isResponded() {
+        return responded;
+    }
+
+    public void setResponded(final boolean responded) {
+        this.responded = responded;
+    }
+
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(final boolean finished) {
+        this.finished = finished;
+    }
+
+
+    public boolean isSkipped() {
+        return skipped;
+    }
+
+    public void setSkipped(final boolean skipped) {
+        this.skipped = skipped;
+    }
+
+
+    public String getCandidateComment() {
+        return candidateComment;
+    }
+
+    public void setCandidateComment(final String candidateComment) {
+        this.candidateComment = candidateComment;
     }
 
     //----------------------------------------------------------------
@@ -545,7 +595,11 @@ public final class ItemSessionState implements Serializable {
             return false;
         }
         final ItemSessionState other = (ItemSessionState) obj;
-        return sessionStatus.equals(other.sessionStatus)
+        return sessionStatus==other.sessionStatus
+                && presented==other.presented
+                && responded==other.responded
+                && finished==other.finished
+                && skipped==other.skipped
                 && shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
                 && overriddenTemplateDefaultValues.equals(other.overriddenCorrectResponseValues)
                 && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
@@ -560,6 +614,10 @@ public final class ItemSessionState implements Serializable {
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
                 sessionStatus,
+                presented,
+                responded,
+                finished,
+                skipped,
                 shuffledInteractionChoiceOrders,
                 overriddenTemplateDefaultValues,
                 overriddenResponseDefaultValues,
@@ -575,6 +633,10 @@ public final class ItemSessionState implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(sessionStatus=" + sessionStatus
+                + ",presented=" + presented
+                + ",responded=" + responded
+                + ",finished=" + finished
+                + ",skipped=" + skipped
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues

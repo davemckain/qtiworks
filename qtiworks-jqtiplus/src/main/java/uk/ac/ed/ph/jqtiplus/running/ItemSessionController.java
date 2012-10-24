@@ -96,7 +96,7 @@ import org.slf4j.LoggerFactory;
  *
  * {@link #initialize()}
  * {@link #performTemplateProcessing()}
- * {@link #setPendingSubmission()}
+ * {@link #markPendingSubmission()}
  * {@link #bindResponses(Map)}
  * {@link #validateResponses()}
  * {@link #performResponseProcessing()}
@@ -302,8 +302,20 @@ public final class ItemSessionController extends ItemValidationController implem
     //-------------------------------------------------------------------
     // Interacting
 
-    public void setPendingSubmission() {
+    public void markPendingSubmission() {
         itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
+    }
+
+    public void markPresented() {
+        itemSessionState.setPresented(true);
+    }
+
+    public void markSkipped() {
+        itemSessionState.setSkipped(true);
+    }
+
+    public void markFinished() {
+        itemSessionState.setFinished(true);
     }
 
     //-------------------------------------------------------------------
@@ -360,6 +372,7 @@ public final class ItemSessionController extends ItemValidationController implem
         }
 
         /* Update session status */
+        itemSessionState.setResponded(true);
         itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
 
         return Collections.unmodifiableSet(badResponses);

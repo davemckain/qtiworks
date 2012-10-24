@@ -243,7 +243,10 @@ public class CandidateSessionStarter {
 
         /* Set SessionStatus */
         /* FIXME: This doesn't really make sense if attemptAllowed==false */
-        itemSessionController.setPendingSubmission();
+        itemSessionController.markPendingSubmission();
+
+        /* Mark item as being presented */
+        itemSessionController.markPresented();
 
         /* Create new session and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();
