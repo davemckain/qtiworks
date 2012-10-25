@@ -70,8 +70,17 @@ public final class TestPlan implements Serializable {
 
     private static final long serialVersionUID = 5176553452095038589L;
 
+    /** Root of the {@link TestPlanNode} tree */
     private final TestPlanNode testPlanRootNode;
+
+    /** Map of all {@link TestPlanNode}s, in the correct order */
     private final Map<TestPlanNodeInstanceKey, TestPlanNode> testPlanNodeMap;
+
+    /**
+     * Map of the {@link TestPlanNode}s corresponding to each {@link Identifier}.
+     * There will be multiple elements in the case of non-unique {@link Identifier}s and
+     * selection with replacement.
+     */
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
 
     public TestPlan(final TestPlanNode testPlanRootNode, final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap) {

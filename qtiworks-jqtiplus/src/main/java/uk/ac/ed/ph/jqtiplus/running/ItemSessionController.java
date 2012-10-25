@@ -89,8 +89,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Usage: one-shot, not thread safe.
  * FIXME: Document this!
+ *
+ * Usage: one-shot, not thread safe.
  *
  * Current lifecycle is:
  *

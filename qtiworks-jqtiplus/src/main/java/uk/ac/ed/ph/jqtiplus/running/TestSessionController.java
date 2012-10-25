@@ -62,7 +62,9 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -70,6 +72,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * FIXME: Document this type
+ *
+ * Usage: one-shot, not thread safe.
  *
  * @author David McKain
  */
@@ -79,6 +83,7 @@ public final class TestSessionController extends TestValidationController implem
 
     private final TestProcessingMap testProcessingMap;
     private final TestSessionState testSessionState;
+    private final Map<TestPlanNode, ItemSessionController> itemSessionControllerMap;
 
     private Long randomSeed;
     private Random randomGenerator;
@@ -91,6 +96,7 @@ public final class TestSessionController extends TestValidationController implem
         this.testSessionState = testSessionState;
         this.randomSeed = null;
         this.randomGenerator = null;
+        this.itemSessionControllerMap = new HashMap<TestPlanNode, ItemSessionController>();
     }
 
     @Override
@@ -139,18 +145,30 @@ public final class TestSessionController extends TestValidationController implem
 
     @Override
     public ItemProcessingContext getItemSessionContext(final TestPlanNode itemRefNode) {
-        return createItemSessionController(itemRefNode);
+        return getItemSessionController(itemRefNode);
     }
 
-    public ItemSessionController createItemSessionController(final TestPlanNode itemRefNode) {
+    /**
+     * Gets the {@link ItemSessionController} for the {@link TestPlanNode} corresponding to
+     * an {@link AssessmentItemRef}, lazily creating one if required.
+     *
+     * @param itemRefNode
+     * @return
+     */
+    private ItemSessionController getItemSessionController(final TestPlanNode itemRefNode) {
         Assert.notNull(itemRefNode);
         if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
             throw new IllegalArgumentException("TestPlanNode must have type " + TestNodeType.ASSESSMENT_ITEM_REF
                     + " rather than " + itemRefNode.getTestNodeType());
         }
-        final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
-        final ItemSessionState itemSessionState = getItemSessionState(itemRefNode);
-        return new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+        ItemSessionController result = itemSessionControllerMap.get(itemRefNode);
+        if (result==null) {
+            final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
+            final ItemSessionState itemSessionState = getItemSessionState(itemRefNode);
+            result = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+            itemSessionControllerMap.put(itemRefNode, result);
+        }
+        return result;
     }
 
     private ItemSessionState getItemSessionState(final TestPlanNode itemRefNode) {
@@ -166,12 +184,14 @@ public final class TestSessionController extends TestValidationController implem
      * test plan.
      */
     public void initialize() {
+        /* Reset test variables */
         testSessionState.reset();
         for (final Identifier identifier : testProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
             testSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
         }
         testSessionState.resetBuiltinVariables();
 
+        /* Reset variables in each item instance */
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
                 final TestPlanNodeInstanceKey instanceKey = testPlanNode.getTestPlanNodeInstanceKey();
@@ -180,7 +200,7 @@ public final class TestSessionController extends TestValidationController implem
                     itemSessionState = new ItemSessionState();
                     testSessionState.getItemSessionStates().put(instanceKey, itemSessionState);
                 }
-                final ItemSessionController itemSessionController = createItemSessionController(testPlanNode);
+                final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
                 itemSessionController.initialize();
             }
         }
@@ -399,7 +419,7 @@ public final class TestSessionController extends TestValidationController implem
                     return NullValue.INSTANCE;
                 }
             }
-            final ItemSessionController itemSessionController = createItemSessionController(testPlanNode);
+            final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
             return deferencedTestVariableHandler.evaluateInReferencedItem(itemSessionController,
                     assessmentItemRef, testPlanNode, targetVariableIdentifier);
         }
