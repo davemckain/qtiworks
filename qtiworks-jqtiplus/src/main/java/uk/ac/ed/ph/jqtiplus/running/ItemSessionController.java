@@ -727,7 +727,7 @@ public final class ItemSessionController extends ItemValidationController implem
         final ItemResult result = new ItemResult(null);
         result.setIdentifier(item.getIdentifier());
         result.setDateStamp(new Date());
-        result.setSessionStatus(itemSessionState.getNumAttempts() > 0 ? SessionStatus.FINAL : SessionStatus.INITIAL); // TODO: Not really sure what's best here, but probably not important!
+        result.setSessionStatus(itemSessionState.getSessionStatus());
         recordItemVariables(result);
         return result;
     }
@@ -826,6 +826,7 @@ public final class ItemSessionController extends ItemValidationController implem
      *         responseDeclarations contain correctResponses; false otherwise
      * @see #isIncorrect
      */
+    @Override
     public Boolean isCorrect() {
         for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
             if (responseDeclaration.getCorrectResponse() == null) {
@@ -872,6 +873,7 @@ public final class ItemSessionController extends ItemValidationController implem
      *         responseDeclarations contain correctResponses; false otherwise
      * @see #isCorrect
      */
+    @Override
     public Boolean isIncorrect() {
         for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
             if (responseDeclaration.getCorrectResponse() == null) {
