@@ -34,13 +34,19 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.expression.outcome.ItemSubset;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
+import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.List;
 
 /**
  * Extension of {@link ProcessingContext} passed when running an {@link AssessmentTest}
@@ -48,6 +54,8 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  * @author David McKain
  */
 public interface TestProcessingContext extends ProcessingContext, TestValidationContext {
+
+    TestProcessingMap getTestProcessingMap();
 
     /**
      * Returns the {@link TestSessionState} attached to this context.
@@ -84,6 +92,34 @@ public interface TestProcessingContext extends ProcessingContext, TestValidation
 
     Value dereferenceVariable(QtiNode caller, Identifier referenceIdentifier,
             DereferencedTestVariableHandler dereferencedVariableHandler);
+
+    ItemProcessingContext createItemSessionController(final TestPlanNode itemRefNode);
+
+    /**
+     * Builds a List of all {@link TestPlanNode}s corresponding to {@link AssessmentItemRef}s
+     * with some or all of the following filters applied:
+     *
+     * <ul>
+     * <li>
+     *   Restricting to those belonging to the {@link AssessmentSection} having the given {@link Identifier}.
+     *   NB: This is computed against the ORIGINAL test structure before {@link TestPlan} generation.
+     * </li>
+     * <li>
+     *   Category inclusion
+     * </li>
+     * <li>
+     *   Category exclusion
+     * </li>
+     * This is used by {@link ItemSubset}
+     *
+     * @see ItemSubset
+     *
+     * @param sectionIdentifier
+     * @param includeCategories
+     * @param excludeCategories
+     * @return non-null {@link List} or {@link TestPlanNode}s
+     */
+    List<TestPlanNode> computeItemSubset(Identifier sectionIdentifier, List<String> includeCategories, List<String> excludeCategories);
 
 //    @Deprecated
 //    AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState);

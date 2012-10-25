@@ -36,10 +36,10 @@ package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
-import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -124,24 +124,20 @@ public final class TestVariables extends ItemSubset {
         return new BaseType[] { BaseType.INTEGER, BaseType.FLOAT };
     }
 
-
     @Override
-    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final TestProcessingContext testContext = (TestProcessingContext) context;
-        final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
-
+    protected Value handleSubset(final TestProcessingContext testProcessingContext, final List<TestPlanNode> matchedTestPlanNodes) {
         final List<SingleValue> values = new ArrayList<SingleValue>();
         final BaseType baseType = getBaseTypeAttrValue();
         boolean floatFound = false;
-
-        for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
-            final Value value = itemRefController.getItemController().evaluateVariableValue(getVariableIdentifier());
-            if (value != null && !value.isNull() && value.getCardinality() == Cardinality.SINGLE) {
-                if (baseType != null && value.getBaseType() == baseType ||
-                        baseType == null && value.getBaseType().isNumeric()) {
+        for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
+            final ItemProcessingContext itemProcessingContext = testProcessingContext.createItemSessionController(itemRefNode);
+            final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingContext.getTestProcessingMap().resolveAbstractPart(itemRefNode);
+            final Value value = itemProcessingContext.evaluateVariableValue(getVariableIdentifier());
+            if (!value.isNull() && value.getCardinality() == Cardinality.SINGLE) {
+                if ((baseType != null && value.getBaseType() == baseType) ||
+                        (baseType == null && value.getBaseType().isNumeric())) {
                     if (getWeightIdentifier() != null && (baseType == null || baseType.isFloat())) {
-                        final double weight = itemRefController.getItemRef().lookupWeight(getWeightIdentifier());
+                        final double weight = assessmentItemRef.lookupWeight(getWeightIdentifier());
                         final double number = ((NumberValue) value).doubleValue();
                         values.add(new FloatValue(number * weight));
                         floatFound = true;
@@ -163,7 +159,6 @@ public final class TestVariables extends ItemSubset {
             }
             resultValues.add(value);
         }
-
         return MultipleValue.createMultipleValue(resultValues);
     }
 }

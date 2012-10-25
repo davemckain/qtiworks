@@ -35,7 +35,22 @@ package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.SingleValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Super class for outcomeMaximum and outcomeMinimum expressions.
@@ -61,7 +76,6 @@ public abstract class OutcomeMinMax extends ItemSubset {
         getAttributes().add(new IdentifierAttribute(this, ATTR_WEIGHT_IDENTIFIER_NAME, false));
     }
 
-
     public Identifier getOutcomeIdentifier() {
         return getAttributes().getIdentifierAttribute(ATTR_OUTCOME_IDENTIFIER_NAME).getComputedValue();
     }
@@ -78,4 +92,31 @@ public abstract class OutcomeMinMax extends ItemSubset {
     public void setWeightIdentifier(final Identifier weightIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_WEIGHT_IDENTIFIER_NAME).setValue(weightIdentifier);
     }
+
+
+    @Override
+    protected final Value handleSubset(final TestProcessingContext testProcessingContext, final List<TestPlanNode> matchedTestPlanNodes) {
+        final List<SingleValue> resultValues = new ArrayList<SingleValue>();
+        for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
+            /* TODO! Need to find a way to get an item outcome declaration out */
+            final ItemProcessingContext itemProcessingContext = testProcessingContext.createItemSessionController(itemRefNode);
+            final VariableDeclaration declaration = itemProcessingContext.checkLocalVariableReference(this, getOutcomeIdentifier());
+            if (itemProcessingContext.checkVariableType(this, declaration, VariableType.OUTCOME)) {
+                final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) declaration;
+                if (outcomeDeclaration.getCardinality().isSingle()) {
+                    if (!outcomeDeclaration.getBaseType().isNumeric() || outcomeDeclaration.getNormalMaximum() == null) {
+                        return NullValue.INSTANCE;
+                    }
+                    final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingContext.getTestProcessingMap().resolveAbstractPart(itemRefNode);
+                    final double maximum = getMinOrMax(outcomeDeclaration);
+                    final double weight = assessmentItemRef.lookupWeight(getWeightIdentifier());
+
+                    resultValues.add(new FloatValue(maximum * weight));
+                }
+            }
+        }
+        return MultipleValue.createMultipleValue(resultValues);
+    }
+
+    protected abstract double getMinOrMax(OutcomeDeclaration outcomeDeclaration);
 }

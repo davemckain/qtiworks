@@ -34,10 +34,9 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
-import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -66,14 +65,11 @@ public final class NumberCorrect extends ItemSubset {
     }
 
     @Override
-    protected IntegerValue evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final TestProcessingContext testProcessingContext = (TestProcessingContext) context;
-        final List<AssessmentItemRefState> itemRefStates = testProcessingContext.lookupItemRefStates();
-
+    protected Value handleSubset(final TestProcessingContext testProcessingContext, final List<TestPlanNode> matchedTestPlanNodes) {
         int correctCount = 0;
-        for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            final AssessmentItemRefAttemptController itemRefController = testProcessingContext.getItemRefController(itemRefState);
-            final Boolean correct = itemRefController.isCorrect();
+        for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
+            final ItemProcessingContext itemProcessingContext = testProcessingContext.createItemSessionController(itemRefNode);
+            final Boolean correct = itemProcessingContext.isCorrect();
             if (correct!=null && correct.booleanValue()) {
                 correctCount++;
             }

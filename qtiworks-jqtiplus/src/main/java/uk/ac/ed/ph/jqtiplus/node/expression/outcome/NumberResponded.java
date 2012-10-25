@@ -34,9 +34,9 @@
 package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -66,13 +66,11 @@ public final class NumberResponded extends ItemSubset {
     }
 
     @Override
-    protected IntegerValue evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final TestProcessingContext testContext = (TestProcessingContext) context;
-        final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
-
+    protected Value handleSubset(final TestProcessingContext testProcessingContext, final List<TestPlanNode> matchedTestPlanNodes) {
         int respondedCount = 0;
-        for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            if (itemRefState.isResponded()) {
+        for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
+            final ItemProcessingContext itemProcessingContext = testProcessingContext.createItemSessionController(itemRefNode);
+            if (itemProcessingContext.getItemSessionState().isResponded()) {
                 respondedCount++;
             }
         }

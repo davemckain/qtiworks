@@ -93,6 +93,7 @@ public final class TestSessionController extends TestValidationController implem
         this.randomGenerator = null;
     }
 
+    @Override
     public TestProcessingMap getTestProcessingMap() {
         return testProcessingMap;
     }
@@ -136,7 +137,13 @@ public final class TestSessionController extends TestValidationController implem
         }
     }
 
-    private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode) {
+    @Override
+    public ItemSessionController createItemSessionController(final TestPlanNode itemRefNode) {
+        Assert.notNull(itemRefNode);
+        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
+            throw new IllegalArgumentException("TestPlanNode must have type " + TestNodeType.ASSESSMENT_ITEM_REF
+                    + " rather than " + itemRefNode.getTestNodeType());
+        }
         final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
         final ItemSessionState itemSessionState = getItemSessionState(itemRefNode);
         return new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
@@ -396,7 +403,8 @@ public final class TestSessionController extends TestValidationController implem
 
     //-------------------------------------------------------------------
 
-    public List<TestPlanNode> thingy(final Identifier sectionIdentifier, final List<String> includeCategories, final List<String> excludeCategories) {
+    @Override
+    public List<TestPlanNode> computeItemSubset(final Identifier sectionIdentifier, final List<String> includeCategories, final List<String> excludeCategories) {
         final TestPlan testPlan = testSessionState.getTestPlan();
 
         final List<TestPlanNode> itemRefNodes = new ArrayList<TestPlanNode>();

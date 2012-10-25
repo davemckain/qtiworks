@@ -35,18 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.expression.outcome;
 
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
-import uk.ac.ed.ph.jqtiplus.running.legacy.AssessmentItemRefAttemptController;
-import uk.ac.ed.ph.jqtiplus.state.legacy.AssessmentItemRefState;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
-import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.SingleValue;
-import uk.ac.ed.ph.jqtiplus.value.Value;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This expression, which can only be used in outcomes processing, simultaneously looks up the normalMinimum value
@@ -67,26 +55,7 @@ public final class OutcomeMinimum extends OutcomeMinMax {
     }
 
     @Override
-    protected Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
-        final TestProcessingContext testContext = (TestProcessingContext) context;
-        final List<AssessmentItemRefState> itemRefStates = testContext.lookupItemRefStates();
-
-        final List<SingleValue> resultValues = new ArrayList<SingleValue>();
-        for (final AssessmentItemRefState itemRefState : itemRefStates) {
-            final AssessmentItemRefAttemptController itemRefController = testContext.getItemRefController(itemRefState);
-            final OutcomeDeclaration outcomeDeclaration = itemRefController.getItemController().getSubjectItem().getOutcomeDeclaration(getOutcomeIdentifier());
-            if (outcomeDeclaration != null && outcomeDeclaration.getCardinality().isSingle()) {
-                if (!outcomeDeclaration.getBaseType().isNumeric() || outcomeDeclaration.getNormalMaximum() == null) {
-                    return NullValue.INSTANCE;
-                }
-
-                final double minimum = outcomeDeclaration.getNormalMinimum().doubleValue();
-                final double weight = itemRefController.getItemRef().lookupWeight(getWeightIdentifier());
-
-                resultValues.add(new FloatValue(minimum * weight));
-            }
-        }
-
-        return MultipleValue.createMultipleValue(resultValues);
+    protected double getMinOrMax(final OutcomeDeclaration outcomeDeclaration) {
+        return outcomeDeclaration.getNormalMinimum().doubleValue();
     }
 }

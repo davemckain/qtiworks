@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Random;
@@ -67,8 +68,8 @@ public interface ProcessingContext extends ValidationContext {
     Random getRandomGenerator();
 
     /**
-     * Looks up the variable defined in the subject item or test having the given {@link Identifier}
-     * and having the given permitted variable types.
+     * Looks up the declaration of the variable in the subject item or test having the given
+     * {@link Identifier} and having the given permitted variable types.
      * <p>
      * If successful, then the resulting {@link VariableDeclaration} is returned.
      * <p>
@@ -87,6 +88,8 @@ public interface ProcessingContext extends ValidationContext {
     /**
      * Returns the current value of the variable having the
      * given {@link Identifier} and having the given permitted variable types.
+     * <p>
+     * The returned value will not be null (but may be a {@link NullValue}).
      *
      * @param identifier required variable Identifier, which must not be null
      * @param permittedTypes permitted variable types. An empty array is treated as "any type allowed"

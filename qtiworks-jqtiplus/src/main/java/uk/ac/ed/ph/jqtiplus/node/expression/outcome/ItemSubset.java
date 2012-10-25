@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -134,6 +135,9 @@ public abstract class ItemSubset extends AbstractFunctionalExpression {
         /* TODO: Filter out the required assessmentItemRef instances and get the subclass to
          * process them in some suitable way.
          */
-
+        final List<TestPlanNode> matchedTestPlanNodes = testProcessingContext.computeItemSubset(getSectionIdentifier(), getIncludeCategories(), getExcludeCategories());
+        return handleSubset(testProcessingContext, matchedTestPlanNodes);
     }
+
+    protected abstract Value handleSubset(TestProcessingContext testProcessingContext, List<TestPlanNode> matchedTestPlanNodes);
 }
