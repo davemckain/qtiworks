@@ -37,7 +37,10 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.NavigationModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SubmissionModeAttribute;
 import uk.ac.ed.ph.jqtiplus.group.test.AssessmentSectionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,9 +62,6 @@ public final class TestPart extends AbstractPart {
     /** Name of submissionMode attribute in xml schema. */
     public static final String ATTR_SUBMISSION_MODE_NAME = SubmissionMode.QTI_CLASS_NAME;
 
-    /** ItemSessionControl with default values. It is used if no other is provided. */
-    private final ItemSessionControl defaultItemSessionControl;
-
     public TestPart(final AssessmentTest parent) {
         super(parent, QTI_CLASS_NAME);
 
@@ -70,8 +70,6 @@ public final class TestPart extends AbstractPart {
 
         getNodeGroups().add(new AssessmentSectionGroup(this));
         getNodeGroups().add(new TestFeedbackGroup(this));
-
-        defaultItemSessionControl = new ItemSessionControl(this);
     }
 
     @Override
@@ -102,18 +100,6 @@ public final class TestPart extends AbstractPart {
         getAttributes().getSubmissionModeAttribuye(ATTR_SUBMISSION_MODE_NAME).setValue(submissionMode);
     }
 
-    /**
-     * Gets itemSessionControl child if specified; defaultItemSessionControl otherwise.
-     *
-     * @return itemSessionControl child if specified; defaultItemSessionControl otherwise
-     */
-    @Override
-    public ItemSessionControl computeItemSessionControl() {
-        final ItemSessionControl itemSessionControl = getItemSessionControl();
-
-        return itemSessionControl != null ? itemSessionControl : defaultItemSessionControl;
-    }
-
     public List<AssessmentSection> getAssessmentSections() {
         return getNodeGroups().getAssessmentSectionGroup().getAssessmentSections();
     }
@@ -122,32 +108,38 @@ public final class TestPart extends AbstractPart {
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }
 
-    //    /**
-    //     * Gets all viewable testFeedbacks with given access.
-    //     * Tests if feedbacks can be displayed.
-    //     *
-    //     * @param requestedAccess given access
-    //     * @return all testFeedbacks with given access
-    //     */
-    //    @ToRefactor
-    //    public List<TestFeedback> getTestFeedbacks(TestFeedbackAccess requestedAccess)
-    //    {
-    //        List<TestFeedback> result = new ArrayList<TestFeedback>();
-    //
-    //        for (TestFeedback feedback : getTestFeedbacks())
-    //            if (feedback.isVisible(requestedAccess))
-    //                result.add(feedback);
-    //
-    //        return result;
-    //    }
+    /**
+     * Gets all viewable testFeedbacks with given access.
+     * Tests if feedbacks can be displayed.
+     *
+     * @param requestedAccess given access
+     * @return all testFeedbacks with given access
+     */
+    @ToRefactor
+    public List<TestFeedback> getTestFeedbacks(final TestSessionState testSessionState, final TestFeedbackAccess requestedAccess)
+    {
+        final List<TestFeedback> result = new ArrayList<TestFeedback>();
+
+        for (final TestFeedback feedback : getTestFeedbacks()) {
+            if (feedback.isVisible(testSessionState, requestedAccess)) {
+                result.add(feedback);
+            }
+        }
+
+        return result;
+    }
 
     /**
+     * FIXME: This is out of date! Branches and preconditions are allowed in {@link NavigationMode#LINEAR}
+     * and ANY {@link SubmissionMode}. This method should no longer be used in future.
+     *
      * Returns true if jumps (preConditions and branchRules) are enabled; false otherwise.
      * Jumps (preConditions and branchRules) are enabled only in linear individual mode.
      * This is only convenient method for testing linear individual mode.
      *
      * @return true if jumps (preCondition and branchRule) are enabled; false otherwise
      */
+    @Deprecated
     public boolean areJumpsEnabled() {
         return getNavigationMode() == NavigationMode.LINEAR && getSubmissionMode() == SubmissionMode.INDIVIDUAL;
     }

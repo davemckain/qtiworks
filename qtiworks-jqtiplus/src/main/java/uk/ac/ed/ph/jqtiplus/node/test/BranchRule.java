@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * Represents the <code>branchRule</code> QTI class
@@ -160,6 +161,7 @@ public final class BranchRule extends AbstractJump {
         return getTarget().equals(EXIT_SECTION);
     }
 
+    @ToRefactor
     @Override
     protected void validateThis(final ValidationContext context) {
         super.validateThis(context);

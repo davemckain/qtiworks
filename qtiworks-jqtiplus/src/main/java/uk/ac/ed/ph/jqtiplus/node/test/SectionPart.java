@@ -100,22 +100,6 @@ public abstract class SectionPart extends AbstractPart {
 
     @Deprecated
     @Override
-    public ItemSessionControl computeItemSessionControl() {
-        final ItemSessionControl itemSessionControl = getItemSessionControl();
-        if (itemSessionControl != null) {
-            return itemSessionControl;
-        }
-
-        final SectionPart parentSection = getParentSection();
-        if (parentSection != null) {
-            return parentSection.computeItemSessionControl();
-        }
-
-        return getParentTestPart().computeItemSessionControl();
-    }
-
-    @Deprecated
-    @Override
     public boolean isJumpSafeSource() {
         final AssessmentSection parent = getParentSection();
         if (parent != null) {

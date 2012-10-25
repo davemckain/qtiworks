@@ -103,18 +103,6 @@ public abstract class AbstractPart extends UniqueControlObject {
     }
 
     /**
-     * Gets itemSessionControl object for this part.
-     * <p>
-     * Use this method instead of {@code getItemSessionControl}, because returned object of this method contains all fields (they are inherited from parent
-     * if they are not defined in this part).
-     *
-     * @return itemSessionControl object for this part
-     */
-    @ToRefactor
-    @Deprecated
-    public abstract ItemSessionControl computeItemSessionControl();
-
-    /**
      * Returns true if it is safe to jump from this object; false otherwise.
      * <p>
      * It is not safe to jump from shuffled not fixed object (or if any parent is shuffled and not fixed), because object could be moved after jump target (it

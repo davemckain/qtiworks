@@ -141,9 +141,9 @@ public final class AssessmentItemRefAttemptController {
         if (isFinished()) {
             throw new QtiItemFlowException(this, "Item reference is already finished.");
         }
-        if (!itemRef.computeItemSessionControl().getAllowSkipping()) {
-            throw new QtiItemFlowException(this, "It is not allowed to skip this item: ");
-        }
+//        if (!itemRef.computeItemSessionControl().getAllowSkipping()) {
+//            throw new QtiItemFlowException(this, "It is not allowed to skip this item: ");
+//        }
         skip(testAttemptController.getTimer().getCurrentTime());
         itemRefState.setSkipped(true);
         itemRefState.setFinished(true);
