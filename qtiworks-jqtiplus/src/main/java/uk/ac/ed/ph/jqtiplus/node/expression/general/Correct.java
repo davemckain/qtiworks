@@ -82,7 +82,8 @@ public final class Correct extends LookupExpression {
 
     @Override
     public Value evaluateInThisItem(final ItemProcessingContext itemProcessingContext, final Identifier itemVariableIdentifier) {
-        return itemProcessingContext.computeCorrectResponse(itemVariableIdentifier);
+        final Value correctResponseValue = itemProcessingContext.computeCorrectResponse(itemVariableIdentifier); /* (May be null) */
+        return correctResponseValue!=null ? correctResponseValue : NullValue.INSTANCE;
     }
 
     @Override
@@ -95,6 +96,6 @@ public final class Correct extends LookupExpression {
     public Value evaluateInReferencedItem(final ItemProcessingContext itemProcessingContext,
             final AssessmentItemRef assessmentItemRef, final TestPlanNode testPlanNode,
             final Identifier itemVariableIdentifier) {
-        return itemProcessingContext.computeCorrectResponse(itemVariableIdentifier);
+        return evaluateInThisItem(itemProcessingContext, itemVariableIdentifier);
     }
 }

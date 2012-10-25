@@ -121,17 +121,4 @@ public interface TestProcessingContext extends ProcessingContext, TestValidation
      */
     List<TestPlanNode> computeItemSubset(Identifier sectionIdentifier, List<String> includeCategories, List<String> excludeCategories);
 
-//    @Deprecated
-//    AssessmentItemRefAttemptController getItemRefController(AssessmentItemRefState itemRefState);
-//
-//    @Deprecated
-//    Map<AssessmentItemRefState, AssessmentItemRefAttemptController> getItemRefControllers(AssessmentItemRef itemRef);
-//
-//    @Deprecated
-//    List<AssessmentItemRefState> lookupItemRefStates();
-//
-//    /** Called during outcome processing when there's a {@link QtiProcessingInterrupt} */
-//    @Deprecated
-//    void terminate();
-
 }

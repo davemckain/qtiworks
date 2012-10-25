@@ -50,6 +50,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.SetCorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -647,10 +648,11 @@ public final class ItemSessionController extends ItemValidationController implem
 
     /**
      * Computes the current correct response for the {@link ResponseDeclaration} having the
-     * given {@link Identifier}. The result will be not null (though may be a {@link NullValue}).
+     * given {@link Identifier}. The result will be null if there is no {@link CorrectResponse}
+     * for this {@link ResponseDeclaration} or no overridden response has been set, otherwise a non-null {@link Value}.
      *
      * @param identifier identifier of the required variable, which must not be null
-     * @return computed correct response value, which will not be null.
+     * @return computed correct response value or null
      *
      * @throws QtiInvalidLookupException
      */
@@ -661,25 +663,37 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     /**
-     * Computes the current correct response for the {@link ResponseDeclaration} having the
-     * given {@link Identifier}. The result will be not null (though may be a {@link NullValue}).
+     * Computes the current correct response for the given {@link ResponseDeclaration}.
+     * The result will be null if there is no {@link CorrectResponse}
+     * for this {@link ResponseDeclaration}, otherwise a non-null {@link Value}.
      *
-     * @param identifier identifier of the required variable, which must not be null
-     * @return computed correct response value, which will not be null.
+     * @param declaration {@link ResponseDeclaration} to test, which must not be null
+     * @return computed correct response value or null
      */
     public Value computeCorrectResponse(final ResponseDeclaration declaration) {
         Assert.notNull(declaration);
         Value result = itemSessionState.getOverriddenCorrectResponseValue(declaration);
-        if (result == null) {
+        if (result==null) {
             final CorrectResponse correctResponse = declaration.getCorrectResponse();
             if (correctResponse != null) {
                 result = correctResponse.evaluate();
             }
-            else {
-                result = NullValue.INSTANCE;
-            }
         }
         return result;
+    }
+
+    /**
+     * Returns whether a correct response has been set for the given {@link ResponseDeclaration},
+     * either having been set via {@link SetCorrectResponse} or via an explicit
+     * {@link CorrectResponse}.
+     *
+     * @param declaration {@link ResponseDeclaration} to test, which must not be null
+     * @return whether a correct response has been set
+     */
+    public boolean hasCorrectResponse(final ResponseDeclaration declaration) {
+        Assert.notNull(declaration);
+        return declaration.getCorrectResponse()!=null
+                || itemSessionState.getOverriddenCorrectResponseValue(declaration)!=null;
     }
 
     //-------------------------------------------------------------------
@@ -771,20 +785,98 @@ public final class ItemSessionController extends ItemValidationController implem
     //-------------------------------------------------------------------
 
     /**
-     * FIXME: Returning Boolean is dodgy. Fix this API!
-     *
-     * Returns true if this declarations value matches its correctValue.
-     * Returns null if there is no correct value
+     * Returns whether the current response value for the given {@link ResponseDeclaration}
+     * matches the currently correct response set for it. Returns false if there is no
+     * correct response set.
+     * <p>
      * NOTE: This only tests for "the" "correct" response, not "a" correct response.
      *
-     * @return true if the associated correctResponse matches the value; false or null otherwise.
+     * @return true if the associated correctResponse matches the value; false otherwise.
      */
-    public Boolean isCorrectResponse(final ResponseDeclaration responseDeclaration) {
+    private boolean isCorrectResponse(final ResponseDeclaration responseDeclaration) {
         final Value correctResponseValue = computeCorrectResponse(responseDeclaration);
-        if (correctResponseValue.isNull()) {
-            return null;
+        if (correctResponseValue==null) {
+            return false;
         }
-        return Boolean.valueOf(correctResponseValue.equals(itemSessionState.getVariableValue(responseDeclaration)));
+        final Value currentResponseValue = itemSessionState.getVariableValue(responseDeclaration);
+        return currentResponseValue.equals(correctResponseValue);
+    }
+
+    /**
+     * Returns whether ALL response variables have their current value equal to their current
+     * correct response value.
+     * <p>
+     * NOTE: Remember that this only makes sense if the item uses {@link CorrectResponse}
+     * or {@link SetCorrectResponse}.
+     *
+     * @see #isIncorrect
+     */
+    @Override
+    public boolean isCorrect() {
+        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
+            if (!hasCorrectResponse(responseDeclaration)) {
+                return false;
+            }
+            if (!isCorrectResponse(responseDeclaration)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns whether SOME response variables does not have their current value equal to their current
+     * correct response value (or has no correct response set).
+     * <p>
+     * NOTE: Remember that this only makes sense if the item uses {@link CorrectResponse}
+     * or {@link SetCorrectResponse}.
+     *
+     * @see #isIncorrect
+     */
+    @Override
+    public boolean isIncorrect() {
+        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
+            if (!hasCorrectResponse(responseDeclaration)) {
+                return true;
+            }
+            if (!isCorrectResponse(responseDeclaration)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Counts the number of correct responses, as judged by
+     * {@link #isCorrectResponse(ResponseDeclaration)}.
+     *
+     * @see #isCorrectResponse(ResponseDeclaration)
+     */
+    public int countCorrect() {
+        int count = 0;
+        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
+            if (isCorrectResponse(responseDeclaration)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+    /**
+     * Counts the number of correct responses, as judged by
+     * {@link #isCorrectResponse(ResponseDeclaration)}.
+     *
+     * @see #isCorrectResponse(ResponseDeclaration)
+     */
+    public int countIncorrect() {
+        int count = 0;
+        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
+            if (!isCorrectResponse(responseDeclaration)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /**
@@ -812,99 +904,6 @@ public final class ItemSessionController extends ItemValidationController implem
             attemptAllowed = (maxAttempts==0 || numAttempts < maxAttempts);
         }
         return attemptAllowed;
-    }
-
-    /**
-     * FIXME: Returning Boolean is dodgy. Fix this API!
-     *
-     * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
-     * is in general not simply a case of comparing with <correctResponse/>
-     * Returns true if this item reference was correctly responded;
-     * Correctly responded means ALL defined responseVars match their associated correctResponse.
-     * Returns null if any of the responseDeclarations don't have correctResponses.
-     *
-     * @return true if this item reference was correctly responded; null if not all
-     *         responseDeclarations contain correctResponses; false otherwise
-     * @see #isIncorrect
-     */
-    @Override
-    public Boolean isCorrect() {
-        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (responseDeclaration.getCorrectResponse() == null) {
-                return null;
-            }
-        }
-        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (!Boolean.TRUE.equals(isCorrectResponse(responseDeclaration))) {
-                return Boolean.FALSE;
-            }
-        }
-        return Boolean.TRUE;
-    }
-
-    /**
-     * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
-     * is in general not simply a case of comparing with <correctResponse/>
-     * Returns the number of correct responses
-     *
-     * @return the number of correct responses
-     * @see #countIncorrect
-     */
-    public int countCorrect() {
-        int count = 0;
-        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (Boolean.TRUE.equals(isCorrectResponse(responseDeclaration))) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    /**
-     * FIXME: Returning Boolean is dodgy. Fix this API!
-     *
-     * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
-     * is in general not simply a case of comparing with <correctResponse/>
-     * Returns true if this item reference was incorrectly responded;
-     * Incorrectly responded means ANY defined responseVars didn't match their
-     * associated correctResponse.
-     * Returns null if any of the responseDeclarations don't have correctResponses.
-     *
-     * @return true if this item reference was incorrectly responded; null if not all
-     *         responseDeclarations contain correctResponses; false otherwise
-     * @see #isCorrect
-     */
-    @Override
-    public Boolean isIncorrect() {
-        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (responseDeclaration.getCorrectResponse() == null) {
-                return null;
-            }
-        }
-        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (!Boolean.TRUE.equals(isCorrectResponse(responseDeclaration))) {
-                return Boolean.TRUE;
-            }
-        }
-        return Boolean.FALSE;
-    }
-
-    /**
-     * FIXME-DM: THIS LOGIC IS PROBABLY WRONG!!! Judging whether a response is correct
-     * is in general not simply a case of comparing with <correctResponse/>
-     * Returns the number of incorrect responses
-     *
-     * @return the number of incorrect responses
-     * @see #countIncorrect
-     */
-    public int countIncorrect() {
-        int count = 0;
-        for (final ResponseDeclaration responseDeclaration : item.getResponseDeclarations()) {
-            if (!Boolean.TRUE.equals(isCorrectResponse(responseDeclaration))) {
-                count++;
-            }
-        }
-        return count;
     }
 
     @Override

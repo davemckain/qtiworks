@@ -76,7 +76,7 @@ public interface ItemProcessingContext extends ProcessingContext, ItemValidation
      */
     Value computeCorrectResponse(Identifier responseIdentifier);
 
-    Boolean isCorrect();
-    Boolean isIncorrect();
+    boolean isCorrect();
+    boolean isIncorrect();
 
 }

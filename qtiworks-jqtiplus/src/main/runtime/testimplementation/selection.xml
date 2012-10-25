@@ -17,6 +17,7 @@ Selection and ordering examples
       <assessmentItemRef href="questions/choice.xml" identifier="c2"/>
       <assessmentItemRef href="questions/choice.xml" identifier="c3" fixed="true"/>
       <assessmentSection identifier="subsection" title="subsection" visible="true">
+        <itemSessionControl allowSkipping="false"/>
         <assessmentItemRef href="questions/choice.xml" identifier="sub4" fixed="true"/>
       </assessmentSection>
     </assessmentSection>
@@ -27,6 +28,9 @@ Selection and ordering examples
       <sum>
         <variable identifier="c1.SCORE"/>
       </sum>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="SCORE">
+      <baseValue baseType="float">1.0</baseValue>
     </setOutcomeValue>
   </outcomeProcessing>
 </assessmentTest>

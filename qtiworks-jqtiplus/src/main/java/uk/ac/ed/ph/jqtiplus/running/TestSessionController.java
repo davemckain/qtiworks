@@ -40,11 +40,13 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -203,6 +205,29 @@ public final class TestSessionController extends TestValidationController implem
                 final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
                 itemSessionController.initialize();
             }
+        }
+    }
+
+    public void performOutcomeProcessing() {
+        logger.info("Test outcome processing starting on {}", getResolvedAssessmentTest().getRootNodeLookup().getSystemId());
+        fireLifecycleEvent(LifecycleEventType.TEST_OUTCOME_PROCESSING_STARTING);
+        try {
+            resetOutcomeVariables();
+
+            final OutcomeProcessing outcomeProcessing = getSubjectTest().getOutcomeProcessing();
+            if (outcomeProcessing != null) {
+                outcomeProcessing.evaluate(this);
+            }
+            logger.info("Test outcome processing completed on {}", getResolvedAssessmentTest().getRootNodeLookup().getSystemId());
+        }
+        finally {
+            fireLifecycleEvent(LifecycleEventType.TEST_OUTCOME_PROCESSING_FINISHED);
+        }
+    }
+
+    private void resetOutcomeVariables() {
+        for (final OutcomeDeclaration outcomeDeclaration : testProcessingMap.getValidOutcomeDeclarationMap().values()) {
+            testSessionState.setOutcomeValue(outcomeDeclaration, NullValue.INSTANCE);
         }
     }
 

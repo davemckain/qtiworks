@@ -70,5 +70,8 @@ public final class TestTest {
         System.out.println("TC item var ref: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.SCORE")));
         System.out.println("TC item var ref 1: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.1.SCORE")));
         System.out.println("TC item var ref 99: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.99.SCORE")));
+
+        testSessionController.performOutcomeProcessing();
+        System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
     }
 }
