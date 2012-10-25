@@ -46,6 +46,7 @@ import java.util.List;
  * @param <E> type of the identifier of the underlying {@link ControlObject}
  * @author David McKain
  */
+@Deprecated
 public abstract class ControlObjectState<E> implements Serializable {
 
     private static final long serialVersionUID = -1407010070268750764L;

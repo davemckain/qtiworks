@@ -56,6 +56,7 @@ import java.util.Map;
  * @author Jiri Kajaba
  * @author Jonathon Hare
  */
+@Deprecated
 @ObjectDumperOptions(DumpMode.DEEP)
 public final class AssessmentTestState extends ControlObjectState<String> {
 

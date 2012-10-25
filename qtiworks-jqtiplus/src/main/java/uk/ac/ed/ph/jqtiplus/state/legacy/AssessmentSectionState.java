@@ -42,16 +42,17 @@ import java.util.List;
 
 /**
  * Encapsulates the runtime state of an {@link AssessmentSection}
- * 
+ *
  * @author David McKain
  */
+@Deprecated
 @ObjectDumperOptions(DumpMode.DEEP)
 public final class AssessmentSectionState extends SectionPartState {
 
     private static final long serialVersionUID = -1465101870364998266L;
 
-    public AssessmentSectionState(AssessmentTestState testState, Identifier identifier, int siblingIndex,
-            List<? extends SectionPartState> runtimeSectionPartStates) {
+    public AssessmentSectionState(final AssessmentTestState testState, final Identifier identifier, final int siblingIndex,
+            final List<? extends SectionPartState> runtimeSectionPartStates) {
         super(testState, identifier, siblingIndex, runtimeSectionPartStates);
     }
 

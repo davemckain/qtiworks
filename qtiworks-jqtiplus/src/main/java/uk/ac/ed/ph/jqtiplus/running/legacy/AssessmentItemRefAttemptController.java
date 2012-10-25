@@ -50,6 +50,7 @@ import java.util.Date;
 /**
  * @author David McKain
  */
+@Deprecated
 public final class AssessmentItemRefAttemptController {
 
     private final AssessmentTestAttemptController testAttemptController;

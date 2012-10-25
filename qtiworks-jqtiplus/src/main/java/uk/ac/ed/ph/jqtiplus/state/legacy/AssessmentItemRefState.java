@@ -44,9 +44,10 @@ import java.util.Collections;
 
 /**
  * Encapsulates the runtime state of an {@link AssessmentItemRef}
- * 
+ *
  * @author David McKain
  */
+@Deprecated
 @ObjectDumperOptions(DumpMode.DEEP)
 public final class AssessmentItemRefState extends SectionPartState {
 
@@ -68,7 +69,7 @@ public final class AssessmentItemRefState extends SectionPartState {
 
     private final TimeRecord timeRecord;
 
-    public AssessmentItemRefState(AssessmentTestState testState, Identifier identifier, int siblingIndex, ItemSessionState itemState) {
+    public AssessmentItemRefState(final AssessmentTestState testState, final Identifier identifier, final int siblingIndex, final ItemSessionState itemState) {
         super(testState, identifier, siblingIndex, Collections.<SectionPartState> emptyList());
         this.itemState = itemState;
         this.sessionStatus = SessionStatus.INITIAL;
@@ -89,7 +90,7 @@ public final class AssessmentItemRefState extends SectionPartState {
         return presented;
     }
 
-    public void setPresented(boolean presented) {
+    public void setPresented(final boolean presented) {
         this.presented = presented;
     }
 
@@ -98,7 +99,7 @@ public final class AssessmentItemRefState extends SectionPartState {
         return responded;
     }
 
-    public void setResponded(boolean responded) {
+    public void setResponded(final boolean responded) {
         this.responded = responded;
     }
 
@@ -107,7 +108,7 @@ public final class AssessmentItemRefState extends SectionPartState {
         return skipped;
     }
 
-    public void setSkipped(boolean skipped) {
+    public void setSkipped(final boolean skipped) {
         this.skipped = skipped;
     }
 
@@ -116,7 +117,7 @@ public final class AssessmentItemRefState extends SectionPartState {
         return timedOut;
     }
 
-    public void setTimedOut(boolean timedOut) {
+    public void setTimedOut(final boolean timedOut) {
         this.timedOut = timedOut;
     }
 
@@ -125,7 +126,7 @@ public final class AssessmentItemRefState extends SectionPartState {
         return sessionStatus;
     }
 
-    public void setSessionStatus(SessionStatus sessionStatus) {
+    public void setSessionStatus(final SessionStatus sessionStatus) {
         this.sessionStatus = sessionStatus;
     }
 
@@ -134,7 +135,7 @@ public final class AssessmentItemRefState extends SectionPartState {
         return candidateComment;
     }
 
-    public void setCandidateComment(String candidateComment) {
+    public void setCandidateComment(final String candidateComment) {
         this.candidateComment = candidateComment;
     }
 

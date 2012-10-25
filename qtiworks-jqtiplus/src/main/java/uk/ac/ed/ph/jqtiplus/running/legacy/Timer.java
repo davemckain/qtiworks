@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.running.legacy;
 
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+
 import java.io.Serializable;
 
 /**
@@ -42,9 +44,10 @@ import java.io.Serializable;
  * <p>
  * In future this class should be split into interface Timer and class DefaultTimer (implementation of Timer interface). This change should help with testing of
  * time dependent functions (for automated tests must be created special discrete implementation of Timer interface).
- * 
+ *
  * @author Jiri Kajaba
  */
+@ToRefactor
 public class Timer implements Serializable {
 
     private static final long serialVersionUID = 1906553667772182166L;
@@ -55,7 +58,7 @@ public class Timer implements Serializable {
 
     /**
      * Gets current time.
-     * 
+     *
      * @return current time
      */
     public long getCurrentTime() {

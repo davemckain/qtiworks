@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.legacy;
 
-
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,9 +42,10 @@ import java.util.List;
 /**
  * Record of an amount of time in an assessmentItemRef
  * FIXME: Work out what the hell this does!
- * 
+ *
  * @author Jiri Kajaba
  */
+@ToRefactor
 public class TimeRecord implements Serializable {
 
     private static final long serialVersionUID = 5242908459013903094L;
@@ -67,7 +68,7 @@ public class TimeRecord implements Serializable {
 
     private boolean increaseDuration;
 
-    public TimeRecord(AssessmentItemRefState owner) {
+    public TimeRecord(final AssessmentItemRefState owner) {
         this.owner = owner;
         this.entered = new ArrayList<Long>();
         this.exited = new ArrayList<Long>();
@@ -138,7 +139,7 @@ public class TimeRecord implements Serializable {
     /**
      * FIXME: This used to be getTotal() but was renamed so that I could provide
      * access to the raw 'total' field. I'm not exactly sure what this does!!
-     * 
+     *
      * @return total time
      */
     public long getActualTotal() {
@@ -154,7 +155,7 @@ public class TimeRecord implements Serializable {
      * FIXME: This used to be getDuration() but was renamed so that I could
      * provide access to the raw 'duration' field. I'm not exactly sure what
      * this does!!
-     * 
+     *
      * @return total time
      */
     public long getActualDuration() {
@@ -173,7 +174,7 @@ public class TimeRecord implements Serializable {
         return increaseDuration;
     }
 
-    public void setIncreaseDuration(boolean increaseDuration) {
+    public void setIncreaseDuration(final boolean increaseDuration) {
         this.increaseDuration = increaseDuration;
     }
 
@@ -181,11 +182,11 @@ public class TimeRecord implements Serializable {
         return total;
     }
 
-    public void setTotal(long total) {
+    public void setTotal(final long total) {
         this.total = total;
     }
 
-    public void addToTotal(long addition) {
+    public void addToTotal(final long addition) {
         this.total += addition;
     }
 
@@ -193,19 +194,19 @@ public class TimeRecord implements Serializable {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(final long duration) {
         this.duration = duration;
     }
 
-    public void addToDuration(long addition) {
+    public void addToDuration(final long addition) {
         this.duration += addition;
     }
 
-    public void setSkipped(Long skipped) {
+    public void setSkipped(final Long skipped) {
         this.skipped = skipped;
     }
 
-    public void setTimedOut(Long timedOut) {
+    public void setTimedOut(final Long timedOut) {
         this.timedOut = timedOut;
     }
 
@@ -220,12 +221,12 @@ public class TimeRecord implements Serializable {
     //     {
     //     assert entered.size() == exited.size() :
     //     "Cannot enter item reference twice: " + owner.getIdentifier();
-    //    
+    //
     //     entered.add(time);
     //     if (!owner.isFinished() && owner.passMaximumTimeLimit())
     //     increaseDuration = true;
     //     }
-    //    
+    //
     //     /**
     //     * Enter new exit time.
     //     * @param time exit time
@@ -234,7 +235,7 @@ public class TimeRecord implements Serializable {
     //     {
     //     assert entered.size() == (exited.size() + 1) :
     //     "Cannot exit item reference prior to enter: " + owner.getIdentifier();
-    //    
+    //
     //     exited.add(time);
     //     long lastEntered = getLastEntered();
     //     total += time - lastEntered;
@@ -244,7 +245,7 @@ public class TimeRecord implements Serializable {
     //     increaseDuration = false;
     //     }
     //     }
-    //    
+    //
     //     /**
     //     * Enter new submit time.
     //     * @param time submit time
@@ -253,18 +254,18 @@ public class TimeRecord implements Serializable {
     //     {
     //     assert skipped == null : "Cannot submit skipped item reference: " +
     //     owner.getIdentifier();
-    //    
+    //
     //     assert timedOut == null : "Cannot submit timed out item reference: " +
     //     owner.getIdentifier();
-    //    
+    //
     //     assert entered.size() == (exited.size() + 1) :
     //     "Cannot submit item reference prior to enter: " + owner.getIdentifier();
-    //    
+    //
     //     submitted.add(time);
     //     duration += time - getLastEntered();
     //     increaseDuration = false;
     //     }
-    //    
+    //
     //     /**
     //     * Enter new skip time
     //     * @param time skip time
@@ -273,18 +274,18 @@ public class TimeRecord implements Serializable {
     //     {
     //     assert skipped == null : "Cannot skip item reference twice: " +
     //     owner.getIdentifier();
-    //    
+    //
     //     assert timedOut == null : "Cannot skip timed out item reference: " +
     //     owner.getIdentifier();
-    //    
+    //
     //     assert entered.size() == (exited.size() + 1) :
     //     "Cannot skip item reference prior to enter: " + owner.getIdentifier();
-    //    
+    //
     //     skipped = time;
     //     duration += time - getLastEntered();
     //     increaseDuration = false;
     //     }
-    //    
+    //
     //     /**
     //     * Enter new timeout time
     //     * @param time timeout time
@@ -293,13 +294,13 @@ public class TimeRecord implements Serializable {
     //     {
     //     assert skipped == null : "Cannot timeout skipped item reference: " +
     //     owner.getIdentifier();
-    //    
+    //
     //     assert timedOut == null : "Cannot time out item reference twice: " +
     //     owner.getIdentifier();
-    //    
+    //
     //     assert entered.size() == (exited.size() + 1) :
     //     "Cannot timeout item reference prior to enter: " + owner.getIdentifier();
-    //    
+    //
     //     timedOut = time;
     //     duration += time - getLastEntered();
     //     increaseDuration = false;

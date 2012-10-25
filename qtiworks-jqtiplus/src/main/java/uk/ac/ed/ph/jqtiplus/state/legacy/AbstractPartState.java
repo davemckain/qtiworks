@@ -44,9 +44,10 @@ import java.util.List;
 
 /**
  * Encapsulates the runtime state of an {@link AbstractPart}
- * 
+ *
  * @author David McKain
  */
+@Deprecated
 public abstract class AbstractPartState extends ControlObjectState<Identifier> {
 
     private static final long serialVersionUID = 3905562260354725912L;
@@ -60,7 +61,7 @@ public abstract class AbstractPartState extends ControlObjectState<Identifier> {
     /** Read-only access to parent in state hierarchy. This may differ from the hierarchy in the test due to selection/ordering/visibility */
     protected final List<? extends SectionPartState> childStates;
 
-    public AbstractPartState(AssessmentTestState testState, Identifier testIdentifier, List<? extends SectionPartState> childStates) {
+    public AbstractPartState(final AssessmentTestState testState, final Identifier testIdentifier, final List<? extends SectionPartState> childStates) {
         super(testIdentifier);
         this.testState = testState;
         this.childStates = Collections.unmodifiableList(childStates);
@@ -82,10 +83,10 @@ public abstract class AbstractPartState extends ControlObjectState<Identifier> {
 
     /**
      * Used only to complete the parent/child hierarchy. JQTI client applications MUST NOT call this.
-     * 
+     *
      * @param parentState
      */
-    protected void setParentState(ControlObjectState<?> parentState) {
+    protected void setParentState(final ControlObjectState<?> parentState) {
         this.parentState = parentState;
     }
 

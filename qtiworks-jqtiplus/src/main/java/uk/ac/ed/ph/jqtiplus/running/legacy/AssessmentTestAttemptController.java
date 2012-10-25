@@ -44,19 +44,20 @@ import uk.ac.ed.ph.jqtiplus.state.legacy.ControlObjectState;
 /**
  * THIS IS A MINIMISED BUT NON-FUNCTIONAL VERSION OF THE CLASS IN THE UNREFACTORED MODULE
  * THAT I HAVE INCLUDED TO MAKE THINGS COMPILE. DO NOT USE THIS CLASS!!
- * 
+ *
  * @author David McKain
  */
+@Deprecated
 @SuppressWarnings("unused")
 public class AssessmentTestAttemptController {
-    
+
     private final JqtiExtensionManager jqtiExtensionManager;
     private final ResolvedAssessmentTest resolvedAssessmentTest;
     private final AssessmentTest test;
     private final AssessmentTestState testState;
     private final Timer timer;
 
-    public AssessmentTestAttemptController(JqtiExtensionManager jqtiExtensionManager, ResolvedAssessmentTest resolvedAssessmentTest, AssessmentTestState assessmentTestState, Timer timer) {
+    public AssessmentTestAttemptController(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentTest resolvedAssessmentTest, final AssessmentTestState assessmentTestState, final Timer timer) {
         Assert.notNull(jqtiExtensionManager, "jqtiExtensionManager");
         Assert.notNull(resolvedAssessmentTest, "resolvedAssessmentTest");
         Assert.notNull(assessmentTestState, "assessmentTestState");
@@ -67,7 +68,7 @@ public class AssessmentTestAttemptController {
         this.testState = assessmentTestState;
         this.timer = timer;
     }
-    
+
     public JqtiExtensionManager getJqtiExtensionManager() {
         return jqtiExtensionManager;
     }
@@ -81,7 +82,7 @@ public class AssessmentTestAttemptController {
         return null;
     }
 
-    public boolean passMaximumTimeLimit(ControlObjectState<?> start) {
+    public boolean passMaximumTimeLimit(final ControlObjectState<?> start) {
         blowUp();
         return false;
     }

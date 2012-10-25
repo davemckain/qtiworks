@@ -46,6 +46,7 @@ import java.util.List;
  *
  * @author David McKain
  */
+@Deprecated
 @ObjectDumperOptions(DumpMode.DEEP)
 public final class TestPartState extends AbstractPartState {
 
@@ -54,7 +55,7 @@ public final class TestPartState extends AbstractPartState {
     /** READ-ONLY list of runtime {@link SectionPartState}s, taking into account selections and ordering */
     private final List<SectionPartState> runtimeSectionPartStates;
 
-    public TestPartState(AssessmentTestState testState, Identifier identifier, List<SectionPartState> runtimeSectionPartStates) {
+    public TestPartState(final AssessmentTestState testState, final Identifier identifier, final List<SectionPartState> runtimeSectionPartStates) {
         super(testState, identifier, runtimeSectionPartStates);
         this.runtimeSectionPartStates = Collections.unmodifiableList(runtimeSectionPartStates);
     }

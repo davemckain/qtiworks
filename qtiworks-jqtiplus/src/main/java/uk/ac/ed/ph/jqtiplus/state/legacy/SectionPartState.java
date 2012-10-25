@@ -40,9 +40,10 @@ import java.util.List;
 
 /**
  * Encapsulates the runtime state of a {@link SectionPart}
- * 
+ *
  * @author David McKain
  */
+@Deprecated
 public abstract class SectionPartState extends AbstractPartState {
 
     private static final long serialVersionUID = 5181218545848801081L;
@@ -51,7 +52,7 @@ public abstract class SectionPartState extends AbstractPartState {
 
     protected final SectionPartStateKey sectionPartStateKey;
 
-    public SectionPartState(AssessmentTestState testState, Identifier identifier, int siblingIndex, List<? extends SectionPartState> childStates) {
+    public SectionPartState(final AssessmentTestState testState, final Identifier identifier, final int siblingIndex, final List<? extends SectionPartState> childStates) {
         super(testState, identifier, childStates);
         this.siblingIndex = siblingIndex;
         this.sectionPartStateKey = new SectionPartStateKey(identifier, siblingIndex);
