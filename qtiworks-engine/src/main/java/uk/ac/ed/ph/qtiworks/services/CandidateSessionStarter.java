@@ -136,28 +136,28 @@ public class CandidateSessionStarter {
     //----------------------------------------------------
     // Candidate delivery access
 
-    public Delivery lookupItemDelivery(final long did)
+    public Delivery lookupDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final Delivery itemDelivery = deliveryDao.requireFindById(did);
-        ensureCandidateMayAccess(itemDelivery);
-        return itemDelivery;
+        final Delivery delivery = deliveryDao.requireFindById(did);
+        ensureCandidateMayAccess(delivery);
+        return delivery;
     }
 
     /**
      * FIXME: Currently we're only allowing access to public or owned deliveries! This will need
      * to be relaxed in order to allow "real" deliveries to be done.
      */
-    private User ensureCandidateMayAccess(final Delivery itemDelivery)
+    private User ensureCandidateMayAccess(final Delivery delivery)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
-        if (!itemDelivery.isOpen()) {
-            throw new PrivilegeException(caller, Privilege.LAUNCH_CLOSED_DELIVERY, itemDelivery);
+        if (!delivery.isOpen()) {
+            throw new PrivilegeException(caller, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
         }
-        final Assessment assessment = itemDelivery.getAssessment();
+        final Assessment assessment = delivery.getAssessment();
         if (!(assessment.isPublic()
-                || (itemDelivery.isLtiEnabled() && caller.getUserType()==UserType.LTI)
+                || (delivery.isLtiEnabled() && caller.getUserType()==UserType.LTI)
                 || caller.equals(assessment.getOwner()))) {
-            throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, itemDelivery);
+            throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
         }
         return caller;
     }
@@ -177,8 +177,8 @@ public class CandidateSessionStarter {
      */
     public CandidateSession createCandidateSession(final long did, final String exitUrl)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery itemDelivery = lookupItemDelivery(did);
-        return createCandidateSession(itemDelivery, exitUrl);
+        final Delivery delivery = lookupDelivery(did);
+        return createCandidateSession(delivery, exitUrl);
     }
 
     /**
