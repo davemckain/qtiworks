@@ -12,6 +12,58 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV15 [Development] (25/10/2012)</h3>
+  <p>
+    This snapshot includes a lot of the groundwork required for the test implementation,
+    with significant refactoring to the session state and controller classes. It also includes
+    another final QTI 2.1 schema.
+  </p>
+  <ul>
+    <li>
+      The <code>ValidationContext</code> callback API has been improved and many validators have been
+      updated to use the new convenience methods in this.
+    </li>
+    <li>
+      The <code>ProcessingContext</code> callback API now extends <code>ValidationContext</code> and
+      is richer and easier to use.
+    </li>
+    <li>
+      The requirement that items/tests be valid before running has been lifted. Instead, expression
+      evaluation will validate each expression (if required) and return NULL and log an error if not valid.
+    </li>
+    <li>
+      Resolution and evaluation of variable references has been completely rewritten. The <code>VariableReferenceIdentifier</code>
+      class has been removed and JQTI+ now accepts identifiers with dots in them. The behaviour or how
+      variable dereferencing works in the case of ambiguities has been clarified and documented.
+    </li>
+    <li>
+      Added new <code>ItemProcessingMap</code> and <code>TestProcessingMap</code> helper classes to contain
+      information about items/tests useful at runtime.
+    </li>
+    <li>
+      Added new <code>TestPlan</code> class to represent the test structure as visible to a candidate once
+      selection and ordering have been performed.
+    </li>
+    <li>
+      All test-specific expressions and processing rules have been updated to use the new API.
+      (Exceptions are <code>branchRule</code> and <code>preCondition</code>.)
+    </li>
+    <li>
+      Fixed logic issues with <code>EqualRounded</code> and <code>Rounded</code>.
+    </li>
+    <li>
+      Duration is now tracked during item delivery.
+    </li>
+    <li>
+      Some of the front-end web MVC/CRUD has been updated to support tests as well as items. (Further work is
+      needed to model test state and events...)
+    </li>
+  </ul>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
+
   <h3>1.0-DEV14 [Development] (28/09/2012)</h3>
   <p>
     This is the first development snapshot following the split into two instances.
