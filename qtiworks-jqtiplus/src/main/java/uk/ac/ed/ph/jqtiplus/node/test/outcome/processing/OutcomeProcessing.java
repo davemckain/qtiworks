@@ -89,8 +89,7 @@ public final class OutcomeProcessing extends AbstractNode {
             }
         }
         catch (final QtiProcessingInterrupt interrupt) {
-            //stop the test by setting to finished
-            context.terminate();
+            /* Terminate processing */
         }
     }
 }
