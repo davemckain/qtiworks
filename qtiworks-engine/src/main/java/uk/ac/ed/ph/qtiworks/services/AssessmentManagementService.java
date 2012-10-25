@@ -793,7 +793,7 @@ public class AssessmentManagementService {
         deliveryDao.persist(delivery);
 
         /* That's it! */
-        auditor.recordEvent("Created demo ItemDelivery #" + delivery.getId() + " for Assessment #" + assessment.getId());
+        auditor.recordEvent("Created demo Delivery #" + delivery.getId() + " for Assessment #" + assessment.getId());
         return delivery;
     }
 

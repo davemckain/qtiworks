@@ -167,8 +167,8 @@ public class CandidateSessionStarter {
 
     public CandidateSession createSystemSampleSession(final long aid, final String exitUrl)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery sampleItemDelivery = lookupSystemSampleDelivery(aid);
-        return createCandidateSession(sampleItemDelivery, exitUrl);
+        final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
+        return createCandidateSession(sampleDelivery, exitUrl);
     }
 
     /**
@@ -262,7 +262,7 @@ public class CandidateSessionStarter {
         candidateAuditLogger.logCandidateItemEvent(candidateSession, candidateItemEvent);
 
         auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
-                + " on ItemDelivery #" + delivery.getId());
+                + " on Delivery #" + delivery.getId());
         return candidateSession;
     }
 }
