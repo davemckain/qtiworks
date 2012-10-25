@@ -69,7 +69,7 @@ public final class NumberIncorrect extends ItemSubset {
     protected Value handleSubset(final TestProcessingContext testProcessingContext, final List<TestPlanNode> matchedTestPlanNodes) {
         int incorrectCount = 0;
         for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
-            final ItemProcessingContext itemProcessingContext = testProcessingContext.createItemSessionController(itemRefNode);
+            final ItemProcessingContext itemProcessingContext = testProcessingContext.getItemSessionContext(itemRefNode);
             final Boolean incorrect = itemProcessingContext.isIncorrect();
             if (incorrect!=null && incorrect.booleanValue()) {
                 incorrectCount++;

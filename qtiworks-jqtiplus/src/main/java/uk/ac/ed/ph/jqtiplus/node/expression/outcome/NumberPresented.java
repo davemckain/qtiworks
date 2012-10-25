@@ -68,7 +68,7 @@ public final class NumberPresented extends ItemSubset {
     protected Value handleSubset(final TestProcessingContext testProcessingContext, final List<TestPlanNode> matchedTestPlanNodes) {
         int presentedCount = 0;
         for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
-            final ItemProcessingContext itemProcessingContext = testProcessingContext.createItemSessionController(itemRefNode);
+            final ItemProcessingContext itemProcessingContext = testProcessingContext.getItemSessionContext(itemRefNode);
             if (itemProcessingContext.getItemSessionState().isPresented()) {
                 presentedCount++;
             }

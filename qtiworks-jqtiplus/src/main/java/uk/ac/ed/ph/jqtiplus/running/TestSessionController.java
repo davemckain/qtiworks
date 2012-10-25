@@ -138,6 +138,10 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     @Override
+    public ItemProcessingContext getItemSessionContext(final TestPlanNode itemRefNode) {
+        return createItemSessionController(itemRefNode);
+    }
+
     public ItemSessionController createItemSessionController(final TestPlanNode itemRefNode) {
         Assert.notNull(itemRefNode);
         if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
