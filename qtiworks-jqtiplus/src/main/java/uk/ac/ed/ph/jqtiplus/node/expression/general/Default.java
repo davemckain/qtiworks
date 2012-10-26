@@ -65,13 +65,12 @@ public final class Default extends LookupExpression {
     //----------------------------------------------------------------------
 
     @Override
-    protected void validateResolvedItemVariableReference(final ValidationContext context, final Identifier variableReferenceIdentifier, final VariableDeclaration resolvedDeclaration) {
+    protected void validateResolvedItemVariableReference(final ValidationContext context, final VariableDeclaration resolvedDeclaration) {
         context.checkVariableType(this, resolvedDeclaration, VariableType.RESPONSE, VariableType.TEMPLATE);
     }
 
     @Override
-    protected void validateResolvedTestVariableReference(final ValidationContext context, final Identifier variableReferenceIdentifier,
-            final ResolvedTestVariableReference resolvedReference) {
+    protected void validateResolvedTestVariableReference(final ValidationContext context, final ResolvedTestVariableReference resolvedReference) {
         context.checkVariableType(this, resolvedReference.getVariableDeclaration(),
                 VariableType.RESPONSE, VariableType.TEMPLATE);
     }

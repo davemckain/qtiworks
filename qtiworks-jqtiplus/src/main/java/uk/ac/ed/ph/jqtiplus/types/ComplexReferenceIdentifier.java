@@ -35,26 +35,25 @@ package uk.ac.ed.ph.jqtiplus.types;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.expression.general.LookupExpression;
 
 import java.io.Serializable;
 
 /**
- * Encapsulates a QTI "identifier" in its most common use cases.
+ * Special version of {@link Identifier} that allows period (.) characters in them.
  * <p>
- * The period character (.) is not allowed here. The related {@link ComplexReferenceIdentifier}
- * should be used in the small number of cases where these characters are allowed.
- * <p>
- * CombiningChars and Extenders are not currently supported!
+ * These are used for prefixed variable references in {@link LookupExpression}s.
  *
- * @see ComplexReferenceIdentifier
+ * @see Identifier
  *
  * @author David McKain
  */
-public final class Identifier implements Serializable, Comparable<Identifier> {
+public final class ComplexReferenceIdentifier implements Serializable, Comparable<ComplexReferenceIdentifier> {
 
     private static final long serialVersionUID = 1842878881636384148L;
 
     private final String value;
+    private final boolean dotted;
 
     /**
      * Parses the given Identifier String, making sure it follows the required syntax.
@@ -63,23 +62,29 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
      *
      * @throws QtiParseException if value is not a valid identifier
      */
-    public static Identifier parseString(final String value) {
+    public static ComplexReferenceIdentifier parseString(final String value) {
         verifyIdentifier(value);
-        return new Identifier(value);
+        return new ComplexReferenceIdentifier(value);
     }
 
     /**
-     * Creates an {@link Identifier} from the given String, without checking its syntax.
+     * Creates an {@link ComplexReferenceIdentifier} from the given String, without checking its syntax.
      * This should ONLY be used for identifiers that are known to be valid, such as the ones
      * defined in the QTI specification.
      */
-    public static Identifier assumedLegal(final String value) {
-        return new Identifier(value);
+    public static ComplexReferenceIdentifier assumedLegal(final String value) {
+        return new ComplexReferenceIdentifier(value);
     }
 
-    private Identifier(final String value) {
+    private ComplexReferenceIdentifier(final String value) {
         this.value = value;
+        this.dotted = value.indexOf('.')!=-1;
     }
+
+    public boolean isDotted() {
+        return dotted;
+    }
+
 
     @Override
     public String toString() {
@@ -93,15 +98,15 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof Identifier)) {
+        if (!(obj instanceof ComplexReferenceIdentifier)) {
             return false;
         }
-        final Identifier other = (Identifier) obj;
+        final ComplexReferenceIdentifier other = (ComplexReferenceIdentifier) obj;
         return value.equals(other.value);
     }
 
     @Override
-    public int compareTo(final Identifier other) {
+    public int compareTo(final ComplexReferenceIdentifier other) {
         return value.compareTo(other.value);
     }
 
@@ -119,9 +124,6 @@ public final class Identifier implements Serializable, Comparable<Identifier> {
 
         /* Check remaining characters */
         for (int i = 1; i < value.length(); i++) {
-            if (value.charAt(i) == '.') {
-                throw new QtiParseException("Invalid identifier '" + value + "': Period (.) characters are not allowed in this particular type of identifier.");
-            }
             if (!Character.isLetterOrDigit(value.codePointAt(i)) && value.charAt(i) != '_' && value.charAt(i) != '-'
                     && value.charAt(i) != '.') {
                 throw new QtiParseException("Invalid identifier '" + value + "': Character '" + value.charAt(i) + "' at position " + (i + 1) + " is not valid");

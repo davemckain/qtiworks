@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.exception2;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
@@ -50,14 +51,18 @@ public final class QtiInvalidLookupException extends QtiRuntimeException {
 
     private static final long serialVersionUID = 2827334569953049498L;
 
-    private final Identifier identifier;
+    private final ComplexReferenceIdentifier referenceIdentifier;
 
     public QtiInvalidLookupException(final Identifier identifier) {
-        super("Invalid variable lookup: " + identifier);
-        this.identifier = identifier;
+        this(ComplexReferenceIdentifier.assumedLegal(identifier.toString()));
     }
 
-    public Identifier getIdentifier() {
-        return identifier;
+    public QtiInvalidLookupException(final ComplexReferenceIdentifier referenceIdentifier) {
+        super("Invalid variable lookup: " + referenceIdentifier);
+        this.referenceIdentifier = referenceIdentifier;
+    }
+
+    public ComplexReferenceIdentifier getReferenceIdentifier() {
+        return referenceIdentifier;
     }
 }

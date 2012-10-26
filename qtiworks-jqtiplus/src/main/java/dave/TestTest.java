@@ -19,6 +19,7 @@ import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -67,9 +68,9 @@ public final class TestTest {
 
         System.out.println("TC test var lookup: " + testSessionController.evaluateVariableValue(Identifier.assumedLegal("SCORE")));
         System.out.println("TC test var ref: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("SCORE")));
-        System.out.println("TC item var ref: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.SCORE")));
-        System.out.println("TC item var ref 1: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.1.SCORE")));
-        System.out.println("TC item var ref 99: " + testSessionController.evaluateVariableReference(null, Identifier.assumedLegal("c2.99.SCORE")));
+        System.out.println("TC item var ref: " + testSessionController.evaluateVariableReference(null, ComplexReferenceIdentifier.assumedLegal("c2.SCORE")));
+        System.out.println("TC item var ref 1: " + testSessionController.evaluateVariableReference(null, ComplexReferenceIdentifier.assumedLegal("c2.1.SCORE")));
+        System.out.println("TC item var ref 99: " + testSessionController.evaluateVariableReference(null, ComplexReferenceIdentifier.assumedLegal("c2.99.SCORE")));
 
         testSessionController.performOutcomeProcessing();
         System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));

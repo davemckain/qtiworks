@@ -40,6 +40,8 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 /**
@@ -136,4 +138,23 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Lis
         }
         return found;
     }
+
+    @Override
+    public final VariableDeclaration isValidLocalVariableReference(final ComplexReferenceIdentifier variableReferenceIdentifier) {
+        if (variableReferenceIdentifier.isDotted()) {
+            return null;
+        }
+        return isValidLocalVariableReference(Identifier.assumedLegal(variableReferenceIdentifier.toString()));
+    }
+
+
+    @Override
+    public final VariableDeclaration checkLocalVariableReference(final QtiNode owner, final ComplexReferenceIdentifier variableReferenceIdentifier) {
+        if (variableReferenceIdentifier.isDotted()) {
+            fireValidationWarning(owner, "Variable references containing period (.) characters cannot be used here");
+            return null;
+        }
+        return checkLocalVariableReference(owner, Identifier.assumedLegal(variableReferenceIdentifier.toString()));
+    }
+
 }

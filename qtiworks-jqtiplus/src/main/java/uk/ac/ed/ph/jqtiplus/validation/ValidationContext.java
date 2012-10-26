@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -74,8 +75,10 @@ public interface ValidationContext extends NotificationFirer {
     AssessmentObject getSubject();
 
     /**
-     * Checks that the variable having the given {@link Identifier} can be successfully and uniquely
-     * dereferenced. Returns the resulting {@link VariableDeclaration} if successful, otherwise null.
+     * Tests that the variable having the given {@link Identifier} can be successfully and uniquely
+     * dereferenced.
+     * <p>
+     * Returns the resulting {@link VariableDeclaration} if successful, otherwise null.
      * <p>
      * NOTE: If the subject is an {@link AssessmentTest} then this only does a "local" reference
      * to an {@link OutcomeDeclaration} defined within the test.
@@ -85,8 +88,21 @@ public interface ValidationContext extends NotificationFirer {
     VariableDeclaration isValidLocalVariableReference(Identifier variableReferenceIdentifier);
 
     /**
-     * Checks that the variable reference {@link Identifier} resolves successfully and uniquely.
-     * A validation error is recorded and {@link NullValue} is returned if this is unsuccessful.
+     * Tests that the variable referenced by the given {@link ComplexReferenceIdentifier}
+     * can be successfully and uniquely dereferenced.
+     * <p>
+     * Returns the resulting {@link VariableDeclaration} if successful, otherwise null.
+     * <p>
+     * NOTE: If the subject is an {@link AssessmentTest} then this only does a "local" reference
+     * to an {@link OutcomeDeclaration} defined within the test.
+     *
+     * @see #checkLocalVariableReference(QtiNode, Identifier)
+     */
+    VariableDeclaration isValidLocalVariableReference(ComplexReferenceIdentifier variableReferenceIdentifier);
+
+    /**
+     * Checks that the variable reference {@link Identifier} resolves successfully and uniquely
+     * dereferenced. A validation error is recorded and {@link NullValue} is returned if this is unsuccessful.
      * <p>
      * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
      * otherwise null.
@@ -95,8 +111,24 @@ public interface ValidationContext extends NotificationFirer {
      * to an {@link OutcomeDeclaration} defined within the test.
      *
      * @see #isValidVariableReference(QtiNode, Identifier)
+     * @see #checkLocalVariableReference(QtiNode, ComplexReferenceIdentifier)
      */
     VariableDeclaration checkLocalVariableReference(QtiNode owner, Identifier variableReferenceIdentifier);
+
+    /**
+     * Checks that the variable reference {@link Identifier} resolves successfully and uniquely
+     * dereferenced. A validation error is recorded and {@link NullValue} is returned if this is unsuccessful.
+     * <p>
+     * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
+     * otherwise null.
+     * <p>
+     * NOTE: If the subject is an {@link AssessmentTest} then this only does a "local" reference
+     * to an {@link OutcomeDeclaration} defined within the test.
+     *
+     * @see #isValidVariableReference(QtiNode, ComplexReferenceIdentifier)
+     * @see #checkLocalVariableReference(QtiNode, Identifier)
+     */
+    VariableDeclaration checkLocalVariableReference(QtiNode owner, ComplexReferenceIdentifier variableReferenceIdentifier);
 
     /**
      * Checks that the given {@link VariableDeclaration} is of one of the stated {@link VariableType}s,

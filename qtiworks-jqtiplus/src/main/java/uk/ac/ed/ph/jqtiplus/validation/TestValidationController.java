@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.List;
@@ -128,7 +129,7 @@ public class TestValidationController extends AbstractValidationContext<Assessme
     }
 
     @Override
-    public ResolvedTestVariableReference isValidDeepVariableReference(final Identifier variableReferenceIdentifier) {
+    public ResolvedTestVariableReference isValidComplexVariableReference(final ComplexReferenceIdentifier variableReferenceIdentifier) {
         final List<ResolvedTestVariableReference> resolvedReferences = resolvedAssessmentTest.resolveVariableReference(variableReferenceIdentifier);
         if (resolvedReferences==null) {
             /* Test lookup failed, which is impossible here */
@@ -146,7 +147,7 @@ public class TestValidationController extends AbstractValidationContext<Assessme
     }
 
     @Override
-    public ResolvedTestVariableReference checkDeepVariableReference(final QtiNode owner, final Identifier variableReferenceIdentifier) {
+    public ResolvedTestVariableReference checkComplexVariableReference(final QtiNode owner, final ComplexReferenceIdentifier variableReferenceIdentifier) {
         final List<ResolvedTestVariableReference> resolvedReferences = resolvedAssessmentTest.resolveVariableReference(variableReferenceIdentifier);
         if (resolvedReferences==null) {
             /* Test lookup failed, which is impossible here */

@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.general;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.ComplexReferenceIdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.node.expression.AbstractFunctionalExpression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -73,15 +74,15 @@ public abstract class LookupExpression extends AbstractFunctionalExpression impl
 
     public LookupExpression(final ExpressionParent parent, final String qtiClassName) {
         super(parent, qtiClassName);
-        getAttributes().add(new IdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
+        getAttributes().add(new ComplexReferenceIdentifierAttribute(this, ATTR_IDENTIFIER_NAME, true));
     }
 
-    public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
+    public ComplexReferenceIdentifier getIdentifier() {
+        return getAttributes().getComplexReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    public void setIdentifier(final Identifier identifier) {
-        getAttributes().getIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
+    public void setIdentifier(final ComplexReferenceIdentifier identifier) {
+        getAttributes().getComplexReferenceIdentifierAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
     //----------------------------------------------------------------------
@@ -90,7 +91,7 @@ public abstract class LookupExpression extends AbstractFunctionalExpression impl
     @Override
     protected final void validateThis(final ValidationContext context) {
         super.validateThis(context);
-        final Identifier variableReferenceIdentifier = getIdentifier();
+        final ComplexReferenceIdentifier variableReferenceIdentifier = getIdentifier();
 
         if (context.isSubjectItem()) {
             /* Check reference within this item */
@@ -98,17 +99,17 @@ public abstract class LookupExpression extends AbstractFunctionalExpression impl
 
             /* If reference was OK, let subclasses do any further validation as required */
             if (resolvedDeclaration!=null) {
-                validateResolvedItemVariableReference(context, variableReferenceIdentifier, resolvedDeclaration);
+                validateResolvedItemVariableReference(context, resolvedDeclaration);
             }
         }
         else {
             /* Check reference within this test OR within referenced item */
             final TestValidationContext testValidationContext = (TestValidationContext) context;
-            final ResolvedTestVariableReference resolvedReference = testValidationContext.checkDeepVariableReference(this, variableReferenceIdentifier);
+            final ResolvedTestVariableReference resolvedReference = testValidationContext.checkComplexVariableReference(this, variableReferenceIdentifier);
 
             /* If reference was OK, let subclasses do any further validation as required */
             if (resolvedReference!=null) {
-                validateResolvedTestVariableReference(context, variableReferenceIdentifier, resolvedReference);
+                validateResolvedTestVariableReference(context, resolvedReference);
             }
         }
     }
@@ -118,14 +119,14 @@ public abstract class LookupExpression extends AbstractFunctionalExpression impl
      * {@link VariableDeclaration} within an {@link AssessmentItem}
      */
     protected abstract void validateResolvedItemVariableReference(ValidationContext context,
-            Identifier variableReferenceIdentifier, VariableDeclaration resolvedDeclaration);
+            VariableDeclaration resolvedDeclaration);
 
     /**
      * Subclasses should implement this to perform additional validation on the given
      * {@link ResolvedTestVariableReference} within an {@link AssessmentTest}
      */
     protected abstract void validateResolvedTestVariableReference(ValidationContext context,
-            Identifier variableReferenceIdentifier, ResolvedTestVariableReference resolvedReference);
+            ResolvedTestVariableReference resolvedReference);
 
     //----------------------------------------------------------------------
 
@@ -148,7 +149,7 @@ public abstract class LookupExpression extends AbstractFunctionalExpression impl
     }
 
     public final VariableDeclaration lookupTargetVariableDeclaration(final ValidationContext context) {
-        final Identifier referenceIdentifier = getIdentifier();
+        final ComplexReferenceIdentifier referenceIdentifier = getIdentifier();
 
         if (context.isSubjectItem()) {
             return context.isValidLocalVariableReference(referenceIdentifier);
@@ -156,7 +157,7 @@ public abstract class LookupExpression extends AbstractFunctionalExpression impl
         else {
             /* Check reference within this test OR within referenced item */
             final TestValidationContext testValidationContext = (TestValidationContext) context;
-            final ResolvedTestVariableReference resolvedTestVariableReference = testValidationContext.isValidDeepVariableReference(referenceIdentifier);
+            final ResolvedTestVariableReference resolvedTestVariableReference = testValidationContext.isValidComplexVariableReference(referenceIdentifier);
             return (resolvedTestVariableReference!=null) ? resolvedTestVariableReference.getVariableDeclaration() : null;
         }
     }
@@ -167,12 +168,12 @@ public abstract class LookupExpression extends AbstractFunctionalExpression impl
     protected final Value evaluateValidSelf(final ProcessingContext context, final Value[] childValues, final int depth) {
         logger.debug("{}Evaluation of expression {} on variable {} started.", new Object[] { formatIndent(depth), getQtiClassName(), getIdentifier() });
 
-        final Identifier referenceIdentifier = getIdentifier();
+        final ComplexReferenceIdentifier referenceIdentifier = getIdentifier();
         Value result;
         if (context.isSubjectItem()) {
             /* Variable reference within item */
             final ItemProcessingContext itemProcessingContext = (ItemProcessingContext) context;
-            result = evaluateInThisItem(itemProcessingContext, referenceIdentifier);
+            result = evaluateInThisItem(itemProcessingContext, Identifier.assumedLegal(referenceIdentifier.toString()));
         }
         else {
             /* Variable reference in test */

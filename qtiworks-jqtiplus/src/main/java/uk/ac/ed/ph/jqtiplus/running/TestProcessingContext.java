@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -91,7 +92,10 @@ public interface TestProcessingContext extends ProcessingContext, TestValidation
     }
 
     Value dereferenceVariable(QtiNode caller, Identifier referenceIdentifier,
-            DereferencedTestVariableHandler dereferencedVariableHandler);
+            DereferencedTestVariableHandler dereferencedTestVariableHandler);
+
+    Value dereferenceVariable(QtiNode caller, ComplexReferenceIdentifier referenceIdentifier,
+            DereferencedTestVariableHandler dereferencedTestVariableHandler);
 
     ItemProcessingContext getItemSessionContext(final TestPlanNode itemRefNode);
 

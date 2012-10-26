@@ -31,10 +31,9 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.value;
+package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,14 +44,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests <code>IdentifierValue</code> implementation of parsing value from <code>String</code>.
+ * Tests {@link ComplexReferenceIdentifier} implementation of parsing value from <code>String</code>.
  * <p>
- * This test contains only invalid <code>String</code> representations.
- *
- * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
+ * This test contains only valid <code>String</code> representations.
  */
 @RunWith(Parameterized.class)
-public class IdentifierValueRefuseTest {
+public class ComplexReferenceIdentifierAcceptTest {
 
     /**
      * Creates test data for this test.
@@ -62,33 +59,31 @@ public class IdentifierValueRefuseTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "" }, { " " }, { "-identifier" }, { ".identifier" }, { "1identifier" },
-                { "identifier:identifier" }, { "`A" }, { "A`" }, { "�A" }, { "A�" }, { "!A" }, { "A!" }, { "\"A" }, { "A\"" }, { "�A" }, { "A�" }, { "$A" },
-                { "A$" }, { "%A" }, { "A%" }, { "^A" }, { "A^" }, { "&A" }, { "A&" }, { "*A" }, { "A*" }, { "(A" }, { "A(" }, { ")A" }, { "A)" }, { "=A" },
-                { "A=" }, { "+A" }, { "A+" }, { "[A" }, { "A[" }, { "{A" }, { "A{" }, { "]A" }, { "A]" }, { "}A" }, { "A}" }, { ";A" }, { "A;" }, { ":A" },
-                { "A:" }, { "'A" }, { "A'" }, { "@A" }, { "A@" }, { "#A" }, { "A#" }, { "~A" }, { "A~" }, { "\\A" }, { "A\\" }, { "|A" }, { "A|" }, { ",A" },
-                { "A," }, { "<A" }, { "A<" }, { ">A" }, { "A>" }, { "/A" }, { "A/" }, { "?A" }, { "A?" }, { "*A" }, { "A*" },
+                { "identifier" },
+                { "ident.ifier" },
+                { "Identifier" },
+                { "IdenTifier" },
+                { "IDENTIFIER" },
+                { "identifier-123_A" },
+                { "_identifier" },
+                { "_Identifier" },
+                { "_IdenTifier" },
+                { "_IDENTIFIER" },
+                { "_identifier-123_A"},
         });
     }
 
     private final String string;
 
-    /**
-     * Constructs this test.
-     *
-     * @param string parsed <code>String</code>
-     */
-    public IdentifierValueRefuseTest(final String string) {
+    public ComplexReferenceIdentifierAcceptTest(final String string) {
         this.string = string;
     }
 
     /**
      * Tests parsing value from <code>String</code> representation.
-     *
-     * @throws QtiParseException if test was successful
      */
-    @Test(expected = QtiParseException.class)
-    public void testParseIdentifier() throws QtiParseException {
-        new IdentifierValue(Identifier.parseString(string));
+    @Test
+    public void testParseString() {
+        assertEquals(string, ComplexReferenceIdentifier.parseString(string).toString());
     }
 }

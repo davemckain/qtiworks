@@ -67,14 +67,14 @@ public final class Correct extends LookupExpression {
 
     @Override
     protected void validateResolvedItemVariableReference(final ValidationContext context,
-            final Identifier variableReferenceIdentifier, final VariableDeclaration resolvedDeclaration) {
+            final VariableDeclaration resolvedDeclaration) {
         /* Ensure that the referenced variable is a response variable. */
         context.checkVariableType(this, resolvedDeclaration, VariableType.RESPONSE);
     }
 
     @Override
     protected void validateResolvedTestVariableReference(final ValidationContext context,
-            final Identifier variableReferenceIdentifier, final ResolvedTestVariableReference resolvedReference) {
+            final ResolvedTestVariableReference resolvedReference) {
         context.checkVariableType(this, resolvedReference.getVariableDeclaration(), VariableType.RESPONSE);
     }
 

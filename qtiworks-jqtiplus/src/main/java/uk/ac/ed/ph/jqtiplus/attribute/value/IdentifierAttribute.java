@@ -38,33 +38,33 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
- * Attribute with identifier value.
- * 
+ * Attribute with {@link Identifier} value.
+ *
  * @author Jiri Kajaba
  */
 public final class IdentifierAttribute extends SingleAttribute<Identifier> {
 
     private static final long serialVersionUID = -2194882443131770832L;
 
-    public IdentifierAttribute(QtiNode parent, String localName, boolean required) {
+    public IdentifierAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, required);
     }
 
-    public IdentifierAttribute(QtiNode parent, String localName, Identifier defaultValue, boolean required) {
+    public IdentifierAttribute(final QtiNode parent, final String localName, final Identifier defaultValue, final boolean required) {
         super(parent, localName, defaultValue, required);
     }
 
-    public IdentifierAttribute(QtiNode parent, String localName, String namespaceUri, Identifier defaultValue, boolean required) {
+    public IdentifierAttribute(final QtiNode parent, final String localName, final String namespaceUri, final Identifier defaultValue, final boolean required) {
         super(parent, localName, namespaceUri, defaultValue, required);
     }
 
     @Override
-    protected Identifier parseQtiString(String value) {
+    protected Identifier parseQtiString(final String value) {
         return Identifier.parseString(value);
     }
-    
+
     @Override
-    protected String toQtiString(Identifier value) {
+    protected String toQtiString(final Identifier value) {
         return value.toString();
     }
 }

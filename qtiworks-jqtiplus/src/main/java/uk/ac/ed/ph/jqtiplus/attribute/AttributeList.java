@@ -49,6 +49,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ToleranceModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.ViewMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.VisibilityModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.ComplexReferenceIdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.CoordsAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.DateAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.DurationAttribute;
@@ -328,6 +329,9 @@ public final class AttributeList implements Serializable, Iterable<Attribute<?>>
         return (FloatAttribute) get(name);
     }
 
+    public ComplexReferenceIdentifierAttribute getComplexReferenceIdentifierAttribute(final String name) {
+        return (ComplexReferenceIdentifierAttribute) get(name);
+    }
 
     public IdentifierAttribute getIdentifierAttribute(final String name) {
         return (IdentifierAttribute) get(name);

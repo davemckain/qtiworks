@@ -26,7 +26,7 @@ Selection and ordering examples
   <outcomeProcessing>
     <setOutcomeValue identifier="SCORE">
       <sum>
-        <variable identifier="c1.SCORE"/>
+        <variable identifier="c2.SCORE"/>
       </sum>
     </setOutcomeValue>
     <setOutcomeValue identifier="SCORE">

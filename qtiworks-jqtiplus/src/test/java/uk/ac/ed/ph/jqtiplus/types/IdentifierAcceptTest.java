@@ -31,34 +31,58 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.validation;
+package uk.ac.ed.ph.jqtiplus.types;
 
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
-import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Callback interface to enable {@link QtiNode} to validate themselves.
- *
- * @author David McKain
+ * Tests {@link Identifier} implementation of parsing value from <code>String</code>.
+ * <p>
+ * This test contains only valid <code>String</code> representations.
  */
-public interface TestValidationContext extends ValidationContext {
+@RunWith(Parameterized.class)
+public class IdentifierAcceptTest {
 
     /**
-     * Returns the {@link AssessmentTest} being handled
+     * Creates test data for this test.
+     *
+     * @return test data for this test
      */
-    AssessmentTest getSubjectTest();
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                { "identifier" },
+                { "Identifier" },
+                { "IdenTifier" },
+                { "IDENTIFIER" },
+                { "identifier-123_A" },
+                { "_identifier" },
+                { "_Identifier" },
+                { "_IdenTifier" },
+                { "_IDENTIFIER" },
+                { "_identifier-123_A"},
+        });
+    }
+
+    private final String string;
+
+    public IdentifierAcceptTest(final String string) {
+        this.string = string;
+    }
 
     /**
-     * Returns the {@link ResolvedAssessmentTest} being handled
+     * Tests parsing value from <code>String</code> representation.
      */
-    ResolvedAssessmentTest getResolvedAssessmentTest();
-
-    ResolvedTestVariableReference isValidComplexVariableReference(final ComplexReferenceIdentifier referenceIdentifier);
-
-    ResolvedTestVariableReference checkComplexVariableReference(final QtiNode owner,
-            final ComplexReferenceIdentifier variableReferenceIdentifier);
-
+    @Test
+    public void testParseIdentifier() {
+        assertEquals(string, Identifier.parseString(string).toString());
+    }
 }

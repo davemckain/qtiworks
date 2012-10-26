@@ -56,6 +56,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeInstanceKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.utils.TreeWalkNodeHandler;
@@ -341,6 +342,10 @@ public final class TestSessionController extends TestValidationController implem
         return dereferenceVariable(caller, referenceIdentifier, variableEvaluator);
     }
 
+    public Value evaluateVariableReference(final QtiNode caller, final ComplexReferenceIdentifier referenceIdentifier) {
+        return dereferenceVariable(caller, referenceIdentifier, variableEvaluator);
+    }
+
     public Value evaluateVariableReference(final QtiNode caller, final ResolvedTestVariableReference resolvedTestVariableReference) {
         return dereferenceVariable(caller, resolvedTestVariableReference, variableEvaluator);
     }
@@ -366,6 +371,27 @@ public final class TestSessionController extends TestValidationController implem
 
     @Override
     public Value dereferenceVariable(final QtiNode caller, final Identifier referenceIdentifier,
+            final DereferencedTestVariableHandler dereferencedTestVariableHandler) {
+        Assert.notNull(referenceIdentifier);
+        Assert.notNull(dereferencedTestVariableHandler);
+
+        final List<ResolvedTestVariableReference> resolvedVariableReferences = resolvedAssessmentTest.resolveVariableReference(referenceIdentifier);
+        if (resolvedVariableReferences==null) {
+            throw new QtiLogicException("Did not expect null result here");
+        }
+        if (resolvedVariableReferences.size()==0) {
+            throw new QtiInvalidLookupException(referenceIdentifier);
+        }
+        final ResolvedTestVariableReference resultingVariableReference = resolvedVariableReferences.get(0);
+        if (resolvedVariableReferences.size()>1) {
+            fireRuntimeWarning(caller, "Complex variable reference " + referenceIdentifier
+                    + " within test could be derefenced in " + resolvedVariableReferences + " ways. Using the first of these");
+        }
+        return dereferenceVariable(caller, resultingVariableReference, dereferencedTestVariableHandler);
+    }
+
+    @Override
+    public Value dereferenceVariable(final QtiNode caller, final ComplexReferenceIdentifier referenceIdentifier,
             final DereferencedTestVariableHandler dereferencedTestVariableHandler) {
         Assert.notNull(referenceIdentifier);
         Assert.notNull(dereferencedTestVariableHandler);

@@ -31,64 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.value;
+package uk.ac.ed.ph.jqtiplus.attribute.value;
 
-import static org.junit.Assert.assertEquals;
-
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 
 /**
- * Tests <code>IdentifierValue</code> implementation of parsing value from <code>String</code>.
- * <p>
- * This test contains only valid <code>String</code> representations.
+ * Attribute with {@link ComplexReferenceIdentifier} value
  *
- * @see Identifier
- * @see uk.ac.ed.ph.jqtiplus.value.IdentifierValue
+ * @author David McKain
  */
-@RunWith(Parameterized.class)
-public class IdentifierValueAcceptTest {
+public final class ComplexReferenceIdentifierAttribute extends SingleAttribute<ComplexReferenceIdentifier> {
 
-    /**
-     * Creates test data for this test.
-     *
-     * @return test data for this test
-     */
-    @Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { "identifier" },
-                { "ident.ifier" },
-                { "Identifier" },
-                { "IdenTifier" },
-                { "IDENTIFIER" },
-                { "identifier-123_A" },
-                { "_identifier" },
-                { "_Identifier" },
-                { "_IdenTifier" },
-                { "_IDENTIFIER" },
-                { "_identifier-123_A"},
-        });
+    private static final long serialVersionUID = -5849955226891367741L;
+
+    public ComplexReferenceIdentifierAttribute(final QtiNode parent, final String localName, final boolean required) {
+        super(parent, localName, required);
     }
 
-    private final String string;
-
-    public IdentifierValueAcceptTest(final String string) {
-        this.string = string;
+    public ComplexReferenceIdentifierAttribute(final QtiNode parent, final String localName, final ComplexReferenceIdentifier defaultValue, final boolean required) {
+        super(parent, localName, defaultValue, required);
     }
 
-    /**
-     * Tests parsing value from <code>String</code> representation.
-     */
-    @Test
-    public void testParseIdentifier() {
-        assertEquals(string, new IdentifierValue(Identifier.parseString(string)).toQtiString());
+    public ComplexReferenceIdentifierAttribute(final QtiNode parent, final String localName, final String namespaceUri, final ComplexReferenceIdentifier defaultValue, final boolean required) {
+        super(parent, localName, namespaceUri, defaultValue, required);
+    }
+
+    @Override
+    protected ComplexReferenceIdentifier parseQtiString(final String value) {
+        return ComplexReferenceIdentifier.parseString(value);
+    }
+
+    @Override
+    protected String toQtiString(final ComplexReferenceIdentifier value) {
+        return value.toString();
     }
 }

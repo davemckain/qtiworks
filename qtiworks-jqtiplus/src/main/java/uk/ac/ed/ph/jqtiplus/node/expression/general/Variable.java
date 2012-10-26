@@ -85,7 +85,6 @@ public final class Variable extends LookupExpression {
 
     @Override
     protected void validateResolvedItemVariableReference(final ValidationContext context,
-            final Identifier variableReferenceIdentifier,
             final VariableDeclaration resolvedDeclaration) {
         final Identifier weightIdentifier = getWeightIdentifier();
         if (weightIdentifier!=null) {
@@ -95,8 +94,7 @@ public final class Variable extends LookupExpression {
     }
 
     @Override
-    protected void validateResolvedTestVariableReference(final ValidationContext context, final Identifier variableReferenceIdentifier,
-            final ResolvedTestVariableReference resolvedReference) {
+    protected void validateResolvedTestVariableReference(final ValidationContext context, final ResolvedTestVariableReference resolvedReference) {
         final Identifier weightIdentifier = getWeightIdentifier();
         if (weightIdentifier!=null) {
             if (resolvedReference.isItemVariableReference()) {

@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.net.URI;
@@ -49,8 +50,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Wraps up the lookup of an {@link AssessmentTest} and all of the unique
@@ -142,71 +141,65 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     }
 
     /**
-     * Resolves the given variable reference, supporting references to both test variables and
-     * referenced item variables using 'dotted' notation defined in the discussion of the
-     * <code>variable</code> class in the QTI information model.
+     * Resolves the given variable reference using the given simple {@link Identifier}.
      * <p>
-     * The resolution is not guaranteed to return a single result, even if identifiers are all
-     * correctly unique, as the dotted notation is ambiguous. Therefore a List of matches is
-     * returned; the first of these being considered the "best" option if the test is valid.
+     * This type of reference will always resolve a local test variable.
+     * <p>
+     * The resolution will give a single result unless there are duplicate variables having
+     * the same identifier (in which case the test is not considered valid).
      * <p>
      * Return null if the test lookup was unsuccessful.
      *
      * @param variableReferenceIdentifier
+     *
+     * @see #resolveVariableReference(ComplexReferenceIdentifier)
      */
     public List<ResolvedTestVariableReference> resolveVariableReference(final Identifier variableReferenceIdentifier) {
         if (!testLookup.wasSuccessful()) {
             return null;
         }
-        final String reference = variableReferenceIdentifier.toString();
-        final int dotPos = reference.indexOf('.');
         final List<ResolvedTestVariableReference> result = new ArrayList<ResolvedTestVariableReference>();
-        if (dotPos==-1) {
-            /* Reference contains no dot, so *must* be referring to a variable within this test */
-            final List<OutcomeDeclaration> outcomeDeclarations = tryTestVariableDeclaration(Identifier.parseString(reference));
+        final List<OutcomeDeclaration> outcomeDeclarations = tryTestVariableDeclaration(variableReferenceIdentifier);
+        for (final OutcomeDeclaration outcomeDeclaration : outcomeDeclarations) {
+            result.add(new ResolvedTestVariableReference(outcomeDeclaration));
+        }
+        return result;
+    }
+
+    /**
+     * Resolves the given variable reference using the given {@link ComplexReferenceIdentifier},
+     * which supports references to both test variables and referenced item variables using 'dotted'
+     * notation defined in the discussion of the <code>variable</code> class in the QTI information model.
+     * <p>
+     * The resolution will give a single result unless there are duplicate variables having
+     * the same identifier (in which case the test is not considered valid).
+     * <p>
+     * Return null if the test lookup was unsuccessful.
+     *
+     * @param variableReferenceIdentifier
+     */
+    public List<ResolvedTestVariableReference> resolveVariableReference(final ComplexReferenceIdentifier variableReferenceIdentifier) {
+        if (!testLookup.wasSuccessful()) {
+            return null;
+        }
+        final List<ResolvedTestVariableReference> result = new ArrayList<ResolvedTestVariableReference>();
+
+        /* Split the reference across any '.' characters */
+        final String[] components = variableReferenceIdentifier.toString().split("\\.");
+        if (components.length==1) {
+            /* No dots, so it must be a local test variable reference */
+            final List<OutcomeDeclaration> outcomeDeclarations = tryTestVariableDeclaration(Identifier.parseString(components[0]));
             for (final OutcomeDeclaration outcomeDeclaration : outcomeDeclarations) {
                 result.add(new ResolvedTestVariableReference(outcomeDeclaration));
             }
         }
-        else {
-            /* Identifier contains a dot, so will be of the form:
-             *
-             * TESTVAR (containing a dot)
-             * ITEMREF.ITEMVAR
-             * or ITEMREF.n.ITEMVAR
-             *
-             * However, both TESTVAR and ITEMVAR are identifiers so may themselves contains dots and numbers,
-             * so there are possibly multiple resolutions. We return all possibilities, checked as follows
-             * as follows:
-             *
-             * (1) All successful matches of the form ITEMREF.n.ITEMVAR, running through all ITEMREFS in the order listed in the test and checking for an item variable with identifier ITEMVAR.
-             * (2) All successful matches of the form ITEMREF.ITEMVAR, running through all ITEMREFS in the order listed in the test and checking for an item variable with identifier ITEMVAR
-             * (3) All successful matches of the form TESTVAR, checking for a test variable with identifier TESTVAR (containing a dot)
-             */
-            for (final AssessmentItemRef itemRef : assessmentItemRefs) { /*  (1) above */
-                final Identifier itemRefIdentifier = itemRef.getIdentifier();
-                final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\d+)\\.(\\p{L}.*)$");
-                final Matcher matcher = pattern.matcher(reference);
-                if (matcher.matches()) {
-                    final Integer instanceNumber = Integer.valueOf(matcher.group(1));
-                    final Identifier possibleItemVariableIdentifier = Identifier.assumedLegal(matcher.group(2));
-
-                    final List<VariableDeclaration> itemVariableDeclarations = tryItemVariableDeclaration(itemRef, possibleItemVariableIdentifier);
-                    if (itemVariableDeclarations!=null) {
-                        for (final VariableDeclaration itemVariableDeclaration : itemVariableDeclarations) {
-                            result.add(new ResolvedTestVariableReference(itemRef, itemVariableDeclaration, instanceNumber));
-                        }
-                    }
-                }
-            }
-            for (final AssessmentItemRef itemRef : assessmentItemRefs) { /*  (2) above */
-                final Identifier itemRefIdentifier = itemRef.getIdentifier();
-                final Pattern pattern = Pattern.compile("^" + itemRefIdentifier + "\\.(\\p{L}.*)$");
-                final Matcher matcher = pattern.matcher(reference);
-                if (matcher.matches()) {
-                    final Identifier possibleItemVariableIdentifier = Identifier.assumedLegal(matcher.group(1));
-
-                    final List<VariableDeclaration> itemVariableDeclarations = tryItemVariableDeclaration(itemRef, possibleItemVariableIdentifier);
+        else if (components.length==2) {
+            /* It's a ITEMREF.ITEMVAR reference (hopefully) */
+            final Identifier itemRefIdentifier = Identifier.assumedLegal(components[0]);
+            final Identifier itemVarIdentifier = Identifier.assumedLegal(components[1]);
+            for (final AssessmentItemRef itemRef : assessmentItemRefs) {
+                if (itemRefIdentifier.equals(itemRef.getIdentifier())) {
+                    final List<VariableDeclaration> itemVariableDeclarations = tryItemVariableDeclaration(itemRef, itemVarIdentifier);
                     if (itemVariableDeclarations!=null) {
                         for (final VariableDeclaration itemVariableDeclaration : itemVariableDeclarations) {
                             result.add(new ResolvedTestVariableReference(itemRef, itemVariableDeclaration));
@@ -214,10 +207,26 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
                     }
                 }
             }
-            /* (3) above */
-            final List<OutcomeDeclaration> outcomeDeclarations = tryTestVariableDeclaration(Identifier.parseString(reference));
-            for (final OutcomeDeclaration outcomeDeclaration : outcomeDeclarations) {
-                result.add(new ResolvedTestVariableReference(outcomeDeclaration));
+        }
+        else if (components.length==3) {
+            /* It's an ITEMREF.n.ITEMVAR reference (hopefully) */
+            try {
+                final Integer instanceNumber = Integer.parseInt(components[1]);
+                final Identifier itemRefIdentifier = Identifier.assumedLegal(components[0]);
+                final Identifier itemVarIdentifier = Identifier.assumedLegal(components[2]);
+                for (final AssessmentItemRef itemRef : assessmentItemRefs) {
+                    if (itemRefIdentifier.equals(itemRef.getIdentifier())) {
+                        final List<VariableDeclaration> itemVariableDeclarations = tryItemVariableDeclaration(itemRef, itemVarIdentifier);
+                        if (itemVariableDeclarations!=null) {
+                            for (final VariableDeclaration itemVariableDeclaration : itemVariableDeclarations) {
+                                result.add(new ResolvedTestVariableReference(itemRef, itemVariableDeclaration, instanceNumber));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (final NumberFormatException e) {
+                /* Not an instance number, so ignore */
             }
         }
         return result;
