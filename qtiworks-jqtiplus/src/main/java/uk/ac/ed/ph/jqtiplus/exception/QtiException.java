@@ -38,16 +38,16 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * <p>
  * It is abstract class because you should <em>never</em> use this class directly. For example:
  * </p>
- * 
+ *
  * <pre>
  * throw new QTIException()
  * </pre>
- * 
+ *
  * (this is not possible anyway)
  * <p>
  * And you should <em>never</em> use this class in method header also. For example:
  * </p>
- * 
+ *
  * <pre>
  * void someMethod() throws QTIException
  * </pre>
@@ -55,7 +55,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * Only two legal usages are as superclass of all checked exceptions and in catch block, when you don't need to distinguish between different exceptions types.
  * For example:
  * </p>
- * 
+ *
  * <pre>
  * try
  * {
@@ -69,7 +69,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * <p>
  * Checked exceptions are reserved for special purposes. In general case you should use unchecked exception instead.
  * </p>
- * 
+ *
  * @see uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException
  * @author Jiri Kajaba
  */
@@ -77,39 +77,19 @@ public abstract class QtiException extends Exception {
 
     private static final long serialVersionUID = 4870005618050972243L;
 
-    /**
-     * Constructs A new <code>QTIException</code> with <code>null</code> as its detailed message.
-     */
     public QtiException() {
         super();
     }
 
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
-    public QtiException(String message) {
+    public QtiException(final String message) {
         super(message);
     }
 
-    /**
-     * Constructs A new exception with the specified detailed message and cause.
-     * 
-     * @param message the detail message
-     * @param cause the cause
-     */
-    public QtiException(String message, Throwable cause) {
+    public QtiException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    /**
-     * Constructs A new exception with the specified cause.
-     * If cause is not <code>null</code> detailed message is set from this cause.
-     * 
-     * @param cause the cause
-     */
-    public QtiException(Throwable cause) {
+    public QtiException(final Throwable cause) {
         super(cause);
     }
 }

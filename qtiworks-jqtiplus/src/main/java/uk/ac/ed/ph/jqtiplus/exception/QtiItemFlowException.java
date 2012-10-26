@@ -37,24 +37,25 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 
 /**
  * This exception is used for propagating errors during item flow.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class QtiItemFlowException extends QtiRuntimeException {
+@Deprecated
+public final class QtiItemFlowException extends QtiRuntimeException {
 
     private static final long serialVersionUID = -5609897195533003863L;
 
     /**
      * Constructs A new exception with the specified detailed message.
-     * 
+     *
      * @param source source of this exception
      * @param message the detail message
      */
-    public QtiItemFlowException(QtiNode source, String message) {
+    public QtiItemFlowException(final QtiNode source, final String message) {
         super(message + " (" + source.computeXPath() + ")");
     }
 
-    public QtiItemFlowException(Object source, String message) {
+    public QtiItemFlowException(final Object source, final String message) {
         super(message + " (" + source.toString() + ")");
     }
 }

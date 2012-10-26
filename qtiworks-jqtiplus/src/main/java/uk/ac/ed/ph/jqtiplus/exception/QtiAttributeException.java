@@ -33,21 +33,18 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
+import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
+
 /**
  * This exception is used for reporting problems with attributes.
- * 
+ *
  * @author Jiri Kajaba
  */
-public class QtiAttributeException extends QtiRuntimeException {
+public class QtiAttributeException extends QtiModelException {
 
     private static final long serialVersionUID = 2704011285854256980L;
 
-    /**
-     * Constructs A new exception with the specified detailed message.
-     * 
-     * @param message the detail message
-     */
-    public QtiAttributeException(String message) {
+    public QtiAttributeException(final String message) {
         super(message);
     }
 }

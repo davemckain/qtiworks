@@ -33,15 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception2;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
-
 /**
  * This exception is used for reporting expectation failures when constructing
  * and manipulating container types.
  *
  * @author David McKain
  */
-public final class QtiContainerException extends QtiRuntimeException {
+public final class QtiContainerException extends QtiModelException {
 
     private static final long serialVersionUID = 543586953995447052L;
 
