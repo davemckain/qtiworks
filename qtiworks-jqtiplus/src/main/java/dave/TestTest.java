@@ -17,6 +17,7 @@ import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
@@ -74,5 +75,13 @@ public final class TestTest {
 
         testSessionController.performOutcomeProcessing();
         System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+
+        /* NEW STUFF TEST */
+        testSessionController.initialize();
+
+        testSessionController.enterNextTestPart();
+        final TestPlanNode testPlanNode = testSessionController.enterNextItem();
+        System.out.println("Now in item " + testPlanNode.getTestPlanNodeInstanceKey());
+        System.out.println("State is now " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
     }
 }

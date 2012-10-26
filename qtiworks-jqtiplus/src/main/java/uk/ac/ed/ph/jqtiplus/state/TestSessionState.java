@@ -70,6 +70,10 @@ public final class TestSessionState implements Serializable {
     private FloatValue durationValue;
     private final Map<TestPlanNodeInstanceKey, ItemSessionState> itemSessionStates;
 
+    private boolean finished;
+    private TestPlanNodeInstanceKey currentTestPartKey;
+    private TestPlanNodeInstanceKey currentItemKey;
+
     public TestSessionState(final TestPlan testPlan) {
         Assert.notNull(testPlan, "testPlan");
         this.testPlan = testPlan;
@@ -93,11 +97,42 @@ public final class TestSessionState implements Serializable {
     public void reset() {
         this.outcomeValues.clear();
         this.itemSessionStates.clear();
+        this.currentTestPartKey = null;
+        this.currentItemKey = null;
+        this.finished = false;
         resetBuiltinVariables();
     }
 
     public void resetBuiltinVariables() {
         setDuration(0);
+    }
+
+    //----------------------------------------------------------------
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(final boolean finished) {
+        this.finished = finished;
+    }
+
+
+    public TestPlanNodeInstanceKey getCurrentTestPartKey() {
+        return currentTestPartKey;
+    }
+
+    public void setCurrentTestPartKey(final TestPlanNodeInstanceKey currentTestPartKey) {
+        this.currentTestPartKey = currentTestPartKey;
+    }
+
+
+    public TestPlanNodeInstanceKey getCurrentItemKey() {
+        return currentItemKey;
+    }
+
+    public void setCurrentItemKey(final TestPlanNodeInstanceKey currentItemKey) {
+        this.currentItemKey = currentItemKey;
     }
 
     //----------------------------------------------------------------
@@ -184,6 +219,10 @@ public final class TestSessionState implements Serializable {
 
         final TestSessionState other = (TestSessionState) obj;
         return testPlan.equals(other.testPlan)
+                && finished==other.finished
+                && currentTestPartKey.equals(other.currentTestPartKey)
+                && currentItemKey.equals(other.currentItemKey)
+                && durationValue.equals(other.durationValue)
                 && outcomeValues.equals(other.outcomeValues)
                 && itemSessionStates.equals(other.itemSessionStates);
     }
@@ -192,6 +231,10 @@ public final class TestSessionState implements Serializable {
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
                 testPlan,
+                finished,
+                currentTestPartKey,
+                currentItemKey,
+                durationValue,
                 outcomeValues,
                 itemSessionStates
         });
@@ -201,6 +244,10 @@ public final class TestSessionState implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testPlan=" + testPlan
+                + ",finished=" + finished
+                + ",currentTestPartKey=" + currentTestPartKey
+                + ",currentItemKey=" + currentItemKey
+                + ",durationValue=" + durationValue
                 + ",outcomeValues=" + outcomeValues
                 + ",itemSessionStates=" + itemSessionStates
                 + ")";

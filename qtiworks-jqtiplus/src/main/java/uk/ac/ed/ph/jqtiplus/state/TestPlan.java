@@ -104,6 +104,10 @@ public final class TestPlan implements Serializable {
         return testPlanRootNode;
     }
 
+    public List<TestPlanNode> getTestPartNodes() {
+        return testPlanRootNode.getChildren();
+    }
+
     public List<TestPlanNode> getNodes(final Identifier identifier) {
         final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
         if (nodesForIdentifier==null) {
@@ -155,4 +159,5 @@ public final class TestPlan implements Serializable {
             buildStructure(result, testPlanNode.getChildren(), indent + 1);
         }
     }
+
 }

@@ -46,6 +46,8 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
@@ -208,6 +210,112 @@ public final class TestSessionController extends TestValidationController implem
             }
         }
     }
+
+    //-------------------------------------------------------------------
+    // WORK IN PROGRESS - TEST CONTROL - LINEAR/INDIVIDUAL ONLY
+
+    public boolean hasMoreTestParts() {
+        ensureNotFinished();
+
+        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
+        boolean result;
+        if (currentTestPartKey==null) {
+            /* Haven't started yet */
+            result = !testPartNodes.isEmpty();
+        }
+        else {
+            final TestPlanNode currentTestPart = testPlan.getTestPlanNodeMap().get(currentTestPartKey);
+            final int currentTestPartIndex = currentTestPart.getSiblingIndex();
+            result = currentTestPartIndex==testPartNodes.size()-1;
+        }
+        return result;
+    }
+
+    /**
+     * Advances to the next {@link TestPart} in the {@link TestPlan}
+     *
+     * FIXME: This needs to support {@link PreCondition}!
+     */
+    public TestPlanNode enterNextTestPart() {
+        ensureNotFinished();
+        if (!hasMoreTestParts()) {
+            return null;
+        }
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
+        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        final TestPlanNode result;
+        if (currentTestPartKey==null) {
+            result = testPartNodes.get(0);
+        }
+        else {
+            final TestPlanNode currentTestPart = testPlan.getTestPlanNodeMap().get(currentTestPartKey);
+            final int currentSiblingIndex = currentTestPart.getSiblingIndex();
+            result = testPartNodes.get(currentSiblingIndex + 1);
+        }
+        testSessionState.setCurrentTestPartKey(result.getTestPlanNodeInstanceKey());
+        testSessionState.setCurrentItemKey(null);
+        return result;
+    }
+
+    public boolean hasMoreItemsInPart() {
+        ensureNotFinished();
+
+        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        if (currentTestPartKey==null) {
+            throw new IllegalStateException("Not currently in a testPart");
+        }
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final TestPlanNode currentTestPart = testPlan.getTestPlanNodeMap().get(currentTestPartKey);
+        final List<TestPlanNode> itemsInTestPart = currentTestPart.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+        final TestPlanNodeInstanceKey itemKey = testSessionState.getCurrentItemKey();
+        boolean result;
+        if (itemKey==null) {
+            /* Haven't entered any items yet */
+            result = !itemsInTestPart.isEmpty();
+        }
+        else {
+            final TestPlanNode currentItem = testPlan.getTestPlanNodeMap().get(itemKey);
+            final int itemIndex = itemsInTestPart.indexOf(currentItem);
+            result = itemIndex==itemsInTestPart.size()-1;
+        }
+        return result;
+    }
+
+    public TestPlanNode enterNextItem() {
+        ensureNotFinished();
+        if (!hasMoreItemsInPart()) {
+            return null;
+        }
+        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final TestPlanNode currentTestPart = testPlan.getTestPlanNodeMap().get(currentTestPartKey);
+        final List<TestPlanNode> itemsInTestPart = currentTestPart.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+        final TestPlanNodeInstanceKey itemKey = testSessionState.getCurrentItemKey();
+        TestPlanNode result;
+        if (itemKey==null) {
+            /* Haven't entered any items yet */
+            result = itemsInTestPart.get(0);
+        }
+        else {
+            final TestPlanNode currentItem = testPlan.getTestPlanNodeMap().get(itemKey);
+            final int currentItemIndex = itemsInTestPart.indexOf(currentItem);
+            result = itemsInTestPart.get(currentItemIndex+1);
+        }
+        testSessionState.setCurrentItemKey(result.getTestPlanNodeInstanceKey());
+        return result;
+    }
+
+    private void ensureNotFinished() {
+        if (testSessionState.isFinished()) {
+            throw new IllegalStateException("Test is finished");
+        }
+    }
+
+    //-------------------------------------------------------------------
+    // Outcome processing
 
     public void performOutcomeProcessing() {
         logger.info("Test outcome processing starting on {}", getResolvedAssessmentTest().getRootNodeLookup().getSystemId());
