@@ -177,7 +177,6 @@ public class AssessmentRenderer {
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        xsltParameters.put("candidateSessionState", renderingRequest.getCandidateSessionState().toString());
         xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());

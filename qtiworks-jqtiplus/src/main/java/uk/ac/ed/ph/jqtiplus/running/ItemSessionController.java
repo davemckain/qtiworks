@@ -199,6 +199,40 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
     }
 
+
+    /**
+     * Determines whether a further attempt is allowed on this item, setting
+     * {@link ItemSessionState#finished} as appropriate.
+     *
+     * FIXME: Ideally, this should be called with something resembling {@link ItemSessionControl}
+     *   that could be used in both standalone and within-test fashion.
+     * FIXME: This is not integrated into tests yet
+     *
+     * (New in JQTI+)
+     *
+     * @param maxAttempts maximum number of attempts. This is only used for non-adaptive items,
+     *   and 0 is treated as "unlimited".
+     * @return true if a further attempt is allowed, false otherwise.
+     */
+    public boolean checkAttemptAllowed(final int maxAttempts) {
+        boolean attemptAllowed;
+        if (item.getAdaptive()) {
+            /* For adaptive items, attempts are limited by the value of the completion status variable */
+            final String completionStatus = itemSessionState.getCompletionStatus();
+            attemptAllowed = !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
+        }
+        else {
+            /* Non-adaptive items use maxAttempts, with 0 treated as unlimited */
+            final int numAttempts = itemSessionState.getNumAttempts();
+            attemptAllowed = (maxAttempts==0 || numAttempts < maxAttempts);
+        }
+        itemSessionState.setFinished(!attemptAllowed);
+        return attemptAllowed;
+    }
+
+    //-------------------------------------------------------------------
+    // Response processing
+
     /**
      * Performs template processing, with no <code>templateDefaults</code>.
      */
@@ -877,33 +911,6 @@ public final class ItemSessionController extends ItemValidationController implem
             }
         }
         return count;
-    }
-
-    /**
-     * Determines whether a further attempt is allowed on this item.
-     *
-     * FIXME: Ideally, this should be called with something resembling {@link ItemSessionControl}
-     *   that could be used in both standalone and within-test fashion.
-     * FIXME: This is not integrated into tests yet
-     * (New in JQTI+)
-     *
-     * @param maxAttempts maximum number of attempts. This is only used for non-adaptive items,
-     *   and 0 is treated as "unlimited".
-     * @return true if a further attempt is allowed, false otherwise.
-     */
-    public boolean isAttemptAllowed(final int maxAttempts) {
-        boolean attemptAllowed;
-        if (item.getAdaptive()) {
-            /* For adaptive items, attempts are limited by the value of the completion status variable */
-            final String completionStatus = itemSessionState.getCompletionStatus();
-            attemptAllowed = !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
-        }
-        else {
-            /* Non-adaptive items use maxAttempts, with 0 treated as unlimited */
-            final int numAttempts = itemSessionState.getNumAttempts();
-            attemptAllowed = (maxAttempts==0 || numAttempts < maxAttempts);
-        }
-        return attemptAllowed;
     }
 
     @Override

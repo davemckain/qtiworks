@@ -145,7 +145,6 @@ public class CandidateDataServices {
         final CandidateItemEvent event = new CandidateItemEvent();
         event.setCandidateItemSession(candidateItemSession);
         event.setEventType(eventType);
-        event.setSessionStatus(candidateItemSession.getCandidateSessionStatus());
         event.setCompletionStatus(itemSessionState.getCompletionStatus());
         event.setDuration(itemSessionState.getDuration());
         event.setNumAttempts(itemSessionState.getNumAttempts());
@@ -224,8 +223,8 @@ public class CandidateDataServices {
         return result;
     }
 
-    public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateItemSession)  {
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateItemSession);
+    public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateSession)  {
+        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
         return unmarshalItemSessionState(mostRecentEvent);
     }
 

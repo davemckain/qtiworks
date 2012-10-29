@@ -55,14 +55,13 @@ public class CandidateAuditLogger {
     /** Special logger for auditing candidate actions */
     private static final Logger candidateLogger = LoggerFactory.getLogger("CandidateAuditor");
 
-    private void logEvent(final CandidateSession candidateItemSession, final String message) {
-        candidateLogger.info("user={} xid={} did={} aid={} state={} {}",
+    private void logEvent(final CandidateSession candidateSession, final String message) {
+        candidateLogger.info("user={} xid={} did={} aid={} {}",
                 new Object[] {
-                    candidateItemSession.getCandidate().getBusinessKey(),
-                    candidateItemSession.getId(),
-                    candidateItemSession.getDelivery().getId(),
-                    candidateItemSession.getDelivery().getAssessment().getId(),
-                    candidateItemSession.getCandidateSessionStatus(),
+                    candidateSession.getCandidate().getBusinessKey(),
+                    candidateSession.getId(),
+                    candidateSession.getDelivery().getId(),
+                    candidateSession.getDelivery().getAssessment().getId(),
                     message
         });
     }
@@ -71,34 +70,34 @@ public class CandidateAuditLogger {
         logEvent(candidateItemEvent.getCandidateSession(), "action=RENDER mode=" + renderingRequest.getRenderingMode());
     }
 
-    public void logAction(final CandidateSession candidateItemSession, final String actionName) {
-        logEvent(candidateItemSession, "action=" + actionName);
+    public void logAction(final CandidateSession candidateSession, final String actionName) {
+        logEvent(candidateSession, "action=" + actionName);
     }
 
-    public void logCandidateItemEvent(final CandidateSession candidateItemSession, final CandidateItemEvent candidateItemEvent) {
-        logEvent(candidateItemSession, "action=CANDIDATE_ITEM_EVENT xeid=" + candidateItemEvent.getId()
+    public void logCandidateItemEvent(final CandidateSession candidateSession, final CandidateItemEvent candidateItemEvent) {
+        logEvent(candidateSession, "action=CANDIDATE_ITEM_EVENT xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getEventType()
                 + " notifications=" + candidateItemEvent.getNotifications().size());
     }
 
-    public void logPlaybackEvent(final CandidateSession candidateItemSession, final CandidateItemEvent candidateItemEvent,
+    public void logPlaybackEvent(final CandidateSession candidateSession, final CandidateItemEvent candidateItemEvent,
             final CandidateItemEvent targetEvent) {
-        logEvent(candidateItemSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateItemEvent.getId()
+        logEvent(candidateSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getEventType()
                 + " target_xeid=" + targetEvent.getId());
     }
 
-    public void logCandidateItemAttempt(final CandidateSession candidateItemSession, final CandidateItemAttempt candidateItemAttempt) {
+    public void logCandidateItemAttempt(final CandidateSession candidateSession, final CandidateItemAttempt candidateItemAttempt) {
         final CandidateItemEvent candidateItemEvent = candidateItemAttempt.getEvent();
-        logEvent(candidateItemSession, "action=CANDIDATE_ITEM_ATTEMPT xeid=" + candidateItemEvent.getId()
+        logEvent(candidateSession, "action=CANDIDATE_ITEM_ATTEMPT xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getEventType()
                 + " xaid=" + candidateItemAttempt.getId()
                 + " notifications=" + candidateItemEvent.getNotifications().size());
     }
 
-    public void logAndForbid(final CandidateSession candidateItemSession, final CandidatePrivilege privilege)
+    public void logAndForbid(final CandidateSession candidateSession, final CandidatePrivilege privilege)
             throws CandidateForbiddenException {
-        logEvent(candidateItemSession, "forbid=" + privilege);
-        throw new CandidateForbiddenException(candidateItemSession, privilege);
+        logEvent(candidateSession, "forbid=" + privilege);
+        throw new CandidateForbiddenException(candidateSession, privilege);
     }
 }
