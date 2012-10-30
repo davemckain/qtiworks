@@ -81,15 +81,6 @@ public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
     @Enumerated(EnumType.STRING)
     private CandidateItemEventType itemEventType;
 
-    /**
-     * Status that the {@link CandidateSession} had when (just before)
-     * this event was performed.
-     */
-    @Basic(optional=false)
-    @Column(name="state", length=11)
-    @Enumerated(EnumType.STRING)
-    private CandidateSessionStatus sessionStatus;
-
     /** Value of the <code>completionStatus</code> item variable */
     @Basic(optional=false)
     @Column(name="completion_status", updatable=false, length=DomainConstants.QTI_COMPLETION_STATUS_MAX_LENGTH)
@@ -139,17 +130,6 @@ public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
 
     public void setItemEventType(final CandidateItemEventType itemEventType) {
         this.itemEventType = itemEventType;
-    }
-
-
-    @Override
-    public CandidateSessionStatus getSessionStatus() {
-        return sessionStatus;
-    }
-
-    @Override
-    public void setSessionStatus(final CandidateSessionStatus sessionState) {
-        this.sessionStatus = sessionState;
     }
 
 

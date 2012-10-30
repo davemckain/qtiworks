@@ -39,8 +39,8 @@ import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
@@ -120,32 +120,31 @@ public class CandidateDataServices {
         return ItemSesssionStateXmlMarshaller.unmarshal(doc);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateItemSession,
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
-        return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, null, null);
+        return recordCandidateItemEvent(candidateSession, eventType, itemSessionState, null, null);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateItemSession,
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
             final NotificationRecorder notificationRecorder) {
-        return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, notificationRecorder, null);
+        return recordCandidateItemEvent(candidateSession, eventType, itemSessionState, notificationRecorder, null);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateItemSession,
+    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
             final CandidateItemEvent playbackEvent) {
-        return recordCandidateItemEvent(candidateItemSession, eventType, itemSessionState, null, playbackEvent);
+        return recordCandidateItemEvent(candidateSession, eventType, itemSessionState, null, playbackEvent);
     }
 
-    private CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateItemSession,
+    private CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
             final NotificationRecorder notificationRecorder,
             final CandidateItemEvent playbackEvent) {
         /* Create event */
         final CandidateItemEvent event = new CandidateItemEvent();
-        event.setCandidateItemSession(candidateItemSession);
+        event.setCandidateItemSession(candidateSession);
         event.setItemEventType(eventType);
-        event.setSessionStatus(candidateItemSession.getCandidateSessionStatus());
         event.setCompletionStatus(itemSessionState.getCompletionStatus());
         event.setDuration(itemSessionState.getDuration());
         event.setNumAttempts(itemSessionState.getNumAttempts());
@@ -206,13 +205,13 @@ public class CandidateDataServices {
         return createItemSessionController(itemDelivery, itemSessionState, notificationRecorder);
     }
 
-    public ItemSessionController createItemSessionController(final Delivery itemDelivery,
+    public ItemSessionController createItemSessionController(final Delivery delivery,
             final ItemSessionState itemSessionState,  final NotificationRecorder notificationRecorder) {
-        Assert.notNull(itemDelivery, "itemDelivery");
+        Assert.notNull(delivery, "delivery");
         Assert.notNull(itemSessionState, "itemSessionState");
 
         /* Resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
 
         /* Create controller and wire up notification recorder (if passed) */
@@ -224,13 +223,13 @@ public class CandidateDataServices {
         return result;
     }
 
-    public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateItemSession)  {
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateItemSession);
+    public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateSession)  {
+        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
         return unmarshalItemSessionState(mostRecentEvent);
     }
 
-    public CandidateItemEvent getMostRecentEvent(final CandidateSession candidateItemSession)  {
-        final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateItemSession);
+    public CandidateItemEvent getMostRecentEvent(final CandidateSession candidateSession)  {
+        final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
         if (mostRecentEvent==null) {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }

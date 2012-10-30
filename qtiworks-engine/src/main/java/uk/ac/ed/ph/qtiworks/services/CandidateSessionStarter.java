@@ -49,7 +49,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
@@ -236,10 +235,8 @@ public class CandidateSessionStarter {
         itemSessionController.initialize();
         itemSessionController.performTemplateProcessing();
 
-        /* Check whether an attempt is allowed. This is a bit pathological here,
-         * but it makes sense to be consistent.
-         */
-        final boolean attemptAllowed = itemSessionController.isAttemptAllowed(itemDeliverySettings.getMaxAttempts());
+        /* Check whether an attempt is allowed. */
+        itemSessionController.checkAttemptAllowed(itemDeliverySettings.getMaxAttempts());
 
         /* Set SessionStatus */
         /* FIXME: This doesn't really make sense if attemptAllowed==false */
@@ -254,7 +251,6 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
-        candidateSession.setCandidateSessionStatus(attemptAllowed ? CandidateSessionStatus.INTERACTING : CandidateSessionStatus.CLOSED);
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */

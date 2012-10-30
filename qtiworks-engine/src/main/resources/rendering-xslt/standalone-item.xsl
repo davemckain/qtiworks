@@ -21,10 +21,9 @@ Renders a standalone assessmentItem
   <xsl:import href="utils.xsl"/>
 
   <!-- State -->
-  <xsl:param name="candidateSessionState" as="xs:string" required="yes"/>
   <xsl:param name="renderingMode" as="xs:string" required="yes"/>
-  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="$candidateSessionState='INTERACTING'"/>
-  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$candidateSessionState='CLOSED'"/>
+  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="$itemSessionState/@finished!='true'"/>
+  <xsl:variable name="isSessionClosed" as="xs:boolean" select="not($isSessionInteracting)"/>
 
   <xsl:param name="prompt" select="()" as="xs:string?"/>
   <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
@@ -162,7 +161,7 @@ Renders a standalone assessmentItem
       </head>
       <body class="qtiworks assessmentItem">
         <xsl:choose>
-          <xsl:when test="$candidateSessionState='TERMINATED'">
+          <xsl:when test="$renderingMode='TERMINATED'">
             <p>
               This assessment is now completed.
             </p>
@@ -333,11 +332,7 @@ Renders a standalone assessmentItem
       <div class="authorInfo authorMode">
         <h2>QTI authoring feedback</h2>
         <h3>Candidate Session State</h3>
-        <p>The current candidate session state is:</p>
-        <ul>
-          <li>Primary: <xsl:value-of select="$candidateSessionState"/></li>
-          <li>Secondary: <xsl:value-of select="$renderingMode"/></li>
-        </ul>
+        <p>The current candidate session state is: <xsl:value-of select="$renderingMode"/></p>
 
         <!-- Show response stuff -->
         <xsl:if test="exists($badResponseIdentifiers) or exists($invalidResponseIdentifiers)">

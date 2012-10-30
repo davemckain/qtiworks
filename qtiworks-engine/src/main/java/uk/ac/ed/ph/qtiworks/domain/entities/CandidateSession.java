@@ -43,8 +43,6 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -114,11 +112,13 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="uid")
     private User candidate;
 
-    /** Current status (enumerated) */
+    /**
+     * Flag to indicate whether session has been terminated.
+     * Once terminated, a session is no longer available to the candidate.
+     */
     @Basic(optional=false)
-    @Column(name="status", length=11)
-    @Enumerated(EnumType.STRING)
-    private CandidateSessionStatus status;
+    @Column(name="terminated")
+    private boolean terminated;
 
     //------------------------------------------------------------
 
@@ -181,12 +181,12 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public CandidateSessionStatus getCandidateSessionStatus() {
-        return status;
+    public boolean isTerminated() {
+        return terminated;
     }
 
-    public void setCandidateSessionStatus(final CandidateSessionStatus status) {
-        this.status = status;
+    public void setTerminated(final boolean terminated) {
+        this.terminated = terminated;
     }
 
     //------------------------------------------------------------
@@ -195,7 +195,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
-                + ",status=" + status
+                + ",terminated=" + terminated
                 + ")";
     }
 }

@@ -107,15 +107,6 @@ public abstract class CandidateEvent implements BaseEntity {
     @Enumerated(EnumType.STRING)
     private CandidateEventCategory eventCategory;
 
-    /**
-     * Status that the {@link CandidateSession} had when (just before)
-     * this event was performed.
-     */
-    @Basic(optional=false)
-    @Column(name="state", length=11)
-    @Enumerated(EnumType.STRING)
-    private CandidateSessionStatus sessionStatus;
-
     @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateEvent")
     @OrderBy("id")
     private List<CandidateEventNotification> notifications;
@@ -167,15 +158,6 @@ public abstract class CandidateEvent implements BaseEntity {
 
     public void setEventCategory(final CandidateEventCategory eventCategory) {
         this.eventCategory = eventCategory;
-    }
-
-
-    public CandidateSessionStatus getSessionStatus() {
-        return sessionStatus;
-    }
-
-    public void setSessionStatus(final CandidateSessionStatus sessionState) {
-        this.sessionStatus = sessionState;
     }
 
 
