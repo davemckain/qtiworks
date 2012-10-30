@@ -120,9 +120,6 @@ public final class FieldValue extends AbstractSimpleFunctionalExpression {
         final RecordValue record = (RecordValue) childValues[0];
         final Value value = record.get(getFieldIdentifier());
 
-        if (value == null || value.isNull()) {
-            return NullValue.INSTANCE;
-        }
-        return value;
+        return value!=null ? value : NullValue.INSTANCE;
     }
 }

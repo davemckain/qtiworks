@@ -101,6 +101,8 @@ public final class ItemSessionState implements Serializable {
 
     private SessionStatus sessionStatus;
 
+    private boolean initialized;
+
     /** Has item been presented? */
     private boolean presented;
 
@@ -109,6 +111,7 @@ public final class ItemSessionState implements Serializable {
     private String candidateComment;
 
     public ItemSessionState() {
+        this.initialized = false;
         this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
         this.badResponseIdentifiers = new HashSet<Identifier>();
         this.invalidResponseIdentifiers = new HashSet<Identifier>();
@@ -128,6 +131,11 @@ public final class ItemSessionState implements Serializable {
     //----------------------------------------------------------------
 
     public void reset() {
+        this.initialized = false;
+        this.presented = false;
+        this.responded = false;
+        this.closed = false;
+        this.candidateComment = null;
         this.badResponseIdentifiers.clear();
         this.invalidResponseIdentifiers.clear();
         this.shuffledInteractionChoiceOrders.clear();
@@ -181,6 +189,15 @@ public final class ItemSessionState implements Serializable {
     }
 
     //----------------------------------------------------------------
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void setInitialized(final boolean initialized) {
+        this.initialized = initialized;
+    }
+
 
     public SessionStatus getSessionStatus() {
         return sessionStatus;
@@ -621,7 +638,8 @@ public final class ItemSessionState implements Serializable {
             return false;
         }
         final ItemSessionState other = (ItemSessionState) obj;
-        return sessionStatus==other.sessionStatus
+        return initialized==other.initialized
+                && sessionStatus==other.sessionStatus
                 && presented==other.presented
                 && responded==other.responded
                 && closed==other.closed
@@ -640,6 +658,7 @@ public final class ItemSessionState implements Serializable {
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
+                initialized,
                 sessionStatus,
                 presented,
                 responded,
@@ -660,7 +679,8 @@ public final class ItemSessionState implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(sessionStatus=" + sessionStatus
+                + "(initialized=" + initialized
+                + ",sessionStatus=" + sessionStatus
                 + ",presented=" + presented
                 + ",responded=" + responded
                 + ",closed=" + closed

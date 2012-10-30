@@ -41,8 +41,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.EndAttemptInteraction;
@@ -199,8 +197,14 @@ public final class ItemSessionController extends ItemValidationController implem
         }
         itemSessionState.resetBuiltinVariables();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
+        itemSessionState.setInitialized(true);
     }
 
+    private void ensureInitialized() {
+        if (!itemSessionState.isInitialized()) {
+            throw new IllegalStateException("ItemSessionState has not been initialiazed");
+        }
+    }
 
     /**
      * Determines whether a further attempt is allowed on this item, setting
@@ -248,6 +252,7 @@ public final class ItemSessionController extends ItemValidationController implem
      * @param templateDefaults List of {@link TemplateDefault}s, which may be null or empty.
      */
     public void performTemplateProcessing(final List<TemplateDefault> templateDefaults) {
+        ensureInitialized();
         fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
         try {
             /* Initialise template defaults with any externally provided defaults */
@@ -341,14 +346,17 @@ public final class ItemSessionController extends ItemValidationController implem
     // Interacting
 
     public void markPendingSubmission() {
+        ensureInitialized();
         itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
     }
 
     public void markPresented() {
+        ensureInitialized();
         itemSessionState.setPresented(true);
     }
 
     public void markClosed() {
+        ensureInitialized();
         itemSessionState.setClosed(true);
     }
 
@@ -371,6 +379,7 @@ public final class ItemSessionController extends ItemValidationController implem
      */
     public boolean bindResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
+        ensureInitialized();
         logger.debug("Binding responses {}", responseMap);
 
         /* First set all responses bound to <endAttemptInteractions> to false initially.
@@ -424,7 +433,6 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
         itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
 
-        System.out.println("ITEM STATE AT END IS " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
         return badResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
@@ -433,6 +441,7 @@ public final class ItemSessionController extends ItemValidationController implem
      * as appropriate.
      */
     public void performResponseProcessing() {
+        ensureInitialized();
         logger.debug("Response processing starting");
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
@@ -497,6 +506,7 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     public <C extends Choice> void shuffleInteractionChoiceOrders(final Interaction interaction, final List<List<C>> choiceLists) {
+        ensureInitialized();
         if (interaction instanceof Shuffleable) {
             if (((Shuffleable) interaction).getShuffle()) {
                 final List<Identifier> choiceIdentifiers = new ArrayList<Identifier>();

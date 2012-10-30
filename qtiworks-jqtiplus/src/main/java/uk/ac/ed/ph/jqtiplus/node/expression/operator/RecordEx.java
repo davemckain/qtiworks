@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The record operator takes 0 or more single sub-expressions of any base-type. The result is A container with record
+ * The record operator takes 0 or more single sub-expressions of any base-type. The result is a container with record
  * cardinality containing the values of the sub-expressions.
  * <p>
  * All sub-expressions with NULL values are ignored. If no sub-expressions are given (or all are NULL) then the result is NULL.

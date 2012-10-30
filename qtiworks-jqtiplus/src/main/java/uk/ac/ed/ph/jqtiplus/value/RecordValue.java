@@ -106,6 +106,19 @@ public final class RecordValue extends ContainerValue {
         return container.size();
     }
 
+    /**
+     * Returns whether this record contains a value corresponding to the given {@link Identifier}.
+     */
+    public boolean contains(final Identifier identifier) {
+        return container.containsKey(identifier);
+    }
+
+    /**
+     * Returns the value corresponding to the given {@link Identifier}, or null if there is no
+     * such value in this container.
+     *
+     * @see #contains(Identifier)
+     */
     public SingleValue get(final Identifier identifier) {
         return container.get(identifier);
     }

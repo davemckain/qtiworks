@@ -84,13 +84,14 @@ public final class ItemSesssionStateXmlMarshaller {
         /* Create document element */
         final Element documentElement = document.createElementNS(QTIWORKS_NAMESPACE, "itemSessionState");
         documentElement.setAttribute("modelVersion", "1");
+        documentElement.setAttribute("initialized", StringUtilities.toTrueFalse(itemSessionState.isInitialized()));
+        documentElement.setAttribute("presented", StringUtilities.toTrueFalse(itemSessionState.isPresented()));
+        documentElement.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
+        documentElement.setAttribute("closed", StringUtilities.toTrueFalse(itemSessionState.isClosed()));
         final SessionStatus sessionStatus = itemSessionState.getSessionStatus();
         if (sessionStatus!=null) {
             documentElement.setAttribute("sessionStatus", sessionStatus.toQtiString());
         }
-        documentElement.setAttribute("closed", StringUtilities.toTrueFalse(itemSessionState.isClosed()));
-        documentElement.setAttribute("presented", StringUtilities.toTrueFalse(itemSessionState.isPresented()));
-        documentElement.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
         documentElement.setAttribute("badResponseIdentifiers", StringUtilities.join(itemSessionState.getBadResponseIdentifiers(), " "));
         documentElement.setAttribute("invalidResponseIdentifiers", StringUtilities.join(itemSessionState.getInvalidResponseIdentifiers(), " "));
         document.appendChild(documentElement);
@@ -225,6 +226,7 @@ public final class ItemSesssionStateXmlMarshaller {
         if (!"1".equals(documentElement.getAttribute("modelVersion"))) {
             throw new MarshallingException("Expected modelVersion to be 1");
         }
+        result.setInitialized(parseOptionalBooleanAttribute(documentElement, "initialized", false));
         result.setClosed(parseOptionalBooleanAttribute(documentElement, "closed", false));
         result.setPresented(parseOptionalBooleanAttribute(documentElement, "presented", false));
         result.setResponded(parseOptionalBooleanAttribute(documentElement, "responded", false));
