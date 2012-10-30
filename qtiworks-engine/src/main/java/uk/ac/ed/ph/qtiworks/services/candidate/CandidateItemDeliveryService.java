@@ -255,7 +255,7 @@ public class CandidateItemDeliveryService {
             renderTerminated(candidateItemEvent, renderingOptions, resultStream);
         }
         final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(candidateItemEvent);
-        if (itemSessionState.isFinished()) {
+        if (itemSessionState.isClosed()) {
             /* Session is finished */
             renderEventWhenClosed(candidateItemEvent, renderingOptions, resultStream);
         }
@@ -542,7 +542,7 @@ public class CandidateItemDeliveryService {
 
         /* Make sure an attempt is allowed */
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        if (itemSessionState.isFinished()) {
+        if (itemSessionState.isClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_ATTEMPT);
         }
 
@@ -673,7 +673,7 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (itemSessionState.isFinished()) {
+        if (itemSessionState.isClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.CLOSE_SESSION_WHEN_CLOSED);
         }
         else if (!itemDeliverySettings.isAllowClose()) {
@@ -684,7 +684,7 @@ public class CandidateItemDeliveryService {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.markFinished();
+        itemSessionController.markClosed();
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
 
         /* Record and log event */
@@ -721,10 +721,10 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isFinished() && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
+        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isFinished() && !itemDeliverySettings.isAllowReinitWhenClosed()) {
+        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowReinitWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
         }
 
@@ -774,10 +774,10 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isFinished() && !itemDeliverySettings.isAllowResetWhenInteracting()) {
+        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
         }
-        else if (!itemSessionState.isFinished() && !itemDeliverySettings.isAllowResetWhenClosed()) {
+        else if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
         }
 
@@ -836,10 +836,10 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isFinished() && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
+        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isFinished() && !itemDeliverySettings.isAllowResetWhenClosed()) {
+        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
         }
 
@@ -847,7 +847,7 @@ public class CandidateItemDeliveryService {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.markFinished();
+        itemSessionController.markClosed();
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
 
         /* Record and log event */
@@ -881,10 +881,10 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isFinished()) {
+        if (!itemSessionState.isClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isFinished() && !itemDeliverySettings.isAllowPlayback()) {
+        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowPlayback()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK);
         }
 

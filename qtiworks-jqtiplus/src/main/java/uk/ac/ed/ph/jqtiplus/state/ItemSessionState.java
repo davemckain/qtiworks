@@ -96,7 +96,7 @@ public final class ItemSessionState implements Serializable {
     private SessionStatus sessionStatus;
     private boolean presented;
     private boolean responded;
-    private boolean finished;
+    private boolean closed;
     private boolean skipped;
     private String candidateComment;
 
@@ -197,12 +197,12 @@ public final class ItemSessionState implements Serializable {
     }
 
 
-    public boolean isFinished() {
-        return finished;
+    public boolean isClosed() {
+        return closed;
     }
 
-    public void setFinished(final boolean finished) {
-        this.finished = finished;
+    public void setClosed(final boolean closed) {
+        this.closed = closed;
     }
 
 
@@ -598,7 +598,7 @@ public final class ItemSessionState implements Serializable {
         return sessionStatus==other.sessionStatus
                 && presented==other.presented
                 && responded==other.responded
-                && finished==other.finished
+                && closed==other.closed
                 && skipped==other.skipped
                 && shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
                 && overriddenTemplateDefaultValues.equals(other.overriddenCorrectResponseValues)
@@ -616,7 +616,7 @@ public final class ItemSessionState implements Serializable {
                 sessionStatus,
                 presented,
                 responded,
-                finished,
+                closed,
                 skipped,
                 shuffledInteractionChoiceOrders,
                 overriddenTemplateDefaultValues,
@@ -635,7 +635,7 @@ public final class ItemSessionState implements Serializable {
                 + "(sessionStatus=" + sessionStatus
                 + ",presented=" + presented
                 + ",responded=" + responded
-                + ",finished=" + finished
+                + ",closed=" + closed
                 + ",skipped=" + skipped
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues

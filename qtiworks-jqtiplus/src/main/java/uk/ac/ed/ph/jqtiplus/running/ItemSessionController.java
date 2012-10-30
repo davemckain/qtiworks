@@ -226,7 +226,7 @@ public final class ItemSessionController extends ItemValidationController implem
             final int numAttempts = itemSessionState.getNumAttempts();
             attemptAllowed = (maxAttempts==0 || numAttempts < maxAttempts);
         }
-        itemSessionState.setFinished(!attemptAllowed);
+        itemSessionState.setClosed(!attemptAllowed);
         return attemptAllowed;
     }
 
@@ -350,8 +350,8 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setSkipped(true);
     }
 
-    public void markFinished() {
-        itemSessionState.setFinished(true);
+    public void markClosed() {
+        itemSessionState.setClosed(true);
     }
 
     //-------------------------------------------------------------------
