@@ -36,33 +36,19 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
 
@@ -73,7 +59,6 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="candidate_item_events")
-@SequenceGenerator(name="candidateItemEventSequence", sequenceName="candidate_item_event_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
     @NamedQuery(name="CandidateItemEvent.getForSession",
             query="SELECT e"
@@ -86,31 +71,15 @@ import org.hibernate.annotations.Type;
                 + "  WHERE e.candidateSession = :candidateSession"
                 + "  ORDER BY e.id DESC")
 })
-public class CandidateItemEvent implements BaseEntity {
+public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
 
-    private static final long serialVersionUID = -4620030911222629913L;
-
-    @Id
-    @GeneratedValue(generator="candidateItemEventSequence")
-    @Column(name="xeid")
-    private Long id;
-
-    /** {@link CandidateSession} owning this event */
-    @ManyToOne(optional=false)
-    @JoinColumn(name="xid")
-    private CandidateSession candidateSession;
-
-    /** Timestamp for this event */
-    @Basic(optional=false)
-    @Column(name="timestamp", updatable=false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timestamp;
+    private static final long serialVersionUID = 6121745930649659116L;
 
     /** Type of event */
     @Basic(optional=false)
-    @Column(name="event_type", updatable=false, length=16)
+    @Column(name="item_event_type", updatable=false, length=16)
     @Enumerated(EnumType.STRING)
-    private CandidateItemEventType eventType;
+    private CandidateItemEventType itemEventType;
 
     /**
      * Status that the {@link CandidateSession} had when (just before)
@@ -156,54 +125,29 @@ public class CandidateItemEvent implements BaseEntity {
     @JoinColumn(name="playback_xeid", updatable=false)
     private CandidateItemEvent playbackEvent;
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateItemEvent")
-    @OrderBy("id")
-    private List<CandidateItemEventNotification> notifications;
-
     //------------------------------------------------------------
 
+    public CandidateItemEvent() {
+        super(CandidateEventCategory.ITEM);
+    }
+
+    //----------------------------------------------------------
+
+    public CandidateItemEventType getItemEventType() {
+        return itemEventType;
+    }
+
+    public void setItemEventType(final CandidateItemEventType itemEventType) {
+        this.itemEventType = itemEventType;
+    }
+
+
     @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-
-    public CandidateSession getCandidateSession() {
-        return candidateSession;
-    }
-
-    public void setCandidateItemSession(final CandidateSession candidateSession) {
-        this.candidateSession = candidateSession;
-    }
-
-
-    public Date getTimestamp() {
-        return ObjectUtilities.safeClone(timestamp);
-    }
-
-    public void setTimestamp(final Date timestamp) {
-        this.timestamp = ObjectUtilities.safeClone(timestamp);
-    }
-
-
-    public CandidateItemEventType getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(final CandidateItemEventType eventType) {
-        this.eventType = eventType;
-    }
-
-
     public CandidateSessionStatus getSessionStatus() {
         return sessionStatus;
     }
 
+    @Override
     public void setSessionStatus(final CandidateSessionStatus sessionState) {
         this.sessionStatus = sessionState;
     }
@@ -253,25 +197,14 @@ public class CandidateItemEvent implements BaseEntity {
         this.playbackEvent = playbackEvent;
     }
 
-
-    public List<CandidateItemEventNotification> getNotifications() {
-        if (notifications==null) {
-            notifications = new ArrayList<CandidateItemEventNotification>();
-        }
-        return notifications;
-    }
-
-    public void setNotifications(final List<CandidateItemEventNotification> notifications) {
-        this.notifications = notifications;
-    }
-
     //------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
-                + ",eventType=" + eventType
+                + "(id=" + getId()
+                + ",eventCategory" + getEventCategory()
+                + ",itemEventType=" + itemEventType
                 + ")";
     }
 }

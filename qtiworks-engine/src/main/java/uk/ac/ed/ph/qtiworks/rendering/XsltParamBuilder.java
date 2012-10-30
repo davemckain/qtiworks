@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.rendering.XsltParamDocumentBuilder.SaxFirerCallback;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
@@ -99,10 +99,10 @@ public final class XsltParamBuilder {
         return result;
     }
 
-    public List<Node> notificationsToElements(final List<CandidateItemEventNotification> notifications) {
+    public List<Node> notificationsToElements(final List<CandidateEventNotification> notifications) {
         final ArrayList<Node> result = new ArrayList<Node>();
         final Document doc = documentBuilder.newDocument();
-        for (final CandidateItemEventNotification notification : notifications) {
+        for (final CandidateEventNotification notification : notifications) {
             final Element element = doc.createElementNS(QTIWORKS_NAMESPACE, "notification");
             element.setAttribute("type", notification.getNotificationType().toString());
             element.setAttribute("level", notification.getNotificationLevel().toString());

@@ -40,7 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
@@ -144,7 +144,7 @@ public class CandidateDataServices {
         /* Create event */
         final CandidateItemEvent event = new CandidateItemEvent();
         event.setCandidateItemSession(candidateItemSession);
-        event.setEventType(eventType);
+        event.setItemEventType(eventType);
         event.setSessionStatus(candidateItemSession.getCandidateSessionStatus());
         event.setCompletionStatus(itemSessionState.getCompletionStatus());
         event.setDuration(itemSessionState.getDuration());
@@ -168,9 +168,9 @@ public class CandidateDataServices {
         return event;
     }
 
-    public CandidateItemEventNotification recordNotification(final CandidateItemEvent candidateItemEvent, final Notification notification) {
-        final CandidateItemEventNotification record = new CandidateItemEventNotification();
-        record.setCandidateItemEvent(candidateItemEvent);
+    public CandidateEventNotification recordNotification(final CandidateItemEvent candidateItemEvent, final Notification notification) {
+        final CandidateEventNotification record = new CandidateEventNotification();
+        record.setCandidateEvent(candidateItemEvent);
 
         record.setMessage(notification.getMessage());
         record.setNotificationLevel(notification.getNotificationLevel());

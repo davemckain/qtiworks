@@ -77,21 +77,21 @@ public class CandidateAuditLogger {
 
     public void logCandidateItemEvent(final CandidateSession candidateItemSession, final CandidateItemEvent candidateItemEvent) {
         logEvent(candidateItemSession, "action=CANDIDATE_ITEM_EVENT xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getEventType()
+                + " event=" + candidateItemEvent.getItemEventType()
                 + " notifications=" + candidateItemEvent.getNotifications().size());
     }
 
     public void logPlaybackEvent(final CandidateSession candidateItemSession, final CandidateItemEvent candidateItemEvent,
             final CandidateItemEvent targetEvent) {
         logEvent(candidateItemSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getEventType()
+                + " event=" + candidateItemEvent.getItemEventType()
                 + " target_xeid=" + targetEvent.getId());
     }
 
     public void logCandidateItemAttempt(final CandidateSession candidateItemSession, final CandidateItemAttempt candidateItemAttempt) {
         final CandidateItemEvent candidateItemEvent = candidateItemAttempt.getEvent();
         logEvent(candidateItemSession, "action=CANDIDATE_ITEM_ATTEMPT xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getEventType()
+                + " event=" + candidateItemEvent.getItemEventType()
                 + " xaid=" + candidateItemAttempt.getId()
                 + " notifications=" + candidateItemEvent.getNotifications().size());
     }

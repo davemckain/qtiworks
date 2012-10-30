@@ -6,7 +6,7 @@
 package dave;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionStatus;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
@@ -97,11 +97,11 @@ public class RenderingTest {
 
             final CandidateItemEvent playback1 = new CandidateItemEvent();
             playback1.setId(1L);
-            playback1.setEventType(CandidateItemEventType.INIT);
+            playback1.setItemEventType(CandidateItemEventType.INIT);
 
             final CandidateItemEvent playback2 = new CandidateItemEvent();
             playback2.setId(2L);
-            playback2.setEventType(CandidateItemEventType.ATTEMPT_VALID);
+            playback2.setItemEventType(CandidateItemEventType.ATTEMPT_VALID);
 
             renderingRequest.setPlaybackEvents(Arrays.asList(playback1, playback2));
             renderingRequest.setCurrentPlaybackEvent(playback1);
@@ -116,11 +116,11 @@ public class RenderingTest {
             renderer.init();
 
             /* Create a fake notification for debugging */
-            final CandidateItemEventNotification notification = new CandidateItemEventNotification();
+            final CandidateEventNotification notification = new CandidateEventNotification();
             notification.setNotificationLevel(NotificationLevel.INFO);
             notification.setNotificationType(NotificationType.RUNTIME);
             notification.setMessage("This is a notification");
-            final List<CandidateItemEventNotification> notifications = new ArrayList<CandidateItemEventNotification>();
+            final List<CandidateEventNotification> notifications = new ArrayList<CandidateEventNotification>();
             notifications.add(notification);
 
             final String rendered = renderer.renderItemToString(renderingRequest, notifications);

@@ -45,7 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
@@ -273,7 +273,7 @@ public class CandidateItemDeliveryService {
 
     private void renderEventWhenInteracting(final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final CandidateItemEventType eventType = candidateItemEvent.getEventType();
+        final CandidateItemEventType eventType = candidateItemEvent.getItemEventType();
         switch (eventType) {
             case INIT:
             case REINIT:
@@ -342,7 +342,7 @@ public class CandidateItemDeliveryService {
 
     private void renderEventWhenClosed(final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final CandidateItemEventType eventType = candidateItemEvent.getEventType();
+        final CandidateItemEventType eventType = candidateItemEvent.getItemEventType();
         switch (eventType) {
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
@@ -438,7 +438,7 @@ public class CandidateItemDeliveryService {
 
     private void doRendering(final CandidateItemEvent candidateItemEvent, final ItemRenderingRequest renderingRequest, final OutputStream resultStream) {
         candidateAuditLogger.logRendering(candidateItemEvent, renderingRequest);
-        final List<CandidateItemEventNotification> notifications = candidateItemEvent.getNotifications();
+        final List<CandidateEventNotification> notifications = candidateItemEvent.getNotifications();
         assessmentRenderer.renderItem(renderingRequest, notifications, resultStream);
     }
 
@@ -791,7 +791,7 @@ public class CandidateItemDeliveryService {
         final List<CandidateItemEvent> events = candidateItemEventDao.getForSessionReversed(candidateSession);
         CandidateItemEvent lastInitEvent = null;
         for (final CandidateItemEvent event : events) {
-            if (event.getEventType()==CandidateItemEventType.REINIT) {
+            if (event.getItemEventType()==CandidateItemEventType.REINIT) {
                 lastInitEvent = event;
                 break;
             }
@@ -892,7 +892,7 @@ public class CandidateItemDeliveryService {
         if (targetEvent.getCandidateSession().getId().longValue()!=candidateSession.getId().longValue()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK_OTHER_SESSION);
         }
-        final CandidateItemEventType targetEventType = targetEvent.getEventType();
+        final CandidateItemEventType targetEventType = targetEvent.getItemEventType();
         if (targetEventType==CandidateItemEventType.PLAYBACK
                 || targetEventType==CandidateItemEventType.CLOSE
                 || targetEventType==CandidateItemEventType.TERMINATE) {
@@ -1066,7 +1066,7 @@ public class CandidateItemDeliveryService {
     }
 
     private boolean isCandidatePlaybackCapable(final CandidateItemEvent event) {
-        final CandidateItemEventType eventType = event.getEventType();
+        final CandidateItemEventType eventType = event.getItemEventType();
         return eventType==CandidateItemEventType.ATTEMPT_VALID
                 || eventType==CandidateItemEventType.ATTEMPT_INVALID
                 || eventType==CandidateItemEventType.ATTEMPT_BAD

@@ -54,34 +54,34 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 /**
- * A runtime notification message generated while executing a particular {@link CandidateItemEvent}.
+ * A runtime notification message generated while executing a particular {@link CandidateEvent}.
  * This is used for debugging and general auditing.
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_event_notifications")
-@SequenceGenerator(name="candidateItemEventNotificationSequence", sequenceName="candidate_item_event_notification_sequence", initialValue=1, allocationSize=50)
+@Table(name="candidate_event_notifications")
+@SequenceGenerator(name="candidateEventNotificationSequence", sequenceName="candidate_event_notification_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
-    @NamedQuery(name="CandidateItemEventNotification.getForEvent",
+    @NamedQuery(name="CandidateEventNotification.getForEvent",
             query="SELECT n"
-                + "  FROM CandidateItemEventNotification n"
-                + "  WHERE n.candidateItemEvent = :candidateItemEvent"
+                + "  FROM CandidateEventNotification n"
+                + "  WHERE n.candidateEvent = :candidateEvent"
                 + "  ORDER BY n.id")
 })
-public class CandidateItemEventNotification implements BaseEntity {
+public class CandidateEventNotification implements BaseEntity {
 
     private static final long serialVersionUID = -2429213365619136433L;
 
     @Id
-    @GeneratedValue(generator="candidateItemEventNotificationSequence")
+    @GeneratedValue(generator="candidateEventNotificationSequence")
     @Column(name="xnid")
     private Long id;
 
-    /** {@link CandidateItemEvent} owning this notification */
+    /** {@link CandidateEvent} owning this notification */
     @ManyToOne(optional=false)
     @JoinColumn(name="xeid")
-    private CandidateItemEvent candidateItemEvent;
+    private CandidateEvent candidateEvent;
 
     /** Type of notification */
     @Basic(optional=false)
@@ -146,12 +146,12 @@ public class CandidateItemEventNotification implements BaseEntity {
     }
 
 
-    public CandidateItemEvent getCandidateItemEvent() {
-        return candidateItemEvent;
+    public CandidateEvent getCandidateEvent() {
+        return candidateEvent;
     }
 
-    public void setCandidateItemEvent(final CandidateItemEvent candidateItemEvent) {
-        this.candidateItemEvent = candidateItemEvent;
+    public void setCandidateEvent(final CandidateEvent candidateEvent) {
+        this.candidateEvent = candidateEvent;
     }
 
 

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -143,7 +143,7 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     /** (Convenience method) */
-    public String renderItemToString(final ItemRenderingRequest renderingRequest, final List<CandidateItemEventNotification> notifications) {
+    public String renderItemToString(final ItemRenderingRequest renderingRequest, final List<CandidateEventNotification> notifications) {
         final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
         renderItem(renderingRequest, notifications, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
         return stringBuilderWriter.toString();
@@ -160,7 +160,7 @@ public class AssessmentRenderer {
      *
      * @throws QtiRenderingException if an unexpected Exception happens during rendering
      */
-    public void renderItem(final ItemRenderingRequest renderingRequest, final List<CandidateItemEventNotification> notifications, final OutputStream resultStream) {
+    public void renderItem(final ItemRenderingRequest renderingRequest, final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
         Assert.notNull(renderingRequest, "renderingRequest");
         Assert.notNull(resultStream, "resultStream");
 
@@ -211,7 +211,7 @@ public class AssessmentRenderer {
             final List<String> playbackEventTypes = new ArrayList<String>();
             for (final CandidateItemEvent playbackEvent : playbackEvents) {
                 playbackEventIds.add(playbackEvent.getId());
-                playbackEventTypes.add(playbackEvent.getEventType().toString());
+                playbackEventTypes.add(playbackEvent.getItemEventType().toString());
             }
             xsltParameters.put("playbackEventIds", playbackEventIds);
             xsltParameters.put("playbackEventTypes", playbackEventTypes);
@@ -219,7 +219,7 @@ public class AssessmentRenderer {
         final CandidateItemEvent currentPlaybackEvent = renderingRequest.getCurrentPlaybackEvent();
         if (currentPlaybackEvent!=null) {
             xsltParameters.put("currentPlaybackEventId", currentPlaybackEvent.getId());
-            xsltParameters.put("currentPlaybackEventType", currentPlaybackEvent.getEventType().toString());
+            xsltParameters.put("currentPlaybackEventType", currentPlaybackEvent.getItemEventType().toString());
         }
 
         /* Pass ItemSessionState as XML */

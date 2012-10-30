@@ -31,40 +31,17 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
-
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * DAO implementation for the {@link CandidateEventNotification} entity.
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateItemEventNotificationDao extends GenericDao<CandidateEventNotification> {
+public enum CandidateEventCategory {
 
-    @PersistenceContext
-    private EntityManager em;
+    ITEM,
+    TEST,
+    ;
 
-    public CandidateItemEventNotificationDao() {
-        super(CandidateEventNotification.class);
-    }
-
-    public List<CandidateEventNotification> getForEvent(final CandidateItemEvent event) {
-        final TypedQuery<CandidateEventNotification> query = em.createNamedQuery("CandidateItemEventNotification.getForEvent", CandidateEventNotification.class);
-        query.setParameter("candidateItemEvent", event);
-        return query.getResultList();
-    }
 }
