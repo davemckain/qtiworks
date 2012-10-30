@@ -346,10 +346,6 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setPresented(true);
     }
 
-    public void markSkipped() {
-        itemSessionState.setSkipped(true);
-    }
-
     public void markClosed() {
         itemSessionState.setClosed(true);
     }
@@ -358,19 +354,18 @@ public final class ItemSessionController extends ItemValidationController implem
     // Response processing
 
     /**
-     * Binds response variables for this assessmentItem, returning a Set of response
-     * variable identifiers for whom the given data could not be successfully bound.
+     * Binds response variables for this assessmentItem. If all responses are successfully bound
+     * to variables of the required types then they are additionally validated.
      * <p>
-     * This will modify {@link #itemSessionState}
+     * All response variables (except those bound to {@link EndAttemptInteraction}) will be
+     * cleared before this runs.
      *
-     * @return a {@link Set} of identifiers corresponding to response variables which could not be
-     *         successfully bound from the provided data. (E.g. expected a float but got a String)
      * @param responseMap Map of responses to set, keyed on response variable identifier
      *
      * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
      *   any key fails to map to an interaction
      */
-    public Set<Identifier> bindResponses(final Map<Identifier, ResponseData> responseMap) {
+    public void bindResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
 
@@ -388,7 +383,7 @@ public final class ItemSessionController extends ItemValidationController implem
 
         /* Now bind responses */
         final Map<Identifier, Interaction> interactionByResponseIdentifierMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
-        final Set<Identifier> badResponses = new HashSet<Identifier>();
+        final Set<Identifier> badResponseIdentifiers = new HashSet<Identifier>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
@@ -403,33 +398,27 @@ public final class ItemSessionController extends ItemValidationController implem
                 }
             }
             catch (final ResponseBindingException e) {
-                badResponses.add(responseIdentifier);
+                badResponseIdentifiers.add(responseIdentifier);
+            }
+        }
+
+        /* Maybe validate */
+        final Set<Identifier> invalidResponseIdentifiers = new HashSet<Identifier>();
+        if (badResponseIdentifiers.isEmpty()) {
+            logger.debug("Validating responses");
+            for (final Interaction interaction : itemProcessingMap.getInteractions()) {
+                final Value responseValue = itemSessionState.getResponseValue(interaction);
+                if (!interaction.validateResponse(this, responseValue)) {
+                    invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
+                }
             }
         }
 
         /* Update session status */
         itemSessionState.setResponded(true);
+        itemSessionState.setBadResponseIdentifiers(badResponseIdentifiers);
+        itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
         itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
-
-        return Collections.unmodifiableSet(badResponses);
-    }
-
-    /**
-     * Validates the currently-bound responses for each of the interactions
-     *
-     * @return a Set of identifiers corresponding to invalid responses. The Set will be
-     *         empty if all responses were valid.
-     */
-    public Set<Identifier> validateResponses() {
-        logger.debug("Validating responses");
-        final Set<Identifier> invalidResponseIdentifiers = new HashSet<Identifier>();
-        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
-            final Value responseValue = itemSessionState.getResponseValue(interaction);
-            if (!interaction.validateResponse(this, responseValue)) {
-                invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
-            }
-        }
-        return Collections.unmodifiableSet(invalidResponseIdentifiers);
     }
 
     /**

@@ -112,10 +112,10 @@ public class MathAssessTest {
 
             final ItemSessionState itemSessionState = new ItemSessionState();
             final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(itemValidationResult).initialize();
-            final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
 
             System.out.println("\n\nInitialising");
-            itemController.performTemplateProcessing(null);
+            itemSessionController.performTemplateProcessing(null);
             System.out.println("\nTemplate Values: " + itemSessionState.getTemplateValues());
             System.out.println("\nResponse Values: " + itemSessionState.getResponseValues());
             System.out.println("\nOutcome Values: " + itemSessionState.getOutcomeValues());
@@ -123,14 +123,16 @@ public class MathAssessTest {
             System.out.println("\n\nBinding Math responses");
             final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
             responses.put(Identifier.parseString("RESPONSE"), new StringResponseData("1+x"));
-            final Set<Identifier> badResponses = itemController.bindResponses(responses);
-            final Set<Identifier> invalidResponses = itemController.validateResponses();
+            itemSessionController.bindResponses(responses);
+
+            final Set<Identifier> badResponses = itemSessionState.getBadResponseIdentifiers();
+            final Set<Identifier> invalidResponses = itemSessionState.getInvalidResponseIdentifiers();
             System.out.println("Bad responses: " + badResponses);
             System.out.println("Invalid response: " + invalidResponses);
             System.out.println("Response Values: " + itemSessionState.getResponseValues());
 
             System.out.println("\n\nStarting response processiong");
-            itemController.performResponseProcessing();
+            itemSessionController.performResponseProcessing();
             System.out.println("Response processing finished");
             System.out.println("Outcome Values: " + itemSessionState.getOutcomeValues());
         }

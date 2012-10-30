@@ -42,10 +42,10 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
@@ -601,9 +601,10 @@ public class CandidateItemDeliveryService {
         candidateItemAttempt.setResponses(candidateItemResponses);
 
         /* Attempt to bind responses */
-        final Set<Identifier> badResponseIdentifiers = itemSessionController.bindResponses(responseMap);
+        itemSessionController.bindResponses(responseMap);
 
         /* Note any responses that failed to bind */
+        final Set<Identifier> badResponseIdentifiers = itemSessionState.getBadResponseIdentifiers();
         final boolean allResponsesBound = badResponseIdentifiers.isEmpty();
         for (final Identifier badResponseIdentifier : badResponseIdentifiers) {
             responseEntityMap.get(badResponseIdentifier).setResponseLegality(ResponseLegality.BAD);
@@ -612,7 +613,7 @@ public class CandidateItemDeliveryService {
         /* Now validate the responses according to any constraints specified by the interactions */
         boolean allResponsesValid = false;
         if (allResponsesBound) {
-            final Set<Identifier> invalidResponseIdentifiers = itemSessionController.validateResponses();
+            final Set<Identifier> invalidResponseIdentifiers = itemSessionState.getInvalidResponseIdentifiers();
             allResponsesValid = invalidResponseIdentifiers.isEmpty();
             if (!allResponsesValid) {
                 /* Some responses not valid, so note these down */

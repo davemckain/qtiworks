@@ -128,9 +128,13 @@ public class TextEntryInteractionTest {
 
         final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
         responses.put(Identifier.parseString(RESPONSE_NAME), new StringResponseData(stringResponse));
-        final Set<Identifier> badResponses = itemSessionController.bindResponses(responses);
+
+        itemSessionController.bindResponses(responses);
+
+        final Set<Identifier> badResponses = itemSessionState.getBadResponseIdentifiers();
+        final Set<Identifier> invalidResponses = itemSessionState.getInvalidResponseIdentifiers();
         assertEquals(0, badResponses.size());
-        assertEquals(expectedValidates, itemSessionController.validateResponses().size() == 0);
+        assertEquals(expectedValidates, invalidResponses.isEmpty());
         assertEquals(expectedResponse, itemSessionState.getResponseValue(Identifier.parseString(RESPONSE_NAME)));
         assertEquals(expectedStringResponse, itemSessionState.getResponseValue(Identifier.parseString(STRING_RESPONSE_NAME)));
     }

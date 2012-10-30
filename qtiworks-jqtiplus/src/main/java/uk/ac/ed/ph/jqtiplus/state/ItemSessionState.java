@@ -56,10 +56,13 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Encapsulates the current state of a candidate's item session.
@@ -84,6 +87,9 @@ public final class ItemSessionState implements Serializable {
      */
     private final Map<Identifier, List<Identifier>> shuffledInteractionChoiceOrders;
 
+    private final Set<Identifier> badResponseIdentifiers;
+    private final Set<Identifier> invalidResponseIdentifiers;
+
     private final Map<Identifier, Value> overriddenTemplateDefaultValues;
     private final Map<Identifier, Value> overriddenResponseDefaultValues;
     private final Map<Identifier, Value> overriddenOutcomeDefaultValues;
@@ -94,14 +100,18 @@ public final class ItemSessionState implements Serializable {
     private final Map<Identifier, Value> outcomeValues;
 
     private SessionStatus sessionStatus;
+
+    /** Has item been presented? */
     private boolean presented;
+
     private boolean responded;
     private boolean closed;
-    private boolean skipped;
     private String candidateComment;
 
     public ItemSessionState() {
         this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
+        this.badResponseIdentifiers = new HashSet<Identifier>();
+        this.invalidResponseIdentifiers = new HashSet<Identifier>();
         this.overriddenTemplateDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenResponseDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenOutcomeDefaultValues = new HashMap<Identifier, Value>();
@@ -118,6 +128,8 @@ public final class ItemSessionState implements Serializable {
     //----------------------------------------------------------------
 
     public void reset() {
+        this.badResponseIdentifiers.clear();
+        this.invalidResponseIdentifiers.clear();
         this.shuffledInteractionChoiceOrders.clear();
         this.overriddenTemplateDefaultValues.clear();
         this.overriddenResponseDefaultValues.clear();
@@ -188,6 +200,10 @@ public final class ItemSessionState implements Serializable {
     }
 
 
+    public boolean isRespondedValidly() {
+        return isResponded() && badResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
+    }
+
     public boolean isResponded() {
         return responded;
     }
@@ -203,15 +219,6 @@ public final class ItemSessionState implements Serializable {
 
     public void setClosed(final boolean closed) {
         this.closed = closed;
-    }
-
-
-    public boolean isSkipped() {
-        return skipped;
-    }
-
-    public void setSkipped(final boolean skipped) {
-        this.skipped = skipped;
     }
 
 
@@ -455,6 +462,25 @@ public final class ItemSessionState implements Serializable {
     }
 
     //----------------------------------------------------------------
+    // Response mutation
+
+    public Set<Identifier> getBadResponseIdentifiers() {
+        return Collections.unmodifiableSet(badResponseIdentifiers);
+    }
+
+    public void setBadResponseIdentifiers(final Collection<Identifier> badResponseIdentifiers) {
+        this.badResponseIdentifiers.clear();
+        this.badResponseIdentifiers.addAll(badResponseIdentifiers);
+    }
+
+    public Set<Identifier> getInvalidResponseIdentifiers() {
+        return Collections.unmodifiableSet(invalidResponseIdentifiers);
+    }
+
+    public void setInvalidResponseIdentifiers(final Collection<Identifier> invalidResponseIdentifiers) {
+        this.invalidResponseIdentifiers.clear();
+        this.invalidResponseIdentifiers.addAll(invalidResponseIdentifiers);
+    }
 
     public Value getResponseValue(final Identifier identifier) {
         Assert.notNull(identifier);
@@ -599,12 +625,13 @@ public final class ItemSessionState implements Serializable {
                 && presented==other.presented
                 && responded==other.responded
                 && closed==other.closed
-                && skipped==other.skipped
                 && shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
                 && overriddenTemplateDefaultValues.equals(other.overriddenCorrectResponseValues)
                 && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
                 && overriddenOutcomeDefaultValues.equals(other.overriddenOutcomeDefaultValues)
                 && overriddenCorrectResponseValues.equals(other.overriddenCorrectResponseValues)
+                && badResponseIdentifiers.equals(other.badResponseIdentifiers)
+                && invalidResponseIdentifiers.equals(other.invalidResponseIdentifiers)
                 && templateValues.equals(other.templateValues)
                 && responseValues.equals(other.responseValues)
                 && outcomeValues.equals(other.outcomeValues);
@@ -617,12 +644,13 @@ public final class ItemSessionState implements Serializable {
                 presented,
                 responded,
                 closed,
-                skipped,
                 shuffledInteractionChoiceOrders,
                 overriddenTemplateDefaultValues,
                 overriddenResponseDefaultValues,
                 overriddenOutcomeDefaultValues,
                 overriddenCorrectResponseValues,
+                badResponseIdentifiers,
+                invalidResponseIdentifiers,
                 templateValues,
                 responseValues,
                 outcomeValues
@@ -636,12 +664,13 @@ public final class ItemSessionState implements Serializable {
                 + ",presented=" + presented
                 + ",responded=" + responded
                 + ",closed=" + closed
-                + ",skipped=" + skipped
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues
                 + ",overriddenOutcomeDefaultValues=" + overriddenOutcomeDefaultValues
                 + ",overriddenCorrectResponseValues=" + overriddenCorrectResponseValues
+                + ",badResponseIdentifiers=" + badResponseIdentifiers
+                + ",invalidResponseIdentifiers=" + invalidResponseIdentifiers
                 + ",templateValues=" + templateValues
                 + ",responseValues=" + responseValues
                 + ",outcomesValues=" + outcomeValues

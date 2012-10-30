@@ -25,7 +25,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class ChoiceRunningTest {
 
@@ -42,27 +41,26 @@ public class ChoiceRunningTest {
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, false).initialize();
         System.out.println("Run map is: " + ObjectDumper.dumpObject(itemProcessingMap, DumpMode.DEEP));
 
-        final ItemSessionState itemState = new ItemSessionState();
-        System.out.println("Item state before init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
+        final ItemSessionState itemSessionState = new ItemSessionState();
+        System.out.println("Item state before init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
-        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemState);
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
 
         System.out.println("\nInitialising");
-        itemController.performTemplateProcessing();
-        System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
+        itemSessionController.performTemplateProcessing();
+        System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         System.out.println("\nBinding & validating responses");
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
-        final Set<Identifier> badResponses = itemController.bindResponses(responseMap);
-        final Set<Identifier> invalidResponses = itemController.validateResponses();
-        System.out.println("Bad responses: " + badResponses);
-        System.out.println("Invalid responses:" + invalidResponses);
+        itemSessionController.bindResponses(responseMap);
+        System.out.println("Bad responses: " + itemSessionState.getBadResponseIdentifiers());
+        System.out.println("Invalid responses:" + itemSessionState.getInvalidResponseIdentifiers());
 
         System.out.println("\nInvoking response processing");
-        itemController.performResponseProcessing();
-        System.out.println("Item state after RP1: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
+        itemSessionController.performResponseProcessing();
+        System.out.println("Item state after RP1: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
-        System.out.println(itemState.getCompletionStatus());
+        System.out.println(itemSessionState.getCompletionStatus());
     }
 }
