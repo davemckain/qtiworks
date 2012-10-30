@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 
 import org.junit.Test;
 
@@ -50,21 +51,23 @@ public class TemplateTest {
     @Test
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TemplateTest.class, true);
+        itemSessionController.initialize();
+
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getSubjectItem();
 
         final Identifier responseIdentifier = Identifier.parseString("response");
-        assertNull(itemSessionState.getResponseValue(responseIdentifier));
+        assertEquals(NullValue.INSTANCE, itemSessionState.getResponseValue(responseIdentifier));
         assertNull(itemSessionState.getOverriddenDefaultValue(responseIdentifier));
         assertNull(itemSessionState.getOverriddenCorrectResponseValue(responseIdentifier));
 
         final Identifier template1Identifier = Identifier.parseString("template1");
-        assertNull(itemSessionState.getTemplateValue(template1Identifier));
+        assertEquals(NullValue.INSTANCE, itemSessionState.getTemplateValue(template1Identifier));
         assertEquals("initial", item.getTemplateDeclaration(template1Identifier).getDefaultValue().evaluate().toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue(template1Identifier).toQtiString());
 
         final Identifier template2Identifier = Identifier.parseString("template2");
-        assertNull(itemSessionState.getTemplateValue(template2Identifier));
+        assertEquals(NullValue.INSTANCE, itemSessionState.getTemplateValue(template2Identifier));
         assertEquals("initial", item.getTemplateDeclaration(template2Identifier).getDefaultValue().evaluate().toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue(template2Identifier).toQtiString());
 

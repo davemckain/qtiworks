@@ -68,12 +68,16 @@ public class TextEntryInteractionTest {
 
         recordBuilder.put(StringInteraction.KEY_STRING_VALUE_NAME, new StringValue(stringValue));
         recordBuilder.put(StringInteraction.KEY_FLOAT_VALUE_NAME, new FloatValue(floatValue));
-        recordBuilder.put(StringInteraction.KEY_INTEGER_VALUE_NAME, integerValue == null ? null : new IntegerValue(integerValue));
+        if (integerValue!=null) {
+            recordBuilder.put(StringInteraction.KEY_INTEGER_VALUE_NAME, new IntegerValue(integerValue));
+        }
         recordBuilder.put(StringInteraction.KEY_LEFT_DIGITS_NAME, new IntegerValue(leftDigits));
         recordBuilder.put(StringInteraction.KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightDigits));
         recordBuilder.put(StringInteraction.KEY_NDP_NAME, new IntegerValue(ndp));
         recordBuilder.put(StringInteraction.KEY_NSF_NAME, new IntegerValue(nsf));
-        recordBuilder.put(StringInteraction.KEY_EXPONENT_NAME, exponent == null ? null : new IntegerValue(exponent));
+        if (exponent!=null) {
+            recordBuilder.put(StringInteraction.KEY_EXPONENT_NAME, new IntegerValue(exponent));
+        }
 
         return (RecordValue) RecordValue.createRecordValue(recordBuilder);
     }
@@ -124,6 +128,7 @@ public class TextEntryInteractionTest {
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TextEntryInteractionTest.class, true);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+        itemSessionController.initialize();
         itemSessionController.performTemplateProcessing();
 
         final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();

@@ -75,6 +75,9 @@ public final class RecordValue extends ContainerValue {
 
     public static Value createRecordValue(final Map<Identifier, SingleValue> values) {
         Assert.notNull(values);
+        for (final Entry<Identifier, SingleValue> entry : values.entrySet()) {
+            Assert.notNull(entry.getValue(), "Value for record entry " + entry.getKey());
+        }
         return values.isEmpty() ? NullValue.INSTANCE : new RecordValue(values);
     }
 
@@ -179,10 +182,12 @@ public final class RecordValue extends ContainerValue {
         final Iterator<Entry<Identifier, SingleValue>> iterator = container.entrySet().iterator();
         while (iterator.hasNext()) {
             final Entry<Identifier, SingleValue> entry = iterator.next();
+            final Identifier key = entry.getKey();
+            final SingleValue value = entry.getValue();
             stringBuilder.append("  ")
-                .append(entry.getKey().toString())
+                .append(key.toString())
                 .append(": ")
-                .append(entry.getValue().toQtiString());
+                .append(value.toQtiString());
             if (iterator.hasNext()) {
                 stringBuilder.append(',');
             }

@@ -258,10 +258,7 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
         final String rightPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(responseStringAfterExp.indexOf(".") + 1) : null;
         final String leftPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(0, responseStringAfterExp.indexOf(".")) : responseStringAfterExp;
 
-        if (exponentIndicator != null || responseStringAfterExp.contains(".")) {
-            recordBuilder.put(KEY_INTEGER_VALUE_NAME, null);
-        }
-        else {
+        if (exponentIndicator == null && !responseStringAfterExp.contains(".")) {
             recordBuilder.put(KEY_INTEGER_VALUE_NAME, IntegerValue.parseString(responseStringAfterExp, base));
         }
 
@@ -286,9 +283,6 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
 
         if (exponentIndicator != null) {
             recordBuilder.put(KEY_EXPONENT_NAME, IntegerValue.parseString(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
-        }
-        else {
-            recordBuilder.put(KEY_EXPONENT_NAME, null);
         }
         return RecordValue.createRecordValue(recordBuilder);
     }

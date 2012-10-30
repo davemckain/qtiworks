@@ -103,6 +103,7 @@ public class MapResponsePointTest {
     @Test
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, MapResponseTest.class, true);
+        itemSessionController.initialize();
         itemSessionController.performTemplateProcessing();
 
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
