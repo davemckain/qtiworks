@@ -16,6 +16,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -23,10 +24,14 @@ import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * (Used for ad hoc test of test functionality)
@@ -80,7 +85,15 @@ public final class TestTest {
 
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
         testSessionController.selectItem(firstItemRefNode.getTestPlanNodeInstanceKey());
+        System.out.println("First item is " + firstItemRefNode);
 
-        System.out.println("Test state after start: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+        final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
+        responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
+        testSessionController.handleResponses(responseMap);
+
+        System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRefNode.getTestPlanNodeInstanceKey());
+        System.out.println("First item state: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
     }
 }

@@ -64,6 +64,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.utils.TreeWalkNodeHandler;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
@@ -170,18 +171,11 @@ public final class TestSessionController extends TestValidationController implem
             throw new IllegalArgumentException("TestPlanNode must have type " + TestNodeType.ASSESSMENT_ITEM_REF
                     + " rather than " + itemRefNode.getTestNodeType());
         }
-        ItemSessionController result = itemSessionControllerMap.get(itemRefNode);
+        final ItemSessionController result = itemSessionControllerMap.get(itemRefNode);
         if (result==null) {
-            final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
-            final ItemSessionState itemSessionState = getItemSessionState(itemRefNode);
-            result = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
-            itemSessionControllerMap.put(itemRefNode, result);
+            throw new IllegalStateException("Expected ItemSessionController to be not null");
         }
         return result;
-    }
-
-    private ItemSessionState getItemSessionState(final TestPlanNode itemRefNode) {
-        return testSessionState.getItemSessionStates().get(itemRefNode.getTestPlanNodeInstanceKey());
     }
 
     //-------------------------------------------------------------------
@@ -193,6 +187,9 @@ public final class TestSessionController extends TestValidationController implem
      * test plan.
      */
     public void initialize() {
+        /* Clear ItemSessionController map as we'll have to create new ones for new item states */
+        itemSessionControllerMap.clear();
+
         /* Reset test variables */
         testSessionState.reset();
         for (final Identifier identifier : testProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
@@ -200,16 +197,16 @@ public final class TestSessionController extends TestValidationController implem
         }
         testSessionState.resetBuiltinVariables();
 
-        /* Reset variables in each item instance */
+        /* Initialise state in each item instance */
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
                 final TestPlanNodeInstanceKey instanceKey = testPlanNode.getTestPlanNodeInstanceKey();
-                ItemSessionState itemSessionState = getItemSessionState(testPlanNode);
-                if (itemSessionState==null) {
-                    itemSessionState = new ItemSessionState();
-                    testSessionState.getItemSessionStates().put(instanceKey, itemSessionState);
-                }
-                final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
+                final ItemSessionState itemSessionState = new ItemSessionState();
+                testSessionState.getItemSessionStates().put(instanceKey, itemSessionState);
+
+                final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(testPlanNode);
+                final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+                itemSessionControllerMap.put(testPlanNode, itemSessionController);
                 itemSessionController.initialize();
             }
         }
@@ -268,7 +265,7 @@ public final class TestSessionController extends TestValidationController implem
     /**
      * Selects the given item within the part.
      */
-    public void selectItem(final TestPlanNodeInstanceKey itemKey) {
+    public TestPlanNode selectItem(final TestPlanNodeInstanceKey itemKey) {
         final TestPlanNode testPartNode = ensureTestPartSelected();
         final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
         ensureItemRef(itemRefNode);
@@ -276,6 +273,24 @@ public final class TestSessionController extends TestValidationController implem
             throw new IllegalStateException(itemRefNode + " is not a descendant of " + testPartNode);
         }
         testSessionState.setCurrentItemKey(itemRefNode.getTestPlanNodeInstanceKey());
+        return itemRefNode;
+    }
+
+    /**
+     * Handles response submission to the currently selected item
+     */
+    public void handleResponses(final Map<Identifier, ResponseData> responseMap) {
+        Assert.notNull(responseMap, "responseMap");
+        final TestPlanNode itemRefNode = ensureItemSelected();
+        final AssessmentItemRef itemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
+        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(itemRef);
+
+        /* Bind responses and run response processing */
+        final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+        if (itemSessionController.bindResponses(responseMap)) {
+            itemSessionController.performResponseProcessing();
+        }
+        itemSessionController.checkAttemptAllowed(effectiveItemSessionControl.getMaxAttempts());
     }
 
     /**
@@ -315,12 +330,24 @@ public final class TestSessionController extends TestValidationController implem
         testSessionState.setFinished(true);
     }
 
+    private TestPlanNode ensureItemSelected() {
+        final TestPlanNodeInstanceKey currentItemKey = testSessionState.getCurrentItemKey();
+        if (currentItemKey==null) {
+            throw new IllegalStateException("No current item");
+        }
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentItemKey);
+        if (itemRefNode==null) {
+            throw new QtiLogicException("Unexpected map lookup failure");
+        }
+        return itemRefNode;
+    }
+
     private TestPlanNode ensureTestPartSelected() {
-        final TestPlanNodeInstanceKey testPartKey = testSessionState.getCurrentTestPartKey();
-        if (testSessionState.getCurrentTestPartKey()==null) {
+        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        if (currentTestPartKey==null) {
             throw new IllegalStateException("No current test part");
         }
-        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(testPartKey);
+        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentTestPartKey);
         if (testPlanNode==null) {
             throw new QtiLogicException("Unexpected map lookup failure");
         }
