@@ -9,7 +9,7 @@ Selection and ordering examples
 
   <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE"/>
 
-  <testPart identifier="part0" navigationMode="linear" submissionMode="individual">
+  <testPart identifier="part0" navigationMode="nonlinear" submissionMode="individual">
     <assessmentSection identifier="s" title="section" visible="false">
       <selection select="10" withReplacement="true"/>
       <ordering shuffle="true"/>

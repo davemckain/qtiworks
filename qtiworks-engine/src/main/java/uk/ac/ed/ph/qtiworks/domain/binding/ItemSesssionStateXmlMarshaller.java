@@ -91,7 +91,8 @@ public final class ItemSesssionStateXmlMarshaller {
         documentElement.setAttribute("closed", StringUtilities.toTrueFalse(itemSessionState.isClosed()));
         documentElement.setAttribute("presented", StringUtilities.toTrueFalse(itemSessionState.isPresented()));
         documentElement.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
-        documentElement.setAttribute("skipped", StringUtilities.toTrueFalse(itemSessionState.isSkipped()));
+        documentElement.setAttribute("badResponseIdentifiers", StringUtilities.join(itemSessionState.getBadResponseIdentifiers(), " "));
+        documentElement.setAttribute("invalidResponseIdentifiers", StringUtilities.join(itemSessionState.getInvalidResponseIdentifiers(), " "));
         document.appendChild(documentElement);
 
         /* Output candidate comment */
@@ -227,7 +228,7 @@ public final class ItemSesssionStateXmlMarshaller {
         result.setClosed(parseOptionalBooleanAttribute(documentElement, "closed", false));
         result.setPresented(parseOptionalBooleanAttribute(documentElement, "presented", false));
         result.setResponded(parseOptionalBooleanAttribute(documentElement, "responded", false));
-        result.setSkipped(parseOptionalBooleanAttribute(documentElement, "skipped", false));
+        result.setBadResponseIdentifiers(parseIdentifierAttributeList(documentElement, "badResponseIdentifiers"));
         if (documentElement.hasAttribute("sessionStatus")) {
             final String sessionStatusAttr = documentElement.getAttribute("sessionStatus");
             try {

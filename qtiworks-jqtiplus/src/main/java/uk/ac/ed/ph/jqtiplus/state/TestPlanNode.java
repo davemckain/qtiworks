@@ -137,6 +137,20 @@ public final class TestPlanNode implements Serializable {
         return Collections.unmodifiableList(children);
     }
 
+    public boolean hasAncestor(final TestPlanNode node) {
+        if (parentNode==null) {
+            return false;
+        }
+        if (parentNode.testPlanNodeInstanceKey.equals(node.testPlanNodeInstanceKey)) {
+            return true;
+        }
+        return parentNode.hasAncestor(node);
+    }
+
+    public boolean hasDescendant(final TestPlanNode node) {
+        return node.hasAncestor(this);
+    }
+
     public List<TestPlanNode> searchDescendantsOrSelf(final TestNodeType testNodeType) {
         final ArrayList<TestPlanNode> resultBuilder = new ArrayList<TestPlanNode>();
         buildDescendantsOrSelf(resultBuilder, this, testNodeType);

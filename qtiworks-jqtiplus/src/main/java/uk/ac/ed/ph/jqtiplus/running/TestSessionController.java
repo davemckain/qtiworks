@@ -46,10 +46,14 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
+import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
+import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
@@ -212,6 +216,124 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     //-------------------------------------------------------------------
+    // WORK IN PROGRESS - TEST CONTROL - NONLINEAR/INDIVIDUAL ONLY WITH SINGLE TEST PART
+
+    /**
+     * Temporary start method!
+     *
+     * Only works for tests with 1 part in N/I mode.
+     *
+     * Runs template processing on each item, selects the single part, then test is ready.
+     */
+    public void startTestNI() {
+        testSessionState.setCurrentTestPartKey(null);
+        testSessionState.setCurrentItemKey(null);
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
+        if (testPartNodes.size()!=1) {
+            fireRuntimeWarning(getSubjectTest(), "Support for single part tests is coming soon");
+            testSessionState.setFinished(true);
+            return;
+        }
+        /* Check submission/navigation mode */
+        final TestPlanNode testPlanNode = testPartNodes.get(0);
+        final TestPart testPart = (TestPart) testProcessingMap.resolveAbstractPart(testPlanNode);
+        if (!(testPart.getNavigationMode()==NavigationMode.NONLINEAR && testPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL)) {
+            fireRuntimeWarning(testPart, "This work in progress only supports NONLINEAR/INDIVIDUAL testParts");
+            testSessionState.setFinished(true);
+            return;
+        }
+        /* Select part */
+        testSessionState.setCurrentTestPartKey(testPlanNode.getTestPlanNodeInstanceKey());
+
+        /* Perform template processing on each item */
+        logger.debug("Performing template processing on each item in this testPart");
+        final List<TestPlanNode> itemRefNodes = testPlanNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+        for (final TestPlanNode itemRefNode : itemRefNodes) {
+            performTemplateProcessing(itemRefNode);
+        }
+    }
+
+    private void performTemplateProcessing(final TestPlanNode itemRefNode) {
+        Assert.notNull(itemRefNode);
+        ensureItemRef(itemRefNode);
+
+        final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
+        final List<TemplateDefault> templateDefaults = assessmentItemRef.getTemplateDefaults();
+
+        final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+        itemSessionController.performTemplateProcessing(templateDefaults);
+    }
+
+    /**
+     * Selects the given item within the part.
+     */
+    public void selectItem(final TestPlanNodeInstanceKey itemKey) {
+        final TestPlanNode testPartNode = ensureTestPartSelected();
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+        ensureItemRef(itemRefNode);
+        if (!itemRefNode.hasAncestor(testPartNode)) {
+            throw new IllegalStateException(itemRefNode + " is not a descendant of " + testPartNode);
+        }
+        testSessionState.setCurrentItemKey(itemRefNode.getTestPlanNodeInstanceKey());
+    }
+
+    /**
+     * Can we exit the test part?
+     */
+    public boolean canExitTestPart() {
+        final TestPlanNode currentTestPartNode = ensureTestPartSelected();
+        final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+        for (final TestPlanNode itemRefNode : itemRefNodes) {
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getTestPlanNodeInstanceKey());
+            final AssessmentItemRef itemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
+            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(itemRef);
+            if (!effectiveItemSessionControl.isAllowSkipping() && !itemSessionState.isResponded()) {
+                logger.debug("Item " + itemRefNode.getTestPlanNodeInstanceKey() + " has not been responded and allowSkipping=false, so test part exit will be forbidden");
+                return false;
+            }
+            if (effectiveItemSessionControl.isValidateResponses() && !itemSessionState.isRespondedValidly()) {
+                logger.debug("Item " + itemRefNode.getTestPlanNodeInstanceKey() + " has been responded with bad/invalid responses and validateResponses=true, so test part exit will be forbidden");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Exits the test part.
+     *
+     * (This would end the test in this case)
+     */
+    public void exitTestPart() {
+        ensureTestPartSelected();
+        if (!canExitTestPart()) {
+            throw new IllegalStateException("Current test part cannot be exited");
+        }
+        testSessionState.setCurrentTestPartKey(null);
+        testSessionState.setCurrentItemKey(null);
+        testSessionState.setFinished(true);
+    }
+
+    private TestPlanNode ensureTestPartSelected() {
+        final TestPlanNodeInstanceKey testPartKey = testSessionState.getCurrentTestPartKey();
+        if (testSessionState.getCurrentTestPartKey()==null) {
+            throw new IllegalStateException("No current test part");
+        }
+        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(testPartKey);
+        if (testPlanNode==null) {
+            throw new QtiLogicException("Unexpected map lookup failure");
+        }
+        return testPlanNode;
+    }
+
+    private void ensureItemRef(final TestPlanNode itemRefNode) {
+        if (itemRefNode==null || itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
+            throw new IllegalArgumentException("Expected " + itemRefNode + " to be an " + TestNodeType.ASSESSMENT_ITEM_REF);
+        }
+    }
+
+    //-------------------------------------------------------------------
     // WORK IN PROGRESS - TEST CONTROL - LINEAR/INDIVIDUAL ONLY
 
     public boolean hasMoreTestParts() {
@@ -318,7 +440,7 @@ public final class TestSessionController extends TestValidationController implem
     // Outcome processing
 
     public void performOutcomeProcessing() {
-        logger.info("Test outcome processing starting on {}", getResolvedAssessmentTest().getRootNodeLookup().getSystemId());
+        logger.info("Test outcome processing starting on {}", getSubjectTest().getSystemId());
         fireLifecycleEvent(LifecycleEventType.TEST_OUTCOME_PROCESSING_STARTING);
         try {
             resetOutcomeVariables();
@@ -327,7 +449,7 @@ public final class TestSessionController extends TestValidationController implem
             if (outcomeProcessing != null) {
                 outcomeProcessing.evaluate(this);
             }
-            logger.info("Test outcome processing completed on {}", getResolvedAssessmentTest().getRootNodeLookup().getSystemId());
+            logger.info("Test outcome processing completed on {}", getSubjectTest().getSystemId());
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.TEST_OUTCOME_PROCESSING_FINISHED);
