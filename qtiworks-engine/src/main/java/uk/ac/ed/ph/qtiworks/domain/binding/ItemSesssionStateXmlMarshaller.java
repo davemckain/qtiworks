@@ -88,7 +88,7 @@ public final class ItemSesssionStateXmlMarshaller {
         if (sessionStatus!=null) {
             documentElement.setAttribute("sessionStatus", sessionStatus.toQtiString());
         }
-        documentElement.setAttribute("finished", StringUtilities.toTrueFalse(itemSessionState.isClosed()));
+        documentElement.setAttribute("closed", StringUtilities.toTrueFalse(itemSessionState.isClosed()));
         documentElement.setAttribute("presented", StringUtilities.toTrueFalse(itemSessionState.isPresented()));
         documentElement.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
         documentElement.setAttribute("skipped", StringUtilities.toTrueFalse(itemSessionState.isSkipped()));
@@ -224,7 +224,7 @@ public final class ItemSesssionStateXmlMarshaller {
         if (!"1".equals(documentElement.getAttribute("modelVersion"))) {
             throw new MarshallingException("Expected modelVersion to be 1");
         }
-        result.setClosed(parseOptionalBooleanAttribute(documentElement, "finished", false));
+        result.setClosed(parseOptionalBooleanAttribute(documentElement, "closed", false));
         result.setPresented(parseOptionalBooleanAttribute(documentElement, "presented", false));
         result.setResponded(parseOptionalBooleanAttribute(documentElement, "responded", false));
         result.setSkipped(parseOptionalBooleanAttribute(documentElement, "skipped", false));
