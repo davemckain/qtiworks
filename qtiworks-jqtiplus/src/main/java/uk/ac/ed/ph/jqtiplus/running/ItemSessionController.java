@@ -361,11 +361,13 @@ public final class ItemSessionController extends ItemValidationController implem
      * cleared before this runs.
      *
      * @param responseMap Map of responses to set, keyed on response variable identifier
+     * @return true if all responses were successfully bound and validated, false otherwise.
+     *   Further details can be found within {@link ItemSessionState}
      *
      * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
      *   any key fails to map to an interaction
      */
-    public void bindResponses(final Map<Identifier, ResponseData> responseMap) {
+    public boolean bindResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
         logger.debug("Binding responses {}", responseMap);
 
@@ -419,6 +421,7 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setBadResponseIdentifiers(badResponseIdentifiers);
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
         itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
+        return badResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
     /**
