@@ -53,10 +53,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 /**
- * Subclass of {@link CandidateEvent} for events specific to an item.
+ * Subclass of {@link CandidateEvent} for events specific to a test
  *
  * @see CandidateEvent
- * @see CandidateTestEvent
+ * @see CandidateItemEvent
  *
  * @author David McKain
  */
@@ -74,13 +74,13 @@ import org.hibernate.annotations.Type;
                 + "  WHERE e.candidateSession = :candidateSession"
                 + "  ORDER BY e.id DESC")
 })
-public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
+public class CandidateTestEvent extends CandidateEvent implements BaseEntity {
 
     private static final long serialVersionUID = 6121745930649659116L;
 
     /** Type of event */
     @Basic(optional=false)
-    @Column(name="item_event_type", updatable=false, length=16)
+    @Column(name="test_event_type", updatable=false, length=16)
     @Enumerated(EnumType.STRING)
     private CandidateItemEventType itemEventType;
 
@@ -113,15 +113,15 @@ public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
     /**
      * For a {@link CandidateItemEventType#PLAYBACK} event, this points to the event in
      * the same session that the candidate has requested to see
-     * {@link CandidateItemEvent}
+     * {@link CandidateTestEvent}
      */
     @OneToOne(optional=true)
     @JoinColumn(name="playback_xeid", updatable=false)
-    private CandidateItemEvent playbackEvent;
+    private CandidateTestEvent playbackEvent;
 
     //------------------------------------------------------------
 
-    public CandidateItemEvent() {
+    public CandidateTestEvent() {
         super(CandidateEventCategory.ITEM);
     }
 
@@ -172,11 +172,11 @@ public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
     }
 
 
-    public CandidateItemEvent getPlaybackEvent() {
+    public CandidateTestEvent getPlaybackEvent() {
         return playbackEvent;
     }
 
-    public void setPlaybackEvent(final CandidateItemEvent playbackEvent) {
+    public void setPlaybackEvent(final CandidateTestEvent playbackEvent) {
         this.playbackEvent = playbackEvent;
     }
 

@@ -39,9 +39,9 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
  *
  * @author David McKain
  */
-public enum CandidateItemEventType {
+public enum CandidateTestEventType {
 
-    /** Item session first initialised and template processing happened */
+    /** {@link CandidateItemSession} first initialised */
     INIT,
 
     /** Attempt made, all responses bound successfully and valid */
