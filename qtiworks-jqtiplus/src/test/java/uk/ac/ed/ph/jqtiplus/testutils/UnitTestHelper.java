@@ -45,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
@@ -101,9 +102,11 @@ public final class UnitTestHelper {
 
     public static ItemSessionController loadUnitTestAssessmentItemForControl(final String fileName, final Class<?> baseClass, final boolean isValid) {
         final ResolvedAssessmentItem resolvedAssessmentItem = resolveUnitTestAssessmentItem(baseClass, fileName, ModelRichness.EXECUTION_ONLY);
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
         final ItemSessionState itemSessionState = new ItemSessionState();
-        return new ItemSessionController(createJqtiExtensionManager(), itemProcessingMap, itemSessionState);
+        return new ItemSessionController(createJqtiExtensionManager(), itemSessionControllerSettings,
+                itemProcessingMap, itemSessionState);
     }
 
     public static URI createTestFileUri(final Class<?> baseClass, final String fileName) {

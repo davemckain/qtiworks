@@ -103,6 +103,9 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * Service the manages the real-time delivery of an assessment item to a candidate.
  * <p>
+ * NOTE: Current single item delivery assumes that items are always presented immediately after
+ * template processing runs, and that attempts are always treated as being submitted.
+ * <p>
  * NOTE: Remember there is no {@link IdentityContext} for candidates.
  *
  * @author David McKain
@@ -530,8 +533,6 @@ public class CandidateItemDeliveryService {
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
-        final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
 
         /* Set up listener to record any notifications from JQTI candidateAuditLogger.logic */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -602,6 +603,7 @@ public class CandidateItemDeliveryService {
 
         /* Attempt to bind responses */
         itemSessionController.bindResponses(responseMap);
+        itemSessionController.markPendingResponseProcessing();
 
         /* Note any responses that failed to bind */
         final Set<Identifier> badResponseIdentifiers = itemSessionState.getBadResponseIdentifiers();
@@ -630,7 +632,6 @@ public class CandidateItemDeliveryService {
 
         /* Update state */
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-        itemSessionController.checkAttemptAllowed(itemDeliverySettings.getMaxAttempts());
 
         /* Record resulting attempt and event */
         final CandidateItemEventType eventType = allResponsesBound ?
@@ -737,7 +738,14 @@ public class CandidateItemDeliveryService {
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
         itemSessionController.performTemplateProcessing();
-        itemSessionController.checkAttemptAllowed(itemDeliverySettings.getMaxAttempts());
+
+        /* Mark item as being presented */
+        itemSessionController.markPresented();
+
+        /* Maybe mark as pending submission */
+        if (!itemSessionState.isClosed()) {
+            itemSessionController.markPendingSubmission();
+        }
 
         /* Record and log event */
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
@@ -799,11 +807,7 @@ public class CandidateItemDeliveryService {
         itemSessionState = candidateDataServices.unmarshalItemSessionState(lastInitEvent);
 
         /* Update state */
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
-                itemSessionState, notificationRecorder);
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-        itemSessionController.checkAttemptAllowed(itemDeliverySettings.getMaxAttempts());
 
         /* Record and event */
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);

@@ -5,8 +5,8 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
@@ -26,6 +26,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -52,11 +53,14 @@ public class RenderingTest {
 
             final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
             final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
+            final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
             final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, true).initialize();
             final ItemSessionState itemSessionState = new ItemSessionState();
-            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
+                    itemSessionControllerSettings, itemProcessingMap, itemSessionState);
 
             System.out.println("\nInitialising");
+            itemSessionController.initialize();
             itemSessionController.performTemplateProcessing();
             System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 

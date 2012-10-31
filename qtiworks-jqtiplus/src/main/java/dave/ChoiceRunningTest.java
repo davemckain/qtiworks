@@ -15,6 +15,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -44,9 +45,11 @@ public class ChoiceRunningTest {
         final ItemSessionState itemSessionState = new ItemSessionState();
         System.out.println("Item state before init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemSessionControllerSettings, itemProcessingMap, itemSessionState);
 
         System.out.println("\nInitialising");
+        itemSessionController.initialize();
         itemSessionController.performTemplateProcessing();
         System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
@@ -60,7 +63,5 @@ public class ChoiceRunningTest {
         System.out.println("\nInvoking response processing");
         itemSessionController.performResponseProcessing();
         System.out.println("Item state after RP1: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
-
-        System.out.println(itemSessionState.getCompletionStatus());
     }
 }

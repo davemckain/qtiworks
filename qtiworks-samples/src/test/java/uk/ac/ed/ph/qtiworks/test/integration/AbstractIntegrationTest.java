@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
@@ -129,8 +130,9 @@ public abstract class AbstractIntegrationTest {
     
     protected ItemSessionController createItemSessionController(boolean isValid) {
         final ResolvedAssessmentItem resolvedAssessmentItem = createAssessmentObjectManager().resolveAssessmentItem(sampleResourceUri, ModelRichness.FULL_ASSUMED_VALID);
-        ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
         final ItemSessionState itemSessionState = new ItemSessionState();
-        return new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+        return new ItemSessionController(jqtiExtensionManager, itemSessionControllerSettings, itemProcessingMap, itemSessionState);
     }
 }

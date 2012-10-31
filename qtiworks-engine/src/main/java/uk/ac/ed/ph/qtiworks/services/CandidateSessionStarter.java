@@ -51,7 +51,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
@@ -222,7 +221,6 @@ public class CandidateSessionStarter {
 
     private CandidateSession createCandidateItemSession(final Delivery delivery, final String exitUrl) {
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
 
         /* Create fresh JQTI+ state Object */
         final ItemSessionState itemSessionState = new ItemSessionState();
@@ -231,19 +229,18 @@ public class CandidateSessionStarter {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Initialise state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery, itemSessionState, notificationRecorder);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
+                itemSessionState, notificationRecorder);
         itemSessionController.initialize();
         itemSessionController.performTemplateProcessing();
 
-        /* Check whether an attempt is allowed. */
-        itemSessionController.checkAttemptAllowed(itemDeliverySettings.getMaxAttempts());
-
-        /* Set SessionStatus */
-        /* FIXME: This doesn't really make sense if attemptAllowed==false */
-        itemSessionController.markPendingSubmission();
-
         /* Mark item as being presented */
         itemSessionController.markPresented();
+
+        /* Maybe mark as pending submission */
+        if (!itemSessionState.isClosed()) {
+            itemSessionController.markPendingSubmission();
+        }
 
         /* Create new session and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();

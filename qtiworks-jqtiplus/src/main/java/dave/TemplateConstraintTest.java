@@ -13,6 +13,7 @@ import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
@@ -38,11 +39,13 @@ public class TemplateConstraintTest {
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(itemValidationResult).initialize();
         System.out.println("Run map is " + ObjectDumper.dumpObject(itemProcessingMap, DumpMode.DEEP));
 
-        final ItemSessionState itemState = new ItemSessionState();
-        final ItemSessionController itemController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemState);
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        final ItemSessionState itemSessionState = new ItemSessionState();
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemSessionControllerSettings, itemProcessingMap, itemSessionState);
 
         System.out.println("\nInitialising");
-        itemController.performTemplateProcessing();
-        System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemState, DumpMode.DEEP));
+        itemSessionController.initialize();
+        itemSessionController.performTemplateProcessing();
+        System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
     }
 }

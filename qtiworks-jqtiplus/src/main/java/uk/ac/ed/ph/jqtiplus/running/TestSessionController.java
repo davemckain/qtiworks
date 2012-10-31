@@ -205,7 +205,14 @@ public final class TestSessionController extends TestValidationController implem
                 testSessionState.getItemSessionStates().put(instanceKey, itemSessionState);
 
                 final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(testPlanNode);
-                final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+                final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(testPlanNode);
+
+                /* Copy relevant bits of ItemSessionControl into ItemSessionControllerSettings */
+                final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+                itemSessionControllerSettings.setMaxAttempts(effectiveItemSessionControl.getMaxAttempts());
+
+                final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
+                        itemSessionControllerSettings, itemProcessingMap, itemSessionState);
                 itemSessionControllerMap.put(testPlanNode, itemSessionController);
                 itemSessionController.initialize();
             }
@@ -282,15 +289,12 @@ public final class TestSessionController extends TestValidationController implem
     public void handleResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
         final TestPlanNode itemRefNode = ensureItemSelected();
-        final AssessmentItemRef itemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
-        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(itemRef);
 
         /* Bind responses and run response processing */
         final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
         if (itemSessionController.bindResponses(responseMap)) {
             itemSessionController.performResponseProcessing();
         }
-        itemSessionController.checkAttemptAllowed(effectiveItemSessionControl.getMaxAttempts());
     }
 
     /**

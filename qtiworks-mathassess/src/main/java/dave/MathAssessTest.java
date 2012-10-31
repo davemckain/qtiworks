@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
@@ -108,13 +109,16 @@ public class MathAssessTest {
             final QtiSaxDocumentFirer saxEventFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, serializerHandler, new SaxFiringOptions());
             saxEventFirer.fireSaxDocument(resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful());
 
-            System.out.println("\n\nSerailized XML:\n" + serializedXmlWriter.toString());
+            System.out.println("\n\nSerialized XML:\n" + serializedXmlWriter.toString());
 
             final ItemSessionState itemSessionState = new ItemSessionState();
             final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(itemValidationResult).initialize();
-            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+            final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
+                    itemSessionControllerSettings, itemProcessingMap, itemSessionState);
 
             System.out.println("\n\nInitialising");
+            itemSessionController.initialize();
             itemSessionController.performTemplateProcessing(null);
             System.out.println("\nTemplate Values: " + itemSessionState.getTemplateValues());
             System.out.println("\nResponse Values: " + itemSessionState.getResponseValues());

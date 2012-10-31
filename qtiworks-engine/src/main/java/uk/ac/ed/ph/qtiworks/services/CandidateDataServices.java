@@ -44,14 +44,17 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
@@ -200,22 +203,31 @@ public class CandidateDataServices {
             final NotificationRecorder notificationRecorder) {
         Assert.notNull(candidateItemEvent, "candidateItemEvent");
 
-        final Delivery itemDelivery = candidateItemEvent.getCandidateSession().getDelivery();
+        final Delivery delivery = candidateItemEvent.getCandidateSession().getDelivery();
         final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateItemEvent);
-        return createItemSessionController(itemDelivery, itemSessionState, notificationRecorder);
+        return createItemSessionController(delivery, itemSessionState, notificationRecorder);
     }
 
     public ItemSessionController createItemSessionController(final Delivery delivery,
             final ItemSessionState itemSessionState,  final NotificationRecorder notificationRecorder) {
         Assert.notNull(delivery, "delivery");
         Assert.notNull(itemSessionState, "itemSessionState");
+        if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
+            throw new IllegalArgumentException("Expected an item delivery");
+        }
 
         /* Resolve the underlying JQTI+ object */
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
 
+        /* Create config for ItemSessionController */
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        itemSessionControllerSettings.setMaxAttempts(itemDeliverySettings.getMaxAttempts());
+
         /* Create controller and wire up notification recorder (if passed) */
-        final ItemSessionController result = new ItemSessionController(jqtiExtensionManager, itemProcessingMap, itemSessionState);
+        final ItemSessionController result = new ItemSessionController(jqtiExtensionManager,
+                itemSessionControllerSettings, itemProcessingMap, itemSessionState);
         if (notificationRecorder!=null) {
             result.addNotificationListener(notificationRecorder);
         }

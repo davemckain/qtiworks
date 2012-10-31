@@ -63,7 +63,6 @@ import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
-import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
@@ -98,10 +97,12 @@ import org.slf4j.LoggerFactory;
  *
  * {@link #initialize()}
  * {@link #performTemplateProcessing()}
+ * {@link #markPresented()}
+ * {@link #markPendingResponseProcessing()}
  * {@link #markPendingSubmission()}
  * {@link #bindResponses(Map)}
- * {@link #validateResponses()}
  * {@link #performResponseProcessing()}
+ * {@link #markClosed()}
  *
  * @author David McKain
  */
@@ -109,9 +110,7 @@ public final class ItemSessionController extends ItemValidationController implem
 
     private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 
-    /** TODO: Make this settable! */
-    public static final int MAX_TEMPLATE_PROCESSING_TRIES = 100;
-
+    private final ItemSessionControllerSettings itemSessionControllerSettings;
     private final ItemProcessingMap itemProcessingMap;
     private final ItemSessionState itemSessionState;
 
@@ -119,13 +118,20 @@ public final class ItemSessionController extends ItemValidationController implem
     private Random randomGenerator;
 
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager,
+            final ItemSessionControllerSettings itemSessionControllerSettings,
             final ItemProcessingMap itemProcessingMap, final ItemSessionState itemSessionState) {
         super(jqtiExtensionManager, itemProcessingMap!=null ? itemProcessingMap.getResolvedAssessmentItem() : null);
+        Assert.notNull(itemSessionControllerSettings, "itemSessionControllerSettings");
         Assert.notNull(itemSessionState, "itemSessionState");
+        this.itemSessionControllerSettings = new ItemSessionControllerSettings(itemSessionControllerSettings);
         this.itemProcessingMap = itemProcessingMap;
         this.itemSessionState = itemSessionState;
         this.randomSeed = null;
         this.randomGenerator = null;
+    }
+
+    public ItemSessionControllerSettings getItemSessionControllerSettings() {
+        return itemSessionControllerSettings;
     }
 
     @Override
@@ -198,42 +204,42 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.resetBuiltinVariables();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         itemSessionState.setInitialized(true);
+        updateClosedStatus();
     }
 
     private void ensureInitialized() {
         if (!itemSessionState.isInitialized()) {
-            throw new IllegalStateException("ItemSessionState has not been initialiazed");
+            throw new IllegalStateException("ItemSession has not been initialiazed");
+        }
+    }
+
+    private void ensureOpen() {
+        ensureInitialized();
+        if (itemSessionState.isClosed()) {
+            throw new IllegalStateException("ItemSession is closed");
         }
     }
 
     /**
-     * Determines whether a further attempt is allowed on this item, setting
-     * {@link ItemSessionState#finished} as appropriate.
-     *
-     * FIXME: Ideally, this should be called with something resembling {@link ItemSessionControl}
-     *   that could be used in both standalone and within-test fashion.
-     * FIXME: This is not integrated into tests yet
+     * Checks whether a further attempt is allowed on this item, updating
+     * {@link ItemSessionState#isClosed()} as appropriate.
      *
      * (New in JQTI+)
-     *
-     * @param maxAttempts maximum number of attempts. This is only used for non-adaptive items,
-     *   and 0 is treated as "unlimited".
-     * @return true if a further attempt is allowed, false otherwise.
      */
-    public boolean checkAttemptAllowed(final int maxAttempts) {
-        boolean attemptAllowed;
+    private void updateClosedStatus() {
+        boolean shouldClose;
         if (item.getAdaptive()) {
             /* For adaptive items, attempts are limited by the value of the completion status variable */
             final String completionStatus = itemSessionState.getCompletionStatus();
-            attemptAllowed = !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
+            shouldClose = AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
         }
         else {
             /* Non-adaptive items use maxAttempts, with 0 treated as unlimited */
+            final int maxAttempts = itemSessionControllerSettings.getMaxAttempts();
             final int numAttempts = itemSessionState.getNumAttempts();
-            attemptAllowed = (maxAttempts==0 || numAttempts < maxAttempts);
+            shouldClose = (maxAttempts>0 && numAttempts>=maxAttempts);
         }
-        itemSessionState.setClosed(!attemptAllowed);
-        return attemptAllowed;
+        itemSessionState.setClosed(shouldClose);
     }
 
     //-------------------------------------------------------------------
@@ -296,6 +302,7 @@ public final class ItemSessionController extends ItemValidationController implem
 
             /* Reset SessionStatus */
             itemSessionState.setSessionStatus(SessionStatus.INITIAL);
+            updateClosedStatus();
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
@@ -308,8 +315,9 @@ public final class ItemSessionController extends ItemValidationController implem
         /* Reset template variables */
         resetTemplateVariables();
 
-        if (attemptNumber > MAX_TEMPLATE_PROCESSING_TRIES) {
-            fireRuntimeWarning(item, "Exceeded maximum number " + MAX_TEMPLATE_PROCESSING_TRIES + " of template processing retries - leaving variables at default values");
+        final int maxTemplateProcessingTries = itemSessionControllerSettings.getTemplateProcessingLimit();
+        if (attemptNumber > maxTemplateProcessingTries) {
+            fireRuntimeWarning(item, "Exceeded maximum number " + maxTemplateProcessingTries + " of template processing retries - leaving variables at default values");
             return true;
         }
 
@@ -345,14 +353,19 @@ public final class ItemSessionController extends ItemValidationController implem
     //-------------------------------------------------------------------
     // Interacting
 
-    public void markPendingSubmission() {
-        ensureInitialized();
-        itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
-    }
-
     public void markPresented() {
         ensureInitialized();
         itemSessionState.setPresented(true);
+    }
+
+    public void markPendingSubmission() {
+        ensureOpen();
+        itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
+    }
+
+    public void markPendingResponseProcessing() {
+        ensureOpen();
+        itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
     }
 
     public void markClosed() {
@@ -369,6 +382,8 @@ public final class ItemSessionController extends ItemValidationController implem
      * <p>
      * All response variables (except those bound to {@link EndAttemptInteraction}) will be
      * cleared before this runs.
+     * <p>
+     * NB: This is NOT counted as an attempt.
      *
      * @param responseMap Map of responses to set, keyed on response variable identifier
      * @return true if all responses were successfully bound and validated, false otherwise.
@@ -379,7 +394,7 @@ public final class ItemSessionController extends ItemValidationController implem
      */
     public boolean bindResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
-        ensureInitialized();
+        ensureOpen();
         logger.debug("Binding responses {}", responseMap);
 
         /* First set all responses bound to <endAttemptInteractions> to false initially.
@@ -431,7 +446,6 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setResponded(true);
         itemSessionState.setBadResponseIdentifiers(badResponseIdentifiers);
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
-        itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
 
         return badResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
@@ -441,7 +455,7 @@ public final class ItemSessionController extends ItemValidationController implem
      * as appropriate.
      */
     public void performResponseProcessing() {
-        ensureInitialized();
+        ensureOpen();
         logger.debug("Response processing starting");
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
@@ -487,8 +501,9 @@ public final class ItemSessionController extends ItemValidationController implem
                 logger.debug("No responseProcessing rules or responseProcessing template exists, so no response processing will be performed");
             }
 
-            /* Set SessionStatus */
+            /* Update final state */
             itemSessionState.setSessionStatus(SessionStatus.FINAL);
+            updateClosedStatus();
         }
         finally {
             logger.debug("Response processing finished");
