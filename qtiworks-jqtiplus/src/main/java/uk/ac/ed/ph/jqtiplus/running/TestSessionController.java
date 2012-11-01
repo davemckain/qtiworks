@@ -59,7 +59,7 @@ import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeInstanceKey;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
@@ -209,9 +209,9 @@ public final class TestSessionController extends TestValidationController implem
         /* Initialise state & controller for each item instance */
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
-                final TestPlanNodeInstanceKey instanceKey = testPlanNode.getTestPlanNodeInstanceKey();
+                final TestPlanNodeKey key = testPlanNode.getKey();
                 final ItemSessionState itemSessionState = new ItemSessionState();
-                testSessionState.getItemSessionStates().put(instanceKey, itemSessionState);
+                testSessionState.getItemSessionStates().put(key, itemSessionState);
 
                 final ItemSessionController itemSessionController = createItemSessionController(testPlanNode, itemSessionState);
                 itemSessionController.initialize();
@@ -263,7 +263,7 @@ public final class TestSessionController extends TestValidationController implem
             return;
         }
         /* Select part */
-        testSessionState.setCurrentTestPartKey(testPlanNode.getTestPlanNodeInstanceKey());
+        testSessionState.setCurrentTestPartKey(testPlanNode.getKey());
 
         /* Perform template processing on each item */
         logger.debug("Performing template processing on each item in this testPart");
@@ -287,14 +287,14 @@ public final class TestSessionController extends TestValidationController implem
     /**
      * Selects the given item within the part.
      */
-    public TestPlanNode selectItem(final TestPlanNodeInstanceKey itemKey) {
+    public TestPlanNode selectItem(final TestPlanNodeKey itemKey) {
         final TestPlanNode testPartNode = ensureTestPartSelected();
         final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
         ensureItemRef(itemRefNode);
         if (!itemRefNode.hasAncestor(testPartNode)) {
             throw new IllegalStateException(itemRefNode + " is not a descendant of " + testPartNode);
         }
-        testSessionState.setCurrentItemKey(itemRefNode.getTestPlanNodeInstanceKey());
+        testSessionState.setCurrentItemKey(itemRefNode.getKey());
         return itemRefNode;
     }
 
@@ -319,15 +319,15 @@ public final class TestSessionController extends TestValidationController implem
         final TestPlanNode currentTestPartNode = ensureTestPartSelected();
         final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
         for (final TestPlanNode itemRefNode : itemRefNodes) {
-            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getTestPlanNodeInstanceKey());
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
             final AssessmentItemRef itemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
             final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(itemRef);
             if (!effectiveItemSessionControl.isAllowSkipping() && !itemSessionState.isResponded()) {
-                logger.debug("Item " + itemRefNode.getTestPlanNodeInstanceKey() + " has not been responded and allowSkipping=false, so test part exit will be forbidden");
+                logger.debug("Item " + itemRefNode.getKey() + " has not been responded and allowSkipping=false, so test part exit will be forbidden");
                 return false;
             }
             if (effectiveItemSessionControl.isValidateResponses() && !itemSessionState.isRespondedValidly()) {
-                logger.debug("Item " + itemRefNode.getTestPlanNodeInstanceKey() + " has been responded with bad/invalid responses and validateResponses=true, so test part exit will be forbidden");
+                logger.debug("Item " + itemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so test part exit will be forbidden");
                 return false;
             }
         }
@@ -350,7 +350,7 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     private TestPlanNode ensureItemSelected() {
-        final TestPlanNodeInstanceKey currentItemKey = testSessionState.getCurrentItemKey();
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
         if (currentItemKey==null) {
             throw new IllegalStateException("No current item");
         }
@@ -362,7 +362,7 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     private TestPlanNode ensureTestPartSelected() {
-        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
         if (currentTestPartKey==null) {
             throw new IllegalStateException("No current test part");
         }
@@ -385,7 +385,7 @@ public final class TestSessionController extends TestValidationController implem
     public boolean hasMoreTestParts() {
         ensureNotFinished();
 
-        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
         boolean result;
@@ -413,7 +413,7 @@ public final class TestSessionController extends TestValidationController implem
         }
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
-        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
         final TestPlanNode result;
         if (currentTestPartKey==null) {
             result = testPartNodes.get(0);
@@ -423,7 +423,7 @@ public final class TestSessionController extends TestValidationController implem
             final int currentSiblingIndex = currentTestPart.getSiblingIndex();
             result = testPartNodes.get(currentSiblingIndex + 1);
         }
-        testSessionState.setCurrentTestPartKey(result.getTestPlanNodeInstanceKey());
+        testSessionState.setCurrentTestPartKey(result.getKey());
         testSessionState.setCurrentItemKey(null);
         return result;
     }
@@ -431,14 +431,14 @@ public final class TestSessionController extends TestValidationController implem
     public boolean hasMoreItemsInPart() {
         ensureNotFinished();
 
-        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
         if (currentTestPartKey==null) {
             throw new IllegalStateException("Not currently in a testPart");
         }
         final TestPlan testPlan = testSessionState.getTestPlan();
         final TestPlanNode currentTestPart = testPlan.getTestPlanNodeMap().get(currentTestPartKey);
         final List<TestPlanNode> itemsInTestPart = currentTestPart.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
-        final TestPlanNodeInstanceKey itemKey = testSessionState.getCurrentItemKey();
+        final TestPlanNodeKey itemKey = testSessionState.getCurrentItemKey();
         boolean result;
         if (itemKey==null) {
             /* Haven't entered any items yet */
@@ -457,11 +457,11 @@ public final class TestSessionController extends TestValidationController implem
         if (!hasMoreItemsInPart()) {
             return null;
         }
-        final TestPlanNodeInstanceKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
         final TestPlan testPlan = testSessionState.getTestPlan();
         final TestPlanNode currentTestPart = testPlan.getTestPlanNodeMap().get(currentTestPartKey);
         final List<TestPlanNode> itemsInTestPart = currentTestPart.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
-        final TestPlanNodeInstanceKey itemKey = testSessionState.getCurrentItemKey();
+        final TestPlanNodeKey itemKey = testSessionState.getCurrentItemKey();
         TestPlanNode result;
         if (itemKey==null) {
             /* Haven't entered any items yet */
@@ -472,7 +472,7 @@ public final class TestSessionController extends TestValidationController implem
             final int currentItemIndex = itemsInTestPart.indexOf(currentItem);
             result = itemsInTestPart.get(currentItemIndex+1);
         }
-        testSessionState.setCurrentItemKey(result.getTestPlanNodeInstanceKey());
+        testSessionState.setCurrentItemKey(result.getKey());
         return result;
     }
 

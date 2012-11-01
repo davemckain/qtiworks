@@ -84,7 +84,7 @@ public final class TestTest {
         testSessionController.startTestNI();
 
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
-        testSessionController.selectItem(firstItemRefNode.getTestPlanNodeInstanceKey());
+        testSessionController.selectItem(firstItemRefNode.getKey());
         System.out.println("First item is " + firstItemRefNode);
 
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
@@ -93,7 +93,7 @@ public final class TestTest {
 
         System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRefNode.getTestPlanNodeInstanceKey());
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRefNode.getKey());
         System.out.println("First item state: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
     }
 }

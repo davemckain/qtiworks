@@ -47,7 +47,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeInstanceKey;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
@@ -123,7 +123,7 @@ public final class TestPlanner extends ListenerNotificationFirer {
         this.resolvedAssessmentTest = testProcessingMap.getResolvedAssessmentTest();
         this.test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
-        this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, -1, null);
+        this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, null);
     }
 
     public TestPlan generateTestPlan() {
@@ -475,8 +475,8 @@ public final class TestPlanner extends ListenerNotificationFirer {
         final int instanceNumber = 1 + computeCurrentInstanceCount(identifier);
 
         /* Create resulting Node and add to tree */
-        final TestPlanNodeInstanceKey testPlanNodeInstanceKey = new TestPlanNodeInstanceKey(identifier, instanceNumber);
-        final TestPlanNode result = new TestPlanNode(testNodeType, abstractPartGlobalIndex, testPlanNodeInstanceKey);
+        final TestPlanNodeKey key = new TestPlanNodeKey(identifier, abstractPartGlobalIndex, instanceNumber);
+        final TestPlanNode result = new TestPlanNode(testNodeType, key);
         parent.addChild(result);
 
         /* Record nodes for this Identifier */

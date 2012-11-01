@@ -74,7 +74,7 @@ public final class TestPlan implements Serializable {
     private final TestPlanNode testPlanRootNode;
 
     /** Map of all {@link TestPlanNode}s, in the correct order */
-    private final Map<TestPlanNodeInstanceKey, TestPlanNode> testPlanNodeMap;
+    private final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMap;
 
     /**
      * Map of the {@link TestPlanNode}s corresponding to each {@link Identifier}.
@@ -87,16 +87,16 @@ public final class TestPlan implements Serializable {
         this.testPlanRootNode = testPlanRootNode;
         this.testPlanNodesByIdentifierMap = testPlanNodesByIdentifierMap;
 
-        final Map<TestPlanNodeInstanceKey, TestPlanNode> testPlanNodeMapBuilder = new LinkedHashMap<TestPlanNodeInstanceKey, TestPlanNode>();
+        final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new LinkedHashMap<TestPlanNodeKey, TestPlanNode>();
         for (final List<TestPlanNode> testPlanNodeList : testPlanNodesByIdentifierMap.values()) {
             for (final TestPlanNode testPlanNode : testPlanNodeList) {
-                testPlanNodeMapBuilder.put(testPlanNode.getTestPlanNodeInstanceKey(), testPlanNode);
+                testPlanNodeMapBuilder.put(testPlanNode.getKey(), testPlanNode);
             }
         }
         this.testPlanNodeMap = Collections.unmodifiableMap(testPlanNodeMapBuilder);
     }
 
-    public Map<TestPlanNodeInstanceKey, TestPlanNode> getTestPlanNodeMap() {
+    public Map<TestPlanNodeKey, TestPlanNode> getTestPlanNodeMap() {
         return testPlanNodeMap;
     }
 
@@ -152,10 +152,9 @@ public final class TestPlan implements Serializable {
                 result.append("  ");
             }
             result.append(testPlanNode.getTestNodeType())
-                    .append(testPlanNode.getTestPlanNodeInstanceKey())
-                    .append('@')
-                    .append(testPlanNode.getAbstractPartGlobalIndex())
-                    .append('\n');
+                .append('(')
+                .append(testPlanNode.getKey())
+                .append(")\n");
             buildStructure(result, testPlanNode.getChildren(), indent + 1);
         }
     }

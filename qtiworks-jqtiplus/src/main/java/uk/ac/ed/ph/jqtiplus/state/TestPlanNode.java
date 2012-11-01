@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
-import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
@@ -50,8 +49,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents an instance of a {@link TestPart}, {@link AssessmentSection}
- * or {@link AssessmentItemRef} within a {@link TestPlan}.
+ * Represents an instance of an {@link AbstractPart) (i.e. {@link TestPart},
+ * {@link AssessmentSection} or {@link AssessmentItemRef}) within a {@link TestPlan}.
  *
  * @see TestPlan
  *
@@ -69,11 +68,15 @@ public final class TestPlanNode implements Serializable {
         ;
     }
 
+    /**
+     * Computed {@link TestPlanNodeKey} for this node.
+     * <p>
+     * (This will be null for the {@link TestNodeType#ROOT} Node)
+     */
+    private final TestPlanNodeKey key;
+
     /** Parent Node (set internally) */
     private TestPlanNode parentNode;
-
-    /** Global index of the corresponding {@link AbstractPart} in the test, starting at 0 */
-    private final int abstractPartGlobalIndex;
 
     /** Index within siblings, starting at 0 */
     private int siblingIndex;
@@ -81,24 +84,15 @@ public final class TestPlanNode implements Serializable {
     /** Type of Node represented */
     private final TestNodeType testNodeType;
 
-    /**
-     * Computed {@link TestPlanNodeInstanceKey} for this node.
-     * <p>
-     * (This will be null for the {@link TestNodeType#ROOT} Node)
-     */
-    private final TestPlanNodeInstanceKey testPlanNodeInstanceKey;
-
     /** Children of this Node */
     private final List<TestPlanNode> children;
 
-    public TestPlanNode(final TestNodeType testNodeType, final int abstractPartGlobalIndex,
-            final TestPlanNodeInstanceKey testPlanNodeInstanceKey) {
+    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey testPlanNodeInstanceKey) {
         super();
         this.parentNode = null;
-        this.abstractPartGlobalIndex = abstractPartGlobalIndex;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
-        this.testPlanNodeInstanceKey = testPlanNodeInstanceKey;
+        this.key = testPlanNodeInstanceKey;
         this.children = new ArrayList<TestPlanNode>();
     }
 
@@ -106,10 +100,6 @@ public final class TestPlanNode implements Serializable {
     @ObjectDumperOptions(DumpMode.IGNORE)
     public TestPlanNode getParent() {
         return parentNode;
-    }
-
-    public int getAbstractPartGlobalIndex() {
-        return abstractPartGlobalIndex;
     }
 
     public int getSiblingIndex() {
@@ -120,16 +110,23 @@ public final class TestPlanNode implements Serializable {
         return testNodeType;
     }
 
-    public TestPlanNodeInstanceKey getTestPlanNodeInstanceKey() {
-        return testPlanNodeInstanceKey;
+    public TestPlanNodeKey getKey() {
+        return key;
     }
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public Identifier getIdentifier() {
-        return testPlanNodeInstanceKey!=null ? testPlanNodeInstanceKey.getIdentifier() : null;
+        return key!=null ? key.getIdentifier() : null;
     }
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
+    public int getAbstractPartGlobalIndex() {
+        return key!=null ? key.getGlobalIndex() : -1;
+    }
+
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public int getInstanceNumber() {
-        return testPlanNodeInstanceKey!=null ? testPlanNodeInstanceKey.getInstanceNumber() : 1;
+        return key!=null ? key.getInstanceNumber() : 1;
     }
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
@@ -141,7 +138,7 @@ public final class TestPlanNode implements Serializable {
         if (parentNode==null) {
             return false;
         }
-        if (parentNode.testPlanNodeInstanceKey.equals(node.testPlanNodeInstanceKey)) {
+        if (parentNode.key.equals(node.key)) {
             return true;
         }
         return parentNode.hasAncestor(node);

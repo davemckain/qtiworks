@@ -68,17 +68,17 @@ public final class TestSessionState implements Serializable {
     private final TestPlan testPlan;
     private final Map<Identifier, Value> outcomeValues;
     private FloatValue durationValue;
-    private final Map<TestPlanNodeInstanceKey, ItemSessionState> itemSessionStates;
+    private final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates;
 
     private boolean finished;
-    private TestPlanNodeInstanceKey currentTestPartKey;
-    private TestPlanNodeInstanceKey currentItemKey;
+    private TestPlanNodeKey currentTestPartKey;
+    private TestPlanNodeKey currentItemKey;
 
     public TestSessionState(final TestPlan testPlan) {
         Assert.notNull(testPlan, "testPlan");
         this.testPlan = testPlan;
         this.outcomeValues = new HashMap<Identifier, Value>();
-        this.itemSessionStates = new HashMap<TestPlanNodeInstanceKey, ItemSessionState>();
+        this.itemSessionStates = new HashMap<TestPlanNodeKey, ItemSessionState>();
         reset();
     }
 
@@ -88,7 +88,7 @@ public final class TestSessionState implements Serializable {
         return testPlan;
     }
 
-    public Map<TestPlanNodeInstanceKey, ItemSessionState> getItemSessionStates() {
+    public Map<TestPlanNodeKey, ItemSessionState> getItemSessionStates() {
         return itemSessionStates;
     }
 
@@ -118,20 +118,20 @@ public final class TestSessionState implements Serializable {
     }
 
 
-    public TestPlanNodeInstanceKey getCurrentTestPartKey() {
+    public TestPlanNodeKey getCurrentTestPartKey() {
         return currentTestPartKey;
     }
 
-    public void setCurrentTestPartKey(final TestPlanNodeInstanceKey currentTestPartKey) {
+    public void setCurrentTestPartKey(final TestPlanNodeKey currentTestPartKey) {
         this.currentTestPartKey = currentTestPartKey;
     }
 
 
-    public TestPlanNodeInstanceKey getCurrentItemKey() {
+    public TestPlanNodeKey getCurrentItemKey() {
         return currentItemKey;
     }
 
-    public void setCurrentItemKey(final TestPlanNodeInstanceKey currentItemKey) {
+    public void setCurrentItemKey(final TestPlanNodeKey currentItemKey) {
         this.currentItemKey = currentItemKey;
     }
 
