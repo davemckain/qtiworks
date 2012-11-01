@@ -16,6 +16,7 @@ import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
@@ -67,7 +68,8 @@ public final class TestTest {
         System.out.println("Test plan: " + ObjectDumper.dumpObject(testPlan, DumpMode.DEEP));
 
         final TestSessionState testSessionState = new TestSessionState(testPlan);
-        final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testProcessingMap, testSessionState);
+        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
+        final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
         testSessionController.addNotificationListener(notificationLogListener);
 
         testSessionController.initialize();

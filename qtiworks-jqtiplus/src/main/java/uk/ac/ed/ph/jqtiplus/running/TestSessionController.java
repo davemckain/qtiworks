@@ -91,6 +91,7 @@ public final class TestSessionController extends TestValidationController implem
 
     private static final Logger logger = LoggerFactory.getLogger(TestSessionController.class);
 
+    private final TestSessionControllerSettings testSessionControllerSettings;
     private final TestProcessingMap testProcessingMap;
     private final TestSessionState testSessionState;
     private final Map<TestPlanNode, ItemSessionController> itemSessionControllerMap;
@@ -99,14 +100,22 @@ public final class TestSessionController extends TestValidationController implem
     private Random randomGenerator;
 
     public TestSessionController(final JqtiExtensionManager jqtiExtensionManager,
+            final TestSessionControllerSettings testSessionControllerSettings,
             final TestProcessingMap testProcessingMap,
             final TestSessionState testSessionState) {
         super(jqtiExtensionManager, testProcessingMap!=null ? testProcessingMap.getResolvedAssessmentTest() : null);
+        Assert.notNull(testSessionControllerSettings, "testSessionControllerSettings");
+        Assert.notNull(testSessionState, "testSessionState");
+        this.testSessionControllerSettings = new TestSessionControllerSettings(testSessionControllerSettings);
         this.testProcessingMap = testProcessingMap;
         this.testSessionState = testSessionState;
         this.randomSeed = null;
         this.randomGenerator = null;
         this.itemSessionControllerMap = new HashMap<TestPlanNode, ItemSessionController>();
+    }
+
+    public TestSessionControllerSettings getTestSessionControllerSettings() {
+        return testSessionControllerSettings;
     }
 
     @Override
@@ -197,26 +206,32 @@ public final class TestSessionController extends TestValidationController implem
         }
         testSessionState.resetBuiltinVariables();
 
-        /* Initialise state in each item instance */
+        /* Initialise state & controller for each item instance */
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
                 final TestPlanNodeInstanceKey instanceKey = testPlanNode.getTestPlanNodeInstanceKey();
                 final ItemSessionState itemSessionState = new ItemSessionState();
                 testSessionState.getItemSessionStates().put(instanceKey, itemSessionState);
 
-                final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(testPlanNode);
-                final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(testPlanNode);
-
-                /* Copy relevant bits of ItemSessionControl into ItemSessionControllerSettings */
-                final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
-                itemSessionControllerSettings.setMaxAttempts(effectiveItemSessionControl.getMaxAttempts());
-
-                final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
-                        itemSessionControllerSettings, itemProcessingMap, itemSessionState);
-                itemSessionControllerMap.put(testPlanNode, itemSessionController);
+                final ItemSessionController itemSessionController = createItemSessionController(testPlanNode, itemSessionState);
                 itemSessionController.initialize();
+                itemSessionControllerMap.put(testPlanNode, itemSessionController);
             }
         }
+    }
+
+    private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode, final ItemSessionState itemSessionState) {
+        final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
+        final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
+        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(assessmentItemRef);
+
+        /* Copy relevant bits of ItemSessionControl into ItemSessionControllerSettings */
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        itemSessionControllerSettings.setTemplateProcessingLimit(testSessionControllerSettings.getTemplateProcessingLimit());
+        itemSessionControllerSettings.setMaxAttempts(effectiveItemSessionControl.getMaxAttempts());
+
+        return new ItemSessionController(jqtiExtensionManager, itemSessionControllerSettings,
+                itemProcessingMap, itemSessionState);
     }
 
     //-------------------------------------------------------------------
