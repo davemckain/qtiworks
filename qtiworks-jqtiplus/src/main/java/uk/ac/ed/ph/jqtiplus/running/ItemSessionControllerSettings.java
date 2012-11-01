@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 
@@ -48,15 +49,10 @@ public class ItemSessionControllerSettings implements Serializable {
     private static final long serialVersionUID = 5629709736636888844L;
 
     /**
-     * Default value for {@link #templateProcessingLimit}
-     */
-    public static final int DEFAULT_TEMPLATE_PROCESSING_LIMIT = 100;
-
-    /**
      * Maximum number of runs before template processing fails
      * and reverts to default values
      */
-    private int templateProcessingLimit;
+    public int templateProcessingLimit;
 
     /**
      * Value for <code>maxAttempts</code> as defined in {@link ItemSessionControl}
@@ -66,7 +62,7 @@ public class ItemSessionControllerSettings implements Serializable {
     private int maxAttempts;
 
     public ItemSessionControllerSettings() {
-        this.templateProcessingLimit = DEFAULT_TEMPLATE_PROCESSING_LIMIT;
+        this.templateProcessingLimit = JqtiPlus.DEFAULT_TEMPLATE_PROCESSING_LIMIT;
         this.maxAttempts = 0;
     }
 

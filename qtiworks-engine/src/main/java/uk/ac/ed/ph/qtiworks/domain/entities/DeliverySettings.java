@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -155,6 +156,18 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Column(name="author_mode")
     private boolean authorMode;
 
+    /**
+     * If specified, overrides the default number of times that template processing
+     * rules should be run on a particular item before reverting to default values.
+     * (This is to accommodate <code>templateConstraint</code>.)
+     * <p>
+     * If non-positive then the {@link JqtiPlus#DEFAULT_TEMPLATE_PROCESSING_LIMIT}
+     * is used instead.
+     */
+    @Basic(optional=false)
+    @Column(name="template_processing_limit")
+    private int templateProcessingLimit;
+
     //------------------------------------------------------------
 
     public DeliverySettings() {
@@ -242,6 +255,16 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     public void setAuthorMode(final boolean authorMode) {
         this.authorMode = authorMode;
+    }
+
+
+    public int getTemplateProcessingLimit() {
+        return templateProcessingLimit;
+    }
+
+
+    public void setTemplateProcessingLimit(final int templateProcessingLimit) {
+        this.templateProcessingLimit = templateProcessingLimit;
     }
 
     //------------------------------------------------------------

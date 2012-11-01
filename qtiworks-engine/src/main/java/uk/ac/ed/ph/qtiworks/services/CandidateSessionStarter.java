@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
@@ -49,6 +48,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
@@ -61,7 +62,9 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import java.util.List;
 
@@ -211,22 +214,24 @@ public class CandidateSessionStarter {
                 return createCandidateItemSession(delivery, exitUrl);
 
             case ASSESSMENT_TEST:
-                throw new QtiWorksRuntimeException("Launching a CandidateSession on a test has not been implemented yet");
+                return createCandidateTestSession(delivery, exitUrl);
 
             default:
                 throw new QtiWorksLogicException("Unexpected switch case " + assessment.getAssessmentType());
         }
-
     }
+
+    //----------------------------------------------------
+    // Item session creation
 
     private CandidateSession createCandidateItemSession(final Delivery delivery, final String exitUrl) {
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
 
-        /* Create fresh JQTI+ state Object */
-        final ItemSessionState itemSessionState = new ItemSessionState();
-
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
+        /* Create fresh JQTI+ state Object */
+        final ItemSessionState itemSessionState = new ItemSessionState();
 
         /* Initialise state */
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
@@ -242,7 +247,7 @@ public class CandidateSessionStarter {
             itemSessionController.markPendingSubmission();
         }
 
-        /* Create new session and put into appropriate initial state */
+        /* Create new session entity and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
@@ -254,7 +259,42 @@ public class CandidateSessionStarter {
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateItemEvent(candidateSession, candidateItemEvent);
 
-        auditor.recordEvent("Created and initialised new CandidateItemSession #" + candidateSession.getId()
+        auditor.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
+                + " on Delivery #" + delivery.getId());
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Test session creation
+
+    public CandidateSession createCandidateTestSession(final Delivery delivery, final String exitUrl) {
+        final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
+
+        /* Set up listener to record any notifications */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
+        /* Create fresh state & controller for it */
+        final TestSessionController testSessionController = candidateDataServices.createNewTestSessionStateAndController(delivery, notificationRecorder);
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+
+        /* Initialise state */
+        testSessionController.initialize();
+
+        /* FIXME: Make further state transitions */
+
+        /* Create new session entity and put into appropriate initial state */
+        final CandidateSession candidateSession = new CandidateSession();
+        candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
+        candidateSession.setExitUrl(exitUrl);
+        candidateSession.setCandidate(candidate);
+        candidateSession.setDelivery(delivery);
+        candidateSessionDao.persist(candidateSession);
+
+        /* Record and log event */
+        final CandidateTestEvent candidateItemEvent = candidateDataServices.recordCandidateTestEvent(candidateSession, CandidateTestEventType.INIT, testSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateTestEvent(candidateSession, candidateItemEvent);
+
+        auditor.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());
         return candidateSession;
     }

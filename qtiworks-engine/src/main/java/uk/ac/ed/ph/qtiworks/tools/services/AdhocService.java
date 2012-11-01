@@ -93,10 +93,23 @@ public class AdhocService {
         identityContext.setCurrentThreadEffectiveIdentity(dave);
         identityContext.setCurrentThreadUnderlyingIdentity(dave);
 
+        final long did = 93L; /* ID of test delivery */
+        final String exitUrl = "/exit";
+
+        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
+    }
+
+    public void doWorkItem() throws Exception {
+        requestTimestampContext.setCurrentRequestTimestamp(new Date());
+
+        final InstructorUser dave = instructorUserDao.requireFindByLoginName("dmckain");
+        identityContext.setCurrentThreadEffectiveIdentity(dave);
+        identityContext.setCurrentThreadUnderlyingIdentity(dave);
+
         final long did = 4L; /* ID of delivery to try out (choice.xml) */
         final String exitUrl = "/exit";
 
-        final CandidateSession candidateItemSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
+        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
 
         /* Render initial state */
         final RenderingOptions renderingOptions = new RenderingOptions();
@@ -114,39 +127,39 @@ public class AdhocService {
         renderingOptions.setPlaybackUrlBase("/playback");
 
         final Utf8Streamer utf8Streamer = new Utf8Streamer();
-        candidateItemDeliveryService.renderCurrentState(candidateItemSession, renderingOptions, utf8Streamer);
+        candidateItemDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
         System.out.println("Rendering after init:\n" + utf8Streamer.getResult());
 
         /* Do bad attempt == file submission */
         final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
         fileResponseMap.put(Identifier.parseString("RESPONSE"), new NullMultipartFile());
-        candidateItemDeliveryService.handleAttempt(candidateItemSession, null, fileResponseMap);
+        candidateItemDeliveryService.handleAttempt(candidateSession, null, fileResponseMap);
 
         /* Do invalid attempt */
         final Map<Identifier, StringResponseData> stringResponseMap = new HashMap<Identifier, StringResponseData>();
         stringResponseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("x"));
-        candidateItemDeliveryService.handleAttempt(candidateItemSession, stringResponseMap, null);
+        candidateItemDeliveryService.handleAttempt(candidateSession, stringResponseMap, null);
 
         /* Then valid attempt */
         stringResponseMap.clear();
         stringResponseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
-        candidateItemDeliveryService.handleAttempt(candidateItemSession, stringResponseMap, null);
+        candidateItemDeliveryService.handleAttempt(candidateSession, stringResponseMap, null);
 
         /* Render new state */
-        candidateItemDeliveryService.renderCurrentState(candidateItemSession, renderingOptions, utf8Streamer);
+        candidateItemDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
         System.out.println("Rendering after first proper attempt:\n" + utf8Streamer.getResult());
 
         /* Then reinit state */
-        candidateItemDeliveryService.reinitCandidateSession(candidateItemSession);
+        candidateItemDeliveryService.reinitCandidateSession(candidateSession);
 
         /* Then reset state */
-        candidateItemDeliveryService.resetCandidateSession(candidateItemSession);
+        candidateItemDeliveryService.resetCandidateSession(candidateSession);
 
         /* Then end session */
-        candidateItemDeliveryService.closeCandidateSession(candidateItemSession);
+        candidateItemDeliveryService.closeCandidateSession(candidateSession);
 
         /* Then close session */
-        candidateItemDeliveryService.terminateCandidateSession(candidateItemSession);
+        candidateItemDeliveryService.terminateCandidateSession(candidateSession);
     }
 
     public static class Utf8Streamer implements OutputStreamer {

@@ -103,7 +103,7 @@ public abstract class CandidateEvent implements BaseEntity {
 
     /** Category of event */
     @Basic(optional=false)
-    @Column(name="event_categroy", updatable=false, length=4)
+    @Column(name="event_category", updatable=false, length=4)
     @Enumerated(EnumType.STRING)
     private CandidateEventCategory eventCategory;
 
@@ -138,7 +138,7 @@ public abstract class CandidateEvent implements BaseEntity {
         return candidateSession;
     }
 
-    public void setCandidateItemSession(final CandidateSession candidateSession) {
+    public void setCandidateSession(final CandidateSession candidateSession) {
         this.candidateSession = candidateSession;
     }
 

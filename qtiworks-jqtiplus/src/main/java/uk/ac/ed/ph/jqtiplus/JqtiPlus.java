@@ -33,9 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus;
 
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConstraint;
+
 /**
  * JQTI+ public definitions
- * 
+ *
  * @author David McKain
  * @author Jonathon Hare
  */
@@ -44,5 +46,13 @@ public final class JqtiPlus {
     public static final String TOOL_NAME = "JQTIPlus";
 
     public static final String TOOL_VERSION = "1.0";
+
+    /**
+     * Default number of tries for running template processing rules before giving
+     * up and using default values.
+     * <p>
+     * This is to support {@link TemplateConstraint}
+     */
+    public static final int DEFAULT_TEMPLATE_PROCESSING_LIMIT = 100;
 
 }

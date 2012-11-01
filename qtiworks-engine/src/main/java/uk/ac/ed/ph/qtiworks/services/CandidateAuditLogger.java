@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidatePrivilege;
@@ -78,6 +79,12 @@ public class CandidateAuditLogger {
         logEvent(candidateSession, "action=CANDIDATE_ITEM_EVENT xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getItemEventType()
                 + " notifications=" + candidateItemEvent.getNotifications().size());
+    }
+
+    public void logCandidateTestEvent(final CandidateSession candidateSession, final CandidateTestEvent candidateTestEvent) {
+        logEvent(candidateSession, "action=CANDIDATE_TEST_EVENT xeid=" + candidateTestEvent.getId()
+                + " event=" + candidateTestEvent.getTestEventType()
+                + " notifications=" + candidateTestEvent.getNotifications().size());
     }
 
     public void logPlaybackEvent(final CandidateSession candidateSession, final CandidateItemEvent candidateItemEvent,

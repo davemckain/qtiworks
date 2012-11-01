@@ -31,22 +31,53 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.domain.dao;
+
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Enumerates the types of {@link CandidateItemEvent}s that happen
- * on a {@link CandidateSession}
+ * DAO implementation for the {@link CandidateEvent} entity.
  *
  * @author David McKain
  */
-public enum CandidateTestEventType {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class CandidateEventDao extends GenericDao<CandidateEvent> {
 
-    /** Test session initialized */
-    INIT,
+    @PersistenceContext
+    private EntityManager em;
 
-    /** Termination of session */
-    TERMINATE,
+    public CandidateEventDao() {
+        super(CandidateEvent.class);
+    }
 
-    ;
+    public List<CandidateEvent> getForSession(final CandidateSession session) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSession", CandidateEvent.class);
+        query.setParameter("candidateSession", session);
+        return query.getResultList();
+    }
 
+    public List<CandidateEvent> getForSessionReversed(final CandidateSession session) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSessionReversed", CandidateEvent.class);
+        query.setParameter("candidateSession", session);
+        return query.getResultList();
+    }
+
+    public CandidateEvent getNewestEventInSession(final CandidateSession session) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSessionReversed", CandidateEvent.class);
+        query.setParameter("candidateSession", session);
+        query.setMaxResults(1);
+        return extractNullableFindResult(query);
+    }
 }

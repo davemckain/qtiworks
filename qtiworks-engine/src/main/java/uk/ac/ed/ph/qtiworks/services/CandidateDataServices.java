@@ -36,18 +36,24 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -55,8 +61,14 @@ import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
+import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
@@ -94,13 +106,51 @@ public class CandidateDataServices {
     private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
+    private CandidateEventDao candidateEventDao;
+
+    @Resource
+    private CandidateEventNotificationDao candidateEventNotificationDao;
+
+    @Resource
     private CandidateItemEventDao candidateItemEventDao;
 
     @Resource
-    private CandidateItemEventNotificationDao candidateItemEventNotificationDao;
-
-    @Resource
     private JqtiExtensionManager jqtiExtensionManager;
+
+    //----------------------------------------------------
+    // Notification recording
+
+    public CandidateEventNotification recordNotification(final CandidateEvent candidateEvent, final Notification notification) {
+        final CandidateEventNotification record = new CandidateEventNotification();
+        record.setCandidateEvent(candidateEvent);
+
+        record.setMessage(notification.getMessage());
+        record.setNotificationLevel(notification.getNotificationLevel());
+        record.setNotificationType(notification.getNotificationType());
+
+        final QtiNode qtiNode = notification.getQtiNode();
+        if (qtiNode!=null) {
+            record.setNodeQtiClassName(qtiNode.getQtiClassName());
+            final XmlSourceLocationInformation sourceLocation = qtiNode.getSourceLocation();
+            if (sourceLocation!=null) {
+                record.setSystemId(sourceLocation.getSystemId());
+                record.setLineNumber(sourceLocation.getLineNumber());
+                record.setColumnNumber(sourceLocation.getColumnNumber());
+            }
+        }
+        final Attribute<?> attribute = notification.getAttribute();
+        if (attribute!=null) {
+            record.setAttributeLocalName(attribute.getLocalName());
+            record.setAttributeNamespaceUri(attribute.getNamespaceUri());
+        }
+
+        candidateEvent.getNotifications().add(record);
+        candidateEventNotificationDao.persist(record);
+        return record;
+    }
+
+    //----------------------------------------------------
+    // Item methods
 
     public String marshalItemSessionState(final ItemSessionState itemSessionState) {
         final Document marshalledState = ItemSesssionStateXmlMarshaller.marshal(itemSessionState);
@@ -146,7 +196,7 @@ public class CandidateDataServices {
             final CandidateItemEvent playbackEvent) {
         /* Create event */
         final CandidateItemEvent event = new CandidateItemEvent();
-        event.setCandidateItemSession(candidateSession);
+        event.setCandidateSession(candidateSession);
         event.setItemEventType(eventType);
         event.setCompletionStatus(itemSessionState.getCompletionStatus());
         event.setDuration(itemSessionState.getDuration());
@@ -158,7 +208,7 @@ public class CandidateDataServices {
         event.setItemSessionStateXml(marshalItemSessionState(itemSessionState));
 
         /* Store event */
-        candidateItemEventDao.persist(event);
+        candidateEventDao.persist(event);
 
         /* Now store processing notifications */
         if (notificationRecorder!=null) {
@@ -168,35 +218,6 @@ public class CandidateDataServices {
         }
 
         return event;
-    }
-
-    public CandidateEventNotification recordNotification(final CandidateItemEvent candidateItemEvent, final Notification notification) {
-        final CandidateEventNotification record = new CandidateEventNotification();
-        record.setCandidateEvent(candidateItemEvent);
-
-        record.setMessage(notification.getMessage());
-        record.setNotificationLevel(notification.getNotificationLevel());
-        record.setNotificationType(notification.getNotificationType());
-
-        final QtiNode qtiNode = notification.getQtiNode();
-        if (qtiNode!=null) {
-            record.setNodeQtiClassName(qtiNode.getQtiClassName());
-            final XmlSourceLocationInformation sourceLocation = qtiNode.getSourceLocation();
-            if (sourceLocation!=null) {
-                record.setSystemId(sourceLocation.getSystemId());
-                record.setLineNumber(sourceLocation.getLineNumber());
-                record.setColumnNumber(sourceLocation.getColumnNumber());
-            }
-        }
-        final Attribute<?> attribute = notification.getAttribute();
-        if (attribute!=null) {
-            record.setAttributeLocalName(attribute.getLocalName());
-            record.setAttributeNamespaceUri(attribute.getNamespaceUri());
-        }
-
-        candidateItemEvent.getNotifications().add(record);
-        candidateItemEventNotificationDao.persist(record);
-        return record;
     }
 
     public ItemSessionController createItemSessionController(final CandidateItemEvent candidateItemEvent,
@@ -210,11 +231,8 @@ public class CandidateDataServices {
 
     public ItemSessionController createItemSessionController(final Delivery delivery,
             final ItemSessionState itemSessionState,  final NotificationRecorder notificationRecorder) {
-        Assert.notNull(delivery, "delivery");
+        ensureItemDelivery(delivery);
         Assert.notNull(itemSessionState, "itemSessionState");
-        if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
-            throw new IllegalArgumentException("Expected an item delivery");
-        }
 
         /* Resolve the underlying JQTI+ object */
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
@@ -223,6 +241,7 @@ public class CandidateDataServices {
         /* Create config for ItemSessionController */
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        itemSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(itemDeliverySettings));
         itemSessionControllerSettings.setMaxAttempts(itemDeliverySettings.getMaxAttempts());
 
         /* Create controller and wire up notification recorder (if passed) */
@@ -235,16 +254,104 @@ public class CandidateDataServices {
         return result;
     }
 
+    /**
+     * Computes a usable template processing limit from {@link DeliverySettings}, reverting
+     * to a default value if they make no sense.
+     */
+    public int computeTemplateProcessingLimit(final DeliverySettings deliverySettings) {
+        final int requestedLimit = deliverySettings.getTemplateProcessingLimit();
+        return requestedLimit > 0 ? requestedLimit : JqtiPlus.DEFAULT_TEMPLATE_PROCESSING_LIMIT;
+    }
+
     public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateSession)  {
-        final CandidateItemEvent mostRecentEvent = getMostRecentEvent(candidateSession);
+        final CandidateItemEvent mostRecentEvent = getMostRecentItemEvent(candidateSession);
         return unmarshalItemSessionState(mostRecentEvent);
     }
 
-    public CandidateItemEvent getMostRecentEvent(final CandidateSession candidateSession)  {
+    public CandidateItemEvent getMostRecentItemEvent(final CandidateSession candidateSession)  {
         final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
         if (mostRecentEvent==null) {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
         return mostRecentEvent;
+    }
+
+    public void ensureItemDelivery(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+        if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
+            throw new IllegalArgumentException("Expected " + delivery + " to correspond to an Item");
+        }
+    }
+
+    //----------------------------------------------------
+    // Test methods
+
+    public TestSessionController createNewTestSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
+        ensureTestDelivery(delivery);
+
+        /* Resolve the underlying JQTI+ object */
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
+
+        /* Generate a test plan for this session */
+        final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
+        if (notificationRecorder!=null) {
+            testPlanner.addNotificationListener(notificationRecorder);
+        }
+        final TestPlan testPlan = testPlanner.generateTestPlan();
+
+        /* Create fresh state for session */
+        final TestSessionState testSessionState = new TestSessionState(testPlan);
+
+        /* Create config for TestSessionController */
+        final DeliverySettings testDeliverySettings = delivery.getDeliverySettings();
+        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
+        testSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(testDeliverySettings));
+
+        /* Create controller and wire up notification recorder */
+        final TestSessionController result = new TestSessionController(jqtiExtensionManager,
+                testSessionControllerSettings, testProcessingMap, testSessionState);
+        if (notificationRecorder!=null) {
+            result.addNotificationListener(notificationRecorder);
+        }
+        return result;
+    }
+
+    public CandidateTestEvent recordCandidateTestEvent(final CandidateSession candidateSession,
+            final CandidateTestEventType eventType, final TestSessionState testSessionState) {
+        return recordCandidateTestEvent(candidateSession, eventType, testSessionState, null);
+    }
+
+    public CandidateTestEvent recordCandidateTestEvent(final CandidateSession candidateSession,
+            final CandidateTestEventType eventType, final TestSessionState testSessionState,
+            final NotificationRecorder notificationRecorder) {
+        /* Create event */
+        final CandidateTestEvent event = new CandidateTestEvent();
+        event.setCandidateSession(candidateSession);
+        event.setTestEventType(eventType);
+        event.setDuration(testSessionState.getDuration());
+        event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
+
+        /* Record serialized TestSessionState */
+        event.setTestSessionStateXml("FIXME!");
+
+        /* Store event */
+        candidateEventDao.persist(event);
+
+        /* Now store processing notifications */
+        if (notificationRecorder!=null) {
+            for (final Notification notification : notificationRecorder.getNotifications()) {
+                recordNotification(event, notification);
+            }
+        }
+
+        return event;
+    }
+
+    public void ensureTestDelivery(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+        if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
+            throw new IllegalArgumentException("Expected " + delivery + " to correspond to a Test");
+        }
     }
 }

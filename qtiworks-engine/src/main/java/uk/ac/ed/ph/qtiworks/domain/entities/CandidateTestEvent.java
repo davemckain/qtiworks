@@ -33,21 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
-
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -61,16 +56,16 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_events")
+@Table(name="candidate_test_events")
 @NamedQueries({
-    @NamedQuery(name="CandidateItemEvent.getForSession",
+    @NamedQuery(name="CandidateTestEvent.getForSession",
             query="SELECT e"
-                + "  FROM CandidateItemEvent e"
+                + "  FROM CandidateTestEvent e"
                 + "  WHERE e.candidateSession = :candidateSession"
                 + "  ORDER BY e.id"),
-    @NamedQuery(name="CandidateItemEvent.getForSessionReversed",
+    @NamedQuery(name="CandidateTestEvent.getForSessionReversed",
             query="SELECT e"
-                + "  FROM CandidateItemEvent e"
+                + "  FROM CandidateTestEvent e"
                 + "  WHERE e.candidateSession = :candidateSession"
                 + "  ORDER BY e.id DESC")
 })
@@ -82,66 +77,38 @@ public class CandidateTestEvent extends CandidateEvent implements BaseEntity {
     @Basic(optional=false)
     @Column(name="test_event_type", updatable=false, length=16)
     @Enumerated(EnumType.STRING)
-    private CandidateItemEventType itemEventType;
+    private CandidateTestEventType testEventType;
 
-    /** Value of the <code>completionStatus</code> item variable */
-    @Basic(optional=false)
-    @Column(name="completion_status", updatable=false, length=DomainConstants.QTI_COMPLETION_STATUS_MAX_LENGTH)
-    private String completionStatus;
-
-    /** Value of the <code>duration</code> item variable (at the time this event was created) */
+    /** Value of the <code>duration</code> test variable (at the time this event was created) */
     @Basic(optional=false)
     @Column(name="duration", updatable=false)
     private double duration;
 
-    /** Value of the <code>numAttempts</code> item variable */
-    @Basic(optional=false)
-    @Column(name="num_attempts", updatable=false)
-    private int numAttempts;
-
     /**
-     * {@link ItemSessionState} serialized in a custom XML format.
+     * {@link TestSessionState} serialized in a custom XML format.
      *
-     * @see ItemSesssionStateXmlMarshaller
+     * @see TestSesssionStateXmlMarshaller
      */
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
-    @Column(name="item_session_state_xml", updatable=false)
-    private String itemSessionStateXml;
-
-    /**
-     * For a {@link CandidateItemEventType#PLAYBACK} event, this points to the event in
-     * the same session that the candidate has requested to see
-     * {@link CandidateTestEvent}
-     */
-    @OneToOne(optional=true)
-    @JoinColumn(name="playback_xeid", updatable=false)
-    private CandidateTestEvent playbackEvent;
+    @Column(name="test_session_state_xml", updatable=false)
+    private String testSessionStateXml;
 
     //------------------------------------------------------------
 
     public CandidateTestEvent() {
-        super(CandidateEventCategory.ITEM);
+        super(CandidateEventCategory.TEST);
     }
 
     //----------------------------------------------------------
 
-    public CandidateItemEventType getItemEventType() {
-        return itemEventType;
+    public CandidateTestEventType getTestEventType() {
+        return testEventType;
     }
 
-    public void setItemEventType(final CandidateItemEventType itemEventType) {
-        this.itemEventType = itemEventType;
-    }
-
-
-    public String getCompletionStatus() {
-        return completionStatus;
-    }
-
-    public void setCompletionStatus(final String completionStatus) {
-        this.completionStatus = completionStatus;
+    public void setTestEventType(final CandidateTestEventType testEventType) {
+        this.testEventType = testEventType;
     }
 
 
@@ -154,30 +121,12 @@ public class CandidateTestEvent extends CandidateEvent implements BaseEntity {
     }
 
 
-    public int getNumAttempts() {
-        return numAttempts;
+    public String getTestSessionStateXml() {
+        return testSessionStateXml;
     }
 
-    public void setNumAttempts(final int numAttempts) {
-        this.numAttempts = numAttempts;
-    }
-
-
-    public String getItemSessionStateXml() {
-        return itemSessionStateXml;
-    }
-
-    public void setItemSessionStateXml(final String itemSessionStateXml) {
-        this.itemSessionStateXml = itemSessionStateXml;
-    }
-
-
-    public CandidateTestEvent getPlaybackEvent() {
-        return playbackEvent;
-    }
-
-    public void setPlaybackEvent(final CandidateTestEvent playbackEvent) {
-        this.playbackEvent = playbackEvent;
+    public void setTestSessionStateXml(final String testSessionStateXml) {
+        this.testSessionStateXml = testSessionStateXml;
     }
 
     //------------------------------------------------------------
@@ -187,7 +136,7 @@ public class CandidateTestEvent extends CandidateEvent implements BaseEntity {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + getId()
                 + ",eventCategory" + getEventCategory()
-                + ",itemEventType=" + itemEventType
+                + ",testEventType=" + testEventType
                 + ")";
     }
 }

@@ -206,7 +206,7 @@ public class CandidateItemDeliveryService {
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateItemEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateItemEvent latestEvent = candidateDataServices.getMostRecentItemEvent(candidateSession);
 
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
@@ -538,7 +538,7 @@ public class CandidateItemDeliveryService {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Get current JQTI state and create JQTI controller */
-        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentItemEvent(candidateSession);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, notificationRecorder);
 
         /* Make sure an attempt is allowed */
@@ -1028,7 +1028,7 @@ public class CandidateItemDeliveryService {
         ensureCallerMayViewResult(candidateSession);
 
         /* Get current state */
-        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateItemEvent mostRecentEvent = candidateDataServices.getMostRecentItemEvent(candidateSession);
 
         /* Generate result Object from state */
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, null);

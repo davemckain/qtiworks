@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
@@ -60,25 +61,40 @@ import java.util.Map;
 
 /**
  * This helper class analyses a {@link ResolvedAssessmentTest} and generates an
- * {@link TestProcessingMap} that can be reused by {@link TestSessionController}
- * s.
+ * {@link TestProcessingMap} that can be reused by {@link TestSessionController}s.
  *
  * @see TestProcessingMap
  * @see ItemProcessingInitializer
  * @see TestSessionController
+ *
  * @author David McKain
  */
 public final class TestProcessingInitializer {
 
-    private final TestValidationResult testValidationResult;
-
     private final ResolvedAssessmentTest resolvedAssessmentTest;
-
+    private final TestValidationResult testValidationResult;
+    private final boolean isTestValid;
     private final LinkedHashMap<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder;
 
+    /**
+     * Preferred constructor. Accepts a full {@link TestValidationResult}, which contains
+     * good validity information about each item within.
+     */
     public TestProcessingInitializer(final TestValidationResult testValidationResult) {
         this.testValidationResult = testValidationResult;
         this.resolvedAssessmentTest = testValidationResult.getResolvedAssessmentTest();
+        this.isTestValid = testValidationResult.isValid();
+        this.outcomeDeclarationMapBuilder = new LinkedHashMap<Identifier, OutcomeDeclaration>();
+    }
+
+    /**
+     * Alternative constructor. Accepts a {@link ResolvedAssessmentTest} and overall indication
+     * of whether the test is valid as a whole.
+     */
+    public TestProcessingInitializer(final ResolvedAssessmentTest resolvedAssessmentTest, final boolean isTestValid) {
+        this.testValidationResult = null;
+        this.resolvedAssessmentTest = resolvedAssessmentTest;
+        this.isTestValid = isTestValid;
         this.outcomeDeclarationMapBuilder = new LinkedHashMap<Identifier, OutcomeDeclaration>();
     }
 
@@ -94,7 +110,6 @@ public final class TestProcessingInitializer {
         /* Compute effective values for ItemSessionControl for each AbstractPart */
         final Map<AbstractPart, EffectiveItemSessionControl> effectiveItemSessionControlMap = computeEffectiveItemSessionControlMap(test);
 
-
         /* Extract test's duration variable declaration */
         final ResponseDeclaration durationResponseDeclaration = test.getDurationResponseDeclaration();
 
@@ -105,16 +120,33 @@ public final class TestProcessingInitializer {
 
         /* Now repeat this for each resolved item that was successfully looked up */
         final Map<URI, ItemProcessingMap> itemProcessingMapBuilder = new LinkedHashMap<URI, ItemProcessingMap>();
-        for (final ItemValidationResult itemValidationResult : testValidationResult.getItemValidationResults()) {
-            final RootNodeLookup<AssessmentItem> itemLookup = itemValidationResult.getResolvedAssessmentItem().getItemLookup();
-            if (itemLookup.wasSuccessful()) {
-                final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(itemValidationResult).initialize();
-                itemProcessingMapBuilder.put(itemLookup.getSystemId(), itemProcessingMap);
+        if (testValidationResult!=null) {
+            /* This initializer was built from validation result, so we can be quite fine grained */
+            for (final ItemValidationResult itemValidationResult : testValidationResult.getItemValidationResults()) {
+                final RootNodeLookup<AssessmentItem> itemLookup = itemValidationResult.getResolvedAssessmentItem().getItemLookup();
+                if (itemLookup.wasSuccessful()) {
+                    final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(itemValidationResult).initialize();
+                    itemProcessingMapBuilder.put(itemLookup.getSystemId(), itemProcessingMap);
+                }
             }
+        }
+        else {
+            /* This initializer was just built from resolved test. In this case, the best we
+             * can say about the validity of individual items is by using the overall validity
+             * of the test, which may result in some false negatives.
+             */
+            for (final ResolvedAssessmentItem resolvedAssessmentItem : resolvedAssessmentTest.getResolvedAssessmentItemBySystemIdMap().values()) {
+                final RootNodeLookup<AssessmentItem> itemLookup = resolvedAssessmentItem.getItemLookup();
+                if (itemLookup.wasSuccessful()) {
+                    final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isTestValid).initialize();
+                    itemProcessingMapBuilder.put(itemLookup.getSystemId(), itemProcessingMap);
+                }
+            }
+
         }
 
         /* That's it! */
-        return new TestProcessingMap(resolvedAssessmentTest, testValidationResult.isValid(),
+        return new TestProcessingMap(resolvedAssessmentTest, isTestValid,
                 abstractParts, effectiveItemSessionControlMap, outcomeDeclarationMapBuilder,
                 durationResponseDeclaration, itemProcessingMapBuilder);
     }
