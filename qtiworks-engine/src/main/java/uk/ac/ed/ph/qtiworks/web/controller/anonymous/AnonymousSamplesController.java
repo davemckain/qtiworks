@@ -42,6 +42,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -99,12 +100,7 @@ public class AnonymousSamplesController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/list");
 
-        final CandidateSession candidateItemSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
-        return redirectToCandidateSession(candidateItemSession);
-    }
-
-    private String redirectToCandidateSession(final CandidateSession candidateItemSession) {
-        return "redirect:/candidate/session/" + candidateItemSession.getId()
-                + "/" + candidateItemSession.getSessionToken();
+        final CandidateSession candidateSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
+        return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 }

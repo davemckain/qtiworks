@@ -336,8 +336,8 @@ public final class InstructorAssessmentManagementController {
     private String runDelivery(final long aid, final Delivery delivery)
             throws PrivilegeException {
         final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        final CandidateSession candidateItemSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
-        return "redirect:/candidate/session/" + candidateItemSession.getId() + "/" + candidateItemSession.getSessionToken();
+        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
+        return instructorRouter.buildSessionStartRedirect(candidateSession);
     }
 
     //------------------------------------------------------
@@ -369,7 +369,7 @@ public final class InstructorAssessmentManagementController {
         final Delivery delivery = assessmentManagementService.lookupOwnDelivery(did);
         final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
-        return "redirect:/candidate/session/" + candidateSession.getId() + "/" + candidateSession.getSessionToken();
+        return instructorRouter.buildSessionStartRedirect(candidateSession);
     }
 
     /** (Deliveries are currently very simple so created using a sensible default) */

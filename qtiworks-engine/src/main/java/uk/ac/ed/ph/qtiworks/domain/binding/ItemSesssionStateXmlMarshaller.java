@@ -54,6 +54,8 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,8 +94,8 @@ public final class ItemSesssionStateXmlMarshaller {
         if (sessionStatus!=null) {
             documentElement.setAttribute("sessionStatus", sessionStatus.toQtiString());
         }
-        documentElement.setAttribute("badResponseIdentifiers", StringUtilities.join(itemSessionState.getBadResponseIdentifiers(), " "));
-        documentElement.setAttribute("invalidResponseIdentifiers", StringUtilities.join(itemSessionState.getInvalidResponseIdentifiers(), " "));
+        maybeAddIdentifierListAttribute(documentElement, "badResponseIdentifiers", itemSessionState.getBadResponseIdentifiers());
+        maybeAddIdentifierListAttribute(documentElement, "invalidResponseIdentifiers", itemSessionState.getInvalidResponseIdentifiers());
         document.appendChild(documentElement);
 
         /* Output candidate comment */
@@ -119,6 +121,12 @@ public final class ItemSesssionStateXmlMarshaller {
         appendValues(documentElement, "overriddenCorrectResponse", itemSessionState.getOverriddenCorrectResponseValues());
 
         return document;
+    }
+
+    private static void maybeAddIdentifierListAttribute(final Element element, final String attributeName, final Collection<Identifier> values) {
+        if (!values.isEmpty()) {
+            element.setAttribute(attributeName, StringUtilities.join(values, " "));
+        }
     }
 
     private static void appendValues(final Element parentElement, final String elementName, final Map<Identifier, Value> valueMap) {
@@ -227,10 +235,10 @@ public final class ItemSesssionStateXmlMarshaller {
             throw new MarshallingException("Expected modelVersion to be 1");
         }
         result.setInitialized(parseOptionalBooleanAttribute(documentElement, "initialized", false));
-        result.setClosed(parseOptionalBooleanAttribute(documentElement, "closed", false));
         result.setPresented(parseOptionalBooleanAttribute(documentElement, "presented", false));
         result.setResponded(parseOptionalBooleanAttribute(documentElement, "responded", false));
-        result.setBadResponseIdentifiers(parseIdentifierAttributeList(documentElement, "badResponseIdentifiers"));
+        result.setClosed(parseOptionalBooleanAttribute(documentElement, "closed", false));
+        result.setBadResponseIdentifiers(parseOptionalIdentifierAttributeList(documentElement, "badResponseIdentifiers"));
         if (documentElement.hasAttribute("sessionStatus")) {
             final String sessionStatusAttr = documentElement.getAttribute("sessionStatus");
             try {
@@ -249,7 +257,7 @@ public final class ItemSesssionStateXmlMarshaller {
             }
             else if (elementName.equals("shuffledInteractionChoiceOrder")) {
                 final Identifier responseIdentifier = parseIdentifierAttribute(childElement, "responseIdentifier");
-                final List<Identifier> choiceIdentifiers = parseIdentifierAttributeList(childElement, "choiceSequence");
+                final List<Identifier> choiceIdentifiers = parseOptionalIdentifierAttributeList(childElement, "choiceSequence");
                 result.setShuffledInteractionChoiceOrder(responseIdentifier, choiceIdentifiers);
             }
             else if (elementName.equals("templateVariable")) {
@@ -312,8 +320,11 @@ public final class ItemSesssionStateXmlMarshaller {
         }
     }
 
-    private static List<Identifier> parseIdentifierAttributeList(final Element element, final String identifierAttrListName) {
-        final String identifierListAttrValue = requireAttribute(element, identifierAttrListName);
+    private static List<Identifier> parseOptionalIdentifierAttributeList(final Element element, final String identifierAttrListName) {
+        final String identifierListAttrValue = element.getAttribute(identifierAttrListName);
+        if (identifierListAttrValue.isEmpty()) {
+            return Collections.emptyList();
+        }
         final String[] identifierArray = identifierListAttrValue.split("\\s+");
         final List<Identifier> result = new ArrayList<Identifier>(identifierArray.length);
         for (final String identifierString : identifierArray) {
@@ -321,8 +332,9 @@ public final class ItemSesssionStateXmlMarshaller {
                 result.add(Identifier.parseString(identifierString));
             }
             catch (final QtiParseException e) {
-                throw new MarshallingException("Value "
-                        + identifierString + " in list attribute "
+                throw new MarshallingException("Item '"
+                        + identifierString + "' extracted from value '"
+                        + identifierListAttrValue + "' of list attribute "
                         + identifierAttrListName + " is not a valid QTI Identifier");
             }
         }

@@ -24,6 +24,9 @@ rendering.
   <!-- URI of the Item being rendered -->
   <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
 
+  <!-- Current state -->
+  <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
+
   <!-- Action URLs -->
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
@@ -34,9 +37,6 @@ rendering.
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>
-
-  <!-- Current state -->
-  <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
 
   <!-- AssessmentTest variables (only passed when rendering tests) -->
   <!-- FIXME: These need to be refactored -->

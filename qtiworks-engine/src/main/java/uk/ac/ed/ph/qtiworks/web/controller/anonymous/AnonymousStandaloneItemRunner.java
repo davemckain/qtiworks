@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -82,6 +83,9 @@ public class AnonymousStandaloneItemRunner {
     private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
+    private AnonymousRouter anonymousRouter;
+
+    @Resource
     private DeliverySettingsDao deliverySettingsDao;
 
     @ModelAttribute
@@ -114,30 +118,25 @@ public class AnonymousStandaloneItemRunner {
 
         /* FIXME: Delete the uploaded data if there is an Exception here! */
         try {
-            /* Make sure the required ItemDeliverySettings exists */
-            final DeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(command.getDsid());
+            /* Make sure the required DeliverySettings exists */
+            final DeliverySettings deliverySettings = assessmentManagementService.lookupDeliverySettings(command.getDsid());
 
             /* Now upload the Assessment and validate it */
             final Assessment assessment;
             assessment = assessmentManagementService.importAssessment(command.getFile());
             final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessment.getId().longValue());
-            if (assessment.getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
-                /* FIXME! We're only supporting items at present */
-                errors.reject("testsNotSupportedYet");
-                return "standalonerunner/uploadForm";
-            }
             if (!validationResult.isValid()) {
                 model.addAttribute("validationResult", validationResult);
                 return "standalonerunner/invalidUpload";
             }
 
             /* If still here, start new delivery and get going */
-            final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, itemDeliverySettings);
+            final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
             final String exitUrl = "/web/anonymous/standalonerunner";
             final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
 
             /* Redirect to candidate dispatcher */
-            return "redirect:/candidate/session/" + candidateSession.getId().longValue() + "/" + candidateSession.getSessionToken();
+            return GlobalRouter.buildSessionStartRedirect(candidateSession);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();

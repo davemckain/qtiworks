@@ -33,6 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -58,5 +62,12 @@ public class InstructorRouter {
 
     public String buildInstructorRedirect(final String actionUrl) {
         return "redirect:" + buildWithinContextUrl(actionUrl);
+    }
+
+    public String buildSessionStartRedirect(final CandidateSession candidateSession) {
+        final boolean isItem = candidateSession.getDelivery().getAssessment().getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM;
+        final String subPath = isItem ? "session" : "testsession";
+        return "redirect:/candidate/" + subPath + "/" + candidateSession.getId()
+                + "/" + candidateSession.getSessionToken();
     }
 }

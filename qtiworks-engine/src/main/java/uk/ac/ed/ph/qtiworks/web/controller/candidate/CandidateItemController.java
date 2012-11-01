@@ -72,8 +72,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 /**
  * Controller for candidate item sessions
  *
- * FIXME: This will need to be refactored to accommodate test sessions
- *
  * @author David McKain
  */
 @Controller
@@ -95,7 +93,7 @@ public class CandidateItemController {
      * @throws CandidateForbiddenException
      */
     @RequestMapping(value="/session/{xid}/{sessionToken}", method=RequestMethod.GET)
-    public void renderItem(@PathVariable final long xid, @PathVariable final String sessionToken,
+    public void renderCurrentItemSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
             final WebRequest webRequest, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */

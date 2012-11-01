@@ -31,44 +31,71 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.controller.lti;
+package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
+
+import java.io.IOException;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.WebRequest;
 
 /**
- * Controller for browsing and trying the public samples
+ * Controller for candidate test sessions
  *
  * @author David McKain
  */
 @Controller
-public class LtiController {
+public class CandidateTestController {
 
     @Resource
-    private CandidateSessionStarter candidateSessionStarter;
+    private CandidateItemDeliveryService candidateItemDeliveryService;
 
-    @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
-    public String ltiLaunch(final HttpServletRequest httpRequest, @PathVariable final long did)
-            throws  PrivilegeException, DomainEntityNotFoundException {
-        final LtiLaunchData ltiLaunchData = LtiAuthenticationFilter.getLaunchData(httpRequest);
+    //----------------------------------------------------
+    // Rendering
 
-        /* FIXME: Decide what to do if this data is not passed */
-        final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
+    /**
+     * Renders the current state of the given session
+     *
+     * FIXME: This is currently just a placeholder!
+     *
+     * @throws IOException
+     * @throws CandidateForbiddenException
+     */
+    @ResponseBody
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
+    public String renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
+            final WebRequest webRequest, final HttpServletResponse response)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateSession(xid, sessionToken);
 
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
-        return GlobalRouter.buildSessionStartRedirect(candidateSession);
+        final StringBuilder resultBuilder = new StringBuilder();
+        resultBuilder.append("This is test session " ).append(candidateSession.getId());
+
+        return resultBuilder.toString();
+    }
+
+    //----------------------------------------------------
+    // Redirections
+
+    private String redirectToRenderSession(final long xid, final String sessionToken) {
+        return "redirect:/candidate/testsession/" + xid + "/" + sessionToken;
+    }
+
+    private String redirectToExitUrl(final String exitUrl) {
+        if (exitUrl!=null && (exitUrl.startsWith("/") || exitUrl.startsWith("http://") || exitUrl.startsWith("https://"))) {
+            return "redirect:" + exitUrl;
+        }
+        return null;
     }
 }

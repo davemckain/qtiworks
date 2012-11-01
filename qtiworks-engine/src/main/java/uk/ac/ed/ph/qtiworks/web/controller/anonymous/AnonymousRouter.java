@@ -55,9 +55,4 @@ public class AnonymousRouter {
     public String buildWebUrl(final String actionUrl) {
         return contextPath + buildWithinContextUrl(actionUrl);
     }
-
-    public String buildInstructorRedirect(final String actionUrl) {
-        return "redirect:" + buildWithinContextUrl(actionUrl);
-    }
-
 }

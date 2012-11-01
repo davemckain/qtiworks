@@ -22,8 +22,8 @@ Renders a standalone assessmentItem
 
   <!-- State -->
   <xsl:param name="renderingMode" as="xs:string" required="yes"/>
-  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="$itemSessionState/@finished!='true'"/>
-  <xsl:variable name="isSessionClosed" as="xs:boolean" select="not($isSessionInteracting)"/>
+  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$itemSessionState/@closed='true'"/>
+  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="not($isSessionClosed)"/>
 
   <xsl:param name="prompt" select="()" as="xs:string?"/>
   <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
