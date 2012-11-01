@@ -737,6 +737,7 @@ public class CandidateItemDeliveryService {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
+        itemSessionController.initialize();
         itemSessionController.performTemplateProcessing();
 
         /* Mark item as being presented */
