@@ -87,13 +87,17 @@ public final class TestPlanNode implements Serializable {
     /** Children of this Node */
     private final List<TestPlanNode> children;
 
-    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey testPlanNodeInstanceKey) {
+    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key) {
         super();
         this.parentNode = null;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
-        this.key = testPlanNodeInstanceKey;
+        this.key = key;
         this.children = new ArrayList<TestPlanNode>();
+    }
+
+    public static TestPlanNode createRoot() {
+        return new TestPlanNode(TestNodeType.ROOT, null);
     }
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
@@ -148,10 +152,18 @@ public final class TestPlanNode implements Serializable {
         return node.hasAncestor(this);
     }
 
+    public List<TestPlanNode> searchDescendantsOrSelf() {
+        return searchDescendantsOrSelf(null);
+    }
+
     public List<TestPlanNode> searchDescendantsOrSelf(final TestNodeType testNodeType) {
         final ArrayList<TestPlanNode> resultBuilder = new ArrayList<TestPlanNode>();
         buildDescendantsOrSelf(resultBuilder, this, testNodeType);
         return Collections.unmodifiableList(resultBuilder);
+    }
+
+    public List<TestPlanNode> searchDescendants() {
+        return searchDescendants(null);
     }
 
     public List<TestPlanNode> searchDescendants(final TestNodeType testNodeType) {
@@ -163,7 +175,7 @@ public final class TestPlanNode implements Serializable {
     }
 
     private void buildDescendantsOrSelf(final List<TestPlanNode> resultBuilder, final TestPlanNode testPlanNode, final TestNodeType testNodeType) {
-        if (testPlanNode.getTestNodeType()==testNodeType) {
+        if (testNodeType==null || testPlanNode.getTestNodeType()==testNodeType) {
             resultBuilder.add(testPlanNode);
         }
         for (final TestPlanNode childNode : testPlanNode.getChildren()) {

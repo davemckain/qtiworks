@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -83,6 +84,7 @@ public final class TestPlan implements Serializable {
      */
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
 
+    /** (This is the most efficient constructor) */
     public TestPlan(final TestPlanNode testPlanRootNode, final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap) {
         this.testPlanRootNode = testPlanRootNode;
         this.testPlanNodesByIdentifierMap = testPlanNodesByIdentifierMap;
@@ -93,6 +95,28 @@ public final class TestPlan implements Serializable {
                 testPlanNodeMapBuilder.put(testPlanNode.getKey(), testPlanNode);
             }
         }
+        this.testPlanNodeMap = Collections.unmodifiableMap(testPlanNodeMapBuilder);
+    }
+
+    /** (Convenience constructor) */
+    public TestPlan(final TestPlanNode testPlanRootNode) {
+        final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMapBuilder = new LinkedHashMap<Identifier, List<TestPlanNode>>();
+        final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new LinkedHashMap<TestPlanNodeKey, TestPlanNode>();
+        for (final TestPlanNode testPlanNode : testPlanRootNode.searchDescendants()) {
+            final TestPlanNodeKey key = testPlanNode.getKey();
+            if (key==null) {
+                throw new IllegalArgumentException("Did not expect to find a Node " + testPlanNode + " with null key");
+            }
+            testPlanNodeMapBuilder.put(key, testPlanNode);
+            List<TestPlanNode> nodesByIdentifier = testPlanNodesByIdentifierMapBuilder.get(key.getIdentifier());
+            if (nodesByIdentifier==null) {
+                nodesByIdentifier = new ArrayList<TestPlanNode>();
+                testPlanNodesByIdentifierMapBuilder.put(key.getIdentifier(), nodesByIdentifier);
+            }
+            nodesByIdentifier.add(testPlanNode);
+        }
+        this.testPlanRootNode = testPlanRootNode;
+        this.testPlanNodesByIdentifierMap = Collections.unmodifiableMap(testPlanNodesByIdentifierMapBuilder);
         this.testPlanNodeMap = Collections.unmodifiableMap(testPlanNodeMapBuilder);
     }
 
