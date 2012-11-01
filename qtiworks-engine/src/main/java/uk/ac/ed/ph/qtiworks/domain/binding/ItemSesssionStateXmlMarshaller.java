@@ -66,7 +66,6 @@ import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 /**
@@ -76,51 +75,47 @@ import org.xml.sax.InputSource;
  */
 public final class ItemSesssionStateXmlMarshaller {
 
-    /** Internal namespace used in QTIWorks Rendering XSLT that we'll use for certain custom elements/attrs */
-    public static final String QTIWORKS_NAMESPACE = "http://www.ph.ed.ac.uk/qtiworks";
-
     public static Document marshal(final ItemSessionState itemSessionState) {
         final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
         final Document document = documentBuilder.newDocument();
+        appendItemSessionState(document, itemSessionState);
+        return document;
+    }
 
-        /* Create document element */
-        final Element documentElement = document.createElementNS(QTIWORKS_NAMESPACE, "itemSessionState");
-        documentElement.setAttribute("modelVersion", "1");
-        documentElement.setAttribute("initialized", StringUtilities.toTrueFalse(itemSessionState.isInitialized()));
-        documentElement.setAttribute("presented", StringUtilities.toTrueFalse(itemSessionState.isPresented()));
-        documentElement.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
-        documentElement.setAttribute("closed", StringUtilities.toTrueFalse(itemSessionState.isClosed()));
+    static void appendItemSessionState(final Node documentOrElement, final ItemSessionState itemSessionState) {
+        final Element element = XmlMarshallerCore.appendElement(documentOrElement, "itemSessionState");
+        element.setAttribute("modelVersion", "1");
+        element.setAttribute("initialized", StringUtilities.toTrueFalse(itemSessionState.isInitialized()));
+        element.setAttribute("presented", StringUtilities.toTrueFalse(itemSessionState.isPresented()));
+        element.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
+        element.setAttribute("closed", StringUtilities.toTrueFalse(itemSessionState.isClosed()));
         final SessionStatus sessionStatus = itemSessionState.getSessionStatus();
         if (sessionStatus!=null) {
-            documentElement.setAttribute("sessionStatus", sessionStatus.toQtiString());
+            element.setAttribute("sessionStatus", sessionStatus.toQtiString());
         }
-        maybeAddIdentifierListAttribute(documentElement, "badResponseIdentifiers", itemSessionState.getBadResponseIdentifiers());
-        maybeAddIdentifierListAttribute(documentElement, "invalidResponseIdentifiers", itemSessionState.getInvalidResponseIdentifiers());
-        document.appendChild(documentElement);
+        maybeAddIdentifierListAttribute(element, "badResponseIdentifiers", itemSessionState.getBadResponseIdentifiers());
+        maybeAddIdentifierListAttribute(element, "invalidResponseIdentifiers", itemSessionState.getInvalidResponseIdentifiers());
 
         /* Output candidate comment */
-        maybeAppendTextElement(documentElement, "candidateComment", itemSessionState.getCandidateComment());
+        XmlMarshallerCore.maybeAppendTextElement(element, "candidateComment", itemSessionState.getCandidateComment());
 
         /* Output shuffled choice orders */
         for (final Entry<Identifier, List<Identifier>> entry : itemSessionState.getShuffledInteractionChoiceOrders().entrySet()) {
             final Identifier responseIdentifier = entry.getKey();
             final List<Identifier> choiceIdentifiers = entry.getValue();
-            final Element orderElement = document.createElementNS(QTIWORKS_NAMESPACE, "shuffledInteractionChoiceOrder");
+            final Element orderElement = XmlMarshallerCore.appendElement(element, "shuffledInteractionChoiceOrder");
             orderElement.setAttribute("responseIdentifier", responseIdentifier.toString());
             orderElement.setAttribute("choiceSequence", StringUtilities.join(choiceIdentifiers, " "));
-            documentElement.appendChild(orderElement);
         }
 
         /* Do template variables */
-        appendValues(documentElement, "templateVariable", itemSessionState.getTemplateValues());
-        appendValues(documentElement, "responseVariable", itemSessionState.getResponseValues());
-        appendValues(documentElement, "outcomeVariable", itemSessionState.getOutcomeValues());
-        appendValues(documentElement, "overriddenTemplateDefault", itemSessionState.getOverriddenTemplateDefaultValues());
-        appendValues(documentElement, "overriddenResponseDefault", itemSessionState.getOverriddenResponseDefaultValues());
-        appendValues(documentElement, "overriddenOutcomeDefault", itemSessionState.getOverriddenOutcomeDefaultValues());
-        appendValues(documentElement, "overriddenCorrectResponse", itemSessionState.getOverriddenCorrectResponseValues());
-
-        return document;
+        appendValues(element, "templateVariable", itemSessionState.getTemplateValues());
+        appendValues(element, "responseVariable", itemSessionState.getResponseValues());
+        appendValues(element, "outcomeVariable", itemSessionState.getOutcomeValues());
+        appendValues(element, "overriddenTemplateDefault", itemSessionState.getOverriddenTemplateDefaultValues());
+        appendValues(element, "overriddenResponseDefault", itemSessionState.getOverriddenResponseDefaultValues());
+        appendValues(element, "overriddenOutcomeDefault", itemSessionState.getOverriddenOutcomeDefaultValues());
+        appendValues(element, "overriddenCorrectResponse", itemSessionState.getOverriddenCorrectResponseValues());
     }
 
     private static void maybeAddIdentifierListAttribute(final Element element, final String attributeName, final Collection<Identifier> values) {
@@ -134,19 +129,9 @@ public final class ItemSesssionStateXmlMarshaller {
             final Identifier identifier = entry.getKey();
             final Value value = entry.getValue();
 
-            final Element valueElement = parentElement.getOwnerDocument().createElementNS(QTIWORKS_NAMESPACE, elementName);
+            final Element valueElement = XmlMarshallerCore.appendElement(parentElement, elementName);
             valueElement.setAttribute("identifier", identifier.toString());
             appendValueToElement(valueElement, value);
-
-            parentElement.appendChild(valueElement);
-        }
-    }
-
-    private static void maybeAppendTextElement(final Element parentElement, final String elementName, final String content) {
-        if (content!=null) {
-            final Element element = parentElement.getOwnerDocument().createElementNS(QTIWORKS_NAMESPACE, elementName);
-            element.appendChild(parentElement.getOwnerDocument().createTextNode(content));
-            parentElement.appendChild(element);
         }
     }
 
@@ -155,7 +140,6 @@ public final class ItemSesssionStateXmlMarshaller {
             /* Currently we'll indicate null by outputting no value */
         }
         else {
-            final Document document = element.getOwnerDocument();
             final Cardinality cardinality = value.getCardinality();
             final BaseType baseType = value.getBaseType(); /* (NB: may be null) */
             element.setAttribute("cardinality", cardinality.toQtiString());
@@ -180,11 +164,10 @@ public final class ItemSesssionStateXmlMarshaller {
                     for (final Entry<Identifier, SingleValue> entry : recordValue.entrySet()) {
                         final Identifier itemIdentifier = entry.getKey();
                         final SingleValue itemValue = entry.getValue();
-                        final Element v = document.createElementNS(QTIWORKS_NAMESPACE, "value");
+                        final Element v = XmlMarshallerCore.appendElement(element, "value");
                         v.setAttribute("baseType", itemValue.getBaseType().toQtiString());
                         v.setAttribute("fieldIdentifier",itemIdentifier.toString());
                         appendSingleValue(v, itemValue);
-                        element.appendChild(v);
                     }
                     break;
 
@@ -196,8 +179,7 @@ public final class ItemSesssionStateXmlMarshaller {
     }
 
     private static void appendSingleValue(final Element parent, final SingleValue value) {
-        final Document document = parent.getOwnerDocument();
-        final Element singleValueElement = document.createElementNS(QTIWORKS_NAMESPACE, "value");
+        final Element singleValueElement = XmlMarshallerCore.appendElement(parent, "value");
         if (value instanceof FileValue) {
             /* FIXME: Not sure how much we'll do with this */
             final FileValue fileValue = (FileValue) value;
@@ -207,7 +189,6 @@ public final class ItemSesssionStateXmlMarshaller {
         else {
             singleValueElement.setTextContent(value.toQtiString());
         }
-        parent.appendChild(singleValueElement);
     }
 
     //----------------------------------------------
@@ -221,26 +202,23 @@ public final class ItemSesssionStateXmlMarshaller {
         catch (final Exception e) {
             throw new MarshallingException("XML parsing failed", e);
         }
-        return unmarshal(document);
+        return unmarshal(document.getDocumentElement());
     }
 
-    public static ItemSessionState unmarshal(final Document document) {
+    public static ItemSessionState unmarshal(final Element element) {
+        XmlMarshallerCore.expectThisElement(element, "itemSessionState");
         final ItemSessionState result = new ItemSessionState();
-        final Element documentElement = document.getDocumentElement();
-        if (!(QTIWORKS_NAMESPACE.equals(documentElement.getNamespaceURI())
-                && "itemSessionState".equals(documentElement.getLocalName()))) {
-            throw new MarshallingException("Expected <itemSessionState> in " + QTIWORKS_NAMESPACE + " namespace");
-        }
-        if (!"1".equals(documentElement.getAttribute("modelVersion"))) {
+
+        if (!"1".equals(element.getAttribute("modelVersion"))) {
             throw new MarshallingException("Expected modelVersion to be 1");
         }
-        result.setInitialized(parseOptionalBooleanAttribute(documentElement, "initialized", false));
-        result.setPresented(parseOptionalBooleanAttribute(documentElement, "presented", false));
-        result.setResponded(parseOptionalBooleanAttribute(documentElement, "responded", false));
-        result.setClosed(parseOptionalBooleanAttribute(documentElement, "closed", false));
-        result.setBadResponseIdentifiers(parseOptionalIdentifierAttributeList(documentElement, "badResponseIdentifiers"));
-        if (documentElement.hasAttribute("sessionStatus")) {
-            final String sessionStatusAttr = documentElement.getAttribute("sessionStatus");
+        result.setInitialized(parseOptionalBooleanAttribute(element, "initialized", false));
+        result.setPresented(parseOptionalBooleanAttribute(element, "presented", false));
+        result.setResponded(parseOptionalBooleanAttribute(element, "responded", false));
+        result.setClosed(parseOptionalBooleanAttribute(element, "closed", false));
+        result.setBadResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "badResponseIdentifiers"));
+        if (element.hasAttribute("sessionStatus")) {
+            final String sessionStatusAttr = element.getAttribute("sessionStatus");
             try {
                 result.setSessionStatus(SessionStatus.parseSessionStatus(sessionStatusAttr));
             }
@@ -249,11 +227,11 @@ public final class ItemSesssionStateXmlMarshaller {
             }
         }
 
-        final List<Element> childElements = expectElementChildren(documentElement);
+        final List<Element> childElements = XmlMarshallerCore.expectElementChildren(element);
         for (final Element childElement : childElements) {
             final String elementName = childElement.getLocalName();
             if (elementName.equals("candidateComment")) {
-                result.setCandidateComment(expectTextContent(childElement));
+                result.setCandidateComment(XmlMarshallerCore.expectTextContent(childElement));
             }
             else if (elementName.equals("shuffledInteractionChoiceOrder")) {
                 final Identifier responseIdentifier = parseIdentifierAttribute(childElement, "responseIdentifier");
@@ -309,7 +287,7 @@ public final class ItemSesssionStateXmlMarshaller {
     }
 
     private static Identifier parseIdentifierAttribute(final Element element, final String identifierAttrName) {
-        final String identifierAttrValue = requireAttribute(element, identifierAttrName);
+        final String identifierAttrValue = XmlMarshallerCore.requireAttribute(element, identifierAttrName);
         try {
             return Identifier.parseString(identifierAttrValue);
         }
@@ -400,7 +378,7 @@ public final class ItemSesssionStateXmlMarshaller {
     }
 
     private static Value parseRecordValue(final Element element) {
-        final List<Element> childElements = expectElementChildren(element);
+        final List<Element> childElements = XmlMarshallerCore.expectElementChildren(element);
         final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
         for (final Element childElement : childElements) {
             if (!"value".equals(childElement.getLocalName())) {
@@ -414,7 +392,7 @@ public final class ItemSesssionStateXmlMarshaller {
     }
 
     private static Cardinality parseCardinalityAttribute(final Element element) {
-        final String cardinalityString = requireAttribute(element, "cardinality");
+        final String cardinalityString = XmlMarshallerCore.requireAttribute(element, "cardinality");
         try {
             return Cardinality.parseCardinality(cardinalityString);
         }
@@ -424,7 +402,7 @@ public final class ItemSesssionStateXmlMarshaller {
     }
 
     private static BaseType parseBaseTypeAttribute(final Element element) {
-        final String baseTypeString = requireAttribute(element, "baseType");
+        final String baseTypeString = XmlMarshallerCore.requireAttribute(element, "baseType");
         try {
             return BaseType.parseBaseType(baseTypeString);
         }
@@ -433,56 +411,14 @@ public final class ItemSesssionStateXmlMarshaller {
         }
     }
 
-    private static String requireAttribute(final Element element, final String attrName) {
-        if (!element.hasAttribute(attrName)) {
-            throw new MarshallingException("Attribute " + attrName + " of element " + element.getLocalName() + " is required");
-        }
-        return element.getAttribute(attrName);
-    }
-
     private static List<String> parseValueChildren(final Element element) {
-        final List<Element> childElements = expectElementChildren(element);
+        final List<Element> childElements = XmlMarshallerCore.expectElementChildren(element);
         final List<String> result = new ArrayList<String>();
         for (final Element childElement : childElements) {
             if (!"value".equals(childElement.getLocalName())) {
                 throw new MarshallingException("Expected only <value> children of " + element);
             }
-            result.add(expectTextContent(childElement));
-        }
-        return result;
-    }
-
-    private static String expectTextContent(final Element element) {
-        final NodeList childNodes = element.getChildNodes();
-        final StringBuilder resultBuilder = new StringBuilder();
-        for (int i=0, size=childNodes.getLength(); i<size; i++) {
-            final Node childNode = childNodes.item(i);
-            if (childNode.getNodeType()==Node.TEXT_NODE) {
-                resultBuilder.append(childNode.getNodeValue());
-            }
-            else {
-                throw new MarshallingException("Expected only text content of element " + element);
-            }
-        }
-        return resultBuilder.toString();
-    }
-
-    private static List<Element> expectElementChildren(final Element element) {
-        final NodeList childNodes = element.getChildNodes();
-        final List<Element> result = new ArrayList<Element>(childNodes.getLength());
-        for (int i=0, size=childNodes.getLength(); i<size; i++) {
-            final Node childNode = childNodes.item(i);
-            if (childNode.getNodeType()==Node.TEXT_NODE && childNode.getNodeValue().trim().isEmpty()) {
-                continue;
-            }
-            if (childNode.getNodeType()!=Node.ELEMENT_NODE) {
-                throw new MarshallingException("Expected only element children of " + element);
-            }
-            final Element childElement = (Element) childNode;
-            if (!QTIWORKS_NAMESPACE.equals(childElement.getNamespaceURI())) {
-                throw new MarshallingException("Expected Element " + childElement + " to have namepsace URI " + QTIWORKS_NAMESPACE);
-            }
-            result.add(childElement);
+            result.add(XmlMarshallerCore.expectTextContent(childElement));
         }
         return result;
     }

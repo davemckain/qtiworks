@@ -123,7 +123,7 @@ public final class TestPlanner extends ListenerNotificationFirer {
         this.resolvedAssessmentTest = testProcessingMap.getResolvedAssessmentTest();
         this.test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
         this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
-        this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, null);
+        this.testPlanRootNode = TestPlanNode.createRoot();
     }
 
     public TestPlan generateTestPlan() {
