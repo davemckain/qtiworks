@@ -24,16 +24,20 @@ rendering.
   <!-- URI of the Item being rendered -->
   <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
 
-  <!-- Current state -->
+  <!-- State of item being rendered -->
   <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
+
+  <!-- Set to true to include author debug information -->
+  <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
+
+  <!-- Notificates produced during the event being rendered -->
+  <xsl:param name="notifications" as="element(qw:notification)*"/>
 
   <!-- Action URLs -->
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>
-  <xsl:param name="badResponseIdentifiers" select="()" as="xs:string*"/>
-  <xsl:param name="invalidResponseIdentifiers" select="()" as="xs:string*"/>
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>
@@ -55,9 +59,14 @@ rendering.
   <xsl:variable name="responseValues" select="$itemSessionState/qw:responseVariable" as="element(qw:responseVariable)*"/>
   <xsl:variable name="outcomeValues" select="$itemSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
   <xsl:variable name="overriddenCorrectResponses" select="$itemSessionState/qw:overriddenCorrectResponse" as="element(qw:overriddenCorrectResponse)*"/>
+  <xsl:variable name="sessionStatus" select="$itemSessionState/@sessionStatus" as="xs:string"/>
+
+  <!-- Bad/invalid responses -->
+  <xsl:variable name="badResponseIdentifiers" select="$itemSessionState/@badResponseIdentifiers" as="xs:string*"/>
+  <xsl:variable name="invalidResponseIdentifiers" select="$itemSessionState/@invalidResponseIdentifiers" as="xs:string*"/>
 
   <!-- Has the candidate made a response? -->
-  <xsl:variable name="isResponded" as="xs:boolean" select="exists($responseInputs)"/>
+  <xsl:variable name="isResponded" as="xs:boolean" select="$itemSessionState/@responsed='true'"/>
 
   <!-- Is a model solution provided? -->
   <xsl:variable name="hasModelSolution" as="xs:boolean" select="exists(/qti:assessmentItem/qti:responseDeclaration/qti:correctResponse) or exists($overriddenCorrectResponses)"/>

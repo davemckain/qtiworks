@@ -39,7 +39,7 @@ import java.util.List;
 
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-public class RenderingTest {
+public class ItemRenderingTest {
 
     public static void main(final String[] args) {
         final URI inputUri = URI.create("classpath:/choice.xml");

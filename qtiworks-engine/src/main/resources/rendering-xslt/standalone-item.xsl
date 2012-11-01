@@ -25,9 +25,8 @@ Renders a standalone assessmentItem
   <xsl:variable name="isSessionClosed" as="xs:boolean" select="$itemSessionState/@closed='true'"/>
   <xsl:variable name="isSessionInteracting" as="xs:boolean" select="not($isSessionClosed)"/>
 
+  <!-- Item prompt -->
   <xsl:param name="prompt" select="()" as="xs:string?"/>
-  <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
-  <xsl:param name="notifications" as="element(qw:notification)*"/>
 
   <!-- Item Action URLs -->
   <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
@@ -237,7 +236,7 @@ Renders a standalone assessmentItem
     <xsl:apply-templates select="qti:itemBody"/>
 
     <!-- Display active modal feedback (only after responseProcessing) -->
-    <xsl:if test="$isResponded">
+    <xsl:if test="$sessionStatus='final'">
       <xsl:variable name="modalFeedback" as="element()*">
         <xsl:for-each select="qti:modalFeedback">
           <xsl:variable name="feedback" as="node()*">
@@ -332,7 +331,16 @@ Renders a standalone assessmentItem
       <div class="authorInfo authorMode">
         <h2>QTI authoring feedback</h2>
         <h3>Candidate Session State</h3>
-        <p>The current candidate session state is: <xsl:value-of select="$renderingMode"/></p>
+
+        <p>The current candidate rendering mode state is: <xsl:value-of select="$renderingMode"/></p>
+        <p>Current value of sessionStatus is: <xsl:value-of select="$sessionStatus"/></p>
+        <p>
+          Flags:
+          initialized=<xsl:value-of select="$itemSessionState/@initialized"/>,
+          presented=<xsl:value-of select="$itemSessionState/@presented"/>,
+          responded=<xsl:value-of select="$itemSessionState/@responded"/>,
+          closed=<xsl:value-of select="$itemSessionState/@closed"/>.
+        </p>
 
         <!-- Show response stuff -->
         <xsl:if test="exists($badResponseIdentifiers) or exists($invalidResponseIdentifiers)">

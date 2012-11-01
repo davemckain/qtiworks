@@ -75,6 +75,7 @@ public final class XmlMarshalTest {
         itemSessionState.setResponseValue(Identifier.parseString("RESPONSE"), MultipleValue.createMultipleValue(new StringValue("Bad"), new StringValue("Thing")));
         itemSessionState.setTemplateValue(Identifier.parseString("TEMPLATE"), NullValue.INSTANCE);
         itemSessionState.setOutcomeValue(Identifier.parseString("RECORD"), rv);
+        itemSessionState.setBadResponseIdentifiers(Arrays.asList(new Identifier[] { Identifier.assumedLegal("A") } ));
 
         /* Marshal */
         final Document document = ItemSesssionStateXmlMarshaller.marshal(itemSessionState);
