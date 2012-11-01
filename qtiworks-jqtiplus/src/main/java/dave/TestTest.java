@@ -8,7 +8,6 @@ package dave;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -58,10 +57,9 @@ public final class TestTest {
         final TestProcessingMap testProcessingMap = new TestProcessingInitializer(testValidationResult).initialize();
         System.out.println("Test processing map: " + ObjectDumper.dumpObject(testProcessingMap, DumpMode.DEEP));
 
-        final ListenerNotificationFirer notificationFirer = new ListenerNotificationFirer();
         final NotificationLogListener notificationLogListener = new NotificationLogListener();
-        notificationFirer.addNotificationListener(notificationLogListener);
-        final TestPlanner testPlanner = new TestPlanner(testProcessingMap, notificationFirer);
+        final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
+        testPlanner.addNotificationListener(notificationLogListener);
         final TestPlan testPlan = testPlanner.generateTestPlan();
         System.out.println("Test plan structure:\n" + testPlan.debugStructure());
 

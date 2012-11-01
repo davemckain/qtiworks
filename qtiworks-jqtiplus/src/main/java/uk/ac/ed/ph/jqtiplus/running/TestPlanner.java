@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
 import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
+import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
@@ -72,7 +72,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public final class TestPlanner {
+public final class TestPlanner extends ListenerNotificationFirer {
 
     private static final Logger logger = LoggerFactory.getLogger(TestPlanner.class);
 
@@ -114,16 +114,14 @@ public final class TestPlanner {
     private final TestProcessingMap testProcessingMap;
     private final ResolvedAssessmentTest resolvedAssessmentTest;
     private final AssessmentTest test;
-    private final NotificationFirer notificationFirer;
 
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
     private final TestPlanNode testPlanRootNode;
 
-    public TestPlanner(final TestProcessingMap testProcessingMap, final NotificationFirer notificationFirer) {
+    public TestPlanner(final TestProcessingMap testProcessingMap) {
         this.testProcessingMap = testProcessingMap;
         this.resolvedAssessmentTest = testProcessingMap.getResolvedAssessmentTest();
         this.test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
-        this.notificationFirer = notificationFirer;
         this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
         this.testPlanRootNode = new TestPlanNode(TestNodeType.ROOT, -1, null);
     }
@@ -159,7 +157,7 @@ public final class TestPlanner {
         /* Make sure part is usable */
         final int abstractPartGlobalIndex = testProcessingMap.getAbstractPartGlobalIndex(testPart);
         if (abstractPartGlobalIndex==-1) {
-            notificationFirer.fireRuntimeWarning(testPart,
+            fireRuntimeWarning(testPart,
                     "The testPart with identifier " + testPart
                     + " is too invalid to be used, so is being ignored");
             return null;
@@ -188,7 +186,7 @@ public final class TestPlanner {
         /* Make sure section is usable */
         final int abstractPartIndex = testProcessingMap.getAbstractPartGlobalIndex(section);
         if (abstractPartIndex==-1) {
-            notificationFirer.fireRuntimeWarning(section,
+            fireRuntimeWarning(section,
                     "The section with identifier " + section
                     + " is too invalid to be used, so is being ignored");
             return null;
@@ -253,8 +251,7 @@ public final class TestPlanner {
         /* Make sure item is usable */
         final int abstractPartIndex = testProcessingMap.getAbstractPartGlobalIndex(itemRef);
         if (abstractPartIndex==-1) {
-            notificationFirer.fireRuntimeWarning(itemRef,
-                    "The item referenced with identifier " + itemRef
+            fireRuntimeWarning(itemRef, "The item referenced with identifier " + itemRef
                     + " is too invalid to be used, so is being ignored");
             return null;
         }
@@ -262,8 +259,7 @@ public final class TestPlanner {
         /* Make sure the item was successfully resolved */
         final URI itemSystemId = resolvedAssessmentTest.getSystemIdByItemRefMap().get(itemRef);
         if (!testProcessingMap.getItemProcessingMapMap().containsKey(itemSystemId)) {
-            notificationFirer.fireRuntimeWarning(itemRef,
-                    "The item referred by identifier " + itemRef.getIdentifier()
+            fireRuntimeWarning(itemRef, "The item referred by identifier " + itemRef.getIdentifier()
                     + " was not successfully resolved so is being dropped from the test plan");
             return null;
         }
@@ -296,8 +292,8 @@ public final class TestPlanner {
 
         /* Handle edge and corner cases */
         if (requestedSelections < 0) {
-            notificationFirer.fireRuntimeWarning(assessmentSection,
-                    "The requested number of selections (" + requestedSelections
+            fireRuntimeWarning(assessmentSection, "The requested number of selections ("
+                    + requestedSelections
                     + ") is negative and is being treated as an empty selection");
             requestedSelections = 0;
         }
@@ -306,9 +302,10 @@ public final class TestPlanner {
         }
         if (!selection.getWithReplacement() && requestedSelections > childCount) {
             /* Trivial corner case: not enough children for selection without replacement */
-            notificationFirer.fireRuntimeWarning(assessmentSection,
-                    "The requested number of selections (" + requestedSelections
-                    + ") is greater than the number of children (" + childCount
+            fireRuntimeWarning(assessmentSection, "The requested number of selections ("
+                    + requestedSelections
+                    + ") is greater than the number of children ("
+                    + childCount
                     + "), which makes selection without replacement impossible. "
                     + "As a result, all children have been selected.");
             return children;
@@ -325,8 +322,8 @@ public final class TestPlanner {
             }
         }
         if (requiredChildCount > requestedSelections) {
-            notificationFirer.fireRuntimeWarning(assessmentSection,
-                    "The requested number of selections (" + requestedSelections
+            fireRuntimeWarning(assessmentSection, "The requested number of selections ("
+                    + requestedSelections
                     + ") was smaller than the number of children marked as 'required' ("
                     + requiredChildCount
                     + "). All required children will be selected");
