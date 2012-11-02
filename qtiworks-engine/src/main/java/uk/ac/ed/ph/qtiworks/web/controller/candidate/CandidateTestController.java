@@ -34,11 +34,18 @@
 package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +66,7 @@ import org.springframework.web.context.request.WebRequest;
 public class CandidateTestController {
 
     @Resource
-    private CandidateItemDeliveryService candidateItemDeliveryService;
+    private CandidateTestDeliveryService candidateTestDeliveryService;
 
     //----------------------------------------------------
     // Rendering
@@ -73,14 +80,34 @@ public class CandidateTestController {
      * @throws CandidateForbiddenException
      */
     @ResponseBody
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET, produces="text/plain")
     public String renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
             final WebRequest webRequest, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateSession(xid, sessionToken);
+
+        /* TEMP! */
+        final Pair<CandidateTestEvent, List<CandidateEventNotification>> result = candidateTestDeliveryService.getMostRecentEvent(candidateSession);
+        final CandidateTestEvent candidateTestEvent = result.getFirst();
+        final List<CandidateEventNotification> notifications = result.getSecond();
 
         final StringBuilder resultBuilder = new StringBuilder();
-        resultBuilder.append("This is test session " ).append(candidateSession.getId());
+        resultBuilder.append("This is test session " )
+            .append(candidateSession.getId())
+            .append("\n\nTest has temporarily been initialized in NONLINEAR/INDIVIDUAL mode, regardless of what your XML said, and we're only supporting the first <testPart> for now.\n"
+                    + "As in the case for INDIVIDUAL mode, template processing has been run on all items.\n\n"
+                    + "Rendering (as in displaying the test) will appear soon, as will buttons for actually doing the test.\n"
+                    + "In the mean time, please enjoy the XML below!\n\n"
+                    + "TestSessionState is currently:\n")
+            .append(candidateTestEvent.getTestSessionStateXml());
+
+        if (!notifications.isEmpty()) {
+            resultBuilder.append("\n\nNotifications generated during test initialization are:\n");
+            for (final CandidateEventNotification notification : notifications) {
+                resultBuilder.append(ObjectDumper.dumpObject(notification, DumpMode.DEEP))
+                        .append("\n");
+            }
+        }
 
         return resultBuilder.toString();
     }

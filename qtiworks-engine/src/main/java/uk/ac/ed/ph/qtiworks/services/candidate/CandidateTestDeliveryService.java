@@ -49,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
@@ -65,8 +66,9 @@ import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -102,11 +104,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Service the manages the real-time delivery of a standalone {@link AssessmentItem}
- * to a candidate.
- * <p>
- * NOTE: Current single item delivery assumes that items are always presented immediately after
- * template processing runs, and that attempts are always treated as being submitted.
+ * Service the manages the real-time delivery of a an {@link AssessmentTest}
+ * to candidates.
  * <p>
  * NOTE: Remember there is no {@link IdentityContext} for candidates.
  *
@@ -116,7 +115,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 @Transactional(propagation=Propagation.REQUIRED)
-public class CandidateItemDeliveryService {
+public class CandidateTestDeliveryService {
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -183,6 +182,16 @@ public class CandidateItemDeliveryService {
             /* No access when session has been is closed */
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_TERMINATED_SESSION);
         }
+    }
+
+    /* TEMP! */
+    public Pair<CandidateTestEvent, List<CandidateEventNotification>> getMostRecentEvent(final CandidateSession candidateSession)  {
+        final CandidateTestEvent event = (CandidateTestEvent) candidateDataServices.getMostRecentEvent(candidateSession);
+
+        /* Ensure lazy instantiation within this layer */
+        final List<CandidateEventNotification> notifications = new ArrayList<CandidateEventNotification>(event.getNotifications());
+
+        return new Pair<CandidateTestEvent, List<CandidateEventNotification>>(event, notifications);
     }
 
     //----------------------------------------------------

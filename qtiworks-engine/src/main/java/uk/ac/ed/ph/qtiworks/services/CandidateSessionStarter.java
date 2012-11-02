@@ -281,6 +281,7 @@ public class CandidateSessionStarter {
         testSessionController.initialize();
 
         /* FIXME: Make further state transitions */
+        testSessionController.startTestNI();
 
         /* Create new session entity and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();
@@ -291,7 +292,8 @@ public class CandidateSessionStarter {
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */
-        final CandidateTestEvent candidateItemEvent = candidateDataServices.recordCandidateTestEvent(candidateSession, CandidateTestEventType.INIT, testSessionState, notificationRecorder);
+        final CandidateTestEvent candidateItemEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+                CandidateTestEventType.INIT, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateTestEvent(candidateSession, candidateItemEvent);
 
         auditor.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()

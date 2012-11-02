@@ -135,7 +135,7 @@ public class CandidateTestEvent extends CandidateEvent implements BaseEntity {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + getId()
-                + ",eventCategory" + getEventCategory()
+                + ",eventCategory=" + getEventCategory()
                 + ",testEventType=" + testEventType
                 + ")";
     }

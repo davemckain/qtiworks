@@ -250,16 +250,14 @@ public final class TestSessionController extends TestValidationController implem
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
         if (testPartNodes.size()!=1) {
-            fireRuntimeWarning(getSubjectTest(), "Support for single part tests is coming soon");
-            testSessionState.setFinished(true);
+            fireRuntimeWarning(getSubjectTest(), "Support for multiple part tests is coming soon. We'll just run the first part for now.");
             return;
         }
         /* Check submission/navigation mode */
         final TestPlanNode testPlanNode = testPartNodes.get(0);
         final TestPart testPart = (TestPart) testProcessingMap.resolveAbstractPart(testPlanNode);
         if (!(testPart.getNavigationMode()==NavigationMode.NONLINEAR && testPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL)) {
-            fireRuntimeWarning(testPart, "This work in progress only supports NONLINEAR/INDIVIDUAL testParts");
-            testSessionState.setFinished(true);
+            fireRuntimeWarning(testPart, "This work in progress only supports NONLINEAR/INDIVIDUAL testParts. We're going to ignore your choices today and run the test in N/I mode.");
             return;
         }
         /* Select part */

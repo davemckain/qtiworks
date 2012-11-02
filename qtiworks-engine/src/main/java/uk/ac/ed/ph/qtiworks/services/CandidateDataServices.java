@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
+import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
@@ -70,6 +71,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
@@ -153,25 +155,16 @@ public class CandidateDataServices {
     // Item methods
 
     public String marshalItemSessionState(final ItemSessionState itemSessionState) {
-        final Document marshalledState = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
-        final XMLStringOutputOptions xmlOptions = new XMLStringOutputOptions();
-        xmlOptions.setIndenting(true);
-        xmlOptions.setIncludingXMLDeclaration(false);
-        return XMLUtilities.serializeNode(marshalledState, xmlOptions);
+        return serializeMarshalledXml(ItemSessionStateXmlMarshaller.marshal(itemSessionState));
     }
 
     public ItemSessionState unmarshalItemSessionState(final CandidateItemEvent event) {
         final String itemSessionStateXml = event.getItemSessionStateXml();
         final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
-        Document doc;
-        try {
-            doc = documentBuilder.parse(new InputSource(new StringReader(itemSessionStateXml)));
-        }
-        catch (final Exception e) {
-            throw new QtiWorksLogicException("Could not parse ItemSessionState XML. This is an internal error as we currently don't expose this data to clients", e);
-        }
-        return ItemSessionStateXmlMarshaller.unmarshal(doc);
+        final Document doc = parseMarshalledState(itemSessionStateXml);
+        return ItemSessionStateXmlMarshaller.unmarshal(doc.getDocumentElement());
     }
+
 
     public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
@@ -268,6 +261,7 @@ public class CandidateDataServices {
         return unmarshalItemSessionState(mostRecentEvent);
     }
 
+    @ToRefactor
     public CandidateItemEvent getMostRecentItemEvent(final CandidateSession candidateSession)  {
         final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
         if (mostRecentEvent==null) {
@@ -285,6 +279,16 @@ public class CandidateDataServices {
 
     //----------------------------------------------------
     // Test methods
+
+    public String marshalTestSessionState(final TestSessionState testSessionState) {
+        return serializeMarshalledXml(TestSessionStateXmlMarshaller.marshal(testSessionState));
+    }
+
+    public TestSessionState unmarshalTestSessionState(final CandidateTestEvent event) {
+        final String testSessionStateXml = event.getTestSessionStateXml();
+        final Document doc = parseMarshalledState(testSessionStateXml);
+        return TestSessionStateXmlMarshaller.unmarshal(doc.getDocumentElement());
+    }
 
     public TestSessionController createNewTestSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
         ensureTestDelivery(delivery);
@@ -333,7 +337,7 @@ public class CandidateDataServices {
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
 
         /* Record serialized TestSessionState */
-        event.setTestSessionStateXml("FIXME!");
+        event.setTestSessionStateXml(marshalTestSessionState(testSessionState));
 
         /* Store event */
         candidateEventDao.persist(event);
@@ -352,6 +356,34 @@ public class CandidateDataServices {
         Assert.notNull(delivery, "delivery");
         if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
             throw new IllegalArgumentException("Expected " + delivery + " to correspond to a Test");
+        }
+    }
+
+    //----------------------------------------------------
+    // General helpers
+
+    public CandidateEvent getMostRecentEvent(final CandidateSession candidateSession)  {
+        final CandidateEvent mostRecentEvent = candidateEventDao.getNewestEventInSession(candidateSession);
+        if (mostRecentEvent==null) {
+            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
+        }
+        return mostRecentEvent;
+    }
+
+    private String serializeMarshalledXml(final Document marshalledState) {
+        final XMLStringOutputOptions xmlOptions = new XMLStringOutputOptions();
+        xmlOptions.setIndenting(true);
+        xmlOptions.setIncludingXMLDeclaration(false);
+        return XMLUtilities.serializeNode(marshalledState, xmlOptions);
+    }
+
+    private Document parseMarshalledState(final String stateXml) {
+        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
+        try {
+            return documentBuilder.parse(new InputSource(new StringReader(stateXml)));
+        }
+        catch (final Exception e) {
+            throw new QtiWorksLogicException("Could not parse serailized state XML. This is an internal error as we currently don't expose this data to clients", e);
         }
     }
 }

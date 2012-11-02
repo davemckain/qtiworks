@@ -116,7 +116,6 @@ public class CandidateItemController {
         candidateItemDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
-
     //----------------------------------------------------
     // Attempt handling
 

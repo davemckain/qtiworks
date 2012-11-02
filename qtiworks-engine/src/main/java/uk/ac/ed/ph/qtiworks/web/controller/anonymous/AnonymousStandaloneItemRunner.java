@@ -83,9 +83,6 @@ public class AnonymousStandaloneItemRunner {
     private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
-    private AnonymousRouter anonymousRouter;
-
-    @Resource
     private DeliverySettingsDao deliverySettingsDao;
 
     @ModelAttribute

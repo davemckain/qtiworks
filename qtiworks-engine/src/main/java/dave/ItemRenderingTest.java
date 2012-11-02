@@ -39,6 +39,11 @@ import java.util.List;
 
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+/**
+ * Developer class for debugging item rendering
+ *
+ * @author David McKain
+ */
 public class ItemRenderingTest {
 
     public static void main(final String[] args) {
