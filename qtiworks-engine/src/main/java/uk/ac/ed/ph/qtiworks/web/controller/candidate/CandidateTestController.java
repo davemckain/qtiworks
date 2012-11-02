@@ -40,6 +40,8 @@ import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
+
 import java.io.IOException;
 
 import javax.annotation.Resource;
@@ -92,9 +94,22 @@ public class CandidateTestController {
         renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
+        renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateTestDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
+    }
+
+    /**
+     * Selects the requested item instance
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/select/{key}", method=RequestMethod.POST)
+    public String selectItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateTestDeliveryService.selectItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
     }
 
     //----------------------------------------------------

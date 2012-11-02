@@ -50,6 +50,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -70,7 +71,6 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
@@ -255,7 +255,6 @@ public class CandidateDataServices {
         return unmarshalItemSessionState(mostRecentEvent);
     }
 
-    @ToRefactor
     public CandidateItemEvent getMostRecentItemEvent(final CandidateSession candidateSession)  {
         final CandidateItemEvent mostRecentEvent = (CandidateItemEvent) candidateEventDao.getNewestEventInSession(candidateSession);
         if (mostRecentEvent==null) {
@@ -344,6 +343,44 @@ public class CandidateDataServices {
         }
 
         return event;
+    }
+
+    public TestSessionController createTestSessionController(final CandidateTestEvent candidateTestEvent,
+            final NotificationRecorder notificationRecorder) {
+        Assert.notNull(candidateTestEvent, "candidateTestEvent");
+
+        final Delivery delivery = candidateTestEvent.getCandidateSession().getDelivery();
+        final TestSessionState testSessionState = unmarshalTestSessionState(candidateTestEvent);
+        return createTestSessionController(delivery, testSessionState, notificationRecorder);
+    }
+
+    public TestSessionController createTestSessionController(final Delivery delivery,
+            final TestSessionState testSessionState,  final NotificationRecorder notificationRecorder) {
+        ensureTestDelivery(delivery);
+        Assert.notNull(testSessionState, "testSessionState");
+
+        /* Resolve the underlying JQTI+ object */
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
+
+        /* Create config for TestSessionController */
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
+        testSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(testDeliverySettings));
+
+        /* Create controller and wire up notification recorder (if passed) */
+        final TestSessionController result = new TestSessionController(jqtiExtensionManager,
+                testSessionControllerSettings, testProcessingMap, testSessionState);
+        if (notificationRecorder!=null) {
+            result.addNotificationListener(notificationRecorder);
+        }
+
+        return result;
+    }
+
+    public TestSessionState computeCurrentTestSessionState(final CandidateSession candidateSession)  {
+        final CandidateTestEvent mostRecentEvent = getMostRecentTestEvent(candidateSession);
+        return unmarshalTestSessionState(mostRecentEvent);
     }
 
     public CandidateTestEvent getMostRecentTestEvent(final CandidateSession candidateSession)  {

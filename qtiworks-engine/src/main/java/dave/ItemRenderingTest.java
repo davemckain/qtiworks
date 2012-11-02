@@ -74,20 +74,7 @@ public class ItemRenderingTest {
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = new RenderingOptions();
-            renderingOptions.setContextPath("/qtiworks");
-            renderingOptions.setAttemptUrl("/attempt");
-            renderingOptions.setCloseUrl("/close");
-            renderingOptions.setResetUrl("/reset");
-            renderingOptions.setReinitUrl("/reinit");
-            renderingOptions.setSolutionUrl("/solution");
-            renderingOptions.setResultUrl("/result");
-            renderingOptions.setSourceUrl("/source");
-            renderingOptions.setServeFileUrl("/serveFile");
-            renderingOptions.setPlaybackUrlBase("/playback");
-            renderingOptions.setTerminateUrl("/terminate");
-            renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-
+            final RenderingOptions renderingOptions = createRenderingOptions();
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
             renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
@@ -141,5 +128,23 @@ public class ItemRenderingTest {
         finally {
             jqtiExtensionManager.destroy();
         }
+    }
+
+    static RenderingOptions createRenderingOptions() {
+        final RenderingOptions renderingOptions = new RenderingOptions();
+        renderingOptions.setContextPath("/qtiworks");
+        renderingOptions.setAttemptUrl("/attempt");
+        renderingOptions.setCloseUrl("/close");
+        renderingOptions.setResetUrl("/reset");
+        renderingOptions.setReinitUrl("/reinit");
+        renderingOptions.setSolutionUrl("/solution");
+        renderingOptions.setResultUrl("/result");
+        renderingOptions.setSourceUrl("/source");
+        renderingOptions.setServeFileUrl("/serveFile");
+        renderingOptions.setPlaybackUrlBase("/playback");
+        renderingOptions.setTerminateUrl("/terminate");
+        renderingOptions.setSelectItemUrl("/select");
+        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        return renderingOptions;
     }
 }

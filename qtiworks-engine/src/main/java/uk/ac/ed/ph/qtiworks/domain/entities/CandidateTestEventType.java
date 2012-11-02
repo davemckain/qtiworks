@@ -44,6 +44,9 @@ public enum CandidateTestEventType {
     /** Test session initialized */
     INIT,
 
+    /** Selection of a particular item */
+    SELECT_ITEM,
+
     /** Termination of session */
     TERMINATE,
 

@@ -179,6 +179,7 @@ public class AdhocService {
         renderingOptions.setTerminateUrl("/terminate");
         renderingOptions.setSolutionUrl("/solution");
         renderingOptions.setPlaybackUrlBase("/playback");
+        renderingOptions.setSelectItemUrl("/select");
         return renderingOptions;
     }
 

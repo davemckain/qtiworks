@@ -37,12 +37,12 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
@@ -59,7 +59,10 @@ import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import java.io.File;
@@ -98,9 +101,6 @@ public class CandidateTestDeliveryService {
     private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
-    private QtiSerializer qtiSerializer;
-
-    @Resource
     private EntityGraphService entityGraphService;
 
     @Resource
@@ -116,13 +116,7 @@ public class CandidateTestDeliveryService {
     private AssessmentRenderer assessmentRenderer;
 
     @Resource
-    private CandidateUploadService candidateUploadService;
-
-    @Resource
     private CandidateSessionDao candidateSessionDao;
-
-    @Resource
-    private CandidateItemAttemptDao candidateItemAttemptDao;
 
     //----------------------------------------------------
     // Session access
@@ -231,6 +225,7 @@ public class CandidateTestDeliveryService {
      * This is only rendering the navigation menu at the moment. This will be fleshed out
      * shortly.
      */
+    @SuppressWarnings("unused")
     private void renderEvent(final CandidateSession candidateSession,
             final CandidateTestEvent candidateTestEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
@@ -256,5 +251,40 @@ public class CandidateTestDeliveryService {
         candidateAuditLogger.logTestPartNavigationRendering(candidateTestEvent);
         final List<CandidateEventNotification> notifications = candidateTestEvent.getNotifications();
         assessmentRenderer.renderTestPartNavigation(renderingRequest, notifications, resultStream);
+    }
+
+    //----------------------------------------------------
+    // Navigation
+
+    public CandidateSession selectItem(final long xid, final String sessionToken, final TestPlanNodeKey key)
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        return selectItem(candidateSession, key);
+    }
+
+    public CandidateSession selectItem(final CandidateSession candidateSession, final TestPlanNodeKey key)
+            throws CandidateForbiddenException {
+        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(key, "key");
+
+        /* Get current session state */
+        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
+
+        /* Make sure caller may do this */
+        ensureSessionNotTerminated(candidateSession);
+
+        /* Update state */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, notificationRecorder);
+        testSessionController.selectItem(key);
+
+        /* Record and log event */
+        final CandidateTestEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+                CandidateTestEventType.SELECT_ITEM, testSessionState);
+        candidateAuditLogger.logCandidateTestEvent(candidateSession, candidateTestEvent);
+
+        return candidateSession;
     }
 }

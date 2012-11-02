@@ -85,6 +85,9 @@ public final class RenderingOptions implements Serializable {
     @NotNull
     private String serveFileUrl;
 
+    @NotNull
+    private String selectItemUrl;
+
     //----------------------------------------------------
 
     public SerializationMethod getSerializationMethod() {
@@ -192,6 +195,15 @@ public final class RenderingOptions implements Serializable {
 
     public void setServeFileUrl(final String serveFileUrl) {
         this.serveFileUrl = serveFileUrl;
+    }
+
+
+    public String getSelectItemUrl() {
+        return selectItemUrl;
+    }
+
+    public void setSelectItemUrl(final String selectItemUrl) {
+        this.selectItemUrl = selectItemUrl;
     }
 
     //----------------------------------------------------

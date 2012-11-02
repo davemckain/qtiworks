@@ -268,16 +268,7 @@ public class AssessmentRenderer {
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
-        xsltParameters.put("itemSystemId", renderingRequest.getAssessmentResourceUri().toString());
-        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
-        xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
-        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
-        xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
-        xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
-        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
-        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
-        xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
-        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
+        xsltParameters.put("selectItemUrl", renderingOptions.getSelectItemUrl());
 
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();

@@ -7,7 +7,6 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -74,20 +73,7 @@ public class TestRenderingTest {
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = new RenderingOptions();
-            renderingOptions.setContextPath("/qtiworks");
-            renderingOptions.setAttemptUrl("/attempt");
-            renderingOptions.setCloseUrl("/close");
-            renderingOptions.setResetUrl("/reset");
-            renderingOptions.setReinitUrl("/reinit");
-            renderingOptions.setSolutionUrl("/solution");
-            renderingOptions.setResultUrl("/result");
-            renderingOptions.setSourceUrl("/source");
-            renderingOptions.setServeFileUrl("/serveFile");
-            renderingOptions.setPlaybackUrlBase("/playback");
-            renderingOptions.setTerminateUrl("/terminate");
-            renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-
+            final RenderingOptions renderingOptions = ItemRenderingTest.createRenderingOptions();
             final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(inputUri);

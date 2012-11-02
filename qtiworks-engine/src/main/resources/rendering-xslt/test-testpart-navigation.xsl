@@ -25,7 +25,11 @@ Renders the navigation for the current testPart
   <!-- Set to true to include author debug information -->
   <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
 
+  <!-- Current state -->
   <xsl:param name="testSessionState" as="element(qw:testSessionState)"/>
+
+  <!-- Relevant action URLs -->
+  <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
 
   <!-- Extract current testPart -->
   <xsl:variable name="currentTestPartKey" select="$testSessionState/@currentTestPartKey" as="xs:string"/>
@@ -87,16 +91,16 @@ Renders the navigation for the current testPart
 
   <xsl:template match="qw:node" mode="testPart-item">
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
-    <pre>
+    <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
+      <input type="submit" value="Choose Item"/> <xsl:value-of select="@key"/>
+      <pre>
+        PRESENTED: <xsl:value-of select="$itemSessionState/@presented='true'"/>
+        RESPONDED: <xsl:value-of select="$itemSessionState/@responsed='true'"/>
+        INVALID: <xsl:value-of select="not(empty($itemSessionState/@badResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))"/>
+        CLOSED: <xsl:value-of select="$itemSessionState/@closed='true'"/>
 
-      BUTTON: <xsl:value-of select="@key"/>
-
-      PRESENTED: <xsl:value-of select="$itemSessionState/@presented='true'"/>
-      RESPONDED: <xsl:value-of select="$itemSessionState/@responsed='true'"/>
-      INVALID: <xsl:value-of select="not(empty($itemSessionState/@badResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))"/>
-      CLOSED: <xsl:value-of select="$itemSessionState/@closed='true'"/>
-
-    </pre>
+      </pre>
+    </form>
   </xsl:template>
 
 </xsl:stylesheet>
