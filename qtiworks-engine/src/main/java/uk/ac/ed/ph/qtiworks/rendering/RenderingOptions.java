@@ -40,7 +40,7 @@ import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
 /**
- * FIXME: Document this!
+ * Encapsulates general options for passing to the {@link AssessmentRenderer}.
  *
  * @author David McKain
  */

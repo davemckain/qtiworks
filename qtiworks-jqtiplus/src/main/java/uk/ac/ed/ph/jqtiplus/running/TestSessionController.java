@@ -304,7 +304,9 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     /**
-     * Handles response submission to the currently selected item
+     * Handles response submission to the currently selected item.
+     * <p>
+     * RP is always run in {@link SubmissionMode#INDIVIDUAL} mode.
      */
     public void handleResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");

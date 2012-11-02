@@ -39,7 +39,6 @@ import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
@@ -114,9 +113,6 @@ public class CandidateDataServices {
     private CandidateEventNotificationDao candidateEventNotificationDao;
 
     @Resource
-    private CandidateItemEventDao candidateItemEventDao;
-
-    @Resource
     private JqtiExtensionManager jqtiExtensionManager;
 
     //----------------------------------------------------
@@ -160,11 +156,9 @@ public class CandidateDataServices {
 
     public ItemSessionState unmarshalItemSessionState(final CandidateItemEvent event) {
         final String itemSessionStateXml = event.getItemSessionStateXml();
-        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
         final Document doc = parseMarshalledState(itemSessionStateXml);
         return ItemSessionStateXmlMarshaller.unmarshal(doc.getDocumentElement());
     }
-
 
     public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
@@ -263,7 +257,7 @@ public class CandidateDataServices {
 
     @ToRefactor
     public CandidateItemEvent getMostRecentItemEvent(final CandidateSession candidateSession)  {
-        final CandidateItemEvent mostRecentEvent = candidateItemEventDao.getNewestEventInSession(candidateSession);
+        final CandidateItemEvent mostRecentEvent = (CandidateItemEvent) candidateEventDao.getNewestEventInSession(candidateSession);
         if (mostRecentEvent==null) {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
@@ -352,6 +346,14 @@ public class CandidateDataServices {
         return event;
     }
 
+    public CandidateTestEvent getMostRecentTestEvent(final CandidateSession candidateSession)  {
+        final CandidateTestEvent mostRecentEvent = (CandidateTestEvent) candidateEventDao.getNewestEventInSession(candidateSession);
+        if (mostRecentEvent==null) {
+            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
+        }
+        return mostRecentEvent;
+    }
+
     public void ensureTestDelivery(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
         if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
@@ -361,14 +363,6 @@ public class CandidateDataServices {
 
     //----------------------------------------------------
     // General helpers
-
-    public CandidateEvent getMostRecentEvent(final CandidateSession candidateSession)  {
-        final CandidateEvent mostRecentEvent = candidateEventDao.getNewestEventInSession(candidateSession);
-        if (mostRecentEvent==null) {
-            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
-        }
-        return mostRecentEvent;
-    }
 
     private String serializeMarshalledXml(final Document marshalledState) {
         final XMLStringOutputOptions xmlOptions = new XMLStringOutputOptions();

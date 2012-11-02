@@ -39,43 +39,31 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Encapsulates parameters for controlling "external" aspects of the rendering process.
+ * Encapsulates the required data for rendering the current state of an item
  *
  * @author David McKain
  */
-public final class ItemRenderingRequest {
+public final class ItemRenderingRequest extends AbstractRenderingRequest {
 
     /** Selected {@link RenderingMode} */
     @NotNull
     private RenderingMode renderingMode;
 
-    @NotNull
-    private ResourceLocator assessmentResourceLocator;
-
-    @NotNull
-    private URI assessmentResourceUri;
-
-    @NotNull
-    @Valid
-    private RenderingOptions renderingOptions;
 
     /** Required {@link ItemSessionState} to be rendered */
     @NotNull
     private ItemSessionState itemSessionState;
 
     private String prompt;
-    private boolean authorMode;
+
     private boolean closeAllowed;
     private boolean resetAllowed;
     private boolean reinitAllowed;
@@ -102,33 +90,6 @@ public final class ItemRenderingRequest {
     }
 
 
-    public ResourceLocator getAssessmentResourceLocator() {
-        return assessmentResourceLocator;
-    }
-
-    public void setAssessmentResourceLocator(final ResourceLocator assessmentResourceLocator) {
-        this.assessmentResourceLocator = assessmentResourceLocator;
-    }
-
-
-    public URI getAssessmentResourceUri() {
-        return assessmentResourceUri;
-    }
-
-    public void setAssessmentResourceUri(final URI assessmentResourceUri) {
-        this.assessmentResourceUri = assessmentResourceUri;
-    }
-
-
-    public RenderingOptions getRenderingOptions() {
-        return renderingOptions;
-    }
-
-    public void setRenderingOptions(final RenderingOptions renderingOptions) {
-        this.renderingOptions = renderingOptions;
-    }
-
-
     public ItemSessionState getItemSessionState() {
         return itemSessionState;
     }
@@ -144,15 +105,6 @@ public final class ItemRenderingRequest {
 
     public void setPrompt(final String prompt) {
         this.prompt = prompt;
-    }
-
-
-    public boolean isAuthorMode() {
-        return authorMode;
-    }
-
-    public void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
     }
 
 
@@ -240,7 +192,6 @@ public final class ItemRenderingRequest {
     public boolean isPlaybackAllowed() {
         return playbackAllowed;
     }
-
 
     public void setPlaybackAllowed(final boolean playbackAllowed) {
         this.playbackAllowed = playbackAllowed;

@@ -34,18 +34,13 @@
 package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
+import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
-
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
+import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +49,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
 /**
@@ -79,37 +73,28 @@ public class CandidateTestController {
      * @throws IOException
      * @throws CandidateForbiddenException
      */
-    @ResponseBody
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET, produces="text/plain")
-    public String renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
+    public void renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
             final WebRequest webRequest, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateSession(xid, sessionToken);
+        /* Create appropriate options that link back to this controller */
+        final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + sessionToken;
+        final RenderingOptions renderingOptions = new RenderingOptions();
+        renderingOptions.setContextPath(webRequest.getContextPath());
+        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
+        renderingOptions.setCloseUrl(sessionBaseUrl + "/close");
+        renderingOptions.setSolutionUrl(sessionBaseUrl + "/solution");
+        renderingOptions.setResetUrl(sessionBaseUrl + "/reset");
+        renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
+        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
+        renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
+        renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
+        renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
+        renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
 
-        /* TEMP! */
-        final Pair<CandidateTestEvent, List<CandidateEventNotification>> result = candidateTestDeliveryService.getMostRecentEvent(candidateSession);
-        final CandidateTestEvent candidateTestEvent = result.getFirst();
-        final List<CandidateEventNotification> notifications = result.getSecond();
-
-        final StringBuilder resultBuilder = new StringBuilder();
-        resultBuilder.append("This is test session " )
-            .append(candidateSession.getId())
-            .append("\n\nTest has temporarily been initialized in NONLINEAR/INDIVIDUAL mode, regardless of what your XML said, and we're only supporting the first <testPart> for now.\n"
-                    + "As in the case for INDIVIDUAL mode, template processing has been run on all items.\n\n"
-                    + "Rendering (as in displaying the test) will appear soon, as will buttons for actually doing the test.\n"
-                    + "In the mean time, please enjoy the XML below!\n\n"
-                    + "TestSessionState is currently:\n")
-            .append(candidateTestEvent.getTestSessionStateXml());
-
-        if (!notifications.isEmpty()) {
-            resultBuilder.append("\n\nNotifications generated during test initialization are:\n");
-            for (final CandidateEventNotification notification : notifications) {
-                resultBuilder.append(ObjectDumper.dumpObject(notification, DumpMode.DEEP))
-                        .append("\n");
-            }
-        }
-
-        return resultBuilder.toString();
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateTestDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
     //----------------------------------------------------

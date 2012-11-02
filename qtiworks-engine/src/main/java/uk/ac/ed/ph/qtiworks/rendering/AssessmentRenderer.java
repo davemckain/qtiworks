@@ -34,12 +34,14 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -68,13 +70,13 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.Charsets;
-import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
 
 /**
+ * FIXME: Redocument this!
+ *
  * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
  * containing a mixture of C & P. The idea would be that we use the PMathML, if available,
  * or convert the CMathML to PMathML once all substitutions have been made. Potential
@@ -93,6 +95,8 @@ public class AssessmentRenderer {
 
     @SuppressWarnings("unused")
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
+
+    private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
 
     @Resource
     private JqtiExtensionManager jqtiExtensionManager;
@@ -142,13 +146,6 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
-    /** (Convenience method) */
-    public String renderItemToString(final ItemRenderingRequest renderingRequest, final List<CandidateEventNotification> notifications) {
-        final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-        renderItem(renderingRequest, notifications, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
-        return stringBuilderWriter.toString();
-    }
-
     /**
      * Renders the given {@link ItemRenderingRequest}, sending the results as UTF-8 encoded XML
      * to the given {@link OutputStream}.
@@ -160,7 +157,8 @@ public class AssessmentRenderer {
      *
      * @throws QtiRenderingException if an unexpected Exception happens during rendering
      */
-    public void renderItem(final ItemRenderingRequest renderingRequest, final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
+    public void renderItem(final ItemRenderingRequest renderingRequest,
+            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
         Assert.notNull(renderingRequest, "renderingRequest");
         Assert.notNull(resultStream, "resultStream");
 
@@ -177,12 +175,12 @@ public class AssessmentRenderer {
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
+        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+        xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
         xsltParameters.put("itemSystemId", renderingRequest.getAssessmentResourceUri().toString());
         xsltParameters.put("prompt", renderingRequest.getPrompt());
-        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
         xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
         xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
@@ -235,11 +233,68 @@ public class AssessmentRenderer {
             xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
         }
 
-        doTransform(renderingRequest, resultStream, standaloneItemXsltUri, xsltParameters);
+        doTransform(renderingRequest, standaloneItemXsltUri, resultStream, xsltParameters);
     }
 
-    private void doTransform(final ItemRenderingRequest renderingRequest, final OutputStream resultStream,
-            final URI stylesheetUri, final Map<String, Object> xsltParameters) {
+    //----------------------------------------------------
+
+    /**
+     * FIXME: Document this!
+     *
+     * The caller is responsible for closing this stream afterwards.
+     *
+     * @param renderingRequest
+     * @param resultStream
+     *
+     * @throws QtiRenderingException if an unexpected Exception happens during rendering
+     */
+    public void renderTestPartNavigation(final TestPartNavigationRenderingRequest renderingRequest,
+            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
+        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(resultStream, "resultStream");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testPartNavigationRenderingRequest");
+        jsr303Validator.validate(renderingRequest, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName() + " Object: " + errors);
+        }
+
+        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+
+        /* Pass request info to XSLT as parameters */
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
+        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
+        xsltParameters.put("itemSystemId", renderingRequest.getAssessmentResourceUri().toString());
+        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
+        xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
+        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
+        xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
+        xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
+        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
+        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
+        xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
+        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
+
+        /* Pass TestSessionState as XML */
+        final TestSessionState testSessionState = renderingRequest.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+
+        /* Pass notifications */
+        if (notifications!=null) {
+            xsltParameters.put("notifications", xsltParamBuilder.notificationsToElements(notifications));
+        }
+
+        doTransform(renderingRequest, testPartNavigationXsltUri, resultStream, xsltParameters);
+    }
+
+    //----------------------------------------------------
+
+    private void doTransform(final AbstractRenderingRequest renderingRequest, final URI stylesheetUri,
+            final OutputStream resultStream, final Map<String, Object> xsltParameters) {
         final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);
         Transformer transformer;
         try {

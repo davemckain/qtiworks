@@ -43,6 +43,8 @@ package uk.ac.ed.ph.qtiworks.services.candidate;
 public enum CandidatePrivilege {
 
     ACCESS_CANDIDATE_SESSION,
+    ACCESS_CANDIDATE_SESSION_AS_ITEM,
+    ACCESS_CANDIDATE_SESSION_AS_TEST,
     MAKE_ATTEMPT,
     ACCESS_BLACKLISTED_ASSESSMENT_FILE,
     ACCESS_ASSESSMENT_FILE,

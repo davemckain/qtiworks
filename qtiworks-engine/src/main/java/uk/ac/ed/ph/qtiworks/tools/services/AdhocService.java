@@ -42,6 +42,7 @@ import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
@@ -81,12 +82,19 @@ public class AdhocService {
     private CandidateItemDeliveryService candidateItemDeliveryService;
 
     @Resource
+    private CandidateTestDeliveryService candidateTestDeliveryService;
+
+    @Resource
     private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
     private InstructorUserDao instructorUserDao;
 
     public void doWork() throws Exception {
+        doWorkTest();
+    }
+
+    public void doWorkTest() throws Exception {
         requestTimestampContext.setCurrentRequestTimestamp(new Date());
 
         final InstructorUser dave = instructorUserDao.requireFindByLoginName("dmckain");
@@ -97,6 +105,13 @@ public class AdhocService {
         final String exitUrl = "/exit";
 
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
+
+        /* Render initial state */
+        final RenderingOptions renderingOptions = createRenderingOptions();
+
+        final Utf8Streamer utf8Streamer = new Utf8Streamer();
+        candidateTestDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
+        System.out.println("Rendering after init:\n" + utf8Streamer.getResult());
     }
 
     public void doWorkItem() throws Exception {
@@ -112,19 +127,7 @@ public class AdhocService {
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
 
         /* Render initial state */
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath("/context");
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setCloseUrl("/end");
-        renderingOptions.setResetUrl("/reset");
-        renderingOptions.setReinitUrl("/reinit");
-        renderingOptions.setSourceUrl("/source");
-        renderingOptions.setResultUrl("/result");
-        renderingOptions.setServeFileUrl("/file");
-        renderingOptions.setTerminateUrl("/terminate");
-        renderingOptions.setSolutionUrl("/solution");
-        renderingOptions.setPlaybackUrlBase("/playback");
+        final RenderingOptions renderingOptions = createRenderingOptions();
 
         final Utf8Streamer utf8Streamer = new Utf8Streamer();
         candidateItemDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
@@ -160,6 +163,23 @@ public class AdhocService {
 
         /* Then close session */
         candidateItemDeliveryService.terminateCandidateSession(candidateSession);
+    }
+
+    private RenderingOptions createRenderingOptions() {
+        final RenderingOptions renderingOptions = new RenderingOptions();
+        renderingOptions.setContextPath("/context");
+        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        renderingOptions.setAttemptUrl("/attempt");
+        renderingOptions.setCloseUrl("/end");
+        renderingOptions.setResetUrl("/reset");
+        renderingOptions.setReinitUrl("/reinit");
+        renderingOptions.setSourceUrl("/source");
+        renderingOptions.setResultUrl("/result");
+        renderingOptions.setServeFileUrl("/file");
+        renderingOptions.setTerminateUrl("/terminate");
+        renderingOptions.setSolutionUrl("/solution");
+        renderingOptions.setPlaybackUrlBase("/playback");
+        return renderingOptions;
     }
 
     public static class Utf8Streamer implements OutputStreamer {

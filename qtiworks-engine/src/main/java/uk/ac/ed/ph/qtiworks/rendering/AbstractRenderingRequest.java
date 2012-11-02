@@ -33,23 +33,75 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
+
+import java.net.URI;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 /**
- * This is a (still somewhat experimental) attempt to provide granular information
- * about the current rendering state.
- * <p>
- * (This is presently referred to as the "secondary session state" in the author debug mode
- * in rendered content.)
+ * Base for {@link ItemRenderingRequest} and {@link TestPartNavigationRenderingRequest} containing things
+ * that are required in both cases.
  *
  * @author David McKain
  */
-public enum RenderingMode {
+public abstract class AbstractRenderingRequest {
 
-    AFTER_INITIALISATION,
-    AFTER_ATTEMPT,
-    CLOSED,
-    SOLUTION,
-    PLAYBACK,
-    TERMINATED,
-    ;
+    @NotNull
+    private ResourceLocator assessmentResourceLocator;
 
+    @NotNull
+    private URI assessmentResourceUri;
+
+    @NotNull
+    @Valid
+    private RenderingOptions renderingOptions;
+
+    private boolean authorMode;
+
+    //----------------------------------------------------
+
+    public ResourceLocator getAssessmentResourceLocator() {
+        return assessmentResourceLocator;
+    }
+
+    public void setAssessmentResourceLocator(final ResourceLocator assessmentResourceLocator) {
+        this.assessmentResourceLocator = assessmentResourceLocator;
+    }
+
+
+    public URI getAssessmentResourceUri() {
+        return assessmentResourceUri;
+    }
+
+    public void setAssessmentResourceUri(final URI assessmentResourceUri) {
+        this.assessmentResourceUri = assessmentResourceUri;
+    }
+
+
+    public RenderingOptions getRenderingOptions() {
+        return renderingOptions;
+    }
+
+    public void setRenderingOptions(final RenderingOptions renderingOptions) {
+        this.renderingOptions = renderingOptions;
+    }
+
+
+    public boolean isAuthorMode() {
+        return authorMode;
+    }
+
+    public void setAuthorMode(final boolean authorMode) {
+        this.authorMode = authorMode;
+    }
+
+    //----------------------------------------------------
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

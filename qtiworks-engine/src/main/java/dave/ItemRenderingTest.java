@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
@@ -130,7 +133,9 @@ public class ItemRenderingTest {
             final List<CandidateEventNotification> notifications = new ArrayList<CandidateEventNotification>();
             notifications.add(notification);
 
-            final String rendered = renderer.renderItemToString(renderingRequest, notifications);
+            final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+            renderer.renderItem(renderingRequest, notifications, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            final String rendered = stringBuilderWriter.toString();
             System.out.println("Rendered page: " + rendered);
         }
         finally {

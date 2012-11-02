@@ -5,6 +5,11 @@
  */
 package dave;
 
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
+
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
@@ -22,8 +27,14 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
+
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.commons.io.output.WriterOutputStream;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
  * Developer class for debugging test rendering
@@ -61,69 +72,42 @@ public class TestRenderingTest {
             testSessionController.startTestNI();
             System.out.println("Test session state after init: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
-//            System.out.println("\nRendering");
-//
-//            final RenderingOptions renderingOptions = new RenderingOptions();
-//            renderingOptions.setContextPath("/qtiworks");
-//            renderingOptions.setAttemptUrl("/attempt");
-//            renderingOptions.setCloseUrl("/close");
-//            renderingOptions.setResetUrl("/reset");
-//            renderingOptions.setReinitUrl("/reinit");
-//            renderingOptions.setSolutionUrl("/solution");
-//            renderingOptions.setResultUrl("/result");
-//            renderingOptions.setSourceUrl("/source");
-//            renderingOptions.setServeFileUrl("/serveFile");
-//            renderingOptions.setPlaybackUrlBase("/playback");
-//            renderingOptions.setTerminateUrl("/terminate");
-//            renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-//
-//            final TestRenderingRequest renderingRequest = new TestRenderingRequest();
-//            renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
-//            renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
-//            renderingRequest.setAssessmentResourceUri(inputUri);
-//            renderingRequest.setTestSessionState(itemSessionState);
-//            renderingRequest.setRenderingOptions(renderingOptions);
-//            renderingRequest.setPrompt("This is an item!");
-//            renderingRequest.setAuthorMode(true);
-//            renderingRequest.setSolutionAllowed(true);
-//            renderingRequest.setResetAllowed(true);
-//            renderingRequest.setReinitAllowed(true);
-//            renderingRequest.setResultAllowed(true);
-//            renderingRequest.setSourceAllowed(true);
-//            renderingRequest.setPlaybackAllowed(true);
-//            renderingRequest.setBadResponseIdentifiers(null);
-//            renderingRequest.setInvalidResponseIdentifiers(null);
-//
-//            final CandidateTestEvent playback1 = new CandidateTestEvent();
-//            playback1.setId(1L);
-//            playback1.setTestEventType(CandidateTestEventType.INIT);
-//
-//            final CandidateTestEvent playback2 = new CandidateTestEvent();
-//            playback2.setId(2L);
-//            playback2.setTestEventType(CandidateTestEventType.ATTEMPT_VALID);
-//
-//            renderingRequest.setPlaybackEvents(Arrays.asList(playback1, playback2));
-//            renderingRequest.setCurrentPlaybackEvent(playback1);
-//
-//            final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
-//            validator.afterPropertiesSet();
-//
-//            final AssessmentRenderer renderer = new AssessmentRenderer();
-//            renderer.setJsr303Validator(validator);
-//            renderer.setJqtiExtensionManager(jqtiExtensionManager);
-//            renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
-//            renderer.init();
-//
-//            /* Create a fake notification for debugging */
-//            final CandidateEventNotification notification = new CandidateEventNotification();
-//            notification.setNotificationLevel(NotificationLevel.INFO);
-//            notification.setNotificationType(NotificationType.RUNTIME);
-//            notification.setMessage("This is a notification");
-//            final List<CandidateEventNotification> notifications = new ArrayList<CandidateEventNotification>();
-//            notifications.add(notification);
-//
-//            final String rendered = renderer.renderTestToString(renderingRequest, notifications);
-//            System.out.println("Rendered page: " + rendered);
+            System.out.println("\nRendering");
+
+            final RenderingOptions renderingOptions = new RenderingOptions();
+            renderingOptions.setContextPath("/qtiworks");
+            renderingOptions.setAttemptUrl("/attempt");
+            renderingOptions.setCloseUrl("/close");
+            renderingOptions.setResetUrl("/reset");
+            renderingOptions.setReinitUrl("/reinit");
+            renderingOptions.setSolutionUrl("/solution");
+            renderingOptions.setResultUrl("/result");
+            renderingOptions.setSourceUrl("/source");
+            renderingOptions.setServeFileUrl("/serveFile");
+            renderingOptions.setPlaybackUrlBase("/playback");
+            renderingOptions.setTerminateUrl("/terminate");
+            renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+
+            final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
+            renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
+            renderingRequest.setAssessmentResourceUri(inputUri);
+            renderingRequest.setTestSessionState(testSessionState);
+            renderingRequest.setRenderingOptions(renderingOptions);
+
+            final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+            validator.afterPropertiesSet();
+
+            final AssessmentRenderer renderer = new AssessmentRenderer();
+            renderer.setJsr303Validator(validator);
+            renderer.setJqtiExtensionManager(jqtiExtensionManager);
+            renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
+            renderer.init();
+
+            final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
+            renderer.renderTestPartNavigation(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            final String rendered = stringBuilderWriter.toString();
+
+            System.out.println("Rendered page: " + rendered);
         }
         finally {
             jqtiExtensionManager.destroy();

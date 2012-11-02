@@ -33,23 +33,42 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+
+import javax.validation.constraints.NotNull;
+
 /**
- * This is a (still somewhat experimental) attempt to provide granular information
- * about the current rendering state.
- * <p>
- * (This is presently referred to as the "secondary session state" in the author debug mode
- * in rendered content.)
+ * Request for rendering the navigation menu for the currently selected {@link TestPart}
+ * in an {@link AssessmentTest}.
  *
  * @author David McKain
  */
-public enum RenderingMode {
+public final class TestPartNavigationRenderingRequest extends AbstractRenderingRequest {
 
-    AFTER_INITIALISATION,
-    AFTER_ATTEMPT,
-    CLOSED,
-    SOLUTION,
-    PLAYBACK,
-    TERMINATED,
-    ;
+    /** Required {@link TestSessionState} to be rendered */
+    @NotNull
+    private TestSessionState testSessionState;
+
+    //----------------------------------------------------
+
+    public TestSessionState getTestSessionState() {
+        return testSessionState;
+    }
+
+    public void setTestSessionState(final TestSessionState testSessionState) {
+        this.testSessionState = testSessionState;
+    }
+
+    //----------------------------------------------------
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
+
+
 
 }

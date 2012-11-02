@@ -71,6 +71,10 @@ public class CandidateAuditLogger {
         logEvent(candidateItemEvent.getCandidateSession(), "action=RENDER mode=" + renderingRequest.getRenderingMode());
     }
 
+    public void logTestPartNavigationRendering(final CandidateTestEvent candidateItemEvent) {
+        logEvent(candidateItemEvent.getCandidateSession(), "action=RENDER_CURRENT_TEST_PART_NAVIGATION");
+    }
+
     public void logAction(final CandidateSession candidateSession, final String actionName) {
         logEvent(candidateSession, "action=" + actionName);
     }
