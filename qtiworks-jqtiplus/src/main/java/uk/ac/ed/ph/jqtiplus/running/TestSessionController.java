@@ -52,6 +52,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
+import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationForwarder;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
@@ -95,6 +96,7 @@ public final class TestSessionController extends TestValidationController implem
     private final TestProcessingMap testProcessingMap;
     private final TestSessionState testSessionState;
     private final Map<TestPlanNode, ItemSessionController> itemSessionControllerMap;
+    private final ListenerNotificationForwarder listenerNotificationForwarder;
 
     private Long randomSeed;
     private Random randomGenerator;
@@ -107,6 +109,7 @@ public final class TestSessionController extends TestValidationController implem
         Assert.notNull(testSessionControllerSettings, "testSessionControllerSettings");
         Assert.notNull(testSessionState, "testSessionState");
         this.testSessionControllerSettings = new TestSessionControllerSettings(testSessionControllerSettings);
+        this.listenerNotificationForwarder = new ListenerNotificationForwarder(this);
         this.testProcessingMap = testProcessingMap;
         this.testSessionState = testSessionState;
         this.randomSeed = null;
@@ -230,8 +233,12 @@ public final class TestSessionController extends TestValidationController implem
         itemSessionControllerSettings.setTemplateProcessingLimit(testSessionControllerSettings.getTemplateProcessingLimit());
         itemSessionControllerSettings.setMaxAttempts(effectiveItemSessionControl.getMaxAttempts());
 
-        return new ItemSessionController(jqtiExtensionManager, itemSessionControllerSettings,
-                itemProcessingMap, itemSessionState);
+        /* Create controller and forward any notifications it generates */
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
+                itemSessionControllerSettings, itemProcessingMap, itemSessionState);
+        itemSessionController.addNotificationListener(listenerNotificationForwarder);
+
+        return itemSessionController;
     }
 
     //-------------------------------------------------------------------
@@ -251,17 +258,17 @@ public final class TestSessionController extends TestValidationController implem
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
         if (testPartNodes.size()!=1) {
             fireRuntimeWarning(getSubjectTest(), "Support for multiple part tests is coming soon. We'll just run the first part for now.");
-            return;
         }
-        /* Check submission/navigation mode */
+
+        /* Select first (assumed only) part */
         final TestPlanNode testPlanNode = testPartNodes.get(0);
+        testSessionState.setCurrentTestPartKey(testPlanNode.getKey());
+
+        /* Check submission/navigation mode */
         final TestPart testPart = (TestPart) testProcessingMap.resolveAbstractPart(testPlanNode);
         if (!(testPart.getNavigationMode()==NavigationMode.NONLINEAR && testPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL)) {
             fireRuntimeWarning(testPart, "This work in progress only supports NONLINEAR/INDIVIDUAL testParts. We're going to ignore your choices today and run the test in N/I mode.");
-            return;
         }
-        /* Select part */
-        testSessionState.setCurrentTestPartKey(testPlanNode.getKey());
 
         /* Perform template processing on each item */
         logger.debug("Performing template processing on each item in this testPart");
