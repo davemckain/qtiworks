@@ -41,6 +41,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -50,6 +52,8 @@ import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
@@ -57,6 +61,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,16 +71,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller allowing the public to upload, (validate, ) then run an item. The
- * item and all its data will be deleted soon afterwards.
+ * Controller allowing the public to upload, (validate, ) then run an
+ * {@link AssessmentItem} or {@link AssessmentTest}.
  * <p>
  * This provides a subset of functionality provided for instructor users, but
  * might be useful.
  *
+ * FIXME: This currently doesn't support {@link TestDeliverySettings} and we'll need
+ * to rethink the GUI a bit to cater for both these and {@link ItemDeliverySettings}.
+ *
  * @author David McKain
  */
 @Controller
-public class AnonymousStandaloneItemRunner {
+public class AnonymousStandaloneRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(AnonymousStandaloneRunner.class);
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -87,8 +98,8 @@ public class AnonymousStandaloneItemRunner {
 
     @ModelAttribute
     public void setupDeliverySettings(final Model model) {
-        final List<DeliverySettings> itemDeliverySettingsList = deliverySettingsDao.getAllPublicSettingsForType(AssessmentObjectType.ASSESSMENT_ITEM);
-        model.addAttribute("itemDeliverySettingsList", itemDeliverySettingsList);
+        final List<DeliverySettings> deliverySettingsList = deliverySettingsDao.getAllPublicSettingsForType(AssessmentObjectType.ASSESSMENT_ITEM);
+        model.addAttribute("itemDeliverySettingsList", deliverySettingsList);
     }
 
     //--------------------------------------------------------------------
@@ -116,7 +127,7 @@ public class AnonymousStandaloneItemRunner {
         /* FIXME: Delete the uploaded data if there is an Exception here! */
         try {
             /* Make sure the required DeliverySettings exists */
-            final DeliverySettings deliverySettings = assessmentManagementService.lookupDeliverySettings(command.getDsid());
+            DeliverySettings deliverySettings = assessmentManagementService.lookupDeliverySettings(command.getDsid());
 
             /* Now upload the Assessment and validate it */
             final Assessment assessment;
@@ -125,6 +136,14 @@ public class AnonymousStandaloneItemRunner {
             if (!validationResult.isValid()) {
                 model.addAttribute("validationResult", validationResult);
                 return "standalonerunner/invalidUpload";
+            }
+
+            /* TEMP! Override user's delivery settings for tests, as they can currently only
+             * specify *item* settings, which are not appropriate
+             */
+            if (assessment.getAssessmentType()==AssessmentObjectType.ASSESSMENT_TEST) {
+                logger.warn("FIXME! Replacing user's delivery settings as item settings can't be used with a test");
+                deliverySettings = deliverySettingsDao.getAllPublicSettingsForType(AssessmentObjectType.ASSESSMENT_TEST).get(0);
             }
 
             /* If still here, start new delivery and get going */
