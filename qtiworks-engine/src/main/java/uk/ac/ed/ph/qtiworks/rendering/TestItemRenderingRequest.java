@@ -33,75 +33,29 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
-import java.net.URI;
-
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Base for {@link StandaloneItemRenderingRequest} and {@link TestPartNavigationRenderingRequest} containing things
- * that are required in both cases.
+ * Encapsulates the required data for rendering the current state of an item
+ * within a test
  *
  * @author David McKain
  */
-public abstract class AbstractRenderingRequest {
+public final class TestItemRenderingRequest extends StandaloneItemRenderingRequest {
 
+    /** {@link TestSessionState} owning this item */
     @NotNull
-    private ResourceLocator assessmentResourceLocator;
-
-    @NotNull
-    private URI assessmentResourceUri;
-
-    @NotNull
-    @Valid
-    private RenderingOptions renderingOptions;
-
-    private boolean authorMode;
+    private TestSessionState testSessionState;
 
     //----------------------------------------------------
 
-    public ResourceLocator getAssessmentResourceLocator() {
-        return assessmentResourceLocator;
+    public TestSessionState getTestSessionState() {
+        return testSessionState;
     }
 
-    public void setAssessmentResourceLocator(final ResourceLocator assessmentResourceLocator) {
-        this.assessmentResourceLocator = assessmentResourceLocator;
-    }
-
-
-    public URI getAssessmentResourceUri() {
-        return assessmentResourceUri;
-    }
-
-    public void setAssessmentResourceUri(final URI assessmentResourceUri) {
-        this.assessmentResourceUri = assessmentResourceUri;
-    }
-
-
-    public RenderingOptions getRenderingOptions() {
-        return renderingOptions;
-    }
-
-    public void setRenderingOptions(final RenderingOptions renderingOptions) {
-        this.renderingOptions = renderingOptions;
-    }
-
-
-    public boolean isAuthorMode() {
-        return authorMode;
-    }
-
-    public void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
-    }
-
-    //----------------------------------------------------
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    public void setTestSessionState(final TestSessionState testSessionState) {
+        this.testSessionState = testSessionState;
     }
 }

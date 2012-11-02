@@ -147,7 +147,7 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     /**
-     * Renders the given {@link ItemRenderingRequest}, sending the results as UTF-8 encoded XML
+     * Renders the given {@link StandaloneItemRenderingRequest}, sending the results as UTF-8 encoded XML
      * to the given {@link OutputStream}.
      * <p>
      * The caller is responsible for closing this stream afterwards.
@@ -157,24 +157,40 @@ public class AssessmentRenderer {
      *
      * @throws QtiRenderingException if an unexpected Exception happens during rendering
      */
-    public void renderItem(final ItemRenderingRequest renderingRequest,
+    public void renderStandaloneItem(final StandaloneItemRenderingRequest renderingRequest,
             final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
         Assert.notNull(renderingRequest, "renderingRequest");
         Assert.notNull(resultStream, "resultStream");
 
         /* Check request is valid */
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "renderingRequest");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "standloneItemRenderingRequest");
         jsr303Validator.validate(renderingRequest, errors);
         if (errors.hasErrors()) {
             throw new IllegalArgumentException("Invalid ItemRenderingRequest Object: " + errors);
         }
 
-        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
-        final Map<Identifier, ResponseData> responseInputs = renderingRequest.getResponseInputs();
-
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setItemRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
+        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+
+        doTransform(renderingRequest, standaloneItemXsltUri, resultStream, xsltParameters);
+    }
+
+    private void setNotificationParameters(final Map<String, Object> xsltParameters,
+            final XsltParamBuilder xsltParamBuilder, final List<CandidateEventNotification> notifications) {
+        if (notifications!=null) {
+            xsltParameters.put("notifications", xsltParamBuilder.notificationsToElements(notifications));
+        }
+    }
+
+    private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
+            final XsltParamBuilder xsltParamBuilder, final StandaloneItemRenderingRequest renderingRequest) {
+        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+        final Map<Identifier, ResponseData> responseInputs = renderingRequest.getResponseInputs();
+
+        /* Set config & control parameters */
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
@@ -191,8 +207,6 @@ public class AssessmentRenderer {
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
-        xsltParameters.put("badResponseIdentifiers", XsltParamBuilder.identifiersToList(renderingRequest.getBadResponseIdentifiers()));
-        xsltParameters.put("invalidResponseIdentifiers", XsltParamBuilder.identifiersToList(renderingRequest.getInvalidResponseIdentifiers()));
         xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
         xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
         xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));
@@ -200,7 +214,16 @@ public class AssessmentRenderer {
         xsltParameters.put("sourceAllowed", Boolean.valueOf(renderingRequest.isSourceAllowed()));
         xsltParameters.put("resultAllowed", Boolean.valueOf(renderingRequest.isResultAllowed()));
 
-        /* Playback */
+        /* Pass ItemSessionState (as DOM Document) */
+        final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
+        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
+
+        /* Pass raw response inputs (if appropriate) */
+        if (responseInputs!=null) {
+            xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
+        }
+
+        /* Playback control */
         xsltParameters.put("playbackAllowed", Boolean.valueOf(renderingRequest.isPlaybackAllowed()));
         final List<CandidateItemEvent> playbackEvents = renderingRequest.getPlaybackEvents();
         if (playbackEvents!=null) {
@@ -218,22 +241,6 @@ public class AssessmentRenderer {
             xsltParameters.put("currentPlaybackEventId", currentPlaybackEvent.getId());
             xsltParameters.put("currentPlaybackEventType", currentPlaybackEvent.getItemEventType().toString());
         }
-
-        /* Pass ItemSessionState as XML */
-        final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
-        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
-
-        /* Pass notifications */
-        if (notifications!=null) {
-            xsltParameters.put("notifications", xsltParamBuilder.notificationsToElements(notifications));
-        }
-
-        /* Pass raw response inputs (if appropriate) */
-        if (responseInputs!=null) {
-            xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
-        }
-
-        doTransform(renderingRequest, standaloneItemXsltUri, resultStream, xsltParameters);
     }
 
     //----------------------------------------------------
@@ -265,6 +272,8 @@ public class AssessmentRenderer {
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
@@ -273,11 +282,6 @@ public class AssessmentRenderer {
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
-
-        /* Pass notifications */
-        if (notifications!=null) {
-            xsltParameters.put("notifications", xsltParamBuilder.notificationsToElements(notifications));
-        }
 
         doTransform(renderingRequest, testPartNavigationXsltUri, resultStream, xsltParameters);
     }

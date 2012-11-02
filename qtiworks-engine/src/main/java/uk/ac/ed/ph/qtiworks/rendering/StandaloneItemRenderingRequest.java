@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -47,16 +46,16 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 /**
- * Encapsulates the required data for rendering the current state of an item
+ * Encapsulates the required data for rendering the current state of a standalone
+ * item.
  *
  * @author David McKain
  */
-public final class ItemRenderingRequest extends AbstractRenderingRequest {
+public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
 
     /** Selected {@link RenderingMode} */
     @NotNull
     private RenderingMode renderingMode;
-
 
     /** Required {@link ItemSessionState} to be rendered */
     @NotNull
@@ -213,12 +212,5 @@ public final class ItemRenderingRequest extends AbstractRenderingRequest {
 
     public void setPlaybackEvents(final List<CandidateItemEvent> playbackEvents) {
         this.playbackEvents = playbackEvents;
-    }
-
-    //----------------------------------------------------
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
     }
 }

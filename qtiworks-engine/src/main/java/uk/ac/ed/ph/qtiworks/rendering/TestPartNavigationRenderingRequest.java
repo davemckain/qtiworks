@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
@@ -61,14 +60,4 @@ public final class TestPartNavigationRenderingRequest extends AbstractRenderingR
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
     }
-
-    //----------------------------------------------------
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
-    }
-
-
-
 }

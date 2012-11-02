@@ -48,6 +48,8 @@ import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -88,6 +90,7 @@ public final class XsltParamBuilder {
         this.documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
     }
 
+    @ToCheck
     public static List<String> identifiersToList(final Collection<Identifier> identifiers) {
         if (identifiers==null || identifiers.isEmpty()) {
             return Collections.emptyList();
@@ -200,6 +203,7 @@ public final class XsltParamBuilder {
         return buildNodeList(values);
     }
 
+    @ToRefactor
     public NodeList outcomeDeclarationsToNodeList(final List<OutcomeDeclaration> values) {
         return buildNodeList(values);
     }
