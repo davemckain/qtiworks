@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
+import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
@@ -102,7 +102,7 @@ public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
     /**
      * {@link ItemSessionState} serialized in a custom XML format.
      *
-     * @see ItemSesssionStateXmlMarshaller
+     * @see ItemSessionStateXmlMarshaller
      */
     @Lob
     @Type(type="org.hibernate.type.TextType")

@@ -55,7 +55,7 @@ import org.xml.sax.InputSource;
  *
  * @author David McKain
  */
-public final class TestPlanMarshaller {
+public final class TestPlanXmlMarshaller {
 
     public static Document marshal(final TestPlan testPlan) {
         final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
@@ -135,7 +135,7 @@ public final class TestPlanMarshaller {
         }
     }
 
-    private static TestPlanNodeKey requireTestPlanNodeKeyAttribute(final Element element, final String localName) {
+    static TestPlanNodeKey requireTestPlanNodeKeyAttribute(final Element element, final String localName) {
         final String stringValue = XmlMarshallerCore.requireAttribute(element, localName);
         try {
             return TestPlanNodeKey.fromString(stringValue);
@@ -145,5 +145,12 @@ public final class TestPlanMarshaller {
                     + " value '" + stringValue
                     + "' in attribute " + localName);
         }
+    }
+
+    static TestPlanNodeKey parseOptionalTestPlanNodeKeyAttribute(final Element element, final String localName) {
+        if (!element.hasAttribute(localName)) {
+            return null;
+        }
+        return requireTestPlanNodeKeyAttribute(element, localName);
     }
 }

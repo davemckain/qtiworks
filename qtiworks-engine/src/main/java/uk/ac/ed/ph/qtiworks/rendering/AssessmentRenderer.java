@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
+import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
@@ -223,7 +223,7 @@ public class AssessmentRenderer {
 
         /* Pass ItemSessionState as XML */
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
-        xsltParameters.put("itemSessionState", ItemSesssionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
+        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
 
         /* Pass notifications */
         if (notifications!=null) {

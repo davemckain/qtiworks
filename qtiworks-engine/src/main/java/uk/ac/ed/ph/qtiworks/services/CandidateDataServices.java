@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.binding.ItemSesssionStateXmlMarshaller;
+import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
@@ -153,7 +153,7 @@ public class CandidateDataServices {
     // Item methods
 
     public String marshalItemSessionState(final ItemSessionState itemSessionState) {
-        final Document marshalledState = ItemSesssionStateXmlMarshaller.marshal(itemSessionState);
+        final Document marshalledState = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
         final XMLStringOutputOptions xmlOptions = new XMLStringOutputOptions();
         xmlOptions.setIndenting(true);
         xmlOptions.setIncludingXMLDeclaration(false);
@@ -170,7 +170,7 @@ public class CandidateDataServices {
         catch (final Exception e) {
             throw new QtiWorksLogicException("Could not parse ItemSessionState XML. This is an internal error as we currently don't expose this data to clients", e);
         }
-        return ItemSesssionStateXmlMarshaller.unmarshal(doc);
+        return ItemSessionStateXmlMarshaller.unmarshal(doc);
     }
 
     public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
