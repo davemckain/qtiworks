@@ -12,6 +12,18 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV16 [Development] (02/11/2012)</h3>
+  <p>
+    This snapshot continues with the implementation of tests. The basic logic for handling
+    tests with one NONLINEAR/INDIVIDUAL part are now in place, and much of the
+    supporting data model is now ready. You can now upload and start one of
+    these tests, but you'll just end up seeing a dump of the resulting test
+    state (after template processing has run on each item).
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV15 [Development] (25/10/2012)</h3>
   <p>
     This snapshot includes a lot of the groundwork required for the test implementation,
@@ -62,7 +74,6 @@ All Rights Reserved
   <p>
     See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
   </p>
-
 
   <h3>1.0-DEV14 [Development] (28/09/2012)</h3>
   <p>
