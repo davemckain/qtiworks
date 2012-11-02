@@ -65,6 +65,7 @@ import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
@@ -175,6 +176,9 @@ public class CandidateItemDeliveryService {
         if (!sessionToken.equals(candidateSession.getSessionToken())) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
         }
+        if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION_AS_ITEM);
+        }
         return candidateSession;
     }
 
@@ -193,8 +197,7 @@ public class CandidateItemDeliveryService {
      * the given ID (xid).
      */
     public void renderCurrentState(final long xid, final String sessionToken,
-            final RenderingOptions renderingOptions,
-            final OutputStreamer outputStreamer)
+            final RenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
         renderCurrentState(candidateSession, renderingOptions, outputStreamer);
@@ -256,34 +259,35 @@ public class CandidateItemDeliveryService {
     private void renderEvent(final CandidateSession candidateSession,
             final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        if (candidateSession.isTerminated()) {
-            renderTerminated(candidateItemEvent, renderingOptions, resultStream);
-        }
         final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(candidateItemEvent);
+        if (candidateSession.isTerminated()) {
+            renderTerminated(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+        }
         if (itemSessionState.isClosed()) {
             /* Session is finished */
-            renderEventWhenClosed(candidateItemEvent, renderingOptions, resultStream);
+            renderEventWhenClosed(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
         }
         else {
             /* Interacting */
-            renderEventWhenInteracting(candidateItemEvent, renderingOptions, resultStream);
+            renderEventWhenInteracting(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
         }
     }
 
     private void renderEventWhenInteracting(final CandidateItemEvent candidateItemEvent,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
         final CandidateItemEventType eventType = candidateItemEvent.getItemEventType();
         switch (eventType) {
             case INIT:
             case REINIT:
             case RESET:
-                renderInteractingPresentation(candidateItemEvent, renderingOptions, resultStream);
+                renderInteractingPresentation(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
                 break;
 
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
-                renderInteractingAfterAttempt(candidateItemEvent, renderingOptions, resultStream);
+                renderInteractingAfterAttempt(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
                 break;
 
             default:
@@ -291,19 +295,25 @@ public class CandidateItemDeliveryService {
         }
     }
 
-    private void renderInteractingPresentation(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent, renderingOptions, RenderingMode.AFTER_INITIALISATION);
+    private void renderInteractingPresentation(final CandidateItemEvent candidateItemEvent,
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent,
+                itemSessionState, renderingOptions, RenderingMode.AFTER_INITIALISATION);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
-    private void renderInteractingAfterAttempt(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent, renderingOptions, RenderingMode.AFTER_ATTEMPT);
+    private void renderInteractingAfterAttempt(final CandidateItemEvent candidateItemEvent,
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent,
+                itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
         fillAttemptResponseData(renderingRequest, candidateItemEvent);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
     private ItemRenderingRequest initItemRenderingRequestWhenInteracting(final CandidateItemEvent candidateItemEvent,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
         final CandidateSession candidateSession = candidateItemEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
@@ -311,7 +321,8 @@ public class CandidateItemDeliveryService {
         /* Compute current value for 'duration' */
         final double duration = computeItemSessionDuration(candidateSession);
 
-        final ItemRenderingRequest renderingRequest = initItemRenderingRequestCustomDuration(candidateItemEvent, renderingOptions, renderingMode, duration);
+        final ItemRenderingRequest renderingRequest = initItemRenderingRequestCustomDuration(candidateItemEvent,
+                itemSessionState, renderingOptions, renderingMode, duration);
         renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
         renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
         renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
@@ -338,28 +349,29 @@ public class CandidateItemDeliveryService {
     }
 
     private void renderEventWhenClosed(final CandidateItemEvent candidateItemEvent,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
         final CandidateItemEventType eventType = candidateItemEvent.getItemEventType();
         switch (eventType) {
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
-                renderClosedAfterAttempt(candidateItemEvent, renderingOptions, resultStream);
+                renderClosedAfterAttempt(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
                 break;
 
             case INIT:
             case REINIT:
             case RESET:
             case CLOSE:
-                renderClosed(candidateItemEvent, renderingOptions, resultStream);
+                renderClosed(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
                 break;
 
             case SOLUTION:
-                renderSolution(candidateItemEvent, renderingOptions, resultStream);
+                renderSolution(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
                 break;
 
             case PLAYBACK:
-                renderPlayback(candidateItemEvent, renderingOptions, resultStream);
+                renderPlayback(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
                 break;
 
             default:
@@ -367,29 +379,37 @@ public class CandidateItemDeliveryService {
         }
     }
 
-    private void renderClosedAfterAttempt(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
+    private void renderClosedAfterAttempt(final CandidateItemEvent candidateItemEvent,
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
-                renderingOptions, RenderingMode.AFTER_ATTEMPT);
+                itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
         fillAttemptResponseData(renderingRequest, candidateItemEvent);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
-    private void renderClosed(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
+    private void renderClosed(final CandidateItemEvent candidateItemEvent,
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
-                renderingOptions, RenderingMode.CLOSED);
+                itemSessionState, renderingOptions, RenderingMode.CLOSED);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
-    private void renderSolution(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
+    private void renderSolution(final CandidateItemEvent candidateItemEvent,
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
-                renderingOptions, RenderingMode.SOLUTION);
+                itemSessionState, renderingOptions, RenderingMode.SOLUTION);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
-    private void renderPlayback(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
+    private void renderPlayback(final CandidateItemEvent candidateItemEvent,
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
         final CandidateItemEvent playbackEvent = candidateItemEvent.getPlaybackEvent();
         final ItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(playbackEvent,
-                renderingOptions, RenderingMode.PLAYBACK);
+                itemSessionState, renderingOptions, RenderingMode.PLAYBACK);
 
         /* If we're playing back an attempt, pull out the raw response data */
         final CandidateItemAttempt playbackAttempt = candidateItemAttemptDao.getForEvent(playbackEvent);
@@ -405,13 +425,14 @@ public class CandidateItemDeliveryService {
     }
 
     private ItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateItemEvent candidateItemEvent,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final RenderingMode renderingMode) {
         final CandidateSession candidateSession = candidateItemEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
 
         final ItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent,
-                renderingOptions, renderingMode);
+                itemSessionState, renderingOptions, renderingMode);
         renderingRequest.setCloseAllowed(false);
         renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
         renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenClosed());
@@ -426,9 +447,11 @@ public class CandidateItemDeliveryService {
         return renderingRequest;
     }
 
-    private void renderTerminated(final CandidateItemEvent candidateItemEvent, final RenderingOptions renderingOptions, final OutputStream resultStream) {
+    private void renderTerminated(final CandidateItemEvent candidateItemEvent,
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
         final ItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent,
-                renderingOptions, RenderingMode.TERMINATED);
+                itemSessionState, renderingOptions, RenderingMode.TERMINATED);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
@@ -439,13 +462,14 @@ public class CandidateItemDeliveryService {
     }
 
     private ItemRenderingRequest initItemRenderingRequest(final CandidateItemEvent candidateItemEvent,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-        return initItemRenderingRequestCustomDuration(candidateItemEvent, renderingOptions, renderingMode, -1.0);
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final RenderingMode renderingMode) {
+        return initItemRenderingRequestCustomDuration(candidateItemEvent, itemSessionState, renderingOptions, renderingMode, -1.0);
     }
 
     private ItemRenderingRequest initItemRenderingRequestCustomDuration(final CandidateItemEvent candidateItemEvent,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode,
-            final double durationOverride) {
+            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final RenderingMode renderingMode, final double durationOverride) {
         final CandidateSession candidateSession = candidateItemEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
@@ -453,7 +477,6 @@ public class CandidateItemDeliveryService {
 
         /* Extract ItemSessionState XML for this event and override the value for duration if caller
          * supplies a non-negative duration */
-        final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(candidateItemEvent);
         if (durationOverride >= 0.0) {
             itemSessionState.setDuration(durationOverride);
         }
@@ -462,10 +485,10 @@ public class CandidateItemDeliveryService {
         renderingRequest.setRenderingMode(renderingMode);
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setItemSessionState(candidateDataServices.unmarshalItemSessionState(candidateItemEvent));
+        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
+        renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
-        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
         return renderingRequest;
     }
 
@@ -961,8 +984,8 @@ public class CandidateItemDeliveryService {
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Make sure requested file is whitelisted for access */
-        final Delivery itemDelivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+        final Delivery delivery = candidateSession.getDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         String resultingFileHref = null;
         for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
             final URI fileUri = assessmentPackageFileService.createAssessmentFileUri(assessmentPackage, safeFileHref);
