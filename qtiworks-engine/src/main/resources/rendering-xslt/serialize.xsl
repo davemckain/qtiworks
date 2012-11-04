@@ -188,6 +188,4 @@ hence slightly easier to debug.
     <xsl:copy-of select="."/>
   </xsl:template>
 
-  <!-- ************************************************************ -->
-
 </xsl:stylesheet>

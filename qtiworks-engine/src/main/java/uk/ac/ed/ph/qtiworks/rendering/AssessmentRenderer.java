@@ -91,7 +91,7 @@ import org.springframework.validation.Validator;
 @Service
 public class AssessmentRenderer {
 
-    private static final URI standaloneItemXsltUri = URI.create("classpath:/rendering-xslt/standalone-item.xsl");
+    private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
 
     @SuppressWarnings("unused")
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
@@ -175,7 +175,7 @@ public class AssessmentRenderer {
         setItemRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
 
-        doTransform(renderingRequest, standaloneItemXsltUri, resultStream, xsltParameters);
+        doTransform(renderingRequest, itemStandaloneXsltUri, resultStream, xsltParameters);
     }
 
     private void setNotificationParameters(final Map<String, Object> xsltParameters,

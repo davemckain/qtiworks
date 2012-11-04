@@ -16,7 +16,7 @@ Renders a standalone assessmentItem
 
   <!-- ************************************************************ -->
 
-  <xsl:import href="qti-common.xsl"/>
+  <xsl:import href="item-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
