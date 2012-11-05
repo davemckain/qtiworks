@@ -58,6 +58,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,8 +73,8 @@ import org.w3c.dom.Document;
 public final class XmlMarshalTest {
 
     public static void main(final String[] args) {
-//        debugItemSessionState();
-//        debugTestPlan();
+        debugItemSessionState();
+        debugTestPlan();
         debugTestSessionState();
     }
 
@@ -127,8 +128,8 @@ public final class XmlMarshalTest {
         final TestPlanNode section1 = new TestPlanNode(TestNodeType.ASSESSMENT_SECTION, new TestPlanNodeKey(Identifier.assumedLegal("SECTION1"), 2, 1));
         part1.addChild(section1);
 
-        final TestPlanNode item1 = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, new TestPlanNodeKey(Identifier.assumedLegal("ITEM"), 3, 1));
-        final TestPlanNode item2 = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, new TestPlanNodeKey(Identifier.assumedLegal("ITEM"), 3, 2));
+        final TestPlanNode item1 = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, new TestPlanNodeKey(Identifier.assumedLegal("ITEM"), 3, 1), "Title", URI.create("urn:x"));
+        final TestPlanNode item2 = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, new TestPlanNodeKey(Identifier.assumedLegal("ITEM"), 3, 2), "Title 2", URI.create("urn:y"));
         section1.addChild(item1);
         section1.addChild(item2);
 

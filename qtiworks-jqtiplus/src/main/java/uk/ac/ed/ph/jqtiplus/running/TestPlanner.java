@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
@@ -43,7 +44,9 @@ import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -470,13 +473,31 @@ public final class TestPlanner extends ListenerNotificationFirer {
     private TestPlanNode recordTestPlanNode(final TestPlanNode parent, final TestNodeType testNodeType,
             final BuildTreeNode buildTreeNode) {
         /* Compute instance number for this identifier */
+        final AbstractPart abstractPart = buildTreeNode.getAbstractPart();
         final Identifier identifier = buildTreeNode.getAbstractPart().getIdentifier();
         final int abstractPartGlobalIndex = buildTreeNode.getAbstractPartGlobalIndex();
         final int instanceNumber = 1 + computeCurrentInstanceCount(identifier);
 
         /* Create resulting Node and add to tree */
         final TestPlanNodeKey key = new TestPlanNodeKey(identifier, abstractPartGlobalIndex, instanceNumber);
-        final TestPlanNode result = new TestPlanNode(testNodeType, key);
+
+        TestPlanNode result;
+        if (abstractPart instanceof AssessmentItemRef) {
+            final URI itemSystemId = resolvedAssessmentTest.getSystemIdByItemRefMap().get(abstractPart);
+            final ResolvedAssessmentItem resolvedAssessmentItem = resolvedAssessmentTest.getResolvedAssessmentItem((AssessmentItemRef) abstractPart);
+            final RootNodeLookup<AssessmentItem> assessmentItemLookup = resolvedAssessmentItem.getItemLookup();
+            String itemTitle;
+            if (assessmentItemLookup.wasSuccessful()) {
+                itemTitle = assessmentItemLookup.extractAssumingSuccessful().getTitle();
+            }
+            else {
+                itemTitle = "[Unresolved assessmentItem at " + itemSystemId + "]";
+            }
+            result = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, key, itemTitle, itemSystemId);
+        }
+        else {
+            result = new TestPlanNode(testNodeType, key);
+        }
         parent.addChild(result);
 
         /* Record nodes for this Identifier */

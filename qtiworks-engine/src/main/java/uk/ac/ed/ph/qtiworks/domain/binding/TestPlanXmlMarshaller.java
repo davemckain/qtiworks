@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 
 import java.io.StringReader;
+import java.net.URI;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -77,6 +78,14 @@ public final class TestPlanXmlMarshaller {
         final Element element = XmlMarshallerCore.appendElement(parent, "node");
         element.setAttribute("type", testPlanNode.getTestNodeType().toString());
         element.setAttribute("key", testPlanNode.getKey().toString());
+        final String itemTitle = testPlanNode.getItemTitle();
+        if (itemTitle!=null) {
+            element.setAttribute("itemTitle", itemTitle);
+        }
+        final URI itemSystemId = testPlanNode.getItemSystemId();
+        if (itemSystemId!=null) {
+            element.setAttribute("itemSystemId", itemSystemId.toString());
+        }
 
         /* Descend into children */
         for (final TestPlanNode childNode : testPlanNode.getChildren()) {
@@ -116,7 +125,9 @@ public final class TestPlanXmlMarshaller {
             }
             final TestNodeType type = requireTestNodeTypeAttribute(childElement, "type");
             final TestPlanNodeKey key = requireTestPlanNodeKeyAttribute(childElement, "key");
-            final TestPlanNode childTestPlanNode = new TestPlanNode(type, key);
+            final String itemTitle = XmlMarshallerCore.parseOptionalStringAttribute(childElement, "itemTitle");
+            final URI itemSystemId = XmlMarshallerCore.parseOptionalUriAttribute(childElement, "itemSystemId");
+            final TestPlanNode childTestPlanNode = new TestPlanNode(type, key, itemTitle, itemSystemId);
 
             targetOwner.addChild(childTestPlanNode);
             expectTestPlanNodeChildren(childElement, childTestPlanNode);

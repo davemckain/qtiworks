@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -84,16 +85,28 @@ public final class TestPlanNode implements Serializable {
     /** Type of Node represented */
     private final TestNodeType testNodeType;
 
+    /** Title of the corresponding AssessmentItem, if this is an {@link TestNodeType#ASSESSMENT_ITEM_REF}, or null */
+    private final String itemTitle;
+
+    /** Resolved System ID (href) if this is an {@link TestNodeType#ASSESSMENT_ITEM_REF}, or null */
+    private final URI itemSystemId;
+
     /** Children of this Node */
     private final List<TestPlanNode> children;
 
     public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key) {
+        this(testNodeType, key, null, null);
+    }
+
+    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key, final String itemTitle, final URI itemSystemId) {
         super();
         this.parentNode = null;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
         this.key = key;
         this.children = new ArrayList<TestPlanNode>();
+        this.itemTitle = itemTitle;
+        this.itemSystemId = itemSystemId;
     }
 
     public static TestPlanNode createRoot() {
@@ -116,6 +129,14 @@ public final class TestPlanNode implements Serializable {
 
     public TestPlanNodeKey getKey() {
         return key;
+    }
+
+    public URI getItemSystemId() {
+        return itemSystemId;
+    }
+
+    public String getItemTitle() {
+        return itemTitle;
     }
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)

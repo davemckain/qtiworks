@@ -46,6 +46,7 @@ import java.util.Map;
  *
  * @author David McKain
  */
+@Deprecated
 public final class TestRenderingSummary {
 
     public static class TestItemInfo {

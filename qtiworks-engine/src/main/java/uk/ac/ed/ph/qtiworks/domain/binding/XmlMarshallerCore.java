@@ -49,6 +49,8 @@ import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -225,8 +227,24 @@ public final class XmlMarshallerCore {
     }
 
     static boolean parseOptionalBooleanAttribute(final Element element, final String attrName, final boolean defaultValue) {
+        if (!element.hasAttribute(attrName)) {
+            return defaultValue;
+        }
         final String attrValue = element.getAttribute(attrName);
-        return attrValue!=null ? StringUtilities.fromTrueFalse(attrValue) : defaultValue;
+        return StringUtilities.fromTrueFalse(attrValue);
+    }
+
+    static String parseOptionalStringAttribute(final Element element, final String attrName) {
+        return element.hasAttribute(attrName) ? element.getAttribute(attrName) : null;
+    }
+
+    static URI parseOptionalUriAttribute(final Element element, final String attrName) {
+        try {
+            return element.hasAttribute(attrName) ? new URI(element.getAttribute(attrName)) : null;
+        }
+        catch (final URISyntaxException e) {
+            throw new MarshallingException("Could not parse URI attribute", e);
+        }
     }
 
     static Value parseValue(final Element element) {
