@@ -38,24 +38,24 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemAttemptDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemResponse;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
@@ -153,7 +153,7 @@ public class CandidateItemDeliveryService {
     private CandidateItemEventDao candidateItemEventDao;
 
     @Resource
-    private CandidateItemAttemptDao candidateItemAttemptDao;
+    private CandidateAttemptDao candidateAttemptDao;
 
     //----------------------------------------------------
     // Session access
@@ -264,7 +264,7 @@ public class CandidateItemDeliveryService {
             renderTerminated(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
         }
         if (itemSessionState.isClosed()) {
-            /* Session is finished */
+            /* Item is closed */
             renderEventWhenClosed(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
         }
         else {
@@ -412,7 +412,7 @@ public class CandidateItemDeliveryService {
                 itemSessionState, renderingOptions, RenderingMode.PLAYBACK);
 
         /* If we're playing back an attempt, pull out the raw response data */
-        final CandidateItemAttempt playbackAttempt = candidateItemAttemptDao.getForEvent(playbackEvent);
+        final CandidateAttempt playbackAttempt = candidateAttemptDao.getForEvent(playbackEvent);
         if (playbackAttempt!=null) {
             fillAttemptResponseData(renderingRequest, playbackAttempt);
         }
@@ -456,7 +456,7 @@ public class CandidateItemDeliveryService {
     }
 
     private void doRendering(final CandidateItemEvent candidateItemEvent, final StandaloneItemRenderingRequest renderingRequest, final OutputStream resultStream) {
-        candidateAuditLogger.logRendering(candidateItemEvent, renderingRequest);
+        candidateAuditLogger.logStandaloneItemRendering(candidateItemEvent, renderingRequest);
         final List<CandidateEventNotification> notifications = candidateItemEvent.getNotifications();
         assessmentRenderer.renderStandaloneItem(renderingRequest, notifications, resultStream);
     }
@@ -493,14 +493,14 @@ public class CandidateItemDeliveryService {
     }
 
     private void fillAttemptResponseData(final StandaloneItemRenderingRequest renderingRequest, final CandidateItemEvent candidateItemEvent) {
-        final CandidateItemAttempt attempt = candidateItemAttemptDao.getForEvent(candidateItemEvent);
+        final CandidateAttempt attempt = candidateAttemptDao.getForEvent(candidateItemEvent);
         if (attempt==null) {
             throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateItemEvent.getId());
         }
         fillAttemptResponseData(renderingRequest, attempt);
     }
 
-    private void fillAttemptResponseData(final StandaloneItemRenderingRequest renderingRequest, final CandidateItemAttempt candidateItemAttempt) {
+    private void fillAttemptResponseData(final StandaloneItemRenderingRequest renderingRequest, final CandidateAttempt candidateItemAttempt) {
         final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
         final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
         final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
@@ -511,9 +511,9 @@ public class CandidateItemDeliveryService {
         renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
     }
 
-    private void extractResponseDataForRendering(final CandidateItemAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
+    private void extractResponseDataForRendering(final CandidateAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
             final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
-        for (final CandidateItemResponse response : attempt.getResponses()) {
+        for (final CandidateResponse response : attempt.getResponses()) {
             final Identifier responseIdentifier = Identifier.parseString(response.getResponseIdentifier());
             final ResponseLegality responseLegality = response.getResponseLegality();
             final ResponseDataType responseType = response.getResponseType();
@@ -545,7 +545,7 @@ public class CandidateItemDeliveryService {
     //----------------------------------------------------
     // Attempt
 
-    public CandidateItemAttempt handleAttempt(final long xid, final String sessionToken,
+    public CandidateAttempt handleAttempt(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
@@ -553,7 +553,7 @@ public class CandidateItemDeliveryService {
         return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
     }
 
-    public CandidateItemAttempt handleAttempt(final CandidateSession candidateSession,
+    public CandidateAttempt handleAttempt(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException {
@@ -597,14 +597,14 @@ public class CandidateItemDeliveryService {
         }
 
         /* Build Map of responses in appropriate entity form */
-        final CandidateItemAttempt candidateItemAttempt = new CandidateItemAttempt();
-        final Map<Identifier, CandidateItemResponse> responseEntityMap = new HashMap<Identifier, CandidateItemResponse>();
-        final Set<CandidateItemResponse> candidateItemResponses = new HashSet<CandidateItemResponse>();
+        final CandidateAttempt candidateItemAttempt = new CandidateAttempt();
+        final Map<Identifier, CandidateResponse> responseEntityMap = new HashMap<Identifier, CandidateResponse>();
+        final Set<CandidateResponse> candidateItemResponses = new HashSet<CandidateResponse>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
 
-            final CandidateItemResponse candidateItemResponse = new CandidateItemResponse();
+            final CandidateResponse candidateItemResponse = new CandidateResponse();
             candidateItemResponse.setResponseIdentifier(responseIdentifier.toString());
             candidateItemResponse.setAttempt(candidateItemAttempt);
             candidateItemResponse.setResponseType(responseData.getType());
@@ -666,10 +666,10 @@ public class CandidateItemDeliveryService {
                 eventType, itemSessionState, notificationRecorder);
 
         candidateItemAttempt.setEvent(candidateItemEvent);
-        candidateItemAttemptDao.persist(candidateItemAttempt);
+        candidateAttemptDao.persist(candidateItemAttempt);
 
         /* Log this (in existing state) */
-        candidateAuditLogger.logCandidateItemAttempt(candidateSession, candidateItemAttempt);
+        candidateAuditLogger.logCandidateAttempt(candidateSession, candidateItemAttempt);
 
         /* Persist session */
         candidateSessionDao.update(candidateSession);

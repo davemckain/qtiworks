@@ -33,20 +33,28 @@
  */
 package uk.ac.ed.ph.qtiworks.services.candidate;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
@@ -62,8 +70,14 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,7 +85,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -117,6 +135,9 @@ public class CandidateTestDeliveryService {
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
+
+    @Resource
+    private CandidateAttemptDao candidateAttemptDao;
 
     //----------------------------------------------------
     // Session access
@@ -219,18 +240,48 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    /**
-     * TEMP!
-     *
-     * This is only rendering the navigation menu at the moment. This will be fleshed out
-     * shortly.
-     */
     @SuppressWarnings("unused")
     private void renderEvent(final CandidateSession candidateSession,
             final CandidateTestEvent candidateTestEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestSessionState testSessionState = candidateDataServices.unmarshalTestSessionState(candidateTestEvent);
-        renderTestPartNavigationMenu(candidateTestEvent, testSessionState, renderingOptions, resultStream);
+        if (candidateSession.isTerminated()) {
+            renderTerminated(candidateTestEvent, testSessionState, renderingOptions, resultStream);
+        }
+        if (testSessionState.isFinished()) {
+            renderFinishedTest(candidateTestEvent, testSessionState, renderingOptions, resultStream);
+        }
+        else {
+            renderEventWhenTestOpen(candidateTestEvent, testSessionState, renderingOptions, resultStream);
+        }
+    }
+
+    private void renderEventWhenTestOpen(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+        if (currentItemKey!=null) {
+            /* Item selected, so render current state of item */
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
+            renderSelectedItem(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, resultStream);
+        }
+        else {
+            /* Show navigation menu */
+            renderTestPartNavigationMenu(candidateTestEvent, testSessionState, renderingOptions, resultStream);
+        }
+    }
+
+    private void renderSelectedItem(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        if (itemSessionState.isClosed()) {
+            /* Item is closed */
+            renderEventWhenClosed(candidateTestEvent, itemSessionState, renderingOptions, resultStream);
+        }
+        else {
+            /* Interacting */
+            renderEventWhenInteracting(candidateTestEvent, itemSessionState, renderingOptions, resultStream);
+        }
     }
 
     private void renderTestPartNavigationMenu(final CandidateTestEvent candidateTestEvent,
@@ -251,6 +302,102 @@ public class CandidateTestDeliveryService {
         candidateAuditLogger.logTestPartNavigationRendering(candidateTestEvent);
         final List<CandidateEventNotification> notifications = candidateTestEvent.getNotifications();
         assessmentRenderer.renderTestPartNavigation(renderingRequest, notifications, resultStream);
+    }
+
+    private void renderTerminated(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final RenderingOptions renderingOptions,
+            final OutputStream resultStream) {
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateTestEvent,
+                testSessionState, renderingOptions, RenderingMode.TERMINATED);
+        doRendering(candidateTestEvent, renderingRequest, resultStream);
+    }
+
+    private void doRendering(final CandidateTestEvent candidateTestEvent,
+            final TestItemRenderingRequest renderingRequest, final OutputStream resultStream) {
+        candidateAuditLogger.logTestItemRendering(candidateTestEvent, renderingRequest);
+        final List<CandidateEventNotification> notifications = candidateTestEvent.getNotifications();
+        assessmentRenderer.renderTestItem(renderingRequest, notifications, resultStream);
+    }
+
+    private TestItemRenderingRequest initTestItemRenderingRequest(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final RenderingOptions renderingOptions,
+            final RenderingMode renderingMode) {
+        return initTestItemRenderingRequestCustomDuration(candidateTestEvent, testSessionState, renderingOptions, renderingMode, -1.0);
+    }
+
+    private TestItemRenderingRequest initTestItemRenderingRequestCustomDuration(final CandidateTestEvent candidateTestEvent,
+            final ItemSessionState testSessionState, final RenderingOptions renderingOptions,
+            final RenderingMode renderingMode, final double durationOverride) {
+        final CandidateSession candidateSession = candidateTestEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        /* Extract ItemSessionState XML for this event and override the value for duration if caller
+         * supplies a non-negative duration */
+        if (durationOverride >= 0.0) {
+            testSessionState.setDuration(durationOverride);
+        }
+
+        final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
+        renderingRequest.setRenderingMode(renderingMode);
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAuthorMode(testDeliverySettings.isAuthorMode());
+        renderingRequest.setItemSessionState(testSessionState);
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setPrompt(testDeliverySettings.getPrompt());
+        return renderingRequest;
+    }
+
+    private void fillAttemptResponseData(final TestItemRenderingRequest renderingRequest, final CandidateTestEvent candidateTestEvent) {
+        final CandidateAttempt attempt = candidateAttemptDao.getForEvent(candidateTestEvent);
+        if (attempt==null) {
+            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateTestEvent.getId());
+        }
+        fillAttemptResponseData(renderingRequest, attempt);
+    }
+
+    private void fillAttemptResponseData(final TestItemRenderingRequest renderingRequest, final CandidateAttempt candidateItemAttempt) {
+        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
+        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
+        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
+        extractResponseDataForRendering(candidateItemAttempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+
+        renderingRequest.setResponseInputs(responseDataBuilder);
+        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
+        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
+    }
+
+    private void extractResponseDataForRendering(final CandidateAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
+            final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
+        for (final CandidateResponse response : attempt.getResponses()) {
+            final Identifier responseIdentifier = Identifier.parseString(response.getResponseIdentifier());
+            final ResponseLegality responseLegality = response.getResponseLegality();
+            final ResponseDataType responseType = response.getResponseType();
+            ResponseData responseData = null;
+            switch (responseType) {
+                case STRING:
+                    responseData = new StringResponseData(response.getStringResponseData());
+                    break;
+
+                case FILE:
+                    final CandidateFileSubmission fileSubmission = response.getFileSubmission();
+                    responseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()),
+                            fileSubmission.getContentType());
+                    break;
+
+                default:
+                    throw new QtiWorksLogicException("Unexpected ResponseDataType " + responseType);
+            }
+            responseDataBuilder.put(responseIdentifier, responseData);
+            if (responseLegality==ResponseLegality.BAD) {
+                badResponseIdentifiersBuilder.add(responseIdentifier);
+            }
+            else if (responseLegality==ResponseLegality.INVALID) {
+                invalidResponseIdentifiersBuilder.add(responseIdentifier);
+            }
+        }
     }
 
     //----------------------------------------------------

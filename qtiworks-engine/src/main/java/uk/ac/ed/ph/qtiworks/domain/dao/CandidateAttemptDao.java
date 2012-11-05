@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemAttempt;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -45,24 +45,24 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link CandidateItemAttempt} entity.
+ * DAO implementation for the {@link CandidateAttempt} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateItemAttemptDao extends GenericDao<CandidateItemAttempt> {
+public class CandidateAttemptDao extends GenericDao<CandidateAttempt> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public CandidateItemAttemptDao() {
-        super(CandidateItemAttempt.class);
+    public CandidateAttemptDao() {
+        super(CandidateAttempt.class);
     }
 
-    public CandidateItemAttempt getForEvent(final CandidateItemEvent candidateItemEvent) {
-        final TypedQuery<CandidateItemAttempt> query = em.createNamedQuery("CandidateItemAttempt.getForEvent", CandidateItemAttempt.class);
-        query.setParameter("candidateItemEvent", candidateItemEvent);
+    public CandidateAttempt getForEvent(final CandidateEvent candidateEvent) {
+        final TypedQuery<CandidateAttempt> query = em.createNamedQuery("CandidateAttempt.getForEvent", CandidateAttempt.class);
+        query.setParameter("candidateEvent", candidateEvent);
         return extractNullableFindResult(query);
     }
 }

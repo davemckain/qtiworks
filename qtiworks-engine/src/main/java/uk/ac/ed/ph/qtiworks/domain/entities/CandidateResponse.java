@@ -65,21 +65,21 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_responses")
-@SequenceGenerator(name="candidateItemResponseSequence", sequenceName="candidate_item_response_sequence", initialValue=1, allocationSize=50)
-public class CandidateItemResponse implements BaseEntity {
+@Table(name="candidate_responses")
+@SequenceGenerator(name="candidateResponseSequence", sequenceName="candidate_response_sequence", initialValue=1, allocationSize=50)
+public class CandidateResponse implements BaseEntity {
 
     private static final long serialVersionUID = -4310598861282271053L;
 
     @Id
-    @GeneratedValue(generator="candidateItemResponseSequence")
+    @GeneratedValue(generator="candidateResponseSequence")
     @Column(name="xrid")
     private Long id;
 
     /** Attempt in which this response was made */
     @ManyToOne(optional=false)
     @JoinColumn(name="xaid")
-    private CandidateItemAttempt attempt;
+    private CandidateAttempt attempt;
 
     /** Identifier of the underlying response variable */
     @Basic(optional=false)
@@ -124,11 +124,11 @@ public class CandidateItemResponse implements BaseEntity {
     }
 
 
-    public CandidateItemAttempt getAttempt() {
+    public CandidateAttempt getAttempt() {
         return attempt;
     }
 
-    public void setAttempt(final CandidateItemAttempt attempt) {
+    public void setAttempt(final CandidateAttempt attempt) {
         this.attempt = attempt;
     }
 

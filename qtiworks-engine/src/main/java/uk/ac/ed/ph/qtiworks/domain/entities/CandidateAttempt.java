@@ -52,37 +52,38 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
- * Represents a candidate attempt on a particular {@link Delivery}
+ * Represents a candidate attempt within a {@link CandidateSession}.
+ * One of these is always attached to a {@link CandidateEvent}.
  *
  * @author David McKain
  */
 @Entity
-@Table(name="candidate_item_attempts")
+@Table(name="candidate_attempts")
 @Inheritance(strategy=InheritanceType.JOINED)
-@SequenceGenerator(name="candidateItemAttemptSequence", sequenceName="candidate_item_attempt_sequence", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="candidateAttemptSequence", sequenceName="candidate_attempt_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
-    @NamedQuery(name="CandidateItemAttempt.getForEvent",
+    @NamedQuery(name="CandidateAttempt.getForEvent",
             query="SELECT a"
-                + "  FROM CandidateItemAttempt a"
+                + "  FROM CandidateAttempt a"
                 + "  WHERE a.event = :candidateItemEvent")
 })
-public class CandidateItemAttempt implements BaseEntity {
+public class CandidateAttempt implements BaseEntity {
 
     private static final long serialVersionUID = 8824668735905399883L;
 
     @Id
-    @GeneratedValue(generator="candidateItemAttemptSequence")
+    @GeneratedValue(generator="candidateAttemptSequence")
     @Column(name="xaid")
     private Long id;
 
-    /** {@link CandidateItemEvent} representing this attempt */
+    /** {@link CandidateEvent} representing this attempt */
     @OneToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
     @JoinColumn(name="xeid")
-    private CandidateItemEvent event;
+    private CandidateEvent event;
 
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="xaid")
-    private Set<CandidateItemResponse> responses;
+    private Set<CandidateResponse> responses;
 
     //------------------------------------------------------------
 
@@ -97,20 +98,20 @@ public class CandidateItemAttempt implements BaseEntity {
     }
 
 
-    public CandidateItemEvent getEvent() {
+    public CandidateEvent getEvent() {
         return event;
     }
 
-    public void setEvent(final CandidateItemEvent event) {
+    public void setEvent(final CandidateEvent event) {
         this.event = event;
     }
 
 
-    public Set<CandidateItemResponse> getResponses() {
+    public Set<CandidateResponse> getResponses() {
         return responses;
     }
 
-    public void setResponses(final Set<CandidateItemResponse> responses) {
+    public void setResponses(final Set<CandidateResponse> responses) {
         this.responses = responses;
     }
 

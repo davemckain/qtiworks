@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Encapsulates the legality of a {@link CandidateItemResponse}
+ * Encapsulates the legality of a {@link CandidateResponse}
  *
  * @author David McKain
  */
