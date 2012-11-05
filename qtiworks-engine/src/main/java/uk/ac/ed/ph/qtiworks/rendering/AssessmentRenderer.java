@@ -46,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
@@ -168,7 +169,8 @@ public class AssessmentRenderer {
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, renderingRequest);
 
-        doTransform(renderingRequest, terminatedXsltUri, resultStream, xsltParameters);
+        doTransform(renderingRequest, terminatedXsltUri, renderingRequest.getAssessmentResourceUri(),
+                resultStream, xsltParameters);
     }
 
     /**
@@ -199,9 +201,9 @@ public class AssessmentRenderer {
         setItemRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
 
-        doTransform(renderingRequest, itemStandaloneXsltUri, resultStream, xsltParameters);
+        doTransform(renderingRequest, itemStandaloneXsltUri, renderingRequest.getAssessmentItemUri(),
+                resultStream, xsltParameters);
     }
-
 
     /**
      * Renders the given {@link TestItemREnderingRequest}, sending the results as UTF-8 encoded XML
@@ -227,12 +229,14 @@ public class AssessmentRenderer {
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+
         setBaseRenderingParameters(xsltParameters, renderingRequest);
         setItemRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
         setTestRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
 
-        doTransform(renderingRequest, testItemXsltUri, resultStream, xsltParameters);
+        doTransform(renderingRequest, testItemXsltUri, renderingRequest.getAssessmentItemUri(),
+                resultStream, xsltParameters);
     }
 
     private void setNotificationParameters(final Map<String, Object> xsltParameters,
@@ -246,6 +250,10 @@ public class AssessmentRenderer {
             final XsltParamBuilder xsltParamBuilder, final TestItemRenderingRequest renderingRequest) {
         /* FIXME: Add remaining things here! */
         xsltParameters.put("testSystemId", renderingRequest.getAssessmentResourceUri().toString());
+
+        /* Pass ItemSessionState (as DOM Document) */
+        final TestSessionState testSessionState = renderingRequest.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
     }
 
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
@@ -254,7 +262,6 @@ public class AssessmentRenderer {
 
         /* Set config & control parameters */
         xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
-        xsltParameters.put("itemSystemId", renderingRequest.getAssessmentResourceUri().toString());
         xsltParameters.put("prompt", renderingRequest.getPrompt());
         xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
         xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
@@ -351,12 +358,14 @@ public class AssessmentRenderer {
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
 
-        doTransform(renderingRequest, testPartNavigationXsltUri, resultStream, xsltParameters);
+        doTransform(renderingRequest, testPartNavigationXsltUri, renderingRequest.getAssessmentResourceUri(),
+                resultStream, xsltParameters);
     }
 
     //----------------------------------------------------
 
     private void doTransform(final AbstractRenderingRequest renderingRequest, final URI stylesheetUri,
+            final URI inputUri,
             final OutputStream resultStream, final Map<String, Object> xsltParameters) {
         final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);
         Transformer transformer;
@@ -371,6 +380,9 @@ public class AssessmentRenderer {
                 transformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
             }
         }
+
+        /* Set system ID of the input document */
+        transformer.setParameter("systemId", inputUri);
 
         /* Configure requested serialization */
         final SerializationMethod serializationMethod = renderingRequest.getRenderingOptions().getSerializationMethod();
@@ -399,15 +411,15 @@ public class AssessmentRenderer {
 
         /* Set up Source */
         final ResourceLocator assessmentResourceLocator = renderingRequest.getAssessmentResourceLocator();
-        final URI assessmentResourceUri = renderingRequest.getAssessmentResourceUri();
-        final InputStream assessmentStream = assessmentResourceLocator.findResource(assessmentResourceUri);
-        final StreamSource assessmentSource = new StreamSource(assessmentStream);
+        final InputStream assessmentStream = assessmentResourceLocator.findResource(inputUri);
+        final StreamSource assessmentSource = new StreamSource(assessmentStream, inputUri.toString());
 
         /* Set up Result */
         final StreamResult result = new StreamResult(resultStream);
 
         /* Do transform */
         try {
+            transformer.setURIResolver(new XsltResourceResolver(assessmentResourceLocator));
             transformer.transform(assessmentSource, result);
         }
         catch (final TransformerException e) {

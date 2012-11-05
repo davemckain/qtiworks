@@ -6,8 +6,9 @@
 package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary;
 import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary.TestItemInfo;
 
@@ -24,6 +25,7 @@ import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -43,24 +45,23 @@ import org.apache.commons.io.output.WriterOutputStream;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * Developer class for debugging test rendering
+ * Developer class for debugging item rendering within a test
  *
  * @author David McKain
  */
-public class TestNavigationRenderingTest {
+public class TestItemRenderingTest {
 
     public static void main(final String[] args) {
         final URI testUri = URI.create("classpath:/testimplementation/selection.xml");
         final URI itemUri = URI.create("classpath:/testimplementation/questions/choice.xml");
 
         System.out.println("Reading");
-        final NotificationLogListener notificationLogListener = new NotificationLogListener();
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
+        final NotificationLogListener notificationLogListener = new NotificationLogListener();
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
             final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
-
             final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
             final ResolvedAssessmentTest resolvedAssessmentTest = objectManager.resolveAssessmentTest(testUri, ModelRichness.FULL_ASSUMED_VALID);
             final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, true).initialize();
@@ -79,22 +80,40 @@ public class TestNavigationRenderingTest {
             testSessionController.startTestNI();
             System.out.println("Test session state after init: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
-            /* Create fake rendering summary */
+            /* Select first item */
             final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
+            testSessionController.selectItem(firstItemRef.getKey());
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRef.getKey());
+
+            /* Create fake rendering summary */
             final TestItemInfo testItemInfo = new TestItemInfo(itemUri, "Item Title");
             final Map<TestPlanNodeKey, TestItemInfo> testRenderingSummaryBuilder = new HashMap<TestPlanNodeKey, TestItemInfo>();
             testRenderingSummaryBuilder.put(firstItemRef.getKey(), testItemInfo);
             final TestRenderingSummary testRenderingSummary = new TestRenderingSummary(testRenderingSummaryBuilder);
 
-            System.out.println("\nRendering");
+            System.out.println("\nRendering state after selection of first item");
 
             final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
-            final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
-            renderingRequest.setTestRenderingSummary(testRenderingSummary);
+            final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
+            renderingRequest.setAssessmentTest(resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful());
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
+            renderingRequest.setAssessmentItemUri(itemUri);
+            renderingRequest.setTestRenderingSummary(testRenderingSummary);
             renderingRequest.setTestSessionState(testSessionState);
+            renderingRequest.setItemSessionState(itemSessionState);
+            renderingRequest.setRenderingMode(RenderingMode.AFTER_INITIALISATION);
             renderingRequest.setRenderingOptions(renderingOptions);
+            renderingRequest.setPrompt("This is an item within a test!");
+            renderingRequest.setAuthorMode(true);
+            renderingRequest.setSolutionAllowed(false);
+            renderingRequest.setResetAllowed(false);
+            renderingRequest.setReinitAllowed(false);
+            renderingRequest.setResultAllowed(false);
+            renderingRequest.setSourceAllowed(false);
+            renderingRequest.setPlaybackAllowed(false);
+            renderingRequest.setBadResponseIdentifiers(null);
+            renderingRequest.setInvalidResponseIdentifiers(null);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
@@ -106,9 +125,8 @@ public class TestNavigationRenderingTest {
             renderer.init();
 
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-            renderer.renderTestPartNavigation(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            renderer.renderTestItem(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
             final String rendered = stringBuilderWriter.toString();
-
             System.out.println("Rendered page: " + rendered);
         }
         finally {

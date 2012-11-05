@@ -3,8 +3,6 @@
 
 Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
 
-THIS IS THE UNREFACTORED ORIGINAL VERSION FROM MATHASSESSENGINE
-
 -->
 <xsl:stylesheet version="2.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -16,27 +14,23 @@ THIS IS THE UNREFACTORED ORIGINAL VERSION FROM MATHASSESSENGINE
   xpath-default-namespace="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="xs qti qw m">
 
-  <xsl:import href="qti-common.xsl"/>
+  <xsl:import href="test-common.xsl"/>
+  <xsl:import href="item-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- Import stylesheet to fix-up QTI 2.0 questions before processing -->
-  <xsl:import href="qti20-fixer.xsl"/>
+  <!-- State -->
+  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
+  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$itemSessionState/@closed='true'"/>
+  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="not($isSessionClosed)"/>
 
-  <xsl:param name="articleId" as="xs:string?"/>
   <xsl:param name="queryString" as="xs:string?"/>
   <xsl:param name="isResponded" select="false()" as="xs:boolean"/>
-  <xsl:param name="title" select="''" as="xs:string"/> <!-- item title -->
-  <xsl:param name="timeRemaining" select="-1" as="xs:integer"/> <!-- time remaining -->
-  <xsl:param name="numberRemaining" select="-1" as="xs:integer"/> <!-- number of remaining items -->
 
   <!-- (These are set in qti.controller.TestCoordinator) -->
-  <xsl:param name="questionId" select="'1'" as="xs:string"/>
-  <xsl:param name="sectionTitles" as="xs:string*"/> <!-- sequence of section titles -->
   <xsl:param name="rubric" as="element(qw:section)*"/> <!-- sequence of grouped rubric blocks -->
-  <xsl:param name="assessmentFeedback" as="element(qti:testFeedback)*"/> <!-- feedback as qti dom trees -->
-  <xsl:param name="testPartFeedback" as="element(qti:testFeedback)*"/> <!-- feedback as qti dom trees -->
 
+  <!-- Below are all deprecated -->
   <xsl:param name="previousEnabled" select="false()" as="xs:boolean"/>
   <xsl:param name="backwardEnabled" select="false()" as="xs:boolean"/>
   <xsl:param name="nextEnabled" select="false()" as="xs:boolean"/>
@@ -44,11 +38,7 @@ THIS IS THE UNREFACTORED ORIGINAL VERSION FROM MATHASSESSENGINE
   <xsl:param name="submitEnabled" select="true()" as="xs:boolean"/>
   <xsl:param name="skipEnabled" select="false()" as="xs:boolean"/>
   <xsl:param name="allowCandidateComment" select="false()" as="xs:boolean"/>
-  <xsl:param name="view" select="false()" as="xs:boolean"/> <!-- view mode (unset shows everthing) -->
   <xsl:param name="flash" as="xs:string?"/>
-
-  <xsl:param name="displayTitle" select="true()" as="xs:boolean"/>
-  <xsl:param name="displayControls" select="true()" as="xs:boolean"/>
   <xsl:param name="exitButton" select="true()" as="xs:boolean"/>
   <xsl:param name="reportButton" select="true()" as="xs:boolean"/>
 
@@ -73,15 +63,20 @@ THIS IS THE UNREFACTORED ORIGINAL VERSION FROM MATHASSESSENGINE
         <xsl:copy-of select="@lang"/>
         <xsl:attribute name="xml:lang" select="@lang"/>
       </xsl:if>
+      <hello>
+        <xsl:copy-of select="$assessmentTest"/>
+      </hello>
       <head>
-        <title><xsl:value-of select="concat($title, ' :: ', @title)"/></title>
-
-        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js" type="text/javascript"/>
-        <!-- The following are used for certain interactions and time limits -->
+        <title><xsl:value-of select="@title"/></title>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js" type="text/javascript"/>
+        <xsl:if test="$authorMode">
+          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js" type="text/javascript"/>
+        </xsl:if>
 
         <!-- Timer setup (requires controls to be displayed) -->
+        <!-- HAS NOT BEEN PORTED OVER YET
         <xsl:if test="$displayControls and $timeRemaining >= 0">
           <script src="{$webappContextPath}/Jscript/TimeLimit.js" type="text/javascript"/>
           <script type="text/javascript">
@@ -90,6 +85,7 @@ THIS IS THE UNREFACTORED ORIGINAL VERSION FROM MATHASSESSENGINE
             });
           </script>
         </xsl:if>
+        -->
 
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
@@ -105,113 +101,50 @@ THIS IS THE UNREFACTORED ORIGINAL VERSION FROM MATHASSESSENGINE
           </script>
         </xsl:if>
 
-        <!-- Styling for JQuery dialog -->
+        <!-- Styling for JQuery -->
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
 
-        <!-- Stylesheet(s) for this item -->
-        <link rel="stylesheet" href="{$webappContextPath}/css/item-rendering.css" type="text/css" media="screen"/>
-        <xsl:apply-templates select="qti:stylesheet"/>
-
-        <!-- Test styling -->
-        <link rel="stylesheet" href="{$webappContextPath}/css/test-rendering.css" type="text/css" media="screen"/>
+        <!-- QTIWorks Item styling -->
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
       </head>
-      <body>
-        <div class="qtiworksRendering">
-          <div class="assessmentTest">
-            <!-- TODO: Not sure this is the optimal place for this now? -->
-            <xsl:if test="$displayTitle">
-              <h1 title="{$itemHref}">
-                <xsl:value-of select="@title"/>
-              </h1>
-            </xsl:if>
+      <body class="qtiworks assessmentItem assessmentTest">
 
-            <xsl:if test="exists($flash)">
-              <div class="flash">
-                <xsl:value-of select="$flash"/>
-              </div>
-            </xsl:if>
+        <!-- Item title -->
+        <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
 
-            <div id="navbar">
-              <xsl:if test="$displayControls and $timeRemaining >= 0">
-                <div id="controls">
-                  Time to complete <b><xsl:value-of select="$numberRemaining"/></b> remaining items is <b id="timer">...</b>.
+        <!-- (test only) rubric -->
+        <xsl:if test="exists($rubric)">
+          <xsl:call-template name="qw:rubric"/>
+        </xsl:if>
+
+        <!-- Item body -->
+        <xsl:apply-templates select="qti:itemBody"/>
+
+        <!-- Display active modal feedback (only after responseProcessing) -->
+        <xsl:if test="$sessionStatus='final'">
+          <xsl:variable name="modalFeedback" as="element()*">
+            <xsl:for-each select="qti:modalFeedback">
+              <xsl:variable name="feedback" as="node()*">
+                <xsl:call-template name="feedback"/>
+              </xsl:variable>
+              <xsl:if test="$feedback">
+                <div class="modalFeedback">
+                  <xsl:if test="@title"><h3><xsl:value-of select="@title"/></h3></xsl:if>
+                  <xsl:sequence select="$feedback"/>
                 </div>
               </xsl:if>
+            </xsl:for-each>
+          </xsl:variable>
+          <xsl:if test="exists($modalFeedback)">
+            <div class="modalFeedback">
+              <h2>Feedback</h2>
+              <xsl:sequence select="$modalFeedback"/>
             </div>
-
-            <div id="body">
-              <div id="body-container">
-                <!-- (test only) titles -->
-                <xsl:if test="exists($title)">
-                  <h1><xsl:value-of select="$title"/></h1>
-                </xsl:if>
-                <xsl:if test="exists($sectionTitles)">
-                  <h2>
-                    <xsl:for-each select="$sectionTitles">
-                      <xsl:value-of select="."/>
-                      <br />
-                    </xsl:for-each>
-                  </h2>
-                </xsl:if>
-
-                <!-- (test only) rubric -->
-                <xsl:if test="exists($rubric)">
-                  <xsl:call-template name="rubric"/>
-                </xsl:if>
-
-                <xsl:choose>
-                  <xsl:when test="qti:itemBody">
-                    <!-- Render itemBody -->
-                    <xsl:apply-templates select="qti:itemBody"/>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <!-- DM-TODO: Maybe have a separate stylesheet if we're not actually rendering anything? -->
-                    <!-- End of test. Just render any feedback -->
-                    <xsl:if test="exists($testPartFeedback) or exists($assessmentFeedback)">
-                      <xsl:call-template name="test-feedback"/>
-                    </xsl:if>
-
-                    <p>This assessment is now complete.</p>
-                    <xsl:if test="$reportButton">
-                      <p><a href="#" onclick="window.open('?report=yes', 'report');">Click here to view the test report</a></p>
-                    </xsl:if>
-                    <xsl:if test="$exitButton">
-                      <p><a href="?exit=yes">Click here to exit this test</a></p>
-                    </xsl:if>
-                  </xsl:otherwise>
-                </xsl:choose>
-
-                <!-- Display active modal feedback (only after responseProcessing) -->
-                <xsl:if test="$isResponded">
-                  <xsl:variable name="modalFeedback" as="element()*">
-                    <xsl:for-each select="qti:modalFeedback">
-                      <xsl:variable name="feedback" as="node()*">
-                        <xsl:call-template name="feedback"/>
-                      </xsl:variable>
-                      <xsl:if test="$feedback">
-                        <div class="modalFeedback">
-                          <xsl:if test="@title"><h3><xsl:value-of select="@title"/></h3></xsl:if>
-                          <xsl:sequence select="$feedback"/>
-                        </div>
-                      </xsl:if>
-                    </xsl:for-each>
-                  </xsl:variable>
-                  <xsl:if test="exists($modalFeedback)">
-                    <hr/>
-                    <h2>Feedback</h2>
-                    <xsl:sequence select="$modalFeedback"/>
-                  </xsl:if>
-                </xsl:if>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Optional debugging information -->
-        <xsl:if test="$showInternalState">
-          <div id="debug_panel">
-            <xsl:call-template name="internalState"/>
-          </div>
+          </xsl:if>
         </xsl:if>
+
+        <!-- Session control -->
+        <xsl:call-template name="qw:item-controls"/>
       </body>
     </html>
   </xsl:template>
@@ -220,56 +153,23 @@ THIS IS THE UNREFACTORED ORIGINAL VERSION FROM MATHASSESSENGINE
 
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
-      <form method="post"
+      <form method="post" action="{$webappContextPath}{$attemptUrl}"
         onsubmit="return QtiWorksRendering.submit()" enctype="multipart/form-data"
         onreset="QtiWorksRendering.reset()" autocomplete="off">
-        <div class="outer-box">
-          <input type="hidden" name="questionId" value="{$questionId}"/>
-          <span class="box-title">Question</span>
-          <div class="inner-box">
 
-            <!-- Do QTI body as usual -->
-            <xsl:apply-templates/>
+        <xsl:apply-templates/>
+
+        <!-- FIXME: These are copied from item; might not be right here -->
+        <xsl:if test="$isSessionInteracting">
+          <div class="controls">
+            <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
           </div>
-        </div>
-        <div class="spacer">&#160;</div>
-
-        <!-- feedback goes here -->
-        <xsl:if test="exists($testPartFeedback) or exists($assessmentFeedback)">
-          <xsl:call-template name="test-feedback"/>
-        </xsl:if>
-
-        <!-- add controls. (NB: logic here is slightly different from QTIEngine) -->
-        <xsl:if test="$displayControls">
-          <xsl:call-template name="controls"/>
         </xsl:if>
       </form>
     </div>
   </xsl:template>
 
-  <xsl:template name="test-feedback">
-    <div class="outer-box">
-      <span class="box-title">Feedback</span>
-      <div class="inner-box">
-        <xsl:if test="exists($assessmentFeedback)">
-          <xsl:for-each select="$assessmentFeedback">
-            <div class="feedback_title"><xsl:value-of select="@title"/></div>
-            <xsl:apply-templates select="*"/>
-          </xsl:for-each>
-        </xsl:if>
-
-        <xsl:if test="exists($testPartFeedback)">
-          <xsl:for-each select="$testPartFeedback">
-            <div class="feedback_title"><xsl:value-of select="@title"/></div>
-            <xsl:apply-templates select="*"/>
-          </xsl:for-each>
-        </xsl:if>
-      </div>
-    </div>
-    <div class="spacer">&#160;</div>
-  </xsl:template>
-
-  <xsl:template name="rubric">
+  <xsl:template name="qw:rubric">
     <div class="outer-box">
       <span class="box-title">Rubric</span>
       <div class="inner-box">
@@ -354,5 +254,198 @@ THIS IS THE UNREFACTORED ORIGINAL VERSION FROM MATHASSESSENGINE
   <xsl:template match="qti:endAttemptInteraction[not($submitEnabled)]">
     <input type="submit" name="{@responseIdentifier}" value="{@title}" disabled="disabled"/>
   </xsl:template>
+
+  <!-- ************************************************************ -->
+
+  <xsl:template name="sessionState" as="element()+">
+    <div class="sessionState">
+      <xsl:if test="exists($shuffledChoiceOrders)">
+        <h4>Shuffled choice orders</h4>
+        <ul>
+          <xsl:for-each select="$shuffledChoiceOrders">
+            <li>
+              <span class="variableName">
+                <xsl:value-of select="@responseIdentifier"/>
+              </span>
+              <xsl:text> = [</xsl:text>
+              <xsl:value-of select="tokenize(@choiceSequence, ' ')" separator=", "/>
+              <xsl:text>]</xsl:text>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </xsl:if>
+      <xsl:if test="exists($templateValues)">
+        <h4>Template variables</h4>
+        <xsl:call-template name="dump-values">
+          <xsl:with-param name="valueHolders" select="$templateValues"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="exists($badResponseIdentifiers)">
+        <h4>Unbound Response inputs</h4>
+        <xsl:call-template name="dump-unbound-response-inputs"/>
+      </xsl:if>
+      <xsl:if test="exists($responseValues)">
+        <h4>Response variables</h4>
+        <xsl:call-template name="dump-values">
+          <xsl:with-param name="valueHolders" select="$responseValues"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="exists($outcomeValues)">
+        <h4>Outcome variables</h4>
+        <xsl:call-template name="dump-values">
+          <xsl:with-param name="valueHolders" select="$outcomeValues"/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="exists($testOutcomeValues)">
+        <h4>Test Outcome variables</h4>
+        <xsl:call-template name="dump-values">
+          <xsl:with-param name="valueHolders" select="$testOutcomeValues"/>
+        </xsl:call-template>
+      </xsl:if>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="dump-values" as="element(ul)">
+    <xsl:param name="valueHolders" as="element()*"/>
+    <ul>
+      <xsl:for-each select="$valueHolders">
+        <xsl:call-template name="dump-value">
+          <xsl:with-param name="valueHolder" select="."/>
+        </xsl:call-template>
+      </xsl:for-each>
+    </ul>
+  </xsl:template>
+
+  <xsl:template name="dump-value" as="element(li)">
+    <xsl:param name="valueHolder" as="element()"/>
+    <li>
+      <span class="variableName">
+        <xsl:value-of select="@identifier"/>
+      </span>
+      <xsl:text> = </xsl:text>
+      <xsl:choose>
+        <xsl:when test="not(*)">
+          <xsl:text>NULL</xsl:text>
+        </xsl:when>
+        <xsl:when test="qw:is-maths-content-value($valueHolder)">
+          <!-- We'll handle MathsContent variables specially to help question authors -->
+          <span class="type">MathsContent :: </span>
+          <xsl:copy-of select="qw:extract-maths-content-pmathml($valueHolder)"/>
+
+          <!-- Make the raw record fields available via a toggle -->
+          <xsl:text> </xsl:text>
+          <a id="qtiworks_id_toggle_debugMathsContent_{@identifier}" class="debugButton"
+            href="javascript:void(0)">Toggle Details</a>
+          <div id="qtiworks_id_debugMathsContent_{@identifier}" class="debugMathsContent">
+            <xsl:call-template name="dump-record-entries">
+              <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
+            </xsl:call-template>
+          </div>
+          <script type="text/javascript">
+            $(document).ready(function() {
+              $('a#qtiworks_id_toggle_debugMathsContent_<xsl:value-of select="@identifier"/>').click(function() {
+                $('#qtiworks_id_debugMathsContent_<xsl:value-of select="@identifier"/>').toggle();
+              })
+            });
+          </script>
+        </xsl:when>
+        <xsl:otherwise>
+          <!-- Other variables will be output in a fairly generic way -->
+          <span class="type">
+            <xsl:value-of select="(@cardinality, @baseType, ':: ')" separator=" "/>
+          </span>
+          <xsl:choose>
+            <xsl:when test="@cardinality='single'">
+              <xsl:variable name="text" select="$valueHolder/qw:value" as="xs:string"/>
+              <xsl:choose>
+                <xsl:when test="contains($text, '&#x0a;')">
+                  <pre><xsl:value-of select="$text"/></pre>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$text"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:when test="@cardinality='multiple'">
+              <xsl:text>{</xsl:text>
+              <xsl:value-of select="$valueHolder/qw:value" separator=", "/>
+              <xsl:text>}</xsl:text>
+            </xsl:when>
+            <xsl:when test="@cardinality='ordered'">
+              <xsl:text>[</xsl:text>
+              <xsl:value-of select="$valueHolder/qw:value" separator=", "/>
+              <xsl:text>]</xsl:text>
+            </xsl:when>
+            <xsl:when test="@cardinality='record'">
+              <xsl:text>(</xsl:text>
+              <xsl:call-template name="dump-record-entries">
+                <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
+              </xsl:call-template>
+              <xsl:text>)</xsl:text>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
+    </li>
+  </xsl:template>
+
+  <xsl:template name="dump-record-entries" as="element(ul)">
+    <xsl:param name="valueHolders" as="element()*"/>
+    <ul>
+      <xsl:for-each select="$valueHolders">
+        <li>
+          <span class="variableName">
+            <xsl:value-of select="@fieldIdentifier"/>
+          </span>
+          <xsl:text> = </xsl:text>
+          <xsl:choose>
+            <xsl:when test="not(*)">
+              <xsl:text>NULL</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <!-- Other variables will be output in a fairly generic way -->
+              <span class="type">
+                <xsl:value-of select="(@baseType, ':: ')" separator=" "/>
+              </span>
+              <xsl:variable name="text" select="qw:value" as="xs:string"/>
+              <xsl:choose>
+                <xsl:when test="contains($text, '&#x0a;')">
+                  <pre><xsl:value-of select="$text"/></pre>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="$text"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+          </xsl:choose>
+        </li>
+      </xsl:for-each>
+    </ul>
+  </xsl:template>
+
+  <xsl:template name="dump-unbound-response-inputs" as="element(ul)">
+    <ul>
+      <xsl:for-each select="$responseInputs[@identifier = $badResponseIdentifiers]">
+        <li>
+          <span class="variableName">
+            <xsl:value-of select="@identifier"/>
+          </span>
+          <xsl:text> = </xsl:text>
+          <xsl:choose>
+            <xsl:when test="@type='string'">
+              <xsl:text>[</xsl:text>
+              <xsl:value-of select="qw:value" separator=", "/>
+              <xsl:text>]</xsl:text>
+            </xsl:when>
+            <xsl:when test="@type='file'">
+              (Uploaded file)
+            </xsl:when>
+          </xsl:choose>
+        </li>
+      </xsl:for-each>
+    </ul>
+  </xsl:template>
+
+
 
 </xsl:stylesheet>

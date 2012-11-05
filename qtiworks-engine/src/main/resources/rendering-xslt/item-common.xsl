@@ -18,39 +18,46 @@ rendering.
 
   <!-- ************************************************************ -->
 
-  <!-- Web Application contextPath. Starts with a '/' -->
-  <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
-
-  <!-- URI of the Item being rendered -->
-  <xsl:param name="itemSystemId" as="xs:string" required="yes"/>
+  <xsl:import href="qti-common.xsl"/>
 
   <!-- State of item being rendered -->
   <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
 
-  <!-- Set to true to include author debug information -->
-  <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
-
-  <!-- Notificates produced during the event being rendered -->
-  <xsl:param name="notifications" as="element(qw:notification)*"/>
-
-  <!-- Action URLs -->
-  <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
-
   <!-- Raw response information -->
   <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>
 
-  <!-- FIXME: This is not used at the moment -->
-  <xsl:param name="view" select="false()" as="xs:boolean"/>
+  <!-- Action permissions -->
+  <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="playbackAllowed" as="xs:boolean" required="yes"/>
 
-  <!-- AssessmentTest variables (only passed when rendering tests) -->
-  <!-- FIXME: These need to be refactored -->
-  <xsl:param name="testOutcomeValues" select="()" as="element(qw:outcome)*"/>
-  <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
+  <!-- Playback -->
+  <xsl:param name="playbackUrlBase" as="xs:string" required="yes"/>
+  <xsl:param name="currentPlaybackEventId" select="()" as="xs:integer?"/>
+  <xsl:param name="currentPlaybackEventType" select="()" as="xs:string?"/>
+  <xsl:param name="playbackEventIds" select="()" as="xs:integer*"/>
+  <xsl:param name="playbackEventTypes" select="()" as="xs:string*"/>
 
-  <!-- Debugging Params -->
-  <!-- FIXME: These are not currently used! -->
-  <xsl:param name="overrideFeedback" select="false()" as="xs:boolean"/> <!-- enable all feedback  -->
-  <xsl:param name="overrideTemplate" select="false()" as="xs:boolean"/> <!-- enable all templates -->
+  <xsl:function name="qw:describe-candidate-event" as="xs:string">
+    <xsl:param name="candidate-event-type" as="xs:string"/>
+    <xsl:variable name="descriptions" as="element(qw:description)+">
+      <qw:description type="INIT">Initial presentation of your assessment</qw:description>
+      <qw:description type="ATTEMPT_VALID">Submission of an answer</qw:description>
+      <qw:description type="ATTEMPT_INVALID">Submission of an answer that did not fit what was asked for</qw:description>
+      <qw:description type="ATTEMPT_BAD">Submission of the wrong type of answer</qw:description>
+      <qw:description type="REINIT">Re-initialisation of your assessment</qw:description>
+      <qw:description type="RESET">Reset of your assessment</qw:description>
+      <qw:description type="SOLUTION">Display of a model solution for this assessment</qw:description>
+      <qw:description type="PLAYBACK">Playback of your assessment</qw:description>
+      <qw:description type="CLOSE">Completion of your assessment</qw:description>
+      <qw:description type="TERMINATE">Termination of your assessment</qw:description>
+    </xsl:variable>
+    <xsl:sequence select="$descriptions[@type=$candidate-event-type]/text()"/>
+  </xsl:function>
 
   <!-- Extract stuff from the state -->
   <xsl:variable name="shuffledChoiceOrders" select="$itemSessionState/qw:shuffledInteractionChoiceOrder"
@@ -65,14 +72,8 @@ rendering.
   <xsl:variable name="badResponseIdentifiers" select="$itemSessionState/@badResponseIdentifiers" as="xs:string*"/>
   <xsl:variable name="invalidResponseIdentifiers" select="$itemSessionState/@invalidResponseIdentifiers" as="xs:string*"/>
 
-  <!-- Has the candidate made a response? -->
-  <xsl:variable name="isResponded" as="xs:boolean" select="$itemSessionState/@responsed='true'"/>
-
   <!-- Is a model solution provided? -->
   <xsl:variable name="hasModelSolution" as="xs:boolean" select="exists(/qti:assessmentItem/qti:responseDeclaration/qti:correctResponse) or exists($overriddenCorrectResponses)"/>
-
-  <!-- Codebase URL for engine-provided applets -->
-  <xsl:variable name="appletCodebase" select="concat($webappContextPath, '/rendering/applets')" as="xs:string"/>
 
   <!-- Include stylesheets handling each type of interaction -->
   <xsl:include href="interactions/associateInteraction.xsl"/>
@@ -96,22 +97,6 @@ rendering.
   <xsl:include href="interactions/textEntryInteraction.xsl"/>
   <xsl:include href="interactions/uploadInteraction.xsl"/>
   <xsl:include href="interactions/mathEntryInteraction.xsl"/>
-
-  <!-- ************************************************************ -->
-
-  <!-- Resolves a link to a resource -->
-  <xsl:function name="qw:convert-link" as="xs:string">
-    <xsl:param name="uri" as="xs:string"/>
-    <xsl:choose>
-      <xsl:when test="starts-with($uri, 'http:') or starts-with($uri, 'https:') or starts-with($uri, 'mailto:')">
-        <xsl:sequence select="$uri"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:variable name="resolved" as="xs:string" select="string(resolve-uri($uri, $itemSystemId))"/>
-        <xsl:sequence select="concat($webappContextPath, $serveFileUrl, '?href=', encode-for-uri($resolved))"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
 
   <!-- ************************************************************ -->
 
@@ -146,12 +131,6 @@ rendering.
         </xsl:message>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:function>
-
-  <xsl:function name="qw:format-number" as="xs:string">
-    <xsl:param name="format" as="xs:string"/>
-    <xsl:param name="number" as="xs:double"/>
-    <xsl:sequence select="fmt:format($format, $number)" xmlns:fmt="java:uk.ac.ed.ph.qtiworks.rendering.XsltExtensionFunctions"/>
   </xsl:function>
 
   <xsl:function name="qw:get-template-value" as="element(qw:templateVariable)?">
@@ -217,136 +196,6 @@ rendering.
     <xsl:sequence select="$document/qti:assessmentItem/qti:outcomeDeclaration[@identifier=$identifier]"/>
   </xsl:function>
 
-  <xsl:function name="qw:get-test-outcome-value" as="element(qw:outcome)?">
-    <xsl:param name="identifier" as="xs:string"/>
-    <xsl:sequence select="$testOutcomeValues[@identifier=$identifier]"/>
-  </xsl:function>
-
-  <xsl:function name="qw:get-test-outcome-declaration" as="element(qti:outcomeDeclaration)?">
-    <xsl:param name="identifier" as="xs:string"/>
-    <xsl:sequence select="$testOutcomeDeclarations[@identifier=$identifier]"/>
-  </xsl:function>
-
-  <xsl:function name="qw:value-contains" as="xs:boolean">
-    <xsl:param name="valueHolder" as="element()?"/>
-    <xsl:param name="test" as="xs:string"/>
-    <xsl:sequence select="boolean($valueHolder/qw:value[string(.)=$test])"/>
-  </xsl:function>
-
-  <xsl:function name="qw:is-not-null-value" as="xs:boolean">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:sequence select="exists($valueHolder/*)"/>
-  </xsl:function>
-
-  <xsl:function name="qw:is-null-value" as="xs:boolean">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:sequence select="not(exists($valueHolder/*))"/>
-  </xsl:function>
-
-  <xsl:function name="qw:is-single-cardinality-value" as="xs:boolean">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:sequence select="boolean($valueHolder[@cardinality='single'])"/>
-  </xsl:function>
-
-  <xsl:function name="qw:extract-single-cardinality-value" as="xs:string">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:choose>
-      <xsl:when test="qw:is-null-value($valueHolder)">
-        <xsl:sequence select="''"/>
-      </xsl:when>
-      <xsl:when test="qw:is-single-cardinality-value($valueHolder)">
-        <xsl:sequence select="string($valueHolder/qw:value)"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:message terminate="yes">
-          Expected value <xsl:copy-of select="$valueHolder"/> to have single cardinality
-        </xsl:message>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
-
-  <xsl:function name="qw:is-multiple-cardinality-value" as="xs:boolean">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:sequence select="boolean($valueHolder[@cardinality='multiple'])"/>
-  </xsl:function>
-
-  <xsl:function name="qw:is-ordered-cardinality-value" as="xs:boolean">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:sequence select="boolean($valueHolder[@cardinality='ordered'])"/>
-  </xsl:function>
-
-  <xsl:function name="qw:get-cardinality-size" as="xs:integer">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:sequence select="count($valueHolder/qw:value)"/>
-  </xsl:function>
-
-  <!-- NB: This works for both ordered and multiple cardinalities so as to allow iteration -->
-  <!-- (NB: The term 'iterable' is not defined in the spec.) -->
-  <xsl:function name="qw:extract-iterable-element" as="xs:string">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:param name="index" as="xs:integer"/>
-    <xsl:choose>
-      <xsl:when test="qw:is-null-value($valueHolder)">
-        <xsl:sequence select="''"/>
-      </xsl:when>
-      <xsl:when test="qw:is-ordered-cardinality-value($valueHolder) or qw:is-multiple-cardinality-value($valueHolder)">
-        <xsl:sequence select="string($valueHolder/qw:value[position()=$index])"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:message terminate="yes">
-          Expected value <xsl:copy-of select="$valueHolder"/> to have ordered
-          or multiple cardinality
-        </xsl:message>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
-
-  <xsl:function name="qw:extract-iterable-elements" as="xs:string*">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:choose>
-      <xsl:when test="qw:is-null-value($valueHolder)">
-        <xsl:sequence select="()"/>
-      </xsl:when>
-      <xsl:when test="qw:is-ordered-cardinality-value($valueHolder) or qw:is-multiple-cardinality-value($valueHolder)">
-        <xsl:sequence select="for $v in $valueHolder/qw:value return string($v)"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:message terminate="yes">
-          Expected value <xsl:copy-of select="$valueHolder"/> to have ordered
-          or multiple cardinality
-        </xsl:message>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
-
-  <xsl:function name="qw:is-record-cardinality-value" as="xs:boolean">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:sequence select="boolean($valueHolder[@cardinality='record'])"/>
-  </xsl:function>
-
-  <xsl:function name="qw:is-maths-content-value" as="xs:boolean">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:sequence select="boolean($valueHolder[@cardinality='record'
-      and qw:value[@baseType='string' and @fieldIdentifier='MathsContentClass'
-        and string(qw:value)='org.qtitools.mathassess']])"/>
-  </xsl:function>
-
-  <xsl:function name="qw:extract-maths-content-pmathml" as="element(m:math)">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:choose>
-      <xsl:when test="qw:is-maths-content-value($valueHolder)">
-        <xsl:variable name="pmathmlString" select="$valueHolder/qw:value[@fieldIdentifier='PMathML']" as="xs:string"/>
-        <xsl:variable name="pmathmlDocNode" select="saxon:parse($pmathmlString)" as="document-node()"/>
-        <xsl:copy-of select="$pmathmlDocNode/*"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:message terminate="yes">
-          Expected value <xsl:copy-of select="$valueHolder"/> to be a MathsContent value
-        </xsl:message>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
-
   <!-- ************************************************************ -->
 
   <!-- Tests the @showHide and @templateIdentifier attributes of the given (choice) element to determine whether it
@@ -392,11 +241,84 @@ rendering.
 
   <!-- ************************************************************ -->
 
+  <xsl:template name="qw:item-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following "session control" options. You can choose
+          exactly which options are available via the "item delivery". (You will be able
+          to do this soon!)
+        </div>
+      </xsl:if>
+      <ul class="controls">
+        <xsl:if test="$resetAllowed">
+          <li>
+            <form action="{$webappContextPath}{$resetUrl}" method="post">
+              <input type="submit" value="Reset{if ($isSessionClosed) then ' and play again' else ''}"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$reinitAllowed">
+          <li>
+            <form action="{$webappContextPath}{$reinitUrl}" method="post">
+              <input type="submit" value="Reinitialise{if ($isSessionClosed) then ' and play again' else ''}"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$closeAllowed">
+          <li>
+            <form action="{$webappContextPath}{$closeUrl}" method="post">
+              <input type="submit" value="Finish and review"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$playbackAllowed and exists($playbackEventIds) and $renderingMode!='PLAYBACK'">
+          <li>
+            <form action="{$webappContextPath}{$playbackUrlBase}/{$playbackEventIds[1]}" method="post">
+              <input type="submit" value="Enter playback mode"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$solutionAllowed and $hasModelSolution">
+          <li>
+            <form action="{$webappContextPath}{$solutionUrl}" method="post">
+              <input type="submit" value="Show model solution"/>
+            </form>
+          </li>
+        </xsl:if>
+      </ul>
+      <ul class="controls">
+        <xsl:if test="$resultAllowed">
+          <li>
+            <form action="{$webappContextPath}{$resultUrl}" method="get" class="showXmlInDialog" title="Item Result XML">
+              <input type="submit" value="View ItemResult"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$sourceAllowed">
+          <li>
+            <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">
+              <input type="submit" value="View Item source"/>
+            </form>
+          </li>
+        </xsl:if>
+        <li>
+          <form action="{$webappContextPath}{$terminateUrl}" method="post">
+            <input type="submit" value="Exit"/>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </xsl:template>
+
+  <!-- ************************************************************ -->
+
   <xsl:template name="qw:generic-bad-response-message">
     <div class="badResponse">
       Please complete this interaction as directed.
     </div>
   </xsl:template>
+
   <!-- ************************************************************ -->
 
   <xsl:template match="qti:infoControl" as="element(div)">
@@ -442,19 +364,12 @@ rendering.
   </xsl:template>
 
   <!-- printedVariable. Numeric output currently only supports Java String.format formatting. -->
-  <xsl:template match="qti:printedVariable" as="element(span)">
+  <xsl:template match="qti:assessmentItem//qti:printedVariable" as="element(span)">
     <xsl:variable name="identifier" select="@identifier" as="xs:string"/>
     <xsl:variable name="templateValue" select="qw:get-template-value(@identifier)" as="element(qw:templateVariable)?"/>
     <xsl:variable name="outcomeValue" select="qw:get-outcome-value(@identifier)" as="element(qw:outcomeVariable)?"/>
-    <xsl:variable name="testOutcomeValue" select="if (ancestor::qti:testFeedback) then qw:get-test-outcome-value(@identifier) else ()" as="element(qw:outcome)?"/>
     <span class="printedVariable">
       <xsl:choose>
-        <xsl:when test="exists($testOutcomeValue)">
-          <xsl:call-template name="printedVariable">
-            <xsl:with-param name="valueHolder" select="$testOutcomeValue"/>
-            <xsl:with-param name="valueDeclaration" select="qw:get-test-outcome-declaration(@identifier)"/>
-          </xsl:call-template>
-        </xsl:when>
         <xsl:when test="exists($outcomeValue)">
           <xsl:call-template name="printedVariable">
             <xsl:with-param name="valueHolder" select="$outcomeValue"/>
@@ -472,66 +387,6 @@ rendering.
         </xsl:otherwise>
       </xsl:choose>
     </span>
-  </xsl:template>
-
-  <xsl:template name="printedVariable" as="node()?">
-    <xsl:param name="valueHolder" as="element()"/>
-    <xsl:param name="valueDeclaration" as="element()"/>
-    <!--
-
-    The QTI spec says that this variable must have single cardinality.
-
-    For convenience, we also accept multiple, ordered and record cardinality variables here,
-    printing them out in a hard-coded form that probably won't make sense to test
-    candidates but might be useful for debugging.
-
-    Our implementation additionally adds support for "printing" MathsContent variables
-    used in MathAssess, outputting an inline Presentation MathML element, as documented
-    in the MathAssses spec.
-
-    -->
-    <xsl:choose>
-      <xsl:when test="qw:is-null-value($valueHolder)">
-        <!-- We'll output NULL as an empty string -->
-        <xsl:text/>
-      </xsl:when>
-      <xsl:when test="qw:is-single-cardinality-value($valueHolder)">
-        <xsl:variable name="singleValue" select="qw:extract-single-cardinality-value($valueHolder)" as="xs:string"/>
-        <xsl:choose>
-          <xsl:when test="@format and $valueDeclaration[@baseType='float' or @baseType='integer']">
-            <xsl:value-of select="qw:format-number(@format, number($singleValue))"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$singleValue"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:when test="qw:is-maths-content-value($valueHolder)">
-        <xsl:copy-of select="qw:extract-maths-content-pmathml($valueHolder)"/>
-      </xsl:when>
-      <xsl:when test="qw:is-multiple-cardinality-value($valueHolder)">
-        <xsl:text>{</xsl:text>
-        <xsl:value-of select="qw:extract-iterable-elements($valueHolder)" separator=", "/>
-        <xsl:text>}</xsl:text>
-      </xsl:when>
-      <xsl:when test="qw:is-ordered-cardinality-value($valueHolder)">
-        <xsl:text>[</xsl:text>
-        <xsl:value-of select="qw:extract-iterable-elements($valueHolder)" separator=", "/>
-        <xsl:text>]</xsl:text>
-      </xsl:when>
-      <xsl:when test="qw:is-record-cardinality-value($valueHolder)">
-        <xsl:text>{</xsl:text>
-        <xsl:variable name="to-print" as="xs:string*"
-          select="for $v in $valueHolder/qw:value return concat($v/@identifier, ': ', $v/qw:value)"/>
-        <xsl:value-of select="$to-print" separator=", "/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:message terminate="yes">
-          &lt;printedVariable&gt; may not be applied to value
-          <xsl:copy-of select="$valueHolder"/>
-        </xsl:message>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:template>
 
   <!-- Keep MathML by default -->
@@ -571,12 +426,11 @@ rendering.
   1. Allowing MathsContent variables to be substituted
   2. Allowing arbitrary response and outcome variables to be substituted.
   -->
-  <xsl:template match="m:mi" as="element()">
+  <xsl:template match="qti:assessmentItem//m:mi" as="element()">
     <xsl:variable name="content" select="normalize-space(text())" as="xs:string"/>
     <xsl:variable name="templateValue" select="qw:get-template-value($content)" as="element(qw:templateVariable)?"/>
     <xsl:variable name="responseValue" select="qw:get-response-value(/, $content)" as="element(qw:responseVariable)?"/>
     <xsl:variable name="outcomeValue" select="qw:get-outcome-value($content)" as="element(qw:outcomeVariable)?"/>
-    <xsl:variable name="testOutcomeValue" select="if (ancestor::qti:testFeedback) then qw:get-test-outcome-value(@identifier) else ()" as="element(qw:outcome)?"/>
     <xsl:choose>
       <xsl:when test="exists($templateValue) and qw:get-template-declaration(/, $content)[@mathVariable='true']">
         <xsl:call-template name="substitute-mi">
@@ -588,12 +442,6 @@ rendering.
         <xsl:call-template name="substitute-mi">
           <xsl:with-param name="identifier" select="$content"/>
           <xsl:with-param name="value" select="$responseValue"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:when test="exists($testOutcomeValue)">
-        <xsl:call-template name="substitute-mi">
-          <xsl:with-param name="identifier" select="$content"/>
-          <xsl:with-param name="value" select="$outcomeValue"/>
         </xsl:call-template>
       </xsl:when>
       <xsl:when test="exists($outcomeValue)">
@@ -611,101 +459,7 @@ rendering.
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template name="substitute-mi" as="element()">
-    <xsl:param name="identifier" as="xs:string"/>
-    <xsl:param name="value" as="element()"/>
-    <xsl:choose>
-      <xsl:when test="qw:is-null-value($value)">
-        <!-- We shall represent null as an empty mrow -->
-        <xsl:element name="mn" namespace="http://www.w3.org/1998/Math/MathML"/>
-      </xsl:when>
-      <xsl:when test="qw:is-single-cardinality-value($value)">
-        <!-- Single cardinality template variables are substituted according to Section 6.3.1 of the
-        spec. Note that it does not define what should be done with multiple and ordered
-        cardinality variables. -->
-        <xsl:element name="mn" namespace="http://www.w3.org/1998/Math/MathML">
-          <xsl:copy-of select="@*"/>
-          <xsl:value-of select="qw:extract-single-cardinality-value($value)"/>
-        </xsl:element>
-      </xsl:when>
-      <xsl:when test="qw:is-maths-content-value($value)">
-        <!-- This is a MathAssess MathsContent variable. What we do here is
-        replace the matched MathML element with the child(ren) of the <math/> PMathML field
-        in this record, wrapping in an <mrow/> if required so as to ensure that we have a
-        single replacement element -->
-        <xsl:variable name="pmathml" select="qw:extract-maths-content-pmathml($value)" as="element(m:math)"/>
-        <xsl:choose>
-          <xsl:when test="count($pmathml/*)=1">
-            <xsl:copy-of select="$pmathml/*"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:element name="mrow" namespace="http://www.w3.org/1998/Math/MathML">
-              <xsl:copy-of select="$pmathml/*"/>
-            </xsl:element>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:otherwise>
-        <!-- Unsupported substitution -->
-        <xsl:message>
-          Substituting the variable <xsl:value-of select="$identifier"/> with value
-          <xsl:copy-of select="$value"/>
-          within MathML is not currently supported.
-        </xsl:message>
-        <xsl:element name="mtext" namespace="http://www.w3.org/1998/Math/MathML">(Unsupported variable substitution)</xsl:element>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-
-  <!-- mathml (ci) -->
-  <!--
-  (We are currently not allowing MathsContent variables to be substituted in the same way as <mi/>.
-  Instead, we're sticking to what the spec says here. This could be expanded later if required.
-  -->
-  <xsl:template match="m:ci">
-    <xsl:variable name="value" select="normalize-space(text())"/>
-    <xsl:variable name="templateValue" select="qw:get-template-value($value)" as="element(qw:templateVariable)?"/>
-    <xsl:variable name="templateDeclaration" select="qw:get-template-declaration(/, $value)" as="element(qti:templateDeclaration)?"/>
-    <xsl:choose>
-      <xsl:when test="exists($templateValue) and $templateDeclaration[@mathVariable='true']">
-        <xsl:element name="cn" namespace="http://www.w3.org/1998/Math/MathML">
-          <xsl:copy-of select="@*"/>
-          <xsl:apply-templates/>
-        </xsl:element>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:element name="ci" namespace="http://www.w3.org/1998/Math/MathML">
-          <xsl:copy-of select="@*"/>
-          <xsl:apply-templates/>
-        </xsl:element>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
-  <!-- feedbackInline -->
-  <xsl:template match="qti:feedbackInline" as="element(span)?">
-    <xsl:variable name="feedback" as="node()*">
-      <xsl:call-template name="feedback"/>
-    </xsl:variable>
-    <xsl:if test="exists($feedback)">
-      <span class="feedbackInline">
-        <xsl:sequence select="$feedback"/>
-      </span>
-    </xsl:if>
-  </xsl:template>
-
-  <!-- feedbackBlock -->
-  <xsl:template match="qti:feedbackBlock" as="element(div)?">
-    <xsl:variable name="feedback" as="node()*">
-      <xsl:call-template name="feedback"/>
-    </xsl:variable>
-    <xsl:if test="exists($feedback)">
-      <div class="feedbackBlock">
-        <xsl:sequence select="$feedback"/>
-      </div>
-    </xsl:if>
-  </xsl:template>
+  <!-- ************************************************************ -->
 
   <!-- feedback (block and inline) -->
   <xsl:template name="feedback" as="node()*">
@@ -721,6 +475,8 @@ rendering.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <!-- ************************************************************ -->
 
   <!-- templateBlock -->
   <xsl:template match="qti:templateBlock" as="node()*">
@@ -745,37 +501,6 @@ rendering.
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template>
-
-  <!-- Convert XHTML elements that have been "imported" into QTI -->
-  <xsl:template match="qti:abbr|qti:acronym|qti:address|qti:blockquote|qti:br|qti:cite|qti:code|
-                       qti:dfn|qti:div|qti:em|qti:h1|qti:h2|qti:h3|qti:h4|qti:h5|qti:h6|qti:kbd|
-                       qti:p|qti:pre|qti:q|qti:samp|qti:span|qti:strong|qti:var|
-                       qti:dl|qti:dt|qti:dd|qti:ol|qti:ul|qti:li|
-                       qti:object|qti:b|qti:big|qti:hr|qti:i|qti:small|qti:sub|qti:sup|qti:tt|
-                       qti:caption|qti:col|qti:colgroup|qti:table|qti:tbody|qti:td|qti:tfoot|qti:tr|qti:thead|
-                       qti:img|qti:a">
-    <xsl:element name="{local-name()}">
-      <xsl:apply-templates select="@*" mode="qti-to-xhtml"/>
-      <xsl:apply-templates select="node()"/>
-    </xsl:element>
-  </xsl:template>
-
-  <!-- Handle path attributes carefully so that relative paths get fixed up -->
-  <xsl:template match="qti:img/@src|@href|qti:object/@data" mode="qti-to-xhtml">
-    <xsl:attribute name="{local-name()}" select="qw:convert-link(string(.))"/>
-  </xsl:template>
-
-  <!-- Copy other attributes as-is -->
-  <xsl:template match="@*" mode="qti-to-xhtml">
-    <xsl:copy-of select="."/>
-  </xsl:template>
-
-  <!-- Catch-all for QTI elements not handled elsewhere. -->
-  <xsl:template match="qti:*" priority="-10">
-    <xsl:message terminate="yes">
-      QTI element <xsl:value-of select="local-name()"/> was not handled by a template
-    </xsl:message>
   </xsl:template>
 
 </xsl:stylesheet>

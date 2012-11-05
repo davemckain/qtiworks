@@ -309,6 +309,7 @@ public class CandidateTestDeliveryService {
         final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setTestSessionState(testSessionState);
+        renderingRequest.setTestRenderingSummary(testRenderingSummary);
 
         candidateAuditLogger.logTestPartNavigationRendering(candidateTestEvent);
         final List<CandidateEventNotification> notifications = candidateTestEvent.getNotifications();
@@ -521,6 +522,7 @@ public class CandidateTestDeliveryService {
 
         final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setTestRenderingSummary(testRenderingSummary);
         renderingRequest.setAssessmentItemUri(itemSystemId);
         renderingRequest.setRenderingMode(renderingMode);
         renderingRequest.setTestSessionState(testSessionState);

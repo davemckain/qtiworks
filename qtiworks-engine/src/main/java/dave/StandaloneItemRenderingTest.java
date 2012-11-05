@@ -5,21 +5,19 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
-import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
@@ -33,9 +31,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -43,29 +39,31 @@ import org.apache.commons.io.output.WriterOutputStream;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * Developer class for debugging item rendering
+ * Developer class for debugging standalone item rendering
  *
  * @author David McKain
  */
 public class StandaloneItemRenderingTest {
 
     public static void main(final String[] args) {
-        final URI inputUri = URI.create("classpath:/choice.xml");
+        final URI itemUri = URI.create("classpath:/choice.xml");
 
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
+        final NotificationLogListener notificationLogListener = new NotificationLogListener();
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
             final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
 
             final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-            final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri, ModelRichness.FULL_ASSUMED_VALID);
+            final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(itemUri, ModelRichness.FULL_ASSUMED_VALID);
             final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
             final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, true).initialize();
             final ItemSessionState itemSessionState = new ItemSessionState();
             final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
                     itemSessionControllerSettings, itemProcessingMap, itemSessionState);
+            itemSessionController.addNotificationListener(notificationLogListener);
 
             System.out.println("\nInitialising");
             itemSessionController.initialize();
@@ -78,7 +76,8 @@ public class StandaloneItemRenderingTest {
             final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
             renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
-            renderingRequest.setAssessmentResourceUri(inputUri);
+            renderingRequest.setAssessmentResourceUri(itemUri);
+            renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setPrompt("This is an item!");
@@ -112,16 +111,8 @@ public class StandaloneItemRenderingTest {
             renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
             renderer.init();
 
-            /* Create a fake notification for debugging */
-            final CandidateEventNotification notification = new CandidateEventNotification();
-            notification.setNotificationLevel(NotificationLevel.INFO);
-            notification.setNotificationType(NotificationType.RUNTIME);
-            notification.setMessage("This is a notification");
-            final List<CandidateEventNotification> notifications = new ArrayList<CandidateEventNotification>();
-            notifications.add(notification);
-
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-            renderer.renderStandaloneItem(renderingRequest, notifications, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            renderer.renderStandaloneItem(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
             final String rendered = stringBuilderWriter.toString();
             System.out.println("Rendered page: " + rendered);
         }
