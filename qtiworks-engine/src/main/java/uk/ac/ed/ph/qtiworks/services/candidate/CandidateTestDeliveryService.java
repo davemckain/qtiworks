@@ -42,6 +42,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateAttemptDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateResponse;
@@ -49,11 +50,14 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
@@ -240,20 +244,39 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    @SuppressWarnings("unused")
     private void renderEvent(final CandidateSession candidateSession,
             final CandidateTestEvent candidateTestEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestSessionState testSessionState = candidateDataServices.unmarshalTestSessionState(candidateTestEvent);
         if (candidateSession.isTerminated()) {
-            renderTerminated(candidateTestEvent, testSessionState, renderingOptions, resultStream);
+            renderTerminated(candidateTestEvent, renderingOptions, resultStream);
         }
-        if (testSessionState.isFinished()) {
+        else if (testSessionState.isFinished()) {
             renderFinishedTest(candidateTestEvent, testSessionState, renderingOptions, resultStream);
         }
         else {
             renderEventWhenTestOpen(candidateTestEvent, testSessionState, renderingOptions, resultStream);
         }
+    }
+
+    /** FIXME: Implement this! */
+    private void renderFinishedTest(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        throw new QtiWorksLogicException("NOT IMPLEMENTED YET");
+    }
+
+    private void renderTerminated(final CandidateEvent candidateEvent,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final DeliverySettings deliverySettings = delivery.getDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
+        initBaseRenderingRequest(renderingRequest, assessmentPackage, deliverySettings, renderingOptions);
+
+        assessmentRenderer.renderTeminated(renderingRequest, resultStream);
     }
 
     private void renderEventWhenTestOpen(final CandidateTestEvent candidateTestEvent,
@@ -268,19 +291,6 @@ public class CandidateTestDeliveryService {
         else {
             /* Show navigation menu */
             renderTestPartNavigationMenu(candidateTestEvent, testSessionState, renderingOptions, resultStream);
-        }
-    }
-
-    private void renderSelectedItem(final CandidateTestEvent candidateTestEvent,
-            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        if (itemSessionState.isClosed()) {
-            /* Item is closed */
-            renderEventWhenClosed(candidateTestEvent, itemSessionState, renderingOptions, resultStream);
-        }
-        else {
-            /* Interacting */
-            renderEventWhenInteracting(candidateTestEvent, itemSessionState, renderingOptions, resultStream);
         }
     }
 
@@ -304,30 +314,181 @@ public class CandidateTestDeliveryService {
         assessmentRenderer.renderTestPartNavigation(renderingRequest, notifications, resultStream);
     }
 
-    private void renderTerminated(final CandidateTestEvent candidateTestEvent,
-            final TestSessionState testSessionState, final RenderingOptions renderingOptions,
+    private void renderSelectedItem(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        if (itemSessionState.isClosed()) {
+            /* Item is closed */
+            renderEventWhenClosed(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, resultStream);
+        }
+        else {
+            /* Interacting */
+            renderEventWhenInteracting(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, resultStream);
+        }
+    }
+
+    private void renderEventWhenInteracting(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions,
             final OutputStream resultStream) {
-        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateTestEvent,
-                testSessionState, renderingOptions, RenderingMode.TERMINATED);
+        final CandidateTestEventType eventType = candidateTestEvent.getTestEventType();
+        switch (eventType) {
+            case INIT:
+            case REINIT:
+            case RESET:
+            case SELECT_ITEM:
+                renderInteractingPresentation(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, resultStream);
+                break;
+
+            case ATTEMPT_VALID:
+            case ATTEMPT_INVALID:
+            case ATTEMPT_BAD:
+                renderInteractingAfterAttempt(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, resultStream);
+                break;
+
+            default:
+                throw new QtiWorksLogicException("Unexpected logic branch. Event type " + eventType);
+        }
+    }
+
+    private void renderInteractingPresentation(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenInteracting(candidateTestEvent,
+                testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_INITIALISATION);
         doRendering(candidateTestEvent, renderingRequest, resultStream);
     }
 
-    private void doRendering(final CandidateTestEvent candidateTestEvent,
-            final TestItemRenderingRequest renderingRequest, final OutputStream resultStream) {
-        candidateAuditLogger.logTestItemRendering(candidateTestEvent, renderingRequest);
-        final List<CandidateEventNotification> notifications = candidateTestEvent.getNotifications();
-        assessmentRenderer.renderTestItem(renderingRequest, notifications, resultStream);
+    private void renderInteractingAfterAttempt(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenInteracting(candidateTestEvent,
+                testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
+        fillAttemptResponseData(renderingRequest, candidateTestEvent);
+        doRendering(candidateTestEvent, renderingRequest, resultStream);
+    }
+
+    private TestItemRenderingRequest initTestRenderingRequestWhenInteracting(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+        final CandidateSession candidateSession = candidateTestEvent.getCandidateSession();
+//        final Delivery delivery = candidateSession.getDelivery();
+//        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+
+        /* Compute current value for 'duration' */
+        final double duration = computeTestSessionDuration(candidateSession);
+
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateTestEvent,
+                testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
+//        renderingRequest.setCloseAllowed(testDeliverySettings.isAllowClose());
+//        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenInteracting());
+//        renderingRequest.setResetAllowed(testDeliverySettings.isAllowResetWhenInteracting());
+//        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenInteracting());
+//        renderingRequest.setResultAllowed(false);
+//        renderingRequest.setSourceAllowed(testDeliverySettings.isAllowSource());
+        return renderingRequest;
+    }
+
+    /**
+     * Computes the current value for the <code>duration</code> variable for this session.
+     * <p>
+     * Currently, this is just the length of time since the session was first opened.
+     * We DO NOT yet support breaking sessions time-wise.
+     *
+     * @return computed value for <code>duration</code>, which will be non-negative.
+     */
+    private double computeTestSessionDuration(final CandidateSession candidateSession) {
+        final long startTime = candidateSession.getCreationTime().getTime();
+        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
+
+        final double duration = (currentTime - startTime) / 1000.0;
+        return duration;
+    }
+
+    private void renderEventWhenClosed(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final CandidateTestEventType eventType = candidateTestEvent.getTestEventType();
+        switch (eventType) {
+            case ATTEMPT_VALID:
+            case ATTEMPT_INVALID:
+            case ATTEMPT_BAD:
+                renderClosedAfterAttempt(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, resultStream);
+                break;
+
+            case INIT:
+            case REINIT:
+            case RESET:
+            case CLOSE:
+                renderClosed(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, resultStream);
+                break;
+
+            case SOLUTION:
+                renderSolution(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, resultStream);
+                break;
+
+            default:
+                throw new QtiWorksLogicException("Unexpected logic branch. Event type " + eventType);
+        }
+    }
+
+    private void renderClosedAfterAttempt(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateTestEvent,
+                testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
+        fillAttemptResponseData(renderingRequest, candidateTestEvent);
+        doRendering(candidateTestEvent, renderingRequest, resultStream);
+    }
+
+    private void renderClosed(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateTestEvent,
+                testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
+        doRendering(candidateTestEvent, renderingRequest, resultStream);
+    }
+
+    private void renderSolution(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateTestEvent,
+                testSessionState, itemSessionState, renderingOptions, RenderingMode.SOLUTION);
+        doRendering(candidateTestEvent, renderingRequest, resultStream);
+    }
+
+    private TestItemRenderingRequest initTestRenderingRequestWhenClosed(final CandidateTestEvent candidateTestEvent,
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+        final CandidateSession candidateSession = candidateTestEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+//        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateTestEvent,
+                testSessionState, itemSessionState, renderingOptions, renderingMode);
+//        renderingRequest.setCloseAllowed(false);
+//        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenClosed());
+//        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenClosed());
+//        renderingRequest.setResetAllowed(testDeliverySettings.isAllowResetWhenClosed());
+//        renderingRequest.setResultAllowed(testDeliverySettings.isAllowResult());
+//        renderingRequest.setSourceAllowed(testDeliverySettings.isAllowSource());
+//
+//        renderingRequest.setPlaybackAllowed(testDeliverySettings.isAllowPlayback());
+//        if (testDeliverySettings.isAllowPlayback()) {
+//            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
+//        }
+        return renderingRequest;
     }
 
     private TestItemRenderingRequest initTestItemRenderingRequest(final CandidateTestEvent candidateTestEvent,
-            final TestSessionState testSessionState, final RenderingOptions renderingOptions,
-            final RenderingMode renderingMode) {
-        return initTestItemRenderingRequestCustomDuration(candidateTestEvent, testSessionState, renderingOptions, renderingMode, -1.0);
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions,final RenderingMode renderingMode) {
+        return initTestItemRenderingRequestCustomDuration(candidateTestEvent, testSessionState, itemSessionState, renderingOptions, renderingMode, -1.0);
     }
 
     private TestItemRenderingRequest initTestItemRenderingRequestCustomDuration(final CandidateTestEvent candidateTestEvent,
-            final ItemSessionState testSessionState, final RenderingOptions renderingOptions,
-            final RenderingMode renderingMode, final double durationOverride) {
+            final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final RenderingMode renderingMode, final double durationOverride) {
         final CandidateSession candidateSession = candidateTestEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -340,29 +501,43 @@ public class CandidateTestDeliveryService {
         }
 
         final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
+        initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setRenderingMode(renderingMode);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(testDeliverySettings.isAuthorMode());
-        renderingRequest.setItemSessionState(testSessionState);
-        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setTestSessionState(testSessionState);
+        renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setPrompt(testDeliverySettings.getPrompt());
         return renderingRequest;
+    }
+
+    private void initBaseRenderingRequest(final AbstractRenderingRequest renderingRequest,
+            final AssessmentPackage assessmentPackage, final DeliverySettings deliverySettings,
+            final RenderingOptions renderingOptions) {
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
+        renderingRequest.setRenderingOptions(renderingOptions);
+    }
+
+    private void doRendering(final CandidateTestEvent candidateTestEvent,
+            final TestItemRenderingRequest renderingRequest, final OutputStream resultStream) {
+        candidateAuditLogger.logTestItemRendering(candidateTestEvent, renderingRequest);
+        final List<CandidateEventNotification> notifications = candidateTestEvent.getNotifications();
+        assessmentRenderer.renderTestItem(renderingRequest, notifications, resultStream);
     }
 
     private void fillAttemptResponseData(final TestItemRenderingRequest renderingRequest, final CandidateTestEvent candidateTestEvent) {
         final CandidateAttempt attempt = candidateAttemptDao.getForEvent(candidateTestEvent);
         if (attempt==null) {
-            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateTestEvent.getId());
+            throw new QtiWorksLogicException("Expected to find a CandidateAttempt corresponding to event #" + candidateTestEvent.getId());
         }
         fillAttemptResponseData(renderingRequest, attempt);
     }
 
-    private void fillAttemptResponseData(final TestItemRenderingRequest renderingRequest, final CandidateAttempt candidateItemAttempt) {
+    private void fillAttemptResponseData(final TestItemRenderingRequest renderingRequest, final CandidateAttempt candidateTestAttempt) {
         final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
         final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
         final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-        extractResponseDataForRendering(candidateItemAttempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
+        extractResponseDataForRendering(candidateTestAttempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
 
         renderingRequest.setResponseInputs(responseDataBuilder);
         renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);

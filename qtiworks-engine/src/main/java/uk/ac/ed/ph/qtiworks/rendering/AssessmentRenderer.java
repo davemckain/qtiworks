@@ -91,6 +91,8 @@ import org.springframework.validation.Validator;
 @Service
 public class AssessmentRenderer {
 
+    private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
+
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
 
     @SuppressWarnings("unused")
@@ -147,13 +149,34 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     /**
+     * Renders a terminated session, sending the results as UTF-8 encoded XML
+     * to the given {@link OutputStream}.
+     * <p>
+     * The caller is responsible for closing this stream afterwards.
+     */
+    public void renderTeminated(final TerminatedRenderingRequest renderingRequest, final OutputStream resultStream) {
+        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(resultStream, "resultStream");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "terminatedRenderingRequest");
+        jsr303Validator.validate(renderingRequest, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, renderingRequest);
+
+        doTransform(renderingRequest, terminatedXsltUri, resultStream, xsltParameters);
+    }
+
+    /**
      * Renders the given {@link StandaloneItemRenderingRequest}, sending the results as UTF-8 encoded XML
      * to the given {@link OutputStream}.
      * <p>
      * The caller is responsible for closing this stream afterwards.
-     *
-     * @param renderingRequest
-     * @param resultStream
      *
      * @throws QtiRenderingException if an unexpected Exception happens during rendering
      */
@@ -166,13 +189,48 @@ public class AssessmentRenderer {
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "standloneItemRenderingRequest");
         jsr303Validator.validate(renderingRequest, errors);
         if (errors.hasErrors()) {
-            throw new IllegalArgumentException("Invalid ItemRenderingRequest Object: " + errors);
+            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+                    + " Object: " + errors);
         }
 
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, renderingRequest);
         setItemRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
+        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+
+        doTransform(renderingRequest, itemStandaloneXsltUri, resultStream, xsltParameters);
+    }
+
+
+    /**
+     * Renders the given {@link TestItemREnderingRequest}, sending the results as UTF-8 encoded XML
+     * to the given {@link OutputStream}.
+     * <p>
+     * The caller is responsible for closing this stream afterwards.
+     *
+     * @throws QtiRenderingException if an unexpected Exception happens during rendering
+     */
+    public void renderTestItem(final TestItemRenderingRequest renderingRequest,
+            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
+        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(resultStream, "resultStream");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testItemRenderingRequest");
+        jsr303Validator.validate(renderingRequest, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        /* Pass request info to XSLT as parameters */
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, renderingRequest);
+        setItemRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
+        setTestRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
 
         doTransform(renderingRequest, itemStandaloneXsltUri, resultStream, xsltParameters);
@@ -185,28 +243,20 @@ public class AssessmentRenderer {
         }
     }
 
+    private void setTestRenderingParameters(final Map<String, Object> xsltParameters,
+            final XsltParamBuilder xsltParamBuilder, final TestItemRenderingRequest renderingRequest) {
+        /* FIXME: Add remaining things here! */
+        xsltParameters.put("testSystemId", renderingRequest.getAssessmentResourceUri().toString());
+    }
+
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
             final XsltParamBuilder xsltParamBuilder, final StandaloneItemRenderingRequest renderingRequest) {
-        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
         final Map<Identifier, ResponseData> responseInputs = renderingRequest.getResponseInputs();
 
         /* Set config & control parameters */
-        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
-        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
-        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
         xsltParameters.put("itemSystemId", renderingRequest.getAssessmentResourceUri().toString());
         xsltParameters.put("prompt", renderingRequest.getPrompt());
-        xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
-        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
-        xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
-        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
-        xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
-        xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
-        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
-        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
-        xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
-        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
         xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
         xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));
@@ -242,6 +292,24 @@ public class AssessmentRenderer {
             xsltParameters.put("currentPlaybackEventType", currentPlaybackEvent.getItemEventType().toString());
         }
     }
+    private void setBaseRenderingParameters(final Map<String, Object> xsltParameters,
+            final AbstractRenderingRequest renderingRequest) {
+        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+        /* Set config & control parameters */
+        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
+        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
+        xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
+        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
+        xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
+        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
+        xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
+        xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
+        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
+        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
+        xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
+        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
+    }
 
     //----------------------------------------------------
 
@@ -264,7 +332,8 @@ public class AssessmentRenderer {
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testPartNavigationRenderingRequest");
         jsr303Validator.validate(renderingRequest, errors);
         if (errors.hasErrors()) {
-            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName() + " Object: " + errors);
+            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+                    + " Object: " + errors);
         }
 
         final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
@@ -298,8 +367,10 @@ public class AssessmentRenderer {
         catch (final TransformerConfigurationException e) {
             throw new QtiRenderingException("Could not complile stylesheet " + stylesheetUri, e);
         }
-        for (final Entry<String, Object> paramEntry : xsltParameters.entrySet()) {
-            transformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
+        if (xsltParameters!=null) {
+            for (final Entry<String, Object> paramEntry : xsltParameters.entrySet()) {
+                transformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
+            }
         }
 
         /* Configure requested serialization */

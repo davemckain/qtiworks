@@ -43,6 +43,7 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateItemEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
@@ -50,12 +51,15 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
+import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
@@ -261,9 +265,10 @@ public class CandidateItemDeliveryService {
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(candidateItemEvent);
         if (candidateSession.isTerminated()) {
-            renderTerminated(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+            /* Session is terminated */
+            renderTerminated(candidateItemEvent, renderingOptions, resultStream);
         }
-        if (itemSessionState.isClosed()) {
+        else if (itemSessionState.isClosed()) {
             /* Item is closed */
             renderEventWhenClosed(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
         }
@@ -447,12 +452,17 @@ public class CandidateItemDeliveryService {
         return renderingRequest;
     }
 
-    private void renderTerminated(final CandidateItemEvent candidateItemEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent,
-                itemSessionState, renderingOptions, RenderingMode.TERMINATED);
-        doRendering(candidateItemEvent, renderingRequest, resultStream);
+    private void renderTerminated(final CandidateEvent candidateEvent,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final DeliverySettings deliverySettings = delivery.getDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
+        initBaseRenderingRequest(renderingRequest, assessmentPackage, deliverySettings, renderingOptions);
+
+        assessmentRenderer.renderTeminated(renderingRequest, resultStream);
     }
 
     private void doRendering(final CandidateItemEvent candidateItemEvent, final StandaloneItemRenderingRequest renderingRequest, final OutputStream resultStream) {
@@ -482,20 +492,26 @@ public class CandidateItemDeliveryService {
         }
 
         final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
+        initBaseRenderingRequest(renderingRequest, assessmentPackage, itemDeliverySettings, renderingOptions);
         renderingRequest.setRenderingMode(renderingMode);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
         renderingRequest.setItemSessionState(itemSessionState);
-        renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
         return renderingRequest;
+    }
+
+    private void initBaseRenderingRequest(final AbstractRenderingRequest renderingRequest,
+            final AssessmentPackage assessmentPackage, final DeliverySettings deliverySettings,
+            final RenderingOptions renderingOptions) {
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
+        renderingRequest.setRenderingOptions(renderingOptions);
     }
 
     private void fillAttemptResponseData(final StandaloneItemRenderingRequest renderingRequest, final CandidateItemEvent candidateItemEvent) {
         final CandidateAttempt attempt = candidateAttemptDao.getForEvent(candidateItemEvent);
         if (attempt==null) {
-            throw new QtiWorksLogicException("Expected to find a CandidateItemAttempt corresponding to event #" + candidateItemEvent.getId());
+            throw new QtiWorksLogicException("Expected to find a CandidateAttempt corresponding to event #" + candidateItemEvent.getId());
         }
         fillAttemptResponseData(renderingRequest, attempt);
     }
@@ -669,7 +685,7 @@ public class CandidateItemDeliveryService {
         candidateAttemptDao.persist(candidateItemAttempt);
 
         /* Log this (in existing state) */
-        candidateAuditLogger.logCandidateAttempt(candidateSession, candidateItemAttempt);
+        candidateAuditLogger.logStandaloneItemCandidateAttempt(candidateSession, candidateItemAttempt);
 
         /* Persist session */
         candidateSessionDao.update(candidateSession);

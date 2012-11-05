@@ -36,6 +36,8 @@ package uk.ac.ed.ph.qtiworks.domain.dao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -51,6 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author David McKain
  */
+@ToRefactor
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class CandidateItemEventDao extends GenericDao<CandidateItemEvent> {

@@ -55,6 +55,10 @@ import javax.persistence.Table;
  * Represents a candidate attempt within a {@link CandidateSession}.
  * One of these is always attached to a {@link CandidateEvent}.
  *
+ * FIXME: This probably needs to be renamed as we also use this to refer to saved
+ * responses in tests before response processing has been run, and they're not
+ * technically considered to be attempts at this time.
+ *
  * @author David McKain
  */
 @Entity
@@ -65,7 +69,7 @@ import javax.persistence.Table;
     @NamedQuery(name="CandidateAttempt.getForEvent",
             query="SELECT a"
                 + "  FROM CandidateAttempt a"
-                + "  WHERE a.event = :candidateItemEvent")
+                + "  WHERE a.event = :candidateEvent")
 })
 public class CandidateAttempt implements BaseEntity {
 

@@ -31,37 +31,15 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
- * Enumerates the types of {@link CandidateItemEvent}s that happen
- * on a {@link CandidateSession}
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public enum CandidateTestEventType {
+public final class TerminatedRenderingRequest extends AbstractRenderingRequest {
 
-    /** Test session initialized */
-    INIT,
-
-    /** Selection of a particular item */
-    SELECT_ITEM,
-
-    /** Termination of session */
-    TERMINATE,
-
-    /* FOLLOWING ARE COPIED FROM ITEM - DECIDE WHETHER TO KEEP OR NOT */
-
-    REINIT,
-    RESET,
-
-    ATTEMPT_VALID,
-    ATTEMPT_INVALID,
-    ATTEMPT_BAD,
-
-    CLOSE,
-    SOLUTION,
-
-    ;
+    /* Nothing to add */
 
 }

@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
@@ -70,11 +69,11 @@ public class CandidateAuditLogger {
     }
 
     public void logStandaloneItemRendering(final CandidateItemEvent candidateItemEvent, final StandaloneItemRenderingRequest renderingRequest) {
-        logEvent(candidateItemEvent.getCandidateSession(), "action=RENDER mode=" + renderingRequest.getRenderingMode());
+        logEvent(candidateItemEvent.getCandidateSession(), "action=RENDER_STANDALONE_ITEM mode=" + renderingRequest.getRenderingMode());
     }
 
     public void logTestItemRendering(final CandidateTestEvent candidateTestEvent, final TestItemRenderingRequest renderingRequest) {
-        logEvent(candidateTestEvent.getCandidateSession(), "action=RENDER mode=" + renderingRequest.getRenderingMode());
+        logEvent(candidateTestEvent.getCandidateSession(), "action=RENDER_TEST_ITEM mode=" + renderingRequest.getRenderingMode());
     }
 
     public void logTestPartNavigationRendering(final CandidateTestEvent candidateItemEvent) {
@@ -104,12 +103,20 @@ public class CandidateAuditLogger {
                 + " target_xeid=" + targetEvent.getId());
     }
 
-    public void logCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
-        final CandidateEvent candidateEvent = candidateAttempt.getEvent();
-        logEvent(candidateSession, "action=CANDIDATE_ATTEMPT xeid=" + candidateEvent.getId()
-                + " event=" + candidateEvent.getItemEventType()
+    public void logStandaloneItemCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
+        final CandidateItemEvent candidateItemEvent = (CandidateItemEvent) candidateAttempt.getEvent();
+        logEvent(candidateSession, "action=CANDIDATE_STANDALONE_ITEM_ATTEMPT xeid=" + candidateItemEvent.getId()
+                + " event=" + candidateItemEvent.getItemEventType()
                 + " xaid=" + candidateAttempt.getId()
-                + " notifications=" + candidateEvent.getNotifications().size());
+                + " notifications=" + candidateItemEvent.getNotifications().size());
+    }
+
+    public void logTestItemCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
+        final CandidateTestEvent candidateTestEvent = (CandidateTestEvent) candidateAttempt.getEvent();
+        logEvent(candidateSession, "action=CANDIDATE_TEST_ITEM_ATTEMPT xeid=" + candidateTestEvent.getId()
+                + " event=" + candidateTestEvent.getTestEventType()
+                + " xaid=" + candidateAttempt.getId()
+                + " notifications=" + candidateTestEvent.getNotifications().size());
     }
 
     public void logAndForbid(final CandidateSession candidateSession, final CandidatePrivilege privilege)
