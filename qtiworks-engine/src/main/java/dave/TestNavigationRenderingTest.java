@@ -40,7 +40,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  *
  * @author David McKain
  */
-public class TestRenderingTest {
+public class TestNavigationRenderingTest {
 
     public static void main(final String[] args) {
         final URI inputUri = URI.create("classpath:/testimplementation/selection.xml");
@@ -73,7 +73,7 @@ public class TestRenderingTest {
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = ItemRenderingTest.createRenderingOptions();
+            final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
             final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(inputUri);

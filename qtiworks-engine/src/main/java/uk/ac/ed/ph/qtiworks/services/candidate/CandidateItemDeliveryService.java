@@ -493,6 +493,7 @@ public class CandidateItemDeliveryService {
 
         final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, itemDeliverySettings, renderingOptions);
+        renderingRequest.setAssessmentItemUri(renderingRequest.getAssessmentResourceUri()); /* (These are the same for standalone items) */
         renderingRequest.setRenderingMode(renderingMode);
         renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());

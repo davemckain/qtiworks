@@ -35,10 +35,12 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +54,10 @@ import javax.validation.constraints.NotNull;
  * @author David McKain
  */
 public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
+
+    /** URI of the {@link AssessmentItem} being rendered */
+    @NotNull
+    private URI assessmentItemUri;
 
     /** Selected {@link RenderingMode} */
     @NotNull
@@ -79,6 +85,15 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
     private List<CandidateItemEvent> playbackEvents;
 
     //----------------------------------------------------
+
+    public URI getAssessmentItemUri() {
+        return assessmentItemUri;
+    }
+
+    public void setAssessmentItemUri(final URI assessmentItemUri) {
+        this.assessmentItemUri = assessmentItemUri;
+    }
+
 
     public RenderingMode getRenderingMode() {
         return renderingMode;

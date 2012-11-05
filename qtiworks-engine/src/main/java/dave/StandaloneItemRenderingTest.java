@@ -47,7 +47,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  *
  * @author David McKain
  */
-public class ItemRenderingTest {
+public class StandaloneItemRenderingTest {
 
     public static void main(final String[] args) {
         final URI inputUri = URI.create("classpath:/choice.xml");

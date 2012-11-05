@@ -95,7 +95,6 @@ public class AssessmentRenderer {
 
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
 
-    @SuppressWarnings("unused")
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
 
     private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
@@ -233,7 +232,7 @@ public class AssessmentRenderer {
         setTestRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
 
-        doTransform(renderingRequest, itemStandaloneXsltUri, resultStream, xsltParameters);
+        doTransform(renderingRequest, testItemXsltUri, resultStream, xsltParameters);
     }
 
     private void setNotificationParameters(final Map<String, Object> xsltParameters,
