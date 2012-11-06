@@ -115,11 +115,11 @@ public final class FilespaceManager {
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = filesystemBaseDirectory.toURI().toString()
-                + "/responses/assessment_" + assessment.getId()
-                + "/package_" + assessmentPackage.getId()
-                + "/delivery_" + delivery.getId()
+                + "/responses/assessment" + assessment.getId()
+                + "/package" + assessmentPackage.getId()
+                + "/delivery" + delivery.getId()
                 + "/" + candidate.getBusinessKey()
-                + "/session_" + candidateSession.getId();
+                + "/session" + candidateSession.getId();
         final File candidateResponseFolder = createDirectoryPath(folderUri);
         return new File(candidateResponseFolder, createUniqueRequestComponent());
     }
@@ -132,11 +132,11 @@ public final class FilespaceManager {
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = filesystemBaseDirectory.toURI().toString()
-                + "/sessions/assessment_" + assessment.getId()
-                + "/package_" + assessmentPackage.getId()
-                + "/delivery_" + delivery.getId()
+                + "/sessions/assessment" + assessment.getId()
+                + "/package" + assessmentPackage.getId()
+                + "/delivery" + delivery.getId()
                 + "/" + candidate.getBusinessKey()
-                + "/session_" + candidateSession.getId();
+                + "/session" + candidateSession.getId();
         return createDirectoryPath(folderUri);
     }
 
