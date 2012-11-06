@@ -371,14 +371,19 @@ public class CandidateTestDeliveryService {
             final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
         final CandidateSession candidateSession = candidateTestEvent.getCandidateSession();
-//        final Delivery delivery = candidateSession.getDelivery();
+        final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
 
         /* Compute current value for 'duration' */
         final double duration = computeTestSessionDuration(candidateSession);
 
+        /* Will need to query certain parts of state */
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, new NotificationRecorder(NotificationLevel.INFO));
+
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateTestEvent,
                 testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
+        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTestPart());
 //        renderingRequest.setCloseAllowed(testDeliverySettings.isAllowClose());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenInteracting());
 //        renderingRequest.setResetAllowed(testDeliverySettings.isAllowResetWhenInteracting());
@@ -459,12 +464,17 @@ public class CandidateTestDeliveryService {
     private TestItemRenderingRequest initTestRenderingRequestWhenClosed(final CandidateTestEvent candidateTestEvent,
             final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-//        final CandidateSession candidateSession = candidateTestEvent.getCandidateSession();
-//        final Delivery delivery = candidateSession.getDelivery();
+        final CandidateSession candidateSession = candidateTestEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+
+        /* Will need to query certain parts of state */
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, new NotificationRecorder(NotificationLevel.INFO));
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateTestEvent,
                 testSessionState, itemSessionState, renderingOptions, renderingMode);
+        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTestPart());
 //        renderingRequest.setCloseAllowed(false);
 //        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenClosed());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenClosed());

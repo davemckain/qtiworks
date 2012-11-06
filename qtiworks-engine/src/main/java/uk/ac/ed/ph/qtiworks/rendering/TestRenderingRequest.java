@@ -35,42 +35,17 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
-import javax.validation.constraints.NotNull;
-
 /**
- * Encapsulates the required data for rendering the current state of an item
- * within a test
+ * FIXME: Document this!
  *
  * @author David McKain
  */
-public final class TestItemRenderingRequest extends StandaloneItemRenderingRequest implements TestRenderingRequest {
+interface TestRenderingRequest {
 
-    /** {@link TestSessionState} owning this item */
-    @NotNull
-    private TestSessionState testSessionState;
+    TestSessionState getTestSessionState();
+    void setTestSessionState(final TestSessionState testSessionState);
 
-    private boolean exitTestPartAllowed;
+    boolean isExitTestPartAllowed();
+    void setExitTestPartAllowed(boolean exitTestPartAllowed);
 
-    //----------------------------------------------------
-
-    @Override
-    public TestSessionState getTestSessionState() {
-        return testSessionState;
-    }
-
-    @Override
-    public void setTestSessionState(final TestSessionState testSessionState) {
-        this.testSessionState = testSessionState;
-    }
-
-
-    @Override
-    public boolean isExitTestPartAllowed() {
-        return exitTestPartAllowed;
-    }
-
-    @Override
-    public void setExitTestPartAllowed(final boolean exitTestPartAllowed) {
-        this.exitTestPartAllowed = exitTestPartAllowed;
-    }
 }

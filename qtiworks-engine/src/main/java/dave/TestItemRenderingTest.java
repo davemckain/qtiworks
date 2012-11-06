@@ -84,7 +84,6 @@ public class TestItemRenderingTest {
 
             final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
             final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
-            renderingRequest.setAssessmentTest(resolvedAssessmentTest.getTestLookup().extractAssumingSuccessful());
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setAssessmentItemUri(itemUri);

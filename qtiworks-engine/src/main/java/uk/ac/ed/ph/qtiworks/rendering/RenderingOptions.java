@@ -88,6 +88,9 @@ public final class RenderingOptions implements Serializable {
     @NotNull
     private String selectItemUrl;
 
+    @NotNull
+    private String exitTestPartUrl;
+
     //----------------------------------------------------
 
     public SerializationMethod getSerializationMethod() {
@@ -204,6 +207,15 @@ public final class RenderingOptions implements Serializable {
 
     public void setSelectItemUrl(final String selectItemUrl) {
         this.selectItemUrl = selectItemUrl;
+    }
+
+
+    public String getExitTestPartUrl() {
+        return exitTestPartUrl;
+    }
+
+    public void setExitTestPartUrl(final String exitTestPartUrl) {
+        this.exitTestPartUrl = exitTestPartUrl;
     }
 
     //----------------------------------------------------

@@ -254,15 +254,20 @@ public class AssessmentRenderer {
         /* Pass ItemSessionState (as DOM Document) */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+
+        /* Set control parameters */
+        xsltParameters.put("exitTestPartAllowed", Boolean.valueOf(renderingRequest.isExitTestPartAllowed()));
     }
 
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
             final XsltParamBuilder xsltParamBuilder, final StandaloneItemRenderingRequest renderingRequest) {
         final Map<Identifier, ResponseData> responseInputs = renderingRequest.getResponseInputs();
 
-        /* Set config & control parameters */
-        xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
+        /* Set config parameters */
         xsltParameters.put("prompt", renderingRequest.getPrompt());
+
+        /* Set control parameters */
+        xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
         xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
         xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
         xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));
@@ -315,6 +320,7 @@ public class AssessmentRenderer {
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
+        xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());
     }
 
     //----------------------------------------------------

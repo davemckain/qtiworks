@@ -95,6 +95,7 @@ public class CandidateTestController {
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
+        renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exittestpart");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateTestDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);

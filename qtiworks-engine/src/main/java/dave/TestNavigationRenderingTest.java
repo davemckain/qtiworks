@@ -44,7 +44,6 @@ public class TestNavigationRenderingTest {
 
     public static void main(final String[] args) {
         final URI testUri = URI.create("classpath:/testimplementation/selection.xml");
-        final URI itemUri = URI.create("classpath:/testimplementation/questions/choice.xml");
 
         System.out.println("Reading");
         final NotificationLogListener notificationLogListener = new NotificationLogListener();

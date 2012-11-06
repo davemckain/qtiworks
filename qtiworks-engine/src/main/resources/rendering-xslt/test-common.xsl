@@ -28,12 +28,16 @@ Base templates used in test rendering
   <!-- Outcome declarations in test -->
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
 
-  <!-- assesssmentTest element -->
-  <xsl:variable name="assessmentTest" as="element(qti:assessmentTest)"
-    select="document($testSystemId)/*[1]"/>
+  <!-- Action permissions -->
+  <xsl:param name="exitTestPartAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Test outcome values -->
   <xsl:param name="testOutcomeValues" select="()" as="element(qw:outcomeVariable)*"/>
+
+  <!-- ************************************************************ -->
+
+  <!-- assesssmentTest document element -->
+  <xsl:variable name="assessmentTest" select="document($testSystemId)/*[1]" as="element(qti:assessmentTest)"/>
 
   <!-- ************************************************************ -->
 

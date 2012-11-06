@@ -246,8 +246,7 @@ rendering.
       <xsl:if test="$authorMode">
         <div class="authorMode">
           The candidate currently has the following "session control" options. You can choose
-          exactly which options are available via the "item delivery". (You will be able
-          to do this soon!)
+          exactly which options are available via the "item delivery".
         </div>
       </xsl:if>
       <ul class="controls">

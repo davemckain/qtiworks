@@ -45,19 +45,34 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class TestPartNavigationRenderingRequest extends AbstractRenderingRequest {
+public final class TestPartNavigationRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
 
     /** Required {@link TestSessionState} to be rendered */
     @NotNull
     private TestSessionState testSessionState;
 
+    private boolean exitTestPartAllowed;
+
     //----------------------------------------------------
 
+    @Override
     public TestSessionState getTestSessionState() {
         return testSessionState;
     }
 
+    @Override
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
+    }
+
+
+    @Override
+    public boolean isExitTestPartAllowed() {
+        return exitTestPartAllowed;
+    }
+
+    @Override
+    public void setExitTestPartAllowed(final boolean exitTestPartAllowed) {
+        this.exitTestPartAllowed = exitTestPartAllowed;
     }
 }
