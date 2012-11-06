@@ -186,6 +186,64 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Rendering
 
+    public void renderTestNavigation(final long xid, final String sessionToken,
+            final RenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+        Assert.notNull(renderingOptions, "renderingOptions");
+        Assert.notNull(outputStreamer, "outputStreamer");
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+
+        /* Look up most recent event and get state */
+        final CandidateTestEvent latestEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
+        final TestSessionState testSessionState = candidateDataServices.unmarshalTestSessionState(latestEvent);
+
+        /* CUT & PASTE BELOW - YUCK! */
+
+        /* Create temporary file to hold the output before it gets streamed */
+        final File resultFile = filespaceManager.createTempFile();
+        try {
+            /* Render to temp file */
+            FileOutputStream resultOutputStream = null;
+            try {
+                resultOutputStream = new FileOutputStream(resultFile);
+
+                /* CUSTOM BIT IS HERE */
+                renderTestPartNavigationMenu(latestEvent, testSessionState, renderingOptions, resultOutputStream);
+            }
+            catch (final IOException e) {
+                throw new QtiWorksRuntimeException("Unexpected IOException", e);
+            }
+            finally {
+                IOUtils.closeQuietly(resultOutputStream);
+            }
+
+            /* Finally stream to caller */
+            final String contentType = renderingOptions.getSerializationMethod().getContentType();
+            final long contentLength = resultFile.length();
+            FileInputStream resultInputStream = null;
+            try {
+                resultInputStream = new FileInputStream(resultFile);
+                outputStreamer.stream(contentType, contentLength, requestTimestampContext.getCurrentRequestTimestamp(),
+                        resultInputStream);
+            }
+            catch (final FileNotFoundException e) {
+                throw new QtiWorksRuntimeException("Unexpected IOException", e);
+            }
+            catch (final IOException e) {
+                /* Streamer threw Exception */
+                throw e;
+            }
+            finally {
+                IOUtils.closeQuietly(resultInputStream);
+            }
+        }
+        finally {
+            if (!resultFile.delete()) {
+                throw new QtiWorksRuntimeException("Could not delete result file " + resultFile.getPath());
+            }
+        }
+    }
+
     /**
      * Renders the current state of the {@link CandidateSession} having
      * the given ID (xid).

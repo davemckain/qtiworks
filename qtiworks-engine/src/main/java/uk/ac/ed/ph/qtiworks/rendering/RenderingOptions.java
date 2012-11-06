@@ -91,6 +91,9 @@ public final class RenderingOptions implements Serializable {
     @NotNull
     private String exitTestPartUrl;
 
+    @NotNull
+    private String testPartNavigationUrl;
+
     //----------------------------------------------------
 
     public SerializationMethod getSerializationMethod() {
@@ -216,6 +219,15 @@ public final class RenderingOptions implements Serializable {
 
     public void setExitTestPartUrl(final String exitTestPartUrl) {
         this.exitTestPartUrl = exitTestPartUrl;
+    }
+
+
+    public String getTestPartNavigationUrl() {
+        return testPartNavigationUrl;
+    }
+
+    public void setTestPartNavigationUrl(final String testPartNavigationUrl) {
+        this.testPartNavigationUrl = testPartNavigationUrl;
     }
 
     //----------------------------------------------------

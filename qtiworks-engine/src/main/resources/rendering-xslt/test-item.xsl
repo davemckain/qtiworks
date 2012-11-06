@@ -161,6 +161,11 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
         </div>
       </xsl:if>
       <ul class="controls test">
+        <li>
+          <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
+            <input type="submit" value="Test Navigation"/>
+          </form>
+        </li>
         <xsl:if test="$exitTestPartAllowed">
           <li>
             <form action="{$webappContextPath}{$exitTestPartUrl}" method="post">

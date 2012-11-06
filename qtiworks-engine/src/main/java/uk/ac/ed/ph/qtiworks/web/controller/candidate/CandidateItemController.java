@@ -113,6 +113,7 @@ public class CandidateItemController {
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
         renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exittestpart");
+        renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/navigation");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateItemDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);

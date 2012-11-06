@@ -136,6 +136,7 @@ public class StandaloneItemRenderingTest {
         renderingOptions.setTerminateUrl("/terminate");
         renderingOptions.setSelectItemUrl("/select");
         renderingOptions.setExitTestPartUrl("/exittestpart");
+        renderingOptions.setTestPartNavigationUrl("/navigation");
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         return renderingOptions;
     }

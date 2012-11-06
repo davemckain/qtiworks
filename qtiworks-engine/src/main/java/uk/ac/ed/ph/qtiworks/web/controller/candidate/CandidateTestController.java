@@ -85,6 +85,13 @@ public class CandidateTestController {
             final WebRequest webRequest, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
+        final RenderingOptions renderingOptions = createTestRenderingOptions(webRequest, xid, sessionToken);
+
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateTestDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
+    }
+
+    private RenderingOptions createTestRenderingOptions(final WebRequest webRequest, final long xid, final String sessionToken) {
         final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + sessionToken;
         final RenderingOptions renderingOptions = new RenderingOptions();
         renderingOptions.setContextPath(webRequest.getContextPath());
@@ -101,10 +108,10 @@ public class CandidateTestController {
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
         renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exittestpart");
-
-        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        candidateTestDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
+        renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/navigation");
+        return renderingOptions;
     }
+
     //----------------------------------------------------
     // Attempt handling
 
@@ -188,6 +195,20 @@ public class CandidateTestController {
 
     //----------------------------------------------------
     // Test navigation and lifecycle
+
+    /**
+     * Shows navigation for current test part
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/navigation", method=RequestMethod.POST)
+    public void showNavigationMenu(final WebRequest webRequest, final HttpServletResponse response,
+            @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException, IOException {
+        /* Create appropriate options that link back to this controller */
+        final RenderingOptions renderingOptions = createTestRenderingOptions(webRequest, xid, sessionToken);
+
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateTestDeliveryService.renderTestNavigation(xid, sessionToken, renderingOptions, outputStreamer);
+    }
 
     /**
      * Selects the requested item instance
