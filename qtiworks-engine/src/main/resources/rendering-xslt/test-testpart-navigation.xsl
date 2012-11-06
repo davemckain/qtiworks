@@ -92,7 +92,7 @@ Renders the navigation for the current testPart
   <xsl:template match="qw:node" mode="testPart-item">
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
     <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
-      <input type="submit" value="Choose Item"/> <xsl:value-of select="@key"/>
+      <input type="submit" value="Choose Item"/> <xsl:value-of select="@itemTitle"/>
       <pre>
         PRESENTED: <xsl:value-of select="$itemSessionState/@presented='true'"/>
         RESPONDED: <xsl:value-of select="$itemSessionState/@responsed='true'"/>
