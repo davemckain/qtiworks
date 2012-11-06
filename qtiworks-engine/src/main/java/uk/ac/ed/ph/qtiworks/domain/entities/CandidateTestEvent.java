@@ -33,19 +33,14 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 /**
  * Subclass of {@link CandidateEvent} for events specific to a test
@@ -84,17 +79,6 @@ public class CandidateTestEvent extends CandidateEvent implements BaseEntity {
     @Column(name="duration", updatable=false)
     private double duration;
 
-    /**
-     * {@link TestSessionState} serialized in a custom XML format.
-     *
-     * @see TestSesssionStateXmlMarshaller
-     */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=false)
-    @Column(name="test_session_state_xml", updatable=false)
-    private String testSessionStateXml;
-
     //------------------------------------------------------------
 
     public CandidateTestEvent() {
@@ -118,15 +102,6 @@ public class CandidateTestEvent extends CandidateEvent implements BaseEntity {
 
     public void setDuration(final double duration) {
         this.duration = duration;
-    }
-
-
-    public String getTestSessionStateXml() {
-        return testSessionStateXml;
-    }
-
-    public void setTestSessionStateXml(final String testSessionStateXml) {
-        this.testSessionStateXml = testSessionStateXml;
     }
 
     //------------------------------------------------------------

@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
@@ -71,21 +72,23 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
+import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
-import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
-import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
-
-import java.io.StringReader;
+import java.io.File;
 
 import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 /**
  * Low level services for manipulating candidate data, such as recording
@@ -102,6 +105,9 @@ public class CandidateDataServices {
 
     @Resource
     private EntityGraphService entityGraphService;
+
+    @Resource
+    private FilespaceManager filespaceManager;
 
     @Resource
     private AssessmentObjectManagementService assessmentObjectManagementService;
@@ -150,14 +156,14 @@ public class CandidateDataServices {
     //----------------------------------------------------
     // Item methods
 
-    public String marshalItemSessionState(final ItemSessionState itemSessionState) {
-        return serializeMarshalledXml(ItemSessionStateXmlMarshaller.marshal(itemSessionState));
+    public void storeItemSessionState(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState) {
+        final Document stateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
+        storeStateDocument(candidateEvent, stateDocument);
     }
 
-    public ItemSessionState unmarshalItemSessionState(final CandidateItemEvent event) {
-        final String itemSessionStateXml = event.getItemSessionStateXml();
-        final Document doc = parseMarshalledState(itemSessionStateXml);
-        return ItemSessionStateXmlMarshaller.unmarshal(doc.getDocumentElement());
+    public ItemSessionState loadItemSessionState(final CandidateEvent candidateEvent) {
+        final Document document = loadStateDocument(candidateEvent);
+        return ItemSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
     public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
@@ -191,11 +197,11 @@ public class CandidateDataServices {
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
         event.setPlaybackEvent(playbackEvent);
 
-        /* Record serialized ItemSessionState */
-        event.setItemSessionStateXml(marshalItemSessionState(itemSessionState));
-
         /* Store event */
         candidateEventDao.persist(event);
+
+        /* Save state */
+        storeItemSessionState(event, itemSessionState);
 
         /* Now store processing notifications */
         if (notificationRecorder!=null) {
@@ -212,7 +218,7 @@ public class CandidateDataServices {
         Assert.notNull(candidateItemEvent, "candidateItemEvent");
 
         final Delivery delivery = candidateItemEvent.getCandidateSession().getDelivery();
-        final ItemSessionState itemSessionState = unmarshalItemSessionState(candidateItemEvent);
+        final ItemSessionState itemSessionState = loadItemSessionState(candidateItemEvent);
         return createItemSessionController(delivery, itemSessionState, notificationRecorder);
     }
 
@@ -252,7 +258,7 @@ public class CandidateDataServices {
 
     public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateSession)  {
         final CandidateItemEvent mostRecentEvent = getMostRecentItemEvent(candidateSession);
-        return unmarshalItemSessionState(mostRecentEvent);
+        return loadItemSessionState(mostRecentEvent);
     }
 
     public CandidateItemEvent getMostRecentItemEvent(final CandidateSession candidateSession)  {
@@ -273,14 +279,14 @@ public class CandidateDataServices {
     //----------------------------------------------------
     // Test methods
 
-    public String marshalTestSessionState(final TestSessionState testSessionState) {
-        return serializeMarshalledXml(TestSessionStateXmlMarshaller.marshal(testSessionState));
+    public void storeTestSessionState(final CandidateEvent candidateEvent, final TestSessionState testSessionState) {
+        final Document stateDocument = TestSessionStateXmlMarshaller.marshal(testSessionState);
+        storeStateDocument(candidateEvent, stateDocument);
     }
 
-    public TestSessionState unmarshalTestSessionState(final CandidateTestEvent event) {
-        final String testSessionStateXml = event.getTestSessionStateXml();
-        final Document doc = parseMarshalledState(testSessionStateXml);
-        return TestSessionStateXmlMarshaller.unmarshal(doc.getDocumentElement());
+    public TestSessionState loadTestSessionState(final CandidateEvent candidateEvent) {
+        final Document document = loadStateDocument(candidateEvent);
+        return TestSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
     public TestSessionController createNewTestSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
@@ -329,11 +335,11 @@ public class CandidateDataServices {
         event.setDuration(testSessionState.getDuration());
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
 
-        /* Record serialized TestSessionState */
-        event.setTestSessionStateXml(marshalTestSessionState(testSessionState));
-
         /* Store event */
         candidateEventDao.persist(event);
+
+        /* Store state */
+        storeTestSessionState(event, testSessionState);
 
         /* Now store processing notifications */
         if (notificationRecorder!=null) {
@@ -350,7 +356,7 @@ public class CandidateDataServices {
         Assert.notNull(candidateTestEvent, "candidateTestEvent");
 
         final Delivery delivery = candidateTestEvent.getCandidateSession().getDelivery();
-        final TestSessionState testSessionState = unmarshalTestSessionState(candidateTestEvent);
+        final TestSessionState testSessionState = loadTestSessionState(candidateTestEvent);
         return createTestSessionController(delivery, testSessionState, notificationRecorder);
     }
 
@@ -380,7 +386,7 @@ public class CandidateDataServices {
 
     public TestSessionState computeCurrentTestSessionState(final CandidateSession candidateSession)  {
         final CandidateTestEvent mostRecentEvent = getMostRecentTestEvent(candidateSession);
-        return unmarshalTestSessionState(mostRecentEvent);
+        return loadTestSessionState(mostRecentEvent);
     }
 
     public CandidateTestEvent getMostRecentTestEvent(final CandidateSession candidateSession)  {
@@ -401,20 +407,37 @@ public class CandidateDataServices {
     //----------------------------------------------------
     // General helpers
 
-    private String serializeMarshalledXml(final Document marshalledState) {
-        final XMLStringOutputOptions xmlOptions = new XMLStringOutputOptions();
-        xmlOptions.setIndenting(true);
-        xmlOptions.setIncludingXMLDeclaration(false);
-        return XMLUtilities.serializeNode(marshalledState, xmlOptions);
+    private void storeStateDocument(final CandidateEvent candidateEvent, final Document stateXml) {
+        final File sessionFile = getStateFile(candidateEvent);
+        final XsltSerializationOptions xsltSerializationOptions = new XsltSerializationOptions();
+        xsltSerializationOptions.setIndenting(true);
+        xsltSerializationOptions.setIncludingXMLDeclaration(false);
+        final Transformer serializer = new XsltStylesheetManager().getSerializer(xsltSerializationOptions);
+        try {
+            serializer.transform(new DOMSource(stateXml), new StreamResult(sessionFile));
+        }
+        catch (final TransformerException e) {
+            throw new QtiWorksRuntimeException("Unexpected Exception serializing state DOM", e);
+        }
     }
 
-    private Document parseMarshalledState(final String stateXml) {
+    private Document loadStateDocument(final CandidateEvent candidateEvent) {
+        final File sessionFile = getStateFile(candidateEvent);
+        if (!sessionFile.exists()) {
+            throw new QtiWorksLogicException("State file " + sessionFile + " does not exist");
+        }
         final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
         try {
-            return documentBuilder.parse(new InputSource(new StringReader(stateXml)));
+            return documentBuilder.parse(sessionFile);
         }
         catch (final Exception e) {
             throw new QtiWorksLogicException("Could not parse serailized state XML. This is an internal error as we currently don't expose this data to clients", e);
         }
+    }
+
+    private File getStateFile(final CandidateEvent candidateEvent) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final File sessionFolder = filespaceManager.createCandidateSessionStateStore(candidateSession);
+        return new File(sessionFolder, String.valueOf("state" + candidateEvent.getId() + ".xml"));
     }
 }

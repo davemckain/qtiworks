@@ -34,9 +34,6 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
-
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -44,13 +41,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Type;
 
 /**
  * Subclass of {@link CandidateEvent} for events specific to an item.
@@ -98,17 +92,6 @@ public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
     @Basic(optional=false)
     @Column(name="num_attempts", updatable=false)
     private int numAttempts;
-
-    /**
-     * {@link ItemSessionState} serialized in a custom XML format.
-     *
-     * @see ItemSessionStateXmlMarshaller
-     */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=false)
-    @Column(name="item_session_state_xml", updatable=false)
-    private String itemSessionStateXml;
 
     /**
      * For a {@link CandidateItemEventType#PLAYBACK} event, this points to the event in
@@ -160,15 +143,6 @@ public class CandidateItemEvent extends CandidateEvent implements BaseEntity {
 
     public void setNumAttempts(final int numAttempts) {
         this.numAttempts = numAttempts;
-    }
-
-
-    public String getItemSessionStateXml() {
-        return itemSessionStateXml;
-    }
-
-    public void setItemSessionStateXml(final String itemSessionStateXml) {
-        this.itemSessionStateXml = itemSessionStateXml;
     }
 
 

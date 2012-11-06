@@ -263,7 +263,7 @@ public class CandidateItemDeliveryService {
     private void renderEvent(final CandidateSession candidateSession,
             final CandidateItemEvent candidateItemEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemSessionState itemSessionState = candidateDataServices.unmarshalItemSessionState(candidateItemEvent);
+        final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(candidateItemEvent);
         if (candidateSession.isTerminated()) {
             /* Session is terminated */
             renderTerminated(candidateItemEvent, renderingOptions, resultStream);
@@ -847,7 +847,7 @@ public class CandidateItemDeliveryService {
         }
 
         /* Pull the QTI state from this event */
-        itemSessionState = candidateDataServices.unmarshalItemSessionState(lastInitEvent);
+        itemSessionState = candidateDataServices.loadItemSessionState(lastInitEvent);
 
         /* Update state */
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));

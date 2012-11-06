@@ -101,27 +101,43 @@ public final class FilespaceManager {
     public File createAssessmentPackageSandbox(final User owner) {
         Assert.notNull(owner, "owner");
         final String filespaceUri = filesystemBaseDirectory.toURI().toString()
-                + "/uploads/assessment_packages/"
+                + "/assessments/"
                 + owner.getBusinessKey()
                 + "/" + createUniqueRequestComponent();
         return createDirectoryPath(filespaceUri);
     }
 
-    public File createCandidateUploadFile(final CandidateSession candidateItemSession) {
-        Assert.notNull(candidateItemSession, "candidateItemSession");
-        final User candidate = candidateItemSession.getCandidate();
-        final Delivery delivery = candidateItemSession.getDelivery();
+    public File createCandidateUploadFile(final CandidateSession candidateSession) {
+        Assert.notNull(candidateSession, "candidateSession");
+        final User candidate = candidateSession.getCandidate();
+        final Delivery delivery = candidateSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = filesystemBaseDirectory.toURI().toString()
-                + "/uploads/file_responses/assessment_" + assessment.getId()
+                + "/responses/assessment_" + assessment.getId()
                 + "/package_" + assessmentPackage.getId()
                 + "/delivery_" + delivery.getId()
                 + "/" + candidate.getBusinessKey()
-                + "/session_" + candidateItemSession.getId();
-        final File candidateItemSessionFolder = createDirectoryPath(folderUri);
-        return new File(candidateItemSessionFolder, createUniqueRequestComponent());
+                + "/session_" + candidateSession.getId();
+        final File candidateResponseFolder = createDirectoryPath(folderUri);
+        return new File(candidateResponseFolder, createUniqueRequestComponent());
+    }
+
+    public File createCandidateSessionStateStore(final CandidateSession candidateSession) {
+        Assert.notNull(candidateSession, "candidateSession");
+        final User candidate = candidateSession.getCandidate();
+        final Delivery delivery = candidateSession.getDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final Assessment assessment = assessmentPackage.getAssessment();
+
+        final String folderUri = filesystemBaseDirectory.toURI().toString()
+                + "/sessions/assessment_" + assessment.getId()
+                + "/package_" + assessmentPackage.getId()
+                + "/delivery_" + delivery.getId()
+                + "/" + candidate.getBusinessKey()
+                + "/session_" + candidateSession.getId();
+        return createDirectoryPath(folderUri);
     }
 
     public void deleteSandbox(final File sandboxDirectory) {

@@ -195,7 +195,7 @@ public class CandidateTestDeliveryService {
 
         /* Look up most recent event and get state */
         final CandidateTestEvent latestEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
-        final TestSessionState testSessionState = candidateDataServices.unmarshalTestSessionState(latestEvent);
+        final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(latestEvent);
 
         /* CUT & PASTE BELOW - YUCK! */
 
@@ -311,7 +311,7 @@ public class CandidateTestDeliveryService {
     private void renderEvent(final CandidateSession candidateSession,
             final CandidateTestEvent candidateTestEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestSessionState testSessionState = candidateDataServices.unmarshalTestSessionState(candidateTestEvent);
+        final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(candidateTestEvent);
         if (candidateSession.isTerminated()) {
             renderTerminated(candidateTestEvent, renderingOptions, resultStream);
         }
