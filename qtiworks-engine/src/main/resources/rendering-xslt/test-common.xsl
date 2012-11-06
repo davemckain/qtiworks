@@ -153,36 +153,4 @@ Base templates used in test rendering
     </xsl:choose>
   </xsl:template>
 
-  <!-- Convert XHTML elements that have been "imported" into QTI -->
-  <xsl:template match="qti:abbr|qti:acronym|qti:address|qti:blockquote|qti:br|qti:cite|qti:code|
-                       qti:dfn|qti:div|qti:em|qti:h1|qti:h2|qti:h3|qti:h4|qti:h5|qti:h6|qti:kbd|
-                       qti:p|qti:pre|qti:q|qti:samp|qti:span|qti:strong|qti:var|
-                       qti:dl|qti:dt|qti:dd|qti:ol|qti:ul|qti:li|
-                       qti:object|qti:b|qti:big|qti:hr|qti:i|qti:small|qti:sub|qti:sup|qti:tt|
-                       qti:caption|qti:col|qti:colgroup|qti:table|qti:tbody|qti:td|qti:tfoot|qti:tr|qti:thead|
-                       qti:img|qti:a">
-    <xsl:element name="{local-name()}">
-      <xsl:apply-templates select="@*" mode="qti-to-xhtml"/>
-      <xsl:apply-templates select="node()"/>
-    </xsl:element>
-  </xsl:template>
-
-  <!-- Handle path attributes carefully so that relative paths get fixed up -->
-  <xsl:template match="qti:img/@src|@href|qti:object/@data" mode="qti-to-xhtml">
-    <xsl:attribute name="{local-name()}" select="qw:convert-link(string(.))"/>
-  </xsl:template>
-
-  <!-- Copy other attributes as-is -->
-  <xsl:template match="@*" mode="qti-to-xhtml">
-    <xsl:copy-of select="."/>
-  </xsl:template>
-
-  <!-- Catch-all for QTI elements not handled elsewhere. -->
-  <xsl:template match="qti:*" priority="-10">
-    <xsl:message terminate="yes">
-      QTI element <xsl:value-of select="local-name()"/> was not handled by a template
-    </xsl:message>
-  </xsl:template>
-
 </xsl:stylesheet>
-
