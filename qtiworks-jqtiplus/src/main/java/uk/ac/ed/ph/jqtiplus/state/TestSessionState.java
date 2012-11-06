@@ -135,6 +135,11 @@ public final class TestSessionState implements Serializable {
         this.currentItemKey = currentItemKey;
     }
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public ItemSessionState getCurrentItemSessionState() {
+        return currentItemKey!=null ? itemSessionStates.get(currentItemKey) : null;
+    }
+
     //----------------------------------------------------------------
     // Built-in variable manipulation
 

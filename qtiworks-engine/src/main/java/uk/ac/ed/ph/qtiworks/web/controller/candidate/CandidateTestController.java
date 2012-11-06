@@ -40,11 +40,19 @@ import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
+import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
@@ -52,6 +60,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * Controller for candidate test sessions
@@ -69,11 +79,6 @@ public class CandidateTestController {
 
     /**
      * Renders the current state of the given session
-     *
-     * FIXME: This is currently just a placeholder!
-     *
-     * @throws IOException
-     * @throws CandidateForbiddenException
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
     public void renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
@@ -100,6 +105,89 @@ public class CandidateTestController {
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateTestDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
     }
+    //----------------------------------------------------
+    // Attempt handling
+
+    /**
+     * Handles submission of candidate responses
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/attempt", method=RequestMethod.POST)
+    public String handleAttempt(final HttpServletRequest request, @PathVariable final long xid,
+            @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        /* First need to extract responses */
+        final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
+
+        /* Extract and import file responses (if appropriate) */
+        Map<Identifier, MultipartFile> fileResponseMap = null;
+        if (request instanceof MultipartHttpServletRequest) {
+            fileResponseMap = extractFileResponseData((MultipartHttpServletRequest) request);
+        }
+
+        /* Call up service layer */
+        candidateTestDeliveryService.handleAttempt(xid, sessionToken, stringResponseMap, fileResponseMap);
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
+    /**
+     * FIXME: copy & pasted from {@link ItemSessionController}
+     * @throws BadResponseWebPayloadException
+     */
+    private Map<Identifier, MultipartFile> extractFileResponseData(final MultipartHttpServletRequest multipartRequest) {
+        final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
+        @SuppressWarnings("unchecked")
+        final Set<String> parameterNames = multipartRequest.getParameterMap().keySet();
+        for (final String name : parameterNames) {
+            if (name.startsWith("qtiworks_uploadpresented_")) {
+                final String responseIdentifierString = name.substring("qtiworks_uploadpresented_".length());
+                final Identifier responseIdentifier;
+                try {
+                    responseIdentifier = Identifier.parseString(responseIdentifierString);
+                }
+                catch (final QtiParseException e) {
+                    throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
+                }
+                final String multipartName = "qtiworks_uploadresponse_" + responseIdentifierString;
+                final MultipartFile multipartFile = multipartRequest.getFile(multipartName);
+                if (multipartFile==null) {
+                    throw new BadResponseWebPayloadException("Expected to find multipart file with name " + multipartName);
+                }
+                fileResponseMap.put(responseIdentifier, multipartFile);
+            }
+        }
+        return fileResponseMap;
+    }
+
+    /**
+     * FIXME: copy & pasted from {@link ItemSessionController}
+     * @throws BadResponseWebPayloadException
+     */
+    private Map<Identifier, StringResponseData> extractStringResponseData(final HttpServletRequest request) {
+        final Map<Identifier, StringResponseData> responseMap = new HashMap<Identifier, StringResponseData>();
+        @SuppressWarnings("unchecked")
+        final Set<String> parameterNames = request.getParameterMap().keySet();
+        for (final String name : parameterNames) {
+            if (name.startsWith("qtiworks_presented_")) {
+                final String responseIdentifierString = name.substring("qtiworks_presented_".length());
+                final Identifier responseIdentifier;
+                try {
+                    responseIdentifier = Identifier.parseString(responseIdentifierString);
+                }
+                catch (final QtiParseException e) {
+                    throw new BadResponseWebPayloadException("Bad response identifier encoded in parameter  " + name, e);
+                }
+                final String[] responseValues = request.getParameterValues("qtiworks_response_" + responseIdentifierString);
+                final StringResponseData stringResponseData = new StringResponseData(responseValues);
+                responseMap.put(responseIdentifier, stringResponseData);
+            }
+        }
+        return responseMap;
+    }
+
+    //----------------------------------------------------
+    // Test navigation and lifecycle
 
     /**
      * Selects the requested item instance

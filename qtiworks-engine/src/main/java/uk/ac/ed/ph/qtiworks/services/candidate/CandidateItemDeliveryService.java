@@ -614,7 +614,7 @@ public class CandidateItemDeliveryService {
         }
 
         /* Build Map of responses in appropriate entity form */
-        final CandidateAttempt candidateItemAttempt = new CandidateAttempt();
+        final CandidateAttempt candidateAttempt = new CandidateAttempt();
         final Map<Identifier, CandidateResponse> responseEntityMap = new HashMap<Identifier, CandidateResponse>();
         final Set<CandidateResponse> candidateItemResponses = new HashSet<CandidateResponse>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
@@ -623,7 +623,7 @@ public class CandidateItemDeliveryService {
 
             final CandidateResponse candidateItemResponse = new CandidateResponse();
             candidateItemResponse.setResponseIdentifier(responseIdentifier.toString());
-            candidateItemResponse.setAttempt(candidateItemAttempt);
+            candidateItemResponse.setAttempt(candidateAttempt);
             candidateItemResponse.setResponseType(responseData.getType());
             candidateItemResponse.setResponseLegality(ResponseLegality.VALID); /* (May change this below) */
             switch (responseData.getType()) {
@@ -641,7 +641,7 @@ public class CandidateItemDeliveryService {
             responseEntityMap.put(responseIdentifier, candidateItemResponse);
             candidateItemResponses.add(candidateItemResponse);
         }
-        candidateItemAttempt.setResponses(candidateItemResponses);
+        candidateAttempt.setResponses(candidateItemResponses);
 
         /* Attempt to bind responses */
         itemSessionController.bindResponses(responseMap);
@@ -682,15 +682,15 @@ public class CandidateItemDeliveryService {
         final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 eventType, itemSessionState, notificationRecorder);
 
-        candidateItemAttempt.setEvent(candidateItemEvent);
-        candidateAttemptDao.persist(candidateItemAttempt);
+        candidateAttempt.setEvent(candidateItemEvent);
+        candidateAttemptDao.persist(candidateAttempt);
 
         /* Log this (in existing state) */
-        candidateAuditLogger.logStandaloneItemCandidateAttempt(candidateSession, candidateItemAttempt);
+        candidateAuditLogger.logStandaloneItemCandidateAttempt(candidateSession, candidateAttempt);
 
         /* Persist session */
         candidateSessionDao.update(candidateSession);
-        return candidateItemAttempt;
+        return candidateAttempt;
     }
 
     //----------------------------------------------------

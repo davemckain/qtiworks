@@ -94,6 +94,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -102,6 +103,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service the manages the real-time delivery of a an {@link AssessmentTest}
@@ -131,6 +133,9 @@ public class CandidateTestDeliveryService {
 
     @Resource
     private FilespaceManager filespaceManager;
+
+    @Resource
+    private CandidateUploadService candidateUploadService;
 
     @Resource
     private CandidateDataServices candidateDataServices;
@@ -589,6 +594,138 @@ public class CandidateTestDeliveryService {
                 invalidResponseIdentifiersBuilder.add(responseIdentifier);
             }
         }
+    }
+
+    //----------------------------------------------------
+    // Attempt
+
+    public CandidateAttempt handleAttempt(final long xid, final String sessionToken,
+            final Map<Identifier, StringResponseData> stringResponseMap,
+            final Map<Identifier, MultipartFile> fileResponseMap)
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
+    }
+
+    public CandidateAttempt handleAttempt(final CandidateSession candidateSession,
+            final Map<Identifier, StringResponseData> stringResponseMap,
+            final Map<Identifier, MultipartFile> fileResponseMap)
+            throws CandidateForbiddenException {
+        Assert.notNull(candidateSession, "candidateSession");
+
+        /* Set up listener to record any notifications from JQTI candidateAuditLogger.logic */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+
+        /* Get current JQTI state and create JQTI controller */
+        final CandidateTestEvent mostRecentEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+
+        /* Make sure an attempt is allowed */
+        if (!testSessionController.canSubmitResponsesToCurrentItem()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_ATTEMPT);
+        }
+
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+        final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();
+
+        /* FIXME: Next wodge of code has some cut & paste! */
+
+        /* Build response map in required format for JQTI+.
+         * NB: The following doesn't test for duplicate keys in the two maps. I'm not sure
+         * it's worth the effort.
+         */
+        final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
+        if (stringResponseMap!=null) {
+            for (final Entry<Identifier, StringResponseData> stringResponseEntry : stringResponseMap.entrySet()) {
+                final Identifier identifier = stringResponseEntry.getKey();
+                final StringResponseData stringResponseData = stringResponseEntry.getValue();
+                responseMap.put(identifier, stringResponseData);
+            }
+        }
+        final Map<Identifier, CandidateFileSubmission> fileSubmissionMap = new HashMap<Identifier, CandidateFileSubmission>();
+        if (fileResponseMap!=null) {
+            for (final Entry<Identifier, MultipartFile> fileResponseEntry : fileResponseMap.entrySet()) {
+                final Identifier identifier = fileResponseEntry.getKey();
+                final MultipartFile multipartFile = fileResponseEntry.getValue();
+                final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
+                final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType());
+                responseMap.put(identifier, fileResponseData);
+                fileSubmissionMap.put(identifier, fileSubmission);
+            }
+        }
+
+        /* Build Map of responses in appropriate entity form */
+        final CandidateAttempt candidateAttempt = new CandidateAttempt();
+        final Map<Identifier, CandidateResponse> responseEntityMap = new HashMap<Identifier, CandidateResponse>();
+        final Set<CandidateResponse> candidateItemResponses = new HashSet<CandidateResponse>();
+        for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
+            final Identifier responseIdentifier = responseEntry.getKey();
+            final ResponseData responseData = responseEntry.getValue();
+
+            final CandidateResponse candidateItemResponse = new CandidateResponse();
+            candidateItemResponse.setResponseIdentifier(responseIdentifier.toString());
+            candidateItemResponse.setAttempt(candidateAttempt);
+            candidateItemResponse.setResponseType(responseData.getType());
+            candidateItemResponse.setResponseLegality(ResponseLegality.VALID); /* (May change this below) */
+            switch (responseData.getType()) {
+                case STRING:
+                    candidateItemResponse.setStringResponseData(((StringResponseData) responseData).getResponseData());
+                    break;
+
+                case FILE:
+                    candidateItemResponse.setFileSubmission(fileSubmissionMap.get(responseIdentifier));
+                    break;
+
+                default:
+                    throw new QtiWorksLogicException("Unexpected switch case: " + responseData.getType());
+            }
+            responseEntityMap.put(responseIdentifier, candidateItemResponse);
+            candidateItemResponses.add(candidateItemResponse);
+        }
+        candidateAttempt.setResponses(candidateItemResponses);
+
+        /* Attempt to bind responses */
+        testSessionController.handleResponses(responseMap);
+
+        /* Note any responses that failed to bind */
+        final Set<Identifier> badResponseIdentifiers = itemSessionState.getBadResponseIdentifiers();
+        final boolean allResponsesBound = badResponseIdentifiers.isEmpty();
+        for (final Identifier badResponseIdentifier : badResponseIdentifiers) {
+            responseEntityMap.get(badResponseIdentifier).setResponseLegality(ResponseLegality.BAD);
+        }
+
+        /* Now validate the responses according to any constraints specified by the interactions */
+        boolean allResponsesValid = false;
+        if (allResponsesBound) {
+            final Set<Identifier> invalidResponseIdentifiers = itemSessionState.getInvalidResponseIdentifiers();
+            allResponsesValid = invalidResponseIdentifiers.isEmpty();
+            if (!allResponsesValid) {
+                /* Some responses not valid, so note these down */
+                for (final Identifier invalidResponseIdentifier : invalidResponseIdentifiers) {
+                    responseEntityMap.get(invalidResponseIdentifier).setResponseLegality(ResponseLegality.INVALID);
+                }
+            }
+        }
+
+        /* Update state */
+        testSessionState.setDuration(computeTestSessionDuration(candidateSession));
+
+        /* Record resulting attempt and event */
+        final CandidateTestEventType eventType = allResponsesBound ?
+            (allResponsesValid ? CandidateTestEventType.ATTEMPT_VALID : CandidateTestEventType.ATTEMPT_INVALID)
+            : CandidateTestEventType.ATTEMPT_BAD;
+        final CandidateTestEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+                eventType, testSessionState, notificationRecorder);
+
+        candidateAttempt.setEvent(candidateTestEvent);
+        candidateAttemptDao.persist(candidateAttempt);
+
+        /* Log this (in existing state) */
+        candidateAuditLogger.logTestItemCandidateAttempt(candidateSession, candidateAttempt);
+
+        /* Persist session */
+        candidateSessionDao.update(candidateSession);
+        return candidateAttempt;
     }
 
     //----------------------------------------------------

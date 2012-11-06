@@ -95,7 +95,7 @@ public final class TestSessionController extends TestValidationController implem
     private final TestSessionControllerSettings testSessionControllerSettings;
     private final TestProcessingMap testProcessingMap;
     private final TestSessionState testSessionState;
-    private final Map<TestPlanNode, ItemSessionController> itemSessionControllerMap;
+    private final Map<TestPlanNodeKey, ItemSessionController> itemSessionControllerMap;
     private final ListenerNotificationForwarder listenerNotificationForwarder;
 
     private Long randomSeed;
@@ -114,7 +114,7 @@ public final class TestSessionController extends TestValidationController implem
         this.testSessionState = testSessionState;
         this.randomSeed = null;
         this.randomGenerator = null;
-        this.itemSessionControllerMap = new HashMap<TestPlanNode, ItemSessionController>();
+        this.itemSessionControllerMap = new HashMap<TestPlanNodeKey, ItemSessionController>();
     }
 
     public TestSessionControllerSettings getTestSessionControllerSettings() {
@@ -183,11 +183,33 @@ public final class TestSessionController extends TestValidationController implem
             throw new IllegalArgumentException("TestPlanNode must have type " + TestNodeType.ASSESSMENT_ITEM_REF
                     + " rather than " + itemRefNode.getTestNodeType());
         }
-        final ItemSessionController result = itemSessionControllerMap.get(itemRefNode);
+        final TestPlanNodeKey key = itemRefNode.getKey();
+        ItemSessionController result = itemSessionControllerMap.get(key);
         if (result==null) {
-            throw new IllegalStateException("Expected ItemSessionController to be not null");
+            /* Create controller lazily */
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(key);
+            result = createItemSessionController(itemRefNode, itemSessionState);
+            itemSessionControllerMap.put(key, result);
         }
         return result;
+    }
+
+    private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode, final ItemSessionState itemSessionState) {
+        final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
+        final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
+        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(assessmentItemRef);
+
+        /* Copy relevant bits of ItemSessionControl into ItemSessionControllerSettings */
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        itemSessionControllerSettings.setTemplateProcessingLimit(testSessionControllerSettings.getTemplateProcessingLimit());
+        itemSessionControllerSettings.setMaxAttempts(effectiveItemSessionControl.getMaxAttempts());
+
+        /* Create controller and forward any notifications it generates */
+        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
+                itemSessionControllerSettings, itemProcessingMap, itemSessionState);
+        itemSessionController.addNotificationListener(listenerNotificationForwarder);
+
+        return itemSessionController;
     }
 
     //-------------------------------------------------------------------
@@ -218,27 +240,9 @@ public final class TestSessionController extends TestValidationController implem
 
                 final ItemSessionController itemSessionController = createItemSessionController(testPlanNode, itemSessionState);
                 itemSessionController.initialize();
-                itemSessionControllerMap.put(testPlanNode, itemSessionController);
+                itemSessionControllerMap.put(key, itemSessionController);
             }
         }
-    }
-
-    private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode, final ItemSessionState itemSessionState) {
-        final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
-        final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
-        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(assessmentItemRef);
-
-        /* Copy relevant bits of ItemSessionControl into ItemSessionControllerSettings */
-        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
-        itemSessionControllerSettings.setTemplateProcessingLimit(testSessionControllerSettings.getTemplateProcessingLimit());
-        itemSessionControllerSettings.setMaxAttempts(effectiveItemSessionControl.getMaxAttempts());
-
-        /* Create controller and forward any notifications it generates */
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
-                itemSessionControllerSettings, itemProcessingMap, itemSessionState);
-        itemSessionController.addNotificationListener(listenerNotificationForwarder);
-
-        return itemSessionController;
     }
 
     //-------------------------------------------------------------------
@@ -291,6 +295,8 @@ public final class TestSessionController extends TestValidationController implem
 
     /**
      * Selects the given item within the part.
+     *
+     * @throws IllegalStateException if no testPart is selected, or item is not in the current part
      */
     public TestPlanNode selectItem(final TestPlanNodeKey itemKey) {
         final TestPlanNode testPartNode = ensureTestPartSelected();
@@ -304,23 +310,37 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     /**
+     * Returns whether responses may be submitted for the currently selected item.
+     *
+     * @throws IllegalStateException if no item is selected
+     */
+    public boolean canSubmitResponsesToCurrentItem() {
+        final TestPlanNode currentItemRefNode = ensureItemSelected();
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
+
+        return !itemSessionState.isClosed();
+    }
+
+    /**
      * Handles response submission to the currently selected item.
      * <p>
      * RP is always run in {@link SubmissionMode#INDIVIDUAL} mode.
      */
     public void handleResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
-        final TestPlanNode itemRefNode = ensureItemSelected();
+        final TestPlanNode currentItemRefNode = ensureItemSelected();
 
         /* Bind responses and run response processing */
-        final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+        final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
         if (itemSessionController.bindResponses(responseMap)) {
             itemSessionController.performResponseProcessing();
         }
     }
 
     /**
-     * Can we exit the test part?
+     * Can we exit the current test part?
+     *
+     * @throws IllegalStateException if no test part is selected
      */
     public boolean canExitTestPart() {
         final TestPlanNode currentTestPartNode = ensureTestPartSelected();
