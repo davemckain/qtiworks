@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary;
-
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
@@ -55,9 +53,6 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     @NotNull
     private TestSessionState testSessionState;
 
-    @NotNull
-    private TestRenderingSummary testRenderingSummary;
-
     //----------------------------------------------------
 
     public AssessmentTest getAssessmentTest() {
@@ -75,14 +70,5 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
 
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
-    }
-
-
-    public TestRenderingSummary getTestRenderingSummary() {
-        return testRenderingSummary;
-    }
-
-    public void setTestRenderingSummary(final TestRenderingSummary testRenderingSummary) {
-        this.testRenderingSummary = testRenderingSummary;
     }
 }

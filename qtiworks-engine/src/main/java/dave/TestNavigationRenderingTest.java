@@ -8,8 +8,6 @@ package dave;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
-import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary;
-import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary.TestItemInfo;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -25,17 +23,12 @@ import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -79,18 +72,10 @@ public class TestNavigationRenderingTest {
             testSessionController.startTestNI();
             System.out.println("Test session state after init: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
-            /* Create fake rendering summary */
-            final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
-            final TestItemInfo testItemInfo = new TestItemInfo(itemUri, "Item Title");
-            final Map<TestPlanNodeKey, TestItemInfo> testRenderingSummaryBuilder = new HashMap<TestPlanNodeKey, TestItemInfo>();
-            testRenderingSummaryBuilder.put(firstItemRef.getKey(), testItemInfo);
-            final TestRenderingSummary testRenderingSummary = new TestRenderingSummary(testRenderingSummaryBuilder);
-
             System.out.println("\nRendering");
 
             final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
             final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
-            renderingRequest.setTestRenderingSummary(testRenderingSummary);
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setTestSessionState(testSessionState);

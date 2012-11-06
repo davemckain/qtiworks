@@ -51,8 +51,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
-import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary;
-import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary.TestItemInfo;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -60,13 +58,8 @@ import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
-import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
@@ -75,9 +68,6 @@ import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
@@ -86,9 +76,6 @@ import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
 import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 
 import java.io.StringReader;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
@@ -356,37 +343,6 @@ public class CandidateDataServices {
         }
 
         return event;
-    }
-
-    public TestRenderingSummary computeTestRenderingSummary(final CandidateTestEvent candidateTestEvent) {
-        Assert.notNull(candidateTestEvent, "candidateTestEvent");
-
-        /* Resolve the underlying JQTI+ object */
-        final Delivery delivery = candidateTestEvent.getCandidateSession().getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-        final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
-        final ResolvedAssessmentTest resolvedAssessmentTest = testProcessingMap.getResolvedAssessmentTest();
-
-        /* Visit each assessmentItemRef and extract relevant info for it */
-        final Map<TestPlanNodeKey, TestItemInfo> resultBuilder = new HashMap<TestPlanNodeKey, TestItemInfo>();
-        final TestSessionState testSessionState = unmarshalTestSessionState(candidateTestEvent);
-        final TestPlan testPlan = testSessionState.getTestPlan();
-        for (final TestPlanNode itemRefNode : testPlan.searchNodes(TestNodeType.ASSESSMENT_ITEM_REF)) {
-            final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
-            final URI itemSystemId = resolvedAssessmentTest.getSystemIdByItemRefMap().get(assessmentItemRef);
-            final ResolvedAssessmentItem resolvedAssessmentItem = resolvedAssessmentTest.getResolvedAssessmentItem(assessmentItemRef);
-            final RootNodeLookup<AssessmentItem> itemLookup = resolvedAssessmentItem.getItemLookup();
-            String itemTitle;
-            if (itemLookup.wasSuccessful()) {
-                itemTitle = itemLookup.extractAssumingSuccessful().getTitle();
-            }
-            else {
-                itemTitle = "[Unresolved AssessmentItem at " + itemSystemId + "]";
-            }
-            final TestItemInfo itemInfo = new TestItemInfo(itemSystemId, itemTitle);
-            resultBuilder.put(itemRefNode.getKey(), itemInfo);
-        }
-        return new TestRenderingSummary(resultBuilder);
     }
 
     public TestSessionController createTestSessionController(final CandidateTestEvent candidateTestEvent,

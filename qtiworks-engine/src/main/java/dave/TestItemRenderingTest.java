@@ -9,8 +9,6 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
-import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary;
-import uk.ac.ed.ph.qtiworks.services.domain.TestRenderingSummary.TestItemInfo;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -29,15 +27,12 @@ import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -85,12 +80,6 @@ public class TestItemRenderingTest {
             testSessionController.selectItem(firstItemRef.getKey());
             final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRef.getKey());
 
-            /* Create fake rendering summary */
-            final TestItemInfo testItemInfo = new TestItemInfo(itemUri, "Item Title");
-            final Map<TestPlanNodeKey, TestItemInfo> testRenderingSummaryBuilder = new HashMap<TestPlanNodeKey, TestItemInfo>();
-            testRenderingSummaryBuilder.put(firstItemRef.getKey(), testItemInfo);
-            final TestRenderingSummary testRenderingSummary = new TestRenderingSummary(testRenderingSummaryBuilder);
-
             System.out.println("\nRendering state after selection of first item");
 
             final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
@@ -99,7 +88,6 @@ public class TestItemRenderingTest {
             renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setAssessmentItemUri(itemUri);
-            renderingRequest.setTestRenderingSummary(testRenderingSummary);
             renderingRequest.setTestSessionState(testSessionState);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setRenderingMode(RenderingMode.AFTER_INITIALISATION);
