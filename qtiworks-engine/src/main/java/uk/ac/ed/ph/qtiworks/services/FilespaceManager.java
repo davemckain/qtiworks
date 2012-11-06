@@ -107,9 +107,9 @@ public final class FilespaceManager {
         return createDirectoryPath(filespaceUri);
     }
 
-    public File createCandidateUploadFile(final CandidateSession candidateItemSession, final User candidate) {
+    public File createCandidateUploadFile(final CandidateSession candidateItemSession) {
         Assert.notNull(candidateItemSession, "candidateItemSession");
-        Assert.notNull(candidate, "candidate");
+        final User candidate = candidateItemSession.getCandidate();
         final Delivery delivery = candidateItemSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();

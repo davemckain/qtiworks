@@ -37,7 +37,6 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateFileSubmissionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -67,14 +66,13 @@ public class CandidateUploadService {
     @Resource
     private CandidateFileSubmissionDao candidateFileSubmissionDao;
 
-    public CandidateFileSubmission importFileSubmission(final CandidateSession candidateItemSession,
+    public CandidateFileSubmission importFileSubmission(final CandidateSession candidateSession,
             final MultipartFile multipartFile) {
-        Assert.notNull(candidateItemSession, "candidateItemSession");
+        Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(multipartFile, "multipartFile");
 
         /* Save file into filesystem */
-        final User candidate = candidateItemSession.getCandidate();
-        final File uploadFile = filespaceManager.createCandidateUploadFile(candidateItemSession, candidate);
+        final File uploadFile = filespaceManager.createCandidateUploadFile(candidateSession);
         try {
             multipartFile.transferTo(uploadFile);
         }
@@ -84,7 +82,7 @@ public class CandidateUploadService {
 
         /* Create and persist submission */
         final CandidateFileSubmission result = new CandidateFileSubmission();
-        result.setCandidateItemSession(candidateItemSession);
+        result.setCandidateItemSession(candidateSession);
         result.setContentType(multipartFile.getContentType());
         result.setFileName(multipartFile.getOriginalFilename());
         result.setStoredFilePath(uploadFile.getAbsolutePath());
