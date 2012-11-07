@@ -33,9 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+
 /**
- * Enumerates the types of {@link CandidateItemEvent}s that happen
- * on a {@link CandidateSession}
+ * Encapsulates the test-specific events that can arise when delivering
+ * a test within a {@link CandidateSession}
  *
  * @author David McKain
  */
@@ -44,23 +46,14 @@ public enum CandidateTestEventType {
     /** Test session initialized */
     INIT,
 
+    /** Presentation of navigation menu for the current {@link TestPart} */
+    SELECT_MENU,
+
     /** Selection of a particular item */
     SELECT_ITEM,
 
-    /** Termination of session */
-    TERMINATE,
-
-    /* FOLLOWING ARE COPIED FROM ITEM - DECIDE WHETHER TO KEEP OR NOT */
-
-    REINIT,
-    RESET,
-
-    ATTEMPT_VALID,
-    ATTEMPT_INVALID,
-    ATTEMPT_BAD,
-
-    CLOSE,
-    SOLUTION,
+    /** Item Event within the selected item */
+    ITEM_EVENT,
 
     ;
 

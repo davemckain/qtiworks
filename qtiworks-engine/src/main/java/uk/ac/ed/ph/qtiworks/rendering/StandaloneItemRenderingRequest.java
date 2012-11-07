@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -81,8 +81,8 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
     private Set<Identifier> badResponseIdentifiers;
     private Set<Identifier> invalidResponseIdentifiers;
 
-    private CandidateItemEvent currentPlaybackEvent;
-    private List<CandidateItemEvent> playbackEvents;
+    private CandidateEvent currentPlaybackEvent;
+    private List<CandidateEvent> playbackEvents;
 
     //----------------------------------------------------
 
@@ -212,20 +212,20 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
     }
 
 
-    public CandidateItemEvent getCurrentPlaybackEvent() {
+    public CandidateEvent getCurrentPlaybackEvent() {
         return currentPlaybackEvent;
     }
 
-    public void setCurrentPlaybackEvent(final CandidateItemEvent currentPlaybackEvent) {
+    public void setCurrentPlaybackEvent(final CandidateEvent currentPlaybackEvent) {
         this.currentPlaybackEvent = currentPlaybackEvent;
     }
 
 
-    public List<CandidateItemEvent> getPlaybackEvents() {
+    public List<CandidateEvent> getPlaybackEvents() {
         return playbackEvents;
     }
 
-    public void setPlaybackEvents(final List<CandidateItemEvent> playbackEvents) {
+    public void setPlaybackEvents(final List<CandidateEvent> playbackEvents) {
         this.playbackEvents = playbackEvents;
     }
 }

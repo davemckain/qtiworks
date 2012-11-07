@@ -296,17 +296,28 @@ public final class TestSessionController extends TestValidationController implem
     /**
      * Selects the given item within the part.
      *
+     * FIXME: Decide whether to leave this free, or whether to enforce constraints made
+     * by navigation mode here.
+     *
+     * @param itemKey item to select, or null to select no item
+     *
      * @throws IllegalStateException if no testPart is selected, or item is not in the current part
      */
     public TestPlanNode selectItem(final TestPlanNodeKey itemKey) {
         final TestPlanNode testPartNode = ensureTestPartSelected();
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-        ensureItemRef(itemRefNode);
-        if (!itemRefNode.hasAncestor(testPartNode)) {
-            throw new IllegalStateException(itemRefNode + " is not a descendant of " + testPartNode);
+        if (itemKey!=null) {
+            final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+            ensureItemRef(itemRefNode);
+            if (!itemRefNode.hasAncestor(testPartNode)) {
+                throw new IllegalStateException(itemRefNode + " is not a descendant of " + testPartNode);
+            }
+            testSessionState.setCurrentItemKey(itemRefNode.getKey());
+            return itemRefNode;
         }
-        testSessionState.setCurrentItemKey(itemRefNode.getKey());
-        return itemRefNode;
+        else {
+            testSessionState.setCurrentItemKey(null);
+            return null;
+        }
     }
 
     /**

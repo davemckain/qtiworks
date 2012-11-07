@@ -42,11 +42,10 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
@@ -69,6 +68,7 @@ import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
@@ -92,7 +92,7 @@ import org.w3c.dom.Document;
 
 /**
  * Low level services for manipulating candidate data, such as recording
- * {@link CandidateItemEvent}s.
+ * {@link CandidateEvent}s.
  *
  * @author David McKain
  */
@@ -166,34 +166,48 @@ public class CandidateDataServices {
         return ItemSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
-            final CandidateItemEventType eventType, final ItemSessionState itemSessionState) {
-        return recordCandidateItemEvent(candidateSession, eventType, itemSessionState, null, null);
+    public CandidateEvent recordItemSessionTerminateEvent(final CandidateSession candidateSession, final ItemSessionState itemSessionState) {
+        /* Create event */
+        final CandidateEvent event = new CandidateEvent();
+        event.setCandidateSession(candidateSession);
+        event.setCandidateEventCategory(CandidateEventCategory.TERMINATE);
+        event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
+
+        /* Store event */
+        candidateEventDao.persist(event);
+
+        /* Save state */
+        storeItemSessionState(event, itemSessionState);
+
+        return event;
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
-            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
+    public CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
+            final CandidateItemEventType itemEventType, final ItemSessionState itemSessionState) {
+        return recordCandidateItemEvent(candidateSession, itemEventType, itemSessionState, null, null);
+    }
+
+    public CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
+            final CandidateItemEventType itemEventType, final ItemSessionState itemSessionState,
             final NotificationRecorder notificationRecorder) {
-        return recordCandidateItemEvent(candidateSession, eventType, itemSessionState, notificationRecorder, null);
+        return recordCandidateItemEvent(candidateSession, itemEventType, itemSessionState, notificationRecorder, null);
     }
 
-    public CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
+    public CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
-            final CandidateItemEvent playbackEvent) {
+            final CandidateEvent playbackEvent) {
         return recordCandidateItemEvent(candidateSession, eventType, itemSessionState, null, playbackEvent);
     }
 
-    private CandidateItemEvent recordCandidateItemEvent(final CandidateSession candidateSession,
+    private CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
             final NotificationRecorder notificationRecorder,
-            final CandidateItemEvent playbackEvent) {
+            final CandidateEvent playbackEvent) {
         /* Create event */
-        final CandidateItemEvent event = new CandidateItemEvent();
+        final CandidateEvent event = new CandidateEvent();
         event.setCandidateSession(candidateSession);
+        event.setCandidateEventCategory(CandidateEventCategory.ITEM);
         event.setItemEventType(eventType);
-        event.setCompletionStatus(itemSessionState.getCompletionStatus());
-        event.setDuration(itemSessionState.getDuration());
-        event.setNumAttempts(itemSessionState.getNumAttempts());
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
         event.setPlaybackEvent(playbackEvent);
 
@@ -213,12 +227,12 @@ public class CandidateDataServices {
         return event;
     }
 
-    public ItemSessionController createItemSessionController(final CandidateItemEvent candidateItemEvent,
+    public ItemSessionController createItemSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
-        Assert.notNull(candidateItemEvent, "candidateItemEvent");
+        ensureItemEvent(candidateEvent);
 
-        final Delivery delivery = candidateItemEvent.getCandidateSession().getDelivery();
-        final ItemSessionState itemSessionState = loadItemSessionState(candidateItemEvent);
+        final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
+        final ItemSessionState itemSessionState = loadItemSessionState(candidateEvent);
         return createItemSessionController(delivery, itemSessionState, notificationRecorder);
     }
 
@@ -257,22 +271,29 @@ public class CandidateDataServices {
     }
 
     public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateSession)  {
-        final CandidateItemEvent mostRecentEvent = getMostRecentItemEvent(candidateSession);
-        return loadItemSessionState(mostRecentEvent);
+        final CandidateEvent mostRecentItemEvent = getMostRecentItemEvent(candidateSession);
+        return loadItemSessionState(mostRecentItemEvent);
     }
 
-    public CandidateItemEvent getMostRecentItemEvent(final CandidateSession candidateSession)  {
-        final CandidateItemEvent mostRecentEvent = (CandidateItemEvent) candidateEventDao.getNewestEventInSession(candidateSession);
-        if (mostRecentEvent==null) {
+    public CandidateEvent getMostRecentItemEvent(final CandidateSession candidateSession)  {
+        final CandidateEvent mostRecentItemEvent = candidateEventDao.getNewestEventInSession(candidateSession, CandidateEventCategory.ITEM);
+        if (mostRecentItemEvent==null) {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
-        return mostRecentEvent;
+        return mostRecentItemEvent;
     }
 
     public void ensureItemDelivery(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
         if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
             throw new IllegalArgumentException("Expected " + delivery + " to correspond to an Item");
+        }
+    }
+
+    private void ensureItemEvent(final CandidateEvent candidateEvent) {
+        Assert.notNull(candidateEvent, "candidateEvent");
+        if (candidateEvent.getCategoryEventCategory()!=CandidateEventCategory.ITEM) {
+            throw new IllegalArgumentException("Expected" + candidateEvent + " to have category " + CandidateEventCategory.ITEM);
         }
     }
 
@@ -320,25 +341,38 @@ public class CandidateDataServices {
         return result;
     }
 
-    public CandidateTestEvent recordCandidateTestEvent(final CandidateSession candidateSession,
-            final CandidateTestEventType eventType, final TestSessionState testSessionState) {
-        return recordCandidateTestEvent(candidateSession, eventType, testSessionState, null);
+    public CandidateEvent recordCandidateTestEvent(final CandidateSession candidateSession,
+            final CandidateTestEventType testEventType, final TestSessionState testSessionState,
+            final NotificationRecorder notificationRecorder) {
+        return recordCandidateTestEvent(candidateSession, testEventType, null, null, testSessionState, notificationRecorder);
     }
 
-    public CandidateTestEvent recordCandidateTestEvent(final CandidateSession candidateSession,
-            final CandidateTestEventType eventType, final TestSessionState testSessionState,
+    public CandidateEvent recordCandidateTestEvent(final CandidateSession candidateSession,
+            final CandidateTestEventType testEventType, final CandidateItemEventType itemEventType,
+            final TestSessionState testSessionState,
+            final NotificationRecorder notificationRecorder) {
+        return recordCandidateTestEvent(candidateSession, testEventType, itemEventType, null, testSessionState, notificationRecorder);
+    }
+
+    public CandidateEvent recordCandidateTestEvent(final CandidateSession candidateSession,
+            final CandidateTestEventType testEventType, final CandidateItemEventType itemEventType,
+            final TestPlanNodeKey itemKey, final TestSessionState testSessionState,
             final NotificationRecorder notificationRecorder) {
         /* Create event */
-        final CandidateTestEvent event = new CandidateTestEvent();
+        final CandidateEvent event = new CandidateEvent();
         event.setCandidateSession(candidateSession);
-        event.setTestEventType(eventType);
-        event.setDuration(testSessionState.getDuration());
+        event.setCandidateEventCategory(CandidateEventCategory.TEST);
+        event.setTestEventType(testEventType);
+        event.setItemEventType(itemEventType);
+        if (itemKey!=null) {
+            event.setTestItemKey(itemKey.toString());
+        }
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
 
         /* Store event */
         candidateEventDao.persist(event);
 
-        /* Store state */
+        /* Store test session state */
         storeTestSessionState(event, testSessionState);
 
         /* Now store processing notifications */
@@ -351,12 +385,12 @@ public class CandidateDataServices {
         return event;
     }
 
-    public TestSessionController createTestSessionController(final CandidateTestEvent candidateTestEvent,
+    public TestSessionController createTestSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
-        Assert.notNull(candidateTestEvent, "candidateTestEvent");
+        ensureTestEvent(candidateEvent);
 
-        final Delivery delivery = candidateTestEvent.getCandidateSession().getDelivery();
-        final TestSessionState testSessionState = loadTestSessionState(candidateTestEvent);
+        final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
+        final TestSessionState testSessionState = loadTestSessionState(candidateEvent);
         return createTestSessionController(delivery, testSessionState, notificationRecorder);
     }
 
@@ -385,27 +419,50 @@ public class CandidateDataServices {
     }
 
     public TestSessionState computeCurrentTestSessionState(final CandidateSession candidateSession)  {
-        final CandidateTestEvent mostRecentEvent = getMostRecentTestEvent(candidateSession);
-        return loadTestSessionState(mostRecentEvent);
+        final CandidateEvent mostRecentTestEvent = getMostRecentTestEvent(candidateSession);
+        return loadTestSessionState(mostRecentTestEvent);
     }
 
-    public CandidateTestEvent getMostRecentTestEvent(final CandidateSession candidateSession)  {
-        final CandidateTestEvent mostRecentEvent = (CandidateTestEvent) candidateEventDao.getNewestEventInSession(candidateSession);
-        if (mostRecentEvent==null) {
+    public CandidateEvent getMostRecentTestEvent(final CandidateSession candidateSession)  {
+        final CandidateEvent mostRecentTestEvent = candidateEventDao.getNewestEventInSession(candidateSession, CandidateEventCategory.TEST);
+        if (mostRecentTestEvent==null) {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
-        return mostRecentEvent;
+        return mostRecentTestEvent;
     }
 
-    public void ensureTestDelivery(final Delivery delivery) {
+    /**
+     * NB: Result will be null on first presentation of item
+     */
+    public CandidateEvent getMostRecentTestItemEvent(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)  {
+        final CandidateEvent mostRecentTestEvent = candidateEventDao.getNewestTestItemEventInSession(candidateSession, itemKey);
+        return mostRecentTestEvent;
+    }
+
+    private void ensureTestDelivery(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
         if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
             throw new IllegalArgumentException("Expected " + delivery + " to correspond to a Test");
         }
     }
 
+    private void ensureTestEvent(final CandidateEvent candidateEvent) {
+        Assert.notNull(candidateEvent, "candidateEvent");
+        if (candidateEvent.getCategoryEventCategory()!=CandidateEventCategory.TEST) {
+            throw new IllegalArgumentException("Expected" + candidateEvent + " to have category " + CandidateEventCategory.TEST);
+        }
+    }
+
     //----------------------------------------------------
     // General helpers
+
+    public CandidateEvent getMostRecentEvent(final CandidateSession candidateSession)  {
+        final CandidateEvent mostRecentEvent = candidateEventDao.getNewestEventInSession(candidateSession);
+        if (mostRecentEvent==null) {
+            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
+        }
+        return mostRecentEvent;
+    }
 
     private void storeStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName, final Document stateXml) {
         final File sessionFile = getStateFile(candidateEvent, stateFileBaseName);

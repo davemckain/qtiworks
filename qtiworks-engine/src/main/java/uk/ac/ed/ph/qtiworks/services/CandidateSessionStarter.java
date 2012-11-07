@@ -45,10 +45,9 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
@@ -256,8 +255,8 @@ public class CandidateSessionStarter {
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */
-        final CandidateItemEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateItemEvent(candidateSession, candidateItemEvent);
+        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 
         auditor.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());
@@ -292,9 +291,9 @@ public class CandidateSessionStarter {
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */
-        final CandidateTestEvent candidateItemEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.INIT, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateTestEvent(candidateSession, candidateItemEvent);
+        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 
         auditor.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());

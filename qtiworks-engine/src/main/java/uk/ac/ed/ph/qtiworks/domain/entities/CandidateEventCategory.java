@@ -42,6 +42,7 @@ public enum CandidateEventCategory {
 
     ITEM,
     TEST,
+    TERMINATE,
     ;
 
 }

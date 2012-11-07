@@ -35,8 +35,8 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -286,18 +286,18 @@ public class AssessmentRenderer {
 
         /* Playback control */
         xsltParameters.put("playbackAllowed", Boolean.valueOf(renderingRequest.isPlaybackAllowed()));
-        final List<CandidateItemEvent> playbackEvents = renderingRequest.getPlaybackEvents();
+        final List<CandidateEvent> playbackEvents = renderingRequest.getPlaybackEvents();
         if (playbackEvents!=null) {
             final List<Long> playbackEventIds = new ArrayList<Long>();
             final List<String> playbackEventTypes = new ArrayList<String>();
-            for (final CandidateItemEvent playbackEvent : playbackEvents) {
+            for (final CandidateEvent playbackEvent : playbackEvents) {
                 playbackEventIds.add(playbackEvent.getId());
                 playbackEventTypes.add(playbackEvent.getItemEventType().toString());
             }
             xsltParameters.put("playbackEventIds", playbackEventIds);
             xsltParameters.put("playbackEventTypes", playbackEventTypes);
         }
-        final CandidateItemEvent currentPlaybackEvent = renderingRequest.getCurrentPlaybackEvent();
+        final CandidateEvent currentPlaybackEvent = renderingRequest.getCurrentPlaybackEvent();
         if (currentPlaybackEvent!=null) {
             xsltParameters.put("currentPlaybackEventId", currentPlaybackEvent.getId());
             xsltParameters.put("currentPlaybackEventType", currentPlaybackEvent.getItemEventType().toString());

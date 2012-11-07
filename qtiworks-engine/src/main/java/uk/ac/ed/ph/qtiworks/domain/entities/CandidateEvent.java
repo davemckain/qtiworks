@@ -33,7 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,13 +50,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -67,7 +69,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="candidate_events")
-@Inheritance(strategy=InheritanceType.JOINED)
 @SequenceGenerator(name="candidateEventSequence", sequenceName="candidate_event_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
     @NamedQuery(name="CandidateEvent.getForSession",
@@ -79,9 +80,28 @@ import javax.persistence.TemporalType;
             query="SELECT e"
                 + "  FROM CandidateEvent e"
                 + "  WHERE e.candidateSession = :candidateSession"
+                + "  ORDER BY e.id DESC"),
+    @NamedQuery(name="CandidateEvent.getInCategoryForSession",
+            query="SELECT e"
+                + "  FROM CandidateEvent e"
+                + "  WHERE e.candidateSession = :candidateSession"
+                + "    AND e.candidateEventCategory = :candidateEventCategory"
+                + "  ORDER BY e.id"),
+    @NamedQuery(name="CandidateEvent.getInCategoryForSessionReversed",
+            query="SELECT e"
+                + "  FROM CandidateEvent e"
+                + "  WHERE e.candidateSession = :candidateSession"
+                + "    AND e.candidateEventCategory = :candidateEventCategory"
+                + "  ORDER BY e.id DESC"),
+    @NamedQuery(name="CandidateEvent.getTestItemEventsForSessionReversed",
+            query="SELECT e"
+                + "  FROM CandidateEvent e"
+                + "  WHERE e.candidateSession = :candidateSession"
+                + "    AND e.testEventType = uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory.TEST"
+                + "    AND e.testItemKey = :testItemKey"
                 + "  ORDER BY e.id DESC")
 })
-public abstract class CandidateEvent implements BaseEntity {
+public class CandidateEvent implements BaseEntity {
 
     private static final long serialVersionUID = -4620030911222629913L;
 
@@ -103,23 +123,47 @@ public abstract class CandidateEvent implements BaseEntity {
 
     /** Category of event */
     @Basic(optional=false)
-    @Column(name="event_category", updatable=false, length=4)
+    @Column(name="event_category", updatable=false, length=16)
     @Enumerated(EnumType.STRING)
-    private CandidateEventCategory eventCategory;
+    private CandidateEventCategory candidateEventCategory;
 
+    /** Type of item event, or null if not an item event */
+    @Basic(optional=true)
+    @Column(name="item_event_type", updatable=false, length=16)
+    @Enumerated(EnumType.STRING)
+    private CandidateItemEventType itemEventType;
+
+    /** Type of test event, or null if not a test event */
+    @Basic(optional=true)
+    @Column(name="test_event_type", updatable=false, length=16)
+    @Enumerated(EnumType.STRING)
+    private CandidateTestEventType testEventType;
+
+    /**
+     * If this is an item event for an item within a test, then this records
+     * the {@link TestPlanNodeKey} of the item. Otherwise, this is null.
+     */
+    @Basic(optional=true)
+    @Column(name="test_item_key", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH + 10)
+    private String testItemKey;
+
+    /**
+     * For a {@link CandidateItemEventType#PLAYBACK} event, this points to the event in
+     * the same session that the candidate has requested to see
+     * {@link CandidateItemEvent}
+     */
+    @OneToOne(optional=true)
+    @JoinColumn(name="playback_xeid", updatable=false)
+    private CandidateEvent playbackEvent;
+
+    /**
+     * Notifications generated during this event
+     */
     @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateEvent")
     @OrderBy("id")
     private List<CandidateEventNotification> notifications;
 
     //------------------------------------------------------------
-
-    public CandidateEvent() {
-        /* (Don't use this in code - required when creating instances by reflection) */
-    }
-
-    protected CandidateEvent(final CandidateEventCategory eventCategory) {
-        this.eventCategory = eventCategory;
-    }
 
     //------------------------------------------------------------
 
@@ -152,12 +196,48 @@ public abstract class CandidateEvent implements BaseEntity {
     }
 
 
-    public CandidateEventCategory getEventCategory() {
-        return eventCategory;
+    public CandidateEventCategory getCategoryEventCategory() {
+        return candidateEventCategory;
     }
 
-    public void setEventCategory(final CandidateEventCategory eventCategory) {
-        this.eventCategory = eventCategory;
+    public void setCandidateEventCategory(final CandidateEventCategory categoryEventCategory) {
+        this.candidateEventCategory = categoryEventCategory;
+    }
+
+
+    public CandidateItemEventType getItemEventType() {
+        return itemEventType;
+    }
+
+    public void setItemEventType(final CandidateItemEventType itemEventType) {
+        this.itemEventType = itemEventType;
+    }
+
+
+    public CandidateTestEventType getTestEventType() {
+        return testEventType;
+    }
+
+    public void setTestEventType(final CandidateTestEventType testEventType) {
+        this.testEventType = testEventType;
+    }
+
+
+    public String getTestItemKey() {
+        return testItemKey;
+    }
+
+    public void setTestItemKey(final String testItemKey) {
+        this.testItemKey = testItemKey;
+    }
+
+
+    public CandidateEvent getPlaybackEvent() {
+        return playbackEvent;
+    }
+
+    public void setPlaybackEvent(final CandidateEvent playbackEvent) {
+        this.playbackEvent = playbackEvent;
     }
 
 
@@ -178,7 +258,7 @@ public abstract class CandidateEvent implements BaseEntity {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
-                + ",eventCategory=" + eventCategory
+                + ",eventCategory=" + candidateEventCategory
                 + ")";
     }
 }

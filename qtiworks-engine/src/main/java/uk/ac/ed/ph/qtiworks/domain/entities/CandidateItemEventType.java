@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Enumerates the types of {@link CandidateItemEvent}s that happen
- * on a {@link CandidateSession}
+ * Enumerates the item-specific events that can happen when delivering
+ * an item or test within a {@link CandidateSession}
  *
  * @author David McKain
  */
@@ -78,12 +78,6 @@ public enum CandidateItemEventType {
      * {@link CandidateSessionState#CLOSED} state
      */
     CLOSE,
-
-    /**
-     * Candidate has terminated the current session completely,
-     * moving it to {@link CandidateSessionState#TERMINATED} state
-     */
-    TERMINATE,
 
     ;
 

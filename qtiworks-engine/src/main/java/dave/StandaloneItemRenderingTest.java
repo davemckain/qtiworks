@@ -5,7 +5,8 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
@@ -91,12 +92,14 @@ public class StandaloneItemRenderingTest {
             renderingRequest.setBadResponseIdentifiers(null);
             renderingRequest.setInvalidResponseIdentifiers(null);
 
-            final CandidateItemEvent playback1 = new CandidateItemEvent();
+            final CandidateEvent playback1 = new CandidateEvent();
             playback1.setId(1L);
+            playback1.setCandidateEventCategory(CandidateEventCategory.ITEM);
             playback1.setItemEventType(CandidateItemEventType.INIT);
 
-            final CandidateItemEvent playback2 = new CandidateItemEvent();
+            final CandidateEvent playback2 = new CandidateEvent();
             playback2.setId(2L);
+            playback2.setCandidateEventCategory(CandidateEventCategory.ITEM);
             playback2.setItemEventType(CandidateItemEventType.ATTEMPT_VALID);
 
             renderingRequest.setPlaybackEvents(Arrays.asList(playback1, playback2));

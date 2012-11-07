@@ -34,9 +34,8 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEvent;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
@@ -68,15 +67,15 @@ public class CandidateAuditLogger {
         });
     }
 
-    public void logStandaloneItemRendering(final CandidateItemEvent candidateItemEvent, final StandaloneItemRenderingRequest renderingRequest) {
+    public void logStandaloneItemRendering(final CandidateEvent candidateItemEvent, final StandaloneItemRenderingRequest renderingRequest) {
         logEvent(candidateItemEvent.getCandidateSession(), "action=RENDER_STANDALONE_ITEM mode=" + renderingRequest.getRenderingMode());
     }
 
-    public void logTestItemRendering(final CandidateTestEvent candidateTestEvent, final TestItemRenderingRequest renderingRequest) {
+    public void logTestItemRendering(final CandidateEvent candidateTestEvent, final TestItemRenderingRequest renderingRequest) {
         logEvent(candidateTestEvent.getCandidateSession(), "action=RENDER_TEST_ITEM mode=" + renderingRequest.getRenderingMode());
     }
 
-    public void logTestPartNavigationRendering(final CandidateTestEvent candidateItemEvent) {
+    public void logTestPartNavigationRendering(final CandidateEvent candidateItemEvent) {
         logEvent(candidateItemEvent.getCandidateSession(), "action=RENDER_CURRENT_TEST_PART_NAVIGATION");
     }
 
@@ -84,39 +83,45 @@ public class CandidateAuditLogger {
         logEvent(candidateSession, "action=" + actionName);
     }
 
-    public void logCandidateItemEvent(final CandidateSession candidateSession, final CandidateItemEvent candidateItemEvent) {
-        logEvent(candidateSession, "action=CANDIDATE_ITEM_EVENT xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getItemEventType()
-                + " notifications=" + candidateItemEvent.getNotifications().size());
+    public void logCandidateEvent(final CandidateSession candidateSession, final CandidateEvent candidateEvent) {
+        final StringBuilder messageBuilder = new StringBuilder("action=CANDIDATE_EVENT xeid=")
+            .append(candidateEvent.getId())
+            .append(" category=")
+            .append(candidateEvent.getCategoryEventCategory());
+        if (candidateEvent.getTestEventType()!=null) {
+            messageBuilder.append(" testEvent=").append(candidateEvent.getTestEventType());
+        }
+        if (candidateEvent.getItemEventType()!=null) {
+            messageBuilder.append(" itemEvent=").append(candidateEvent.getItemEventType());
+        }
+        if (candidateEvent.getTestItemKey()!=null) {
+            messageBuilder.append(" testItemKey=").append(candidateEvent.getTestItemKey());
+        }
+        messageBuilder.append(" notifications=").append(candidateEvent.getNotifications().size());
+        logEvent(candidateSession, messageBuilder.toString());
     }
 
-    public void logCandidateTestEvent(final CandidateSession candidateSession, final CandidateTestEvent candidateTestEvent) {
-        logEvent(candidateSession, "action=CANDIDATE_TEST_EVENT xeid=" + candidateTestEvent.getId()
-                + " event=" + candidateTestEvent.getTestEventType()
-                + " notifications=" + candidateTestEvent.getNotifications().size());
-    }
-
-    public void logPlaybackEvent(final CandidateSession candidateSession, final CandidateItemEvent candidateItemEvent,
-            final CandidateItemEvent targetEvent) {
+    public void logPlaybackEvent(final CandidateSession candidateSession, final CandidateEvent candidateItemEvent,
+            final CandidateEvent targetEvent) {
         logEvent(candidateSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateItemEvent.getId()
                 + " event=" + candidateItemEvent.getItemEventType()
                 + " target_xeid=" + targetEvent.getId());
     }
 
     public void logStandaloneItemCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
-        final CandidateItemEvent candidateItemEvent = (CandidateItemEvent) candidateAttempt.getEvent();
-        logEvent(candidateSession, "action=CANDIDATE_STANDALONE_ITEM_ATTEMPT xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getItemEventType()
+        final CandidateEvent candidateEvent = candidateAttempt.getEvent();
+        logEvent(candidateSession, "action=CANDIDATE_STANDALONE_ITEM_ATTEMPT xeid=" + candidateEvent.getId()
+                + " event=" + candidateEvent.getItemEventType()
                 + " xaid=" + candidateAttempt.getId()
-                + " notifications=" + candidateItemEvent.getNotifications().size());
+                + " notifications=" + candidateEvent.getNotifications().size());
     }
 
     public void logTestItemCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
-        final CandidateTestEvent candidateTestEvent = (CandidateTestEvent) candidateAttempt.getEvent();
-        logEvent(candidateSession, "action=CANDIDATE_TEST_ITEM_ATTEMPT xeid=" + candidateTestEvent.getId()
-                + " event=" + candidateTestEvent.getTestEventType()
+        final CandidateEvent candidateEvent = candidateAttempt.getEvent();
+        logEvent(candidateSession, "action=CANDIDATE_TEST_ITEM_ATTEMPT xeid=" + candidateEvent.getId()
+                + " event=" + candidateEvent.getTestEventType()
                 + " xaid=" + candidateAttempt.getId()
-                + " notifications=" + candidateTestEvent.getNotifications().size());
+                + " notifications=" + candidateEvent.getNotifications().size());
     }
 
     public void logAndForbid(final CandidateSession candidateSession, final CandidatePrivilege privilege)

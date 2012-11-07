@@ -33,8 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
+
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 
 import java.util.List;
 
@@ -62,21 +66,45 @@ public class CandidateEventDao extends GenericDao<CandidateEvent> {
         super(CandidateEvent.class);
     }
 
-    public List<CandidateEvent> getForSession(final CandidateSession session) {
+    public List<CandidateEvent> getForSession(final CandidateSession candidateSession) {
         final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSession", CandidateEvent.class);
-        query.setParameter("candidateSession", session);
+        query.setParameter("candidateSession", candidateSession);
         return query.getResultList();
     }
 
-    public List<CandidateEvent> getForSessionReversed(final CandidateSession session) {
-        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSessionReversed", CandidateEvent.class);
-        query.setParameter("candidateSession", session);
+    public List<CandidateEvent> getForSession(final CandidateSession candidateSession, final CandidateEventCategory eventCategory) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getInCategoryForSession", CandidateEvent.class);
+        query.setParameter("candidateSession", candidateSession);
+        query.setParameter("candidateEventCategory", eventCategory);
         return query.getResultList();
     }
 
-    public CandidateEvent getNewestEventInSession(final CandidateSession session) {
+    public List<CandidateEvent> getForSessionReversed(final CandidateSession candidateSession, final CandidateEventCategory eventCategory) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getInCategoryForSessionReversed", CandidateEvent.class);
+        query.setParameter("candidateSession", candidateSession);
+        query.setParameter("candidateEventCategory", eventCategory);
+        return query.getResultList();
+    }
+
+    public CandidateEvent getNewestEventInSession(final CandidateSession candidateSession) {
         final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSessionReversed", CandidateEvent.class);
-        query.setParameter("candidateSession", session);
+        query.setParameter("candidateSession", candidateSession);
+        query.setMaxResults(1);
+        return extractNullableFindResult(query);
+    }
+
+    public CandidateEvent getNewestEventInSession(final CandidateSession candidateSession, final CandidateEventCategory eventCategory) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getInCategoryForSessionReversed", CandidateEvent.class);
+        query.setParameter("candidateSession", candidateSession);
+        query.setParameter("candidateEventCategory", eventCategory);
+        query.setMaxResults(1);
+        return extractNullableFindResult(query);
+    }
+
+    public CandidateEvent getNewestTestItemEventInSession(final CandidateSession candidateSession, final TestPlanNodeKey itemKey) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getTestItemEventsForSessionReversed", CandidateEvent.class);
+        query.setParameter("candidateSession", candidateSession);
+        query.setParameter("itemKey", itemKey.toString());
         query.setMaxResults(1);
         return extractNullableFindResult(query);
     }
