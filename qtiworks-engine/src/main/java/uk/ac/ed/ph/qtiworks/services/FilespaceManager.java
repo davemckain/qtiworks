@@ -124,7 +124,7 @@ public final class FilespaceManager {
         return new File(candidateResponseFolder, createUniqueRequestComponent());
     }
 
-    public File createCandidateSessionStateStore(final CandidateSession candidateSession) {
+    public File obtainCandidateSessionStateStore(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
         final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();

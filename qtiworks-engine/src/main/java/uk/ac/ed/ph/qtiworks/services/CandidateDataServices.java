@@ -158,11 +158,11 @@ public class CandidateDataServices {
 
     public void storeItemSessionState(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState) {
         final Document stateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
-        storeStateDocument(candidateEvent, stateDocument);
+        storeStateDocument(candidateEvent, "itemSessionState", stateDocument);
     }
 
     public ItemSessionState loadItemSessionState(final CandidateEvent candidateEvent) {
-        final Document document = loadStateDocument(candidateEvent);
+        final Document document = loadStateDocument(candidateEvent, "itemSessionState");
         return ItemSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
@@ -281,11 +281,11 @@ public class CandidateDataServices {
 
     public void storeTestSessionState(final CandidateEvent candidateEvent, final TestSessionState testSessionState) {
         final Document stateDocument = TestSessionStateXmlMarshaller.marshal(testSessionState);
-        storeStateDocument(candidateEvent, stateDocument);
+        storeStateDocument(candidateEvent, "testSessionState", stateDocument);
     }
 
     public TestSessionState loadTestSessionState(final CandidateEvent candidateEvent) {
-        final Document document = loadStateDocument(candidateEvent);
+        final Document document = loadStateDocument(candidateEvent, "testSessionState");
         return TestSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
@@ -407,8 +407,8 @@ public class CandidateDataServices {
     //----------------------------------------------------
     // General helpers
 
-    private void storeStateDocument(final CandidateEvent candidateEvent, final Document stateXml) {
-        final File sessionFile = getStateFile(candidateEvent);
+    private void storeStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName, final Document stateXml) {
+        final File sessionFile = getStateFile(candidateEvent, stateFileBaseName);
         final XsltSerializationOptions xsltSerializationOptions = new XsltSerializationOptions();
         xsltSerializationOptions.setIndenting(true);
         xsltSerializationOptions.setIncludingXMLDeclaration(false);
@@ -421,8 +421,8 @@ public class CandidateDataServices {
         }
     }
 
-    private Document loadStateDocument(final CandidateEvent candidateEvent) {
-        final File sessionFile = getStateFile(candidateEvent);
+    private Document loadStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName) {
+        final File sessionFile = getStateFile(candidateEvent, stateFileBaseName);
         if (!sessionFile.exists()) {
             throw new QtiWorksLogicException("State file " + sessionFile + " does not exist");
         }
@@ -435,9 +435,9 @@ public class CandidateDataServices {
         }
     }
 
-    private File getStateFile(final CandidateEvent candidateEvent) {
+    private File getStateFile(final CandidateEvent candidateEvent, final String stateFileBaseName) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final File sessionFolder = filespaceManager.createCandidateSessionStateStore(candidateSession);
-        return new File(sessionFolder, String.valueOf("state" + candidateEvent.getId() + ".xml"));
+        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
+        return new File(sessionFolder, stateFileBaseName + candidateEvent.getId() + ".xml");
     }
 }
