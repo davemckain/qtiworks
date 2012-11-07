@@ -41,7 +41,10 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
  */
 public enum CandidateItemEventType {
 
-    /** Item session first initialised and template processing happened */
+    /**
+     * Item session first initialised and template processing happened
+     * (NB: Only in standalone item sessions)
+     */
     INIT,
 
     /** Attempt made, all responses bound successfully and valid */

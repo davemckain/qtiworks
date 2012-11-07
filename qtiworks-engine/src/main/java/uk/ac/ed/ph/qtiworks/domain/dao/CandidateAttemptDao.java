@@ -35,6 +35,11 @@ package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -65,4 +70,33 @@ public class CandidateAttemptDao extends GenericDao<CandidateAttempt> {
         query.setParameter("candidateEvent", candidateEvent);
         return extractNullableFindResult(query);
     }
+
+    public List<CandidateAttempt> getForStandaloneItemSessionReversed(final CandidateSession candidateSession) {
+        final TypedQuery<CandidateAttempt> query = em.createNamedQuery("CandidateAttempt.getForStandaloneItemSessionReversed", CandidateAttempt.class);
+        query.setParameter("candidateSession", candidateSession);
+        return query.getResultList();
+    }
+
+    public List<CandidateAttempt> getForTestItemSessionReversed(final CandidateSession candidateSession, final TestPlanNodeKey itemKey) {
+        final TypedQuery<CandidateAttempt> query = em.createNamedQuery("CandidateAttempt.getForTestItemSessionReversed", CandidateAttempt.class);
+        query.setParameter("candidateSession", candidateSession);
+        query.setParameter("itemKey", itemKey.toString());
+        return query.getResultList();
+    }
+
+    public CandidateAttempt getMostRecentInStandaloneItemSession(final CandidateSession candidateSession) {
+        final TypedQuery<CandidateAttempt> query = em.createNamedQuery("CandidateAttempt.getForStandaloneItemSessionReversed", CandidateAttempt.class);
+        query.setParameter("candidateSession", candidateSession);
+        query.setMaxResults(1);
+        return extractNullableFindResult(query);
+    }
+
+    public CandidateAttempt getMostRecentInTestItemSession(final CandidateSession candidateSession, final TestPlanNodeKey itemKey) {
+        final TypedQuery<CandidateAttempt> query = em.createNamedQuery("CandidateAttempt.getForTestItemSessionReversed", CandidateAttempt.class);
+        query.setParameter("candidateSession", candidateSession);
+        query.setParameter("itemKey", itemKey.toString());
+        query.setMaxResults(1);
+        return extractNullableFindResult(query);
+    }
+
 }

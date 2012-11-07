@@ -39,7 +39,6 @@ import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
@@ -62,6 +61,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import dave.StandaloneItemRenderingTest;
 
 /**
  * Dev utility class for running arbitrary JPA code
@@ -91,7 +92,8 @@ public class AdhocService {
     private InstructorUserDao instructorUserDao;
 
     public void doWork() throws Exception {
-        doWorkTest();
+        doWorkItem();
+//        doWorkTest();
     }
 
     public void doWorkTest() throws Exception {
@@ -107,7 +109,7 @@ public class AdhocService {
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
 
         /* Render initial state */
-        final RenderingOptions renderingOptions = createRenderingOptions();
+        final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
 
         final Utf8Streamer utf8Streamer = new Utf8Streamer();
         candidateTestDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
@@ -127,7 +129,7 @@ public class AdhocService {
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
 
         /* Render initial state */
-        final RenderingOptions renderingOptions = createRenderingOptions();
+        final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
 
         final Utf8Streamer utf8Streamer = new Utf8Streamer();
         candidateItemDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
@@ -163,24 +165,6 @@ public class AdhocService {
 
         /* Then close session */
         candidateItemDeliveryService.terminateCandidateSession(candidateSession);
-    }
-
-    private RenderingOptions createRenderingOptions() {
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath("/context");
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setCloseUrl("/end");
-        renderingOptions.setResetUrl("/reset");
-        renderingOptions.setReinitUrl("/reinit");
-        renderingOptions.setSourceUrl("/source");
-        renderingOptions.setResultUrl("/result");
-        renderingOptions.setServeFileUrl("/file");
-        renderingOptions.setTerminateUrl("/terminate");
-        renderingOptions.setSolutionUrl("/solution");
-        renderingOptions.setPlaybackUrlBase("/playback");
-        renderingOptions.setSelectItemUrl("/select");
-        return renderingOptions;
     }
 
     public static class Utf8Streamer implements OutputStreamer {

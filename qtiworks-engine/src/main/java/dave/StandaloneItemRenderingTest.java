@@ -124,7 +124,7 @@ public class StandaloneItemRenderingTest {
         }
     }
 
-    static RenderingOptions createRenderingOptions() {
+    public static RenderingOptions createRenderingOptions() {
         final RenderingOptions renderingOptions = new RenderingOptions();
         renderingOptions.setContextPath("/qtiworks");
         renderingOptions.setAttemptUrl("/attempt");

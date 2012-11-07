@@ -41,8 +41,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -63,13 +61,23 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="candidate_attempts")
-@Inheritance(strategy=InheritanceType.JOINED)
 @SequenceGenerator(name="candidateAttemptSequence", sequenceName="candidate_attempt_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
     @NamedQuery(name="CandidateAttempt.getForEvent",
             query="SELECT a"
                 + "  FROM CandidateAttempt a"
-                + "  WHERE a.event = :candidateEvent")
+                + "  WHERE a.candidateEvent = :candidateEvent"),
+    @NamedQuery(name="CandidateAttempt.getForStandaloneItemSessionReversed",
+            query="SELECT a"
+                + "  FROM CandidateAttempt a"
+                + "  WHERE a.candidateEvent.candidateSession = :candidateSession"
+                + "  ORDER BY a.id DESC"),
+    @NamedQuery(name="CandidateAttempt.getForTestItemSessionReversed",
+            query="SELECT a"
+                + "  FROM CandidateAttempt a"
+                + "  WHERE a.candidateEvent.candidateSession = :candidateSession"
+                + "    AND a.candidateEvent.testItemKey = :testItemKey"
+                + "  ORDER BY a.id DESC")
 })
 public class CandidateAttempt implements BaseEntity {
 
@@ -83,11 +91,11 @@ public class CandidateAttempt implements BaseEntity {
     /** {@link CandidateEvent} representing this attempt */
     @OneToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
     @JoinColumn(name="xeid")
-    private CandidateEvent event;
+    private CandidateEvent candidateEvent;
 
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="xaid")
-    private Set<CandidateResponse> responses;
+    private Set<CandidateResponse> candidateResponses;
 
     //------------------------------------------------------------
 
@@ -102,21 +110,21 @@ public class CandidateAttempt implements BaseEntity {
     }
 
 
-    public CandidateEvent getEvent() {
-        return event;
+    public CandidateEvent getCandidateEvent() {
+        return candidateEvent;
     }
 
-    public void setEvent(final CandidateEvent event) {
-        this.event = event;
+    public void setCandidateEvent(final CandidateEvent candidateEvent) {
+        this.candidateEvent = candidateEvent;
     }
 
 
-    public Set<CandidateResponse> getResponses() {
-        return responses;
+    public Set<CandidateResponse> getCandidateResponses() {
+        return candidateResponses;
     }
 
-    public void setResponses(final Set<CandidateResponse> responses) {
-        this.responses = responses;
+    public void setCandidateResponses(final Set<CandidateResponse> candidateResponses) {
+        this.candidateResponses = candidateResponses;
     }
 
     //------------------------------------------------------------

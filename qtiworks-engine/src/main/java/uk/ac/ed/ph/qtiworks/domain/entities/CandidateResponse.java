@@ -79,7 +79,7 @@ public class CandidateResponse implements BaseEntity {
     /** Attempt in which this response was made */
     @ManyToOne(optional=false)
     @JoinColumn(name="xaid")
-    private CandidateAttempt attempt;
+    private CandidateAttempt candidateAttempt;
 
     /** Identifier of the underlying response variable */
     @Basic(optional=false)
@@ -90,7 +90,7 @@ public class CandidateResponse implements BaseEntity {
     @Basic(optional=false)
     @Column(name="response_type", updatable=false, length=6)
     @Enumerated(EnumType.STRING)
-    private ResponseDataType responseType;
+    private ResponseDataType responseDataType;
 
     /** Legality of response */
     @Basic(optional=false)
@@ -124,12 +124,12 @@ public class CandidateResponse implements BaseEntity {
     }
 
 
-    public CandidateAttempt getAttempt() {
-        return attempt;
+    public CandidateAttempt getCandidateAttempt() {
+        return candidateAttempt;
     }
 
-    public void setAttempt(final CandidateAttempt attempt) {
-        this.attempt = attempt;
+    public void setCandidateAttempt(final CandidateAttempt candidateAttempt) {
+        this.candidateAttempt = candidateAttempt;
     }
 
 
@@ -142,12 +142,12 @@ public class CandidateResponse implements BaseEntity {
     }
 
 
-    public ResponseDataType getResponseType() {
-        return responseType;
+    public ResponseDataType getResponseDataType() {
+        return responseDataType;
     }
 
-    public void setResponseType(final ResponseDataType responseType) {
-        this.responseType = responseType;
+    public void setResponseDataType(final ResponseDataType responseDataType) {
+        this.responseDataType = responseDataType;
     }
 
 
@@ -184,7 +184,7 @@ public class CandidateResponse implements BaseEntity {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
                 + ",responseIdentifier=" + responseIdentifier
-                + ",responseType=" + responseType
+                + ",responseType=" + responseDataType
                 + ",responseLegality=" + responseLegality
                 + ")";
     }

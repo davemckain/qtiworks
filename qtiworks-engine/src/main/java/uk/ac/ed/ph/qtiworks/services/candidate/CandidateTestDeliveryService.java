@@ -607,10 +607,10 @@ public class CandidateTestDeliveryService {
 
     private void extractResponseDataForRendering(final CandidateAttempt candidateAttempt, final Map<Identifier, ResponseData> responseDataBuilder,
             final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
-        for (final CandidateResponse response : candidateAttempt.getResponses()) {
+        for (final CandidateResponse response : candidateAttempt.getCandidateResponses()) {
             final Identifier responseIdentifier = Identifier.parseString(response.getResponseIdentifier());
             final ResponseLegality responseLegality = response.getResponseLegality();
-            final ResponseDataType responseType = response.getResponseType();
+            final ResponseDataType responseType = response.getResponseDataType();
             ResponseData responseData = null;
             switch (responseType) {
                 case STRING:
@@ -704,8 +704,8 @@ public class CandidateTestDeliveryService {
 
             final CandidateResponse candidateItemResponse = new CandidateResponse();
             candidateItemResponse.setResponseIdentifier(responseIdentifier.toString());
-            candidateItemResponse.setAttempt(candidateAttempt);
-            candidateItemResponse.setResponseType(responseData.getType());
+            candidateItemResponse.setCandidateAttempt(candidateAttempt);
+            candidateItemResponse.setResponseDataType(responseData.getType());
             candidateItemResponse.setResponseLegality(ResponseLegality.VALID); /* (May change this below) */
             switch (responseData.getType()) {
                 case STRING:
@@ -722,7 +722,7 @@ public class CandidateTestDeliveryService {
             responseEntityMap.put(responseIdentifier, candidateItemResponse);
             candidateItemResponses.add(candidateItemResponse);
         }
-        candidateAttempt.setResponses(candidateItemResponses);
+        candidateAttempt.setCandidateResponses(candidateItemResponses);
 
         /* Attempt to bind responses */
         testSessionController.handleResponses(responseMap);
@@ -757,7 +757,7 @@ public class CandidateTestDeliveryService {
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ITEM_EVENT, itemEventType, testSessionState, notificationRecorder);
 
-        candidateAttempt.setEvent(candidateEvent);
+        candidateAttempt.setCandidateEvent(candidateEvent);
         candidateAttemptDao.persist(candidateAttempt);
 
         /* Log this (in existing state) */

@@ -109,7 +109,7 @@ public class CandidateAuditLogger {
     }
 
     public void logStandaloneItemCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
-        final CandidateEvent candidateEvent = candidateAttempt.getEvent();
+        final CandidateEvent candidateEvent = candidateAttempt.getCandidateEvent();
         logEvent(candidateSession, "action=CANDIDATE_STANDALONE_ITEM_ATTEMPT xeid=" + candidateEvent.getId()
                 + " event=" + candidateEvent.getItemEventType()
                 + " xaid=" + candidateAttempt.getId()
@@ -117,7 +117,7 @@ public class CandidateAuditLogger {
     }
 
     public void logTestItemCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
-        final CandidateEvent candidateEvent = candidateAttempt.getEvent();
+        final CandidateEvent candidateEvent = candidateAttempt.getCandidateEvent();
         logEvent(candidateSession, "action=CANDIDATE_TEST_ITEM_ATTEMPT xeid=" + candidateEvent.getId()
                 + " event=" + candidateEvent.getTestEventType()
                 + " xaid=" + candidateAttempt.getId()

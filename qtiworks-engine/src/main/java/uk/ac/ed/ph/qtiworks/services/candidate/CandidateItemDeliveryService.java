@@ -530,10 +530,10 @@ public class CandidateItemDeliveryService {
 
     private void extractResponseDataForRendering(final CandidateAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
             final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
-        for (final CandidateResponse response : attempt.getResponses()) {
+        for (final CandidateResponse response : attempt.getCandidateResponses()) {
             final Identifier responseIdentifier = Identifier.parseString(response.getResponseIdentifier());
             final ResponseLegality responseLegality = response.getResponseLegality();
-            final ResponseDataType responseType = response.getResponseType();
+            final ResponseDataType responseType = response.getResponseDataType();
             ResponseData responseData = null;
             switch (responseType) {
                 case STRING:
@@ -623,8 +623,8 @@ public class CandidateItemDeliveryService {
 
             final CandidateResponse candidateItemResponse = new CandidateResponse();
             candidateItemResponse.setResponseIdentifier(responseIdentifier.toString());
-            candidateItemResponse.setAttempt(candidateAttempt);
-            candidateItemResponse.setResponseType(responseData.getType());
+            candidateItemResponse.setCandidateAttempt(candidateAttempt);
+            candidateItemResponse.setResponseDataType(responseData.getType());
             candidateItemResponse.setResponseLegality(ResponseLegality.VALID); /* (May change this below) */
             switch (responseData.getType()) {
                 case STRING:
@@ -641,7 +641,7 @@ public class CandidateItemDeliveryService {
             responseEntityMap.put(responseIdentifier, candidateItemResponse);
             candidateItemResponses.add(candidateItemResponse);
         }
-        candidateAttempt.setResponses(candidateItemResponses);
+        candidateAttempt.setCandidateResponses(candidateItemResponses);
 
         /* Attempt to bind responses */
         itemSessionController.bindResponses(responseMap);
@@ -682,7 +682,7 @@ public class CandidateItemDeliveryService {
         final CandidateEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 eventType, itemSessionState, notificationRecorder);
 
-        candidateAttempt.setEvent(candidateItemEvent);
+        candidateAttempt.setCandidateEvent(candidateItemEvent);
         candidateAttemptDao.persist(candidateAttempt);
 
         /* Log this (in existing state) */
@@ -808,7 +808,7 @@ public class CandidateItemDeliveryService {
     /**
      * Resets the {@link CandidateSession} having the given ID (xid), returning the
      * updated {@link CandidateSession}. This takes the session back to the state it
-     * was in immediately after the last {@link CandidateEvent#REINIT_WHEN_INTERACTING} (if applicable),
+     * was in immediately after the last {@link CandidateItemEventType#REINIT} (if applicable),
      * or after the original {@link CandidateEvent#INIT}.
      */
     public CandidateSession resetCandidateSession(final long xid, final String sessionToken)
