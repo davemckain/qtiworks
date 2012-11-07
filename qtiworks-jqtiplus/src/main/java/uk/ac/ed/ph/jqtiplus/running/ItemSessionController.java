@@ -98,8 +98,8 @@ import org.slf4j.LoggerFactory;
  * {@link #initialize()}
  * {@link #performTemplateProcessing()}
  * {@link #markPresented()}
- * {@link #markPendingResponseProcessing()}
  * {@link #markPendingSubmission()}
+ * {@link #markPendingResponseProcessing()}
  * {@link #bindResponses(Map)}
  * {@link #performResponseProcessing()}
  * {@link #markClosed()}
@@ -411,7 +411,8 @@ public final class ItemSessionController extends ItemValidationController implem
 
         /* Now bind responses */
         final Map<Identifier, Interaction> interactionByResponseIdentifierMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
-        final Set<Identifier> badResponseIdentifiers = new HashSet<Identifier>();
+        itemSessionState.clearUnboundResponseData();
+        boolean hasUnboundResponses = false;
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
@@ -426,13 +427,14 @@ public final class ItemSessionController extends ItemValidationController implem
                 }
             }
             catch (final ResponseBindingException e) {
-                badResponseIdentifiers.add(responseIdentifier);
+                itemSessionState.setUnboundResponseData(responseIdentifier, responseData);
+                hasUnboundResponses = true;
             }
         }
 
         /* Maybe validate */
         final Set<Identifier> invalidResponseIdentifiers = new HashSet<Identifier>();
-        if (badResponseIdentifiers.isEmpty()) {
+        if (!hasUnboundResponses) {
             logger.debug("Validating responses");
             for (final Interaction interaction : itemProcessingMap.getInteractions()) {
                 final Value responseValue = itemSessionState.getResponseValue(interaction);
@@ -444,10 +446,9 @@ public final class ItemSessionController extends ItemValidationController implem
 
         /* Update session status */
         itemSessionState.setResponded(true);
-        itemSessionState.setBadResponseIdentifiers(badResponseIdentifiers);
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
 
-        return badResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
+        return !hasUnboundResponses && invalidResponseIdentifiers.isEmpty();
     }
 
     /**

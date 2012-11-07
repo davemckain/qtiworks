@@ -46,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
@@ -105,7 +106,7 @@ public final class XmlMarshalTest {
         itemSessionState.setResponseValue(Identifier.parseString("RESPONSE"), MultipleValue.createMultipleValue(new StringValue("Bad"), new StringValue("Thing")));
         itemSessionState.setTemplateValue(Identifier.parseString("TEMPLATE"), NullValue.INSTANCE);
         itemSessionState.setOutcomeValue(Identifier.parseString("RECORD"), rv);
-        itemSessionState.setBadResponseIdentifiers(Arrays.asList(new Identifier[] { Identifier.assumedLegal("A") } ));
+        itemSessionState.setUnboundResponseData(Identifier.assumedLegal("A"), new StringResponseData("1", "2"));
 
         return itemSessionState;
     }

@@ -306,6 +306,13 @@ public final class TestSessionController extends TestValidationController implem
             throw new IllegalStateException(itemRefNode + " is not a descendant of " + testPartNode);
         }
         testSessionState.setCurrentItemKey(itemRefNode.getKey());
+
+        /* Mark item as being presented
+         * FIXME: Is this the right place, or should it go in engine service layer?
+         */
+        final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+        itemSessionController.markPresented();
+
         return itemRefNode;
     }
 
