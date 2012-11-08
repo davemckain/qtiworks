@@ -342,7 +342,7 @@ public final class TestSessionController extends TestValidationController implem
     /**
      * Handles response submission to the currently selected item.
      * <p>
-     * RP is always run in {@link SubmissionMode#INDIVIDUAL} mode.
+     * RP and OP is always run in {@link SubmissionMode#INDIVIDUAL} mode.
      */
     public void handleResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
@@ -353,6 +353,9 @@ public final class TestSessionController extends TestValidationController implem
         if (itemSessionController.bindResponses(responseMap)) {
             itemSessionController.performResponseProcessing();
         }
+
+        /* Run outcome processing */
+        performOutcomeProcessing();
     }
 
     /**
@@ -383,6 +386,12 @@ public final class TestSessionController extends TestValidationController implem
      * Exits the test part.
      *
      * (This would end the test in this case)
+     *
+     * FIXME: When we add support for {@link NavigationMode#LINEAR}, we'd trigger response
+     * processing at this time.
+     *
+     * FIXME: This currently doesn't let the candidate review any feedback a {@link TestPart} level, as
+     * it clears the selected test part.
      */
     public void exitTestPart() {
         ensureTestPartSelected();
@@ -531,7 +540,7 @@ public final class TestSessionController extends TestValidationController implem
     // Outcome processing
 
     public void performOutcomeProcessing() {
-        logger.info("Test outcome processing starting on {}", getSubjectTest().getSystemId());
+        logger.debug("Outcome processing starting on test {}", getSubject().getSystemId());
         fireLifecycleEvent(LifecycleEventType.TEST_OUTCOME_PROCESSING_STARTING);
         try {
             resetOutcomeVariables();
@@ -540,10 +549,10 @@ public final class TestSessionController extends TestValidationController implem
             if (outcomeProcessing != null) {
                 outcomeProcessing.evaluate(this);
             }
-            logger.info("Test outcome processing completed on {}", getSubjectTest().getSystemId());
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.TEST_OUTCOME_PROCESSING_FINISHED);
+            logger.debug("Outcome processing finished on test {}", getSubject().getSystemId());
         }
     }
 

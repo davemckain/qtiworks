@@ -259,6 +259,7 @@ public final class ItemSessionController extends ItemValidationController implem
      */
     public void performTemplateProcessing(final List<TemplateDefault> templateDefaults) {
         ensureInitialized();
+        logger.debug("Template processing starting on item {}", getSubject().getSystemId());
         fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
         try {
             /* Initialise template defaults with any externally provided defaults */
@@ -306,6 +307,7 @@ public final class ItemSessionController extends ItemValidationController implem
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
+            logger.debug("Template processing finished on item {}", getSubject().getSystemId());
         }
     }
 
@@ -395,7 +397,7 @@ public final class ItemSessionController extends ItemValidationController implem
     public boolean bindResponses(final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
         ensureOpen();
-        logger.debug("Binding responses {}", responseMap);
+        logger.debug("Binding responses {} on item {}", responseMap, getSubject().getSystemId());
 
         /* First set all responses bound to <endAttemptInteractions> to false initially.
          * These may be overridden for responses to the presented interactions below.
@@ -459,7 +461,7 @@ public final class ItemSessionController extends ItemValidationController implem
      */
     public void performResponseProcessing() {
         ensureOpen();
-        logger.debug("Response processing starting");
+        logger.debug("Response processing starting on item {}", getSubject().getSystemId());
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
             /* We always count the attempt, unless the response was to an endAttemptInteraction
@@ -509,8 +511,8 @@ public final class ItemSessionController extends ItemValidationController implem
             updateClosedStatus();
         }
         finally {
-            logger.debug("Response processing finished");
             fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
+            logger.debug("Response processing finished on item {}", getSubject().getSystemId());
         }
     }
 
