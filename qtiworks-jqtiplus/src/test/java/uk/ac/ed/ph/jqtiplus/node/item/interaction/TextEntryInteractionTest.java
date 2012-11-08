@@ -136,9 +136,9 @@ public class TextEntryInteractionTest {
 
         itemSessionController.bindResponses(responses);
 
-        final Set<Identifier> badResponses = itemSessionState.getBadResponseIdentifiers();
+        final Map<Identifier, ResponseData> unboundResponses = itemSessionState.getUnboundResponseData();
         final Set<Identifier> invalidResponses = itemSessionState.getInvalidResponseIdentifiers();
-        assertEquals(0, badResponses.size());
+        assertEquals(0, unboundResponses.size());
         assertEquals(expectedValidates, invalidResponses.isEmpty());
         assertEquals(expectedResponse, itemSessionState.getResponseValue(Identifier.parseString(RESPONSE_NAME)));
         assertEquals(expectedStringResponse, itemSessionState.getResponseValue(Identifier.parseString(STRING_RESPONSE_NAME)));

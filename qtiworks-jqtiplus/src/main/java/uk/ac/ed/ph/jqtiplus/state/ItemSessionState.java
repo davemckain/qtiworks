@@ -47,6 +47,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
@@ -87,7 +88,7 @@ public final class ItemSessionState implements Serializable {
      */
     private final Map<Identifier, List<Identifier>> shuffledInteractionChoiceOrders;
 
-    private final Set<Identifier> badResponseIdentifiers;
+    private final Map<Identifier, ResponseData> unboundResponseData;
     private final Set<Identifier> invalidResponseIdentifiers;
 
     private final Map<Identifier, Value> overriddenTemplateDefaultValues;
@@ -113,7 +114,7 @@ public final class ItemSessionState implements Serializable {
     public ItemSessionState() {
         this.initialized = false;
         this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
-        this.badResponseIdentifiers = new HashSet<Identifier>();
+        this.unboundResponseData = new HashMap<Identifier, ResponseData>();
         this.invalidResponseIdentifiers = new HashSet<Identifier>();
         this.overriddenTemplateDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenResponseDefaultValues = new HashMap<Identifier, Value>();
@@ -136,7 +137,7 @@ public final class ItemSessionState implements Serializable {
         this.responded = false;
         this.closed = false;
         this.candidateComment = null;
-        this.badResponseIdentifiers.clear();
+        this.unboundResponseData.clear();
         this.invalidResponseIdentifiers.clear();
         this.shuffledInteractionChoiceOrders.clear();
         this.overriddenTemplateDefaultValues.clear();
@@ -218,7 +219,7 @@ public final class ItemSessionState implements Serializable {
 
 
     public boolean isRespondedValidly() {
-        return isResponded() && badResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
+        return isResponded() && unboundResponseData.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
     public boolean isResponded() {
@@ -481,13 +482,23 @@ public final class ItemSessionState implements Serializable {
     //----------------------------------------------------------------
     // Response mutation
 
-    public Set<Identifier> getBadResponseIdentifiers() {
-        return Collections.unmodifiableSet(badResponseIdentifiers);
+    public ResponseData getUnboundResponseData(final Identifier identifier) {
+        Assert.notNull(identifier, "identifier");
+        return unboundResponseData.get(identifier);
     }
 
-    public void setBadResponseIdentifiers(final Collection<Identifier> badResponseIdentifiers) {
-        this.badResponseIdentifiers.clear();
-        this.badResponseIdentifiers.addAll(badResponseIdentifiers);
+    public void setUnboundResponseData(final Identifier identifier, final ResponseData responseData) {
+        Assert.notNull(identifier, "identifier");
+        Assert.notNull(responseData, "responseData");
+        unboundResponseData.put(identifier, responseData);
+    }
+
+    public Map<Identifier, ResponseData> getUnboundResponseData() {
+        return Collections.unmodifiableMap(unboundResponseData);
+    }
+
+    public void clearUnboundResponseData() {
+        unboundResponseData.clear();
     }
 
     public Set<Identifier> getInvalidResponseIdentifiers() {
@@ -648,7 +659,7 @@ public final class ItemSessionState implements Serializable {
                 && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
                 && overriddenOutcomeDefaultValues.equals(other.overriddenOutcomeDefaultValues)
                 && overriddenCorrectResponseValues.equals(other.overriddenCorrectResponseValues)
-                && badResponseIdentifiers.equals(other.badResponseIdentifiers)
+                && unboundResponseData.equals(other.unboundResponseData)
                 && invalidResponseIdentifiers.equals(other.invalidResponseIdentifiers)
                 && templateValues.equals(other.templateValues)
                 && responseValues.equals(other.responseValues)
@@ -668,7 +679,7 @@ public final class ItemSessionState implements Serializable {
                 overriddenResponseDefaultValues,
                 overriddenOutcomeDefaultValues,
                 overriddenCorrectResponseValues,
-                badResponseIdentifiers,
+                unboundResponseData,
                 invalidResponseIdentifiers,
                 templateValues,
                 responseValues,
@@ -689,7 +700,7 @@ public final class ItemSessionState implements Serializable {
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues
                 + ",overriddenOutcomeDefaultValues=" + overriddenOutcomeDefaultValues
                 + ",overriddenCorrectResponseValues=" + overriddenCorrectResponseValues
-                + ",badResponseIdentifiers=" + badResponseIdentifiers
+                + ",unboundResponseMap=" + unboundResponseData
                 + ",invalidResponseIdentifiers=" + invalidResponseIdentifiers
                 + ",templateValues=" + templateValues
                 + ",responseValues=" + responseValues

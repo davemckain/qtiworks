@@ -129,9 +129,9 @@ public class MathAssessTest {
             responses.put(Identifier.parseString("RESPONSE"), new StringResponseData("1+x"));
             itemSessionController.bindResponses(responses);
 
-            final Set<Identifier> badResponses = itemSessionState.getBadResponseIdentifiers();
+            final Map<Identifier, ResponseData> unboundResponses = itemSessionState.getUnboundResponseData();
             final Set<Identifier> invalidResponses = itemSessionState.getInvalidResponseIdentifiers();
-            System.out.println("Bad responses: " + badResponses);
+            System.out.println("Unbound responses: " + unboundResponses);
             System.out.println("Invalid response: " + invalidResponses);
             System.out.println("Response Values: " + itemSessionState.getResponseValues());
 

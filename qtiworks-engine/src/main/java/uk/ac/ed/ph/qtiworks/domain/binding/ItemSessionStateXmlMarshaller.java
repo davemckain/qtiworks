@@ -33,19 +33,26 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.binding;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.types.ResponseData;
+import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -79,8 +86,18 @@ public final class ItemSessionStateXmlMarshaller {
         if (sessionStatus!=null) {
             element.setAttribute("sessionStatus", sessionStatus.toQtiString());
         }
-        XmlMarshallerCore.maybeAddIdentifierListAttribute(element, "badResponseIdentifiers", itemSessionState.getBadResponseIdentifiers());
+
+        /* Show any invalid responses (as attribute) */
         XmlMarshallerCore.maybeAddIdentifierListAttribute(element, "invalidResponseIdentifiers", itemSessionState.getInvalidResponseIdentifiers());
+
+        /* Output unbound responses (as elements) */
+        for (final Entry<Identifier, ResponseData> entry : itemSessionState.getUnboundResponseData().entrySet()) {
+            final Identifier identifier = entry.getKey();
+            final ResponseData responseData = entry.getValue();
+            final Element unboundResponseElement = XmlMarshallerCore.appendElement(element, "unboundResponse");
+            unboundResponseElement.setAttribute("identifier", identifier.toString());
+            appendResponseData(unboundResponseElement, responseData);
+        }
 
         /* Output candidate comment */
         XmlMarshallerCore.maybeAppendTextElement(element, "candidateComment", itemSessionState.getCandidateComment());
@@ -102,6 +119,28 @@ public final class ItemSessionStateXmlMarshaller {
         XmlMarshallerCore.appendValues(element, "overriddenResponseDefault", itemSessionState.getOverriddenResponseDefaultValues());
         XmlMarshallerCore.appendValues(element, "overriddenOutcomeDefault", itemSessionState.getOverriddenOutcomeDefaultValues());
         XmlMarshallerCore.appendValues(element, "overriddenCorrectResponse", itemSessionState.getOverriddenCorrectResponseValues());
+    }
+
+    private static void appendResponseData(final Element element, final ResponseData responseData) {
+        switch (responseData.getType()) {
+            case STRING:
+                final StringResponseData stringResponseData = (StringResponseData) responseData;
+                for (final String responseDatum : stringResponseData.getResponseData()) {
+                    XmlMarshallerCore.maybeAppendTextElement(element, "string", responseDatum);
+                }
+                break;
+
+            case FILE:
+                final FileResponseData fileResponseData = (FileResponseData) responseData;
+                final Element fileElement = XmlMarshallerCore.appendElement(element, "file");
+                fileElement.setAttribute("contentType", fileResponseData.getContentType());
+                fileElement.setAttribute("fileName", fileResponseData.getFileName());
+                fileElement.setAttribute("filePath", fileResponseData.getFile().getAbsolutePath());
+                break;
+
+            default:
+                throw new QtiWorksLogicException("Unexpected switch case " + responseData.getType());
+        }
     }
 
     //----------------------------------------------
@@ -126,7 +165,7 @@ public final class ItemSessionStateXmlMarshaller {
         result.setPresented(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "presented", false));
         result.setResponded(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "responded", false));
         result.setClosed(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "closed", false));
-        result.setBadResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "badResponseIdentifiers"));
+        result.setInvalidResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "invalidResponseIdentifiers"));
         if (element.hasAttribute("sessionStatus")) {
             final String sessionStatusAttr = element.getAttribute("sessionStatus");
             try {
@@ -137,10 +176,35 @@ public final class ItemSessionStateXmlMarshaller {
             }
         }
 
+        final Map<Identifier, ResponseData> unboundResponseDataMapBuilder = new HashMap<Identifier, ResponseData>();
         final List<Element> childElements = XmlMarshallerCore.expectElementChildren(element);
         for (final Element childElement : childElements) {
             final String elementName = childElement.getLocalName();
-            if (elementName.equals("candidateComment")) {
+            if (elementName.equals("unboundResponse")) {
+                final Identifier identifier = XmlMarshallerCore.parseIdentifierAttribute(childElement, "identifier");
+                final List<Element> responseElements = XmlMarshallerCore.expectElementChildren(childElement);
+                if (responseElements.size()==1 && responseElements.get(0).getLocalName().equals("file")) {
+                    final Element fileResponseElement = responseElements.get(0);
+                    final String contentType = XmlMarshallerCore.requireAttribute(fileResponseElement, "contentType");
+                    final String fileName = XmlMarshallerCore.requireAttribute(fileResponseElement, "fileName");
+                    final String filePath = XmlMarshallerCore.requireAttribute(fileResponseElement, "filePath");
+                    final FileResponseData fileResponseData = new FileResponseData(new File(filePath), contentType, fileName);
+                    unboundResponseDataMapBuilder.put(identifier, fileResponseData);
+                }
+                else {
+                    final List<String> stringResponseBuilder = new ArrayList<String>();
+                    for (final Element responseElement : responseElements) {
+                        if ("string".equals(responseElement.getLocalName())) {
+                            stringResponseBuilder.add(XmlMarshallerCore.expectTextContent(responseElement));
+                        }
+                        else {
+                            throw new MarshallingException("Expeted 1 <file> or multiple <string> children");
+                        }
+                    }
+                    result.setUnboundResponseData(identifier, new StringResponseData(stringResponseBuilder));
+                }
+            }
+            else if (elementName.equals("candidateComment")) {
                 result.setCandidateComment(XmlMarshallerCore.expectTextContent(childElement));
             }
             else if (elementName.equals("shuffledInteractionChoiceOrder")) {
@@ -187,7 +251,6 @@ public final class ItemSessionStateXmlMarshaller {
                 throw new MarshallingException("Unexpected element " + elementName);
             }
         }
-
         return result;
     }
 
