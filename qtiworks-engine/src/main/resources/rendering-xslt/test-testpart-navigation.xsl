@@ -95,7 +95,7 @@ Renders the navigation for the current testPart
       <input type="submit" value="Choose Item"/> <xsl:value-of select="@itemTitle"/>
       <pre>
         PRESENTED: <xsl:value-of select="$itemSessionState/@presented='true'"/>
-        RESPONDED: <xsl:value-of select="$itemSessionState/@responsed='true'"/>
+        RESPONDED: <xsl:value-of select="$itemSessionState/@responded='true'"/>
         INVALID: <xsl:value-of select="not(empty($itemSessionState/@badResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))"/>
         CLOSED: <xsl:value-of select="$itemSessionState/@closed='true'"/>
 
