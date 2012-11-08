@@ -409,32 +409,33 @@ public final class ItemSessionController extends ItemValidationController implem
             }
         }
 
+        /* Save raw responses */
+        itemSessionState.setRawResponseDataMap(responseMap);
+
         /* Now bind responses */
         final Map<Identifier, Interaction> interactionByResponseIdentifierMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
-        itemSessionState.clearUnboundResponseData();
-        boolean hasUnboundResponses = false;
+        final Set<Identifier> unboundResponseIdentifiers = new HashSet<Identifier>();
         for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
             Assert.notNull(responseData, "responseMap entry for key " + responseIdentifier);
-            try {
-                final Interaction interaction = interactionByResponseIdentifierMap.get(responseIdentifier);
-                if (interaction != null) {
+            final Interaction interaction = interactionByResponseIdentifierMap.get(responseIdentifier);
+            if (interaction != null) {
+                try {
                     interaction.bindResponse(this, responseData);
                 }
-                else {
-                    throw new IllegalArgumentException("No interaction found for response identifier " + responseIdentifier);
+                catch (final ResponseBindingException e) {
+                    unboundResponseIdentifiers.add(responseIdentifier);
                 }
             }
-            catch (final ResponseBindingException e) {
-                itemSessionState.setUnboundResponseData(responseIdentifier, responseData);
-                hasUnboundResponses = true;
+            else {
+                throw new IllegalArgumentException("No interaction found for response identifier " + responseIdentifier);
             }
         }
 
-        /* Maybe validate */
+        /* Validate if all responses were successfully bound */
         final Set<Identifier> invalidResponseIdentifiers = new HashSet<Identifier>();
-        if (!hasUnboundResponses) {
+        if (unboundResponseIdentifiers.isEmpty()) {
             logger.debug("Validating responses");
             for (final Interaction interaction : itemProcessingMap.getInteractions()) {
                 final Value responseValue = itemSessionState.getResponseValue(interaction);
@@ -446,9 +447,10 @@ public final class ItemSessionController extends ItemValidationController implem
 
         /* Update session status */
         itemSessionState.setResponded(true);
+        itemSessionState.setUnboundResponseIdentifiers(unboundResponseIdentifiers);
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
 
-        return !hasUnboundResponses && invalidResponseIdentifiers.isEmpty();
+        return unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
     /**

@@ -648,7 +648,7 @@ public class CandidateItemDeliveryService {
         itemSessionController.markPendingResponseProcessing();
 
         /* Note any responses that failed to bind */
-        final Set<Identifier> badResponseIdentifiers = itemSessionState.getBadResponseIdentifiers();
+        final Set<Identifier> badResponseIdentifiers = itemSessionState.getUnboundResponseIdentifiers();
         final boolean allResponsesBound = badResponseIdentifiers.isEmpty();
         for (final Identifier badResponseIdentifier : badResponseIdentifiers) {
             responseEntityMap.get(badResponseIdentifier).setResponseLegality(ResponseLegality.BAD);

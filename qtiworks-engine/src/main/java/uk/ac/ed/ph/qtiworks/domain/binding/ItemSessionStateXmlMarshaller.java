@@ -50,9 +50,7 @@ import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -87,16 +85,17 @@ public final class ItemSessionStateXmlMarshaller {
             element.setAttribute("sessionStatus", sessionStatus.toQtiString());
         }
 
-        /* Show any invalid responses (as attribute) */
+        /* Show any unbound and/or invalid responses (as attribute) */
+        XmlMarshallerCore.maybeAddIdentifierListAttribute(element, "unboundResponseIdentifiers", itemSessionState.getUnboundResponseIdentifiers());
         XmlMarshallerCore.maybeAddIdentifierListAttribute(element, "invalidResponseIdentifiers", itemSessionState.getInvalidResponseIdentifiers());
 
-        /* Output unbound responses (as elements) */
-        for (final Entry<Identifier, ResponseData> entry : itemSessionState.getUnboundResponseData().entrySet()) {
+        /* Output raw responses (as elements) */
+        for (final Entry<Identifier, ResponseData> entry : itemSessionState.getRawResponseDataMap().entrySet()) {
             final Identifier identifier = entry.getKey();
             final ResponseData responseData = entry.getValue();
-            final Element unboundResponseElement = XmlMarshallerCore.appendElement(element, "unboundResponse");
-            unboundResponseElement.setAttribute("identifier", identifier.toString());
-            appendResponseData(unboundResponseElement, responseData);
+            final Element responseInputElement = XmlMarshallerCore.appendElement(element, "responseInput");
+            responseInputElement.setAttribute("identifier", identifier.toString());
+            appendResponseData(responseInputElement, responseData);
         }
 
         /* Output candidate comment */
@@ -165,6 +164,7 @@ public final class ItemSessionStateXmlMarshaller {
         result.setPresented(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "presented", false));
         result.setResponded(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "responded", false));
         result.setClosed(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "closed", false));
+        result.setUnboundResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "unboundResponseIdentifiers"));
         result.setInvalidResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "invalidResponseIdentifiers"));
         if (element.hasAttribute("sessionStatus")) {
             final String sessionStatusAttr = element.getAttribute("sessionStatus");
@@ -176,20 +176,20 @@ public final class ItemSessionStateXmlMarshaller {
             }
         }
 
-        final Map<Identifier, ResponseData> unboundResponseDataMapBuilder = new HashMap<Identifier, ResponseData>();
         final List<Element> childElements = XmlMarshallerCore.expectElementChildren(element);
         for (final Element childElement : childElements) {
             final String elementName = childElement.getLocalName();
-            if (elementName.equals("unboundResponse")) {
+            if (elementName.equals("responseInput")) {
                 final Identifier identifier = XmlMarshallerCore.parseIdentifierAttribute(childElement, "identifier");
                 final List<Element> responseElements = XmlMarshallerCore.expectElementChildren(childElement);
+                /* Should contain either 1 <file> or 1 or more <string> */
                 if (responseElements.size()==1 && responseElements.get(0).getLocalName().equals("file")) {
                     final Element fileResponseElement = responseElements.get(0);
                     final String contentType = XmlMarshallerCore.requireAttribute(fileResponseElement, "contentType");
                     final String fileName = XmlMarshallerCore.requireAttribute(fileResponseElement, "fileName");
                     final String filePath = XmlMarshallerCore.requireAttribute(fileResponseElement, "filePath");
                     final FileResponseData fileResponseData = new FileResponseData(new File(filePath), contentType, fileName);
-                    unboundResponseDataMapBuilder.put(identifier, fileResponseData);
+                    result.setRawResponseData(identifier, fileResponseData);
                 }
                 else {
                     final List<String> stringResponseBuilder = new ArrayList<String>();
@@ -201,7 +201,7 @@ public final class ItemSessionStateXmlMarshaller {
                             throw new MarshallingException("Expeted 1 <file> or multiple <string> children");
                         }
                     }
-                    result.setUnboundResponseData(identifier, new StringResponseData(stringResponseBuilder));
+                    result.setRawResponseData(identifier, new StringResponseData(stringResponseBuilder));
                 }
             }
             else if (elementName.equals("candidateComment")) {

@@ -62,6 +62,7 @@ import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.w3c.dom.Document;
@@ -106,7 +107,8 @@ public final class XmlMarshalTest {
         itemSessionState.setResponseValue(Identifier.parseString("RESPONSE"), MultipleValue.createMultipleValue(new StringValue("Bad"), new StringValue("Thing")));
         itemSessionState.setTemplateValue(Identifier.parseString("TEMPLATE"), NullValue.INSTANCE);
         itemSessionState.setOutcomeValue(Identifier.parseString("RECORD"), rv);
-        itemSessionState.setUnboundResponseData(Identifier.assumedLegal("A"), new StringResponseData("1", "2"));
+        itemSessionState.setUnboundResponseIdentifiers(new HashSet<Identifier>(Arrays.asList(Identifier.assumedLegal("RESPONSE"))));
+        itemSessionState.setRawResponseData(Identifier.assumedLegal("A"), new StringResponseData("1", "2"));
 
         return itemSessionState;
     }

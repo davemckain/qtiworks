@@ -102,6 +102,10 @@ public final class FileValue extends SingleValue {
         this.fileName = fileName;
     }
 
+    public FileResponseData toFileResponseData() {
+        return new FileResponseData(file, contentType, fileName);
+    }
+
     @Override
     public boolean equals(final Object object) {
         if (!(object instanceof FileValue)) {

@@ -23,9 +23,6 @@ rendering.
   <!-- State of item being rendered -->
   <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
 
-  <!-- Raw response information -->
-  <xsl:param name="responseInputs" select="()" as="element(qw:responseInput)*"/>
-
   <!-- Action permissions -->
   <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
@@ -68,8 +65,11 @@ rendering.
   <xsl:variable name="overriddenCorrectResponses" select="$itemSessionState/qw:overriddenCorrectResponse" as="element(qw:overriddenCorrectResponse)*"/>
   <xsl:variable name="sessionStatus" select="$itemSessionState/@sessionStatus" as="xs:string"/>
 
+  <!-- Raw response inputs -->
+  <xsl:variable name="responseInputs" select="$itemSessionState/qw:responseInput" as="element(qw:responseInput)*"/>
+
   <!-- Bad/invalid responses -->
-  <xsl:variable name="badResponseIdentifiers" select="$itemSessionState/@badResponseIdentifiers" as="xs:string*"/>
+  <xsl:variable name="badResponseIdentifiers" select="$itemSessionState/@unboundResponseIdentifiers" as="xs:string*"/>
   <xsl:variable name="invalidResponseIdentifiers" select="$itemSessionState/@invalidResponseIdentifiers" as="xs:string*"/>
 
   <!-- Is a model solution provided? -->
@@ -117,18 +117,25 @@ rendering.
 
   <xsl:function name="qw:extract-single-cardinality-response-input" as="xs:string">
     <xsl:param name="responseInput" as="element(qw:responseInput)?"/>
-    <xsl:variable name="values" select="$responseInput/qw:value" as="element(qw:value)*"/>
     <xsl:choose>
-      <xsl:when test="not(exists($values))">
-        <xsl:sequence select="''"/>
-      </xsl:when>
-      <xsl:when test="count($values)=1">
-        <xsl:sequence select="$values[1]"/>
+      <xsl:when test="$responseInput/qw:file">
+        <xsl:message terminate="yes">This function does not support file responses</xsl:message>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:message terminate="yes">
-          Expected response input <xsl:copy-of select="$responseInput"/> to contain one value only
-        </xsl:message>
+        <xsl:variable name="strings" select="$responseInput/qw:string" as="element(qw:string)*"/>
+        <xsl:choose>
+          <xsl:when test="not(exists($strings))">
+            <xsl:sequence select="''"/>
+          </xsl:when>
+          <xsl:when test="count($strings)=1">
+            <xsl:sequence select="$strings[1]"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:message terminate="yes">
+              Expected response input <xsl:copy-of select="$responseInput"/> to contain one string value only
+            </xsl:message>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>

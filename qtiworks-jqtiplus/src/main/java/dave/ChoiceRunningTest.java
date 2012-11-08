@@ -57,7 +57,7 @@ public class ChoiceRunningTest {
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
         itemSessionController.bindResponses(responseMap);
-        System.out.println("Unbound responses: " + itemSessionState.getUnboundResponseData());
+        System.out.println("Unbound responses: " + itemSessionState.getUnboundResponseIdentifiers());
         System.out.println("Invalid responses:" + itemSessionState.getInvalidResponseIdentifiers());
 
         System.out.println("\nInvoking response processing");
