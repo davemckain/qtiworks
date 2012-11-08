@@ -31,33 +31,46 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+
+import javax.validation.constraints.NotNull;
 
 /**
- * Encapsulates the test-specific events that can arise when delivering
- * a test within a {@link CandidateSession}
+ * Request for rendering Test or {@link TestPart} feedback.
  *
  * @author David McKain
  */
-public enum CandidateTestEventType {
+public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
 
-    /** Test session initialized */
-    INIT,
+    /** Required {@link TestSessionState} to be rendered */
+    @NotNull
+    private TestSessionState testSessionState;
 
-    /** Presentation of navigation menu for the current {@link TestPart} */
-    SELECT_MENU,
+    private boolean exitTestPartAllowed;
 
-    /** Exits the current {@link TestPart} */
-    EXIT_TEST_PART,
+    //----------------------------------------------------
 
-    /** Selection of a particular item */
-    SELECT_ITEM,
+    @Override
+    public TestSessionState getTestSessionState() {
+        return testSessionState;
+    }
 
-    /** Item Event within the selected item */
-    ITEM_EVENT,
+    @Override
+    public void setTestSessionState(final TestSessionState testSessionState) {
+        this.testSessionState = testSessionState;
+    }
 
-    ;
 
+    @Override
+    public boolean isExitTestPartAllowed() {
+        return exitTestPartAllowed;
+    }
+
+    @Override
+    public void setExitTestPartAllowed(final boolean exitTestPartAllowed) {
+        this.exitTestPartAllowed = exitTestPartAllowed;
+    }
 }

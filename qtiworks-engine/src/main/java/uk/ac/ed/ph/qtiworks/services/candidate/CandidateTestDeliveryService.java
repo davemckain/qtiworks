@@ -58,6 +58,7 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
@@ -109,6 +110,21 @@ import org.springframework.web.multipart.MultipartFile;
  * to candidates.
  * <p>
  * NOTE: Remember there is no {@link IdentityContext} for candidates.
+ *
+ * CURRENTLY SUPPORTED:
+ * - nonlinear navigation mode (menu, select item)
+ * - simultaneous submission mode
+ * - test "atEnd" feedback only
+ *
+ * STILL TO DO:
+ * - linear navigation
+ * - individual submission
+ * - test part "atEnd" feedback
+ * - test / test part "during" feedback
+ * - skipping
+ * - solutions
+ * - allowReview
+ * - branchRule/preCondition
  *
  * @author David McKain
  *
@@ -303,6 +319,10 @@ public class CandidateTestDeliveryService {
                 renderTestPartNavigationMenu(candidateEvent, testSessionState, renderingOptions, resultStream);
                 break;
 
+            case EXIT_TEST_PART:
+                renderTestPartFeedback(candidateEvent, testSessionState, renderingOptions, resultStream);
+                break;
+
             default:
                 throw new QtiWorksLogicException("Unexpected logic branch. Event type " + testEventType);
         }
@@ -314,6 +334,7 @@ public class CandidateTestDeliveryService {
         /* FIXME: Only supporting NONLINEAR so far, so only outcome is to show navigation menu */
         renderTestPartNavigationMenu(candidateEvent, testSessionState, renderingOptions, resultStream);
     }
+
 
     private void renderTestPartNavigationMenu(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState, final RenderingOptions renderingOptions,
@@ -330,6 +351,27 @@ public class CandidateTestDeliveryService {
         candidateAuditLogger.logTestPartNavigationRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderTestPartNavigation(renderingRequest, notifications, resultStream);
+    }
+
+    /**
+     * FIXME: Only supporting single part tests, so the only thing this will do is show the
+     * feedback for the test as a whole.
+     */
+    private void renderTestPartFeedback(final CandidateEvent candidateEvent,
+            final TestSessionState testSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        final TestFeedbackRenderingRequest renderingRequest = new TestFeedbackRenderingRequest();
+        initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setTestSessionState(testSessionState);
+
+        candidateAuditLogger.logTestFeedbackRendering(candidateEvent);
+        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
+        assessmentRenderer.renderTestFeedback(renderingRequest, notifications, resultStream);
     }
 
     private void renderAfterSelectItem(final CandidateEvent candidateEvent,
@@ -583,8 +625,6 @@ public class CandidateTestDeliveryService {
         assessmentRenderer.renderTestItem(renderingRequest, notifications, resultStream);
     }
 
-
-
     //----------------------------------------------------
     // Attempt
 
@@ -781,6 +821,38 @@ public class CandidateTestDeliveryService {
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_ITEM, null, itemKey, testSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
+
+        return candidateSession;
+    }
+
+
+    public CandidateSession exitTestPart(final long xid, final String sessionToken)
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        return exitTestPart(candidateSession);
+    }
+
+    public CandidateSession exitTestPart(final CandidateSession candidateSession)
+            throws CandidateForbiddenException {
+        Assert.notNull(candidateSession, "candidateSession");
+
+        /* Get current session state */
+        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
+
+        /* Make sure caller may do this */
+        ensureSessionNotTerminated(candidateSession);
+
+        /* Update state */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, notificationRecorder);
+        testSessionController.exitTestPart();
+
+        /* Record and log event */
+        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+                CandidateTestEventType.EXIT_TEST_PART, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
 
         return candidateSession;

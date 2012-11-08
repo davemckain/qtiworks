@@ -226,6 +226,18 @@ public class CandidateTestController {
         return redirectToRenderSession(xid, sessionToken);
     }
 
+    /**
+     * Exits the current test part
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/exittestpart", method=RequestMethod.POST)
+    public String selectItem(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateTestDeliveryService.exitTestPart(xid, sessionToken);
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
     //----------------------------------------------------
 
     /**

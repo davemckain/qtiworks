@@ -220,8 +220,7 @@ rendering.
     -->
     <xsl:choose>
       <xsl:when test="qw:is-null-value($valueHolder)">
-        <!-- We'll output NULL as an empty string -->
-        <xsl:text/>
+        <xsl:text>NULL</xsl:text>
       </xsl:when>
       <xsl:when test="qw:is-single-cardinality-value($valueHolder)">
         <xsl:variable name="singleValue" select="qw:extract-single-cardinality-value($valueHolder)" as="xs:string"/>

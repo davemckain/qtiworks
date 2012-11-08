@@ -35,12 +35,17 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
+import java.net.URI;
+
 /**
  * FIXME: Document this!
  *
  * @author David McKain
  */
 interface TestRenderingRequest {
+
+    URI getAssessmentResourceUri();
+    void setAssessmentResourceUri(final URI assessmentResourceUri);
 
     TestSessionState getTestSessionState();
     void setTestSessionState(final TestSessionState testSessionState);

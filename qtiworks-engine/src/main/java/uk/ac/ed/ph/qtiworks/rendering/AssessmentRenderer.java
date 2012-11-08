@@ -98,6 +98,8 @@ public class AssessmentRenderer {
 
     private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
 
+    private static final URI testFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-feedback.xsl");
+
     @Resource
     private JqtiExtensionManager jqtiExtensionManager;
 
@@ -196,7 +198,7 @@ public class AssessmentRenderer {
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, renderingRequest);
-        setItemRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
+        setItemRenderingParameters(xsltParameters, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
 
         doTransform(renderingRequest, itemStandaloneXsltUri, renderingRequest.getAssessmentItemUri(),
@@ -229,8 +231,8 @@ public class AssessmentRenderer {
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
 
         setBaseRenderingParameters(xsltParameters, renderingRequest);
-        setItemRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
-        setTestRenderingParameters(xsltParameters, xsltParamBuilder, renderingRequest);
+        setItemRenderingParameters(xsltParameters, renderingRequest);
+        setTestRenderingParameters(xsltParameters, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
 
         doTransform(renderingRequest, testItemXsltUri, renderingRequest.getAssessmentItemUri(),
@@ -245,7 +247,7 @@ public class AssessmentRenderer {
     }
 
     private void setTestRenderingParameters(final Map<String, Object> xsltParameters,
-            final XsltParamBuilder xsltParamBuilder, final TestItemRenderingRequest renderingRequest) {
+            final TestRenderingRequest renderingRequest) {
         /* FIXME: Add remaining things here! */
         xsltParameters.put("testSystemId", renderingRequest.getAssessmentResourceUri().toString());
 
@@ -258,7 +260,7 @@ public class AssessmentRenderer {
     }
 
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
-            final XsltParamBuilder xsltParamBuilder, final StandaloneItemRenderingRequest renderingRequest) {
+            final StandaloneItemRenderingRequest renderingRequest) {
         /* Set config parameters */
         xsltParameters.put("prompt", renderingRequest.getPrompt());
 
@@ -311,6 +313,7 @@ public class AssessmentRenderer {
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
+        xsltParameters.put("selectItemUrl", renderingOptions.getSelectItemUrl());
         xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());
         xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
     }
@@ -346,17 +349,63 @@ public class AssessmentRenderer {
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+        setBaseRenderingParameters(xsltParameters, renderingRequest);
+        setTestRenderingParameters(xsltParameters, renderingRequest);
 
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
-        xsltParameters.put("selectItemUrl", renderingOptions.getSelectItemUrl());
+
 
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
 
         doTransform(renderingRequest, testPartNavigationXsltUri, renderingRequest.getAssessmentResourceUri(),
+                resultStream, xsltParameters);
+    }
+
+    /**
+     * FIXME: Document this!
+     *
+     * The caller is responsible for closing this stream afterwards.
+     *
+     * @param renderingRequest
+     * @param resultStream
+     *
+     * @throws QtiRenderingException if an unexpected Exception happens during rendering
+     */
+    public void renderTestFeedback(final TestFeedbackRenderingRequest renderingRequest,
+            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
+        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(resultStream, "resultStream");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testFeedbackRenderingRequest");
+        jsr303Validator.validate(renderingRequest, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+
+        /* Pass request info to XSLT as parameters */
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+        setBaseRenderingParameters(xsltParameters, renderingRequest);
+        setTestRenderingParameters(xsltParameters, renderingRequest);
+
+        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
+        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
+
+        /* Pass TestSessionState as XML */
+        final TestSessionState testSessionState = renderingRequest.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+
+        doTransform(renderingRequest, testFeedbackXsltUri, renderingRequest.getAssessmentResourceUri(),
                 resultStream, xsltParameters);
     }
 
