@@ -252,8 +252,8 @@ rendering.
     <div class="sessionControl">
       <xsl:if test="$authorMode">
         <div class="authorMode">
-          The candidate currently has the following "session control" options. You can choose
-          exactly which options are available via the "item delivery".
+          The candidate currently has the following options for this item.
+          You can choose exactly which options are available via the "item delivery".
         </div>
       </xsl:if>
       <ul class="controls">
@@ -293,6 +293,17 @@ rendering.
           </li>
         </xsl:if>
       </ul>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="qw:session-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following options for this session.
+          You can choose exactly which options are available via the "item delivery".
+        </div>
+      </xsl:if>
       <ul class="controls">
         <xsl:if test="$resultAllowed">
           <li>

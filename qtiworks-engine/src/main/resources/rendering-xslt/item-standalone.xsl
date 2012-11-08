@@ -166,6 +166,7 @@ Renders a standalone assessmentItem
 
         <!-- Session control -->
         <xsl:call-template name="qw:item-controls"/>
+        <xsl:call-template name="qw:session-controls"/>
 
         <!-- Authoring feedback (maybe) -->
         <xsl:if test="$authorMode">
