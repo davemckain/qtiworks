@@ -260,38 +260,40 @@ public class CandidateItemDeliveryService {
     }
 
     private void renderEvent(final CandidateSession candidateSession,
-            final CandidateEvent candidateItemEvent,
+            final CandidateEvent candidateEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(candidateItemEvent);
+        final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(candidateEvent);
         if (candidateSession.isTerminated()) {
             /* Session is terminated */
-            renderTerminated(candidateItemEvent, renderingOptions, resultStream);
+            renderTerminated(candidateEvent, renderingOptions, resultStream);
         }
         else if (itemSessionState.isClosed()) {
             /* Item is closed */
-            renderEventWhenClosed(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+            renderEventWhenClosed(candidateEvent, itemSessionState, renderingOptions, resultStream);
         }
         else {
             /* Interacting */
-            renderEventWhenInteracting(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+            renderEventWhenInteracting(candidateEvent, itemSessionState, renderingOptions, resultStream);
         }
     }
 
-    private void renderEventWhenInteracting(final CandidateEvent candidateItemEvent,
+    private void renderEventWhenInteracting(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
             final OutputStream resultStream) {
-        final CandidateItemEventType eventType = candidateItemEvent.getItemEventType();
+        final CandidateItemEventType eventType = candidateEvent.getItemEventType();
         switch (eventType) {
             case INIT:
             case REINIT:
             case RESET:
-                renderInteractingPresentation(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+                renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions,
+                        RenderingMode.AFTER_INITIALISATION, resultStream);
                 break;
 
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
-                renderInteractingAfterAttempt(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+                renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions,
+                        RenderingMode.AFTER_ATTEMPT, resultStream);
                 break;
 
             default:
@@ -299,82 +301,58 @@ public class CandidateItemDeliveryService {
         }
     }
 
-    private void renderInteractingPresentation(final CandidateEvent candidateItemEvent,
+    private void renderWhenInteracting(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent,
-                itemSessionState, renderingOptions, RenderingMode.AFTER_INITIALISATION);
-        doRendering(candidateItemEvent, renderingRequest, resultStream);
-    }
-
-    private void renderInteractingAfterAttempt(final CandidateEvent candidateItemEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent,
-                itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
-        doRendering(candidateItemEvent, renderingRequest, resultStream);
-    }
-
-    private StandaloneItemRenderingRequest initItemRenderingRequestWhenInteracting(final CandidateEvent candidateItemEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-        final CandidateSession candidateSession = candidateItemEvent.getCandidateSession();
+            final RenderingMode renderingMode, final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
 
-        /* Compute current value for 'duration' */
+        /* Update current value for 'duration' */
         final double duration = computeItemSessionDuration(candidateSession);
+        itemSessionState.setDuration(duration);
 
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestCustomDuration(candidateItemEvent,
-                itemSessionState, renderingOptions, renderingMode, duration);
+        /* Initialise rendering request */
+        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateEvent,
+                itemSessionState, renderingOptions, renderingMode);
         renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
         renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
         renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
         renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenInteracting());
         renderingRequest.setResultAllowed(false);
         renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
-        return renderingRequest;
+
+        /* Pass to rendering layer */
+        doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    /**
-     * Computes the current value for the <code>duration</code> variable for this session.
-     * <p>
-     * Currently, this is just the length of time since the session was first opened.
-     * We DO NOT yet support breaking sessions time-wise.
-     *
-     * @return computed value for <code>duration</code>, which will be non-negative.
-     */
-    private double computeItemSessionDuration(final CandidateSession candidateSession) {
-        final long startTime = candidateSession.getCreationTime().getTime();
-        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
-
-        final double duration = (currentTime - startTime) / 1000.0;
-        return duration;
-    }
-
-    private void renderEventWhenClosed(final CandidateEvent candidateItemEvent,
+    private void renderEventWhenClosed(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
             final OutputStream resultStream) {
-        final CandidateItemEventType eventType = candidateItemEvent.getItemEventType();
+        final CandidateItemEventType eventType = candidateEvent.getItemEventType();
         switch (eventType) {
             case ATTEMPT_VALID:
             case ATTEMPT_INVALID:
             case ATTEMPT_BAD:
-                renderClosedAfterAttempt(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+                renderWhenClosed(candidateEvent, itemSessionState, renderingOptions,
+                        RenderingMode.AFTER_ATTEMPT, resultStream);
                 break;
 
             case INIT:
             case REINIT:
             case RESET:
             case CLOSE:
-                renderClosed(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+                renderWhenClosed(candidateEvent, itemSessionState, renderingOptions,
+                        RenderingMode.CLOSED, resultStream);
                 break;
 
             case SOLUTION:
-                renderSolution(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+                renderWhenClosed(candidateEvent, itemSessionState, renderingOptions,
+                        RenderingMode.SOLUTION, resultStream);
                 break;
 
             case PLAYBACK:
-                renderPlayback(candidateItemEvent, itemSessionState, renderingOptions, resultStream);
+                renderPlayback(candidateEvent, itemSessionState, renderingOptions, resultStream);
                 break;
 
             default:
@@ -382,34 +360,18 @@ public class CandidateItemDeliveryService {
         }
     }
 
-    private void renderClosedAfterAttempt(final CandidateEvent candidateItemEvent,
+    private void renderWhenClosed(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
-                itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
-        doRendering(candidateItemEvent, renderingRequest, resultStream);
+            final RenderingMode renderingMode, final OutputStream resultStream) {
+        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
+                itemSessionState, renderingOptions, renderingMode);
+        doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    private void renderClosed(final CandidateEvent candidateItemEvent,
+    private void renderPlayback(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
             final OutputStream resultStream) {
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
-                itemSessionState, renderingOptions, RenderingMode.CLOSED);
-        doRendering(candidateItemEvent, renderingRequest, resultStream);
-    }
-
-    private void renderSolution(final CandidateEvent candidateItemEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
-                itemSessionState, renderingOptions, RenderingMode.SOLUTION);
-        doRendering(candidateItemEvent, renderingRequest, resultStream);
-    }
-
-    private void renderPlayback(final CandidateEvent candidateItemEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final CandidateEvent playbackEvent = candidateItemEvent.getPlaybackEvent();
+        final CandidateEvent playbackEvent = candidateEvent.getPlaybackEvent();
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(playbackEvent,
                 itemSessionState, renderingOptions, RenderingMode.PLAYBACK);
 
@@ -417,17 +379,17 @@ public class CandidateItemDeliveryService {
         renderingRequest.setCurrentPlaybackEvent(playbackEvent);
 
         /* Do rendering */
-        doRendering(candidateItemEvent, renderingRequest, resultStream);
+        doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    private StandaloneItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateItemEvent,
+    private StandaloneItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
             final RenderingMode renderingMode) {
-        final CandidateSession candidateSession = candidateItemEvent.getCandidateSession();
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
 
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateItemEvent,
+        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateEvent,
                 itemSessionState, renderingOptions, renderingMode);
         renderingRequest.setCloseAllowed(false);
         renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
@@ -456,31 +418,19 @@ public class CandidateItemDeliveryService {
         assessmentRenderer.renderTeminated(renderingRequest, resultStream);
     }
 
-    private void doRendering(final CandidateEvent candidateItemEvent, final StandaloneItemRenderingRequest renderingRequest, final OutputStream resultStream) {
-        candidateAuditLogger.logStandaloneItemRendering(candidateItemEvent, renderingRequest);
-        final List<CandidateEventNotification> notifications = candidateItemEvent.getNotifications();
+    private void doRendering(final CandidateEvent candidateEvent, final StandaloneItemRenderingRequest renderingRequest, final OutputStream resultStream) {
+        candidateAuditLogger.logStandaloneItemRendering(candidateEvent, renderingRequest);
+        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderStandaloneItem(renderingRequest, notifications, resultStream);
     }
 
-    private StandaloneItemRenderingRequest initItemRenderingRequest(final CandidateEvent candidateItemEvent,
+    private StandaloneItemRenderingRequest initItemRenderingRequest(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
             final RenderingMode renderingMode) {
-        return initItemRenderingRequestCustomDuration(candidateItemEvent, itemSessionState, renderingOptions, renderingMode, -1.0);
-    }
-
-    private StandaloneItemRenderingRequest initItemRenderingRequestCustomDuration(final CandidateEvent candidateItemEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final RenderingMode renderingMode, final double durationOverride) {
-        final CandidateSession candidateSession = candidateItemEvent.getCandidateSession();
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-
-        /* Extract ItemSessionState XML for this event and override the value for duration if caller
-         * supplies a non-negative duration */
-        if (durationOverride >= 0.0) {
-            itemSessionState.setDuration(durationOverride);
-        }
 
         final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, itemDeliverySettings, renderingOptions);
@@ -498,6 +448,22 @@ public class CandidateItemDeliveryService {
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
         renderingRequest.setRenderingOptions(renderingOptions);
+    }
+
+    /**
+     * Computes the current value for the <code>duration</code> variable for this session.
+     * <p>
+     * Currently, this is just the length of time since the session was first opened.
+     * We DO NOT yet support breaking sessions time-wise.
+     *
+     * @return computed value for <code>duration</code>, which will be non-negative.
+     */
+    private double computeItemSessionDuration(final CandidateSession candidateSession) {
+        final long startTime = candidateSession.getCreationTime().getTime();
+        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
+
+        final double duration = (currentTime - startTime) / 1000.0;
+        return duration;
     }
 
     //----------------------------------------------------
@@ -620,10 +586,10 @@ public class CandidateItemDeliveryService {
         final CandidateItemEventType eventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
             : CandidateItemEventType.ATTEMPT_BAD;
-        final CandidateEvent candidateItemEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
+        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 eventType, itemSessionState, notificationRecorder);
 
-        candidateAttempt.setCandidateEvent(candidateItemEvent);
+        candidateAttempt.setCandidateEvent(candidateEvent);
         candidateAttemptDao.persist(candidateAttempt);
 
         /* Log this (in existing state) */
