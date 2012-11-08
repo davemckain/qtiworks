@@ -785,4 +785,33 @@ public class CandidateTestDeliveryService {
 
         return candidateSession;
     }
+
+    //----------------------------------------------------
+    // Access to additional package resources (e.g. images/CSS)
+
+    public void streamAssessmentFile(final CandidateSession candidateSession, final String fileSystemIdString,
+            final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, IOException {
+        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(fileSystemIdString, "fileSystemIdString");
+        Assert.notNull(outputStreamer, "outputStreamer");
+
+        /* Make sure requested file is whitelisted for access */
+        final Delivery delivery = candidateSession.getDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        String resultingFileHref = null;
+        for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
+            final URI fileUri = assessmentPackageFileService.createAssessmentFileUri(assessmentPackage, safeFileHref);
+            if (fileUri.toString().equals(fileSystemIdString)) {
+                resultingFileHref = safeFileHref;
+                break;
+            }
+        }
+        if (resultingFileHref==null) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
+        }
+
+        /* Finally stream the required resource */
+        assessmentPackageFileService.streamAssessmentPackageFile(assessmentPackage, resultingFileHref, outputStreamer);
+    }
 }

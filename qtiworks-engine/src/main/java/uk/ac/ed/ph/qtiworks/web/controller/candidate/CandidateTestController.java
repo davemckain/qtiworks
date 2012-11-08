@@ -34,10 +34,15 @@
 package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
+import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
@@ -59,6 +64,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -218,6 +224,32 @@ public class CandidateTestController {
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);
+    }
+
+    //----------------------------------------------------
+
+    /**
+     * Serves the given (white-listed) file in the given {@link AssessmentPackage}
+     * @throws CandidateForbiddenException
+     *
+     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/file", method=RequestMethod.GET)
+    public void streamPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
+            @RequestParam("href") final String href,
+            final HttpServletRequest request, final HttpServletResponse response)
+            throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
+        final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateSession(xid, sessionToken);
+        final String resourceUniqueTag = request.getRequestURI() + "/" + href;
+        final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
+        final String requestEtag = request.getHeader("If-None-Match");
+        if (resourceEtag.equals(requestEtag)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+        else {
+            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
+            candidateTestDeliveryService.streamAssessmentFile(candidateSession, href, outputStreamer);
+        }
     }
 
     //----------------------------------------------------
