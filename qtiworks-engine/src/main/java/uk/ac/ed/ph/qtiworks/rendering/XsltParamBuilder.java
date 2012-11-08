@@ -38,16 +38,12 @@ import uk.ac.ed.ph.qtiworks.rendering.XsltParamDocumentBuilder.SaxFirerCallback;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
-import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -55,8 +51,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -133,44 +127,6 @@ public final class XsltParamBuilder {
             element.appendChild(doc.createTextNode(notification.getMessage()));
             result.add(element);
          }
-        return result;
-    }
-
-    public List<Node> responseInputsToElements(final Map<Identifier, ResponseData> responseInputs) {
-        final ArrayList<Node> result = new ArrayList<Node>();
-        if (responseInputs==null || responseInputs.isEmpty()) {
-            return result;
-        }
-        final Document doc = documentBuilder.newDocument();
-        for (final Entry<Identifier, ResponseData> entry : responseInputs.entrySet()) {
-            final Identifier interactionIdentifier = entry.getKey();
-            final ResponseData responseData = entry.getValue();
-            final Element responseInputElement = doc.createElementNS(QTIWORKS_NAMESPACE, "responseInput");
-            responseInputElement.setAttribute("identifier", interactionIdentifier.toString());
-            responseInputElement.setAttribute("type", responseData.getType().toString().toLowerCase());
-            switch (responseData.getType()) {
-                case STRING:
-                    final List<String> stringResponses = ((StringResponseData) responseData).getResponseData();
-                    for (final String string : stringResponses) {
-                        final Element valueChild = doc.createElementNS(QTIWORKS_NAMESPACE, "value");
-                        valueChild.appendChild(doc.createTextNode(string));
-                        responseInputElement.appendChild(valueChild);
-                    }
-                    break;
-
-                case FILE:
-                    final FileResponseData fileResponseData = (FileResponseData) responseData;
-                    final Element fileResponseElement = doc.createElementNS(QTIWORKS_NAMESPACE, "file");
-                    fileResponseElement.setAttribute("contentType", fileResponseData.getContentType());
-                    fileResponseElement.setAttribute("fileName", fileResponseData.getFileName());
-                    responseInputElement.appendChild(fileResponseElement);
-                    break;
-
-                default:
-                    throw new QtiLogicException("Unexpected swtich case " + responseData.getType());
-            }
-            result.add(responseInputElement);
-        }
         return result;
     }
 

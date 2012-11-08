@@ -37,13 +37,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
@@ -76,10 +72,6 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
     private boolean sourceAllowed;
     private boolean resultAllowed;
     private boolean playbackAllowed;
-
-    private Map<Identifier, ResponseData> responseInputs;
-    private Set<Identifier> badResponseIdentifiers;
-    private Set<Identifier> invalidResponseIdentifiers;
 
     private CandidateEvent currentPlaybackEvent;
     private List<CandidateEvent> playbackEvents;
@@ -173,33 +165,6 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
 
     public void setResultAllowed(final boolean resultAllowed) {
         this.resultAllowed = resultAllowed;
-    }
-
-
-    public Map<Identifier, ResponseData> getResponseInputs() {
-        return responseInputs;
-    }
-
-    public void setResponseInputs(final Map<Identifier, ResponseData> responseInputs) {
-        this.responseInputs = responseInputs;
-    }
-
-
-    public Set<Identifier> getBadResponseIdentifiers() {
-        return badResponseIdentifiers;
-    }
-
-    public void setBadResponseIdentifiers(final Set<Identifier> badResponseIdentifiers) {
-        this.badResponseIdentifiers = badResponseIdentifiers;
-    }
-
-
-    public Set<Identifier> getInvalidResponseIdentifiers() {
-        return invalidResponseIdentifiers;
-    }
-
-    public void setInvalidResponseIdentifiers(final Set<Identifier> invalidResponseIdentifiers) {
-        this.invalidResponseIdentifiers = invalidResponseIdentifiers;
     }
 
 

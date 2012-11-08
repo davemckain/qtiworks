@@ -89,8 +89,6 @@ public class StandaloneItemRenderingTest {
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
             renderingRequest.setPlaybackAllowed(true);
-            renderingRequest.setBadResponseIdentifiers(null);
-            renderingRequest.setInvalidResponseIdentifiers(null);
 
             final CandidateEvent playback1 = new CandidateEvent();
             playback1.setId(1L);

@@ -80,7 +80,6 @@ import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.File;
@@ -417,7 +416,6 @@ public class CandidateTestDeliveryService {
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenInteracting(candidateEvent,
                 testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
-        fillAttemptResponseData(renderingRequest, candidateEvent);
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
@@ -494,7 +492,6 @@ public class CandidateTestDeliveryService {
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateEvent,
                 testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
-        fillAttemptResponseData(renderingRequest, candidateEvent);
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
@@ -586,55 +583,7 @@ public class CandidateTestDeliveryService {
         assessmentRenderer.renderTestItem(renderingRequest, notifications, resultStream);
     }
 
-    private void fillAttemptResponseData(final TestItemRenderingRequest renderingRequest, final CandidateEvent candidateEvent) {
-        final CandidateAttempt attempt = candidateAttemptDao.getForEvent(candidateEvent);
-        if (attempt==null) {
-            throw new QtiWorksLogicException("Expected to find a CandidateAttempt corresponding to event #" + candidateEvent.getId());
-        }
-        fillAttemptResponseData(renderingRequest, attempt);
-    }
 
-    private void fillAttemptResponseData(final TestItemRenderingRequest renderingRequest, final CandidateAttempt candidateAttempt) {
-        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
-        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
-        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-        extractResponseDataForRendering(candidateAttempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
-
-        renderingRequest.setResponseInputs(responseDataBuilder);
-        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
-        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
-    }
-
-    private void extractResponseDataForRendering(final CandidateAttempt candidateAttempt, final Map<Identifier, ResponseData> responseDataBuilder,
-            final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
-        for (final CandidateResponse response : candidateAttempt.getCandidateResponses()) {
-            final Identifier responseIdentifier = Identifier.parseString(response.getResponseIdentifier());
-            final ResponseLegality responseLegality = response.getResponseLegality();
-            final ResponseDataType responseType = response.getResponseDataType();
-            ResponseData responseData = null;
-            switch (responseType) {
-                case STRING:
-                    responseData = new StringResponseData(response.getStringResponseData());
-                    break;
-
-                case FILE:
-                    final CandidateFileSubmission fileSubmission = response.getFileSubmission();
-                    responseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()),
-                            fileSubmission.getContentType());
-                    break;
-
-                default:
-                    throw new QtiWorksLogicException("Unexpected ResponseDataType " + responseType);
-            }
-            responseDataBuilder.put(responseIdentifier, responseData);
-            if (responseLegality==ResponseLegality.BAD) {
-                badResponseIdentifiersBuilder.add(responseIdentifier);
-            }
-            else if (responseLegality==ResponseLegality.INVALID) {
-                invalidResponseIdentifiersBuilder.add(responseIdentifier);
-            }
-        }
-    }
 
     //----------------------------------------------------
     // Attempt

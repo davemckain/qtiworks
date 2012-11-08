@@ -99,8 +99,6 @@ public class TestItemRenderingTest {
             renderingRequest.setResultAllowed(false);
             renderingRequest.setSourceAllowed(false);
             renderingRequest.setPlaybackAllowed(false);
-            renderingRequest.setBadResponseIdentifiers(null);
-            renderingRequest.setInvalidResponseIdentifiers(null);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

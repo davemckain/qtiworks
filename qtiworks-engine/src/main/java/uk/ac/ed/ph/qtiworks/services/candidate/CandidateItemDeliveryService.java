@@ -80,7 +80,6 @@ import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.File;
@@ -313,7 +312,6 @@ public class CandidateItemDeliveryService {
             final OutputStream resultStream) {
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateItemEvent,
                 itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
-        fillAttemptResponseData(renderingRequest, candidateItemEvent);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
@@ -389,7 +387,6 @@ public class CandidateItemDeliveryService {
             final OutputStream resultStream) {
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateItemEvent,
                 itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
-        fillAttemptResponseData(renderingRequest, candidateItemEvent);
         doRendering(candidateItemEvent, renderingRequest, resultStream);
     }
 
@@ -415,12 +412,6 @@ public class CandidateItemDeliveryService {
         final CandidateEvent playbackEvent = candidateItemEvent.getPlaybackEvent();
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(playbackEvent,
                 itemSessionState, renderingOptions, RenderingMode.PLAYBACK);
-
-        /* If we're playing back an attempt, pull out the raw response data */
-        final CandidateAttempt playbackAttempt = candidateAttemptDao.getForEvent(playbackEvent);
-        if (playbackAttempt!=null) {
-            fillAttemptResponseData(renderingRequest, playbackAttempt);
-        }
 
         /* Record which event we're playing back */
         renderingRequest.setCurrentPlaybackEvent(playbackEvent);
@@ -507,56 +498,6 @@ public class CandidateItemDeliveryService {
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
         renderingRequest.setRenderingOptions(renderingOptions);
-    }
-
-    private void fillAttemptResponseData(final StandaloneItemRenderingRequest renderingRequest, final CandidateEvent candidateItemEvent) {
-        final CandidateAttempt attempt = candidateAttemptDao.getForEvent(candidateItemEvent);
-        if (attempt==null) {
-            throw new QtiWorksLogicException("Expected to find a CandidateAttempt corresponding to event #" + candidateItemEvent.getId());
-        }
-        fillAttemptResponseData(renderingRequest, attempt);
-    }
-
-    private void fillAttemptResponseData(final StandaloneItemRenderingRequest renderingRequest, final CandidateAttempt candidateItemAttempt) {
-        final Map<Identifier, ResponseData> responseDataBuilder = new HashMap<Identifier, ResponseData>();
-        final Set<Identifier> badResponseIdentifiersBuilder = new HashSet<Identifier>();
-        final Set<Identifier> invalidResponseIdentifiersBuilder = new HashSet<Identifier>();
-        extractResponseDataForRendering(candidateItemAttempt, responseDataBuilder, badResponseIdentifiersBuilder, invalidResponseIdentifiersBuilder);
-
-        renderingRequest.setResponseInputs(responseDataBuilder);
-        renderingRequest.setBadResponseIdentifiers(badResponseIdentifiersBuilder);
-        renderingRequest.setInvalidResponseIdentifiers(invalidResponseIdentifiersBuilder);
-    }
-
-    private void extractResponseDataForRendering(final CandidateAttempt attempt, final Map<Identifier, ResponseData> responseDataBuilder,
-            final Set<Identifier> badResponseIdentifiersBuilder, final Set<Identifier> invalidResponseIdentifiersBuilder) {
-        for (final CandidateResponse response : attempt.getCandidateResponses()) {
-            final Identifier responseIdentifier = Identifier.parseString(response.getResponseIdentifier());
-            final ResponseLegality responseLegality = response.getResponseLegality();
-            final ResponseDataType responseType = response.getResponseDataType();
-            ResponseData responseData = null;
-            switch (responseType) {
-                case STRING:
-                    responseData = new StringResponseData(response.getStringResponseData());
-                    break;
-
-                case FILE:
-                    final CandidateFileSubmission fileSubmission = response.getFileSubmission();
-                    responseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()),
-                            fileSubmission.getContentType());
-                    break;
-
-                default:
-                    throw new QtiWorksLogicException("Unexpected ResponseDataType " + responseType);
-            }
-            responseDataBuilder.put(responseIdentifier, responseData);
-            if (responseLegality==ResponseLegality.BAD) {
-                badResponseIdentifiersBuilder.add(responseIdentifier);
-            }
-            else if (responseLegality==ResponseLegality.INVALID) {
-                invalidResponseIdentifiersBuilder.add(responseIdentifier);
-            }
-        }
     }
 
     //----------------------------------------------------

@@ -42,8 +42,6 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;
@@ -261,8 +259,6 @@ public class AssessmentRenderer {
 
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
             final XsltParamBuilder xsltParamBuilder, final StandaloneItemRenderingRequest renderingRequest) {
-        final Map<Identifier, ResponseData> responseInputs = renderingRequest.getResponseInputs();
-
         /* Set config parameters */
         xsltParameters.put("prompt", renderingRequest.getPrompt());
 
@@ -278,11 +274,6 @@ public class AssessmentRenderer {
         /* Pass ItemSessionState (as DOM Document) */
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
         xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
-
-        /* Pass raw response inputs (if appropriate) */
-        if (responseInputs!=null) {
-            xsltParameters.put("responseInputs", xsltParamBuilder.responseInputsToElements(responseInputs));
-        }
 
         /* Playback control */
         xsltParameters.put("playbackAllowed", Boolean.valueOf(renderingRequest.isPlaybackAllowed()));
