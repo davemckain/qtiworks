@@ -67,6 +67,9 @@ Renders the test feedback
       </head>
       <body class="qtiworks assessmentTest testFeedback">
         <xsl:apply-templates select="qti:testFeedback[@access='atEnd']"/>
+
+        <!-- Test session control -->
+        <xsl:call-template name="qw:test-controls"/>
        </body>
     </html>
   </xsl:template>

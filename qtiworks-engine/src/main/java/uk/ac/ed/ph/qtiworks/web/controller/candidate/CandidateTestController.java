@@ -113,6 +113,7 @@ public class CandidateTestController {
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
+        renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/endtestpart");
         renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exittestpart");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/navigation");
         return renderingOptions;
@@ -227,15 +228,33 @@ public class CandidateTestController {
     }
 
     /**
-     * Exits the current test part
+     * Ends the current test part
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/exittestpart", method=RequestMethod.POST)
-    public String selectItem(@PathVariable final long xid, @PathVariable final String sessionToken)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/endtestpart", method=RequestMethod.POST)
+    public String endCurrentTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateTestDeliveryService.exitTestPart(xid, sessionToken);
+        candidateTestDeliveryService.endCurrentTestPart(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);
+    }
+
+    /**
+     * Exits the test
+     *
+     * FIXME: This should just exit the testPart once we support multiple ones.
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/exittestpart", method=RequestMethod.POST)
+    public String exitCurrentTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        final CandidateSession candidateSession = candidateTestDeliveryService.exitCurrentTestPart(xid, sessionToken);
+
+        String redirect = redirectToExitUrl(candidateSession.getExitUrl());
+        if (redirect==null) {
+            /* No/unsafe redirect specified, so get the rendered to generate an "assessment is complete" page */
+            redirect = redirectToRenderSession(xid, sessionToken);
+        }
+        return redirect;
     }
 
     //----------------------------------------------------

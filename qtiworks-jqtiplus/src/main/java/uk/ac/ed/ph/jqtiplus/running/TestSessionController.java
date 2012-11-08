@@ -359,11 +359,11 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     /**
-     * Can we exit the current test part?
+     * Can we end the current test part?
      *
      * @throws IllegalStateException if no test part is selected
      */
-    public boolean canExitTestPart() {
+    public boolean canEndTestPart() {
         final TestPlanNode currentTestPartNode = ensureTestPartSelected();
         final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
         for (final TestPlanNode itemRefNode : itemRefNodes) {
@@ -383,7 +383,18 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     /**
-     * Exits the test part.
+     * FIXME: We need to find a way to determine when the testPart has ended but
+     * not been exited. E.g. a new TestPartState or something like that.
+     *
+     * @return
+     */
+    public boolean canExitTest() {
+        ensureTestPartSelected();
+        return testSessionState.getCurrentItemKey()==null;
+    }
+
+    /**
+     * Ends the test part.
      *
      * (This would end the test in this case)
      *
@@ -393,13 +404,21 @@ public final class TestSessionController extends TestValidationController implem
      * FIXME: This currently doesn't let the candidate review any feedback a {@link TestPart} level, as
      * it clears the selected test part.
      */
-    public void exitTestPart() {
+    public void endTestPart() {
         ensureTestPartSelected();
-        if (!canExitTestPart()) {
+        if (!canEndTestPart()) {
             throw new IllegalStateException("Current test part cannot be exited");
         }
-        testSessionState.setCurrentTestPartKey(null);
         testSessionState.setCurrentItemKey(null);
+    }
+
+    /**
+     * Exits the test
+     *
+     * FIXME: This is work in progress!
+     */
+    public void exitTest() {
+        testSessionState.setCurrentTestPartKey(null);
         testSessionState.setFinished(true);
     }
 

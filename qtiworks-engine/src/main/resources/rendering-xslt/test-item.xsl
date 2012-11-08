@@ -152,32 +152,6 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
     </html>
   </xsl:template>
 
-  <xsl:template name="qw:test-controls">
-    <div class="sessionControl">
-      <xsl:if test="$authorMode">
-        <div class="authorMode">
-          The candidate currently has the following "test session control" options. (These
-          currently depend on the navigation &amp; submission mode of the test only.)
-        </div>
-      </xsl:if>
-      <ul class="controls test">
-        <li>
-          <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
-            <input type="submit" value="Test Navigation"/>
-          </form>
-        </li>
-        <xsl:if test="$exitTestPartAllowed">
-          <li>
-            <form action="{$webappContextPath}{$exitTestPartUrl}" method="post">
-              <input type="submit" value="Exit Test Part"/>
-            </form>
-          </li>
-        </xsl:if>
-      </ul>
-    </div>
-  </xsl:template>
-
-
   <!-- ************************************************************ -->
 
   <xsl:template match="qti:itemBody">

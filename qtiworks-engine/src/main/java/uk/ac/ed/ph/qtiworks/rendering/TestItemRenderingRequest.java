@@ -49,6 +49,7 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     @NotNull
     private TestSessionState testSessionState;
 
+    private boolean endTestPartAllowed;
     private boolean exitTestPartAllowed;
 
     //----------------------------------------------------
@@ -61,6 +62,17 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     @Override
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
+    }
+
+
+    @Override
+    public boolean isEndTestPartAllowed() {
+        return endTestPartAllowed;
+    }
+
+    @Override
+    public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
+        this.endTestPartAllowed = endTestPartAllowed;
     }
 
 

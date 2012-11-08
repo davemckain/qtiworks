@@ -136,6 +136,7 @@ public class StandaloneItemRenderingTest {
         renderingOptions.setPlaybackUrlBase("/playback");
         renderingOptions.setTerminateUrl("/terminate");
         renderingOptions.setSelectItemUrl("/select");
+        renderingOptions.setEndTestPartUrl("/endtestpart");
         renderingOptions.setExitTestPartUrl("/exittestpart");
         renderingOptions.setTestPartNavigationUrl("/navigation");
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);

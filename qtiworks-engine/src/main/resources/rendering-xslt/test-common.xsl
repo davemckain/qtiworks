@@ -29,6 +29,7 @@ Base templates used in test rendering
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
 
   <!-- Action permissions -->
+  <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="exitTestPartAllowed" as="xs:boolean" required="yes"/>
 
   <!-- ************************************************************ -->
@@ -151,6 +152,40 @@ Base templates used in test rendering
         </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+
+  <!-- ************************************************************ -->
+
+  <xsl:template name="qw:test-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following "test session control" options. (These
+          currently depend on the navigation &amp; submission mode of the test only.)
+        </div>
+      </xsl:if>
+      <ul class="controls test">
+        <li>
+          <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
+            <input type="submit" value="Choose Question"/>
+          </form>
+        </li>
+        <xsl:if test="$endTestPartAllowed">
+          <li>
+            <form action="{$webappContextPath}{$endTestPartUrl}" method="post">
+              <input type="submit" value="End Test"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$exitTestPartAllowed">
+          <li>
+            <form action="{$webappContextPath}{$exitTestPartUrl}" method="post">
+              <input type="submit" value="Exit Test"/>
+            </form>
+          </li>
+        </xsl:if>
+      </ul>
+    </div>
   </xsl:template>
 
 </xsl:stylesheet>

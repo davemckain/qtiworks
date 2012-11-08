@@ -16,6 +16,7 @@ Renders the navigation for the current testPart
 
   <!-- ************************************************************ -->
 
+  <xsl:import href="test-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
@@ -71,6 +72,10 @@ Renders the navigation for the current testPart
       <body class="qtiworks assessmentTest testPartNavigation">
         <xsl:choose>
           <xsl:when test="exists($currentTestPart)">
+            <h2>Test Navigation</h2>
+            <p>
+              Yes, it looks like crap at the moment. Bear with me!
+            </p>
             <xsl:apply-templates select="$currentTestPart" mode="testPart-navigation"/>
           </xsl:when>
           <xsl:otherwise>
@@ -79,6 +84,9 @@ Renders the navigation for the current testPart
             </xsl:message>
           </xsl:otherwise>
         </xsl:choose>
+
+        <!-- Test session control -->
+        <xsl:call-template name="qw:test-controls"/>
        </body>
     </html>
   </xsl:template>

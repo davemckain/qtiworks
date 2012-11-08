@@ -319,9 +319,13 @@ public class CandidateTestDeliveryService {
                 renderTestPartNavigationMenu(candidateEvent, testSessionState, renderingOptions, resultStream);
                 break;
 
-            case EXIT_TEST_PART:
+            case END_TEST_PART:
                 renderTestPartFeedback(candidateEvent, testSessionState, renderingOptions, resultStream);
                 break;
+
+            case EXIT_TEST_PART:
+                /* FIXME: Currently EXIT_TEST_PART exits the test completely */
+                throw new QtiWorksLogicException("Unimplemented");
 
             default:
                 throw new QtiWorksLogicException("Unexpected logic branch. Event type " + testEventType);
@@ -344,8 +348,14 @@ public class CandidateTestDeliveryService {
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
+        /* Will need to query certain parts of state */
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, new NotificationRecorder(NotificationLevel.INFO));
+
         final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTest());
         renderingRequest.setTestSessionState(testSessionState);
 
         candidateAuditLogger.logTestPartNavigationRendering(candidateEvent);
@@ -365,8 +375,14 @@ public class CandidateTestDeliveryService {
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
+        /* Will need to query certain parts of state */
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, new NotificationRecorder(NotificationLevel.INFO));
+
         final TestFeedbackRenderingRequest renderingRequest = new TestFeedbackRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTest());
         renderingRequest.setTestSessionState(testSessionState);
 
         candidateAuditLogger.logTestFeedbackRendering(candidateEvent);
@@ -477,7 +493,8 @@ public class CandidateTestDeliveryService {
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateEvent,
                 testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
-        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTestPart());
+        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTest());
 //        renderingRequest.setCloseAllowed(testDeliverySettings.isAllowClose());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenInteracting());
 //        renderingRequest.setResetAllowed(testDeliverySettings.isAllowResetWhenInteracting());
@@ -558,7 +575,8 @@ public class CandidateTestDeliveryService {
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
                 testSessionState, itemSessionState, renderingOptions, renderingMode);
-        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTestPart());
+        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTest());
 //        renderingRequest.setCloseAllowed(false);
 //        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenClosed());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenClosed());
@@ -827,13 +845,13 @@ public class CandidateTestDeliveryService {
     }
 
 
-    public CandidateSession exitTestPart(final long xid, final String sessionToken)
+    public CandidateSession endCurrentTestPart(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return exitTestPart(candidateSession);
+        return endCurrentTestPart(candidateSession);
     }
 
-    public CandidateSession exitTestPart(final CandidateSession candidateSession)
+    public CandidateSession endCurrentTestPart(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -848,11 +866,45 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        testSessionController.exitTestPart();
+        /* FIXME: This is probably not the right logic in general but works OK in this restricted case */
+        testSessionController.endTestPart();
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.EXIT_TEST_PART, testSessionState, notificationRecorder);
+                CandidateTestEventType.END_TEST_PART, testSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
+
+        return candidateSession;
+    }
+
+
+    public CandidateSession exitCurrentTestPart(final long xid, final String sessionToken)
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        return exitCurrentTestPart(candidateSession);
+    }
+
+    public CandidateSession exitCurrentTestPart(final CandidateSession candidateSession)
+            throws CandidateForbiddenException {
+        Assert.notNull(candidateSession, "candidateSession");
+
+        /* Get current session state */
+        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
+
+        /* Make sure caller may do this */
+        ensureSessionNotTerminated(candidateSession);
+
+        /* Update state */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, notificationRecorder);
+        /* FIXME: This is probably not the right logic in general but works OK in this restricted case */
+        testSessionController.endTestPart();
+
+        /* Record and log event */
+        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+                CandidateTestEventType.END_TEST_PART, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
 
         return candidateSession;

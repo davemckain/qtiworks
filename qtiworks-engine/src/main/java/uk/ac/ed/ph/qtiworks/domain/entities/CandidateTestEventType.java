@@ -49,7 +49,10 @@ public enum CandidateTestEventType {
     /** Presentation of navigation menu for the current {@link TestPart} */
     SELECT_MENU,
 
-    /** Exits the current {@link TestPart} */
+    /** Ends the current {@link TestPart} */
+    END_TEST_PART,
+
+    /** Exists the current {@link TestPart} and either goes to the next, or completes the test */
     EXIT_TEST_PART,
 
     /** Selection of a particular item */

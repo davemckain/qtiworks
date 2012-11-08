@@ -50,6 +50,9 @@ interface TestRenderingRequest {
     TestSessionState getTestSessionState();
     void setTestSessionState(final TestSessionState testSessionState);
 
+    boolean isEndTestPartAllowed();
+    void setEndTestPartAllowed(boolean endTestPartAllowed);
+
     boolean isExitTestPartAllowed();
     void setExitTestPartAllowed(boolean exitTestPartAllowed);
 

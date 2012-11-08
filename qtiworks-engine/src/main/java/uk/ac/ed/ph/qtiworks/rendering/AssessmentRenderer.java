@@ -256,6 +256,7 @@ public class AssessmentRenderer {
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
 
         /* Set control parameters */
+        xsltParameters.put("endTestPartAllowed", Boolean.valueOf(renderingRequest.isEndTestPartAllowed()));
         xsltParameters.put("exitTestPartAllowed", Boolean.valueOf(renderingRequest.isExitTestPartAllowed()));
     }
 
@@ -296,6 +297,7 @@ public class AssessmentRenderer {
             xsltParameters.put("currentPlaybackEventType", currentPlaybackEvent.getItemEventType().toString());
         }
     }
+
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters,
             final AbstractRenderingRequest renderingRequest) {
         final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
@@ -314,6 +316,7 @@ public class AssessmentRenderer {
         xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("selectItemUrl", renderingOptions.getSelectItemUrl());
+        xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
         xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());
         xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
     }
@@ -355,7 +358,6 @@ public class AssessmentRenderer {
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
-
 
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
