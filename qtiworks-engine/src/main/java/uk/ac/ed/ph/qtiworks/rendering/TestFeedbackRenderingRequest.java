@@ -49,8 +49,7 @@ public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest
     @NotNull
     private TestSessionState testSessionState;
 
-    private boolean endTestPartAllowed;
-    private boolean exitTestPartAllowed;
+    private boolean testPartNavigationAllowed;
 
     //----------------------------------------------------
 
@@ -59,30 +58,28 @@ public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest
         return testSessionState;
     }
 
-    @Override
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
     }
 
 
     @Override
-    public boolean isEndTestPartAllowed() {
-        return endTestPartAllowed;
+    public boolean isTestPartNavigationAllowed() {
+        return testPartNavigationAllowed;
     }
+
+    public void setTestPartNavigationAllowed(final boolean testPartNavigationAllowed) {
+        this.testPartNavigationAllowed = testPartNavigationAllowed;
+    }
+
 
     @Override
-    public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
-        this.endTestPartAllowed = endTestPartAllowed;
+    public boolean isEndTestPartAllowed() {
+        return false;
     }
-
 
     @Override
     public boolean isExitTestPartAllowed() {
-        return exitTestPartAllowed;
-    }
-
-    @Override
-    public void setExitTestPartAllowed(final boolean exitTestPartAllowed) {
-        this.exitTestPartAllowed = exitTestPartAllowed;
+        return true;
     }
 }

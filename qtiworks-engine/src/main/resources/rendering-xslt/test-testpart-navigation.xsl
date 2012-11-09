@@ -65,14 +65,13 @@ Renders the navigation for the current testPart
         <!-- Styling for JQuery -->
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
 
-        <!-- QTIWorks Test styling -->
-        <!-- TODO -->
-
+        <!-- QTIWorks styling -->
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks assessmentTest testPartNavigation">
         <xsl:choose>
           <xsl:when test="exists($currentTestPart)">
-            <h2>Test Navigation</h2>
+            <h2>Test Questions</h2>
             <p>
               Yes, it looks like crap at the moment. Bear with me!
             </p>
@@ -92,23 +91,19 @@ Renders the navigation for the current testPart
   </xsl:template>
 
   <xsl:template match="qw:node" mode="testPart-navigation">
-    <div class="testPartNavigation">
+    <ul class="testPartNavigation">
       <xsl:apply-templates select=".//qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-item"/>
-    </div>
+    </ul>
   </xsl:template>
 
   <xsl:template match="qw:node" mode="testPart-item">
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
-    <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
-      <input type="submit" value="Choose Item"/> <xsl:value-of select="@itemTitle"/>
-      <pre>
-        PRESENTED: <xsl:value-of select="$itemSessionState/@presented='true'"/>
-        RESPONDED: <xsl:value-of select="$itemSessionState/@responded='true'"/>
-        INVALID: <xsl:value-of select="not(empty($itemSessionState/@badResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))"/>
-        CLOSED: <xsl:value-of select="$itemSessionState/@closed='true'"/>
-
-      </pre>
-    </form>
+    <li>
+      <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
+        <input type="submit" value="{@itemTitle}"/>
+        <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+      </form>
+    </li>
   </xsl:template>
 
 </xsl:stylesheet>

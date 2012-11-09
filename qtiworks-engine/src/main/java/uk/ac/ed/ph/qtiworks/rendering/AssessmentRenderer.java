@@ -256,6 +256,7 @@ public class AssessmentRenderer {
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
 
         /* Set control parameters */
+        xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(renderingRequest.isTestPartNavigationAllowed()));
         xsltParameters.put("endTestPartAllowed", Boolean.valueOf(renderingRequest.isEndTestPartAllowed()));
         xsltParameters.put("exitTestPartAllowed", Boolean.valueOf(renderingRequest.isExitTestPartAllowed()));
     }

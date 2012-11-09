@@ -45,15 +45,13 @@ import java.net.URI;
 interface TestRenderingRequest {
 
     URI getAssessmentResourceUri();
-    void setAssessmentResourceUri(final URI assessmentResourceUri);
 
     TestSessionState getTestSessionState();
-    void setTestSessionState(final TestSessionState testSessionState);
+
+    boolean isTestPartNavigationAllowed();
 
     boolean isEndTestPartAllowed();
-    void setEndTestPartAllowed(boolean endTestPartAllowed);
 
     boolean isExitTestPartAllowed();
-    void setExitTestPartAllowed(boolean exitTestPartAllowed);
 
 }

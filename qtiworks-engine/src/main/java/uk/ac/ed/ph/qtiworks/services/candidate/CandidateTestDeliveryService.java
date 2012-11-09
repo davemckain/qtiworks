@@ -355,7 +355,6 @@ public class CandidateTestDeliveryService {
         final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
-        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTest());
         renderingRequest.setTestSessionState(testSessionState);
 
         candidateAuditLogger.logTestPartNavigationRendering(candidateEvent);
@@ -375,14 +374,8 @@ public class CandidateTestDeliveryService {
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
-        /* Will need to query certain parts of state */
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
-                testSessionState, new NotificationRecorder(NotificationLevel.INFO));
-
         final TestFeedbackRenderingRequest renderingRequest = new TestFeedbackRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
-        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
-        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTest());
         renderingRequest.setTestSessionState(testSessionState);
 
         candidateAuditLogger.logTestFeedbackRendering(candidateEvent);
@@ -493,8 +486,8 @@ public class CandidateTestDeliveryService {
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateEvent,
                 testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
+        renderingRequest.setTestPartNavigationAllowed(testSessionController.canSelectQuestions());
         renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
-        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTest());
 //        renderingRequest.setCloseAllowed(testDeliverySettings.isAllowClose());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenInteracting());
 //        renderingRequest.setResetAllowed(testDeliverySettings.isAllowResetWhenInteracting());
@@ -575,8 +568,8 @@ public class CandidateTestDeliveryService {
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
                 testSessionState, itemSessionState, renderingOptions, renderingMode);
+        renderingRequest.setTestPartNavigationAllowed(testSessionController.canSelectQuestions());
         renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
-        renderingRequest.setExitTestPartAllowed(testSessionController.canExitTest());
 //        renderingRequest.setCloseAllowed(false);
 //        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenClosed());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenClosed());
@@ -632,7 +625,8 @@ public class CandidateTestDeliveryService {
             final RenderingOptions renderingOptions) {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
+        renderingRequest.setAuthorMode(false); /* FIXME: Temporary override until we get decent authoring info! */
+//        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
         renderingRequest.setRenderingOptions(renderingOptions);
     }
 

@@ -94,7 +94,10 @@ Renders a standalone assessmentItem
         </xsl:if>
 
         <!-- Item title -->
-        <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
+        <h1 class="itemTitle">
+          <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+          <xsl:value-of select="@title"/>
+        </h1>
 
         <!-- Delivery prompt -->
         <xsl:if test="$prompt">
@@ -213,9 +216,9 @@ Renders a standalone assessmentItem
       </p>
 
       <!-- Show response stuff -->
-      <xsl:if test="exists($badResponseIdentifiers) or exists($invalidResponseIdentifiers)">
+      <xsl:if test="exists($unboundResponseIdentifiers) or exists($invalidResponseIdentifiers)">
         <h3>Response errors</h3>
-        <xsl:if test="exists($badResponseIdentifiers)">
+        <xsl:if test="exists($unboundResponseIdentifiers)">
           <h4>Bad responses</h4>
           <p>
             The responses listed below were not successfully bound to their corresponding variables.
@@ -223,7 +226,7 @@ Renders a standalone assessmentItem
             a numeric variable and the candidate enters something that is not a number.
           </p>
           <ul>
-            <xsl:for-each select="$badResponseIdentifiers">
+            <xsl:for-each select="$unboundResponseIdentifiers">
               <li>
                 <span class="variableName">
                   <xsl:value-of select="."/>
@@ -344,7 +347,7 @@ Renders a standalone assessmentItem
           <xsl:with-param name="valueHolders" select="$templateValues"/>
         </xsl:call-template>
       </xsl:if>
-      <xsl:if test="exists($badResponseIdentifiers)">
+      <xsl:if test="exists($unboundResponseIdentifiers)">
         <h4>Unbound Response inputs</h4>
         <xsl:call-template name="dump-unbound-response-inputs"/>
       </xsl:if>
@@ -483,7 +486,7 @@ Renders a standalone assessmentItem
 
   <xsl:template name="dump-unbound-response-inputs" as="element(ul)">
     <ul>
-      <xsl:for-each select="$responseInputs[@identifier = $badResponseIdentifiers]">
+      <xsl:for-each select="$responseInputs[@identifier = $unboundResponseIdentifiers]">
         <li>
           <span class="variableName">
             <xsl:value-of select="@identifier"/>

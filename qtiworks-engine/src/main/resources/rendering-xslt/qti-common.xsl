@@ -374,4 +374,26 @@ rendering.
     </xsl:message>
   </xsl:template>
 
+  <!-- ************************************************************ -->
+
+  <xsl:template match="qw:itemSessionState" mode="item-status">
+    <xsl:choose>
+      <xsl:when test="@closed='true'">
+        <div class="itemStatus closed">Finished</div>
+      </xsl:when>
+      <xsl:when test="not(empty(@unboundResponseIdentifiers) and empty(@invalidResponseIdentifiers))">
+        <div class="itemStatus invalid">Needs Attention</div>
+      </xsl:when>
+      <xsl:when test="@responded='true'">
+        <div class="itemStatus answered">Responded</div>
+      </xsl:when>
+      <xsl:when test="@presented='true'">
+          <div class="itemStatus notAnswered">Not Answered</div>
+      </xsl:when>
+      <xsl:otherwise>
+        <div class="itemStatus notPresented">Not Seen</div>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
 </xsl:stylesheet>

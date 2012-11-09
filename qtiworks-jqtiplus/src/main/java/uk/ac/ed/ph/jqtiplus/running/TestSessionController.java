@@ -382,15 +382,27 @@ public final class TestSessionController extends TestValidationController implem
         return true;
     }
 
+//    /**
+//     * FIXME: We need to find a way to determine when the testPart has ended but
+//     * not been exited. E.g. a new TestPartState or something like that.
+//     *
+//     * @return
+//     */
+//    public boolean canExitTest() {
+//        ensureTestPartSelected();
+//        return testSessionState.getCurrentItemKey()==null;
+//    }
+
     /**
-     * FIXME: We need to find a way to determine when the testPart has ended but
-     * not been exited. E.g. a new TestPartState or something like that.
+     * FIXME: Fill in the implementation for this. It would depend on the navigation mode, whether
+     * the test was still open, and probably whether allowReview is enabled.... BUT allowReview
+     * can be done on an item-by-item basis too, so it gets even more complicated there. So might need
+     * to make a list of what questions can actually be selected for review. Gah!
      *
      * @return
      */
-    public boolean canExitTest() {
-        ensureTestPartSelected();
-        return testSessionState.getCurrentItemKey()==null;
+    public boolean canSelectQuestions() {
+        return true;
     }
 
     /**

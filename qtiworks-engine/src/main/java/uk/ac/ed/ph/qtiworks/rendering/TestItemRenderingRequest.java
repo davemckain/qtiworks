@@ -49,8 +49,8 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     @NotNull
     private TestSessionState testSessionState;
 
+    private boolean testPartNavigationAllowed;
     private boolean endTestPartAllowed;
-    private boolean exitTestPartAllowed;
 
     //----------------------------------------------------
 
@@ -59,18 +59,25 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
         return testSessionState;
     }
 
-    @Override
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
     }
 
 
     @Override
+    public boolean isTestPartNavigationAllowed() {
+        return testPartNavigationAllowed;
+    }
+
+    public void setTestPartNavigationAllowed(final boolean testPartNavigationAllowed) {
+        this.testPartNavigationAllowed = testPartNavigationAllowed;
+    }
+
+    @Override
     public boolean isEndTestPartAllowed() {
         return endTestPartAllowed;
     }
 
-    @Override
     public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
         this.endTestPartAllowed = endTestPartAllowed;
     }
@@ -78,11 +85,6 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
 
     @Override
     public boolean isExitTestPartAllowed() {
-        return exitTestPartAllowed;
-    }
-
-    @Override
-    public void setExitTestPartAllowed(final boolean exitTestPartAllowed) {
-        this.exitTestPartAllowed = exitTestPartAllowed;
+        return false;
     }
 }

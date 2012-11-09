@@ -110,7 +110,10 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
       <body class="qtiworks assessmentItem assessmentTest">
 
         <!-- Item title -->
-        <h1 class="itemTitle"><xsl:value-of select="@title"/></h1>
+        <h1 class="itemTitle">
+          <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+          <xsl:value-of select="@title"/>
+        </h1>
 
         <!-- (test only) rubric -->
         <xsl:if test="exists($rubric)">
@@ -283,7 +286,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
           <xsl:with-param name="valueHolders" select="$templateValues"/>
         </xsl:call-template>
       </xsl:if>
-      <xsl:if test="exists($badResponseIdentifiers)">
+      <xsl:if test="exists($unboundResponseIdentifiers)">
         <h4>Unbound Response inputs</h4>
         <xsl:call-template name="dump-unbound-response-inputs"/>
       </xsl:if>
@@ -428,7 +431,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
 
   <xsl:template name="dump-unbound-response-inputs" as="element(ul)">
     <ul>
-      <xsl:for-each select="$responseInputs[@identifier = $badResponseIdentifiers]">
+      <xsl:for-each select="$responseInputs[@identifier = $unboundResponseIdentifiers]">
         <li>
           <span class="variableName">
             <xsl:value-of select="@identifier"/>

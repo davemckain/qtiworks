@@ -1,5 +1,7 @@
 /* QTIworks standalone item rendering */
 
+/* NB: This now includes test stuff and needs tidied up! */
+
 body {
   font-family: Sans-Serif;
   margin: 1em;
@@ -297,6 +299,60 @@ ul.playbackControls {
 
 .assessmentItem table.inputHelp .longComma {
   margin-right: 0.5em;
+}
+
+/************************************************************/
+/* Test stuff */
+
+ul.testPartNavigation {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.testPartNavigation li {
+  padding: 0.3em 0;
+}
+
+ul.testPartNavigation input {
+}
+
+.testPartNavigation .itemStatus {
+  display: inline-block;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  color: white;
+  font-size: 0.7em;
+}
+
+.assessmentItem .itemStatus {
+  float: right;
+  display: block;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  color: white;
+  font-size: 0.7em;
+}
+
+
+.itemStatus.closed {
+  background-color: #999999;
+}
+
+.itemStatus.invalid {
+  background-color: red;
+}
+
+.itemStatus.answered {
+  background-color: blue;
+}
+
+.itemStatus.notAnswered {
+  background-color: #ff9900;
+}
+
+.itemStatus.notPresented {
+  background-color: green;
 }
 
 /************************************************************/

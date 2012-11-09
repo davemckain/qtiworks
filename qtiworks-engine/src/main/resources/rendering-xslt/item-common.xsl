@@ -69,7 +69,7 @@ rendering.
   <xsl:variable name="responseInputs" select="$itemSessionState/qw:responseInput" as="element(qw:responseInput)*"/>
 
   <!-- Bad/invalid responses -->
-  <xsl:variable name="badResponseIdentifiers" select="$itemSessionState/@unboundResponseIdentifiers" as="xs:string*"/>
+  <xsl:variable name="unboundResponseIdentifiers" select="$itemSessionState/@unboundResponseIdentifiers" as="xs:string*"/>
   <xsl:variable name="invalidResponseIdentifiers" select="$itemSessionState/@invalidResponseIdentifiers" as="xs:string*"/>
 
   <!-- Is a model solution provided? -->
@@ -107,7 +107,7 @@ rendering.
 
   <xsl:function name="qw:is-bad-response" as="xs:boolean">
     <xsl:param name="identifier" as="xs:string"/>
-    <xsl:sequence select="$badResponseIdentifiers=$identifier"/>
+    <xsl:sequence select="$unboundResponseIdentifiers=$identifier"/>
   </xsl:function>
 
   <xsl:function name="qw:is-invalid-response" as="xs:boolean">
@@ -519,6 +519,4 @@ rendering.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
 </xsl:stylesheet>
-

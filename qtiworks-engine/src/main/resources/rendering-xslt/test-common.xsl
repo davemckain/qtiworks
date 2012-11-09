@@ -29,6 +29,7 @@ Base templates used in test rendering
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
 
   <!-- Action permissions -->
+  <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="exitTestPartAllowed" as="xs:boolean" required="yes"/>
 
@@ -165,11 +166,13 @@ Base templates used in test rendering
         </div>
       </xsl:if>
       <ul class="controls test">
-        <li>
-          <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
-            <input type="submit" value="Choose Question"/>
-          </form>
-        </li>
+        <xsl:if test="$testPartNavigationAllowed">
+          <li>
+            <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
+              <input type="submit" value="Choose Question"/>
+            </form>
+          </li>
+        </xsl:if>
         <xsl:if test="$endTestPartAllowed">
           <li>
             <form action="{$webappContextPath}{$endTestPartUrl}" method="post">

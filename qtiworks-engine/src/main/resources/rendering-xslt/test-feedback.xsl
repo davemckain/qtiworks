@@ -61,8 +61,8 @@ Renders the test feedback
         <!-- Styling for JQuery -->
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
 
-        <!-- QTIWorks Test styling -->
-        <!-- TODO -->
+        <!-- QTIWorks styling -->
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
 
       </head>
       <body class="qtiworks assessmentTest testFeedback">
