@@ -12,6 +12,16 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV17 [Development] (09/11/2012)</h3>
+  <p>
+    This snapshot continues with the implementation of tests.
+    A first sketch of the full delivery of NONLINEAR/INDIVIDUAL tests is now in place,
+    ready for discussion with project partners.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV16 [Development] (02/11/2012)</h3>
   <p>
     This snapshot continues with the implementation of tests. The basic logic for handling

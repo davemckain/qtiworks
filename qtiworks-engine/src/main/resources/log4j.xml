@@ -60,9 +60,11 @@ Webapp logging configuration
     <appender-ref ref="CANDIDATE_AUDITOR"/>
   </logger>
 
+  <!--
   <logger name="uk.ac.ed.ph.jqtiplus.running">
     <level value="DEBUG"/>
   </logger>
+  -->
 
   <!-- Root logger -->
   <root>
