@@ -794,54 +794,6 @@ public final class ItemSessionController extends ItemValidationController implem
     private Value computeInitialValue(final Identifier identifier) {
         return computeDefaultValue(identifier);
     }
-
-    //-------------------------------------------------------------------
-    // Computes standalone ItemResult for this item. This wasn't available in the original JQTI
-
-    public ItemResult computeItemResult() {
-        final ItemResult result = new ItemResult(null);
-        result.setIdentifier(item.getIdentifier());
-        result.setDateStamp(new Date());
-        result.setSessionStatus(itemSessionState.getSessionStatus());
-        recordItemVariables(result);
-        return result;
-    }
-
-    public void recordItemVariables(final ItemResult result) {
-        final List<ItemVariable> itemVariables = result.getItemVariables();
-        itemVariables.clear();
-        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
-            final OutcomeDeclaration declaration = itemProcessingMap.getValidOutcomeDeclarationMap().get(mapEntry.getKey());
-            if (declaration!=null) {
-                final Value value = mapEntry.getValue();
-                final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
-                itemVariables.add(variable);
-            }
-        }
-        final Map<Identifier, Interaction> interactionMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
-        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
-            final ResponseDeclaration declaration = itemProcessingMap.getValidResponseDeclarationMap().get(mapEntry.getKey());
-            if (declaration!=null) {
-                final Value value = mapEntry.getValue();
-                List<Identifier> interactionChoiceOrder = null;
-                final Interaction interaction = interactionMap.get(declaration.getIdentifier());
-                if (interaction != null && interaction instanceof Shuffleable) {
-                    interactionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
-                }
-                final ResponseVariable variable = new ResponseVariable(result, declaration, value, interactionChoiceOrder);
-                itemVariables.add(variable);
-            }
-        }
-        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getTemplateValues().entrySet()) {
-            final TemplateDeclaration declaration = itemProcessingMap.getValidTemplateDeclarationMap().get(mapEntry.getKey());
-            if (declaration!=null) {
-                final Value value = mapEntry.getValue();
-                final TemplateVariable variable = new TemplateVariable(result, declaration, value);
-                itemVariables.add(variable);
-            }
-        }
-    }
-
     //-------------------------------------------------------------------
 
     /**
@@ -938,6 +890,59 @@ public final class ItemSessionController extends ItemValidationController implem
         }
         return count;
     }
+
+    //-------------------------------------------------------------------
+    // Computes standalone ItemResult for this item. This wasn't available in the original JQTI
+
+    public ItemResult computeItemResult() {
+        return computeItemResult(new Date());
+    }
+
+    public ItemResult computeItemResult(final Date timestamp) {
+        final ItemResult result = new ItemResult(null);
+        result.setIdentifier(item.getIdentifier());
+        result.setDateStamp(timestamp);
+        result.setSessionStatus(itemSessionState.getSessionStatus());
+        recordItemVariables(result);
+        return result;
+    }
+
+    private void recordItemVariables(final ItemResult result) {
+        final List<ItemVariable> itemVariables = result.getItemVariables();
+        itemVariables.clear();
+        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
+            final OutcomeDeclaration declaration = itemProcessingMap.getValidOutcomeDeclarationMap().get(mapEntry.getKey());
+            if (declaration!=null) {
+                final Value value = mapEntry.getValue();
+                final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
+                itemVariables.add(variable);
+            }
+        }
+        final Map<Identifier, Interaction> interactionMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
+        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
+            final ResponseDeclaration declaration = itemProcessingMap.getValidResponseDeclarationMap().get(mapEntry.getKey());
+            if (declaration!=null) {
+                final Value value = mapEntry.getValue();
+                List<Identifier> interactionChoiceOrder = null;
+                final Interaction interaction = interactionMap.get(declaration.getIdentifier());
+                if (interaction != null && interaction instanceof Shuffleable) {
+                    interactionChoiceOrder = itemSessionState.getShuffledInteractionChoiceOrder(interaction);
+                }
+                final ResponseVariable variable = new ResponseVariable(result, declaration, value, interactionChoiceOrder);
+                itemVariables.add(variable);
+            }
+        }
+        for (final Entry<Identifier, Value> mapEntry : itemSessionState.getTemplateValues().entrySet()) {
+            final TemplateDeclaration declaration = itemProcessingMap.getValidTemplateDeclarationMap().get(mapEntry.getKey());
+            if (declaration!=null) {
+                final Value value = mapEntry.getValue();
+                final TemplateVariable variable = new TemplateVariable(result, declaration, value);
+                itemVariables.add(variable);
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------
 
     @Override
     public String toString() {

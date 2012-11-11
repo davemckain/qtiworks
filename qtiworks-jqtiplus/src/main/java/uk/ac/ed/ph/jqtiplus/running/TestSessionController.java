@@ -41,6 +41,10 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
+import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
+import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
@@ -73,9 +77,11 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -920,6 +926,44 @@ public final class TestSessionController extends TestValidationController implem
                 return true;
             }
         }, getSubjectTest());
+        return result;
+    }
+
+    //-------------------------------------------------------------------
+    // Result generation
+
+    public AssessmentResult computeAssessmentResult() {
+        final AssessmentResult result = new AssessmentResult();
+        final Date timestamp = new Date();
+
+        /* Record test result */
+        result.setTestResult(computeTestResult(result, timestamp));
+
+        /* Record item results */
+        final List<ItemResult> itemResults = result.getItemResults();
+        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
+            if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
+                final ItemSessionController itemSessionController = itemSessionControllerMap.get(testPlanNode);
+                final ItemResult itemResult = itemSessionController.computeItemResult(timestamp);
+                itemResult.setSequenceIndex(testPlanNode.getInstanceNumber());
+                itemResults.add(itemResult);
+            }
+        }
+        return result;
+    }
+
+    private TestResult computeTestResult(final AssessmentResult owner, final Date timestamp) {
+        final TestResult result = new TestResult(owner);
+        result.setIdentifier(getSubject().getIdentifier());
+        result.setDateStamp(timestamp);
+
+        /* Record outcome variables */
+        for (final Entry<Identifier, Value> mapEntry : testSessionState.getOutcomeValues().entrySet()) {
+            final OutcomeDeclaration declaration = testProcessingMap.getValidOutcomeDeclarationMap().get(mapEntry.getKey());
+            final Value value = mapEntry.getValue();
+            final OutcomeVariable variable = new OutcomeVariable(result, declaration, value);
+            result.getItemVariables().add(variable);
+        }
         return result;
     }
 }
