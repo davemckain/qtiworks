@@ -60,7 +60,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 /**
- * Encapsulates a response to an {@link Interaction} within a particular {@link AssessmentItem}
+ * Encapsulates the response made by a particular candidate to a particular {@link Interaction}
+ * within a particular {@link AssessmentItem}.
  *
  * @author David McKain
  */
