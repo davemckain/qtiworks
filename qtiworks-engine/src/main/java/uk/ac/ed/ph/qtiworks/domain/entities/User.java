@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
@@ -88,6 +89,14 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Column(name="login_disabled",updatable=true)
     private boolean loginDisabled;
 
+    @Basic(optional=false)
+    @Column(name="first_name",length=DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH)
+    private String firstName;
+
+    @Basic(optional=false)
+    @Column(name="last_name",length=DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH)
+    private String lastName;
+
     //------------------------------------------------------------
 
     public User() {
@@ -137,6 +146,24 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     public void setLoginDisabled(final boolean loginDisabled) {
         this.loginDisabled = loginDisabled;
+    }
+
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
     }
 
     //------------------------------------------------------------

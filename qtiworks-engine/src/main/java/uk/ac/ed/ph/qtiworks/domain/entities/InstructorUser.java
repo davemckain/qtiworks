@@ -81,15 +81,6 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     @Column(name="password_digest", length=DomainConstants.SHA1_DIGEST_LENGTH)
     private String passwordDigest;
 
-    @Basic(optional=false)
-    @Column(name="first_name",length=DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH)
-    private String firstName;
-
-    @Basic(optional=false)
-    @Column(name="last_name",length=DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH)
-    private String lastName;
-
-
     //------------------------------------------------------------
 
     public InstructorUser() {
@@ -139,24 +130,6 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
 
     public void setPasswordDigest(final String passwordDigest) {
         this.passwordDigest = passwordDigest;
-    }
-
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
-    }
-
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
     }
 
 

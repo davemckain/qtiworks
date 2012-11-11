@@ -46,7 +46,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 /**
- * Represents an LTI user
+ * Represents an LTI user.
+ * <p>
+ * This treats <code>lis_given_name</code> as <code>firstName</code>
+ * and <code>lis_family_name</code> as <code>lastName</code>.
  *
  * FIXME: Need to sort out constraints on LTI-specified columns.
  *
@@ -77,18 +80,6 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
     @Basic(optional=true)
     @Column(name="lti_user_id", updatable=false, unique=false)
     private String ltiUserId;
-
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="lis_given_name", updatable=false, unique=false)
-    private String lisGivenName;
-
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="lis_family_name", updatable=false, unique=false)
-    private String lisFamilyName;
 
     @Lob
     @Type(type="org.hibernate.type.TextType")
@@ -125,24 +116,6 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     public void setLtiUserId(final String ltiUserId) {
         this.ltiUserId = ltiUserId;
-    }
-
-
-    public String getLisGivenName() {
-        return lisGivenName;
-    }
-
-    public void setLisGivenName(final String lisGivenName) {
-        this.lisGivenName = lisGivenName;
-    }
-
-
-    public String getLisFamilyName() {
-        return lisFamilyName;
-    }
-
-    public void setLisFamilyName(final String lisFamilyName) {
-        this.lisFamilyName = lisFamilyName;
     }
 
 

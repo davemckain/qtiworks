@@ -107,6 +107,8 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
             throw new QtiWorksLogicException("AnonymousUser with session ID " + sessionId + " already exists in DB");
         }
         anonymousUser = new AnonymousUser();
+        anonymousUser.setFirstName("Anonymous");
+        anonymousUser.setLastName("User " + sessionId);
         anonymousUser.setSessionId(sessionId);
         anonymousUserDao.persist(anonymousUser);
         return anonymousUser;

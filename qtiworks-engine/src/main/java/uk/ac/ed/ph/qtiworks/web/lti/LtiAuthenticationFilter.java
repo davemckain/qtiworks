@@ -38,12 +38,14 @@ import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
+import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
 
 import java.io.IOException;
@@ -244,8 +246,8 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             ltiUser.setLogicalKey(logicalKey);
             ltiUser.setLtiUserId(userId);
             ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull());
-            ltiUser.setLisGivenName(ltiLaunchData.getLisPersonNameGiven());
-            ltiUser.setLisFamilyName(ltiLaunchData.getLisPersonNameFamily());
+            ltiUser.setFirstName(ServiceUtilities.trimString(ltiLaunchData.getLisPersonNameGiven(), DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
+            ltiUser.setLastName(ServiceUtilities.trimString(ltiLaunchData.getLisPersonNameFamily(), DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
             ltiUser.setLisContactEmailPrimary(ltiLaunchData.getLisPersonContactEmailPrimary());
             ltiUserDao.persist(ltiUser);
         }
