@@ -71,10 +71,7 @@ Renders the navigation for the current testPart
       <body class="qtiworks assessmentTest testPartNavigation">
         <xsl:choose>
           <xsl:when test="exists($currentTestPart)">
-            <h2>Test Questions</h2>
-            <p>
-              Yes, it looks like crap at the moment. Bear with me!
-            </p>
+            <h2>Test Question Menu</h2>
             <xsl:apply-templates select="$currentTestPart" mode="testPart-navigation"/>
           </xsl:when>
           <xsl:otherwise>
@@ -100,8 +97,10 @@ Renders the navigation for the current testPart
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
     <li>
       <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
-        <input type="submit" value="{@itemTitle}"/>
-        <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+        <button type="submit">
+          <span class="questionTitle"><xsl:value-of select="@itemTitle"/></span>
+          <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+        </button>
       </form>
     </li>
   </xsl:template>

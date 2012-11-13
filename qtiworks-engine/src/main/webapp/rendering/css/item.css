@@ -314,7 +314,12 @@ ul.testPartNavigation li {
   padding: 0.3em 0;
 }
 
-ul.testPartNavigation input {
+ul.testPartNavigation button {
+  padding: 0.3em 0;
+}
+
+.testPartNavigation .questionTitle {
+  padding: 0 0.8em;
 }
 
 .testPartNavigation .itemStatus {

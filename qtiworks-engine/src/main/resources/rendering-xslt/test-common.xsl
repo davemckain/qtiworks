@@ -169,7 +169,7 @@ Base templates used in test rendering
         <xsl:if test="$testPartNavigationAllowed">
           <li>
             <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
-              <input type="submit" value="Choose Question"/>
+              <input type="submit" value="Test Question Menu"/>
             </form>
           </li>
         </xsl:if>
