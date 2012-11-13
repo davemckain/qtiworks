@@ -52,7 +52,7 @@ public enum CandidateTestEventType {
     /** Ends the current {@link TestPart} */
     END_TEST_PART,
 
-    /** Exists the current {@link TestPart} and either goes to the next, or completes the test */
+    /** Exits the current {@link TestPart} and either goes to the next, or completes the test */
     EXIT_TEST_PART,
 
     /** Selection of a particular item */

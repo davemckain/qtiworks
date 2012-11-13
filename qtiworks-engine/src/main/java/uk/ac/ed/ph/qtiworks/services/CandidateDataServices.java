@@ -62,10 +62,10 @@ import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
-import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -329,7 +329,11 @@ public class CandidateDataServices {
     }
 
     public void recordItemResult(final CandidateSession candidateSession, final ItemResult itemResult) {
-        recordResult(candidateSession, "itemResult", itemResult);
+        /* First record full result XML to filesystem */
+        storeResultFile(candidateSession, "itemResult", itemResult);
+
+        /* Then record item outcome variables to DB */
+        recordOutcomeVariables(candidateSession, itemResult);
     }
 
     public void ensureItemDelivery(final Delivery delivery) {
@@ -388,6 +392,12 @@ public class CandidateDataServices {
             result.addNotificationListener(notificationRecorder);
         }
         return result;
+    }
+
+    public CandidateEvent recordCandidateExitTestEvent(final CandidateSession candidateSession,
+            final TestSessionState testSessionState,
+            final NotificationRecorder notificationRecorder) {
+        return recordCandidateTestEvent(candidateSession, CandidateTestEventType.END_TEST_PART, null, null, testSessionState, notificationRecorder);
     }
 
     public CandidateEvent recordCandidateTestEvent(final CandidateSession candidateSession,
@@ -480,8 +490,12 @@ public class CandidateDataServices {
         return mostRecentTestEvent;
     }
 
-    public void recordTestResult(final CandidateSession candidateSession, final TestResult testResult) {
-        recordResult(candidateSession, "testResult", testResult);
+    public void recordAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
+        /* First record full result XML to filesystem */
+        storeResultFile(candidateSession, "assessmentResult", assessmentResult);
+
+        /* Then record test outcome variables to DB */
+        recordOutcomeVariables(candidateSession, assessmentResult.getTestResult());
     }
 
     private void ensureTestDelivery(final Delivery delivery) {
@@ -523,15 +537,7 @@ public class CandidateDataServices {
         }
     }
 
-    private void recordResult(final CandidateSession candidateSession, final String resultFileBaseName, final AbstractResult resultNode) {
-        /* First record full result XML to filesystem */
-        storeResultFile(candidateSession, resultFileBaseName, resultNode);
-
-        /* Then record outcome variables to DB */
-        recordOutcomeVariables(candidateSession, resultNode);
-    }
-
-    private void storeResultFile(final CandidateSession candidateSession, final String resultFileBaseName, final AbstractResult resultNode) {
+    private void storeResultFile(final CandidateSession candidateSession, final String resultFileBaseName, final QtiNode resultNode) {
         final File resultFile = getResultFile(candidateSession, resultFileBaseName);
         FileOutputStream resultStream = null;
         try {

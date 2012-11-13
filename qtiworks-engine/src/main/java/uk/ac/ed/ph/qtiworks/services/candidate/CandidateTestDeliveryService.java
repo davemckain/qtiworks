@@ -71,6 +71,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
@@ -863,6 +864,17 @@ public class CandidateTestDeliveryService {
         /* FIXME: This is probably not the right logic in general but works OK in this restricted case */
         testSessionController.endTestPart();
 
+        /* Record result and close session if this action finished the test */
+        if (testSessionState.isFinished()) {
+            /* Record assessmentResult */
+            final AssessmentResult assessmentResult = testSessionController.computeAssessmentResult();
+            candidateDataServices.recordAssessmentResult(candidateSession, assessmentResult);
+
+            /* Update CandidateSession */
+            candidateSession.setClosed(true);
+            candidateSessionDao.update(candidateSession);
+        }
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.END_TEST_PART, testSessionState, notificationRecorder);
@@ -896,9 +908,13 @@ public class CandidateTestDeliveryService {
         /* FIXME: This is probably not the right logic in general but works OK in this restricted case */
         testSessionController.endTestPart();
 
+        /* Update CandidateSession */
+        candidateSession.setTerminated(true);
+        candidateSessionDao.update(candidateSession);
+
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.END_TEST_PART, testSessionState, notificationRecorder);
+                CandidateTestEventType.EXIT_TEST_PART, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
 
         return candidateSession;

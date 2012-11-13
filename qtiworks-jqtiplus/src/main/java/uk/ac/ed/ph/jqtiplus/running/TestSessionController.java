@@ -101,7 +101,10 @@ public final class TestSessionController extends TestValidationController implem
     private final TestSessionControllerSettings testSessionControllerSettings;
     private final TestProcessingMap testProcessingMap;
     private final TestSessionState testSessionState;
+
+    /** NB: These are created lazily */
     private final Map<TestPlanNodeKey, ItemSessionController> itemSessionControllerMap;
+
     private final ListenerNotificationForwarder listenerNotificationForwarder;
 
     private Long randomSeed;
@@ -428,12 +431,18 @@ public final class TestSessionController extends TestValidationController implem
             throw new IllegalStateException("Current test part cannot be exited");
         }
         testSessionState.setCurrentItemKey(null);
+
+        /* Mark test as finished.
+         *
+         * FIXME: This would need generalised to handle multiple testParts
+         */
+        testSessionState.setFinished(true);
     }
 
     /**
-     * Exits the test
+     * Exits the test.
      *
-     * FIXME: This is work in progress!
+     * FIXME: This is work in progress! It is only legal to be called at the end of the test
      */
     public void exitTest() {
         testSessionState.setCurrentTestPartKey(null);
@@ -487,7 +496,7 @@ public final class TestSessionController extends TestValidationController implem
         else {
             final TestPlanNode currentTestPart = testPlan.getTestPlanNodeMap().get(currentTestPartKey);
             final int currentTestPartIndex = currentTestPart.getSiblingIndex();
-            result = currentTestPartIndex==testPartNodes.size()-1;
+            result = currentTestPartIndex < testPartNodes.size()-1;
         }
         return result;
     }
@@ -943,7 +952,7 @@ public final class TestSessionController extends TestValidationController implem
         final List<ItemResult> itemResults = result.getItemResults();
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
-                final ItemSessionController itemSessionController = itemSessionControllerMap.get(testPlanNode);
+                final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
                 final ItemResult itemResult = itemSessionController.computeItemResult(timestamp);
                 itemResult.setSequenceIndex(testPlanNode.getInstanceNumber());
                 itemResults.add(itemResult);
