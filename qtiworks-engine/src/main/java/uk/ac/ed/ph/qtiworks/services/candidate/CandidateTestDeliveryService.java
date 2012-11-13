@@ -488,7 +488,8 @@ public class CandidateTestDeliveryService {
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateEvent,
                 testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
         renderingRequest.setTestPartNavigationAllowed(testSessionController.canSelectQuestions());
-        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+//        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+        renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
 //        renderingRequest.setCloseAllowed(testDeliverySettings.isAllowClose());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenInteracting());
 //        renderingRequest.setResetAllowed(testDeliverySettings.isAllowResetWhenInteracting());
@@ -570,7 +571,8 @@ public class CandidateTestDeliveryService {
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
                 testSessionState, itemSessionState, renderingOptions, renderingMode);
         renderingRequest.setTestPartNavigationAllowed(testSessionController.canSelectQuestions());
-        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+//        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+        renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
 //        renderingRequest.setCloseAllowed(false);
 //        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenClosed());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenClosed());
