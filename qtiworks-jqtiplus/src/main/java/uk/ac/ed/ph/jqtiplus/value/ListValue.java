@@ -183,6 +183,14 @@ public abstract class ListValue extends ContainerValue implements Iterable<Singl
      */
     @Override
     public final String toQtiString() {
-        return container.toString();
+        final StringBuilder resultBuilder = new StringBuilder("[");
+        for (int i=0; i<container.length; i++) {
+            resultBuilder.append(container[i].toQtiString());
+            if (i<container.length-1) {
+                resultBuilder.append(',');
+            }
+        }
+        resultBuilder.append(']');
+        return resultBuilder.toString();
     }
 }
