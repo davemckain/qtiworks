@@ -33,10 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionOutcome;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,11 +53,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class CandidateSessionOutcomeDao extends GenericDao<CandidateSessionOutcome> {
 
-    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
     public CandidateSessionOutcomeDao() {
         super(CandidateSessionOutcome.class);
+    }
+
+    public int deleteForCandidateSession(final CandidateSession candidateSession) {
+        final Query query = em.createNamedQuery("CandidateSessionOutcome.deleteForSession");
+        query.setParameter("candidateSession", candidateSession);
+        return query.executeUpdate();
     }
 }

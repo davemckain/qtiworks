@@ -43,6 +43,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -57,9 +59,14 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name="candidate_session_outcomes")
 @SequenceGenerator(name="candidateSessionOutcomeSequence", sequenceName="candidate_session_outcome_sequence", initialValue=1, allocationSize=50)
+@NamedQueries({
+    @NamedQuery(name="CandidateSessionOutcome.deleteForSession",
+            query="DELETE FROM CandidateSessionOutcome xo"
+                + "  WHERE xo.candidateSession = :candidateSession")
+})
 public class CandidateSessionOutcome implements BaseEntity {
 
-    private static final long serialVersionUID = -4310598861282271053L;
+    private static final long serialVersionUID = 4680711506528346018L;
 
     @Id
     @GeneratedValue(generator="candidateSessionOutcomeSequence")

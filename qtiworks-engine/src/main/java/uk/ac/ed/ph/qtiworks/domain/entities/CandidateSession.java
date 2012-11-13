@@ -113,6 +113,15 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     private User candidate;
 
     /**
+     * Flag to indicate whether session has been closed.
+     * Once closed, a result will have been recorded and the item/test state
+     * can no longer be changed. Candidates may still review the session though.
+     */
+    @Basic(optional=false)
+    @Column(name="closed")
+    private boolean closed;
+
+    /**
      * Flag to indicate whether session has been terminated.
      * Once terminated, a session is no longer available to the candidate.
      */
@@ -181,6 +190,15 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void setClosed(final boolean closed) {
+        this.closed = closed;
+    }
+
+
     public boolean isTerminated() {
         return terminated;
     }
@@ -195,6 +213,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
+                + ",closed=" + closed
                 + ",terminated=" + terminated
                 + ")";
     }

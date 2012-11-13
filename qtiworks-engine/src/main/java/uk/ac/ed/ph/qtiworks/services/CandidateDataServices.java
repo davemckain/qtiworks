@@ -40,6 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
@@ -64,6 +65,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
+import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -121,6 +123,9 @@ public class CandidateDataServices {
 
     @Resource
     private AssessmentObjectManagementService assessmentObjectManagementService;
+
+    @Resource
+    private CandidateSessionDao candidateSessionDao;
 
     @Resource
     private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
@@ -182,18 +187,24 @@ public class CandidateDataServices {
         return ItemSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
-    public CandidateEvent recordItemSessionTerminateEvent(final CandidateSession candidateSession, final ItemSessionState itemSessionState) {
-        /* Create event */
+    public CandidateEvent recordTerminateCandidateItemSession(final CandidateSession candidateSession,
+            final ItemSessionState itemSessionState, final NotificationRecorder notificationRecorder) {
+        /* Create and record event */
         final CandidateEvent event = new CandidateEvent();
         event.setCandidateSession(candidateSession);
         event.setCandidateEventCategory(CandidateEventCategory.TERMINATE);
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
 
-        /* Store event */
-        candidateEventDao.persist(event);
+        /* Save result if not done already */
+        if (!candidateSession.isClosed()) {
+            final ItemSessionController itemSessionController = createItemSessionController(candidateSession.getDelivery(), itemSessionState, notificationRecorder);
+            final ItemResult itemResult = itemSessionController.computeItemResult(requestTimestampContext.getCurrentRequestTimestamp());
+            recordItemResult(candidateSession, itemResult);
+        }
 
-        /* Save state */
-        storeItemSessionState(event, itemSessionState);
+        /* Update session state */
+        candidateSession.setTerminated(true);
+        candidateSessionDao.update(candidateSession);
 
         return event;
     }
@@ -230,8 +241,26 @@ public class CandidateDataServices {
         /* Store event */
         candidateEventDao.persist(event);
 
-        /* Save state */
+        /* Save current state */
         storeItemSessionState(event, itemSessionState);
+
+        /* Check whether this event has closed the item session
+         * (either explicitly, or because the ItemSessionController processing has decided
+         * that the session is now closed)
+         */
+        if (eventType==CandidateItemEventType.CLOSE || (!candidateSession.isClosed() && itemSessionState.isClosed())) {
+            final ItemSessionController itemSessionController = createItemSessionController(event, notificationRecorder);
+            final ItemResult itemResult = itemSessionController.computeItemResult(requestTimestampContext.getCurrentRequestTimestamp());
+            recordItemResult(candidateSession, itemResult);
+            candidateSession.setClosed(true);
+            candidateSessionDao.update(candidateSession);
+        }
+
+        /* Reopen the session if REINIT or RESET */
+        if (eventType==CandidateItemEventType.REINIT || eventType==CandidateItemEventType.RESET) {
+            candidateSession.setClosed(false);
+            candidateSessionDao.update(candidateSession);
+        }
 
         /* Now store processing notifications */
         if (notificationRecorder!=null) {
@@ -300,7 +329,7 @@ public class CandidateDataServices {
     }
 
     public void recordItemResult(final CandidateSession candidateSession, final ItemResult itemResult) {
-        recordResultObject(candidateSession, "itemResult", itemResult);
+        recordResult(candidateSession, "itemResult", itemResult);
     }
 
     public void ensureItemDelivery(final Delivery delivery) {
@@ -451,12 +480,8 @@ public class CandidateDataServices {
         return mostRecentTestEvent;
     }
 
-    /**
-     * NB: Result will be null on first presentation of item
-     */
-    public CandidateEvent getMostRecentTestItemEvent(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)  {
-        final CandidateEvent mostRecentTestEvent = candidateEventDao.getNewestTestItemEventInSession(candidateSession, itemKey);
-        return mostRecentTestEvent;
+    public void recordTestResult(final CandidateSession candidateSession, final TestResult testResult) {
+        recordResult(candidateSession, "testResult", testResult);
     }
 
     private void ensureTestDelivery(final Delivery delivery) {
@@ -498,8 +523,15 @@ public class CandidateDataServices {
         }
     }
 
-    private void recordResultObject(final CandidateSession candidateSession, final String resultFileBaseName, final AbstractResult resultNode) {
+    private void recordResult(final CandidateSession candidateSession, final String resultFileBaseName, final AbstractResult resultNode) {
         /* First record full result XML to filesystem */
+        storeResultFile(candidateSession, resultFileBaseName, resultNode);
+
+        /* Then record outcome variables to DB */
+        recordOutcomeVariables(candidateSession, resultNode);
+    }
+
+    private void storeResultFile(final CandidateSession candidateSession, final String resultFileBaseName, final AbstractResult resultNode) {
         final File resultFile = getResultFile(candidateSession, resultFileBaseName);
         FileOutputStream resultStream = null;
         try {
@@ -512,8 +544,10 @@ public class CandidateDataServices {
         finally {
             Closeables.closeQuietly(resultStream);
         }
+    }
 
-        /* Then record outcome variables to DB */
+    private void recordOutcomeVariables(final CandidateSession candidateSession, final AbstractResult resultNode) {
+        candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);
         for (final ItemVariable itemVariable : resultNode.getItemVariables()) {
             if (itemVariable instanceof OutcomeVariable) {
                 final CandidateSessionOutcome outcome = new CandidateSessionOutcome();

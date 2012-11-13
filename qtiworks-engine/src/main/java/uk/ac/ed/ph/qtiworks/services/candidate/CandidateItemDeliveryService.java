@@ -640,11 +640,9 @@ public class CandidateItemDeliveryService {
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
-                CandidateItemEventType.CLOSE, itemSessionState);
+                CandidateItemEventType.CLOSE, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 
-        /* Update state */
-        candidateSessionDao.update(candidateSession);
         return candidateSession;
     }
 
@@ -704,8 +702,6 @@ public class CandidateItemDeliveryService {
                 CandidateItemEventType.REINIT, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 
-        /* Save state */
-        candidateSessionDao.update(candidateSession);
         return candidateSession;
     }
 
@@ -765,8 +761,6 @@ public class CandidateItemDeliveryService {
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 
-        /* Update state */
-        candidateSessionDao.update(candidateSession);
         return candidateSession;
     }
 
@@ -892,14 +886,12 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
 
         /* Record and log event */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-        final CandidateEvent candidateEvent = candidateDataServices.recordItemSessionTerminateEvent(candidateSession, itemSessionState);
+        final CandidateEvent candidateEvent = candidateDataServices.recordTerminateCandidateItemSession(candidateSession, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 
-        /* Update state */
-        candidateSession.setTerminated(true);
-        candidateSessionDao.update(candidateSession);
         return candidateSession;
     }
 
