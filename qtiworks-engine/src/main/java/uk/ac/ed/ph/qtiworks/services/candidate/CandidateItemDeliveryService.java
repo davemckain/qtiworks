@@ -800,12 +800,14 @@ public class CandidateItemDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
         }
 
-        /* Update state */
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
-                itemSessionState, notificationRecorder);
-        itemSessionController.markClosed();
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
+        /* Close session (if required) */
+        if (!itemSessionState.isClosed()) {
+            final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+            final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
+                    itemSessionState, notificationRecorder);
+            itemSessionController.markClosed();
+            itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
+        }
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);

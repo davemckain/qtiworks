@@ -35,14 +35,9 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
-import java.util.List;
-
 import javax.persistence.Basic;
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -81,13 +76,11 @@ public class CandidateSessionOutcome implements BaseEntity {
     @Column(name="outcome_identifier", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH)
     private String outcomeIdentifier;
 
-    /** Stringified variable data */
+    /** Variable as string */
     @Lob
     @Type(type="org.hibernate.type.TextType")
-    @ElementCollection(fetch=FetchType.EAGER)
-    @CollectionTable(name="candidate_session_outcome_items", joinColumns=@JoinColumn(name="xoid"))
-    @Column(name="string")
-    private List<String> stringOutcomeData;
+    @Column(name="string_value")
+    private String stringValue;
 
     //------------------------------------------------------------
 
@@ -106,7 +99,7 @@ public class CandidateSessionOutcome implements BaseEntity {
         return candidateSession;
     }
 
-    public void setCandidateAttempt(final CandidateSession candidateSession) {
+    public void setCandidateSession(final CandidateSession candidateSession) {
         this.candidateSession = candidateSession;
     }
 
@@ -120,12 +113,12 @@ public class CandidateSessionOutcome implements BaseEntity {
     }
 
 
-    public List<String> getStringOutcomeData() {
-        return stringOutcomeData;
+    public String getStringValue() {
+        return stringValue;
     }
 
-    public void setStringOutcomeData(final List<String> stringOutcomeData) {
-        this.stringOutcomeData = stringOutcomeData;
+    public void setStringValue(final String stringValue) {
+        this.stringValue = stringValue;
     }
 
 
@@ -134,6 +127,7 @@ public class CandidateSessionOutcome implements BaseEntity {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
                 + ",outcomeIdentifier=" + outcomeIdentifier
+                + ",stringValue=" + stringValue
                 + ")";
     }
 }

@@ -40,12 +40,14 @@ import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionOutcome;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
@@ -58,6 +60,10 @@ import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
+import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
+import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
+import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -65,6 +71,7 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
+import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
@@ -76,6 +83,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
@@ -89,6 +97,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.w3c.dom.Document;
+
+import com.google.common.io.Closeables;
 
 /**
  * Low level services for manipulating candidate data, such as recording
@@ -113,10 +123,16 @@ public class CandidateDataServices {
     private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
+    private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
+
+    @Resource
     private CandidateEventDao candidateEventDao;
 
     @Resource
     private CandidateEventNotificationDao candidateEventNotificationDao;
+
+    @Resource
+    private QtiSerializer qtiSerializer;
 
     @Resource
     private JqtiExtensionManager jqtiExtensionManager;
@@ -281,6 +297,10 @@ public class CandidateDataServices {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
         return mostRecentItemEvent;
+    }
+
+    public void recordItemResult(final CandidateSession candidateSession, final ItemResult itemResult) {
+        recordResultObject(candidateSession, "itemResult", itemResult);
     }
 
     public void ensureItemDelivery(final Delivery delivery) {
@@ -478,6 +498,33 @@ public class CandidateDataServices {
         }
     }
 
+    private void recordResultObject(final CandidateSession candidateSession, final String resultFileBaseName, final AbstractResult resultNode) {
+        /* First record full result XML to filesystem */
+        final File resultFile = getResultFile(candidateSession, resultFileBaseName);
+        FileOutputStream resultStream = null;
+        try {
+            resultStream = new FileOutputStream(resultFile);
+            qtiSerializer.serializeJqtiObject(resultNode, new FileOutputStream(resultFile));
+        }
+        catch (final Exception e) {
+            throw new QtiWorksRuntimeException("Unexpected Exception", e);
+        }
+        finally {
+            Closeables.closeQuietly(resultStream);
+        }
+
+        /* Then record outcome variables to DB */
+        for (final ItemVariable itemVariable : resultNode.getItemVariables()) {
+            if (itemVariable instanceof OutcomeVariable) {
+                final CandidateSessionOutcome outcome = new CandidateSessionOutcome();
+                outcome.setCandidateSession(candidateSession);
+                outcome.setOutcomeIdentifier(itemVariable.getIdentifier().toString());
+                outcome.setStringValue(itemVariable.getComputedValue().toQtiString());
+                candidateSessionOutcomeDao.persist(outcome);
+            }
+        }
+    }
+
     private Document loadStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName) {
         final File sessionFile = getStateFile(candidateEvent, stateFileBaseName);
         if (!sessionFile.exists()) {
@@ -496,5 +543,10 @@ public class CandidateDataServices {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
         return new File(sessionFolder, stateFileBaseName + candidateEvent.getId() + ".xml");
+    }
+
+    private File getResultFile(final CandidateSession candidateSession, final String resultFileBaseName) {
+        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
+        return new File(sessionFolder, resultFileBaseName + ".xml");
     }
 }
