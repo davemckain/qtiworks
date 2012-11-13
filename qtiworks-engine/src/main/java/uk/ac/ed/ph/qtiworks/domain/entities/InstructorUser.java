@@ -69,9 +69,6 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     @Column(name="sysadmin", updatable=true)
     private boolean sysAdmin;
 
-    @Basic(optional=false)
-    @Column(name="email_address", length=DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH)
-    private String emailAddress;
 
     @Basic(optional=false)
     @Column(name="password_salt", length=DomainConstants.USER_PASSWORD_SALT_LENGTH)
@@ -103,15 +100,6 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
 
     public void setLoginName(final String loginName) {
         this.loginName = loginName;
-    }
-
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(final String emailAddress) {
-        this.emailAddress = emailAddress;
     }
 
 

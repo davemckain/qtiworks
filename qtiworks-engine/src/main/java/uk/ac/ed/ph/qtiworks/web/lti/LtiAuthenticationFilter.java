@@ -248,7 +248,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull());
             ltiUser.setFirstName(ServiceUtilities.trimString(ltiLaunchData.getLisPersonNameGiven(), DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
             ltiUser.setLastName(ServiceUtilities.trimString(ltiLaunchData.getLisPersonNameFamily(), DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
-            ltiUser.setLisContactEmailPrimary(ltiLaunchData.getLisPersonContactEmailPrimary());
+            ltiUser.setEmailAddress(ServiceUtilities.trimString(ltiLaunchData.getLisPersonContactEmailPrimary(), DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
             ltiUserDao.persist(ltiUser);
         }
 

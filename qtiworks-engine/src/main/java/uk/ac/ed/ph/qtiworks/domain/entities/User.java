@@ -97,6 +97,10 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Column(name="last_name",length=DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH)
     private String lastName;
 
+    @Basic(optional=true)
+    @Column(name="email_address", length=DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH)
+    private String emailAddress;
+
     //------------------------------------------------------------
 
     public User() {
@@ -164,6 +168,15 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     public void setLastName(final String lastName) {
         this.lastName = lastName;
+    }
+
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(final String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     //------------------------------------------------------------

@@ -87,12 +87,6 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
     @Column(name="lis_full_name", updatable=false, unique=false)
     private String lisFullName;
 
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="lis_contact_email_primary", updatable=false, unique=false)
-    private String lisContactEmailPrimary;
-
     //------------------------------------------------------------
 
     public LtiUser() {
@@ -125,15 +119,6 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     public void setLisFullName(final String lisFullName) {
         this.lisFullName = lisFullName;
-    }
-
-
-    public String getLisContactEmailPrimary() {
-        return lisContactEmailPrimary;
-    }
-
-    public void setLisContactEmailPrimary(final String lisContactEmailPrimary) {
-        this.lisContactEmailPrimary = lisContactEmailPrimary;
     }
 
     //------------------------------------------------------------

@@ -80,7 +80,6 @@ public class AnonymousUser extends User implements BaseEntity, Comparable<Anonym
         this.sessionId = sessionId;
     }
 
-
     //------------------------------------------------------------
 
     @Override
