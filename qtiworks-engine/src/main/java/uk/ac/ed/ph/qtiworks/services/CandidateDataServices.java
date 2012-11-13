@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
@@ -63,7 +64,6 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
-import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
@@ -86,6 +86,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URI;
 
 import javax.annotation.Resource;
 import javax.xml.parsers.DocumentBuilder;
@@ -111,6 +112,9 @@ import com.google.common.io.Closeables;
 @Service
 @Transactional(propagation=Propagation.SUPPORTS)
 public class CandidateDataServices {
+
+    @Resource
+    private QtiWorksSettings qtiWorksSettings;
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -198,8 +202,8 @@ public class CandidateDataServices {
         /* Save result if not done already */
         if (!candidateSession.isClosed()) {
             final ItemSessionController itemSessionController = createItemSessionController(candidateSession.getDelivery(), itemSessionState, notificationRecorder);
-            final ItemResult itemResult = itemSessionController.computeItemResult(requestTimestampContext.getCurrentRequestTimestamp());
-            recordItemResult(candidateSession, itemResult);
+            final AssessmentResult assessmentResult = computeItemAssessmentResult(candidateSession, itemSessionController);
+            recordItemAssessmentResult(candidateSession, assessmentResult);
         }
 
         /* Update session state */
@@ -250,8 +254,8 @@ public class CandidateDataServices {
          */
         if (eventType==CandidateItemEventType.CLOSE || (!candidateSession.isClosed() && itemSessionState.isClosed())) {
             final ItemSessionController itemSessionController = createItemSessionController(event, notificationRecorder);
-            final ItemResult itemResult = itemSessionController.computeItemResult(requestTimestampContext.getCurrentRequestTimestamp());
-            recordItemResult(candidateSession, itemResult);
+            final AssessmentResult assessmentResult = computeItemAssessmentResult(candidateSession, itemSessionController);
+            recordItemAssessmentResult(candidateSession, assessmentResult);
             candidateSession.setClosed(true);
             candidateSessionDao.update(candidateSession);
         }
@@ -328,12 +332,18 @@ public class CandidateDataServices {
         return mostRecentItemEvent;
     }
 
-    public void recordItemResult(final CandidateSession candidateSession, final ItemResult itemResult) {
+    public AssessmentResult computeItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
+        final URI sessionIdentifierSourceId = URI.create(qtiWorksSettings.getBaseUrl());
+        final String sessionIdentifier = "itemsession/" + candidateSession.getId();
+        return itemSessionController.computeAssessmentResult(requestTimestampContext.getCurrentRequestTimestamp(), sessionIdentifier, sessionIdentifierSourceId);
+    }
+
+    public void recordItemAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         /* First record full result XML to filesystem */
-        storeResultFile(candidateSession, "itemResult", itemResult);
+        storeResultFile(candidateSession, assessmentResult);
 
         /* Then record item outcome variables to DB */
-        recordOutcomeVariables(candidateSession, itemResult);
+        recordOutcomeVariables(candidateSession, assessmentResult.getItemResults().get(0));
     }
 
     public void ensureItemDelivery(final Delivery delivery) {
@@ -490,9 +500,15 @@ public class CandidateDataServices {
         return mostRecentTestEvent;
     }
 
-    public void recordAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
+    public AssessmentResult computeTestAssessmentResult(final CandidateSession candidateSession, final TestSessionController testSessionController) {
+        final URI sessionIdentifierSourceId = URI.create(qtiWorksSettings.getBaseUrl());
+        final String sessionIdentifier = "testsession/" + candidateSession.getId();
+        return testSessionController.computeAssessmentResult(requestTimestampContext.getCurrentRequestTimestamp(), sessionIdentifier, sessionIdentifierSourceId);
+    }
+
+    public void recordTestAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         /* First record full result XML to filesystem */
-        storeResultFile(candidateSession, "assessmentResult", assessmentResult);
+        storeResultFile(candidateSession, assessmentResult);
 
         /* Then record test outcome variables to DB */
         recordOutcomeVariables(candidateSession, assessmentResult.getTestResult());
@@ -537,8 +553,8 @@ public class CandidateDataServices {
         }
     }
 
-    private void storeResultFile(final CandidateSession candidateSession, final String resultFileBaseName, final QtiNode resultNode) {
-        final File resultFile = getResultFile(candidateSession, resultFileBaseName);
+    private void storeResultFile(final CandidateSession candidateSession, final QtiNode resultNode) {
+        final File resultFile = getResultFile(candidateSession, "assessmentResult");
         FileOutputStream resultStream = null;
         try {
             resultStream = new FileOutputStream(resultFile);

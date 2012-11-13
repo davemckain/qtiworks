@@ -867,8 +867,8 @@ public class CandidateTestDeliveryService {
         /* Record result and close session if this action finished the test */
         if (testSessionState.isFinished()) {
             /* Record assessmentResult */
-            final AssessmentResult assessmentResult = testSessionController.computeAssessmentResult();
-            candidateDataServices.recordAssessmentResult(candidateSession, assessmentResult);
+            final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
+            candidateDataServices.recordTestAssessmentResult(candidateSession, assessmentResult);
 
             /* Update CandidateSession */
             candidateSession.setClosed(true);

@@ -71,7 +71,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -961,10 +961,10 @@ public class CandidateItemDeliveryService {
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         Assert.notNull(outputStream, "outputStream");
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        streamItemResult(candidateSession, outputStream);
+        streamAssessmentResult(candidateSession, outputStream);
     }
 
-    public void streamItemResult(final CandidateSession candidateSession, final OutputStream outputStream)
+    public void streamAssessmentResult(final CandidateSession candidateSession, final OutputStream outputStream)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(outputStream, "outputStream");
@@ -980,10 +980,10 @@ public class CandidateItemDeliveryService {
 
         /* Generate result Object from state */
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, null);
-        final ItemResult itemResult = itemSessionController.computeItemResult();
+        final AssessmentResult assessmentResult = candidateDataServices.computeItemAssessmentResult(candidateSession, itemSessionController);
 
         /* Send result */
-        qtiSerializer.serializeJqtiObject(itemResult, outputStream);
+        qtiSerializer.serializeJqtiObject(assessmentResult, outputStream);
         candidateAuditLogger.logAction(candidateSession, "ACCESS_RESULT");
     }
 

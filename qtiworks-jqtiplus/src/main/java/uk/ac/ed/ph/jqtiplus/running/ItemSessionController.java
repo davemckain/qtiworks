@@ -54,10 +54,13 @@ import uk.ac.ed.ph.jqtiplus.node.item.template.processing.SetCorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.node.result.Context;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.ResponseVariable;
+import uk.ac.ed.ph.jqtiplus.node.result.SessionIdentifier;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -75,6 +78,7 @@ import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -892,19 +896,35 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     //-------------------------------------------------------------------
-    // Computes standalone ItemResult for this item. This wasn't available in the original JQTI
+    // Computes standalone assessmentResult for this item. This wasn't available in the original JQTI
 
-    public ItemResult computeItemResult() {
-        return computeItemResult(new Date());
+    public AssessmentResult computeAssessmentResult() {
+        return computeAssessmentResult(new Date(), null, null);
     }
 
-    public ItemResult computeItemResult(final Date timestamp) {
-        final ItemResult result = new ItemResult(null);
-        result.setIdentifier(item.getIdentifier());
-        result.setDateStamp(timestamp);
-        result.setSessionStatus(itemSessionState.getSessionStatus());
-        recordItemVariables(result);
+    public AssessmentResult computeAssessmentResult(final Date timestamp, final String sessionIdentifier,
+            final URI sessionIdentifierSourceId) {
+        final AssessmentResult result = new AssessmentResult();
+        final Context context = new Context(result);
+        result.setContext(context);
+        if (sessionIdentifier!=null && sessionIdentifierSourceId!=null) {
+            final SessionIdentifier sessionIdentifierNode = new SessionIdentifier(context);
+            sessionIdentifierNode.setIdentifier(sessionIdentifier);
+            sessionIdentifierNode.setSourceId(sessionIdentifierSourceId);
+            context.getSessionIdentifiers().add(sessionIdentifierNode);
+        }
+
+        result.getItemResults().add(computeItemResult(result, timestamp));
         return result;
+    }
+
+    ItemResult computeItemResult(final AssessmentResult owner, final Date timestamp) {
+        final ItemResult itemResult = new ItemResult(owner);
+        itemResult.setIdentifier(item.getIdentifier());
+        itemResult.setDateStamp(timestamp);
+        itemResult.setSessionStatus(itemSessionState.getSessionStatus());
+        recordItemVariables(itemResult);
+        return itemResult;
     }
 
     private void recordItemVariables(final ItemResult result) {

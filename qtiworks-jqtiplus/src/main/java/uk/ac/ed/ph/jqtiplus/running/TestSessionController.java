@@ -42,8 +42,10 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.node.result.Context;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
+import uk.ac.ed.ph.jqtiplus.node.result.SessionIdentifier;
 import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
@@ -76,6 +78,7 @@ import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -942,8 +945,20 @@ public final class TestSessionController extends TestValidationController implem
     // Result generation
 
     public AssessmentResult computeAssessmentResult() {
+        return computeAssessmentResult(new Date(), null, null);
+    }
+
+    public AssessmentResult computeAssessmentResult(final Date timestamp, final String sessionIdentifier,
+            final URI sessionIdentifierSourceId) {
         final AssessmentResult result = new AssessmentResult();
-        final Date timestamp = new Date();
+        final Context context = new Context(result);
+        result.setContext(context);
+        if (sessionIdentifier!=null && sessionIdentifierSourceId!=null) {
+            final SessionIdentifier sessionIdentifierNode = new SessionIdentifier(context);
+            sessionIdentifierNode.setIdentifier(sessionIdentifier);
+            sessionIdentifierNode.setSourceId(sessionIdentifierSourceId);
+            context.getSessionIdentifiers().add(sessionIdentifierNode);
+        }
 
         /* Record test result */
         result.setTestResult(computeTestResult(result, timestamp));
@@ -953,7 +968,7 @@ public final class TestSessionController extends TestValidationController implem
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
                 final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
-                final ItemResult itemResult = itemSessionController.computeItemResult(timestamp);
+                final ItemResult itemResult = itemSessionController.computeItemResult(result, timestamp);
                 itemResult.setSequenceIndex(testPlanNode.getInstanceNumber());
                 itemResults.add(itemResult);
             }
