@@ -58,23 +58,22 @@ public final class TemplateVariable extends ItemVariable implements FieldValuePa
         getNodeGroups().add(new FieldValueGroup(this, 0, null));
     }
 
-    /**
-     * Creates new templateVariable from a given templateDeclaration.
-     *
-     * @param parent parent of created templateVariable
-     * @param declaration given templateDeclaration
-     */
     public TemplateVariable(final AbstractResult parent, final TemplateDeclaration declaration, final Value value) {
         this(parent);
-        if (declaration != null) {
-            setIdentifier(declaration.getIdentifier());
-            setCardinality(declaration.getCardinality());
-            setBaseType(declaration.getBaseType());
-            getFieldValues().addAll(FieldValue.computeValues(this, value));
-        }
+
+        setIdentifier(declaration.getIdentifier());
+        setCardinality(declaration.getCardinality());
+        setBaseType(declaration.getBaseType());
+
+        getFieldValues().addAll(FieldValue.computeValues(this, value));
     }
 
     public List<FieldValue> getFieldValues() {
         return getNodeGroups().getFieldValueGroup().getFieldValues();
+    }
+
+    @Override
+    public Value getComputedValue() {
+        return FieldValue.computeValue(getCardinality(), getFieldValues());
     }
 }

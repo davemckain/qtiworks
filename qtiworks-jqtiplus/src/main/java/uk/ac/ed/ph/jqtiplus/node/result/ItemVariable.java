@@ -40,6 +40,8 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
  * Variable is value (of any cardinality and/or baseType) with identifier.
@@ -96,6 +98,47 @@ public abstract class ItemVariable extends AbstractNode {
         getAttributes().getBaseTypeAttribute(ATTR_BASE_TYPE_NAME).setValue(baseType);
     }
 
+
+    /**
+     * Computes the {@link Signature} of this declaration from its {@link Cardinality}
+     * and {@link BaseType}, returning null if this cannot be determined.
+     */
+    public Signature computeSignature() {
+        final Cardinality cardinality = getCardinality();
+        final BaseType baseType = getBaseType();
+        return Signature.getSignature(cardinality, baseType);
+    }
+
+    public boolean hasCardinality(final Cardinality... allowedCardinalities) {
+        final Cardinality cardinality = getCardinality();
+        return cardinality!=null && cardinality.isOneOf(allowedCardinalities);
+    }
+
+    public boolean hasBaseType(final BaseType... allowedBaseType) {
+        final BaseType baseType = getBaseType();
+        return baseType!=null && baseType.isOneOf(allowedBaseType);
+    }
+
+    public boolean hasSignature(final Signature... allowedSignatures) {
+        boolean matches = false;
+        final Cardinality cardinality = getCardinality();
+        final BaseType baseType = getBaseType();
+        for (final Signature signature : allowedSignatures) {
+            if (cardinality==Cardinality.RECORD) {
+                matches = signature==Signature.RECORD;
+            }
+            else {
+                matches = signature.getCardinality()==cardinality
+                        && signature.getBaseType()==baseType;
+            }
+            if (matches) {
+                break;
+            }
+        }
+        return matches;
+    }
+
+    public abstract Value getComputedValue();
 
     @Override
     public final String computeXPathComponent() {

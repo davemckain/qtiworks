@@ -57,11 +57,6 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
     /** Name of datestamp attribute in xml schema. */
     public static final String ATTR_DATE_STAMP_NAME = "datestamp";
 
-    /**
-     * Constructs object.
-     *
-     * @param parent parent of constructed object
-     */
     public AbstractResult(final AssessmentResult parent, final String qtiClassName) {
         super(parent, qtiClassName);
 
@@ -71,56 +66,30 @@ public abstract class AbstractResult extends AbstractNode implements Identifiabl
         getNodeGroups().add(new ItemVariableGroup(this));
     }
 
-    /**
-     * Gets value of identifier attribute.
-     *
-     * @return value of identifier attribute
-     * @see #setIdentifier
-     */
     @Override
     public String getIdentifier() {
         return getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of identifier attribute.
-     *
-     * @param identifier new value of identifier attribute
-     * @see #getIdentifier
-     */
     @Override
     public void setIdentifier(final String identifier) {
         getAttributes().getStringAttribute(ATTR_IDENTIFIER_NAME).setValue(identifier);
     }
 
-    /**
-     * Gets value of datestamp attribute.
-     *
-     * @return value of datestamp attribute
-     * @see #setDateStamp
-     */
+
     public Date getDateStamp() {
         return getAttributes().getDateAttribute(ATTR_DATE_STAMP_NAME).getComputedValue();
     }
 
-    /**
-     * Sets new value of datestamp attribute.
-     *
-     * @param dateStamp new value of datestamp attribute
-     * @see #getDateStamp
-     */
     public void setDateStamp(final Date dateStamp) {
         getAttributes().getDateAttribute(ATTR_DATE_STAMP_NAME).setValue(dateStamp);
     }
 
-    /**
-     * Gets itemVariable children.
-     *
-     * @return itemVariable children
-     */
+
     public List<ItemVariable> getItemVariables() {
         return getNodeGroups().getItemVariableGroup().getItemVariables();
     }
+
 
     @Override
     public final String computeXPathComponent() {

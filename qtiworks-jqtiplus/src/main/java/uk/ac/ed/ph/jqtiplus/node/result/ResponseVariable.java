@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
@@ -71,35 +72,29 @@ public final class ResponseVariable extends ItemVariable implements ResultNode {
 
     public ResponseVariable(final AbstractResult parent, final ResponseDeclaration declaration, final Value value, final List<Identifier> shuffledInteractionChoiceIdentifiers) {
         this(parent);
-        if (declaration != null) {
-            setIdentifier(declaration.getIdentifier());
-            setBaseType(declaration.getBaseType());
-            setCardinality(declaration.getCardinality());
-            setCorrectResponse(declaration.getCorrectResponse());
 
-            final CandidateResponse response = new CandidateResponse(this);
-            response.getFieldValues().addAll(FieldValue.computeValues(response, value));
-            setCandidateResponse(response);
+        setIdentifier(declaration.getIdentifier());
+        setBaseType(declaration.getBaseType());
+        setCardinality(declaration.getCardinality());
+        setCorrectResponse(declaration.getCorrectResponse());
 
-            if (shuffledInteractionChoiceIdentifiers != null) {
-                List<Identifier> choiceSequence = getChoiceSequence();
-                if (choiceSequence==null) {
-                    choiceSequence = new ArrayList<Identifier>();
-                    setChoiceSequence(choiceSequence);
-                }
-                else {
-                    choiceSequence.clear();
-                }
-                choiceSequence.addAll(shuffledInteractionChoiceIdentifiers);
+        if (shuffledInteractionChoiceIdentifiers != null) {
+            List<Identifier> choiceSequence = getChoiceSequence();
+            if (choiceSequence==null) {
+                choiceSequence = new ArrayList<Identifier>();
+                setChoiceSequence(choiceSequence);
             }
+            else {
+                choiceSequence.clear();
+            }
+            choiceSequence.addAll(shuffledInteractionChoiceIdentifiers);
         }
+
+        final CandidateResponse response = new CandidateResponse(this);
+        response.getFieldValues().addAll(FieldValue.computeValues(response, value));
+        setCandidateResponse(response);
     }
 
-    /**
-     * Gets value of choiceSequence attribute.
-     *
-     * @return value of choiceSequence attribute
-     */
     public List<Identifier> getChoiceSequence() {
         return getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).getComputedValue();
     }
@@ -108,44 +103,30 @@ public final class ResponseVariable extends ItemVariable implements ResultNode {
         getAttributes().getIdentifierMultipleAttribute(ATTR_CHOICE_SEQUENCE_NAME).setValue(value);
     }
 
-    /**
-     * Gets correctResponse child.
-     *
-     * @return correctResponse child
-     * @see #setCorrectResponse
-     */
+
     public CorrectResponse getCorrectResponse() {
         return getNodeGroups().getCorrectResponseGroup().getCorrectResponse();
     }
 
-    /**
-     * Sets new correctResponse child.
-     *
-     * @param correctResponse new correctResponse child
-     * @see #getCorrectResponse
-     */
     public void setCorrectResponse(final CorrectResponse correctResponse) {
         getNodeGroups().getCorrectResponseGroup().setCorrectResponse(correctResponse);
     }
 
-    /**
-     * Gets candidateResponse child.
-     *
-     * @return candidateResponse child
-     * @see #setCandidateResponse
-     */
+
     public CandidateResponse getCandidateResponse() {
         return getNodeGroups().getCandidateResponseGroup().getCandidateResponse();
     }
 
-    /**
-     * Sets new candidateResponse child.
-     *
-     * @param candidateResponse new candidateResponse child
-     * @see #getCandidateResponse
-     */
     public void setCandidateResponse(final CandidateResponse candidateResponse) {
         getNodeGroups().getCandidateResponseGroup().setCandidateResponse(candidateResponse);
     }
 
+    @Override
+    public Value getComputedValue() {
+        final CandidateResponse candidateResponse = getCandidateResponse();
+        if (candidateResponse==null) {
+            return NullValue.INSTANCE;
+        }
+        return FieldValue.computeValue(getCardinality(), candidateResponse.getFieldValues());
+    }
 }

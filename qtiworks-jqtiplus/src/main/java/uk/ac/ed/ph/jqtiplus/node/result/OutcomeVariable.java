@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.net.URI;
@@ -92,49 +91,20 @@ public final class OutcomeVariable extends ItemVariable implements FieldValuePar
         getNodeGroups().add(new FieldValueGroup(this, 0, null));
     }
 
-    /**
-     * Creates new outcomeVariable from given outcomeDeclaration.
-     *
-     * @param parent parent of created outcomeVariable
-     * @param declaration given outcomeDeclaration
-     * @param value if provided, replaces value from outcomeDeclaration
-     */
     public OutcomeVariable(final AbstractResult parent, final OutcomeDeclaration declaration, final Value value) {
         this(parent);
         if (declaration != null) {
             setIdentifier(declaration.getIdentifier());
             setCardinality(declaration.getCardinality());
             setBaseType(declaration.getBaseType());
-            getFieldValues().addAll(FieldValue.computeValues(this, value));
             setViews(declaration.getViews());
             setInterpretation(declaration.getInterpretation());
             setLongInterpretation(declaration.getLongInterpretation());
             setNormalMaximum(declaration.getNormalMaximum());
             setNormalMinimum(declaration.getNormalMinimum());
             setMasteryValue(declaration.getMasteryValue());
-
-            //            evaluate();
         }
-    }
-
-    /**
-     * Creates new outcomeVariable from given identifier and value.
-     *
-     * @param parent parent of created outcomeVariable
-     * @param identifier identifier of created outcomeVariable (may be null)
-     * @param value of created outcomeVariable (may be null)
-     */
-    public OutcomeVariable(final AbstractResult parent, final Identifier identifier, final Value value) {
-        this(parent);
-
-        setIdentifier(identifier);
-        if (value != null) {
-            setCardinality(value.getCardinality());
-            setBaseType(value.getBaseType());
-            getFieldValues().addAll(FieldValue.computeValues(this, value));
-
-            //            evaluate();
-        }
+        getFieldValues().addAll(FieldValue.computeValues(this, value));
     }
 
     public List<View> getViews() {
@@ -190,40 +160,13 @@ public final class OutcomeVariable extends ItemVariable implements FieldValuePar
         getAttributes().getFloatAttribute(ATTR_MASTERY_VALUE_NAME).setValue(masteryValue);
     }
 
-    /**
-     * Gets value of this variableDeclaration.
-     *
-     * @return value of this variableDeclaration
-     */
-    public Value getComputedValue() {
-        return FieldValue.computeValue(getCardinality(), getFieldValues());
-        //        return value;
-    }
-
-    //    /**
-    //     * Evaluates value of this itemVariable.
-    //     *
-    //     * @return evaluated value of this itemVariable
-    //     */
-    //    public Value evaluate()
-    //    {
-    //        value = FieldValue.getComputedValue(getCardinality(), getFieldValues());
-    //
-    //        return value;
-    //    }
-
-    /**
-     * Gets fieldValue children.
-     *
-     * @return fieldValue children
-     */
     public List<FieldValue> getFieldValues() {
         return getNodeGroups().getFieldValueGroup().getFieldValues();
     }
 
-    //    @Override
-    //    public void load(JQTIExtensionManager jqtiController, Element sourceElement) {
-    //        super.load(jqtiController, sourceElement);
-    //        evaluate();
-    //    }
+    @Override
+    public Value getComputedValue() {
+        return FieldValue.computeValue(getCardinality(), getFieldValues());
+    }
+
 }
