@@ -66,6 +66,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -571,7 +572,8 @@ public class CandidateDataServices {
     private void recordOutcomeVariables(final CandidateSession candidateSession, final AbstractResult resultNode) {
         candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);
         for (final ItemVariable itemVariable : resultNode.getItemVariables()) {
-            if (itemVariable instanceof OutcomeVariable) {
+            if (itemVariable instanceof OutcomeVariable
+                    || AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(itemVariable.getIdentifier())) {
                 final CandidateSessionOutcome outcome = new CandidateSessionOutcome();
                 outcome.setCandidateSession(candidateSession);
                 outcome.setOutcomeIdentifier(itemVariable.getIdentifier().toString());
