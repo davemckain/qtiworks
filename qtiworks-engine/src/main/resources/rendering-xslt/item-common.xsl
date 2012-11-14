@@ -389,12 +389,14 @@ rendering.
       <xsl:choose>
         <xsl:when test="exists($outcomeValue)">
           <xsl:call-template name="printedVariable">
+            <xsl:with-param name="source" select="."/>
             <xsl:with-param name="valueHolder" select="$outcomeValue"/>
             <xsl:with-param name="valueDeclaration" select="qw:get-outcome-declaration(/, @identifier)"/>
           </xsl:call-template>
         </xsl:when>
         <xsl:when test="exists($templateValue)">
           <xsl:call-template name="printedVariable">
+            <xsl:with-param name="source" select="."/>
             <xsl:with-param name="valueHolder" select="$templateValue"/>
             <xsl:with-param name="valueDeclaration" select="qw:get-template-declaration(/, @identifier)"/>
           </xsl:call-template>

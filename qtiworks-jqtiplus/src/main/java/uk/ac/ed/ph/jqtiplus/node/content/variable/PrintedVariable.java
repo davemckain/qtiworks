@@ -46,7 +46,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.IntegerOrVariableRef;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 /**
  * This is the only way how to show variables to actor.
@@ -193,10 +192,10 @@ public final class PrintedVariable extends AbstractFlowBodyElement implements Fl
                 // pollute this code with too much MathAssess-specfic stuff.
                 //            if (variableDeclaration != null && variableDeclaration.getCardinality() != null && !variableDeclaration.getCardinality().isSingle())
                 //                context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality());
-                if (!(variableDeclaration.getCardinality().isSingle() || variableDeclaration.getCardinality().isRecord())) {
-                    context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()
-                            + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)");
-                }
+//                if (!(variableDeclaration.getCardinality().isSingle() || variableDeclaration.getCardinality().isRecord())) {
+//                    context.fireValidationError(this, "Invalid cardinality. Expected: " + Cardinality.SINGLE + ", but found: " + variableDeclaration.getCardinality()
+//                            + ". (Note that " + Cardinality.RECORD + " is also supported, even though this is not strictly compliant with the spec.)");
+//                }
             }
         }
     }

@@ -71,6 +71,7 @@ Base templates used in test rendering
       <xsl:choose>
         <xsl:when test="exists($testOutcomeValue)">
           <xsl:call-template name="printedVariable">
+            <xsl:with-param name="source" select="."/>
             <xsl:with-param name="valueHolder" select="$testOutcomeValue"/>
             <xsl:with-param name="valueDeclaration" select="qw:get-test-outcome-declaration(@identifier)"/>
           </xsl:call-template>

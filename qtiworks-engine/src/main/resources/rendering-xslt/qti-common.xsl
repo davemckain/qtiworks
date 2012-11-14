@@ -204,6 +204,7 @@ rendering.
   <!-- ************************************************************ -->
 
   <xsl:template name="printedVariable" as="node()?">
+    <xsl:param name="source" as="element(qti:printedVariable)"/>
     <xsl:param name="valueHolder" as="element()"/>
     <xsl:param name="valueDeclaration" as="element()"/>
     <!--
@@ -221,7 +222,7 @@ rendering.
     -->
     <xsl:choose>
       <xsl:when test="qw:is-null-value($valueHolder)">
-        <xsl:text>NULL</xsl:text>
+        <!-- Spec says to output nothing in this case -->
       </xsl:when>
       <xsl:when test="qw:is-single-cardinality-value($valueHolder)">
         <xsl:variable name="singleValue" select="qw:extract-single-cardinality-value($valueHolder)" as="xs:string"/>
@@ -237,21 +238,17 @@ rendering.
       <xsl:when test="qw:is-maths-content-value($valueHolder)">
         <xsl:copy-of select="qw:extract-maths-content-pmathml($valueHolder)"/>
       </xsl:when>
-      <xsl:when test="qw:is-multiple-cardinality-value($valueHolder)">
-        <xsl:text>{</xsl:text>
-        <xsl:value-of select="qw:extract-iterable-elements($valueHolder)" separator=", "/>
-        <xsl:text>}</xsl:text>
-      </xsl:when>
-      <xsl:when test="qw:is-ordered-cardinality-value($valueHolder)">
-        <xsl:text>[</xsl:text>
-        <xsl:value-of select="qw:extract-iterable-elements($valueHolder)" separator=", "/>
-        <xsl:text>]</xsl:text>
+      <xsl:when test="qw:is-multiple-cardinality-value($valueHolder) or qw:is-ordered-cardinality-value($valueHolder)">
+        <xsl:variable name="delimiter" select="if ($source/@delimiter) then $source/@delimiter else ';'"/>
+        <xsl:value-of select="qw:extract-iterable-elements($valueHolder)" separator="{$delimiter}"/>
       </xsl:when>
       <xsl:when test="qw:is-record-cardinality-value($valueHolder)">
-        <xsl:text>{</xsl:text>
+        <!-- FIXME: Need to support 'field' attribute -->
+        <xsl:variable name="delimiter" select="if ($source/@delimiter) then $source/@delimiter else ';'"/>
+        <xsl:variable name="mappingIndicator" select="if ($source/@mappingIndicator) then $source/@mappingIndicator else '='"/>
         <xsl:variable name="to-print" as="xs:string*"
-          select="for $v in $valueHolder/qw:value return concat($v/@identifier, ': ', $v/qw:value)"/>
-        <xsl:value-of select="$to-print" separator=", "/>
+          select="for $v in $valueHolder/qw:value return concat($v/@identifier, $mappingIndicator, $v/qw:value)"/>
+        <xsl:value-of select="$to-print" separator="{$delimiter}"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">
