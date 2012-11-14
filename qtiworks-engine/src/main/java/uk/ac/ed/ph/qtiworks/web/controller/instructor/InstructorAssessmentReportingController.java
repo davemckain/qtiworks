@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.Charsets;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,10 +66,21 @@ public final class InstructorAssessmentReportingController {
     @Resource
     private AssessmentReportingService assessmentReportingService;
 
-    //------------------------------------------------------
+    @Resource
+    private InstructorAssessmentManagementController instructorAssessmentManagementController;
 
-    @RequestMapping(value="/delivery/{did}/summaryreport.csv", method=RequestMethod.GET)
-    public void downloadDeliverySummaryReportCsv(final HttpServletResponse response, @PathVariable final long did)
+    //------------------------------------------------------
+    @RequestMapping(value="/delivery/{did}/candidate-summary-report", method=RequestMethod.GET)
+    public String downloadDeliveryCandidateSummaryReportCsv(@PathVariable final long did, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(did);
+        instructorAssessmentManagementController.setupModelForDelivery(did, model);
+        model.addAttribute(report);
+        return "deliveryCandidateSummaryReport";
+    }
+
+    @RequestMapping(value="/delivery/{did}/candidate-summary-report.csv", method=RequestMethod.GET)
+    public void downloadDeliveryCandidateSummaryReportCsv(final HttpServletResponse response, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(did);
 
@@ -78,7 +90,7 @@ public final class InstructorAssessmentReportingController {
         final CsvWriter csvWriter = new CsvWriter(response.getOutputStream(), ',', Charsets.UTF_8);
 
         /* Write header */
-        final StringBuilder headerBuilder = new StringBuilder("Email Address,First Name,Last Name,Email Address,Launch Time,Session Status");
+        final StringBuilder headerBuilder = new StringBuilder("Session ID,Email Address,First Name,Last Name,Email Address,Launch Time,Session Status");
         for (final String outcomeName : report.getOutcomeNames()) {
             headerBuilder.append(',').append(outcomeName);
         }
@@ -86,6 +98,7 @@ public final class InstructorAssessmentReportingController {
 
         /* Write each row */
         for (final DcsrRow row : report.getRows()) {
+            csvWriter.write(Long.toString(row.getSessionId()));
             csvWriter.write(row.getEmailAddress());
             csvWriter.write(row.getFirstName());
             csvWriter.write(row.getLastName());

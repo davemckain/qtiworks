@@ -24,11 +24,13 @@ instructorAssessmentRouting
     <c:when test="${!empty assessmentList}">
       <table class="assessmentList">
         <thead>
-          <th></th>
-          <th>Details</th>
-          <th>Assessment Type</th>
-          <th>Version</th>
-          <th>Created</th>
+          <tr>
+            <th></th>
+            <th>Details</th>
+            <th>Assessment Type</th>
+            <th>Version</th>
+            <th>Created</th>
+          </tr>
         </thead>
         <tbody>
           <c:forEach var="assessment" items="${assessmentList}" varStatus="loopStatus">

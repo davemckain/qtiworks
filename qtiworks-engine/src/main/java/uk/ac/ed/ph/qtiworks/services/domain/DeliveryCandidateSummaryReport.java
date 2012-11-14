@@ -52,22 +52,28 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
     public static final class DcsrRow implements Serializable {
 
         private static final long serialVersionUID = 9044689689638050265L;
+        private final long sessionId;
         private final Date launchTime;
         private final String firstName;
         private final String lastName;
         private final String emailAddress;
         private final boolean sessionClosed;
-        private final boolean sessionTerminated;
         private final List<String> outcomeValues;
 
-        public DcsrRow(final Date launchTime, final String firstName, final String lastName, final String emailAddress, final boolean sessionClosed, final boolean sessionTerminated, final List<String> outcomeValues) {
+        public DcsrRow(final long sessionId, final Date launchTime, final String firstName,
+                final String lastName, final String emailAddress, final boolean sessionClosed,
+                final List<String> outcomeValues) {
             this.launchTime = launchTime;
+            this.sessionId = sessionId;
             this.firstName = firstName;
             this.lastName = lastName;
             this.emailAddress = emailAddress;
             this.sessionClosed = sessionClosed;
-            this.sessionTerminated = sessionTerminated;
             this.outcomeValues = outcomeValues;
+        }
+
+        public long getSessionId() {
+            return sessionId;
         }
 
         public Date getLaunchTime() {
@@ -88,10 +94,6 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
 
         public boolean isSessionClosed() {
             return sessionClosed;
-        }
-
-        public boolean isSessionTerminated() {
-            return sessionTerminated;
         }
 
         public List<String> getOutcomeValues() {

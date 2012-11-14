@@ -119,12 +119,12 @@ public class AssessmentReportingService {
                 }
             }
             final User candidate = candidateSession.getCandidate();
-            final DcsrRow row = new DcsrRow(candidateSession.getCreationTime(),
+            final DcsrRow row = new DcsrRow(candidateSession.getId().longValue(),
+                    candidateSession.getCreationTime(),
                     candidate.getFirstName(),
                     candidate.getLastName(),
                     candidate.getEmailAddress(),
                     candidateSession.isClosed(),
-                    candidateSession.isTerminated(),
                     outcomeValues);
             rows.add(row);
         }

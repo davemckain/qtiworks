@@ -435,17 +435,18 @@ public final class InstructorAssessmentManagementController {
         result.put("show", instructorRouter.buildWebUrl("/delivery/" + did));
         result.put("edit", instructorRouter.buildWebUrl("/delivery/" + did + "/edit"));
         result.put("try", instructorRouter.buildWebUrl("/delivery/" + did + "/try"));
-        result.put("summaryreportcsv", instructorRouter.buildWebUrl("/delivery/" + did + "/summaryreport.csv"));
+        result.put("candidateSummaryReport", instructorRouter.buildWebUrl("/delivery/" + did + "/candidate-summary-report"));
+        result.put("candidateSummaryReportCsv", instructorRouter.buildWebUrl("/delivery/" + did + "/candidate-summary-report.csv"));
         result.put("ltiLaunch", qtiWorksSettings.getBaseUrl() + "/lti/launch/" + did);
         return result;
     }
 
-    private void setupModelForDelivery(final long did, final Model model)
+    public void setupModelForDelivery(final long did, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         setupModelForDelivery(assessmentManagementService.lookupOwnDelivery(did), model);
     }
 
-    private void setupModelForDelivery(final Delivery delivery, final Model model) {
+    public void setupModelForDelivery(final Delivery delivery, final Model model) {
         final Assessment assessment = delivery.getAssessment();
         model.addAttribute(delivery);
         model.addAttribute(assessment);

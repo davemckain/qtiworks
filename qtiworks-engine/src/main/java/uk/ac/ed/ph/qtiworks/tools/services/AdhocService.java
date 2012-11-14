@@ -122,16 +122,17 @@ public class AdhocService {
         final CsvWriter csvWriter = new CsvWriter(stringWriter, ',');
 
         /* Write header */
-        final StringBuilder headerBuilder = new StringBuilder("First Name,Last Name,Email Address");
+        final StringBuilder headerBuilder = new StringBuilder("Session ID,First Name,Last Name,Email Address");
         for (final String outcomeName : report.getOutcomeNames()) {
             headerBuilder.append(outcomeName);
         }
 
         for (final DcsrRow row : report.getRows()) {
+            csvWriter.write(Long.toString(row.getSessionId()));
             csvWriter.write(row.getFirstName());
             csvWriter.write(row.getLastName());
             csvWriter.write(row.getEmailAddress());
-            csvWriter.write(row.isSessionTerminated() ? "Terminated" : (row.isSessionClosed() ? "Finished" : "In Progress"));
+            csvWriter.write(row.isSessionClosed() ? "Finished" : "In Progress");
             final List<String> outcomeValues = row.getOutcomeValues();
             if (outcomeValues!=null) {
                 for (final String outcomeValue : row.getOutcomeValues()) {
