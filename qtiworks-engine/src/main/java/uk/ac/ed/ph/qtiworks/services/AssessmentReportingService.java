@@ -43,12 +43,20 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
 
@@ -67,6 +75,9 @@ public class AssessmentReportingService {
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
+
+    @Resource
+    private CandidateDataServices candidateDataServices;
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
@@ -132,4 +143,49 @@ public class AssessmentReportingService {
         return new DeliveryCandidateSummaryReport(new ArrayList<String>(outcomeNames), rows);
     }
 
+    //-------------------------------------------------
+
+    public void sendAssessmentReports(final OutputStream outputStream, final long did)
+            throws DomainEntityNotFoundException, PrivilegeException, IOException {
+        /* Look up sessions */
+        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+        final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(delivery);
+
+        /* Create ZIP builder */
+        final ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
+        boolean includedSomething = false;
+        for (final CandidateSession candidateSession : candidateSessions) {
+            if (candidateSession.isClosed()) {
+                addAssessmentReport(zipOutputStream, candidateSession);
+                includedSomething = true;
+            }
+        }
+        safelyFinishZipStream(zipOutputStream, includedSomething);
+    }
+
+    private void addAssessmentReport(final ZipOutputStream zipOutputStream, final CandidateSession candidateSession)
+            throws IOException {
+        final User candidate = candidateSession.getCandidate();
+        final File resultFile = candidateDataServices.getResultFile(candidateSession);
+        final String entryName = candidateSession.getId()
+                + "-" + candidate.getEmailAddress()
+                + "-assessmentResult.xml";
+
+        zipOutputStream.putNextEntry(new ZipEntry(entryName));
+        IoUtilities.transfer(new FileInputStream(resultFile), zipOutputStream, true, false);
+        zipOutputStream.closeEntry();
+    }
+
+    private void safelyFinishZipStream(final ZipOutputStream zipOutputStream, final boolean hasIncludedSomething)
+            throws IOException {
+        if (!hasIncludedSomething) {
+            zipOutputStream.putNextEntry(new ZipEntry("NoResults.txt"));
+            final OutputStreamWriter commentWriter = new OutputStreamWriter(zipOutputStream, "UTF-8");
+            commentWriter.write("There are no results for this delivery yet");
+            commentWriter.flush();
+            zipOutputStream.closeEntry();
+        }
+        zipOutputStream.finish();
+        zipOutputStream.flush();
+    }
 }

@@ -121,4 +121,11 @@ public final class InstructorAssessmentReportingController {
         }
         csvWriter.close();
     }
+
+    @RequestMapping(value="/delivery/{did}/candidate-results.zip", method=RequestMethod.GET)
+    public void downloadDeliveryCandidateResults(final HttpServletResponse response, @PathVariable final long did)
+            throws PrivilegeException, DomainEntityNotFoundException, IOException {
+        response.setContentType("application/zip");
+        assessmentReportingService.sendAssessmentReports(response.getOutputStream(), did);
+    }
 }

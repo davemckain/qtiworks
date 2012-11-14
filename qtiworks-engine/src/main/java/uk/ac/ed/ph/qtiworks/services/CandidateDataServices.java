@@ -555,7 +555,7 @@ public class CandidateDataServices {
     }
 
     private void storeResultFile(final CandidateSession candidateSession, final QtiNode resultNode) {
-        final File resultFile = getResultFile(candidateSession, "assessmentResult");
+        final File resultFile = getResultFile(candidateSession);
         FileOutputStream resultStream = null;
         try {
             resultStream = new FileOutputStream(resultFile);
@@ -567,6 +567,11 @@ public class CandidateDataServices {
         finally {
             Closeables.closeQuietly(resultStream);
         }
+    }
+
+    public File getResultFile(final CandidateSession candidateSession) {
+        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
+        return new File(sessionFolder, "assessmentResult.xml");
     }
 
     private void recordOutcomeVariables(final CandidateSession candidateSession, final AbstractResult resultNode) {
@@ -603,8 +608,4 @@ public class CandidateDataServices {
         return new File(sessionFolder, stateFileBaseName + candidateEvent.getId() + ".xml");
     }
 
-    private File getResultFile(final CandidateSession candidateSession, final String resultFileBaseName) {
-        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
-        return new File(sessionFolder, resultFileBaseName + ".xml");
-    }
 }

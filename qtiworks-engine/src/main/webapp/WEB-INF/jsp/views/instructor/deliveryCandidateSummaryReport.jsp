@@ -91,6 +91,7 @@ deliveryCandidateSummaryReport
   <h4>Actions</h4>
   <ul class="menu">
     <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReportCsv'])}">Download candidate outcome summary (CSV)</a></li>
+    <li><a href="${utils:escapeLink(deliveryRouting['candidateResultsZip'])}">Download all candiate assessmentResult XML files (ZIP)</a></li>
   </ul>
 
 </page:page>
