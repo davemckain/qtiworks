@@ -40,8 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
-import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.MultipleValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
@@ -121,15 +119,5 @@ public final class Multiple extends AbstractSimpleFunctionalExpression {
             }
         }
         return MultipleValue.createMultipleValue(flattenedChildren);
-    }
-
-    public static void main(final String[] args) {
-        final List<SingleValue> children = new ArrayList<SingleValue>();
-        children.add(new IntegerValue(1));
-        children.add(new IntegerValue(2));
-        children.add(new FloatValue(2));
-        final Value mv = MultipleValue.createMultipleValue(children);
-        System.out.println(mv.getBaseType());
-        System.out.println(MultipleValue.createMultipleValue(children).getBaseType());
     }
 }
