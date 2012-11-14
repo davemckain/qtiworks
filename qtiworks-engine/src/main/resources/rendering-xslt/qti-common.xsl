@@ -165,7 +165,7 @@ rendering.
       <xsl:otherwise>
         <xsl:message terminate="yes">
           Expected value <xsl:copy-of select="$valueHolder"/> to have ordered
-          or multiple cardinality
+          or multiple cardinality.
         </xsl:message>
       </xsl:otherwise>
     </xsl:choose>
@@ -174,6 +174,22 @@ rendering.
   <xsl:function name="qw:is-record-cardinality-value" as="xs:boolean">
     <xsl:param name="valueHolder" as="element()"/>
     <xsl:sequence select="boolean($valueHolder[@cardinality='record'])"/>
+  </xsl:function>
+
+  <xsl:function name="qw:extract-record-field-value" as="xs:string?">
+    <xsl:param name="valueHolder" as="element()"/>
+    <xsl:param name="fieldName" as="xs:string"/>
+    <xsl:choose>
+      <xsl:when test="qw:is-record-cardinality-value($valueHolder)">
+        <xsl:value-of select="$valueHolder/qw:value[@fieldIdentifier=$fieldName]"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message terminate="yes">
+          Expected value <xsl:copy-of select="$valueHolder"/> to have record
+          cardinalty.
+        </xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
 
   <xsl:function name="qw:is-maths-content-value" as="xs:boolean">
@@ -239,16 +255,24 @@ rendering.
         <xsl:copy-of select="qw:extract-maths-content-pmathml($valueHolder)"/>
       </xsl:when>
       <xsl:when test="qw:is-multiple-cardinality-value($valueHolder) or qw:is-ordered-cardinality-value($valueHolder)">
-        <xsl:variable name="delimiter" select="if ($source/@delimiter) then $source/@delimiter else ';'"/>
+        <xsl:variable name="delimiter" select="if (exists($source/@delimiter)) then $source/@delimiter else ';'"/>
         <xsl:value-of select="qw:extract-iterable-elements($valueHolder)" separator="{$delimiter}"/>
       </xsl:when>
       <xsl:when test="qw:is-record-cardinality-value($valueHolder)">
-        <!-- FIXME: Need to support 'field' attribute -->
-        <xsl:variable name="delimiter" select="if ($source/@delimiter) then $source/@delimiter else ';'"/>
-        <xsl:variable name="mappingIndicator" select="if ($source/@mappingIndicator) then $source/@mappingIndicator else '='"/>
-        <xsl:variable name="to-print" as="xs:string*"
-          select="for $v in $valueHolder/qw:value return concat($v/@identifier, $mappingIndicator, $v/qw:value)"/>
-        <xsl:value-of select="$to-print" separator="{$delimiter}"/>
+        <xsl:choose>
+          <xsl:when test="exists($source/@field)">
+            <!-- Display single field -->
+            <xsl:value-of select="qw:extract-record-field-value($valueHolder, $source/@field)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <!-- Dump whole record -->
+            <xsl:variable name="delimiter" select="if (exists($source/@delimiter)) then $source/@delimiter else ';'"/>
+            <xsl:variable name="mappingIndicator" select="if ($source/@mappingIndicator) then $source/@mappingIndicator else '='"/>
+            <xsl:variable name="to-print" as="xs:string*"
+              select="for $v in $valueHolder/qw:value return concat($v/@identifier, $mappingIndicator, $v/qw:value)"/>
+            <xsl:value-of select="$to-print" separator="{$delimiter}"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">
