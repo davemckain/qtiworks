@@ -35,13 +35,18 @@ package uk.ac.ed.ph.qtiworks.tools.services;
 
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
+import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
@@ -51,8 +56,10 @@ import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -61,6 +68,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.csvreader.CsvWriter;
 
 import dave.StandaloneItemRenderingTest;
 
@@ -91,9 +100,48 @@ public class AdhocService {
     @Resource
     private InstructorUserDao instructorUserDao;
 
+    @Resource
+    private AssessmentReportingService assessmentReportingService;
+
+    @Resource
+    private DeliveryDao deliveryDao;
+
     public void doWork() throws Exception {
-        doWorkItem();
+        doReport();
+//        doWorkItem();
 //        doWorkTest();
+    }
+
+    public void doReport() throws Exception {
+        final Delivery delivery = deliveryDao.requireFindById(98L);
+        final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(delivery);
+
+        System.out.println(report);
+
+        final StringWriter stringWriter = new StringWriter();
+        final CsvWriter csvWriter = new CsvWriter(stringWriter, ',');
+
+        /* Write header */
+        final StringBuilder headerBuilder = new StringBuilder("First Name,Last Name,Email Address");
+        for (final String outcomeName : report.getOutcomeNames()) {
+            headerBuilder.append(outcomeName);
+        }
+
+        for (final DcsrRow row : report.getRows()) {
+            csvWriter.write(row.getFirstName());
+            csvWriter.write(row.getLastName());
+            csvWriter.write(row.getEmailAddress());
+            csvWriter.write(row.isSessionTerminated() ? "Terminated" : (row.isSessionClosed() ? "Finished" : "In Progress"));
+            final List<String> outcomeValues = row.getOutcomeValues();
+            if (outcomeValues!=null) {
+                for (final String outcomeValue : row.getOutcomeValues()) {
+                    csvWriter.write(outcomeValue, true);
+                }
+            }
+            csvWriter.endRecord();
+        }
+        csvWriter.close();
+        System.out.println(stringWriter);
     }
 
     public void doWorkTest() throws Exception {

@@ -34,9 +34,13 @@
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,11 +55,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
 public class CandidateSessionDao extends GenericDao<CandidateSession> {
 
-    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
     public CandidateSessionDao() {
         super(CandidateSession.class);
+    }
+
+    public List<CandidateSession> getForDelivery(final Delivery delivery) {
+        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForDelivery", CandidateSession.class);
+        query.setParameter("delivery", delivery);
+        return query.getResultList();
     }
 }

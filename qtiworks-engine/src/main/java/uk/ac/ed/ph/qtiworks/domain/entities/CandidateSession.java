@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
@@ -48,6 +49,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -62,6 +65,13 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name="candidate_sessions")
 @SequenceGenerator(name="candidateSessionSequence", sequenceName="candidate_session_sequence", initialValue=1, allocationSize=50)
+@NamedQueries({
+    @NamedQuery(name="CandidateSession.getForDelivery",
+            query="SELECT x"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.delivery = :delivery"
+                + "  ORDER BY x.id"),
+})
 public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -3537558551866726398L;
@@ -144,12 +154,12 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public Date getCreationTime() {
-        return creationTime;
+        return ObjectUtilities.safeClone(creationTime);
     }
 
     @Override
     public void setCreationTime(final Date creationTime) {
-        this.creationTime = creationTime;
+        this.creationTime = ObjectUtilities.safeClone(creationTime);
     }
 
 

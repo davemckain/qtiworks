@@ -60,6 +60,16 @@ import org.hibernate.annotations.Type;
 @Table(name="candidate_session_outcomes")
 @SequenceGenerator(name="candidateSessionOutcomeSequence", sequenceName="candidate_session_outcome_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
+    @NamedQuery(name="CandidateSessionOutcome.getForSession",
+            query="SELECT xo"
+                + "  FROM CandidateSessionOutcome xo"
+                + "  WHERE xo.candidateSession = :candidateSession"
+                + "  ORDER BY xo.id"),
+    @NamedQuery(name="CandidateSessionOutcome.getForDelivery",
+            query="SELECT xo"
+                + "  FROM CandidateSessionOutcome xo"
+                + "  WHERE xo.candidateSession.delivery = :delivery"
+                + "  ORDER BY xo.id"),
     @NamedQuery(name="CandidateSessionOutcome.deleteForSession",
             query="DELETE FROM CandidateSessionOutcome xo"
                 + "  WHERE xo.candidateSession = :candidateSession")

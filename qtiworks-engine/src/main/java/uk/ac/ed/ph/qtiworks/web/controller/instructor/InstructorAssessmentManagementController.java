@@ -435,6 +435,7 @@ public final class InstructorAssessmentManagementController {
         result.put("show", instructorRouter.buildWebUrl("/delivery/" + did));
         result.put("edit", instructorRouter.buildWebUrl("/delivery/" + did + "/edit"));
         result.put("try", instructorRouter.buildWebUrl("/delivery/" + did + "/try"));
+        result.put("summaryreportcsv", instructorRouter.buildWebUrl("/delivery/" + did + "/summaryreport.csv"));
         result.put("ltiLaunch", qtiWorksSettings.getBaseUrl() + "/lti/launch/" + did);
         return result;
     }

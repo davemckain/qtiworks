@@ -88,6 +88,7 @@ instructorAssessmentRouting (action -> URL)
       </form>
     </li>
     <li>Delete Delivery</li>
-    <li>View Candidate attempt data</li>
+    <li><a href="${utils:escapeLink(deliveryRouting['summaryreportcsv'])}">Download candidate outcome summary (CSV)</a></li>
+  </ul>
 
 </page:page>
