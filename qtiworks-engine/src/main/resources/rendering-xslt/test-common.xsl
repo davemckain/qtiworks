@@ -176,14 +176,16 @@ Base templates used in test rendering
         </xsl:if>
         <xsl:if test="$endTestPartAllowed">
           <li>
-            <form action="{$webappContextPath}{$endTestPartUrl}" method="post">
+            <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
+              onsubmit="return confirm('Are you sure? This will submit your responses for marking.')">
               <input type="submit" value="End Test"/>
             </form>
           </li>
         </xsl:if>
         <xsl:if test="$exitTestPartAllowed">
           <li>
-            <form action="{$webappContextPath}{$exitTestPartUrl}" method="post">
+            <form action="{$webappContextPath}{$exitTestPartUrl}" method="post"
+              onsubmit="return confirm('Are you sure? This will leave the test and you can\'t go back in.')">
               <input type="submit" value="Exit Test"/>
             </form>
           </li>
