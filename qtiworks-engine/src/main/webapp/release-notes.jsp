@@ -12,6 +12,16 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV18 [Development] (15/11/2012)</h3>
+  <p>
+    This snapshot tidies up implementation of tests added in DEV17, and adds in
+    initial functionality within the webapp for viewing and downloading result
+    data for candidate sessions on a given delivery.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV17 [Development] (09/11/2012)</h3>
   <p>
     This snapshot continues with the implementation of tests.

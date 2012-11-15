@@ -15,7 +15,7 @@ All Rights Reserved
 <%@ attribute name="cssClass" required="false" %>
 
 <jsp:useBean id="now" class="java.util.Date"/>
-<c:set var="qtiWorksVersion" value="1.0-DEV17"/>
+<c:set var="qtiWorksVersion" value="1.0-DEV18"/>
 
 <!DOCTYPE html>
 <html lang="en">
