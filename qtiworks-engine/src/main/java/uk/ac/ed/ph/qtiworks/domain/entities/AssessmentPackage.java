@@ -161,7 +161,7 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @ElementCollection(fetch=FetchType.LAZY)
-    @CollectionTable(name="assessment_package_qti_files", joinColumns=@JoinColumn(name="aid"))
+    @CollectionTable(name="assessment_package_qti_files", joinColumns=@JoinColumn(name="apid"))
     @Column(name="href")
     private Set<String> qtiFileHrefs;
 
@@ -169,7 +169,7 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @ElementCollection(fetch=FetchType.LAZY)
-    @CollectionTable(name="assessment_package_safe_files", joinColumns=@JoinColumn(name="aid"))
+    @CollectionTable(name="assessment_package_safe_files", joinColumns=@JoinColumn(name="apid"))
     @Column(name="href")
     private Set<String> safeFileHrefs;
 
