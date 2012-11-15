@@ -88,7 +88,7 @@ instructorAssessmentRouting (action -> URL)
       </form>
     </li>
     <li>Delete Delivery</li>
-    <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReport'])}">View Candidate Data</a></li>
+    <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReport'])}">View Candidate Reports</a></li>
   </ul>
 
 </page:page>

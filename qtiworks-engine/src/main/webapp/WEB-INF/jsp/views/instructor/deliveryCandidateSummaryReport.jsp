@@ -37,21 +37,23 @@ deliveryCandidateSummaryReport
 
   <c:choose>
     <c:when test="${!empty deliveryCandidateSummaryReport}">
+      <c:set var="outcomeCount" value="${fn:length(deliveryCandidateSummaryReport.outcomeNames)}"/>
       <table class="assessmentList">
         <thead>
           <tr>
-            <th colspan="6">Candidate</th>
-            <c:if test="${fn:length(deliveryCandidateSummaryReport.outcomeNames) > 0}">
-              <th colspan="${fn:length(deliveryCandidateSummaryReport.outcomeNames)}">Outcomes</th>
+            <th colspan="3">Session</th>
+            <th colspan="3">Candidate</th>
+            <c:if test="${outcomeCount > 0}">
+              <th colspan="${outcomeCount}">Outcomes</th>
             </c:if>
           </tr>
           <tr>
             <th>Session ID</th>
+            <th>Session Launch Time</th>
+            <th>Session Status</th>
             <th>Email Address</th>
             <th>First Name</th>
             <th>Last Name</th>
-            <th>Launch Time</th>
-            <th>Session Status</th>
             <c:forEach var="outcomeName" items="${deliveryCandidateSummaryReport.outcomeNames}">
               <th>${fn:escapeXml(outcomeName)}</th>
             </c:forEach>
@@ -61,21 +63,19 @@ deliveryCandidateSummaryReport
           <c:forEach var="row" items="${deliveryCandidateSummaryReport.rows}">
             <tr>
               <td align="center">${row.sessionId}</td>
+              <td align="center"><c:out value="${utils:formatDayDateAndTime(row.launchTime)}"/></td>
+              <td align="center">${row.sessionClosed ? 'Finished' : 'In Progress'}</td>
               <td><c:out value="${row.emailAddress}"/></td>
               <td><c:out value="${row.firstName}"/></td>
               <td><c:out value="${row.lastName}"/></td>
-              <td align="center"><c:out value="${utils:formatDayDateAndTime(row.launchTime)}"/></td>
-              <td align="center">${row.sessionClosed ? 'Finished' : 'In Progress'}</td>
               <c:choose>
                 <c:when test="${!empty row.outcomeValues}">
                   <c:forEach var="outcomeValue" items="${row.outcomeValues}">
-                    <td><c:out value="${outcomeValue}"/></td>
+                    <td align="center"><c:out value="${outcomeValue}"/></td>
                   </c:forEach>
                 </c:when>
                 <c:otherwise>
-                  <c:forEach var="outcomeName" items="${deliveryCandidateSummaryReport.outcomeNames}">
-                  <td></td>
-                  </c:forEach>
+                  <td align="center" colspan="${outcomeCount}">Available when session closes</td>
                 </c:otherwise>
               </c:choose>
             </tr>
@@ -91,7 +91,7 @@ deliveryCandidateSummaryReport
   <h4>Actions</h4>
   <ul class="menu">
     <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReportCsv'])}">Download candidate outcome summary (CSV)</a></li>
-    <li><a href="${utils:escapeLink(deliveryRouting['candidateResultsZip'])}">Download all candiate assessmentResult XML files (ZIP)</a></li>
+    <li><a href="${utils:escapeLink(deliveryRouting['candidateResultsZip'])}">Download all candiate &lt;assessmentResult&gt; XML files (ZIP)</a></li>
   </ul>
 
 </page:page>

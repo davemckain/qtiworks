@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
@@ -144,6 +145,7 @@ public class AssessmentReportingService {
     }
 
     //-------------------------------------------------
+    // Report ZIP building
 
     public void sendAssessmentReports(final OutputStream outputStream, final long did)
             throws DomainEntityNotFoundException, PrivilegeException, IOException {
@@ -165,13 +167,28 @@ public class AssessmentReportingService {
 
     private void addAssessmentReport(final ZipOutputStream zipOutputStream, final CandidateSession candidateSession)
             throws IOException {
-        final User candidate = candidateSession.getCandidate();
         final File resultFile = candidateDataServices.getResultFile(candidateSession);
-        final String entryName = candidateSession.getId()
-                + "-" + candidate.getEmailAddress()
-                + "-assessmentResult.xml";
+        if (!resultFile.exists()) {
+            throw new QtiWorksLogicException("Expected result file " + resultFile + " to exist after session is closed");
+        }
 
-        zipOutputStream.putNextEntry(new ZipEntry(entryName));
+        /* Work out what to call the ZIP entry */
+        final User candidate = candidateSession.getCandidate();
+        final StringBuilder entryNameBuilder = new StringBuilder("assessmentResult-")
+            .append(candidateSession.getId())
+            .append('-');
+        if (candidate.getEmailAddress()!=null) {
+            entryNameBuilder.append(candidate.getEmailAddress());
+        }
+        else {
+            entryNameBuilder.append(candidate.getFirstName())
+                .append('-')
+                .append(candidate.getLastName());
+        }
+        entryNameBuilder.append(".xml");
+
+        /* Add result to ZIP */
+        zipOutputStream.putNextEntry(new ZipEntry(entryNameBuilder.toString()));
         IoUtilities.transfer(new FileInputStream(resultFile), zipOutputStream, true, false);
         zipOutputStream.closeEntry();
     }

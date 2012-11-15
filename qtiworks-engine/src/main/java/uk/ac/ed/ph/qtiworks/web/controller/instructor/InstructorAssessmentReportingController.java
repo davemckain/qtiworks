@@ -79,7 +79,7 @@ public final class InstructorAssessmentReportingController {
         return "deliveryCandidateSummaryReport";
     }
 
-    @RequestMapping(value="/delivery/{did}/candidate-summary-report.csv", method=RequestMethod.GET)
+    @RequestMapping(value="/delivery/candidate-summary-report-{did}.csv", method=RequestMethod.GET)
     public void downloadDeliveryCandidateSummaryReportCsv(final HttpServletResponse response, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(did);
@@ -122,7 +122,7 @@ public final class InstructorAssessmentReportingController {
         csvWriter.close();
     }
 
-    @RequestMapping(value="/delivery/{did}/candidate-results.zip", method=RequestMethod.GET)
+    @RequestMapping(value="/delivery/candidate-results-{did}.zip", method=RequestMethod.GET)
     public void downloadDeliveryCandidateResults(final HttpServletResponse response, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         response.setContentType("application/zip");
