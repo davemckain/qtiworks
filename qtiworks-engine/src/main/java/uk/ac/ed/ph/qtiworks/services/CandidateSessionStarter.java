@@ -252,11 +252,17 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
+        candidateSession.setClosed(itemSessionState.isClosed());
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+
+        /* Handle the pathological case where the session closes immediately by saving the final result */
+        if (itemSessionState.isClosed()) {
+            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        }
 
         auditor.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());

@@ -595,6 +595,12 @@ public class CandidateItemDeliveryService {
         /* Log this (in existing state) */
         candidateAuditLogger.logStandaloneItemCandidateAttempt(candidateSession, candidateAttempt);
 
+        /* Check whether processing wants to close the session */
+        if (itemSessionState.isClosed()) {
+            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+            candidateSession.setClosed(true);
+        }
+
         /* Persist session */
         candidateSessionDao.update(candidateSession);
         return candidateAttempt;
@@ -642,6 +648,11 @@ public class CandidateItemDeliveryService {
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.CLOSE, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+
+        /* Update session state and record result */
+        candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        candidateSession.setClosed(true);
+        candidateSessionDao.update(candidateSession);
 
         return candidateSession;
     }
@@ -702,6 +713,13 @@ public class CandidateItemDeliveryService {
                 CandidateItemEventType.REINIT, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 
+        /* Update session depending on state after processing. Record final result if session closed immediately */
+        candidateSession.setClosed(itemSessionState.isClosed());
+        if (itemSessionState.isClosed()) {
+            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        }
+        candidateSessionDao.update(candidateSession);
+
         return candidateSession;
     }
 
@@ -758,8 +776,18 @@ public class CandidateItemDeliveryService {
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
 
         /* Record and event */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
+                itemSessionState, notificationRecorder);
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+
+        /* Update session depending on state after processing. Record final result if session closed immediately */
+        candidateSession.setClosed(itemSessionState.isClosed());
+        if (itemSessionState.isClosed()) {
+            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        }
+        candidateSessionDao.update(candidateSession);
 
         return candidateSession;
     }
@@ -794,11 +822,13 @@ public class CandidateItemDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
         }
 
-        /* Close session (if required) */
+        /* Update state */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
+                itemSessionState, notificationRecorder);
+        boolean isClosingSession = false;
         if (!itemSessionState.isClosed()) {
-            final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-            final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
-                    itemSessionState, notificationRecorder);
+            isClosingSession = true;
             itemSessionController.markClosed();
             itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
         }
@@ -806,6 +836,13 @@ public class CandidateItemDeliveryService {
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+
+        /* Update session if required */
+        if (isClosingSession) {
+            candidateSession.setClosed(true);
+            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+            candidateSessionDao.update(candidateSession);
+        }
 
         return candidateSession;
     }
@@ -883,14 +920,30 @@ public class CandidateItemDeliveryService {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Check session has not already been terminated */
+        final Delivery delivery = candidateSession.getDelivery();
         ensureSessionNotTerminated(candidateSession);
 
-        /* Record and log event */
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        /* Get current session state */
         final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
+
+
+        /* Record and log event */
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-        final CandidateEvent candidateEvent = candidateDataServices.recordTerminateCandidateItemSession(candidateSession, itemSessionState, notificationRecorder);
+        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
+                CandidateItemEventType.TERMINATE, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+
+        /* Are we terminating a session that hasn't been closed? If so, record the final result. */
+        if (!itemSessionState.isClosed()) {
+            final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+            final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
+                    itemSessionState, notificationRecorder);
+            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        }
+
+        /* Update session */
+        candidateSession.setTerminated(true);
+        candidateSessionDao.update(candidateSession);
 
         return candidateSession;
     }

@@ -279,7 +279,7 @@ public class CandidateTestDeliveryService {
                     break;
 
                 case ITEM:
-                    throw new QtiWorksLogicException("Did not expect to get an event of categroy " + candidateEvent.getCategoryEventCategory()
+                    throw new QtiWorksLogicException("Did not expect to get an event of category " + candidateEvent.getCategoryEventCategory()
                             + " within a test");
 
                 default:

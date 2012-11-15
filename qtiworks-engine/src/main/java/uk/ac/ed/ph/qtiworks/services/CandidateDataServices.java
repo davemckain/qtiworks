@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
@@ -130,9 +129,6 @@ public class CandidateDataServices {
     private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
-    private CandidateSessionDao candidateSessionDao;
-
-    @Resource
     private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
 
     @Resource
@@ -192,28 +188,6 @@ public class CandidateDataServices {
         return ItemSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
-    public CandidateEvent recordTerminateCandidateItemSession(final CandidateSession candidateSession,
-            final ItemSessionState itemSessionState, final NotificationRecorder notificationRecorder) {
-        /* Create and record event */
-        final CandidateEvent event = new CandidateEvent();
-        event.setCandidateSession(candidateSession);
-        event.setCandidateEventCategory(CandidateEventCategory.TERMINATE);
-        event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
-
-        /* Save result if not done already */
-        if (!candidateSession.isClosed()) {
-            final ItemSessionController itemSessionController = createItemSessionController(candidateSession.getDelivery(), itemSessionState, notificationRecorder);
-            final AssessmentResult assessmentResult = computeItemAssessmentResult(candidateSession, itemSessionController);
-            recordItemAssessmentResult(candidateSession, assessmentResult);
-        }
-
-        /* Update session state */
-        candidateSession.setTerminated(true);
-        candidateSessionDao.update(candidateSession);
-
-        return event;
-    }
-
     public CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType itemEventType, final ItemSessionState itemSessionState) {
         return recordCandidateItemEvent(candidateSession, itemEventType, itemSessionState, null, null);
@@ -246,26 +220,8 @@ public class CandidateDataServices {
         /* Store event */
         candidateEventDao.persist(event);
 
-        /* Save current state */
+        /* Save current ItemSessionState */
         storeItemSessionState(event, itemSessionState);
-
-        /* Check whether this event has closed the item session
-         * (either explicitly, or because the ItemSessionController processing has decided
-         * that the session is now closed)
-         */
-        if (eventType==CandidateItemEventType.CLOSE || (!candidateSession.isClosed() && itemSessionState.isClosed())) {
-            final ItemSessionController itemSessionController = createItemSessionController(event, notificationRecorder);
-            final AssessmentResult assessmentResult = computeItemAssessmentResult(candidateSession, itemSessionController);
-            recordItemAssessmentResult(candidateSession, assessmentResult);
-            candidateSession.setClosed(true);
-            candidateSessionDao.update(candidateSession);
-        }
-
-        /* Reopen the session if REINIT or RESET */
-        if (eventType==CandidateItemEventType.REINIT || eventType==CandidateItemEventType.RESET) {
-            candidateSession.setClosed(false);
-            candidateSessionDao.update(candidateSession);
-        }
 
         /* Now store processing notifications */
         if (notificationRecorder!=null) {
@@ -331,6 +287,11 @@ public class CandidateDataServices {
             throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
         }
         return mostRecentItemEvent;
+    }
+
+    public void computeAndRecordItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
+        final AssessmentResult assessmentResult = computeItemAssessmentResult(candidateSession, itemSessionController);
+        recordItemAssessmentResult(candidateSession, assessmentResult);
     }
 
     public AssessmentResult computeItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {

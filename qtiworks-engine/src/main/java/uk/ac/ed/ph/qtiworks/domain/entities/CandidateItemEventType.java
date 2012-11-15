@@ -82,6 +82,12 @@ public enum CandidateItemEventType {
      */
     CLOSE,
 
+    /**
+     * Candidate has terminated the session and moved it into
+     * {@link CandidateSessionState#TERMINATED} state
+     */
+    TERMINATE,
+
     ;
 
 }
