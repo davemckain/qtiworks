@@ -372,8 +372,9 @@ public class CandidateItemDeliveryService {
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
             final OutputStream resultStream) {
         final CandidateEvent playbackEvent = candidateEvent.getPlaybackEvent();
+        final ItemSessionState playbackItemSessionState = candidateDataServices.loadItemSessionState(playbackEvent);
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(playbackEvent,
-                itemSessionState, renderingOptions, RenderingMode.PLAYBACK);
+                playbackItemSessionState, renderingOptions, RenderingMode.PLAYBACK);
 
         /* Record which event we're playing back */
         renderingRequest.setCurrentPlaybackEvent(playbackEvent);
