@@ -61,22 +61,16 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Fires a QTI {@link QtiNode} as a standalone SAX Document
+ * Fires a QTI {@link QtiNode} as a standalone SAX Document.
+ * <p>
+ * (Also includes functionality for mixing QTI and non-QTI SAX events
+ * together, which is used by the QTIWorks engine.)
  *
- * TODO-LATER: Would be nice to be able to specify how to output MathML elements, i.e. using a
- * prefix instead of changing the default namespace. Need to do the same for apip:accessibility, if we
- * eventually add support for that.
+ * <h2>Usage</h2>
+ *
+ * Not thread safe, not reusable.
  *
  * @author David McKain
- */
-/*
- * Thinking for new version:
- *
- * - takes a NSPrefixMappings with caller's *preferences*
- * - caller decides whether to set schema locations
- * - caller should decide which NS prefix mappings should be explicitly defined at start of document
- * - caller would need to declare which XmlNode(s) are going to be fired so that extensions, foreign elements, APIP and MathML can be checked
- *   and, if found, the required prefix mappings be put in scope at the start of the document.
  */
 public final class QtiSaxDocumentFirer {
 
@@ -103,6 +97,10 @@ public final class QtiSaxDocumentFirer {
     /** Gets set once we have fired the document Element so that we know not to fire off xsi:schemaLocation again */
     private boolean doneStartDocumentElement;
 
+    /** Current QTI namespace being written */
+    private String currentQtiNamespace;
+    private int currentQtiDepth;
+
     public QtiSaxDocumentFirer(final JqtiExtensionManager jqtiExtensionManager,
             final ContentHandler targetHandler,
             final SaxFiringOptions saxFiringOptions) {
@@ -119,6 +117,8 @@ public final class QtiSaxDocumentFirer {
         this.defaultNamespaceChangeMap = new HashMap<Object, String>();
         this.currentDefaultNamespaceUri = null;
         this.doneStartDocumentElement = false;
+        this.currentQtiNamespace = null;
+        this.currentQtiDepth = 0;
     }
 
     /* (Will be put in scope at start of document) */
@@ -246,11 +246,17 @@ public final class QtiSaxDocumentFirer {
             }
         }
 
-        /* Decide on element Name */
+        if (currentQtiDepth==0) {
+            /* This is the opening a new QTI subtree. Decide on correct namespace for native QTI elements */
+            currentQtiNamespace = (node instanceof ResultNode) ? QtiConstants.QTI_RESULT_21_NAMESPACE_URI : QtiConstants.QTI_21_NAMESPACE_URI;
+        }
+
+        /* Decide on element namespace */
         final String elementNamespaceUri = getNodeNamespaceUri(node);
 
         /* Fire element */
         fireStartElement(node, node.getQtiClassName(), elementNamespaceUri, xmlAttributes);
+        ++currentQtiDepth;
     }
 
     public void fireStartElement(final Object object, final String localName, final String namespaceUri, final AttributesImpl attributes) throws SAXException {
@@ -328,6 +334,9 @@ public final class QtiSaxDocumentFirer {
 
     public void fireEndQtiElement(final AbstractNode node) throws SAXException {
         fireEndElement(node, node.getQtiClassName(), getNodeNamespaceUri(node));
+        if (--currentQtiDepth==0) {
+            currentQtiNamespace = null;
+        }
     }
 
     public void fireText(final String string) throws SAXException {
@@ -344,14 +353,13 @@ public final class QtiSaxDocumentFirer {
         else if (node instanceof uk.ac.ed.ph.jqtiplus.node.content.mathml.Math) {
             namespaceUri = QtiConstants.MATHML_NAMESPACE_URI;
         }
+        else if (currentQtiNamespace!=null) {
+            namespaceUri = currentQtiNamespace;
+        }
         else if (node instanceof ResultNode) {
-            /* (These Nodes are now serialized in a different namespace) */
             namespaceUri = QtiConstants.QTI_RESULT_21_NAMESPACE_URI;
         }
         else {
-            /* TODO: If we choose to support APIP or later versions of QTI, we'll
-             * need to change output namespace, so this will have to change.
-             */
             namespaceUri = QtiConstants.QTI_21_NAMESPACE_URI;
         }
         return namespaceUri;

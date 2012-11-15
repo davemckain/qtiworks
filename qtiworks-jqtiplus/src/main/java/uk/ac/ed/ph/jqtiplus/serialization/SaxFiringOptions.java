@@ -40,6 +40,8 @@ import java.io.Serializable;
 /**
  * Encapsulates options for serializing QTI Object by firing SAX events.
  *
+ * @see QtiSaxDocumentFirer
+ *
  * @author David McKain
  */
 public final class SaxFiringOptions implements Serializable {
