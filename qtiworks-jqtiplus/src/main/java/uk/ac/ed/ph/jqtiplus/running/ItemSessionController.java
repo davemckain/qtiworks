@@ -191,8 +191,8 @@ public final class ItemSessionController extends ItemValidationController implem
     // Initialization & template processing
 
     /**
-     * Sets all explicitly-defined (valid) variables to NULL, and the
-     * built-in variables to their initial values.
+     * Resets the current {@link ItemSessionState} then sets all explicitly-defined
+     * (valid) variables to NULL and the built-in variables to their initial values.
      */
     public void initialize() {
         itemSessionState.reset();
@@ -208,7 +208,6 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.resetBuiltinVariables();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         itemSessionState.setInitialized(true);
-        updateClosedStatus();
     }
 
     private void ensureInitialized() {
@@ -227,6 +226,9 @@ public final class ItemSessionController extends ItemValidationController implem
     /**
      * Checks whether a further attempt is allowed on this item, updating
      * {@link ItemSessionState#isClosed()} as appropriate.
+     * <p>
+     * This must be called after every attempt and every processing run
+     * to update the state.
      *
      * (New in JQTI+)
      */
@@ -292,22 +294,13 @@ public final class ItemSessionController extends ItemValidationController implem
                 fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
             }
 
-            /* Initialise all outcome and response variables to their default values */
-            resetOutcomeVariables();
-            resetResponseVariables();
-
-            /* Set special built-in response and outcome variables */
-            itemSessionState.setNumAttempts(0);
-            itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
-
             /* Initialize all interactions */
             for (final Interaction interaction : itemProcessingMap.getInteractions()) {
                 interaction.initialize(this);
             }
 
-            /* Reset SessionStatus */
-            itemSessionState.setSessionStatus(SessionStatus.INITIAL);
-            updateClosedStatus();
+            /* Reset session */
+            resetItemSession();
         }
         finally {
             fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
@@ -354,6 +347,25 @@ public final class ItemSessionController extends ItemValidationController implem
             }
         }
         return true;
+    }
+
+    /**
+     * Resets the item session back to the state it was immediately after template processing.
+     */
+    public void resetItemSession() {
+        ensureInitialized();
+
+        /* Initialise all outcome and response variables to their default values */
+        resetOutcomeVariables();
+        resetResponseState();
+
+        /* Set special built-in response and outcome variables */
+        itemSessionState.setNumAttempts(0);
+        itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
+
+        /* Reset SessionStatus */
+        itemSessionState.setSessionStatus(SessionStatus.INITIAL);
+        updateClosedStatus();
     }
 
     //-------------------------------------------------------------------
@@ -457,6 +469,16 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
 
         return unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
+    }
+
+    /**
+     * Resets all responses
+     */
+    public void resetResponses() {
+        ensureOpen();
+        resetResponseState();
+        itemSessionState.setSessionStatus(SessionStatus.INITIAL);
+        updateClosedStatus();
     }
 
     /**
@@ -768,6 +790,14 @@ public final class ItemSessionController extends ItemValidationController implem
         }
     }
 
+    private void resetResponseState() {
+        resetResponseVariables();
+        itemSessionState.setResponded(false);
+        itemSessionState.clearRawResponseDataMap();
+        itemSessionState.clearUnboundResponseIdentifiers();
+        itemSessionState.clearInvalidResponseIdentifier();
+    }
+
     private void resetResponseVariables() {
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
             if (!responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER) &&
@@ -775,6 +805,9 @@ public final class ItemSessionController extends ItemValidationController implem
                 initValue(responseDeclaration);
             }
         }
+        itemSessionState.clearRawResponseDataMap();
+        itemSessionState.clearUnboundResponseIdentifiers();
+        itemSessionState.clearInvalidResponseIdentifier();
     }
 
     private void resetOutcomeVariables() {

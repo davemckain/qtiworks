@@ -352,7 +352,7 @@ public class CandidateItemDeliveryService {
                 break;
 
             case PLAYBACK:
-                renderPlayback(candidateEvent, itemSessionState, renderingOptions, resultStream);
+                renderPlayback(candidateEvent, renderingOptions, resultStream);
                 break;
 
             default:
@@ -369,8 +369,7 @@ public class CandidateItemDeliveryService {
     }
 
     private void renderPlayback(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateEvent playbackEvent = candidateEvent.getPlaybackEvent();
         final ItemSessionState playbackItemSessionState = candidateDataServices.loadItemSessionState(playbackEvent);
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(playbackEvent,
@@ -690,15 +689,16 @@ public class CandidateItemDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
         }
 
-        /* Create fresh JQTI+ state */
+        /* Might as well just create fresh JQTI+ state */
         itemSessionState = new ItemSessionState();
 
-        /* Update state */
+        /* Update session state */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
         itemSessionController.initialize();
         itemSessionController.performTemplateProcessing();
+        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
 
         /* Mark item as being presented */
         itemSessionController.markPresented();
@@ -744,7 +744,7 @@ public class CandidateItemDeliveryService {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current session state */
-        ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
+        final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
 
         /* Make sure caller may reset the session */
         ensureSessionNotTerminated(candidateSession);
@@ -757,29 +757,22 @@ public class CandidateItemDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
         }
 
-        /* Find the last REINIT, falling back to original INIT if none present */
-        final List<CandidateEvent> itemEvents = candidateEventDao.getForSessionReversed(candidateSession, CandidateEventCategory.ITEM);
-        CandidateEvent lastInitEvent = null;
-        for (final CandidateEvent event : itemEvents) {
-            if (event.getItemEventType()==CandidateItemEventType.REINIT) {
-                lastInitEvent = event;
-                break;
-            }
-        }
-        if (lastInitEvent==null) {
-            lastInitEvent = itemEvents.get(itemEvents.size()-1);
-        }
-
-        /* Pull the QTI state from this event */
-        itemSessionState = candidateDataServices.loadItemSessionState(lastInitEvent);
-
         /* Update state */
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-
-        /* Record and event */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
+        itemSessionController.resetItemSession();
+        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
+
+        /* Mark item as being presented */
+        itemSessionController.markPresented();
+
+        /* Maybe mark as pending submission */
+        if (!itemSessionState.isClosed()) {
+            itemSessionController.markPendingSubmission();
+        }
+
+        /* Record and event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 

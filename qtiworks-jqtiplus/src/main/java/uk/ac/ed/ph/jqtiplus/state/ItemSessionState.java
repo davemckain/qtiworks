@@ -500,6 +500,10 @@ public final class ItemSessionState implements Serializable {
         return Collections.unmodifiableMap(rawResponseDataMap);
     }
 
+    public void clearRawResponseDataMap() {
+        this.rawResponseDataMap.clear();
+    }
+
     public void setRawResponseDataMap(final Map<Identifier, ResponseData> rawResponseDataMap) {
         this.rawResponseDataMap.clear();
         this.rawResponseDataMap.putAll(rawResponseDataMap);
@@ -515,14 +519,24 @@ public final class ItemSessionState implements Serializable {
         this.unboundResponseIdentifiers.addAll(unboundResponseIdentifiers);
     }
 
+    public void clearUnboundResponseIdentifiers() {
+        this.unboundResponseIdentifiers.clear();
+    }
+
     public Set<Identifier> getInvalidResponseIdentifiers() {
         return Collections.unmodifiableSet(invalidResponseIdentifiers);
     }
+
 
     public void setInvalidResponseIdentifiers(final Collection<Identifier> invalidResponseIdentifiers) {
         this.invalidResponseIdentifiers.clear();
         this.invalidResponseIdentifiers.addAll(invalidResponseIdentifiers);
     }
+
+    public void clearInvalidResponseIdentifier() {
+        this.invalidResponseIdentifiers.clear();
+    }
+
 
     public Value getResponseValue(final Identifier identifier) {
         Assert.notNull(identifier);
