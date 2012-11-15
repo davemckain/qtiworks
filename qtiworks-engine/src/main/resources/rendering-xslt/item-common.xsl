@@ -308,7 +308,7 @@ rendering.
         <xsl:if test="$resultAllowed">
           <li>
             <form action="{$webappContextPath}{$resultUrl}" method="get" class="showXmlInDialog" title="Item Result XML">
-              <input type="submit" value="View ItemResult"/>
+              <input type="submit" value="View &lt;assessmentResult&gt;"/>
             </form>
           </li>
         </xsl:if>
