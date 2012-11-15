@@ -230,7 +230,7 @@ public class CandidateTestDeliveryService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderEvent(latestEvent, renderingOptions, resultOutputStream);
+                renderEvent(candidateSession, latestEvent, renderingOptions, resultOutputStream);
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -266,23 +266,25 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    private void renderEvent(final CandidateEvent candidateEvent,
+    private void renderEvent(final CandidateSession candidateSession, final CandidateEvent candidateEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        switch (candidateEvent.getCategoryEventCategory()) {
-            case TEST:
-                renderTestEvent(candidateEvent, renderingOptions, resultStream);
-                break;
+        if (candidateSession.isTerminated()) {
+            /* Session is terminated */
+            renderTerminated(candidateEvent, renderingOptions, resultStream);
+        }
+        else {
+            switch (candidateEvent.getCategoryEventCategory()) {
+                case TEST:
+                    renderTestEvent(candidateEvent, renderingOptions, resultStream);
+                    break;
 
-            case TERMINATE:
-                renderTerminated(candidateEvent, renderingOptions, resultStream);
-                break;
+                case ITEM:
+                    throw new QtiWorksLogicException("Did not expect to get an event of categroy " + candidateEvent.getCategoryEventCategory()
+                            + " within a test");
 
-            case ITEM:
-                throw new QtiWorksLogicException("Did not expect to get an event of categroy " + candidateEvent.getCategoryEventCategory()
-                        + " within a test");
-
-            default:
-                throw new QtiWorksLogicException("Unexpected logic branch. Event type " + candidateEvent.getCategoryEventCategory());
+                default:
+                    throw new QtiWorksLogicException("Unexpected logic branch. Event type " + candidateEvent.getCategoryEventCategory());
+            }
         }
     }
 
