@@ -85,6 +85,13 @@ public final class TestPlanNode implements Serializable {
     /** Type of Node represented */
     private final TestNodeType testNodeType;
 
+    /**
+     * Computed {@link EffectiveItemSessionControl} for this node.
+     * <p>
+     * (This will be null for the {@link TestNodeType#ROOT} Node)
+     */
+    private final EffectiveItemSessionControl effectiveItemSessionControl;
+
     /** Title of the corresponding AssessmentItem, if this is an {@link TestNodeType#ASSESSMENT_ITEM_REF}, or null */
     private final String itemTitle;
 
@@ -94,23 +101,27 @@ public final class TestPlanNode implements Serializable {
     /** Children of this Node */
     private final List<TestPlanNode> children;
 
-    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key) {
-        this(testNodeType, key, null, null);
+    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key,
+            final EffectiveItemSessionControl effectiveItemSessionControl) {
+        this(testNodeType, key, effectiveItemSessionControl, null, null);
     }
 
-    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key, final String itemTitle, final URI itemSystemId) {
+    public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key,
+            final EffectiveItemSessionControl effectiveItemSessionControl,
+            final String itemTitle, final URI itemSystemId) {
         super();
         this.parentNode = null;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
         this.key = key;
+        this.effectiveItemSessionControl = effectiveItemSessionControl;
         this.children = new ArrayList<TestPlanNode>();
         this.itemTitle = itemTitle;
         this.itemSystemId = itemSystemId;
     }
 
     public static TestPlanNode createRoot() {
-        return new TestPlanNode(TestNodeType.ROOT, null);
+        return new TestPlanNode(TestNodeType.ROOT, null, null);
     }
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
@@ -129,6 +140,10 @@ public final class TestPlanNode implements Serializable {
 
     public TestPlanNodeKey getKey() {
         return key;
+    }
+
+    public EffectiveItemSessionControl getEffectiveItemSessionControl() {
+        return effectiveItemSessionControl;
     }
 
     public URI getItemSystemId() {

@@ -24,7 +24,11 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   <xsl:variable name="isSessionClosed" as="xs:boolean" select="$itemSessionState/@closed='true'"/>
   <xsl:variable name="isSessionInteracting" as="xs:boolean" select="not($isSessionClosed)"/>
 
+  <!-- Effective value of itemSessionControl/@showFeedback for this itme -->
   <xsl:param name="showFeedback" as="xs:boolean"/>
+
+  <xsl:variable name="feedbackAllowed" as="xs:boolean"
+    select="if ($renderingMode='REVIEW') then (/qti:assessentItem/@adaptive='true' or $showFeedback) else true()"/>
 
   <!-- FIXME: This is not currently passed -->
   <xsl:param name="rubric" as="element(qw:section)*"/> <!-- sequence of grouped rubric blocks -->
@@ -119,7 +123,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
         <xsl:apply-templates select="qti:itemBody"/>
 
         <!-- Display active modal feedback (only after responseProcessing) -->
-        <xsl:if test="$showFeedback and $sessionStatus='final'">
+        <xsl:if test="$feedbackAllowed and $sessionStatus='final'">
           <xsl:variable name="modalFeedback" as="element()*">
             <xsl:for-each select="qti:modalFeedback">
               <xsl:variable name="feedback" as="node()*">
@@ -172,7 +176,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
 
   <!-- Override using $showFeedback -->
   <xsl:template match="qti:feedbackInline | qti:feedbackBlock">
-    <xsl:if test="$showFeedback">
+    <xsl:if test="$feedbackAllowed">
       <xsl:apply-imports/>
     </xsl:if>
   </xsl:template>

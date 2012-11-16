@@ -231,7 +231,25 @@ public final class XmlMarshallerCore {
             return defaultValue;
         }
         final String attrValue = element.getAttribute(attrName);
-        return StringUtilities.fromTrueFalse(attrValue);
+        try {
+            return StringUtilities.fromTrueFalse(attrValue);
+        }
+        catch (final IllegalArgumentException e) {
+            throw new MarshallingException("Could not parse boolean attribute value " + attrValue + " for " + attrName);
+        }
+    }
+
+    static int parseOptionalIntegerAttribute(final Element element, final String attrName, final int defaultValue) {
+        if (!element.hasAttribute(attrName)) {
+            return defaultValue;
+        }
+        final String attrValue = element.getAttribute(attrName);
+        try {
+            return Integer.parseInt(attrValue);
+        }
+        catch (final NumberFormatException e) {
+            throw new MarshallingException("Could not parse integer attribute value " + attrValue + " for " + attrName);
+        }
     }
 
     static String parseOptionalStringAttribute(final Element element, final String attrName) {

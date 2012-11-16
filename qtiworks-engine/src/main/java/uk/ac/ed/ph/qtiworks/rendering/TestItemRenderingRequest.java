@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import javax.validation.constraints.NotNull;
@@ -54,9 +55,8 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     private boolean reviewTestPartAllowed;
 
     /**
-     * Flag indicating whether to show integrated & modal feedback. This will have been
-     * to true for adaptive items; for non-adaptive items this will depend on whether
-     * the item session is open
+     * When in review state, this is the effective value of 'showFeedback' for this Node.
+     * @see EffectiveItemSessionControl#isShowFeedback()
      */
     private boolean showFeedback;
 

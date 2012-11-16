@@ -47,6 +47,7 @@ import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationFirer;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -482,6 +483,7 @@ public final class TestPlanner extends ListenerNotificationFirer {
         final TestPlanNodeKey key = new TestPlanNodeKey(identifier, abstractPartGlobalIndex, instanceNumber);
 
         TestPlanNode result;
+        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(abstractPart);
         if (abstractPart instanceof AssessmentItemRef) {
             final URI itemSystemId = resolvedAssessmentTest.getSystemIdByItemRefMap().get(abstractPart);
             final ResolvedAssessmentItem resolvedAssessmentItem = resolvedAssessmentTest.getResolvedAssessmentItem((AssessmentItemRef) abstractPart);
@@ -493,10 +495,10 @@ public final class TestPlanner extends ListenerNotificationFirer {
             else {
                 itemTitle = "[Unresolved assessmentItem at " + itemSystemId + "]";
             }
-            result = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, key, itemTitle, itemSystemId);
+            result = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, key, effectiveItemSessionControl, itemTitle, itemSystemId);
         }
         else {
-            result = new TestPlanNode(testNodeType, key);
+            result = new TestPlanNode(testNodeType, key, effectiveItemSessionControl);
         }
         parent.addChild(result);
 

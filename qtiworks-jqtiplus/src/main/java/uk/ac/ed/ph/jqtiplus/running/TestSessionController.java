@@ -330,7 +330,7 @@ public final class TestSessionController extends TestValidationController implem
             return false;
         }
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
+        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
 
         return itemSessionState.isClosed() && effectiveItemSessionControl.isAllowReview();
     }

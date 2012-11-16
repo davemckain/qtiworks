@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
@@ -123,16 +124,17 @@ public final class XmlMarshalTest {
 
     private static TestPlan createTestPlan() {
         final TestPlanNode rootNode = TestPlanNode.createRoot();
-        final TestPlanNode part1 = new TestPlanNode(TestNodeType.TEST_PART, new TestPlanNodeKey(Identifier.assumedLegal("PART1"), 1, 1));
-        final TestPlanNode part2 = new TestPlanNode(TestNodeType.TEST_PART, new TestPlanNodeKey(Identifier.assumedLegal("PART2"), 1, 1));
+        final EffectiveItemSessionControl effectiveItemSessionControl = EffectiveItemSessionControl.createDefault();
+        final TestPlanNode part1 = new TestPlanNode(TestNodeType.TEST_PART, new TestPlanNodeKey(Identifier.assumedLegal("PART1"), 1, 1), effectiveItemSessionControl);
+        final TestPlanNode part2 = new TestPlanNode(TestNodeType.TEST_PART, new TestPlanNodeKey(Identifier.assumedLegal("PART2"), 1, 1), effectiveItemSessionControl);
         rootNode.addChild(part1);
         rootNode.addChild(part2);
 
-        final TestPlanNode section1 = new TestPlanNode(TestNodeType.ASSESSMENT_SECTION, new TestPlanNodeKey(Identifier.assumedLegal("SECTION1"), 2, 1));
+        final TestPlanNode section1 = new TestPlanNode(TestNodeType.ASSESSMENT_SECTION, new TestPlanNodeKey(Identifier.assumedLegal("SECTION1"), 2, 1), effectiveItemSessionControl);
         part1.addChild(section1);
 
-        final TestPlanNode item1 = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, new TestPlanNodeKey(Identifier.assumedLegal("ITEM"), 3, 1), "Title", URI.create("urn:x"));
-        final TestPlanNode item2 = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, new TestPlanNodeKey(Identifier.assumedLegal("ITEM"), 3, 2), "Title 2", URI.create("urn:y"));
+        final TestPlanNode item1 = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, new TestPlanNodeKey(Identifier.assumedLegal("ITEM"), 3, 1), effectiveItemSessionControl, "Title", URI.create("urn:x"));
+        final TestPlanNode item2 = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, new TestPlanNodeKey(Identifier.assumedLegal("ITEM"), 3, 2), effectiveItemSessionControl, "Title 2", URI.create("urn:y"));
         section1.addChild(item1);
         section1.addChild(item2);
 

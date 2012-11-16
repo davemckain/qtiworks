@@ -77,6 +77,7 @@ import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
@@ -124,7 +125,6 @@ import org.springframework.web.multipart.MultipartFile;
  * - test / test part "during" feedback
  * - skipping
  * - solutions
- * - allowReview
  * - branchRule/preCondition
  *
  * @author David McKain
@@ -585,7 +585,9 @@ public class CandidateTestDeliveryService {
             renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
             renderingRequest.setReviewTestPartAllowed(true);
 
-            renderingRequest.setShowFeedback(true); /* FIXME: This shouldn't be hard-coded */
+            /* Pass effective showFeedback to rendering */
+            final TestPlanNode reviewNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(reviewItemKey);
+            renderingRequest.setShowFeedback(reviewNode.getEffectiveItemSessionControl().isShowFeedback());
 
             doRendering(candidateEvent, renderingRequest, resultStream);
         }

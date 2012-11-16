@@ -35,6 +35,9 @@ package uk.ac.ed.ph.qtiworks.domain.binding;
 
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -78,6 +81,16 @@ public final class TestPlanXmlMarshaller {
         final Element element = XmlMarshallerCore.appendElement(parent, "node");
         element.setAttribute("type", testPlanNode.getTestNodeType().toString());
         element.setAttribute("key", testPlanNode.getKey().toString());
+        final EffectiveItemSessionControl effectiveItemSessionControl = testPlanNode.getEffectiveItemSessionControl();
+        if (effectiveItemSessionControl!=null) {
+            element.setAttribute("maxAttempts", Integer.toString(effectiveItemSessionControl.getMaxAttempts()));
+            element.setAttribute("showFeedback", StringUtilities.toTrueFalse(effectiveItemSessionControl.isShowFeedback()));
+            element.setAttribute("allowReview", StringUtilities.toTrueFalse(effectiveItemSessionControl.isAllowReview()));
+            element.setAttribute("showSolution", StringUtilities.toTrueFalse(effectiveItemSessionControl.isShowSolution()));
+            element.setAttribute("allowComment", StringUtilities.toTrueFalse(effectiveItemSessionControl.isAllowComment()));
+            element.setAttribute("allowSkipping", StringUtilities.toTrueFalse(effectiveItemSessionControl.isAllowSkipping()));
+            element.setAttribute("validateResponses", StringUtilities.toTrueFalse(effectiveItemSessionControl.isValidateResponses()));
+        }
         final String itemTitle = testPlanNode.getItemTitle();
         if (itemTitle!=null) {
             element.setAttribute("itemTitle", itemTitle);
@@ -127,8 +140,18 @@ public final class TestPlanXmlMarshaller {
             final TestPlanNodeKey key = requireTestPlanNodeKeyAttribute(childElement, "key");
             final String itemTitle = XmlMarshallerCore.parseOptionalStringAttribute(childElement, "itemTitle");
             final URI itemSystemId = XmlMarshallerCore.parseOptionalUriAttribute(childElement, "itemSystemId");
-            final TestPlanNode childTestPlanNode = new TestPlanNode(type, key, itemTitle, itemSystemId);
 
+            /* Parse EffectiveItemSessionControl attributes */
+            final int maxAttempts = XmlMarshallerCore.parseOptionalIntegerAttribute(childElement, "maxAttempts", ItemSessionControl.MAX_ATTEMPTS_DEFAULT_VALUE);
+            final boolean showFeedback = XmlMarshallerCore.parseOptionalBooleanAttribute(childElement, "showFeedback", ItemSessionControl.SHOW_FEEDBACK_DEFAULT_VALUE);
+            final boolean allowReview = XmlMarshallerCore.parseOptionalBooleanAttribute(childElement, "allowReview", ItemSessionControl.ALLOW_REVIEW_DEFAULT_VALUE);
+            final boolean showSolution = XmlMarshallerCore.parseOptionalBooleanAttribute(childElement, "showSolution", ItemSessionControl.SHOW_SOLUTION_DEFAULT_VALUE);
+            final boolean allowComment = XmlMarshallerCore.parseOptionalBooleanAttribute(childElement, "allowComment", ItemSessionControl.ALLOW_COMMENT_DEFAULT_VALUE);
+            final boolean allowSkipping = XmlMarshallerCore.parseOptionalBooleanAttribute(childElement, "allowSkipping", ItemSessionControl.ALLOW_SKIPPING_DEFAULT_VALUE);
+            final boolean validateResponses = XmlMarshallerCore.parseOptionalBooleanAttribute(childElement, "validateResponses", ItemSessionControl.VALIDATE_RESPONSES_DEFAULT_VALUE);
+            final EffectiveItemSessionControl effectiveItemSessionControl = new EffectiveItemSessionControl(maxAttempts, showFeedback, allowReview, showSolution, allowComment, allowSkipping, validateResponses);
+
+            final TestPlanNode childTestPlanNode = new TestPlanNode(type, key, effectiveItemSessionControl, itemTitle, itemSystemId);
             targetOwner.addChild(childTestPlanNode);
             expectTestPlanNodeChildren(childElement, childTestPlanNode);
         }

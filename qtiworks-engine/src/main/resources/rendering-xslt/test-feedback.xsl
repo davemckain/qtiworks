@@ -90,8 +90,7 @@ Renders the test feedback
   </xsl:template>
 
   <xsl:template match="qw:node" mode="testPart-review">
-    <!-- FIXME: The following is forcing allowReview temporarily! -->
-    <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and (true() or @allowReview='true')]" as="element(qw:node)*"/>
+    <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and @allowReview='true']" as="element(qw:node)*"/>
     <xsl:if test="exists($reviewable-items)">
       <h2>Review your responses</h2>
       <ul class="testPartNavigation">

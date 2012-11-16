@@ -69,6 +69,17 @@ public final class EffectiveItemSessionControl implements Serializable {
         /* No public constructor */
     }
 
+    public EffectiveItemSessionControl(final int maxAttempts, final boolean showFeedback, final boolean allowReview,
+            final boolean showSolution, final boolean allowComment, final boolean allowSkipping, final boolean validateResponses) {
+        this.maxAttempts = maxAttempts;
+        this.showFeedback = showFeedback;
+        this.allowReview = allowReview;
+        this.showSolution = showSolution;
+        this.allowComment = allowComment;
+        this.allowSkipping = allowSkipping;
+        this.validateResponses = validateResponses;
+    }
+
     public static EffectiveItemSessionControl createDefault() {
         final EffectiveItemSessionControl defaultSessionControl = new EffectiveItemSessionControl();
         defaultSessionControl.maxAttempts = ItemSessionControl.MAX_ATTEMPTS_DEFAULT_VALUE;
