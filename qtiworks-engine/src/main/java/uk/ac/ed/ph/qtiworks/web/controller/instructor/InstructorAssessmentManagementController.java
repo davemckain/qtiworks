@@ -85,7 +85,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author David McKain
  */
 @Controller
-public final class InstructorAssessmentManagementController {
+public class InstructorAssessmentManagementController {
 
     @Resource
     private QtiWorksSettings qtiWorksSettings;

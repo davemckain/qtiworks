@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
@@ -45,6 +46,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -66,13 +69,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service for reporting on assessment deliveries
+ * Service for reporting on assessment deliveries and candidate sessions
  *
  * @author David McKain
  */
 @Service
 @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 public class AssessmentReportingService {
+
+    @Resource
+    private Auditor auditor;
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -86,7 +92,10 @@ public class AssessmentReportingService {
     @Resource
     private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
 
-
+    /**
+     * Generates a {@link DeliveryCandidateSummaryReport} containing summary statistics
+     * about each candidate session launched on the {@link Delivery} having the given ID (did).
+     */
     public DeliveryCandidateSummaryReport buildDeliveryCandidateSummaryReport(final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
@@ -94,6 +103,7 @@ public class AssessmentReportingService {
     }
 
     public DeliveryCandidateSummaryReport buildDeliveryCandidateSummaryReport(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
         final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(delivery);
         final List<CandidateSessionOutcome> candidateSessionOutcomes = candidateSessionOutcomeDao.getForDelivery(delivery);
 
@@ -141,14 +151,23 @@ public class AssessmentReportingService {
             rows.add(row);
         }
 
+        auditor.recordEvent("Generated candidate summary report for delivery #" + delivery.getId());
         return new DeliveryCandidateSummaryReport(new ArrayList<String>(outcomeNames), rows);
     }
 
     //-------------------------------------------------
     // Report ZIP building
 
-    public void sendAssessmentReports(final OutputStream outputStream, final long did)
+    /**
+     * Generates a ZIP file containing the <code>assessmentReport</code>s for all (closed)
+     * candidate sessions for the given {@link Delivery}, streaming the result to the given stream.
+     * <p>
+     * The stream will be flushed at the end of this; the caller is responsible for closing it.
+     */
+    public void streamAssessmentReports(final long did, final OutputStream outputStream)
             throws DomainEntityNotFoundException, PrivilegeException, IOException {
+        Assert.notNull(outputStream, "outputStream");
+
         /* Look up sessions */
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
         final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(delivery);
@@ -163,6 +182,7 @@ public class AssessmentReportingService {
             }
         }
         safelyFinishZipStream(zipOutputStream, includedSomething);
+        auditor.recordEvent("Generated assessmentResult ZIP file for delviery #" + did);
     }
 
     private void addAssessmentReport(final ZipOutputStream zipOutputStream, final CandidateSession candidateSession)

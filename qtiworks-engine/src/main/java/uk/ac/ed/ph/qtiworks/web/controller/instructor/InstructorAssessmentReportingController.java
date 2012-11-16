@@ -61,7 +61,7 @@ import com.csvreader.CsvWriter;
  * @author David McKain
  */
 @Controller
-public final class InstructorAssessmentReportingController {
+public class InstructorAssessmentReportingController {
 
     @Resource
     private AssessmentReportingService assessmentReportingService;
@@ -126,6 +126,6 @@ public final class InstructorAssessmentReportingController {
     public void downloadDeliveryCandidateResults(final HttpServletResponse response, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         response.setContentType("application/zip");
-        assessmentReportingService.sendAssessmentReports(response.getOutputStream(), did);
+        assessmentReportingService.streamAssessmentReports(did, response.getOutputStream());
     }
 }
