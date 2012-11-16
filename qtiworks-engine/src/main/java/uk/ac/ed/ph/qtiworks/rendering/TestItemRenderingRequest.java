@@ -53,6 +53,13 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     private boolean endTestPartAllowed;
     private boolean reviewTestPartAllowed;
 
+    /**
+     * Flag indicating whether to show integrated & modal feedback. This will have been
+     * to true for adaptive items; for non-adaptive items this will depend on whether
+     * the item session is open
+     */
+    private boolean showFeedback;
+
     //----------------------------------------------------
 
     @Override
@@ -97,5 +104,14 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     @Override
     public boolean isExitTestPartAllowed() {
         return false;
+    }
+
+
+    public boolean isShowFeedback() {
+        return showFeedback;
+    }
+
+    public void setShowFeedback(final boolean showFeedback) {
+        this.showFeedback = showFeedback;
     }
 }

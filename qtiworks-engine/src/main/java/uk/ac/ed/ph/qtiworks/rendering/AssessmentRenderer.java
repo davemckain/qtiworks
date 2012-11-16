@@ -234,6 +234,7 @@ public class AssessmentRenderer {
         setItemRenderingParameters(xsltParameters, renderingRequest);
         setTestRenderingParameters(xsltParameters, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+        xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.isShowFeedback()));
 
         doTransform(renderingRequest, testItemXsltUri, renderingRequest.getAssessmentItemUri(),
                 resultStream, xsltParameters);

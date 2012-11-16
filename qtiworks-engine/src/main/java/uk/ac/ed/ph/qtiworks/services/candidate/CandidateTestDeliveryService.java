@@ -584,6 +584,9 @@ public class CandidateTestDeliveryService {
             renderingRequest.setTestPartNavigationAllowed(false); /* (This is the pre-closed navigation) */
             renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
             renderingRequest.setReviewTestPartAllowed(true);
+
+            renderingRequest.setShowFeedback(true); /* FIXME: This shouldn't be hard-coded */
+
             doRendering(candidateEvent, renderingRequest, resultStream);
         }
     }
