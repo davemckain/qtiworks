@@ -101,10 +101,28 @@ Renders the test feedback
   </xsl:template>
 
   <xsl:template match="qw:node" mode="testPart-review-item">
+    <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
     <li>
       <form action="{$webappContextPath}{$reviewItemUrl}/{@key}" method="post">
         <button type="submit">
           <span class="questionTitle"><xsl:value-of select="@itemTitle"/></span>
+          <div class="itemStatus review">
+            <!-- FIXME: Do this better -->
+            <xsl:choose>
+              <xsl:when test="not(empty($itemSessionState/@unboundResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))">
+                Review (Invalid Answer)
+              </xsl:when>
+              <xsl:when test="$itemSessionState/@responded='true'">
+                Review
+              </xsl:when>
+              <xsl:when test="$itemSessionState/@presented='true'">
+                Review (Not Answered)
+              </xsl:when>
+              <xsl:otherwise>
+                Review (Not Attempted)
+              </xsl:otherwise>
+            </xsl:choose>
+          </div>
         </button>
       </form>
     </li>

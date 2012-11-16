@@ -568,19 +568,24 @@ public class CandidateTestDeliveryService {
         /* Extract item to review */
         final String reviewItemKeyString = candidateEvent.getTestItemKey();
         if (reviewItemKeyString==null) {
-            throw new QtiWorksLogicException("Did not expect testItemKey==null");
+            /* Render test part feedback */
+            renderTestPartFeedback(candidateEvent, testSessionState, renderingOptions, resultStream);
         }
-        final TestPlanNodeKey reviewItemKey = TestPlanNodeKey.fromString(reviewItemKeyString);
+        else {
+            /* Show this item */
+            final TestPlanNodeKey reviewItemKey = TestPlanNodeKey.fromString(reviewItemKeyString);
 
-        /* Item selected, so render current state of item */
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(reviewItemKey);
+            /* Item selected, so render current state of item */
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(reviewItemKey);
 
-        /* We'll do effectively the same thing as closed, but tweak the available options a bit */
-        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateEvent,
-                reviewItemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);
-        renderingRequest.setTestPartNavigationAllowed(true); /* (Must be allowed here) */
-        renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
-        doRendering(candidateEvent, renderingRequest, resultStream);
+            /* We'll do effectively the same thing as closed, but tweak the available options a bit */
+            final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateEvent,
+                    reviewItemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);
+            renderingRequest.setTestPartNavigationAllowed(false); /* (This is the pre-closed navigation) */
+            renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
+            renderingRequest.setReviewTestPartAllowed(true);
+            doRendering(candidateEvent, renderingRequest, resultStream);
+        }
     }
 
     private TestItemRenderingRequest initTestRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
@@ -599,6 +604,7 @@ public class CandidateTestDeliveryService {
         renderingRequest.setTestPartNavigationAllowed(testSessionController.maySelectQuestions());
 //        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
         renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
+        renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
 //        renderingRequest.setCloseAllowed(false);
 //        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenClosed());
 //        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenClosed());
@@ -924,7 +930,6 @@ public class CandidateTestDeliveryService {
     public CandidateSession reviewItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
-        Assert.notNull(itemKey, "itemKey");
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -934,8 +939,13 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-        if (!testSessionController.mayReviewItem(itemKey)) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
+        if (itemKey!=null) {
+            if (!testSessionController.mayReviewItem(itemKey)) {
+                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
+            }
+        }
+        else {
+            /* FIXME: Need to check that the current test part is finished. We don't currently model this. */
         }
 
         /* Record and log event */

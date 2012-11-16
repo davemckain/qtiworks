@@ -257,6 +257,7 @@ public class AssessmentRenderer {
 
         /* Set control parameters */
         xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(renderingRequest.isTestPartNavigationAllowed()));
+        xsltParameters.put("reviewTestPartAllowed", Boolean.valueOf(renderingRequest.isReviewTestPartAllowed()));
         xsltParameters.put("endTestPartAllowed", Boolean.valueOf(renderingRequest.isEndTestPartAllowed()));
         xsltParameters.put("exitTestPartAllowed", Boolean.valueOf(renderingRequest.isExitTestPartAllowed()));
     }

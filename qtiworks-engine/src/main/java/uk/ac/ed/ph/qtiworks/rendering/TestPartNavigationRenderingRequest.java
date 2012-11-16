@@ -70,8 +70,6 @@ public final class TestPartNavigationRenderingRequest extends AbstractRenderingR
         return false;
     }
 
-
-
     @Override
     public boolean isEndTestPartAllowed() {
         return endTestPartAllowed;
@@ -81,6 +79,10 @@ public final class TestPartNavigationRenderingRequest extends AbstractRenderingR
         this.endTestPartAllowed = endTestPartAllowed;
     }
 
+    @Override
+    public boolean isReviewTestPartAllowed() {
+        return false;
+    }
 
     @Override
     public boolean isExitTestPartAllowed() {

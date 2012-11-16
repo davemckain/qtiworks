@@ -31,6 +31,7 @@ Base templates used in test rendering
   <!-- Action permissions -->
   <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="reviewTestPartAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="exitTestPartAllowed" as="xs:boolean" required="yes"/>
 
   <!-- ************************************************************ -->
@@ -171,6 +172,13 @@ Base templates used in test rendering
           <li>
             <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
               <input type="submit" value="Test Question Menu"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$reviewTestPartAllowed">
+          <li>
+            <form action="{$webappContextPath}{$reviewItemUrl}" method="post">
+              <input type="submit" value="Back to Test Feedback"/>
             </form>
           </li>
         </xsl:if>

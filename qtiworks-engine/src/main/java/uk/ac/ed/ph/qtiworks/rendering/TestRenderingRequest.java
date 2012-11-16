@@ -52,6 +52,8 @@ interface TestRenderingRequest {
 
     boolean isEndTestPartAllowed();
 
+    boolean isReviewTestPartAllowed();
+
     boolean isExitTestPartAllowed();
 
 }

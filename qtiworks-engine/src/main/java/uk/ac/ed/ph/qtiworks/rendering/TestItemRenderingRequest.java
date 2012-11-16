@@ -51,6 +51,7 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
 
     private boolean testPartNavigationAllowed;
     private boolean endTestPartAllowed;
+    private boolean reviewTestPartAllowed;
 
     //----------------------------------------------------
 
@@ -80,6 +81,16 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
 
     public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
         this.endTestPartAllowed = endTestPartAllowed;
+    }
+
+
+    @Override
+    public boolean isReviewTestPartAllowed() {
+        return reviewTestPartAllowed;
+    }
+
+    public void setReviewTestPartAllowed(final boolean reviewTestPartAllowed) {
+        this.reviewTestPartAllowed = reviewTestPartAllowed;
     }
 
 

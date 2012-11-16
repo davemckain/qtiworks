@@ -79,6 +79,11 @@ public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest
     }
 
     @Override
+    public boolean isReviewTestPartAllowed() {
+        return false;
+    }
+
+    @Override
     public boolean isExitTestPartAllowed() {
         return true;
     }

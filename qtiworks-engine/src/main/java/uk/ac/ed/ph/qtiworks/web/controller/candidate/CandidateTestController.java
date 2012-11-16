@@ -253,6 +253,18 @@ public class CandidateTestController {
     }
 
     /**
+     * Shows test part review state
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/review", method=RequestMethod.POST)
+    public String reviewTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateTestDeliveryService.reviewItem(xid, sessionToken, null);
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
+    /**
      * Exits the test
      *
      * FIXME: This should just exit the testPart once we support multiple ones.

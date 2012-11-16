@@ -111,7 +111,15 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
 
         <!-- Item title -->
         <h1 class="itemTitle">
-          <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+          <!-- FIXME: This isn't very nice! -->
+          <xsl:choose>
+            <xsl:when test="$renderingMode='REVIEW'">
+              <div class="itemStatus review">Review</div>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+            </xsl:otherwise>
+          </xsl:choose>
           <xsl:value-of select="@title"/>
         </h1>
 

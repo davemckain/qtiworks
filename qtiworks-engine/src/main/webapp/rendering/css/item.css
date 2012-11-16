@@ -340,6 +340,10 @@ ul.testPartNavigation button {
 }
 
 
+.itemStatus.review {
+  background-color: #999999;
+}
+
 .itemStatus.closed {
   background-color: #999999;
 }
