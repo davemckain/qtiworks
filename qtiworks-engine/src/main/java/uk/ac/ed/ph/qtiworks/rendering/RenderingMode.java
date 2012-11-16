@@ -47,6 +47,7 @@ public enum RenderingMode {
     AFTER_INITIALISATION,
     AFTER_ATTEMPT,
     CLOSED,
+    REVIEW, /* NB: Only supported in tests currently */
     SOLUTION,
     PLAYBACK,
     TERMINATED,

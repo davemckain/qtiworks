@@ -6,7 +6,7 @@
     <outcomeDeclaration baseType="identifier" cardinality="single" identifier="outcomeIdentifier"/>
 
     <testPart identifier="part1" navigationMode="linear" submissionMode="individual">
-        <itemSessionControl maxAttempts="1" showFeedback="true" showSolution="false"/>
+        <itemSessionControl maxAttempts="1" allowReview="true" showFeedback="true" showSolution="false"/>
 
         <assessmentSection identifier="sectionquestion1" title="Electronics and Computer Science" visible="true">
             <assessmentItemRef href="question1.xml" identifier="question1"/>

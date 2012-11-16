@@ -113,6 +113,7 @@ public class CandidateTestController {
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
+        renderingOptions.setReviewItemUrl(sessionBaseUrl + "/review");
         renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/endtestpart");
         renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exittestpart");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/navigation");
@@ -234,6 +235,18 @@ public class CandidateTestController {
     public String endCurrentTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         candidateTestDeliveryService.endCurrentTestPart(xid, sessionToken);
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
+    /**
+     * Shows the review state of the requested item instance
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/review/{key}", method=RequestMethod.POST)
+    public String reviewItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateTestDeliveryService.reviewItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);

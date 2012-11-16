@@ -317,6 +317,7 @@ public class AssessmentRenderer {
         xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("selectItemUrl", renderingOptions.getSelectItemUrl());
+        xsltParameters.put("reviewItemUrl", renderingOptions.getReviewItemUrl());
         xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
         xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());
         xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());

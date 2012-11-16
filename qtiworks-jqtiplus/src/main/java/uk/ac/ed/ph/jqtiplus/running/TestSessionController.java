@@ -208,8 +208,7 @@ public final class TestSessionController extends TestValidationController implem
 
     private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode, final ItemSessionState itemSessionState) {
         final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
-        final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
-        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(assessmentItemRef);
+        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
 
         /* Copy relevant bits of ItemSessionControl into ItemSessionControllerSettings */
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
@@ -305,6 +304,37 @@ public final class TestSessionController extends TestValidationController implem
         itemSessionController.performTemplateProcessing(templateDefaults);
     }
 
+    public boolean maySelectItem(final TestPlanNodeKey itemKey) {
+        final TestPlanNode currentTestPart = getCurrentTestPart();
+        if (currentTestPart==null) {
+            return false;
+        }
+        if (itemKey!=null) {
+            final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+            if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPart)) {
+                return false;
+            }
+            return true;
+        }
+        else {
+            /* Allow deselection FIXME: Review when we support linear? */
+            return true;
+        }
+    }
+
+    public boolean mayReviewItem(final TestPlanNodeKey itemKey) {
+        Assert.notNull(itemKey);
+        final TestPlanNode currentTestPartNode = ensureTestPartSelected();
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPartNode)) {
+            return false;
+        }
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
+
+        return itemSessionState.isClosed() && effectiveItemSessionControl.isAllowReview();
+    }
+
     /**
      * Selects the given item within the part.
      *
@@ -334,6 +364,7 @@ public final class TestSessionController extends TestValidationController implem
             return itemRefNode;
         }
         else {
+            /* Allow deselection FIXME: Review when we support linear? */
             testSessionState.setCurrentItemKey(null);
             return null;
         }
@@ -344,7 +375,7 @@ public final class TestSessionController extends TestValidationController implem
      *
      * @throws IllegalStateException if no item is selected
      */
-    public boolean canSubmitResponsesToCurrentItem() {
+    public boolean maySubmitResponsesToCurrentItem() {
         final TestPlanNode currentItemRefNode = ensureItemSelected();
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
 
@@ -375,13 +406,12 @@ public final class TestSessionController extends TestValidationController implem
      *
      * @throws IllegalStateException if no test part is selected
      */
-    public boolean canEndTestPart() {
+    public boolean mayEndTestPart() {
         final TestPlanNode currentTestPartNode = ensureTestPartSelected();
         final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
         for (final TestPlanNode itemRefNode : itemRefNodes) {
             final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-            final AssessmentItemRef itemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
-            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.getEffectiveItemSessionControlMap().get(itemRef);
+            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
             if (!effectiveItemSessionControl.isAllowSkipping() && !itemSessionState.isResponded()) {
                 logger.debug("Item " + itemRefNode.getKey() + " has not been responded and allowSkipping=false, so test part exit will be forbidden");
                 return false;
@@ -413,7 +443,7 @@ public final class TestSessionController extends TestValidationController implem
      *
      * @return
      */
-    public boolean canSelectQuestions() {
+    public boolean maySelectQuestions() {
         return true;
     }
 
@@ -422,6 +452,8 @@ public final class TestSessionController extends TestValidationController implem
      *
      * (This would end the test in this case)
      *
+     * FIXME: Need to check that this is allowed - e.g. is anything getting skipped?
+     *
      * FIXME: When we add support for {@link NavigationMode#LINEAR}, we'd trigger response
      * processing at this time.
      *
@@ -429,10 +461,19 @@ public final class TestSessionController extends TestValidationController implem
      * it clears the selected test part.
      */
     public void endTestPart() {
-        ensureTestPartSelected();
-        if (!canEndTestPart()) {
+        final TestPlanNode currentTestPartNode = ensureTestPartSelected();
+        if (!mayEndTestPart()) {
             throw new IllegalStateException("Current test part cannot be exited");
         }
+
+        /* Close all items */
+        final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+        for (final TestPlanNode itemRefNode : itemRefNodes) {
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+            itemSessionState.setClosed(true);
+        }
+
+        /* Deselect item */
         testSessionState.setCurrentItemKey(null);
 
         /* Mark test as finished.
@@ -468,6 +509,18 @@ public final class TestSessionController extends TestValidationController implem
         final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
         if (currentTestPartKey==null) {
             throw new IllegalStateException("No current test part");
+        }
+        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentTestPartKey);
+        if (testPlanNode==null) {
+            throw new QtiLogicException("Unexpected map lookup failure");
+        }
+        return testPlanNode;
+    }
+
+    private TestPlanNode getCurrentTestPart() {
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        if (currentTestPartKey==null) {
+            return null;
         }
         final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentTestPartKey);
         if (testPlanNode==null) {

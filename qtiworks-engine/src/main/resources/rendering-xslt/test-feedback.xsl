@@ -30,7 +30,11 @@ Renders the test feedback
   <xsl:param name="testSessionState" as="element(qw:testSessionState)"/>
 
   <!-- Relevant action URLs -->
-  <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reviewItemUrl" as="xs:string" required="yes"/>
+
+  <!-- Extract current testPart -->
+  <xsl:variable name="currentTestPartKey" select="$testSessionState/@currentTestPartKey" as="xs:string"/>
+  <xsl:variable name="currentTestPart" select="$testSessionState/qw:testPlan/qw:node[@key=$currentTestPartKey]" as="element(qw:node)?"/>
 
   <!-- ************************************************************ -->
 
@@ -66,7 +70,11 @@ Renders the test feedback
 
       </head>
       <body class="qtiworks assessmentTest testFeedback">
+        <!-- Show feedback -->
         <xsl:apply-templates select="qti:testFeedback[@access='atEnd']"/>
+
+        <!-- Review -->
+        <xsl:apply-templates select="$currentTestPart" mode="testPart-review"/>
 
         <!-- Test session control -->
         <xsl:call-template name="qw:test-controls"/>
@@ -79,6 +87,27 @@ Renders the test feedback
       <h2>Feedback</h2>
       <xsl:call-template name="feedback"/>
     </div>
+  </xsl:template>
+
+  <xsl:template match="qw:node" mode="testPart-review">
+    <!-- FIXME: The following is forcing allowReview temporarily! -->
+    <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and (true() or @allowReview='true')]" as="element(qw:node)*"/>
+    <xsl:if test="exists($reviewable-items)">
+      <h2>Review your responses</h2>
+      <ul class="testPartNavigation">
+        <xsl:apply-templates select="$reviewable-items" mode="testPart-review-item"/>
+      </ul>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="qw:node" mode="testPart-review-item">
+    <li>
+      <form action="{$webappContextPath}{$reviewItemUrl}/{@key}" method="post">
+        <button type="submit">
+          <span class="questionTitle"><xsl:value-of select="@itemTitle"/></span>
+        </button>
+      </form>
+    </li>
   </xsl:template>
 
 </xsl:stylesheet>

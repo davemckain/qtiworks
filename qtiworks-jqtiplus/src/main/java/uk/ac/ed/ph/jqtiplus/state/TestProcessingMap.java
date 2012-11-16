@@ -162,6 +162,14 @@ public final class TestProcessingMap implements Serializable {
         return abstractPartList.get(abstractPartGlobalIndex);
     }
 
+    public EffectiveItemSessionControl resolveEffectiveItemSessionControl(final TestPlanNode testPlanNode) {
+        if (testPlanNode.getTestNodeType()==TestNodeType.ROOT) {
+            throw new IllegalArgumentException("This method should not be called for " + testPlanNode.getTestNodeType());
+        }
+        final AbstractPart abstractPart = resolveAbstractPart(testPlanNode);
+        return effectiveItemSessionControlMap.get(abstractPart);
+    }
+
     public ItemProcessingMap resolveItemProcessingMap(final TestPlanNode testPlanNode) {
         if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
             throw new IllegalArgumentException("Expected " + TestNodeType.ASSESSMENT_ITEM_REF + " but got " + testPlanNode.getTestNodeType());

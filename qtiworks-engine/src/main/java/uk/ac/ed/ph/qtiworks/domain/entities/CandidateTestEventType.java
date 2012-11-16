@@ -55,11 +55,14 @@ public enum CandidateTestEventType {
     /** Exits the current {@link TestPart} and either goes to the next, or completes the test */
     EXIT_TEST_PART,
 
-    /** Selection of a particular item */
+    /** Selection of a particular item (for interaction) */
     SELECT_ITEM,
 
-    /** Item Event within the selected item */
+    /** Item Event within the currently-selected item */
     ITEM_EVENT,
+
+    /** Review of a particular item */
+    REVIEW_ITEM,
 
     ;
 
