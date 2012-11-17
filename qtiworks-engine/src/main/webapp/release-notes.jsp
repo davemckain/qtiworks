@@ -12,6 +12,18 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV19 [Development] (17/11/2012)</h3>
+  <p>
+    Filled in initial sketch of support for <code>allowReview</code> and
+    <code>showFeedback</code> in the test delivery. Fixed issue with mixed
+    namepsaces when serializing <code>assessmentResult</code> XML. Added
+    basic functionality for getting at candidate data (summary table, CSV summary,
+    ZIP bundle containing all <code>assessmentResult</code> files).
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV18 [Development] (15/11/2012)</h3>
   <p>
     This snapshot tidies up implementation of tests added in DEV17, and adds in
