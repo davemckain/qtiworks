@@ -578,6 +578,8 @@ public class CandidateTestDeliveryService {
             /* Item selected, so render current state of item */
             final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(reviewItemKey);
 
+            /* FIXME: Make sure we're allowed to review this item: allowReview OR showFeedback must be true */
+
             /* We'll do effectively the same thing as closed, but tweak the available options a bit */
             final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateEvent,
                     reviewItemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);

@@ -407,7 +407,7 @@ rendering.
         <div class="itemStatus invalid">Needs Attention</div>
       </xsl:when>
       <xsl:when test="@responded='true'">
-        <div class="itemStatus answered">Responded</div>
+        <div class="itemStatus answered">Answered</div>
       </xsl:when>
       <xsl:when test="@presented='true'">
           <div class="itemStatus notAnswered">Not Answered</div>
