@@ -43,9 +43,7 @@ deliveryCandidateSummaryReport
           <tr>
             <th colspan="3">Session</th>
             <th colspan="3">Candidate</th>
-            <c:if test="${outcomeCount > 0}">
-              <th colspan="${outcomeCount}">Outcomes</th>
-            </c:if>
+            <th colspan="${outcomeCount > 0 ? outcomeCount : 1}">Outcomes</th>
           </tr>
           <tr>
             <th>Session ID</th>
@@ -54,9 +52,16 @@ deliveryCandidateSummaryReport
             <th>Email Address</th>
             <th>First Name</th>
             <th>Last Name</th>
-            <c:forEach var="outcomeName" items="${deliveryCandidateSummaryReport.outcomeNames}">
-              <th>${fn:escapeXml(outcomeName)}</th>
-            </c:forEach>
+            <c:choose>
+              <c:when test="${outcomeCount > 0}">
+                <c:forEach var="outcomeName" items="${deliveryCandidateSummaryReport.outcomeNames}">
+                  <th>${fn:escapeXml(outcomeName)}</th>
+                </c:forEach>
+              </c:when>
+              <c:otherwise>
+                <th>(Will appear when first session is closed)</th>
+              </c:otherwise>
+            </c:choose>
           </tr>
         </thead>
         <tbody>
@@ -75,7 +80,7 @@ deliveryCandidateSummaryReport
                   </c:forEach>
                 </c:when>
                 <c:otherwise>
-                  <td align="center" colspan="${outcomeCount}">Available when session closes</td>
+                  <td align="center" colspan="${outcomeCount > 0 ? outcomeCount : 1}}">Available when session closes</td>
                 </c:otherwise>
               </c:choose>
             </tr>
