@@ -61,9 +61,7 @@ instructorAssessmentRouting
   <h4>Actions</h4>
   <ul class="menu">
     <li>
-      <form action="${utils:escapeLink(assessmentRouting['createDelivery'])}" method="post">
-        <input type="submit" value="Create Delivery">
-      </form>
+      <page:postLink path="${utils:escapeLink(assessmentRouting['createDelivery'])}" title="Create Delivery"/>
     </li>
   </ul>
 

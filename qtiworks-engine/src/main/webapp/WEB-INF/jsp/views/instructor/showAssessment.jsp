@@ -106,18 +106,14 @@ instructorAssessmentRouting (action -> URL)
             <ul>
               <c:forEach var="deliverySettings" items="${deliverySettingsList}">
                 <li>
-                  <form action="${utils:escapeLink(assessmentRouting['try'])}/${deliverySettings.id}" method="post">
-                    <input type="submit" value="${fn:escapeXml(deliverySettings.title)}" />
-                  </form>
+                  <page:postLink path="${assessmentRouting['try']}/${deliverySettings.id}" title="${fn:escapeXml(deliverySettings.title)}"/>
                 </li>
               </c:forEach>
             </ul>
           </c:when>
           <c:otherwise>
             <%-- No options exist yet, so allow try out with a default set --%>
-            <form action="${utils:escapeLink(assessmentRouting['try'])}" method="post">
-              <input type="submit" value="Try out">
-            </form>
+            <page:postLink path="${assessmentRouting['try']}/${deliverySettings.id}" title="Try Out"/>
             (You probably want to create some delivery settings to get more control over this!)
           </c:otherwise>
         </c:choose>
