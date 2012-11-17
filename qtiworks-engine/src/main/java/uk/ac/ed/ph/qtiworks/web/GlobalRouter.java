@@ -38,7 +38,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 /**
- * Global webapp router
+ * Global webapp router.
+ *
+ * FIXME: Refactor this if/when it takes shape.
  *
  * @author David McKain
  */

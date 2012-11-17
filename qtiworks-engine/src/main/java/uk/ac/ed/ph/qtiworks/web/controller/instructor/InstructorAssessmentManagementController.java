@@ -56,6 +56,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
+import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -337,7 +338,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException {
         final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
-        return instructorRouter.buildSessionStartRedirect(candidateSession);
+        return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 
     //------------------------------------------------------
@@ -369,7 +370,7 @@ public class InstructorAssessmentManagementController {
         final Delivery delivery = assessmentManagementService.lookupOwnDelivery(did);
         final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
-        return instructorRouter.buildSessionStartRedirect(candidateSession);
+        return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 
     /** (Deliveries are currently very simple so created using a sensible default) */
