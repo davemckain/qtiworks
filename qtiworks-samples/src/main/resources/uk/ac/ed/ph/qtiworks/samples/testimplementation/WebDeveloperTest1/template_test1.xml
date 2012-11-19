@@ -24,6 +24,7 @@
     <outcomeProcessing>
         <setOutcomeValue identifier="SCORE">
             <sum>
+                <testVariables sectionIdentifier="sectionquestion1" variableIdentifier="SCORE"/>
                 <variable identifier="question1.SCORE"/>
                 <variable identifier="question2.SCORE"/>
                 <variable identifier="question3.SCORE"/>
