@@ -1,0 +1,867 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" identifier="GHFRENCHTEST-01" title="Conjugating French Verbs I">
+  <!-- Authors Graham and Heather Smith-->
+  <outcomeDeclaration identifier="TEST_SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="CONJUGATION_SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="PRESENTTENSE_SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="MAXIMUM_SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>105</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB1-1-SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB1-1-MODIFIEDSCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB1-2-SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB2-1-SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB2-1-MODIFIEDSCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB2-2-SCORE" cardinality="single" baseType="float">
+    <!-- Set this to 6 so that if this section is not attempted (not branched to) Failure feedback will not be called-->
+    <!--See OutcomeProcessing-->
+    <defaultValue>
+      <value>6</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB3-1-SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB3-1-MODIFIEDSCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB3-2-SCORE" cardinality="single" baseType="float">
+    <!-- Set this to 6 so that if this section is not attempted (not branched to) Failure feedback will not be called-->
+    <!--See OutcomeProcessing-->
+    <defaultValue>
+      <value>6</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-1-SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-2a-SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-2a-MODIFIEDSCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-2b-SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-2b-MODIFIEDSCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-3a-SCORE" cardinality="single" baseType="float">
+    <!-- Set this to 6 so that if this section is not attempted (not branched to) Failure feedback will not be called-->
+    <!--See OutcomeProcessing-->
+    <defaultValue>
+      <value>6</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-3b-SCORE" cardinality="single" baseType="float">
+    <!-- Set this to 6 so that if this section is not attempted (not branched to) Failure feedback will not be called-->
+    <!--See OutcomeProcessing-->
+    <defaultValue>
+      <value>6</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-4a-SCORE" cardinality="single" baseType="float">
+    <!-- Set this to 6 so that if this section is not attempted (not branched to) Failure feedback will not be called-->
+    <!--See OutcomeProcessing-->
+    <defaultValue>
+      <value>6</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="sectionB4-4b-SCORE" cardinality="single" baseType="float">
+    <!-- Set this to 6 so that if this section is not attempted (not branched to) Failure feedback will not be called-->
+    <!--See OutcomeProcessing-->
+    <defaultValue>
+      <value>6</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="TEST_FEEDBACK" cardinality="single" baseType="identifier"/>
+  <testPart identifier="P1" navigationMode="linear" submissionMode="individual">
+    <!-- **********************Precondition SectionA ***************-->
+    <assessmentSection identifier="sectionA" title="Section A:Preliminary:Pronouns" visible="true">
+      <!-- This section must be completed successfully before the rest
+of the test -->
+      <!-- See the precondition for section B -->
+      <rubricBlock view="candidate">
+        <p>The first part of this test is to ensure that you know the personal
+pronouns.</p>
+        <p>You may have up to 5 attempts at this part, and you must get the
+answer correct before you can go on to the rest of the test.</p>
+      </rubricBlock>
+      <assessmentItemRef identifier="ghfrench-01-01" href="ghfrench-01-01.xml" category="preliminary">
+        <itemSessionControl maxAttempts="5"/>
+      </assessmentItemRef>
+    </assessmentSection>
+    <!-- **********************End of SectionA ***************-->
+    <!-- **********************Main SectionB *****************-->
+    <assessmentSection identifier="sectionB" title="Section B:Conjugation of French Verbs" visible="true">
+      <preCondition>
+        <gt>
+          <variable identifier="ghfrench-01-01.SCORE"/>
+          <baseValue baseType="float">0</baseValue>
+        </gt>
+      </preCondition>
+      <!-- If not met, exit test with feedback "FAIL_PRONOUNS" -->
+      <rubricBlock view="candidate">
+        <p> You have shown that you know the personal pronouns.</p>
+        <p> Now test whether you can conjugate the present tense of some
+French Verbs.</p>
+      </rubricBlock>
+      <!-- ********************SectionB1 -ER verbs*******************-->
+      <assessmentSection identifier="sectionB1" title="Section B1: -ER verbs" visible="true">
+        <assessmentSection identifier="sectionB1-1" title="Section B1.1: -ER verbs: Conjugation" visible="true">
+          <!-- Allow 3 attempts-->
+          <!-- Go to remedial B1.2 if below 6, if above 5, to
+identification, section B1.3 -->
+          <branchRule target="sectionB1-3">
+            <gt>
+              <variable identifier="sectionB1-1-SCORE"/>
+              <baseValue baseType="float">5</baseValue>
+            </gt>
+          </branchRule>
+          <branchRule target="sectionB1-2">
+            <lt>
+              <variable identifier="sectionB1-1-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <selection select="1"/>
+          <rubricBlock view="candidate">
+            <p> Try conjugating an -ER verb.</p>
+            <p> You may have up to 3 attempts.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-verp1" href="ghfrench-01-verp1.xml" category="conjugation"/>
+          <assessmentItemRef identifier="ghfrench-01-verp2" href="ghfrench-01-verp2.xml" category="conjugation"/>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB1-2" title="Section B1.2: -ER verbs: Conjugation (Remedial)" visible="true">
+          <!-- Exit test if score below 6-->
+          <!-- Feedback = "FAIL_ERCONJUGATIONAFTERREMEDY" -->
+          <branchRule target="EXIT_TEST">
+            <lt>
+              <variable identifier="sectionB1-2-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <rubricBlock view="candidate">
+            <p> You failed to conjugate an -ER verb.</p>
+            <p> Here is a test with some clues</p>
+            <p> You may have up to 3 attempts.</p>
+            <p> Because you have had a clue, you will get reduced marks.</p>
+            <p> If you do not get this right, even with the clues, you will have
+to leave the test and do some revision.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-verprem" href="ghfrench-01-verprem.xml" category="conjugation">
+            <weight identifier="WEIGHT" value="0.5"/>
+          </assessmentItemRef>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB1-3" title="Section B1.3: -ER verbs: Identification of Present tense" visible="true">
+          <!-- maxattempts 1 by default-->
+          <!-- Pass on to next section B2 when answered-->
+          <rubricBlock view="candidate">
+            <p> You have conjugated an -ER verb.</p>
+            <p> Now see if you can identify the present tense.</p>
+            <p> You may have only one attempt.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-erpt" href="ghfrench-01-erpt.xml" category="presentTense">
+            <weight identifier="WEIGHT" value="5.0"/>
+          </assessmentItemRef>
+        </assessmentSection>
+      </assessmentSection>
+      <!-- ********************End of -ER verbs*******************-->
+      <!-- ********************SectionB2 -RE
+verbs**************************-->
+      <assessmentSection identifier="sectionB2" title="Section B2: -RE verbs" visible="true">
+        <assessmentSection identifier="sectionB2-1" title="Section B2.1: -RE verbs: Conjugation" visible="true">
+          <!-- Allow 3 attempts-->
+          <!-- Go to remedial B2.2 if below 6, if above 5, to section
+B2.3, identification -->
+          <branchRule target="sectionB2-3">
+            <gt>
+              <variable identifier="sectionB2-1-SCORE"/>
+              <baseValue baseType="float">5</baseValue>
+            </gt>
+          </branchRule>
+          <branchRule target="sectionB2-2">
+            <lt>
+              <variable identifier="sectionB2-1-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <selection select="1"/>
+          <rubricBlock view="candidate">
+            <p> Try conjugating an -RE verb.</p>
+            <p> You may have up to 3 attempts.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vrep1" href="ghfrench-01-vrep1.xml" category="conjugation"/>
+          <assessmentItemRef identifier="ghfrench-01-vrep2" href="ghfrench-01-vrep2.xml" category="conjugation"/>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB2-2" title="Section B2.2: -RE verbs: Conjugation (Remedial)" visible="true">
+          <!-- Exit test if score below 6-->
+          <!-- Feedback = "FAIL_RECONJUGATIONAFTERREMEDY" -->
+          <branchRule target="EXIT_TEST">
+            <lt>
+              <variable identifier="sectionB2-2-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <rubricBlock view="candidate">
+            <p> You failed to conjugate an -RE verb.</p>
+            <p> Here is a test with some clues</p>
+            <p> You may have up to 3 attempts.</p>
+            <p> Because you have had a clue, you will get reduced marks.</p>
+            <p> If you do not get this right, even with the clues, you will have
+to leave the test and do some revision.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vreprem" href="ghfrench-01-vreprem.xml" category="conjugation">
+            <weight identifier="WEIGHT" value="0.5"/>
+          </assessmentItemRef>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB2-3" title="Section B2.3: -RE verbs: Identification of Present tense" visible="true">
+          <!-- maxattempts 1 by default-->
+          <!-- Pass on to next section B3 when answered-->
+          <rubricBlock view="candidate">
+            <p> You have conjugated an -ER verb.</p>
+            <p> Now see if you can identify the present tense.</p>
+            <p> You may have only one attempt.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-rept" href="ghfrench-01-rept.xml" category="presentTense">
+            <weight identifier="WEIGHT" value="5.0"/>
+          </assessmentItemRef>
+        </assessmentSection>
+      </assessmentSection>
+      <!-- ********************End of -RE verbs**************************-->
+      <!-- ********************Section B3 -IR
+verbs**********************************-->
+      <assessmentSection identifier="sectionB3" title="Section B3: -IR verbs" visible="true">
+        <assessmentSection identifier="sectionB3-1" title="Section B3.1: -IR verbs: Conjugation" visible="true">
+          <!-- Allow 3 attempts-->
+          <!-- Go to remedial B3.2 if below 6, if above 5, to section
+B3.3, identification -->
+          <branchRule target="sectionB3-3">
+            <gt>
+              <variable identifier="sectionB3-1-SCORE"/>
+              <baseValue baseType="float">5</baseValue>
+            </gt>
+          </branchRule>
+          <branchRule target="sectionB3-2">
+            <lt>
+              <variable identifier="sectionB3-1-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <selection select="1"/>
+          <rubricBlock view="candidate">
+            <p> Try conjugating an -IR verb.</p>
+            <p> You may have up to 3 attempts.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-virp1" href="ghfrench-01-virp1.xml" category="conjugation"/>
+          <assessmentItemRef identifier="ghfrench-01-virp2" href="ghfrench-01-virp2.xml" category="conjugation"/>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB3-2" title="Section B3.2: -IR verbs: Conjugation (Remedial)" visible="true">
+          <!-- Exit test if score below 6-->
+          <!-- Feedback = "FAIL_IRCONJUGATIONAFTERREMEDY" -->
+          <branchRule target="EXIT_TEST">
+            <lt>
+              <variable identifier="sectionB3-2-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <rubricBlock view="candidate">
+            <p> You failed to conjugate an -IR verb.</p>
+            <p> Here is a test with some clues</p>
+            <p> You may have up to 3 attempts.</p>
+            <p> Because you have had a clue, you will get reduced marks.</p>
+            <p> If you do not get this right, even with the clues, you will have
+to leave the test and do some revision.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-virprem" href="ghfrench-01-virprem.xml" category="conjugation">
+            <weight identifier="WEIGHT" value="0.5"/>
+          </assessmentItemRef>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB3-3" title="Section B3.3: -IR verbs: Identification of Present tense" visible="true">
+          <!-- maxattempts 1 by default-->
+          <!-- Pass on to next section B4 when answered-->
+          <rubricBlock view="candidate">
+            <p> You have conjugated an -IR verb.</p>
+            <p> Now see if you can identify the present tense.</p>
+            <p> You may have only one attempt.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-irpt" href="ghfrench-01-irpt.xml" category="presentTense">
+            <weight identifier="WEIGHT" value="5.0"/>
+          </assessmentItemRef>
+        </assessmentSection>
+      </assessmentSection>
+      <!-- ********************End of -IR verbs**************************-->
+      <!-- ********************B4 Auxilliary
+verbs**************************-->
+      <!-- ****************Auxilliary verbs: Identification**********-->
+      <assessmentSection identifier="sectionB4" title="Section B4: Auxilliary verbs" visible="true">
+        <assessmentSection identifier="sectionB4-1" title="Section B4.1: Auxilliary verbs: Identification" visible="true">
+          <!-- Allow 3 attempts-->
+          <!-- Exit test if below 2-->
+          <!-- Feedback = "FAIL_AUXILLIARYIDENTFICATION" -->
+          <!-- Go on to avoir, B4.2a if 2 -->
+          <branchRule target="EXIT_TEST">
+            <lt>
+              <variable identifier="sectionB4-1-SCORE"/>
+              <baseValue baseType="float">2</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <rubricBlock view="candidate">
+            <p> Now see if you can identify the auxilliary verbs</p>
+            <p> You may have 3 attempts.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vaux" href="ghfrench-01-vaux.xml" category="auxIdentification"/>
+        </assessmentSection>
+        <!-- ****************Auxilliary verbs: avoir *******************-->
+        <assessmentSection identifier="sectionB4-2a" title="Section B4.2a: Auxilliary verbs (avoir): Conjugation" visible="true">
+          <!-- Allow 3 attempts-->
+          <!-- Go to remedial B4.3a if below 6, if above 5, to
+section B4.4a, identification -->
+          <branchRule target="sectionB4-4a">
+            <gt>
+              <variable identifier="sectionB4-2a-SCORE"/>
+              <baseValue baseType="float">5</baseValue>
+            </gt>
+          </branchRule>
+          <branchRule target="sectionB4-3a">
+            <lt>
+              <variable identifier="sectionB4-2a-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <rubricBlock view="candidate">
+            <p> Try conjugating 'avoir'.</p>
+            <p> You may have up to 3 attempts.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vauxp1" href="ghfrench-01-vauxp1.xml" category="conjugation"/>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB4-3a" title="Section B4.3a: Auxilliary verbs: Conjugation (avoir) (Remedial)" visible="true">
+          <!-- Go on with reduced score in any case -->
+          <!-- but skip identification if below 6 -->
+          <!-- This is set by a precondition in B4.4a-->
+          <!-- The precondition is score of above 5 for B4.2a -->
+          <!-- This is a concession for avoir, with other verbs, score below 6
+exits test -->
+          <!-- But set Feedback = "FAIL_AVOIRCONJUGATIONAFTERREMEDY" -->
+          <rubricBlock view="candidate">
+            <p> You failed to conjugate 'avoir'.</p>
+            <p> Here is a test with some clues</p>
+            <p> You may have up to 3 attempts.</p>
+            <p> Because you have had a clue, you will get reduced marks.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vaux1rem" href="ghfrench-01-vaux1rem.xml" category="conjugation">
+            <weight identifier="WEIGHT" value="0.3"/>
+          </assessmentItemRef>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB4-4a" title="Section B4.4a 'avoir' : Identification of Present tense" visible="true">
+          <!-- maxattempts 1 by default-->
+          <!-- Pass on to next section B4.4b when answered-->
+          <preCondition>
+            <gt>
+              <variable identifier="sectionB4-2a-SCORE"/>
+              <baseValue baseType="float">5</baseValue>
+            </gt>
+          </preCondition>
+          <rubricBlock view="candidate">
+            <p> You have conjugated 'avoir'.</p>
+            <p> Now see if you can identify the present tense.</p>
+            <p> You may have only one attempt.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vauxpt1" href="ghfrench-01-vauxpt1.xml" category="presentTense">
+            <weight identifier="WEIGHT" value="5.0"/>
+          </assessmentItemRef>
+        </assessmentSection>
+        <!-- ****************Auxilliary verbs: être *******************-->
+        <assessmentSection identifier="sectionB4-2b" title="Section B4.2b: Auxilliary verbs (être): Conjugation" visible="true">
+          <!-- Go to remedial B4.3b if below 6, if above 5, to section
+B4.4b, identfication -->
+          <branchRule target="sectionB4-4b">
+            <gt>
+              <variable identifier="sectionB4-2b-SCORE"/>
+              <baseValue baseType="float">5</baseValue>
+            </gt>
+          </branchRule>
+          <branchRule target="sectionB4-3b">
+            <lt>
+              <variable identifier="sectionB4-2b-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <selection select="1"/>
+          <rubricBlock view="candidate">
+            <p> Try conjugating 'être'.</p>
+            <p> You may have up to 3 attempts.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vauxp2" href="ghfrench-01-vauxp2.xml" category="conjugation"/>
+        </assessmentSection>
+        <!-- -->
+        <assessmentSection identifier="sectionB4-3b" title="Section B4.3b: Auxiliary verbs: Conjugation (être) (Remedial)" visible="true">
+          <!-- Exit test if score below 6-->
+          <!-- Feedback = "FAIL_ETRECONJUGATIONAFTERREMEDY" -->
+          <branchRule target="EXIT_TEST">
+            <lt>
+              <variable identifier="sectionB4-3b-SCORE"/>
+              <baseValue baseType="float">6</baseValue>
+            </lt>
+          </branchRule>
+          <itemSessionControl maxAttempts="3"/>
+          <rubricBlock view="candidate">
+            <p> You failed to conjugate 'être'.</p>
+            <p> Here is a test with some clues</p>
+            <p> You may have up to 3 attempts.</p>
+            <p> Because you have had a clue, you will get reduced marks.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vaux2rem" href="ghfrench-01-vaux2rem.xml" category="conjugation">
+            <weight identifier="WEIGHT" value="0.3"/>
+          </assessmentItemRef>
+        </assessmentSection>
+        <assessmentSection identifier="sectionB4-4b" title="Section B4.4b 'être' : Identification of Present tense" visible="true">
+          <!-- maxattempts 1 by default-->
+          <!-- Pass on to (finish) when answered-->
+          <rubricBlock view="candidate">
+            <p> You have conjugated 'être'.</p>
+            <p> Now see if you can identify the present tense.</p>
+            <p> You may have only one attempt.</p>
+          </rubricBlock>
+          <assessmentItemRef identifier="ghfrench-01-vauxpt2" href="ghfrench-01-vauxpt2.xml" category="presentTense">
+            <weight identifier="WEIGHT" value="5.0"/>
+          </assessmentItemRef>
+        </assessmentSection>
+      </assessmentSection>
+      <!-- ****************End of Auxilliary verbs*******************-->
+    </assessmentSection>
+    <!-- ****************End of Section B*******************-->
+  </testPart>
+  <!-- ***************************Outcome
+Processing**********************-->
+  <outcomeProcessing>
+    <!-- do the branchRule scores first -->
+    <setOutcomeValue identifier="sectionB1-1-SCORE">
+      <sum>
+        <variable identifier="ghfrench-01-verp1.SCORE"/>
+        <variable identifier="ghfrench-01-verp2.SCORE"/>
+      </sum>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB1-2-SCORE">
+      <variable identifier="ghfrench-01-verprem.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB2-1-SCORE">
+      <sum>
+        <variable identifier="ghfrench-01-vrep1.SCORE"/>
+        <variable identifier="ghfrench-01-vrep2.SCORE"/>
+      </sum>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB2-2-SCORE">
+      <variable identifier="ghfrench-01-vreprem.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB3-1-SCORE">
+      <sum>
+        <variable identifier="ghfrench-01-virp1.SCORE"/>
+        <variable identifier="ghfrench-01-virp2.SCORE"/>
+      </sum>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB3-2-SCORE">
+      <variable identifier="ghfrench-01-virprem.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB4-1-SCORE">
+      <variable identifier="ghfrench-01-vaux.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB4-2a-SCORE">
+      <variable identifier="ghfrench-01-vauxp1.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB4-2b-SCORE">
+      <variable identifier="ghfrench-01-vauxp2.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB4-3b-SCORE">
+      <variable identifier="ghfrench-01-vaux2rem.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB4-3a-SCORE">
+      <variable identifier="ghfrench-01-vaux1rem.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB4-4a-SCORE">
+      <variable identifier="ghfrench-01-vauxpt1.SCORE"/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="sectionB4-4b-SCORE">
+      <variable identifier="ghfrench-01-vauxpt2.SCORE"/>
+    </setOutcomeValue>
+    <!--  MODIFICATION TO AVOID SETTING ITEM VARIABLE RETROSPECTIVELY
+-->
+    <!-- If conjugation scores are below 6 remedial conjugation will
+have been called -->
+    <!-- So set 'conjugation' scores to zero so they do not contribute
+to total -->
+    <!-- ER VERBS -->
+    <outcomeCondition>
+      <outcomeIf>
+        <lt>
+          <variable identifier="sectionB1-1-SCORE"/>
+          <baseValue baseType="float">6</baseValue>
+        </lt>
+        <setOutcomeValue identifier="sectionB1-1-MODIFIEDSCORE">
+          <variable identifier="ghfrench-01-verprem.SCORE" weightIdentifier="WEIGHT"/>
+        </setOutcomeValue>
+      </outcomeIf>
+      <outcomeElse>
+        <setOutcomeValue identifier="sectionB1-1-MODIFIEDSCORE">
+          <sum>
+            <variable identifier="ghfrench-01-verp1.SCORE"/>
+            <variable identifier="ghfrench-01-verp2.SCORE"/>
+          </sum>
+        </setOutcomeValue>
+      </outcomeElse>
+    </outcomeCondition>
+    <!--RE VERBS -->
+    <outcomeCondition>
+      <outcomeIf>
+        <lt>
+          <variable identifier="sectionB2-1-SCORE"/>
+          <baseValue baseType="float">6</baseValue>
+        </lt>
+        <setOutcomeValue identifier="sectionB2-1-MODIFIEDSCORE">
+          <variable identifier="ghfrench-01-vreprem.SCORE" weightIdentifier="WEIGHT"/>
+        </setOutcomeValue>
+      </outcomeIf>
+      <outcomeElse>
+        <setOutcomeValue identifier="sectionB2-1-MODIFIEDSCORE">
+          <sum>
+            <variable identifier="ghfrench-01-vrep1.SCORE"/>
+            <variable identifier="ghfrench-01-vrep2.SCORE"/>
+          </sum>
+        </setOutcomeValue>
+      </outcomeElse>
+    </outcomeCondition>
+    <!-- IR VERBS -->
+    <outcomeCondition>
+      <outcomeIf>
+        <lt>
+          <variable identifier="sectionB3-1-SCORE"/>
+          <baseValue baseType="float">6</baseValue>
+        </lt>
+        <setOutcomeValue identifier="sectionB3-1-MODIFIEDSCORE">
+          <variable identifier="ghfrench-01-virprem.SCORE" weightIdentifier="WEIGHT"/>
+        </setOutcomeValue>
+      </outcomeIf>
+      <outcomeElse>
+        <setOutcomeValue identifier="sectionB3-1-MODIFIEDSCORE">
+          <sum>
+            <variable identifier="ghfrench-01-virp1.SCORE"/>
+            <variable identifier="ghfrench-01-virp2.SCORE"/>
+          </sum>
+        </setOutcomeValue>
+      </outcomeElse>
+    </outcomeCondition>
+    <!-- AUXILLIARY VERBS AVOIR -->
+    <outcomeCondition>
+      <outcomeIf>
+        <lt>
+          <variable identifier="sectionB4-2a-SCORE"/>
+          <baseValue baseType="float">6</baseValue>
+        </lt>
+        <setOutcomeValue identifier="sectionB4-2a-MODIFIEDSCORE">
+          <variable identifier="ghfrench-01-vaux1rem.SCORE" weightIdentifier="WEIGHT"/>
+        </setOutcomeValue>
+      </outcomeIf>
+      <outcomeElse>
+        <setOutcomeValue identifier="sectionB4-2a-MODIFIEDSCORE">
+          <variable identifier="ghfrench-01-vauxp1.SCORE"/>
+        </setOutcomeValue>
+      </outcomeElse>
+    </outcomeCondition>
+    <!-- AUXILLIARY VERBS ETRE -->
+    <outcomeCondition>
+      <outcomeIf>
+        <lt>
+          <variable identifier="sectionB4-2b-SCORE"/>
+          <baseValue baseType="float">6</baseValue>
+        </lt>
+        <setOutcomeValue identifier="sectionB4-2b-MODIFIEDSCORE">
+          <variable identifier="ghfrench-01-vaux2rem.SCORE" weightIdentifier="WEIGHT"/>
+        </setOutcomeValue>
+      </outcomeIf>
+      <outcomeElse>
+        <setOutcomeValue identifier="sectionB4-2b-MODIFIEDSCORE">
+          <variable identifier="ghfrench-01-vauxp2.SCORE"/>
+        </setOutcomeValue>
+      </outcomeElse>
+    </outcomeCondition>
+    <!-- collect the scores-->
+    <setOutcomeValue identifier="CONJUGATION_SCORE">
+      <sum>
+        <variable identifier="sectionB1-1-MODIFIEDSCORE"/>
+        <variable identifier="sectionB2-1-MODIFIEDSCORE"/>
+        <variable identifier="sectionB3-1-MODIFIEDSCORE"/>
+        <variable identifier="sectionB4-2a-MODIFIEDSCORE"/>
+        <variable identifier="sectionB4-2b-MODIFIEDSCORE"/>
+      </sum>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="PRESENTTENSE_SCORE">
+      <sum>
+        <testVariables includeCategory="presentTense" variableIdentifier="SCORE" weightIdentifier="WEIGHT"/>
+      </sum>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="TEST_SCORE">
+      <sum>
+        <variable identifier="PRESENTTENSE_SCORE"/>
+        <variable identifier="CONJUGATION_SCORE"/>
+      </sum>
+    </setOutcomeValue>
+    <!--****************************SET UP FEEDBACK IDENTIFIERS
+**********************-->
+    <!-- Test conditions which led to EXIT_TEST -->
+    <!-- The navigation mode is linear, so tests will proceed in order
+with no skipping -->
+    <!-- Some of these conditions will be met as we pass through the
+test-->
+    <!-- Do we need to check the appropriate step has been
+started?-->
+    <!-- This should not be important as the Feedback is not being
+given until the end-->
+    <!-- Feedback setting would be more complex if skipping is allowed
+-->
+    <outcomeCondition>
+      <outcomeIf>
+        <!-- The pronoun test will always have been attempted whatever
+item is being processed -->
+        <!-- If the score is 0 the test has ended -->
+        <!-- If it is 1 we can go on-->
+        <equal toleranceMode="exact">
+          <variable identifier="ghfrench-01-01.SCORE"/>
+          <baseValue baseType="float">0</baseValue>
+        </equal>
+        <setOutcomeValue identifier="TEST_FEEDBACK">
+          <baseValue baseType="identifier">FAIL_PRONOUNS</baseValue>
+        </setOutcomeValue>
+      </outcomeIf>
+      <outcomeElseIf>
+        <!-- Remedial conjugation of _ER verb  -->
+        <!-- If the score is below 6  EXIT_TEST has been called -->
+        <!-- Check that remedial test has been called -->
+        <and>
+          <lt>
+            <variable identifier="sectionB1-2-SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+          <lt>
+            <variable identifier="sectionB1-1-SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+        </and>
+        <setOutcomeValue identifier="TEST_FEEDBACK">
+          <baseValue baseType="identifier">FAIL_ERCONJUGATIONAFTERREMEDY</baseValue>
+        </setOutcomeValue>
+      </outcomeElseIf>
+      <outcomeElseIf>
+        <!-- Remedial conjugation of _RE verb  -->
+        <!-- Check that remedial test has been called -->
+        <and>
+          <lt>
+            <variable identifier="sectionB2-2-SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+          <lt>
+            <variable identifier="sectionB2-1-SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+        </and>
+        <setOutcomeValue identifier="TEST_FEEDBACK">
+          <baseValue baseType="identifier">FAIL_RECONJUGATIONAFTERREMEDY</baseValue>
+        </setOutcomeValue>
+      </outcomeElseIf>
+      <outcomeElseIf>
+        <!-- Remedial conjugation of _IR verb  -->
+        <!-- If the score is below 6 EXIT_TEST has been called -->
+        <!-- Check that remedial test has been called -->
+        <and>
+          <lt>
+            <variable identifier="sectionB3-2-SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+          <lt>
+            <variable identifier="sectionB3-1-SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+        </and>
+        <setOutcomeValue identifier="TEST_FEEDBACK">
+          <baseValue baseType="identifier">FAIL_IRCONJUGATIONAFTERREMEDY</baseValue>
+        </setOutcomeValue>
+      </outcomeElseIf>
+      <outcomeElseIf>
+        <!-- Recognition of Auxilliary verbs  -->
+        <!-- If the score is below 2 EXIT_TEST has been called -->
+        <lt>
+          <variable identifier="sectionB4-1-SCORE"/>
+          <baseValue baseType="float">2</baseValue>
+        </lt>
+        <setOutcomeValue identifier="TEST_FEEDBACK">
+          <baseValue baseType="identifier">FAIL_AUXILLIARYIDENTFICATION</baseValue>
+        </setOutcomeValue>
+      </outcomeElseIf>
+      <outcomeElseIf>
+        <!-- Remedial conjugation of avoir verb -->
+        <!-- This is more complex because we have not thrown the candidate out-->
+        <!-- So we must check that we are not processing the outcome of section B4.2b -->
+        <!-- Also, because this is a 'during' feedback, we establish that it is timely-->
+        <!-- If the score is below 6 -->
+        <!-- Check that remedial test has been called -->
+        <and>
+          <lt>
+            <variable identifier="ghfrench-01-vaux1rem.SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+          <lt>
+            <variable identifier="ghfrench-01-vauxp1.SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+          <match>
+            <variable identifier="ghfrench-01-vauxp2.completionStatus"/>
+            <baseValue baseType="identifier">not_attempted</baseValue>
+          </match>
+          <not>
+            <match>
+              <variable identifier="ghfrench-01-vauxp1.completionStatus"/>
+              <baseValue baseType="identifier">not_attempted</baseValue>
+            </match>
+          </not>
+        </and>
+        <setOutcomeValue identifier="TEST_FEEDBACK">
+          <baseValue baseType="identifier">FAIL_AVOIRCONJUGATIONAFTERREMEDY</baseValue>
+        </setOutcomeValue>
+      </outcomeElseIf>
+      <outcomeElseIf>
+        <!-- Remedial conjugation of être  -->
+        <!-- We are coming out of the test if the score is below 6 -->
+        <!-- Check that remedial test has been called -->
+        <and>
+          <lt>
+            <variable identifier="sectionB4-3b-SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+          <!-- DM: Next variable is not declared???
+          <lt>
+            <variable identifier="sectionB2-3b-SCORE"/>
+            <baseValue baseType="float">6</baseValue>
+          </lt>
+          -->
+        </and>
+        <setOutcomeValue identifier="TEST_FEEDBACK">
+          <baseValue baseType="identifier">FAIL_ETRECONJUGATIONAFTERREMEDY</baseValue>
+        </setOutcomeValue>
+      </outcomeElseIf>
+      <outcomeElse>
+        <!-- We have come out of the test at the end -->
+        <setOutcomeValue identifier="TEST_FEEDBACK">
+          <baseValue baseType="identifier">END_FEEDBACK</baseValue>
+        </setOutcomeValue>
+      </outcomeElse>
+    </outcomeCondition>
+  </outcomeProcessing>
+  <!--*************************END OF OUTCOME
+PROCESSING*****************-->
+  <!-- ***********************DEFINE
+FEEDBACK****************************-->
+  <testFeedback outcomeIdentifier="TEST_FEEDBACK" identifier="FAIL_PRONOUNS" showHide="show" access="atEnd">
+    <p>You have not placed the personal pronouns in the correct
+order.</p>
+    <p>Without this, you cannot hope to proceed. You should consult a
+French Grammar Text.</p>
+  </testFeedback>
+  <testFeedback outcomeIdentifier="TEST_FEEDBACK" identifier="FAIL_ERCONJUGATIONAFTERREMEDY" showHide="show" access="atEnd">
+    <p>You have failed to conjugate an _ER verb correctly, in spite of
+help.</p>
+    <p>You should consult a French Grammar before returning to the
+test.</p>
+  </testFeedback>
+  <testFeedback outcomeIdentifier="TEST_FEEDBACK" identifier="FAIL_RECONJUGATIONAFTERREMEDY" showHide="show" access="atEnd">
+    <p>You have failed to conjugate an _RE verb correctly, in spite of
+help.</p>
+    <p>You should consult a French Grammar before returning to the
+test.</p>
+  </testFeedback>
+  <testFeedback outcomeIdentifier="TEST_FEEDBACK" identifier="FAIL_IRCONJUGATIONAFTERREMEDY" showHide="show" access="atEnd">
+    <p>You have failed to conjugate an _IR verb correctly, in spite of
+help.</p>
+    <p>You should consult a French Grammar before returning to the
+test.</p>
+  </testFeedback>
+  <testFeedback outcomeIdentifier="TEST_FEEDBACK" identifier="FAIL_AUXILLIARYIDENTFICATION" showHide="show" access="atEnd">
+    <p>You have failed to recognise the auxilliary verbs.</p>
+    <p>You should consult a French Grammar.</p>
+  </testFeedback>
+  <testFeedback outcomeIdentifier="TEST_FEEDBACK" identifier="FAIL_AVOIRCONJUGATIONAFTERREMEDY" showHide="show" access="during">
+    <!-- Care, this is a 'during' feedback -->
+    <p>You have failed to conjugate 'avoir' correctly, in spite of
+help.</p>
+    <p>You can go on to try with être, but you should consult a French
+Grammar soon.</p>
+  </testFeedback>
+  <testFeedback outcomeIdentifier="TEST_FEEDBACK" identifier="FAIL_ETRECONJUGATIONAFTERREMEDY" showHide="show" access="atEnd">
+    <p>You have failed to conjugate 'avoir' correctly, in spite of
+help.</p>
+    <p>You should consult a French Grammar soon.</p>
+  </testFeedback>
+  <testFeedback outcomeIdentifier="TEST_FEEDBACK" identifier="END_FEEDBACK" showHide="show" access="atEnd">
+    <p>You reached the end of the test.</p>
+    <p>Your scores are as follows: </p>
+    <p> For the conjugations - <printedVariable identifier="CONJUGATION_SCORE" format="%.1f"/>,</p>
+    <p> For the identification of present tense - <printedVariable identifier="PRESENTTENSE_SCORE" format="%.1f"/>,</p>
+    <p> Your Total Score - <printedVariable identifier="TEST_SCORE" format="%.1f"/>,</p>
+    <p> Out of a possible - <printedVariable identifier="MAXIMUM_SCORE" format="%.1f"/>.</p>
+  </testFeedback>
+</assessmentTest>

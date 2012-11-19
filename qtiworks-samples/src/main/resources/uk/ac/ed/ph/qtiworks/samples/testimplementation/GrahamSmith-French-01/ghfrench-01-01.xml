@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" identifier="ghfrench-01-01" title="Conjugation of French Verbs I" adaptive="false" timeDependent="false">
+  <responseDeclaration identifier="RESPONSE" cardinality="ordered" baseType="identifier">
+    <correctResponse>
+      <value>A</value>
+      <value>C</value>
+      <value>D</value>
+      <value>F</value>
+      <value>B</value>
+      <value>E</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+  <itemBody>
+    <orderInteraction responseIdentifier="RESPONSE" shuffle="true">
+      <prompt>
+        <strong>Place these pronouns in order: 1st 2nd and 3rd person singular, then 1st, 2nd and 3rd person plural:</strong>
+      </prompt>
+      <simpleChoice identifier="A">je</simpleChoice>
+      <simpleChoice identifier="B">vous</simpleChoice>
+      <simpleChoice identifier="C" fixed="true">tu</simpleChoice>
+      <simpleChoice identifier="D">il(elle)</simpleChoice>
+      <simpleChoice identifier="E">ils(elles)</simpleChoice>
+      <simpleChoice identifier="F" fixed="true">nous</simpleChoice>
+    </orderInteraction>
+  </itemBody>
+  <responseProcessing>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="RESPONSE"/>
+          <correct identifier="RESPONSE"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">1.0</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">Correct</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">0</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">Wrong</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+  </responseProcessing>
+  <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="Correct">
+    <p>Yes, that is the right order.</p>
+  </modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="Wrong">
+    <p>No, that is not the right order.</p>
+  </modalFeedback>
+</assessmentItem>

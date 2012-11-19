@@ -1,0 +1,23 @@
+DESCRIPTION OF ghfrenchtest-01.xml
+
+(NOTE that this ghfrenchtest-01.xml, and the xml for the items, may contain Unicode characters)
+
+The test is about French verbs (present tense). It is a compromise between reasonable pedagogy and a test for the system. It covers many but not all of the features of assessment tests.
+
+The first item of the assessment tests if the candidate can put the personal pronouns in the right order. If he/she fails, the test exits.
+
+Then for each of -ER, -RE and -IR regular verbs there is a conjugation test. If the candidate succeeds, the next item tests if the candidate can recognise the present tense of the verb in a sentence. If an insufficient score is achieved in the conjugation test, the candidate is passed to a remedial conjugation test. If he/she fails again, the test exits. If he/she now succeeds the test goes to the next item (present tense recognition) with a weighted score.
+
+The test then passes to the auxiliary verbs. The next item tests if the candidate can recognise these. If he/she fails, the test exits. The succeeding tests are almost identical to those for the regular verbs, except that if the candidate fails to conjugate 'avoir' after a remedial attempt, the test does not exit but passes to 'etre'.
+
+The outcome processing produces the criteria for the branch rules and preconditions. Also, in the event of a test exit, the outcome processing detects the point at which this has occured and produces the appropriate feedback. The feedback is set to 'atEnd' except in one case.
+If the test has been followed to the end, the scores are reported to the candidate.
+
+The test makes a number of assumptions about the capabilities of Delivery Engines:
+1. It is assumed that the delivery engine will show the items in the right order, will check when maxattempts is reached, and will allow the student to progress to the next item if he/she wishes to do so before maxattempts is reached.
+
+2. It is assumed that the delivery engine has all of the item variables available to it throughout the test.
+
+3. In implementing the testVariables element, it is assumed that the delivery engine will find the item variable (in this case SCORE) for each item matching the category, i.e. in this context the variable need not be called by e.g. 'ghfrench-01-verp1.SCORE'. This seems a necessary assumption to allow the operation of the testVariables element.
+
+4. Weighting is not applied, even though a weight is not 1, unless the weightIdentifier attribute is set.

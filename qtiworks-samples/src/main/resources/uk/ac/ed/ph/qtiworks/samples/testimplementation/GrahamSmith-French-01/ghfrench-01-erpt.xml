@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" identifier="ghfrench-01-erpt" title="The Tense of French Verbs" adaptive="false" timeDependent="false">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+    <correctResponse>
+      <value>A</value>
+      <value>E</value>
+      <value>F</value>
+    </correctResponse>
+    <mapping lowerBound="0" upperBound="3" defaultValue="-3">
+      <mapEntry mapKey="A" mappedValue="1"/>
+      <mapEntry mapKey="E" mappedValue="1"/>
+      <mapEntry mapKey="F" mappedValue="1"/>
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+  <itemBody>
+    <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="0">
+      <prompt>Tick the box against the sentences in which  the verb is in the present tense.<br/>
+             You will not get the answer right if you tick any that are not in the present tense.
+         	</prompt>
+      <simpleChoice identifier="A" fixed="false">Nous demandons notre petit dejeuner.</simpleChoice>
+      <simpleChoice identifier="B" fixed="false">Je donnerai un cadeau  à Paul.</simpleChoice>
+      <simpleChoice identifier="C" fixed="false">Marie portait une robe rose et un chapeau.</simpleChoice>
+      <simpleChoice identifier="D" fixed="false">Les auto passaient sur la route.</simpleChoice>
+      <simpleChoice identifier="E" fixed="false">Les enfants chantent.</simpleChoice>
+      <simpleChoice identifier="F" fixed="false">Vous donnez des cadeaux aux enfants.</simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing>
+    <responseCondition>
+      <responseIf>
+        <isNull>
+          <variable identifier="RESPONSE"/>
+        </isNull>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">0.0</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE">
+          <mapResponse identifier="RESPONSE"/>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <equal toleranceMode="exact">
+          <variable identifier="SCORE"/>
+          <baseValue baseType="float">3.0</baseValue>
+        </equal>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">THREECORRECT</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElseIf>
+        <equal toleranceMode="exact">
+          <variable identifier="SCORE"/>
+          <baseValue baseType="float">2.0</baseValue>
+        </equal>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">TWOCORRECT</baseValue>
+        </setOutcomeValue>
+      </responseElseIf>
+      <responseElseIf>
+        <equal toleranceMode="exact">
+          <variable identifier="SCORE"/>
+          <baseValue baseType="float">1.0</baseValue>
+        </equal>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">ONECORRECT</baseValue>
+        </setOutcomeValue>
+      </responseElseIf>
+      <responseElse>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">WRONG</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+  </responseProcessing>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="THREECORRECT" showHide="show">
+		   	Yes, you have identified all of them.
+	</modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="TWOCORRECT" showHide="show">
+		   	You have identified two of them.
+	</modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ONECORRECT" showHide="show">
+		   	You have identified one of them.
+	</modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="WRONG" showHide="show">
+	   	No, that is not right.
+	</modalFeedback>
+</assessmentItem>

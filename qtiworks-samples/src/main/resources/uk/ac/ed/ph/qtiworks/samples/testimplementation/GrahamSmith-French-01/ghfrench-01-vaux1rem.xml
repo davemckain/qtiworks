@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" identifier="ghfrench-01-vaux1rem" title="Conjugation of French Verbs II: Auxilliary verbs : avoir (Remedial)" adaptive="false" timeDependent="false">
+  <responseDeclaration identifier="SINGLEFIRST" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>j'ai</value>
+    </correctResponse>
+  </responseDeclaration>
+  <responseDeclaration identifier="SINGLESECOND" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>tu as</value>
+    </correctResponse>
+  </responseDeclaration>
+  <responseDeclaration identifier="SINGLETHIRD" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>il a</value>
+    </correctResponse>
+  </responseDeclaration>
+  <responseDeclaration identifier="PLURALFIRST" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>nous avons</value>
+    </correctResponse>
+  </responseDeclaration>
+  <responseDeclaration identifier="PLURALSECOND" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>vous avez</value>
+    </correctResponse>
+  </responseDeclaration>
+  <responseDeclaration identifier="PLURALTHIRD" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>ils ont</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+  <itemBody>
+    <h2>You failed in the earlier test to conjugate the present tense of 'avoir' correctly </h2>
+    <h3>Here is a clue:</h3>
+    <p>The forms of the verb (not in the right order) are: 'a', 'avez', 'avons', 'ai', 'ont', 'ai'</p>
+    <h3> Now try again with 'avoir' (include the personal pronouns):</h3>
+    <h3>Single</h3>
+    <p>
+  First person 
+  <textEntryInteraction responseIdentifier="SINGLEFIRST" expectedLength="15" placeholderText=""/><br/><br/>
+  Second person
+  <textEntryInteraction responseIdentifier="SINGLESECOND" expectedLength="15" placeholderText=""/><br/><br/>
+  Third person (masculine form)
+  <textEntryInteraction responseIdentifier="SINGLETHIRD" expectedLength="15" placeholderText=""/>
+  </p>
+    <h3>Plural</h3>
+    <p>
+  First person
+  <textEntryInteraction responseIdentifier="PLURALFIRST" expectedLength="15" placeholderText=""/><br/>
+  <br/>
+  Second person
+  <textEntryInteraction responseIdentifier="PLURALSECOND" expectedLength="15" placeholderText=""/><br/>
+  <br/>
+  Third person (masculine form)
+  <textEntryInteraction responseIdentifier="PLURALTHIRD" expectedLength="15" placeholderText=""/>
+  </p>
+  </itemBody>
+  <responseProcessing>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="SINGLEFIRST"/>
+          <correct identifier="SINGLEFIRST"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <sum>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">1.0</baseValue>
+          </sum>
+        </setOutcomeValue>
+      </responseIf>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="SINGLESECOND"/>
+          <correct identifier="SINGLESECOND"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <sum>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">1.0</baseValue>
+          </sum>
+        </setOutcomeValue>
+      </responseIf>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="SINGLETHIRD"/>
+          <correct identifier="SINGLETHIRD"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <sum>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">1.0</baseValue>
+          </sum>
+        </setOutcomeValue>
+      </responseIf>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="PLURALFIRST"/>
+          <correct identifier="PLURALFIRST"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <sum>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">1.0</baseValue>
+          </sum>
+        </setOutcomeValue>
+      </responseIf>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="PLURALSECOND"/>
+          <correct identifier="PLURALSECOND"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <sum>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">1.0</baseValue>
+          </sum>
+        </setOutcomeValue>
+      </responseIf>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="PLURALTHIRD"/>
+          <correct identifier="PLURALTHIRD"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <sum>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">1.0</baseValue>
+          </sum>
+        </setOutcomeValue>
+      </responseIf>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <equal toleranceMode="exact">
+          <variable identifier="SCORE"/>
+          <baseValue baseType="float">6.0</baseValue>
+        </equal>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">ALLCORRECT</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElseIf>
+        <gte>
+          <variable identifier="SCORE"/>
+          <baseValue baseType="float">4.0</baseValue>
+        </gte>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">MOSTCORRECT</baseValue>
+        </setOutcomeValue>
+      </responseElseIf>
+      <responseElse>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">WRONG</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+  </responseProcessing>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="ALLCORRECT" showHide="show">
+  	Yes, you have all the forms correct.</modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="MOSTCORRECT" showHide="show">
+  	You have most of the forms correct.</modalFeedback>
+  <modalFeedback outcomeIdentifier="FEEDBACK" identifier="WRONG" showHide="show">
+  	You have fewer than four forms correct </modalFeedback>
+</assessmentItem>

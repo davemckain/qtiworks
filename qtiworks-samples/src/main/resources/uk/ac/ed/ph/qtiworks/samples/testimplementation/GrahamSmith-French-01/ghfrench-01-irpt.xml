@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd" identifier="ghfrench-01-irpt" title="The Tense of French Verbs" adaptive="false" timeDependent="false">
+  <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+    <correctResponse>
+      <value>A</value>
+      <value>B</value>
+      <value>C</value>
+    </correctResponse>
+    <mapping lowerBound="0" upperBound="3" defaultValue="0">
+      <mapEntry mapKey="A" mappedValue="1"/>
+      <mapEntry mapKey="B" mappedValue="1"/>
+      <mapEntry mapKey="C" mappedValue="1"/>
+      <mapEntry mapKey="D" mappedValue="-1"/>
+      <mapEntry mapKey="E" mappedValue="-1"/>
+      <mapEntry mapKey="F" mappedValue="-1"/>
+    </mapping>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <itemBody>
+    <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="0">
+      <prompt>Tick the box against the sentences in which  the verb is in the present tense.<br/>
+             You will not get the answer right if you tick any that are not in the present tense.
+            </prompt>
+      <simpleChoice identifier="A" fixed="false">Les garcons courent a l'école.</simpleChoice>
+      <simpleChoice identifier="B" fixed="false">Je choisis un livre.</simpleChoice>
+      <simpleChoice identifier="C" fixed="false">Les filles finissent leurs devoirs.</simpleChoice>
+      <simpleChoice identifier="D" fixed="false">Je sourisais.</simpleChoice>
+      <simpleChoice identifier="E" fixed="false">Les garcons finiront les devoirs.</simpleChoice>
+      <simpleChoice identifier="F" fixed="false">Les amis partissaient.</simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"/>
+</assessmentItem>
