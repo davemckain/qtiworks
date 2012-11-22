@@ -23,7 +23,7 @@ Top page for public functionality
       <div class="box">
         <a href="${utils:internalLink(pageContext, '/web/anonymous/standalonerunner')}" class="boxButton run" title="Run">
           <h3>Quick Upload &amp; Run</h3>
-          <div>Upload and run your own QTI 2.1 assessment items</div>
+          <div>Upload and try your own QTI 2.1 assessment items and tests</div>
         </a>
       </div>
     </div>
