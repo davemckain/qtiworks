@@ -32,6 +32,9 @@ Renders the test feedback
   <!-- Relevant action URLs -->
   <xsl:param name="reviewItemUrl" as="xs:string" required="yes"/>
 
+  <!-- This test -->
+  <xsl:variable name="assessmentTest" select="/*[1]" as="element(qti:assessmentTest)"/>
+
   <!-- Extract current testPart -->
   <xsl:variable name="currentTestPartKey" select="$testSessionState/@currentTestPartKey" as="xs:string"/>
   <xsl:variable name="currentTestPart" select="$testSessionState/qw:testPlan/qw:node[@key=$currentTestPartKey]" as="element(qw:node)?"/>
@@ -89,25 +92,55 @@ Renders the test feedback
     </div>
   </xsl:template>
 
-  <xsl:template match="qw:node" mode="testPart-review">
-    <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and (@allowReview='true' or @showFeedbacl='true')]" as="element(qw:node)*"/>
+  <xsl:template match="qw:node[@type='TEST_PART']" mode="testPart-review">
+    <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and (@allowReview='true' or @showFeedback='true')]" as="element(qw:node)*"/>
     <xsl:if test="exists($reviewable-items)">
       <h2>Review your responses</h2>
       <ul class="testPartNavigation">
-        <xsl:apply-templates select="$reviewable-items" mode="testPart-review-item"/>
+        <xsl:apply-templates mode="testPart-review"/>
       </ul>
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="qw:node" mode="testPart-review-item">
+  <xsl:template match="qw:node[@type='ASSESSMENT_SECTION']" mode="testPart-review">
+    <li class="assessmentSection">
+      <!-- Section title -->
+      <header><xsl:value-of select="@sectionPartTitle"/></header>
+      <!-- Handle rubrics -->
+      <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
+      <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
+      <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+      <!-- Descend -->
+      <ul>
+        <xsl:apply-templates mode="testPart-review"/>
+      </ul>
+    </li>
+  </xsl:template>
+
+  <xsl:template match="qti:rubricBlock" as="element(div)">
+    <div class="rubric {@view}">
+      <xsl:if test="not($view) or ($view = @view)">
+        <xsl:apply-templates/>
+      </xsl:if>
+    </div>
+  </xsl:template>
+
+  <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-review">
+    <xsl:variable name="reviewable" select="@allowReview='true' or @showFeedback='true'" as="xs:boolean"/>
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
     <li>
       <form action="{$webappContextPath}{$reviewItemUrl}/{@key}" method="post">
         <button type="submit">
+          <xsl:if test="not($reviewable)">
+            <xsl:attribute name="disabled" select="'disabled'"/>
+          </xsl:if>
           <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
           <div class="itemStatus review">
             <!-- FIXME: Do this better -->
             <xsl:choose>
+              <xsl:when test="not($reviewable)">
+                Not Reviewable
+              </xsl:when>
               <xsl:when test="not(empty($itemSessionState/@unboundResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))">
                 Review (Invalid Answer)
               </xsl:when>
@@ -128,4 +161,3 @@ Renders the test feedback
   </xsl:template>
 
 </xsl:stylesheet>
-

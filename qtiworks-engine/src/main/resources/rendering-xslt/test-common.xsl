@@ -54,6 +54,11 @@ Base templates used in test rendering
     <xsl:sequence select="$assessmentTest/qti:outcomeDeclaration[@identifier=$identifier]"/>
   </xsl:function>
 
+  <xsl:function name="qw:extract-identifier" as="xs:string">
+    <xsl:param name="testPlanNode" as="element(qw:node)"/>
+    <xsl:sequence select="substring-before($testPlanNode/@key, ':')"/>
+  </xsl:function>
+
   <!-- ************************************************************ -->
 
   <!-- FIXME: Move this? -->

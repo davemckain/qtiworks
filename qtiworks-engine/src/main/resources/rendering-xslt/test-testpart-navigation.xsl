@@ -39,11 +39,6 @@ Renders the navigation for the current testPart
   <xsl:variable name="currentTestPartKey" select="$testSessionState/@currentTestPartKey" as="xs:string"/>
   <xsl:variable name="currentTestPart" select="$testSessionState/qw:testPlan/qw:node[@key=$currentTestPartKey]" as="element(qw:node)?"/>
 
-  <xsl:function name="qw:extract-identifier" as="xs:string">
-    <xsl:param name="testPlanNode" as="element(qw:node)"/>
-    <xsl:sequence select="substring-before($testPlanNode/@key, ':')"/>
-  </xsl:function>
-
   <!-- ************************************************************ -->
 
   <xsl:template match="/">
@@ -108,11 +103,6 @@ Renders the navigation for the current testPart
       <!-- Handle rubrics -->
       <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
       <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
-      <xsl:message>
-        IDENTIFIER IS <xsl:copy-of select="$sectionIdentifier"/>
-        SECTION IS <xsl:copy-of select="$assessmentSection"/>
-        THIS DOC IS <xsl:copy-of select="/"/>
-      </xsl:message>
       <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
       <!-- Descend -->
       <ul>
