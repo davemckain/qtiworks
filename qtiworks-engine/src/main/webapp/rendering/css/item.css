@@ -315,6 +315,16 @@ li.assessmentSection {
   padding: 1em;
 }
 
+li.assessmentSection header {
+  font-size: larger;
+  font-weight: bold;
+  padding: 0.5em 0;
+}
+
+li.assessmentSection div.rubric {
+  font-style: italic;
+}
+
 li.assessmentSection ul {
   list-style: none;
   padding: 0;

@@ -32,9 +32,17 @@ Renders the navigation for the current testPart
   <!-- Relevant action URLs -->
   <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
 
+  <!-- This test -->
+  <xsl:variable name="assessmentTest" select="/*[1]" as="element(qti:assessmentTest)"/>
+
   <!-- Extract current testPart -->
   <xsl:variable name="currentTestPartKey" select="$testSessionState/@currentTestPartKey" as="xs:string"/>
   <xsl:variable name="currentTestPart" select="$testSessionState/qw:testPlan/qw:node[@key=$currentTestPartKey]" as="element(qw:node)?"/>
+
+  <xsl:function name="qw:extract-identifier" as="xs:string">
+    <xsl:param name="testPlanNode" as="element(qw:node)"/>
+    <xsl:sequence select="substring-before($testPlanNode/@key, ':')"/>
+  </xsl:function>
 
   <!-- ************************************************************ -->
 
@@ -95,11 +103,30 @@ Renders the navigation for the current testPart
 
   <xsl:template match="qw:node[@type='ASSESSMENT_SECTION']" mode="testPart-navigation">
     <li class="assessmentSection">
+      <!-- Section title -->
       <header><xsl:value-of select="@sectionPartTitle"/></header>
+      <!-- Handle rubrics -->
+      <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
+      <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
+      <xsl:message>
+        IDENTIFIER IS <xsl:copy-of select="$sectionIdentifier"/>
+        SECTION IS <xsl:copy-of select="$assessmentSection"/>
+        THIS DOC IS <xsl:copy-of select="/"/>
+      </xsl:message>
+      <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+      <!-- Descend -->
       <ul>
         <xsl:apply-templates mode="testPart-navigation"/>
       </ul>
     </li>
+  </xsl:template>
+
+  <xsl:template match="qti:rubricBlock" as="element(div)">
+    <div class="rubric {@view}">
+      <xsl:if test="not($view) or ($view = @view)">
+        <xsl:apply-templates/>
+      </xsl:if>
+    </div>
   </xsl:template>
 
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-navigation">
