@@ -43,13 +43,13 @@ public final class StandardQtiSampleSet {
     private static final QtiSampleSet instance = new QtiSampleSet("Standard QTI 2.1 reference examples",
             "These are the standard QTI 2.1 reference examples that can be downloaded from the IMS website, "
             + "as well as a few additional ones that have been been useful to try out some other features.",
-            new QtiSampleAssessment(DeliveryStyle.IMS_ADAPTIVE, "ims/adaptive_template.xml", new String[] { "images/red_door.png", "images/green_door.png", "images/blue_door.png", "images/open_goat.png", "images/open_car.png" }),
             new QtiSampleAssessment(DeliveryStyle.IMS_ADAPTIVE, "ims/adaptive.xml", new String[] { "images/red_door.png", "images/green_door.png", "images/blue_door.png", "images/open_goat.png", "images/open_car.png" }),
+            new QtiSampleAssessment(DeliveryStyle.IMS_ADAPTIVE, "ims/adaptive_template.xml", new String[] { "images/red_door.png", "images/green_door.png", "images/blue_door.png", "images/open_goat.png", "images/open_car.png" }),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/associate.xml"),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/choice.xml", new String[] { "images/sign.png" }),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/choice_fixed.xml", new String[] { "images/sign.png" }),
-            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/choice_multiple_chocolade.xml"),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/choice_multiple.xml"),
+            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/choice_multiple_chocolade.xml"),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/drawing.xml", new String[] { "images/house.png" }),
             new QtiSampleAssessment(DeliveryStyle.IMS_NO_RESPONSE_PROCESSING, "ims/extended_text.xml", new String[] { "images/postcard.png" }),
             new QtiSampleAssessment(DeliveryStyle.IMS_ADAPTIVE, "ims/feedback_adaptive.xml"),
@@ -74,14 +74,14 @@ public final class StandardQtiSampleSet {
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/shufflegap_match.xml"),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/shuffleinline_choice.xml"),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/slider.xml"),
-            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD_TEMPLATED, "ims/template_image.xml", new String[] { "images/plane.png", "images/train.png", "images/bus.png" }),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD_TEMPLATED, "ims/template.xml"),
+            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD_TEMPLATED, "ims/template_image.xml", new String[] { "images/plane.png", "images/train.png", "images/bus.png" }),
+            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/text_entry.xml"),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/text_entry1.xml"),
             new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/text_entry2.xml"),
-            new QtiSampleAssessment(DeliveryStyle.IMS_STANDARD, "ims/text_entry.xml"),
             new QtiSampleAssessment(DeliveryStyle.IMS_FEEDBACK, "ims/towns.xml"),
-            new QtiSampleAssessment(DeliveryStyle.IMS_NO_RESPONSE_PROCESSING, "ims/upload_composite.xml"),
-            new QtiSampleAssessment(DeliveryStyle.IMS_NO_RESPONSE_PROCESSING, "ims/upload.xml")
+            new QtiSampleAssessment(DeliveryStyle.IMS_NO_RESPONSE_PROCESSING, "ims/upload.xml"),
+            new QtiSampleAssessment(DeliveryStyle.IMS_NO_RESPONSE_PROCESSING, "ims/upload_composite.xml")
     );
     
     private StandardQtiSampleSet() {
