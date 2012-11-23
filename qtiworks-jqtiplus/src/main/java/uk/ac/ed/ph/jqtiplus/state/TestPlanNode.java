@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
+import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
@@ -92,10 +93,17 @@ public final class TestPlanNode implements Serializable {
      */
     private final EffectiveItemSessionControl effectiveItemSessionControl;
 
-    /** Title of the corresponding AssessmentItem, if this is an {@link TestNodeType#ASSESSMENT_ITEM_REF}, or null */
-    private final String itemTitle;
+    /**
+     * Title of the corresponding {@link SectionPart} if this is an
+     * {@link TestNodeType#ASSESSMENT_ITEM_REF} or {@link TestNodeType#ASSESSMENT_SECTION},
+     * null otherwise.
+     */
+    private final String sectionPartTitle;
 
-    /** Resolved System ID (href) if this is an {@link TestNodeType#ASSESSMENT_ITEM_REF}, or null */
+    /**
+     * Resolved System ID (href) if this is an {@link TestNodeType#ASSESSMENT_ITEM_REF},
+     * otherwise null.
+     */
     private final URI itemSystemId;
 
     /** Children of this Node */
@@ -108,15 +116,14 @@ public final class TestPlanNode implements Serializable {
 
     public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key,
             final EffectiveItemSessionControl effectiveItemSessionControl,
-            final String itemTitle, final URI itemSystemId) {
-        super();
+            final String sectionPartTitle, final URI itemSystemId) {
         this.parentNode = null;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
         this.key = key;
         this.effectiveItemSessionControl = effectiveItemSessionControl;
         this.children = new ArrayList<TestPlanNode>();
-        this.itemTitle = itemTitle;
+        this.sectionPartTitle = sectionPartTitle;
         this.itemSystemId = itemSystemId;
     }
 
@@ -150,8 +157,8 @@ public final class TestPlanNode implements Serializable {
         return itemSystemId;
     }
 
-    public String getItemTitle() {
-        return itemTitle;
+    public String getSectionPartTitle() {
+        return sectionPartTitle;
     }
 
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)

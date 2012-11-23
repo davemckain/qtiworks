@@ -442,7 +442,7 @@ public final class TestPlanner extends ListenerNotificationFirer {
     //------------------------------------------------------
 
     private TestPlanNode recordTestPartPlan(final BuildTreeNode buildTreeNode) {
-        final TestPlanNode result = recordTestPlanNode(testPlanRootNode, TestNodeType.TEST_PART, buildTreeNode);
+        final TestPlanNode result = recordTestPlanNode(testPlanRootNode, buildTreeNode);
         recordChildPlans(result, buildTreeNode.getChildNodes());
         return result;
     }
@@ -456,23 +456,12 @@ public final class TestPlanner extends ListenerNotificationFirer {
     }
 
     private TestPlanNode recordChildPlans(final TestPlanNode targetParent, final BuildTreeNode treeNode) {
-        final AbstractPart sectionPart = treeNode.getAbstractPart();
-        TestPlanNode result;
-        if (sectionPart instanceof AssessmentSection) {
-            result = recordTestPlanNode(targetParent, TestNodeType.ASSESSMENT_SECTION, treeNode);
-        }
-        else if (sectionPart instanceof AssessmentItemRef) {
-            result = recordTestPlanNode(targetParent, TestNodeType.ASSESSMENT_ITEM_REF, treeNode);
-        }
-        else {
-            throw new QtiLogicException("Unexpected logic branch: sectionPart=" + sectionPart);
-        }
+        final TestPlanNode result = recordTestPlanNode(targetParent, treeNode);
         recordChildPlans(result, treeNode.getChildNodes());
         return result;
     }
 
-    private TestPlanNode recordTestPlanNode(final TestPlanNode parent, final TestNodeType testNodeType,
-            final BuildTreeNode buildTreeNode) {
+    private TestPlanNode recordTestPlanNode(final TestPlanNode parent, final BuildTreeNode buildTreeNode) {
         /* Compute instance number for this identifier */
         final AbstractPart abstractPart = buildTreeNode.getAbstractPart();
         final Identifier identifier = buildTreeNode.getAbstractPart().getIdentifier();
@@ -497,8 +486,16 @@ public final class TestPlanner extends ListenerNotificationFirer {
             }
             result = new TestPlanNode(TestNodeType.ASSESSMENT_ITEM_REF, key, effectiveItemSessionControl, itemTitle, itemSystemId);
         }
+        else if (abstractPart instanceof AssessmentSection) {
+            final AssessmentSection assessmentSection = (AssessmentSection) abstractPart;
+            final String sectionTitle = assessmentSection.getTitle();
+            result = new TestPlanNode(TestNodeType.ASSESSMENT_SECTION, key, effectiveItemSessionControl, sectionTitle, null);
+        }
+        else if (abstractPart instanceof TestPart) {
+            result = new TestPlanNode(TestNodeType.TEST_PART, key, effectiveItemSessionControl);
+        }
         else {
-            result = new TestPlanNode(testNodeType, key, effectiveItemSessionControl);
+            throw new QtiLogicException("Unexpected logic branch");
         }
         parent.addChild(result);
 

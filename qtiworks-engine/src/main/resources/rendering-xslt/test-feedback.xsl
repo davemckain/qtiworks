@@ -104,7 +104,7 @@ Renders the test feedback
     <li>
       <form action="{$webappContextPath}{$reviewItemUrl}/{@key}" method="post">
         <button type="submit">
-          <span class="questionTitle"><xsl:value-of select="@itemTitle"/></span>
+          <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
           <div class="itemStatus review">
             <!-- FIXME: Do this better -->
             <xsl:choose>

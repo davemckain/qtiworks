@@ -98,7 +98,7 @@ Renders the navigation for the current testPart
     <li>
       <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
         <button type="submit">
-          <span class="questionTitle"><xsl:value-of select="@itemTitle"/></span>
+          <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
           <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
         </button>
       </form>

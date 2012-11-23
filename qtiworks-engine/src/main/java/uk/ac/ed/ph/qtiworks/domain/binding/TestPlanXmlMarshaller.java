@@ -91,9 +91,9 @@ public final class TestPlanXmlMarshaller {
             element.setAttribute("allowSkipping", StringUtilities.toTrueFalse(effectiveItemSessionControl.isAllowSkipping()));
             element.setAttribute("validateResponses", StringUtilities.toTrueFalse(effectiveItemSessionControl.isValidateResponses()));
         }
-        final String itemTitle = testPlanNode.getItemTitle();
-        if (itemTitle!=null) {
-            element.setAttribute("itemTitle", itemTitle);
+        final String sectionPartTitle = testPlanNode.getSectionPartTitle();
+        if (sectionPartTitle!=null) {
+            element.setAttribute("sectionPartTitle", sectionPartTitle);
         }
         final URI itemSystemId = testPlanNode.getItemSystemId();
         if (itemSystemId!=null) {
@@ -138,7 +138,7 @@ public final class TestPlanXmlMarshaller {
             }
             final TestNodeType type = requireTestNodeTypeAttribute(childElement, "type");
             final TestPlanNodeKey key = requireTestPlanNodeKeyAttribute(childElement, "key");
-            final String itemTitle = XmlMarshallerCore.parseOptionalStringAttribute(childElement, "itemTitle");
+            final String sectionPartTitle = XmlMarshallerCore.parseOptionalStringAttribute(childElement, "sectionPartTitle");
             final URI itemSystemId = XmlMarshallerCore.parseOptionalUriAttribute(childElement, "itemSystemId");
 
             /* Parse EffectiveItemSessionControl attributes */
@@ -151,7 +151,7 @@ public final class TestPlanXmlMarshaller {
             final boolean validateResponses = XmlMarshallerCore.parseOptionalBooleanAttribute(childElement, "validateResponses", ItemSessionControl.VALIDATE_RESPONSES_DEFAULT_VALUE);
             final EffectiveItemSessionControl effectiveItemSessionControl = new EffectiveItemSessionControl(maxAttempts, showFeedback, allowReview, showSolution, allowComment, allowSkipping, validateResponses);
 
-            final TestPlanNode childTestPlanNode = new TestPlanNode(type, key, effectiveItemSessionControl, itemTitle, itemSystemId);
+            final TestPlanNode childTestPlanNode = new TestPlanNode(type, key, effectiveItemSessionControl, sectionPartTitle, itemSystemId);
             targetOwner.addChild(childTestPlanNode);
             expectTestPlanNodeChildren(childElement, childTestPlanNode);
         }
