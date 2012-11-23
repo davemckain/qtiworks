@@ -149,19 +149,25 @@ Base templates used in test rendering
 
   <!-- ************************************************************ -->
 
-  <!-- feedback (block and inline) -->
-  <xsl:template name="feedback" as="node()*">
-    <xsl:choose>
-      <xsl:when test="$overrideFeedback">
-        <xsl:apply-templates/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:variable name="identifierMatch" select="boolean(qw:value-contains(qw:get-test-outcome-value(@outcomeIdentifier), @identifier))" as="xs:boolean"/>
-        <xsl:if test="($identifierMatch and @showHide='show') or (not($identifierMatch) and @showHide='hide')">
+  <!-- test feedback -->
+  <xsl:template match="qti:testFeedback" as="node()*">
+    <xsl:variable name="feedback-content" as="node()*">
+      <xsl:choose>
+        <xsl:when test="$overrideFeedback">
           <xsl:apply-templates/>
-        </xsl:if>
-      </xsl:otherwise>
-    </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:variable name="identifierMatch" select="boolean(qw:value-contains(qw:get-test-outcome-value(@outcomeIdentifier), @identifier))" as="xs:boolean"/>
+          <xsl:if test="($identifierMatch and @showHide='show') or (not($identifierMatch) and @showHide='hide')">
+            <xsl:apply-templates/>
+          </xsl:if>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:if test="exists($feedback-content)">
+      <h2>Feedback</h2>
+      <xsl:copy-of select="$feedback-content"/>
+    </xsl:if>
   </xsl:template>
 
   <!-- ************************************************************ -->

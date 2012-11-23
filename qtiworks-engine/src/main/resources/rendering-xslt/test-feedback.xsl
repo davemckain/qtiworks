@@ -85,13 +85,6 @@ Renders the test feedback
     </html>
   </xsl:template>
 
-  <xsl:template match="qti:testFeedback">
-    <div class="testFeedback">
-      <h2>Feedback</h2>
-      <xsl:call-template name="feedback"/>
-    </div>
-  </xsl:template>
-
   <xsl:template match="qw:node[@type='TEST_PART']" mode="testPart-review">
     <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and (@allowReview='true' or @showFeedback='true')]" as="element(qw:node)*"/>
     <xsl:if test="exists($reviewable-items)">
