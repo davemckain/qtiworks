@@ -239,7 +239,7 @@ rendering.
     -->
     <xsl:choose>
       <xsl:when test="qw:is-null-value($valueHolder)">
-        <!-- Spec says to output nothing in this case -->
+        <!-- (Spec says to output nothing in this case) -->
       </xsl:when>
       <xsl:when test="qw:is-single-cardinality-value($valueHolder)">
         <xsl:variable name="singleValue" select="qw:extract-single-cardinality-value($valueHolder)" as="xs:string"/>
@@ -253,11 +253,25 @@ rendering.
         </xsl:choose>
       </xsl:when>
       <xsl:when test="qw:is-maths-content-value($valueHolder)">
+        <!-- MathAssess math variable -->
         <xsl:copy-of select="qw:extract-maths-content-pmathml($valueHolder)"/>
       </xsl:when>
-      <xsl:when test="qw:is-multiple-cardinality-value($valueHolder) or qw:is-ordered-cardinality-value($valueHolder)">
+      <xsl:when test="qw:is-multiple-cardinality-value($valueHolder)">
+        <!--  Multiple cardinality -->
         <xsl:variable name="delimiter" select="if (exists($source/@delimiter)) then $source/@delimiter else ';'"/>
         <xsl:value-of select="qw:extract-iterable-elements($valueHolder)" separator="{$delimiter}"/>
+      </xsl:when>
+      <xsl:when test="qw:is-ordered-cardinality-value($valueHolder)">
+        <!--  Ordered cardinality -->
+        <xsl:choose>
+          <xsl:when test="exists($source/@index)">
+            <xsl:value-of select="qw:extract-iterable-element($valueHolder, $source/@index)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:variable name="delimiter" select="if (exists($source/@delimiter)) then $source/@delimiter else ';'"/>
+            <xsl:value-of select="qw:extract-iterable-elements($valueHolder)" separator="{$delimiter}"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:when test="qw:is-record-cardinality-value($valueHolder)">
         <xsl:choose>
