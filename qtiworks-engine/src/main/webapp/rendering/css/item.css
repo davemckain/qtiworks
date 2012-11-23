@@ -310,7 +310,18 @@ ul.testPartNavigation {
   margin: 0;
 }
 
-ul.testPartNavigation li {
+li.assessmentSection {
+  border: 1px dotted #cccccc;
+  padding: 1em;
+}
+
+li.assessmentSection ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.assessmentSection li {
   padding: 0.3em 0;
 }
 
