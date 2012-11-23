@@ -61,7 +61,6 @@ Base templates used in test rendering
 
   <!-- ************************************************************ -->
 
-  <!-- FIXME: Move this? -->
   <xsl:template match="qti:rubricBlock" as="element(div)">
     <div class="rubric {@view}">
       <xsl:if test="not($view) or ($view = @view)">
@@ -69,6 +68,8 @@ Base templates used in test rendering
       </xsl:if>
     </div>
   </xsl:template>
+
+  <!-- ************************************************************ -->
 
   <!-- printedVariable. Numeric output currently only supports Java String.format formatting. -->
   <xsl:template match="qti:assessmentTest//qti:printedVariable" as="element(span)">

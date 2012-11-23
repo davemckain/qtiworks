@@ -111,14 +111,6 @@ Renders the navigation for the current testPart
     </li>
   </xsl:template>
 
-  <xsl:template match="qti:rubricBlock" as="element(div)">
-    <div class="rubric {@view}">
-      <xsl:if test="not($view) or ($view = @view)">
-        <xsl:apply-templates/>
-      </xsl:if>
-    </div>
-  </xsl:template>
-
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-navigation">
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
     <li>
