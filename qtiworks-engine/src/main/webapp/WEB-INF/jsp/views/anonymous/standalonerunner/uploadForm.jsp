@@ -22,8 +22,7 @@ itemDeliverySettingsList
   <div class="hints">
     <p>
       This lets you quickly upload, validate then try out a QTI Assessment
-      Item, using some pre-defined "delivery settings". (Tests will come
-      later!)
+      Item or Test, using some pre-defined "delivery settings".
       If you log in, you'll be able to do much more.
     </p>
   </div>
