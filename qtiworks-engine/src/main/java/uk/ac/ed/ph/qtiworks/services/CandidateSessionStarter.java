@@ -257,7 +257,7 @@ public class CandidateSessionStarter {
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Handle the pathological case where the session closes immediately by saving the final result */
         if (itemSessionState.isClosed()) {
@@ -299,7 +299,7 @@ public class CandidateSessionStarter {
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.INIT, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         auditor.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());

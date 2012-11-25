@@ -791,7 +791,7 @@ public class CandidateTestDeliveryService {
             : CandidateItemEventType.ATTEMPT_BAD;
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ITEM_EVENT, itemEventType, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Persist CandidateResponse entities */
         for (final CandidateResponse candidateResponse : candidateResponseMap.values()) {
@@ -834,7 +834,7 @@ public class CandidateTestDeliveryService {
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_MENU, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         return candidateSession;
     }
@@ -869,7 +869,7 @@ public class CandidateTestDeliveryService {
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_ITEM, null, itemKey, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
+        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
     }
@@ -915,7 +915,7 @@ public class CandidateTestDeliveryService {
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.END_TEST_PART, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
+        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
     }
@@ -953,7 +953,7 @@ public class CandidateTestDeliveryService {
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.REVIEW_ITEM, null, itemKey, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
+        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
     }
@@ -993,7 +993,7 @@ public class CandidateTestDeliveryService {
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.EXIT_TEST_PART, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateTestEvent);
+        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
     }

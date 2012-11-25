@@ -582,7 +582,7 @@ public class CandidateItemDeliveryService {
             : CandidateItemEventType.ATTEMPT_BAD;
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 eventType, itemSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Link and persist CandidateResponse entities */
         for (final CandidateResponse candidateResponse : candidateResponseMap.values()) {
@@ -639,7 +639,7 @@ public class CandidateItemDeliveryService {
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.CLOSE, itemSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session state and record result */
         candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
@@ -704,7 +704,7 @@ public class CandidateItemDeliveryService {
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.REINIT, itemSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session depending on state after processing. Record final result if session closed immediately */
         candidateSession.setClosed(itemSessionState.isClosed());
@@ -766,7 +766,7 @@ public class CandidateItemDeliveryService {
 
         /* Record and event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session depending on state after processing. Record final result if session closed immediately */
         candidateSession.setClosed(itemSessionState.isClosed());
@@ -821,7 +821,7 @@ public class CandidateItemDeliveryService {
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session if required */
         if (isClosingSession) {
@@ -917,7 +917,7 @@ public class CandidateItemDeliveryService {
         itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.TERMINATE, itemSessionState);
-        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
+        candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Are we terminating a session that hasn't been closed? If so, record the final result. */
         if (!itemSessionState.isClosed()) {
