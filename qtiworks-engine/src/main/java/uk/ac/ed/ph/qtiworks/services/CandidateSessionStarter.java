@@ -183,25 +183,19 @@ public class CandidateSessionStarter {
 
     /**
      * Starts new {@link CandidateSession} for the given {@link Delivery}
-     *
-     * @param delivery
-     *
-     * @return
-     * @throws PrivilegeException
      */
     public CandidateSession createCandidateSession(final Delivery delivery, final String exitUrl)
             throws PrivilegeException {
         Assert.notNull(delivery, "delivery");
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
 
-        /* Make sure delivery is open */
-        /* FIXME: This prevents instructors from trying out their own sessions! */
-        if (!delivery.isOpen()) {
+        /* Make sure delivery is open (or candidate owns the delivery) */
+        final Assessment assessment = delivery.getAssessment();
+        if (!(delivery.isOpen() || assessment.getOwner().equals(candidate))) {
             throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
         }
 
         /* Make sure underlying Assessment is valid */
-        final Assessment assessment = delivery.getAssessment();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
         if (!assessmentPackage.isValid()) {
             throw new PrivilegeException(candidate, Privilege.LAUNCH_INVALID_ASSESSMENT, delivery);
