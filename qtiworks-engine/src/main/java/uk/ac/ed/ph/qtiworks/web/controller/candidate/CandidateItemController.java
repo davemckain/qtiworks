@@ -206,7 +206,7 @@ public class CandidateItemController {
      * Resets the given {@link CandidateSession}
      */
     @RequestMapping(value="/session/{xid}/{sessionToken}/reset", method=RequestMethod.POST)
-    public String resetCandidateSession(@PathVariable final long xid, @PathVariable final String sessionToken)
+    public String resetSession(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         candidateItemDeliveryService.resetCandidateSession(xid, sessionToken);
 

@@ -745,7 +745,7 @@ public class CandidateItemDeliveryService {
         if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
         }
-        else if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenClosed()) {
+        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
         }
 
