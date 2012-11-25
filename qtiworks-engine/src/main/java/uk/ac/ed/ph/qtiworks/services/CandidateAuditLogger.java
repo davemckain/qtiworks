@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
@@ -105,27 +104,11 @@ public class CandidateAuditLogger {
         logEvent(candidateSession, messageBuilder.toString());
     }
 
-    public void logPlaybackEvent(final CandidateSession candidateSession, final CandidateEvent candidateItemEvent,
+    public void logPlaybackEvent(final CandidateSession candidateSession, final CandidateEvent candidateEvent,
             final CandidateEvent targetEvent) {
-        logEvent(candidateSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateItemEvent.getId()
-                + " event=" + candidateItemEvent.getItemEventType()
-                + " target_xeid=" + targetEvent.getId());
-    }
-
-    public void logStandaloneItemCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
-        final CandidateEvent candidateEvent = candidateAttempt.getCandidateEvent();
-        logEvent(candidateSession, "action=CANDIDATE_STANDALONE_ITEM_ATTEMPT xeid=" + candidateEvent.getId()
+        logEvent(candidateSession, "action=CANDIDATE_ITEM_PLAYBACK xeid=" + candidateEvent.getId()
                 + " event=" + candidateEvent.getItemEventType()
-                + " xaid=" + candidateAttempt.getId()
-                + " notifications=" + candidateEvent.getNotifications().size());
-    }
-
-    public void logTestItemCandidateAttempt(final CandidateSession candidateSession, final CandidateAttempt candidateAttempt) {
-        final CandidateEvent candidateEvent = candidateAttempt.getCandidateEvent();
-        logEvent(candidateSession, "action=CANDIDATE_TEST_ITEM_ATTEMPT xeid=" + candidateEvent.getId()
-                + " event=" + candidateEvent.getTestEventType()
-                + " xaid=" + candidateAttempt.getId()
-                + " notifications=" + candidateEvent.getNotifications().size());
+                + " target_xeid=" + targetEvent.getId());
     }
 
     public void logAndForbid(final CandidateSession candidateSession, final CandidatePrivilege privilege)

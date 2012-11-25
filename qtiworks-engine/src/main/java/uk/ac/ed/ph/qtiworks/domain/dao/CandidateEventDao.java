@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.dao;
 
-
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;

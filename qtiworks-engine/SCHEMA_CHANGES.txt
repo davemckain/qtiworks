@@ -9,3 +9,9 @@ candidate_item_session:
   rename: state -> status
 
 candidate_item_event_notification: new table
+
+DEV19->DEV20
+============
+
+* candidate_reponses should now have FK to candidate_events
+* candidate_attempts should be dropped

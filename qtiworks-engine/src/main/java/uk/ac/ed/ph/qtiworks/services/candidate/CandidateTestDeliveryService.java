@@ -38,10 +38,9 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateAttemptDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateAttempt;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
@@ -93,7 +92,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -163,7 +161,7 @@ public class CandidateTestDeliveryService {
     private CandidateSessionDao candidateSessionDao;
 
     @Resource
-    private CandidateAttemptDao candidateAttemptDao;
+    private CandidateResponseDao candidateResponseDao;
 
     //----------------------------------------------------
     // Session access
@@ -681,15 +679,15 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Attempt
 
-    public CandidateAttempt handleAttempt(final long xid, final String sessionToken,
+    public void handleAttempt(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
+        handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
     }
 
-    public CandidateAttempt handleAttempt(final CandidateSession candidateSession,
+    public void handleAttempt(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException {
@@ -714,12 +712,12 @@ public class CandidateTestDeliveryService {
          * NB: The following doesn't test for duplicate keys in the two maps. I'm not sure
          * it's worth the effort.
          */
-        final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
+        final Map<Identifier, ResponseData> responseDataMap = new HashMap<Identifier, ResponseData>();
         if (stringResponseMap!=null) {
             for (final Entry<Identifier, StringResponseData> stringResponseEntry : stringResponseMap.entrySet()) {
                 final Identifier identifier = stringResponseEntry.getKey();
                 final StringResponseData stringResponseData = stringResponseEntry.getValue();
-                responseMap.put(identifier, stringResponseData);
+                responseDataMap.put(identifier, stringResponseData);
             }
         }
         final Map<Identifier, CandidateFileSubmission> fileSubmissionMap = new HashMap<Identifier, CandidateFileSubmission>();
@@ -729,22 +727,21 @@ public class CandidateTestDeliveryService {
                 final MultipartFile multipartFile = fileResponseEntry.getValue();
                 final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
                 final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType());
-                responseMap.put(identifier, fileResponseData);
+                responseDataMap.put(identifier, fileResponseData);
                 fileSubmissionMap.put(identifier, fileSubmission);
             }
         }
 
-        /* Build Map of responses in appropriate entity form */
-        final CandidateAttempt candidateAttempt = new CandidateAttempt();
-        final Map<Identifier, CandidateResponse> responseEntityMap = new HashMap<Identifier, CandidateResponse>();
-        final Set<CandidateResponse> candidateItemResponses = new HashSet<CandidateResponse>();
-        for (final Entry<Identifier, ResponseData> responseEntry : responseMap.entrySet()) {
+        /* Build Map of responses in appropriate entity form.
+         * NB: Not ready for persisting yet.
+         */
+        final Map<Identifier, CandidateResponse> candidateResponseMap = new HashMap<Identifier, CandidateResponse>();
+        for (final Entry<Identifier, ResponseData> responseEntry : responseDataMap.entrySet()) {
             final Identifier responseIdentifier = responseEntry.getKey();
             final ResponseData responseData = responseEntry.getValue();
 
             final CandidateResponse candidateItemResponse = new CandidateResponse();
             candidateItemResponse.setResponseIdentifier(responseIdentifier.toString());
-            candidateItemResponse.setCandidateAttempt(candidateAttempt);
             candidateItemResponse.setResponseDataType(responseData.getType());
             candidateItemResponse.setResponseLegality(ResponseLegality.VALID); /* (May change this below) */
             switch (responseData.getType()) {
@@ -759,19 +756,17 @@ public class CandidateTestDeliveryService {
                 default:
                     throw new QtiWorksLogicException("Unexpected switch case: " + responseData.getType());
             }
-            responseEntityMap.put(responseIdentifier, candidateItemResponse);
-            candidateItemResponses.add(candidateItemResponse);
+            candidateResponseMap.put(responseIdentifier, candidateItemResponse);
         }
-        candidateAttempt.setCandidateResponses(candidateItemResponses);
 
         /* Attempt to bind responses */
-        testSessionController.handleResponses(responseMap);
+        testSessionController.handleResponses(responseDataMap);
 
         /* Note any responses that failed to bind */
         final Set<Identifier> badResponseIdentifiers = itemSessionState.getUnboundResponseIdentifiers();
         final boolean allResponsesBound = badResponseIdentifiers.isEmpty();
         for (final Identifier badResponseIdentifier : badResponseIdentifiers) {
-            responseEntityMap.get(badResponseIdentifier).setResponseLegality(ResponseLegality.BAD);
+            candidateResponseMap.get(badResponseIdentifier).setResponseLegality(ResponseLegality.BAD);
         }
 
         /* Now validate the responses according to any constraints specified by the interactions */
@@ -782,30 +777,30 @@ public class CandidateTestDeliveryService {
             if (!allResponsesValid) {
                 /* Some responses not valid, so note these down */
                 for (final Identifier invalidResponseIdentifier : invalidResponseIdentifiers) {
-                    responseEntityMap.get(invalidResponseIdentifier).setResponseLegality(ResponseLegality.INVALID);
+                    candidateResponseMap.get(invalidResponseIdentifier).setResponseLegality(ResponseLegality.INVALID);
                 }
             }
         }
 
-        /* Update state */
+        /* Update JQTI state */
         testSessionState.setDuration(computeTestSessionDuration(candidateSession));
 
-        /* Record resulting attempt and event */
+        /* Record resulting event */
         final CandidateItemEventType itemEventType = allResponsesBound ?
             (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
             : CandidateItemEventType.ATTEMPT_BAD;
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ITEM_EVENT, itemEventType, testSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateEvent(candidateSession, candidateEvent);
 
-        candidateAttempt.setCandidateEvent(candidateEvent);
-        candidateAttemptDao.persist(candidateAttempt);
+        /* Persist CandidateResponse entities */
+        for (final CandidateResponse candidateResponse : candidateResponseMap.values()) {
+            candidateResponse.setCandidateEvent(candidateEvent);
+            candidateResponseDao.persist(candidateResponse);
+        }
 
-        /* Log this (in existing state) */
-        candidateAuditLogger.logTestItemCandidateAttempt(candidateSession, candidateAttempt);
-
-        /* Persist session */
+        /* Save any change to session state */
         candidateSessionDao.update(candidateSession);
-        return candidateAttempt;
     }
 
     //----------------------------------------------------

@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -54,6 +55,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -77,10 +79,10 @@ public class CandidateResponse implements BaseEntity {
     @Column(name="xrid")
     private Long id;
 
-    /** Attempt in which this response was made */
-    @ManyToOne(optional=false)
-    @JoinColumn(name="xaid")
-    private CandidateAttempt candidateAttempt;
+    /** {@link CandidateEvent} on which this response was submitted */
+    @OneToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @JoinColumn(name="xeid")
+    private CandidateEvent candidateEvent;
 
     /** Identifier of the underlying response variable */
     @Basic(optional=false)
@@ -125,12 +127,12 @@ public class CandidateResponse implements BaseEntity {
     }
 
 
-    public CandidateAttempt getCandidateAttempt() {
-        return candidateAttempt;
+    public CandidateEvent getCandidateEvent() {
+        return candidateEvent;
     }
 
-    public void setCandidateAttempt(final CandidateAttempt candidateAttempt) {
-        this.candidateAttempt = candidateAttempt;
+    public void setCandidateEvent(final CandidateEvent candidateEvent) {
+        this.candidateEvent = candidateEvent;
     }
 
 
