@@ -71,6 +71,13 @@ import javax.persistence.TemporalType;
                 + "  FROM CandidateSession x"
                 + "  WHERE x.delivery = :delivery"
                 + "  ORDER BY x.id"),
+    @NamedQuery(name="CandidateSession.getNonTerminatedForDeliveryAndCandidate",
+            query="SELECT x"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.delivery = :delivery"
+                + "  AND x.candidate = :candidate"
+                + "  AND x.terminated IS FALSE"
+                + "  ORDER BY x.id")
 })
 public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 

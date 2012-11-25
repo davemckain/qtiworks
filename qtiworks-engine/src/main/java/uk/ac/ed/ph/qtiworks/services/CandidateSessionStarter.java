@@ -200,6 +200,17 @@ public class CandidateSessionStarter {
             throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
         }
 
+        /* If the candidate already has any non-terminated sessions open for this Delivery,
+         * then we shall reconnect to the (most recent) session instead of creating a new one.
+         */
+        final List<CandidateSession> existingSessions = candidateSessionDao.getNonTerminatedForDeliveryAndCandidate(delivery, candidate);
+        if (!existingSessions.isEmpty()) {
+            final CandidateSession mostRecent = existingSessions.get(existingSessions.size()-1);
+            auditor.recordEvent("Reconnected to CandidateSession #" + mostRecent.getId()
+                    + " on Delivery #" + delivery.getId());
+            return mostRecent;
+        }
+
         /* Make sure underlying Assessment is valid */
         final Assessment assessment = delivery.getAssessment();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
