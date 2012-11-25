@@ -81,7 +81,7 @@ public final class TestTest {
 
         /* NEW STUFF TEST */
         testSessionController.initialize();
-        testSessionController.startTestNI();
+        testSessionController.startTest();
 
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
         testSessionController.selectItem(firstItemRefNode.getKey());

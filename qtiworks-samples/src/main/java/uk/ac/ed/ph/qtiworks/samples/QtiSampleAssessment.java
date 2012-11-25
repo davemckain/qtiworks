@@ -76,6 +76,12 @@ public final class QtiSampleAssessment implements Serializable {
     
     /** Use this constructor for both items or tests */
     public QtiSampleAssessment(AssessmentObjectType type, DeliveryStyle deliveryStyle,
+            String assessmentHref, String[] otherQtiRelativeHrefs, Feature... features) {
+        this(type, deliveryStyle, assessmentHref, otherQtiRelativeHrefs, new String[0], features);
+    }
+    
+    /** Use this constructor for both items or tests */
+    public QtiSampleAssessment(AssessmentObjectType type, DeliveryStyle deliveryStyle,
             String assessmentHref, String[] otherQtiRelativeHrefs, String[] fileRelativeHrefs, Feature... features) {
         this.type = type;
         this.deliveryStyle = deliveryStyle;

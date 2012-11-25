@@ -47,14 +47,17 @@ public enum CandidateItemEventType {
      */
     INIT,
 
-    /** Attempt made, all responses bound successfully and valid */
+    /** Responses made and counted as attempt, all responses bound successfully and valid */
     ATTEMPT_VALID,
 
-    /** Attempt made, all responses bound successfully but some invalid */
-    ATTEMPT_INVALID,
+    /** Responses saved but not yet counted as attempt, all responses bound successfully and valid */
+    RESPONSE_VALID,
+
+    /** Responses made, all responses bound successfully but some invalid */
+    RESPONSE_INVALID,
 
     /** Attempt made, some responses bound unsuccessfully */
-    ATTEMPT_BAD,
+    RESPONSE_BAD,
 
     /** Candidate has re-initialised the session (i.e. template processing has been redone) */
     REINIT,

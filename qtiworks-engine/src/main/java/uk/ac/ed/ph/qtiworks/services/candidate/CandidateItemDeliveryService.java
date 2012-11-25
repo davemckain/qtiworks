@@ -288,8 +288,8 @@ public class CandidateItemDeliveryService {
                 break;
 
             case ATTEMPT_VALID:
-            case ATTEMPT_INVALID:
-            case ATTEMPT_BAD:
+            case RESPONSE_INVALID:
+            case RESPONSE_BAD:
                 renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions,
                         RenderingMode.AFTER_ATTEMPT, resultStream);
                 break;
@@ -330,8 +330,8 @@ public class CandidateItemDeliveryService {
         final CandidateItemEventType eventType = candidateEvent.getItemEventType();
         switch (eventType) {
             case ATTEMPT_VALID:
-            case ATTEMPT_INVALID:
-            case ATTEMPT_BAD:
+            case RESPONSE_INVALID:
+            case RESPONSE_BAD:
                 renderWhenClosed(candidateEvent, itemSessionState, renderingOptions,
                         RenderingMode.AFTER_ATTEMPT, resultStream);
                 break;
@@ -491,7 +491,7 @@ public class CandidateItemDeliveryService {
         /* Make sure an attempt is allowed */
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         if (itemSessionState.isClosed()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_ATTEMPT);
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
         }
 
         /* Build response map in required format for JQTI+.
@@ -578,8 +578,8 @@ public class CandidateItemDeliveryService {
 
         /* Record resulting attempt and event */
         final CandidateItemEventType eventType = allResponsesBound ?
-            (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
-            : CandidateItemEventType.ATTEMPT_BAD;
+            (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.RESPONSE_INVALID)
+            : CandidateItemEventType.RESPONSE_BAD;
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 eventType, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
@@ -1058,8 +1058,8 @@ public class CandidateItemDeliveryService {
     private boolean isCandidatePlaybackCapable(final CandidateEvent event) {
         final CandidateItemEventType eventType = event.getItemEventType();
         return eventType==CandidateItemEventType.ATTEMPT_VALID
-                || eventType==CandidateItemEventType.ATTEMPT_INVALID
-                || eventType==CandidateItemEventType.ATTEMPT_BAD
+                || eventType==CandidateItemEventType.RESPONSE_INVALID
+                || eventType==CandidateItemEventType.RESPONSE_BAD
                 || eventType==CandidateItemEventType.INIT
                 || eventType==CandidateItemEventType.REINIT
                 || eventType==CandidateItemEventType.RESET;

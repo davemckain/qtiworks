@@ -72,6 +72,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
@@ -437,9 +438,10 @@ public class CandidateTestDeliveryService {
         final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
         switch (itemEventType) {
             case ATTEMPT_VALID:
-            case ATTEMPT_INVALID:
-            case ATTEMPT_BAD:
-                renderInteractingAfterAttempt(candidateEvent, itemKey, testSessionState, itemSessionState,
+            case RESPONSE_VALID:
+            case RESPONSE_INVALID:
+            case RESPONSE_BAD:
+                renderInteractingAfterResponse(candidateEvent, itemKey, testSessionState, itemSessionState,
                         renderingOptions, resultStream);
                 break;
 
@@ -466,7 +468,7 @@ public class CandidateTestDeliveryService {
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    private void renderInteractingAfterAttempt(final CandidateEvent candidateEvent,
+    private void renderInteractingAfterResponse(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenInteracting(candidateEvent,
@@ -524,9 +526,10 @@ public class CandidateTestDeliveryService {
         final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
         switch (itemEventType) {
             case ATTEMPT_VALID:
-            case ATTEMPT_INVALID:
-            case ATTEMPT_BAD:
-                renderClosedAfterAttempt(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
+            case RESPONSE_VALID:
+            case RESPONSE_INVALID:
+            case RESPONSE_BAD:
+                renderClosedAfterResponse(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
                 break;
 
             case CLOSE:
@@ -544,7 +547,7 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    private void renderClosedAfterAttempt(final CandidateEvent candidateEvent,
+    private void renderClosedAfterResponse(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateEvent,
@@ -679,15 +682,15 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Attempt
 
-    public void handleAttempt(final long xid, final String sessionToken,
+    public void handleResponses(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
+        handleResponses(candidateSession, stringResponseMap, fileResponseMap);
     }
 
-    public void handleAttempt(final CandidateSession candidateSession,
+    public void handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap)
             throws CandidateForbiddenException {
@@ -701,10 +704,8 @@ public class CandidateTestDeliveryService {
 
         /* Make sure an attempt is allowed */
         if (testSessionState.getCurrentItemKey()==null || !testSessionController.maySubmitResponsesToCurrentItem()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_ATTEMPT);
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
         }
-
-        final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();
 
         /* FIXME: Next wodge of code has some cut & paste! */
 
@@ -759,10 +760,11 @@ public class CandidateTestDeliveryService {
             candidateResponseMap.put(responseIdentifier, candidateItemResponse);
         }
 
-        /* Attempt to bind responses */
+        /* Attempt to bind responses (and maybe perform RP & OP) */
         testSessionController.handleResponses(responseDataMap);
 
         /* Note any responses that failed to bind */
+        final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();
         final Set<Identifier> badResponseIdentifiers = itemSessionState.getUnboundResponseIdentifiers();
         final boolean allResponsesBound = badResponseIdentifiers.isEmpty();
         for (final Identifier badResponseIdentifier : badResponseIdentifiers) {
@@ -785,12 +787,19 @@ public class CandidateTestDeliveryService {
         /* Update JQTI state */
         testSessionState.setDuration(computeTestSessionDuration(candidateSession));
 
+        /* Classify this event */
+        final SubmissionMode submissionMode = testSessionController.getCurrentTestPart().getSubmissionMode();
+        final CandidateItemEventType candidateItemEventType;
+        if (allResponsesValid) {
+            candidateItemEventType = submissionMode==SubmissionMode.INDIVIDUAL ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.RESPONSE_VALID;
+        }
+        else {
+            candidateItemEventType = allResponsesBound ? CandidateItemEventType.RESPONSE_INVALID : CandidateItemEventType.RESPONSE_BAD;
+        }
+
         /* Record resulting event */
-        final CandidateItemEventType itemEventType = allResponsesBound ?
-            (allResponsesValid ? CandidateItemEventType.ATTEMPT_VALID : CandidateItemEventType.ATTEMPT_INVALID)
-            : CandidateItemEventType.ATTEMPT_BAD;
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.ITEM_EVENT, itemEventType, testSessionState, notificationRecorder);
+                CandidateTestEventType.ITEM_EVENT, candidateItemEventType, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Persist CandidateResponse entities */
@@ -983,8 +992,8 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        /* FIXME: This is probably not the right logic in general but works OK in this restricted case */
-        testSessionController.endTestPart();
+
+        testSessionController.exitTestPart();
 
         /* Update CandidateSession */
         candidateSession.setTerminated(true);

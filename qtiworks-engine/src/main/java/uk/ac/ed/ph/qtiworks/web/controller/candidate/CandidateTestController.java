@@ -140,7 +140,7 @@ public class CandidateTestController {
         }
 
         /* Call up service layer */
-        candidateTestDeliveryService.handleAttempt(xid, sessionToken, stringResponseMap, fileResponseMap);
+        candidateTestDeliveryService.handleResponses(xid, sessionToken, stringResponseMap, fileResponseMap);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);

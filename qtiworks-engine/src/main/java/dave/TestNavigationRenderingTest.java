@@ -68,7 +68,7 @@ public class TestNavigationRenderingTest {
 
             System.out.println("\nInitialising");
             testSessionController.initialize();
-            testSessionController.startTestNI();
+            testSessionController.startTest();
             System.out.println("Test session state after init: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");

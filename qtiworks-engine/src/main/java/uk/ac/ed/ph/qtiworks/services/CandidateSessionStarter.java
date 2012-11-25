@@ -291,7 +291,7 @@ public class CandidateSessionStarter {
         testSessionController.initialize();
 
         /* FIXME: Make further state transitions */
-        testSessionController.startTestNI();
+        testSessionController.startTest();
 
         /* Create new session entity and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentTest
+  xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="Test01"
+  title="LI - outcome expressions">
+  <outcomeDeclaration identifier="numberSelected" cardinality="single" baseType="integer"/>
+  <outcomeDeclaration identifier="numberPresented" cardinality="single" baseType="integer"/>
+  <outcomeDeclaration identifier="numberResponded" cardinality="single" baseType="integer"/>
+  <outcomeDeclaration identifier="numberCorrect" cardinality="single" baseType="identifier"/>
+  <outcomeDeclaration identifier="numberIncorrect" cardinality="single" baseType="integer"/>
+  <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
+  <testPart identifier="P01" navigationMode="linear" submissionMode="individual">
+    <assessmentSection identifier="S01" title="Section 1" visible="true">
+      <assessmentItemRef identifier="item01" href="addition-feedback.xml"/>
+      <assessmentItemRef identifier="item02" href="addition-no-feedback.xml"/>
+      <assessmentItemRef identifier="item03" href="item03.xml"/>
+      <assessmentItemRef identifier="item04" href="item04.xml"/>
+      <assessmentItemRef identifier="item05" href="item05.xml"/>
+      <assessmentItemRef identifier="item06" href="item06.xml"/>
+    </assessmentSection>
+  </testPart>
+  <outcomeProcessing>
+    <setOutcomeValue identifier="numberSelected">
+      <numberSelected/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="numberPresented">
+      <numberPresented/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="numberResponded">
+      <numberResponded/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="numberCorrect">
+      <numberCorrect/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="numberIncorrect">
+      <numberIncorrect/>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="totalScore">
+      <sum>
+        <testVariables variableIdentifier="SCORE"/>
+      </sum>
+    </setOutcomeValue>
+  </outcomeProcessing>
+  <testFeedback access="during" showHide="hide" outcomeIdentifier="something" identifier="something">
+    <table>
+      <tbody>
+        <tr><td>Selected: </td><td><printedVariable identifier="numberSelected"/></td></tr>
+        <tr><td>Presented: </td><td><printedVariable identifier="numberPresented"/></td></tr>
+        <tr><td>Responded: </td><td><printedVariable identifier="numberResponded"/></td></tr>
+        <tr><td>Correct: </td><td><printedVariable identifier="numberCorrect"/></td></tr>
+        <tr><td>Incorrect: </td><td><printedVariable identifier="numberIncorrect"/></td></tr>
+        <tr><td>Score: </td><td><printedVariable identifier="totalScore"/></td></tr>
+      </tbody>
+    </table>
+  </testFeedback>
+  <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="something" identifier="something">
+    <table>
+      <tbody>
+        <tr><td>Selected: </td><td><printedVariable identifier="numberSelected"/></td></tr>
+        <tr><td>Presented: </td><td><printedVariable identifier="numberPresented"/></td></tr>
+        <tr><td>Responded: </td><td><printedVariable identifier="numberResponded"/></td></tr>
+        <tr><td>Correct: </td><td><printedVariable identifier="numberCorrect"/></td></tr>
+        <tr><td>Incorrect: </td><td><printedVariable identifier="numberIncorrect"/></td></tr>
+        <tr><td>Score: </td><td><printedVariable identifier="totalScore"/></td></tr>
+      </tbody>
+    </table>
+  </testFeedback>
+</assessmentTest>

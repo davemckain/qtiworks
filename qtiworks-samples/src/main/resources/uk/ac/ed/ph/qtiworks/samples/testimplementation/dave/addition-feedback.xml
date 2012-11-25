@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
+  identifier="addition-feedback" title="Addition with Feedback" adaptive="false" timeDependent="false">
+
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+    <correctResponse>
+      <value>2</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+      <mapEntry mapKey="2" mappedValue="1"/>
+    </mapping>
+  </responseDeclaration>
+
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="1.0">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+
+  <itemBody>
+    <p>Please calculate the following:</p>
+    <p>1+1=<textEntryInteraction responseIdentifier="RESPONSE" expectedLength="15"/></p>
+    <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="CORRECT" showHide="show">
+      <p>Yes, that is correct.</p>
+    </feedbackBlock>
+    <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="INCORRECT" showHide="show">
+      <p>No, that is wrong.</p>
+    </feedbackBlock>
+  </itemBody>
+
+  <responseProcessing>
+    <responseCondition>
+      <responseIf>
+        <isNull>
+          <variable identifier="RESPONSE"/>
+        </isNull>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">0.0</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE">
+          <mapResponse identifier="RESPONSE"/>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <gt>
+          <variable identifier="SCORE"/>
+          <baseValue baseType="float">0.0</baseValue>
+        </gt>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">CORRECT</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="FEEDBACK">
+          <baseValue baseType="identifier">INCORRECT</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+  </responseProcessing>
+
+</assessmentItem>
