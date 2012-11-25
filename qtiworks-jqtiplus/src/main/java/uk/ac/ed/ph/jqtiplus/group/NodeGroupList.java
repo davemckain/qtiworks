@@ -334,7 +334,8 @@ public final class NodeGroupList implements Serializable, Iterable<NodeGroup<?,?
                 }
                 else {
                     /* Register error */
-                    context.modelBuildingError(new QtiIllegalChildException(parent, childNode.getLocalName()), childNode);
+                    final String childName = childNode.getNodeType()==Node.ELEMENT_NODE ? childNode.getLocalName() : "(text)";
+                    context.modelBuildingError(new QtiIllegalChildException(parent, childName), childNode);
                 }
             }
         }
