@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import java.util.List;
 
@@ -65,6 +66,13 @@ public class CandidateSessionDao extends GenericDao<CandidateSession> {
     public List<CandidateSession> getForDelivery(final Delivery delivery) {
         final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForDelivery", CandidateSession.class);
         query.setParameter("delivery", delivery);
+        return query.getResultList();
+    }
+
+    public List<CandidateSession> getNonTerminatedForDeliveryAndCandidate(final Delivery delivery, final User candidate) {
+        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getNonTerminatedForDeliveryAndCandidate", CandidateSession.class);
+        query.setParameter("delivery", delivery);
+        query.setParameter("candidate", candidate);
         return query.getResultList();
     }
 }
