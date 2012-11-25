@@ -36,33 +36,48 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.List;
 
 /**
  * Attribute with identifier values.
- * 
+ *
  * @author Jiri Kajaba
  */
 public final class IdentifierMultipleAttribute extends MultipleAttribute<Identifier> {
 
     private static final long serialVersionUID = -4902112764512399666L;
 
-    public IdentifierMultipleAttribute(QtiNode parent, String localName, boolean required) {
+    public IdentifierMultipleAttribute(final QtiNode parent, final String localName, final boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, required);
     }
 
-    public IdentifierMultipleAttribute(QtiNode parent, String localName, List<Identifier> defaultValue, boolean required) {
+    public IdentifierMultipleAttribute(final QtiNode parent, final String localName, final List<Identifier> defaultValue, final boolean required) {
         super(parent, localName, MultipleAttribute.SPACE_FIELD_SEPARATOR, defaultValue, required);
     }
 
     @Override
-    protected Identifier parseItemValue(String value) {
+    public void validateBasic(final ValidationContext context) {
+        super.validateBasic(context);
+
+        /* Spec recommends identifiers are not more than 32 characters */
+        if (value!=null) {
+            for (final Identifier item : value) {
+                if (item.toString().length() > 32) {
+                    context.fireAttributeValidationWarning(this, "The identifiers " + item + " is recommended to be no more than 32 characters long");
+                }
+            }
+        }
+    }
+
+    @Override
+    protected Identifier parseItemValue(final String value) {
         return Identifier.parseString(value);
     }
-    
+
     @Override
-    protected String itemToQtiString(Identifier item) {
+    protected String itemToQtiString(final Identifier item) {
         return item.toString();
     }
 }

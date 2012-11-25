@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.value;
 
-
 /**
  * Base class for all QTI {@link Value} classes.
  *

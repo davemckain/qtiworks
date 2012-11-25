@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.attribute.value;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
  * Attribute with {@link Identifier} value.
@@ -61,6 +62,16 @@ public final class IdentifierAttribute extends SingleAttribute<Identifier> {
     @Override
     protected Identifier parseQtiString(final String value) {
         return Identifier.parseString(value);
+    }
+
+    @Override
+    public void validateBasic(final ValidationContext context) {
+        super.validateBasic(context);
+
+        /* Spec recommends identifiers are not more than 32 characters */
+        if (value!=null && value.toString().length() > 32) {
+            context.fireAttributeValidationWarning(this, "Identifiers are recommended to be no more than 32 characters long");
+        }
     }
 
     @Override
