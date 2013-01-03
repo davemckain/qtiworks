@@ -23,6 +23,9 @@ rendering.
   <!-- State of item being rendered -->
   <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
 
+  <!-- Rendering mode -->
+  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
+
   <!-- Action permissions -->
   <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
@@ -56,7 +59,7 @@ rendering.
     <xsl:sequence select="$descriptions[@type=$candidate-event-type]/text()"/>
   </xsl:function>
 
-  <!-- Extract stuff from the state -->
+  <!-- Extract information from the <itemSessionState> -->
   <xsl:variable name="shuffledChoiceOrders" select="$itemSessionState/qw:shuffledInteractionChoiceOrder"
     as="element(qw:shuffledInteractionChoiceOrder)*"/>
   <xsl:variable name="templateValues" select="$itemSessionState/qw:templateVariable" as="element(qw:templateVariable)*"/>
@@ -64,6 +67,8 @@ rendering.
   <xsl:variable name="outcomeValues" select="$itemSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
   <xsl:variable name="overriddenCorrectResponses" select="$itemSessionState/qw:overriddenCorrectResponse" as="element(qw:overriddenCorrectResponse)*"/>
   <xsl:variable name="sessionStatus" select="$itemSessionState/@sessionStatus" as="xs:string"/>
+  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$itemSessionState/@closed='true'"/>
+  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="not($isSessionClosed)"/>
 
   <!-- Raw response inputs -->
   <xsl:variable name="responseInputs" select="$itemSessionState/qw:responseInput" as="element(qw:responseInput)*"/>

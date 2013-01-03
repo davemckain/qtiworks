@@ -20,24 +20,11 @@ Renders the navigation for the current testPart
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- Web Application contextPath. Starts with a '/' -->
-  <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
-
-  <!-- Set to true to include author debug information -->
-  <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
-
-  <!-- Current state -->
-  <xsl:param name="testSessionState" as="element(qw:testSessionState)"/>
-
   <!-- Relevant action URLs -->
   <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
 
   <!-- This test -->
   <xsl:variable name="assessmentTest" select="/*[1]" as="element(qti:assessmentTest)"/>
-
-  <!-- Extract current testPart -->
-  <xsl:variable name="currentTestPartKey" select="$testSessionState/@currentTestPartKey" as="xs:string"/>
-  <xsl:variable name="currentTestPart" select="$testSessionState/qw:testPlan/qw:node[@key=$currentTestPartKey]" as="element(qw:node)?"/>
 
   <!-- ************************************************************ -->
 

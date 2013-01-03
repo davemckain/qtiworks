@@ -20,11 +20,6 @@ Renders a standalone assessmentItem
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- State -->
-  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
-  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$itemSessionState/@closed='true'"/>
-  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="not($isSessionClosed)"/>
-
   <!-- Item prompt -->
   <xsl:param name="prompt" select="()" as="xs:string?"/>
 

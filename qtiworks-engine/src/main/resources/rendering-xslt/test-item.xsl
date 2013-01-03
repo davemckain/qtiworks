@@ -19,12 +19,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- State -->
-  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
-  <xsl:variable name="isSessionClosed" as="xs:boolean" select="$itemSessionState/@closed='true'"/>
-  <xsl:variable name="isSessionInteracting" as="xs:boolean" select="not($isSessionClosed)"/>
-
-  <!-- Effective value of itemSessionControl/@showFeedback for this itme -->
+  <!-- Effective value of itemSessionControl/@showFeedback for this item -->
   <xsl:param name="showFeedback" as="xs:boolean"/>
 
   <xsl:variable name="feedbackAllowed" as="xs:boolean"

@@ -23,7 +23,7 @@ Base templates used in test rendering
   <xsl:param name="testSystemId" as="xs:string" required="yes"/>
 
   <!-- State of test being rendered -->
-  <xsl:param name="testSessionState" as="element(qw:itemSessionState)" required="yes"/>
+  <xsl:param name="testSessionState" as="element(qw:testSessionState)" required="yes"/>
 
   <!-- Outcome declarations in test -->
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
@@ -35,6 +35,10 @@ Base templates used in test rendering
   <xsl:param name="exitTestPartAllowed" as="xs:boolean" required="yes"/>
 
   <!-- ************************************************************ -->
+
+  <!-- Current TestPart details -->
+  <xsl:variable name="currentTestPartKey" select="$testSessionState/@currentTestPartKey" as="xs:string"/>
+  <xsl:variable name="currentTestPart" select="$testSessionState/qw:testPlan/qw:node[@key=$currentTestPartKey]" as="element(qw:node)?"/>
 
   <!-- assesssmentTest document element -->
   <xsl:variable name="assessmentTest" select="document($testSystemId)/*[1]" as="element(qti:assessmentTest)"/>
