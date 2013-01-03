@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 
 /**
@@ -55,8 +56,11 @@ public enum CandidateTestEventType {
     /** Exits the current {@link TestPart} and either goes to the next, or completes the test */
     EXIT_TEST_PART,
 
-    /** Selection of a particular item (for interaction) */
+    /** Selection of a particular item for interaction (in {@link NavigationMode#NONLINEAR}) */
     SELECT_ITEM,
+
+    /** Selection of next item for interaction (in {@link NavigationMode#LINEAR}) */
+    SELECT_NEXT_ITEM,
 
     /** Item Event within the currently-selected item */
     ITEM_EVENT,

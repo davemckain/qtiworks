@@ -136,6 +136,7 @@ public class StandaloneItemRenderingTest {
         renderingOptions.setPlaybackUrlBase("/playback");
         renderingOptions.setTerminateUrl("/terminate");
         renderingOptions.setSelectItemUrl("/select");
+        renderingOptions.setSelectNextItemUrl("/next");
         renderingOptions.setEndTestPartUrl("/endtestpart");
         renderingOptions.setReviewItemUrl("/review");
         renderingOptions.setExitTestPartUrl("/exittestpart");

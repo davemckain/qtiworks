@@ -258,12 +258,12 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     //-------------------------------------------------------------------
-    // WORK IN PROGRESS - TEST CONTROL - NONLINEAR ONLY WITH SINGLE TEST PART
+    // WORK IN PROGRESS - TEST CONTROL - SINGLE TEST PART ONLY
 
     /**
      * Temporary start method!
      *
-     * (Only properly works for tests with 1 part in NONLINEAR navigation mode.)
+     * (Only properly works for tests with 1 part.)
      *
      * Runs template processing on each item, selects the single part, then test is ready.
      */
@@ -280,12 +280,6 @@ public final class TestSessionController extends TestValidationController implem
         final TestPlanNode testPlanNode = testPartNodes.get(0);
         testSessionState.setCurrentTestPartKey(testPlanNode.getKey());
 
-        /* Check submission/navigation mode */
-        final TestPart testPart = (TestPart) testProcessingMap.resolveAbstractPart(testPlanNode);
-        if (testPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
-            fireRuntimeWarning(testPart, "This work in progress only supports NONLINEAR testParts. We're going to ignore your choices today and run the test in NONLINEAR mode.");
-        }
-
         /* Perform template processing on each item */
         logger.debug("Performing template processing on each item in this testPart");
         final List<TestPlanNode> itemRefNodes = testPlanNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
@@ -294,6 +288,10 @@ public final class TestSessionController extends TestValidationController implem
         }
     }
 
+    /**
+     * Performs template processing on the given {@link TestPlanNode} corresponding to an
+     * {@link AssessmentItemRef}
+     */
     private void performTemplateProcessing(final TestPlanNode itemRefNode) {
         Assert.notNull(itemRefNode);
         ensureItemRef(itemRefNode);
@@ -305,71 +303,210 @@ public final class TestSessionController extends TestValidationController implem
         itemSessionController.performTemplateProcessing(templateDefaults);
     }
 
+    /**
+     * Returns whether the candidate may select the item in the current {@link NavigationMode#NONLINEAR}
+     * {@link TestPart} having
+     * the given {@link TestPlanNodeKey}.
+     * <p>
+     * - Returns false if no {@link TestPart} is selected.
+     * - In {@link NavigationMode#NONLINEAR} mode:
+     *   - Returns true if the current test part is not null and itemKey is null (indicating "no selection")
+     *     or corresponds to an {@link AssessmentItemRef} in the current test part.
+     *   - Otherwise returns false
+     * - In {@link NavigationMode#LINEAR} mode:
+     *   - Always returns false, as we do not allow the candidate to explicitly select an item.
+     *
+     * @param itemKey key for the requested item, or null to indicate that we want to deselect the
+     *   current item.
+     *
+     * @see #selectItem(TestPlanNodeKey)
+     */
     public boolean maySelectItem(final TestPlanNodeKey itemKey) {
-        final TestPlanNode currentTestPart = getCurrentTestPartNode();
-        if (currentTestPart==null) {
+        final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
+        if (currentTestPartNode==null) {
             return false;
         }
-        if (itemKey!=null) {
-            final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-            if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPart)) {
+        final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+        switch (currentTestPart.getNavigationMode()) {
+            case LINEAR:
+                /* Explicit selection never allowed */
                 return false;
-            }
-            return true;
-        }
-        else {
-            /* Allow deselection FIXME: Review when we support linear? */
-            return true;
-        }
-    }
 
-    public boolean mayReviewItem(final TestPlanNodeKey itemKey) {
-        Assert.notNull(itemKey);
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPartNode)) {
-            return false;
-        }
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
+            case NONLINEAR:
+                if (itemKey!=null) {
+                    final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+                    if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPartNode)) {
+                        return false;
+                    }
+                    return true;
+                }
+                else {
+                    /* Allow deselection */
+                    return true;
+                }
 
-        return itemSessionState.isClosed() && effectiveItemSessionControl.isAllowReview();
+            default:
+                throw new QtiLogicException("Unexpected switch case " + currentTestPart.getNavigationMode());
+        }
     }
 
     /**
-     * Selects the given item within the part.
+     * Select an item within the current {@link TestPart}.
+     * <p>
+     * In {@link NavigationMode#NONLINEAR} mode:
+     * - Selects the item having the given {@link TestPlanNodeKey} in the current TestPart, or
+     *   deselects the current item is the key is null.
      *
-     * FIXME: Decide whether to leave this free, or whether to enforce constraints made
-     * by navigation mode here.
+     * In {@link NavigationMode#LINEAR} mode:
+     * - Throws {@link IllegalStateException} as explicit selction is not allowed
+     *
+     * @param itemKey key for the requested item, or null to indicate that we want to deselect the
+     *   current item.
      *
      * @param itemKey item to select, or null to select no item
      *
-     * @throws IllegalStateException if no testPart is selected, or item is not in the current part
+     * @throws IllegalStateException if no testPart is selected, if the current testPart
+     *   does not have {@link NavigationMode#NONLINEAR}, or if the requested item is not in the current part.
+     *
+     * @see #maySelectItem(TestPlanNodeKey)
      */
     public TestPlanNode selectItem(final TestPlanNodeKey itemKey) {
-        final TestPlanNode testPartNode = ensureCurrentTestPartNode();
-        if (itemKey!=null) {
-            final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-            ensureItemRef(itemRefNode);
-            if (!itemRefNode.hasAncestor(testPartNode)) {
-                throw new IllegalStateException(itemRefNode + " is not a descendant of " + testPartNode);
-            }
-            testSessionState.setCurrentItemKey(itemRefNode.getKey());
+        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+        final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+        switch (currentTestPart.getNavigationMode()) {
+            case LINEAR:
+                /* No selection allowed in this mode */
+                throw new IllegalStateException("Explicit selection is not allowed in LINEAR navigationMode");
 
-            /* Mark item as being presented
-             * FIXME: Is this the right place, or should it go in engine service layer?
-             */
-            final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-            itemSessionController.markPresented();
+            case NONLINEAR:
+                if (itemKey!=null) {
+                    final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+                    ensureItemRef(itemRefNode);
+                    if (!itemRefNode.hasAncestor(currentTestPartNode)) {
+                        throw new IllegalStateException(itemRefNode + " is not a descendant of " + currentTestPartNode);
+                    }
+                    testSessionState.setCurrentItemKey(itemRefNode.getKey());
 
-            return itemRefNode;
-        }
-        else {
-            /* Allow deselection FIXME: Review when we support linear? */
-            testSessionState.setCurrentItemKey(null);
-            return null;
+                    /* Mark item as being presented
+                     * FIXME: Is this the right place, or should it go in engine service layer?
+                     */
+                    final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+                    itemSessionController.markPresented();
+
+                    return itemRefNode;
+                }
+                else {
+                    /* Allow deselection FIXME: Review when we support linear? */
+                    testSessionState.setCurrentItemKey(null);
+                    return null;
+                }
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + currentTestPart.getNavigationMode());
         }
     }
+
+
+    /**
+     * Returns whether the candidate may select the next item, when in a {@link NavigationMode#LINEAR}
+     * {@link TestPart}.
+     * <p>
+     * In {@link NavigationMode#LINEAR} mode:
+     * - Returns true if no item has been selected, or if there are more unselected items in the
+     *   current part.
+     *
+     * In {@link NavigationMode#NONLINEAR} mode:
+     * - Returns false. We don't support "next" in this context.
+     */
+    public boolean maySelectNextItem() {
+        final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
+        if (currentTestPartNode==null) {
+            return false;
+        }
+        final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+        switch (currentTestPart.getNavigationMode()) {
+            case LINEAR:
+                final TestPlan testPlan = testSessionState.getTestPlan();
+                final List<TestPlanNode> itemsInTestPart = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+                final TestPlanNodeKey itemKey = testSessionState.getCurrentItemKey();
+                boolean hasMoreItems;
+                if (itemKey==null) {
+                    /* Haven't entered any items yet */
+                    hasMoreItems = !itemsInTestPart.isEmpty();
+                }
+                else {
+                    final TestPlanNode currentItem = testPlan.getTestPlanNodeMap().get(itemKey);
+                    final int itemIndex = itemsInTestPart.indexOf(currentItem);
+                    hasMoreItems = itemIndex==itemsInTestPart.size()-1;
+                }
+                return hasMoreItems;
+
+            case NONLINEAR:
+                /* (We don't support the concept of "next item" here) */
+                return false;
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + currentTestPart.getNavigationMode());
+        }
+    }
+
+    /**
+     * Select an item within the current {@link TestPart}.
+     * <p>
+     * In {@link NavigationMode#NONLINEAR} mode:
+     * - Selects the item having the given {@link TestPlanNodeKey} in the current TestPart, or
+     *   deselects the current item is the key is null.
+     *
+     * In {@link NavigationMode#LINEAR} mode:
+     * - Throws {@link IllegalStateException} as explicit selction is not allowed
+     *
+     * @param itemKey key for the requested item, or null to indicate that we want to deselect the
+     *   current item.
+     *
+     * @param itemKey item to select, or null to select no item
+     *
+     * @throws IllegalStateException if no testPart is selected, if the current testPart
+     *   does not have {@link NavigationMode#NONLINEAR}, or if the requested item is not in the current part.
+     */
+    public TestPlanNode selectNextItem() {
+        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+        final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+        switch (currentTestPart.getNavigationMode()) {
+            case NONLINEAR:
+                /* No selection allowed in this mode */
+                throw new IllegalStateException("Selection of next item is only supported in LINEAR navigationMode");
+
+            case LINEAR:
+                final TestPlan testPlan = testSessionState.getTestPlan();
+                final List<TestPlanNode> itemsInTestPart = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+                final TestPlanNodeKey itemKey = testSessionState.getCurrentItemKey();
+                TestPlanNode itemRefNode;
+                if (itemKey==null) {
+                    /* Haven't entered any items yet, so select first if available */
+                    itemRefNode = !itemsInTestPart.isEmpty() ? itemsInTestPart.get(0) : null;
+                }
+                else {
+                    final TestPlanNode currentItem = testPlan.getTestPlanNodeMap().get(itemKey);
+                    final int currentItemIndex = itemsInTestPart.indexOf(currentItem);
+                    itemRefNode = currentItemIndex+1 < itemsInTestPart.size() ? itemsInTestPart.get(currentItemIndex+1) : null;
+                }
+                testSessionState.setCurrentItemKey(itemRefNode!=null ? itemRefNode.getKey() : null);
+
+                if (itemRefNode!=null) {
+                    /* Mark item as being presented
+                     * FIXME: Is this the right place, or should it go in engine service layer?
+                     */
+                    final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+                    itemSessionController.markPresented();
+                }
+
+                return itemRefNode;
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + currentTestPart.getNavigationMode());
+        }
+    }
+
 
     /**
      * Returns whether responses may be submitted for the currently selected item.
@@ -434,6 +571,19 @@ public final class TestSessionController extends TestValidationController implem
         return true;
     }
 
+    public boolean mayReviewItem(final TestPlanNodeKey itemKey) {
+        Assert.notNull(itemKey);
+        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPartNode)) {
+            return false;
+        }
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
+
+        return itemSessionState.isClosed() && effectiveItemSessionControl.isAllowReview();
+    }
+
 //    /**
 //     * FIXME: We need to find a way to determine when the testPart has ended but
 //     * not been exited. E.g. a new TestPartState or something like that.
@@ -445,17 +595,6 @@ public final class TestSessionController extends TestValidationController implem
 //        return testSessionState.getCurrentItemKey()==null;
 //    }
 
-    /**
-     * FIXME: Fill in the implementation for this. It would depend on the navigation mode, whether
-     * the test was still open, and probably whether allowReview is enabled.... BUT allowReview
-     * can be done on an item-by-item basis too, so it gets even more complicated there. So might need
-     * to make a list of what questions can actually be selected for review. Gah!
-     *
-     * @return
-     */
-    public boolean maySelectQuestions() {
-        return true;
-    }
 
     /**
      * Ends the test part.
@@ -553,9 +692,13 @@ public final class TestSessionController extends TestValidationController implem
         if (currentTestPartNode==null) {
             return null;
         }
-        final AbstractPart result = testProcessingMap.resolveAbstractPart(currentTestPartNode);
+        return expectTestPart(currentTestPartNode);
+    }
+
+    private TestPart expectTestPart(final TestPlanNode testPlanNode) {
+        final AbstractPart result = testProcessingMap.resolveAbstractPart(testPlanNode);
         if (result==null || !(result instanceof TestPart)) {
-            throw new QtiLogicException("Unexpected map lookup failure");
+            throw new QtiLogicException("Expected " + testPlanNode + " to resolve to a TestPart");
         }
         return (TestPart) result;
     }
@@ -623,6 +766,7 @@ public final class TestSessionController extends TestValidationController implem
         return result;
     }
 
+    @Deprecated
     public boolean hasMoreItemsInPart() {
         ensureNotFinished();
 
@@ -647,6 +791,7 @@ public final class TestSessionController extends TestValidationController implem
         return result;
     }
 
+    @Deprecated
     public TestPlanNode enterNextItem() {
         ensureNotFinished();
         if (!hasMoreItemsInPart()) {

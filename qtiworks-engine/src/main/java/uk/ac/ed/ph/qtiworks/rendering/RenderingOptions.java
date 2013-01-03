@@ -89,6 +89,9 @@ public final class RenderingOptions implements Serializable {
     private String selectItemUrl;
 
     @NotNull
+    private String selectNextItemUrl;
+
+    @NotNull
     private String reviewItemUrl;
 
     @NotNull
@@ -216,6 +219,15 @@ public final class RenderingOptions implements Serializable {
 
     public void setSelectItemUrl(final String selectItemUrl) {
         this.selectItemUrl = selectItemUrl;
+    }
+
+
+    public String getSelectNextItemUrl() {
+        return selectNextItemUrl;
+    }
+
+    public void setSelectNextItemUrl(final String selectNextItemUrl) {
+        this.selectNextItemUrl = selectNextItemUrl;
     }
 
 

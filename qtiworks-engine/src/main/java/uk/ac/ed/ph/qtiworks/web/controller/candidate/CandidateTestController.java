@@ -113,6 +113,7 @@ public class CandidateTestController {
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
+        renderingOptions.setSelectNextItemUrl(sessionBaseUrl + "/next");
         renderingOptions.setReviewItemUrl(sessionBaseUrl + "/review");
         renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/endtestpart");
         renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exittestpart");
@@ -217,12 +218,24 @@ public class CandidateTestController {
     }
 
     /**
-     * Selects the requested item instance
+     * Selects the requested item instance (NONLINEAR)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/select/{key}", method=RequestMethod.POST)
     public String selectItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         candidateTestDeliveryService.selectItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
+    /**
+     * Selects next item instance (LINEAR)
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/next", method=RequestMethod.POST)
+    public String selectNextItem(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateTestDeliveryService.selectNextItem(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);

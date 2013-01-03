@@ -111,6 +111,7 @@ public class CandidateItemController {
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
+        renderingOptions.setSelectNextItemUrl(sessionBaseUrl + "/item");
         renderingOptions.setReviewItemUrl(sessionBaseUrl + "/review");
         renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/endtestpart");
         renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exittestpart");

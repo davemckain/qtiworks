@@ -65,6 +65,7 @@ public enum CandidatePrivilege {
     VIEW_ASSESSMENT_RESULT,
 
     SELECT_TEST_ITEM,
+    SELECT_NEXT_TEST_ITEM,
     REVIEW_TEST_ITEM,
 
     ;

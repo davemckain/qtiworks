@@ -72,7 +72,9 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
@@ -317,6 +319,10 @@ public class CandidateTestDeliveryService {
                 renderAfterSelectItem(candidateEvent, testSessionState, renderingOptions, resultStream);
                 break;
 
+            case SELECT_NEXT_ITEM:
+                renderAfterSelectNextItem(candidateEvent, testSessionState, renderingOptions, resultStream);
+                break;
+
             case REVIEW_ITEM:
                 renderItemReview(candidateEvent, testSessionState, renderingOptions, resultStream);
                 break;
@@ -398,11 +404,30 @@ public class CandidateTestDeliveryService {
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
         if (itemSessionState.isClosed()) {
             /* Item session closed */
-            renderClosed(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
+            renderItemClosed(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
         }
         else {
             /* Interacting */
-            renderInteractingPresentation(candidateEvent, currentItemKey, testSessionState,
+            renderItemInteractingPresentation(candidateEvent, currentItemKey, testSessionState,
+                    itemSessionState, renderingOptions, resultStream);
+        }
+    }
+
+    private void renderAfterSelectNextItem(final CandidateEvent candidateEvent,
+            final TestSessionState testSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+        if (currentItemKey==null) {
+            throw new QtiWorksLogicException("Did not expect currentItemKey==null");
+        }
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
+        if (itemSessionState.isClosed()) {
+            /* Item session closed */
+            renderItemClosed(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
+        }
+        else {
+            /* Interacting */
+            renderItemInteractingPresentation(candidateEvent, currentItemKey, testSessionState,
                     itemSessionState, renderingOptions, resultStream);
         }
     }
@@ -441,7 +466,7 @@ public class CandidateTestDeliveryService {
             case RESPONSE_VALID:
             case RESPONSE_INVALID:
             case RESPONSE_BAD:
-                renderInteractingAfterResponse(candidateEvent, itemKey, testSessionState, itemSessionState,
+                renderItemInteractingAfterResponse(candidateEvent, itemKey, testSessionState, itemSessionState,
                         renderingOptions, resultStream);
                 break;
 
@@ -460,23 +485,23 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    private void renderInteractingPresentation(final CandidateEvent candidateEvent,
+    private void renderItemInteractingPresentation(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenInteracting(candidateEvent,
+        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_INITIALISATION);
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    private void renderInteractingAfterResponse(final CandidateEvent candidateEvent,
+    private void renderItemInteractingAfterResponse(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenInteracting(candidateEvent,
+        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    private TestItemRenderingRequest initTestRenderingRequestWhenInteracting(final CandidateEvent candidateEvent,
+    private TestItemRenderingRequest initItemRenderingRequestWhenInteracting(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
@@ -489,18 +514,13 @@ public class CandidateTestDeliveryService {
         /* Will need to query certain parts of state */
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, new NotificationRecorder(NotificationLevel.INFO));
+        final TestPart currentTestPart = testSessionController.getCurrentTestPart();
+        final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
-        renderingRequest.setTestPartNavigationAllowed(testSessionController.maySelectQuestions());
-//        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
+        renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
-//        renderingRequest.setCloseAllowed(testDeliverySettings.isAllowClose());
-//        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenInteracting());
-//        renderingRequest.setResetAllowed(testDeliverySettings.isAllowResetWhenInteracting());
-//        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenInteracting());
-//        renderingRequest.setResultAllowed(false);
-//        renderingRequest.setSourceAllowed(testDeliverySettings.isAllowSource());
         return renderingRequest;
     }
 
@@ -529,7 +549,7 @@ public class CandidateTestDeliveryService {
             case RESPONSE_VALID:
             case RESPONSE_INVALID:
             case RESPONSE_BAD:
-                renderClosedAfterResponse(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
+                renderItemClosedAfterResponse(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
                 break;
 
             case CLOSE:
@@ -547,20 +567,41 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    private void renderClosedAfterResponse(final CandidateEvent candidateEvent,
+    private void renderItemClosedAfterResponse(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateEvent,
+        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    private void renderClosed(final CandidateEvent candidateEvent,
+    private void renderItemClosed(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateEvent,
+        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
         doRendering(candidateEvent, renderingRequest, resultStream);
+    }
+
+    private TestItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
+            final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+//        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+
+        /* Will need to query certain parts of state */
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, new NotificationRecorder(NotificationLevel.INFO));
+        final TestPart currentTestPart = testSessionController.getCurrentTestPart();
+        final NavigationMode navigationMode = currentTestPart.getNavigationMode();
+
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
+                itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode);
+        renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
+        renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
+        renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
+        return renderingRequest;
     }
 
     private void renderItemReview(final CandidateEvent candidateEvent,
@@ -582,11 +623,8 @@ public class CandidateTestDeliveryService {
             /* FIXME: Make sure we're allowed to review this item: allowReview OR showFeedback must be true */
 
             /* We'll do effectively the same thing as closed, but tweak the available options a bit */
-            final TestItemRenderingRequest renderingRequest = initTestRenderingRequestWhenClosed(candidateEvent,
-                    reviewItemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);
-            renderingRequest.setTestPartNavigationAllowed(false); /* (This is the pre-closed navigation) */
-            renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
-            renderingRequest.setReviewTestPartAllowed(true);
+            final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenReviewing(candidateEvent,
+                    reviewItemKey, testSessionState, itemSessionState, renderingOptions);
 
             /* Pass effective showFeedback to rendering */
             final TestPlanNode reviewNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(reviewItemKey);
@@ -596,34 +634,22 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    private TestItemRenderingRequest initTestRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
+    private TestItemRenderingRequest initItemRenderingRequestWhenReviewing(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final Delivery delivery = candidateSession.getDelivery();
+            final RenderingOptions renderingOptions) {
+//        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+//        final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
 
-        /* Will need to query certain parts of state */
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
-                testSessionState, new NotificationRecorder(NotificationLevel.INFO));
+//        /* Will need to query certain parts of state */
+//        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+//                testSessionState, new NotificationRecorder(NotificationLevel.INFO));
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode);
-        renderingRequest.setTestPartNavigationAllowed(testSessionController.maySelectQuestions());
-//        renderingRequest.setEndTestPartAllowed(testSessionController.canEndTestPart());
-        renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
-        renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
-//        renderingRequest.setCloseAllowed(false);
-//        renderingRequest.setSolutionAllowed(testDeliverySettings.isAllowSolutionWhenClosed());
-//        renderingRequest.setReinitAllowed(testDeliverySettings.isAllowReinitWhenClosed());
-//        renderingRequest.setResetAllowed(testDeliverySettings.isAllowResetWhenClosed());
-//        renderingRequest.setResultAllowed(testDeliverySettings.isAllowResult());
-//        renderingRequest.setSourceAllowed(testDeliverySettings.isAllowSource());
-//
-//        renderingRequest.setPlaybackAllowed(testDeliverySettings.isAllowPlayback());
-//        if (testDeliverySettings.isAllowPlayback()) {
-//            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
-//        }
+                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);
+        renderingRequest.setTestPartNavigationAllowed(false); /* (This is selection/presentation navigation, so no longer available) */
+        renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
+        renderingRequest.setReviewTestPartAllowed(true);
         return renderingRequest;
     }
 
@@ -848,7 +874,6 @@ public class CandidateTestDeliveryService {
         return candidateSession;
     }
 
-
     public CandidateSession selectItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
@@ -883,6 +908,38 @@ public class CandidateTestDeliveryService {
         return candidateSession;
     }
 
+    public CandidateSession selectNextItem(final long xid, final String sessionToken)
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        return selectNextItem(candidateSession);
+    }
+
+    public CandidateSession selectNextItem(final CandidateSession candidateSession)
+            throws CandidateForbiddenException {
+        Assert.notNull(candidateSession, "candidateSession");
+
+        /* Get current JQTI state and create JQTI controller */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+
+        /* Make sure caller may do this */
+        ensureSessionNotTerminated(candidateSession);
+        if (!testSessionController.maySelectNextItem()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NEXT_TEST_ITEM);
+        }
+
+        /* Update state */
+        testSessionController.selectNextItem();
+
+        /* Record and log event */
+        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+                CandidateTestEventType.SELECT_NEXT_ITEM, null, testSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
+
+        return candidateSession;
+    }
 
     public CandidateSession endCurrentTestPart(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
