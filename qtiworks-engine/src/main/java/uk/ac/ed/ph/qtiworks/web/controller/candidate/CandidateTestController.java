@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -278,9 +279,7 @@ public class CandidateTestController {
     }
 
     /**
-     * Exits the test
-     *
-     * FIXME: This should just exit the testPart once we support multiple ones.
+     * Exits the current {@link TestPart}
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/exittestpart", method=RequestMethod.POST)
     public String exitCurrentTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)

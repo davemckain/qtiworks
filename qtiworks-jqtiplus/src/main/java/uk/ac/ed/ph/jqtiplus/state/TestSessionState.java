@@ -68,9 +68,10 @@ public final class TestSessionState implements Serializable {
     private final TestPlan testPlan;
     private final Map<Identifier, Value> outcomeValues;
     private FloatValue durationValue;
+    private final Map<TestPlanNodeKey, TestPartSessionState> testPartSessionStates;
     private final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates;
 
-    private boolean finished;
+    private boolean exited;
     private TestPlanNodeKey currentTestPartKey;
     private TestPlanNodeKey currentItemKey;
 
@@ -78,6 +79,7 @@ public final class TestSessionState implements Serializable {
         Assert.notNull(testPlan, "testPlan");
         this.testPlan = testPlan;
         this.outcomeValues = new HashMap<Identifier, Value>();
+        this.testPartSessionStates = new HashMap<TestPlanNodeKey, TestPartSessionState>();
         this.itemSessionStates = new HashMap<TestPlanNodeKey, ItemSessionState>();
         reset();
     }
@@ -88,6 +90,10 @@ public final class TestSessionState implements Serializable {
         return testPlan;
     }
 
+    public Map<TestPlanNodeKey, TestPartSessionState> getTestPartSessionStates() {
+        return testPartSessionStates;
+    }
+
     public Map<TestPlanNodeKey, ItemSessionState> getItemSessionStates() {
         return itemSessionStates;
     }
@@ -96,10 +102,11 @@ public final class TestSessionState implements Serializable {
 
     public void reset() {
         this.outcomeValues.clear();
+        this.testPartSessionStates.clear();
         this.itemSessionStates.clear();
         this.currentTestPartKey = null;
         this.currentItemKey = null;
-        this.finished = false;
+        this.exited = false;
         resetBuiltinVariables();
     }
 
@@ -109,12 +116,12 @@ public final class TestSessionState implements Serializable {
 
     //----------------------------------------------------------------
 
-    public boolean isFinished() {
-        return finished;
+    public boolean isExited() {
+        return exited;
     }
 
-    public void setFinished(final boolean finished) {
-        this.finished = finished;
+    public void setExited(final boolean exited) {
+        this.exited = exited;
     }
 
 
@@ -224,11 +231,12 @@ public final class TestSessionState implements Serializable {
 
         final TestSessionState other = (TestSessionState) obj;
         return testPlan.equals(other.testPlan)
-                && finished==other.finished
+                && exited==other.exited
                 && currentTestPartKey.equals(other.currentTestPartKey)
                 && currentItemKey.equals(other.currentItemKey)
                 && durationValue.equals(other.durationValue)
                 && outcomeValues.equals(other.outcomeValues)
+                && testPartSessionStates.equals(other.testPartSessionStates)
                 && itemSessionStates.equals(other.itemSessionStates);
     }
 
@@ -236,11 +244,12 @@ public final class TestSessionState implements Serializable {
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
                 testPlan,
-                finished,
+                exited,
                 currentTestPartKey,
                 currentItemKey,
                 durationValue,
                 outcomeValues,
+                testPartSessionStates,
                 itemSessionStates
         });
     }
@@ -249,11 +258,12 @@ public final class TestSessionState implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testPlan=" + testPlan
-                + ",finished=" + finished
+                + ",exited=" + exited
                 + ",currentTestPartKey=" + currentTestPartKey
                 + ",currentItemKey=" + currentItemKey
                 + ",durationValue=" + durationValue
                 + ",outcomeValues=" + outcomeValues
+                + ",testPartSessionStates=" + testPartSessionStates
                 + ",itemSessionStates=" + itemSessionStates
                 + ")";
     }

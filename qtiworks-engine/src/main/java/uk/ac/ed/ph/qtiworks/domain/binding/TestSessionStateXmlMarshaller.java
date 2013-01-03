@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
@@ -79,7 +80,7 @@ public final class TestSessionStateXmlMarshaller {
 
     static void appendTestSessionState(final Node documentOrElement, final TestSessionState testSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testSessionState");
-        element.setAttribute("finished", StringUtilities.toTrueFalse(testSessionState.isFinished()));
+        element.setAttribute("exited", StringUtilities.toTrueFalse(testSessionState.isExited()));
         maybeAddStringifiableAttribute(element, "currentTestPartKey", testSessionState.getCurrentTestPartKey());
         maybeAddStringifiableAttribute(element, "currentItemKey", testSessionState.getCurrentItemKey());
         element.setAttribute("duration", testSessionState.getDurationValue().toQtiString());
@@ -89,6 +90,16 @@ public final class TestSessionStateXmlMarshaller {
 
         /* Do outcome variables */
         XmlMarshallerCore.appendValues(element, "outcomeVariable", testSessionState.getOutcomeValues());
+
+        /* Do states for each TestPart */
+        final Map<TestPlanNodeKey, TestPartSessionState> testPartSessionStates = testSessionState.getTestPartSessionStates();
+        for (final Entry<TestPlanNodeKey, TestPartSessionState> entry : testPartSessionStates.entrySet()) {
+            final TestPlanNodeKey key = entry.getKey();
+            final TestPartSessionState testPartSessionState = entry.getValue();
+            final Element testPartElement = XmlMarshallerCore.appendElement(element, "testPart");
+            testPartElement.setAttribute("key", key.toString());
+            TestPartSessionStateXmlMarshaller.appendTestSessionState(testPartElement, testPartSessionState);
+        }
 
         /* Do states for each item */
         final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates = testSessionState.getItemSessionStates();
@@ -131,7 +142,7 @@ public final class TestSessionStateXmlMarshaller {
         final TestSessionState result = new TestSessionState(testPlan);
 
         /* Extract state attributes */
-        result.setFinished(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "finished", false));
+        result.setExited(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "exited", false));
         result.setCurrentTestPartKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentTestPartKey"));
         result.setCurrentItemKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentItemKey"));
         final String durationString = XmlMarshallerCore.requireAttribute(element, "duration");
@@ -150,6 +161,15 @@ public final class TestSessionStateXmlMarshaller {
                 final Identifier identifier = XmlMarshallerCore.parseIdentifierAttribute(childElement, "identifier");
                 final Value value = XmlMarshallerCore.parseValue(childElement);
                 result.setOutcomeValue(identifier, value);
+            }
+            else if ("testPart".equals(childElementName)) {
+                final List<Element> testPartElements = XmlMarshallerCore.expectElementChildren(childElement);
+                if (testPartElements.size()!=1) {
+                    throw new MarshallingException("Expected exactly one child of <testPart>");
+                }
+                final TestPlanNodeKey key = TestPlanXmlMarshaller.requireTestPlanNodeKeyAttribute(childElement, "key");
+                final TestPartSessionState testPartSessionState = TestPartSessionStateXmlMarshaller.unmarshal(testPartElements.get(0));
+                result.getTestPartSessionStates().put(key, testPartSessionState);
             }
             else if ("item".equals(childElementName)) {
                 final List<Element> itemElements = XmlMarshallerCore.expectElementChildren(childElement);

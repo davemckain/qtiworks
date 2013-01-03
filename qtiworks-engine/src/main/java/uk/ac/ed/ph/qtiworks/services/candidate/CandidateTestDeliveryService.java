@@ -968,7 +968,7 @@ public class CandidateTestDeliveryService {
         testSessionController.endTestPart();
 
         /* Record result and close session if this action finished the test */
-        if (testSessionState.isFinished()) {
+        if (testSessionState.isExited()) {
             /* Record assessmentResult */
             final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
             candidateDataServices.recordTestAssessmentResult(candidateSession, assessmentResult);
@@ -1026,7 +1026,7 @@ public class CandidateTestDeliveryService {
 
 
     //----------------------------------------------------
-    // Exit
+    // Advance TestPart
 
     public CandidateSession exitCurrentTestPart(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
@@ -1049,11 +1049,10 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
+        final TestPlanNode nextTestPart = testSessionController.enterNextTestPart();
 
-        testSessionController.exitTestPart();
-
-        /* Update CandidateSession */
-        candidateSession.setTerminated(true);
+        /* Update CandidateSession as appropriate */
+        candidateSession.setTerminated(nextTestPart==null);
         candidateSessionDao.update(candidateSession);
 
         /* Record and log event */
