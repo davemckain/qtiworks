@@ -47,10 +47,16 @@ public final class TestImplementationSampleSet {
             "Test Implementation Test Samples",
             "Set of sample assessmentTests used to test our implementation",
             /* My sample tests (originally based on the "George" sample tests from QTIEngine) */
-            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/test-ni-simple.xml",
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/test-nonlinear-individual.xml",
                     new String[] { "addition-feedback.xml", "addition-no-feedback.xml", "item03.xml", "item04.xml", "item05.xml", "item06.xml" }
             ),
-            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/test-ns-simple.xml",
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/test-nonlinear-simultaneous.xml",
+                    new String[] { "addition-feedback.xml", "addition-no-feedback.xml", "item03.xml", "item04.xml", "item05.xml", "item06.xml" }
+            ),
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/test-linear-individual.xml",
+                    new String[] { "addition-feedback.xml", "addition-no-feedback.xml", "item03.xml", "item04.xml", "item05.xml", "item06.xml" }
+            ),
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/test-linear-simultaneous.xml",
                     new String[] { "addition-feedback.xml", "addition-no-feedback.xml", "item03.xml", "item04.xml", "item05.xml", "item06.xml" }
             ),
             /* Southampton's "Web Developer Test" (taken and slightly modified from QTIEngine) */

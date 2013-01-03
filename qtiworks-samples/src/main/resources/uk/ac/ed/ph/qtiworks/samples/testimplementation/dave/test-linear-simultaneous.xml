@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assessmentTest
+  xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="Test01"
+  title="Linear/Simultaneous">
+
+  <testPart identifier="P01" navigationMode="linear" submissionMode="simultaneous">
+    <assessmentSection identifier="S01" title="Section 1" visible="true">
+      <assessmentSection identifier="S01f" title="Feedback" visible="true">
+        <rubricBlock view="candidate">
+          <p>The following question has feedback and is asked several times with different &lt;itemSessionControl&gt;</p>
+          <ul>
+            <li>allowReview=false, showFeedback=false</li>
+            <li>allowReview=false, showFeedback=true</li>
+            <li>allowReview=true, showFeedback=false</li>
+            <li>allowReview=true, showFeedback=true</li>
+            <li>allowReview=true, showFeedback=true, showSolution=true</li>
+          </ul>
+        </rubricBlock>
+        <assessmentItemRef identifier="item01a" href="addition-feedback.xml">
+          <itemSessionControl allowReview="false" showFeedback="false"/>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="item01b" href="addition-feedback.xml">
+          <itemSessionControl allowReview="false" showFeedback="true"/>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="item01c" href="addition-feedback.xml">
+          <itemSessionControl allowReview="true" showFeedback="false"/>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="item01d" href="addition-feedback.xml">
+          <itemSessionControl allowReview="true" showFeedback="true"/>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="item01e" href="addition-feedback.xml">
+          <itemSessionControl allowReview="true" showFeedback="true" showSolution="true"/>
+        </assessmentItemRef>
+      </assessmentSection>
+      <assessmentSection identifier="S01nf" title="No Feedback" visible="true">
+        <rubricBlock view="candidate">
+          <p>The following question has no feedback and is asked several times with different &lt;itemSessionControl&gt;</p>
+          <ul>
+            <li>showSolution=false</li>
+            <li>showSolution=true</li>
+          </ul>
+        </rubricBlock>
+        <assessmentItemRef identifier="item02a" href="addition-no-feedback.xml"/>
+        <assessmentItemRef identifier="item02b" href="addition-no-feedback.xml">
+          <itemSessionControl showSolution="true"/>
+        </assessmentItemRef>
+      </assessmentSection>
+    </assessmentSection>
+  </testPart>
+
+</assessmentTest>

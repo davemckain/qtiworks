@@ -4,7 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
   identifier="Test01"
-  title="Simple Nonlinear/Individual">
+  title="Nonlinear/Individual">
 
   <testPart identifier="P01" navigationMode="nonlinear" submissionMode="individual">
     <assessmentSection identifier="S01" title="Section 1" visible="true">
@@ -44,13 +44,13 @@
             <li>maxAttempts=2</li>
           </ul>
         </rubricBlock>
-        <assessmentItemRef identifier="item01fma" href="addition-feedback.xml">
+        <assessmentItemRef identifier="item01fm0" href="addition-feedback.xml">
           <itemSessionControl maxAttempts="0"/>
         </assessmentItemRef>
-        <assessmentItemRef identifier="item01fmb" href="addition-feedback.xml">
+        <assessmentItemRef identifier="item01fm1" href="addition-feedback.xml">
           <itemSessionControl maxAttempts="1"/>
         </assessmentItemRef>
-        <assessmentItemRef identifier="item01fmc" href="addition-feedback.xml">
+        <assessmentItemRef identifier="item01fm2" href="addition-feedback.xml">
           <itemSessionControl maxAttempts="2"/>
         </assessmentItemRef>
       </assessmentSection>
