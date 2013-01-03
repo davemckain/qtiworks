@@ -571,6 +571,14 @@ public final class TestSessionController extends TestValidationController implem
         return true;
     }
 
+    /**
+     * Tests whether the candidate may review the item having the given {@link TestPlanNodeKey}.
+     * <p>
+     * Returns true if the item state is closed and its effective session control allows review,
+     * or showing feedback
+     *
+     * @param key of the item to test, which must not be null
+     */
     public boolean mayReviewItem(final TestPlanNodeKey itemKey) {
         Assert.notNull(itemKey);
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
@@ -581,7 +589,8 @@ public final class TestSessionController extends TestValidationController implem
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
         final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
 
-        return itemSessionState.isClosed() && effectiveItemSessionControl.isAllowReview();
+        return itemSessionState.isClosed() && (effectiveItemSessionControl.isAllowReview()
+                || effectiveItemSessionControl.isShowFeedback());
     }
 
 //    /**
