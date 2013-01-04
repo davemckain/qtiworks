@@ -7,11 +7,12 @@
   title="Linear/Simultaneous">
 
   <testPart identifier="P01" navigationMode="linear" submissionMode="simultaneous">
-    <assessmentSection identifier="S01" title="Section 1" visible="true">
-      <assessmentSection identifier="S01f" title="Feedback" visible="true">
+    <assessmentSection identifier="S01" title="Assessment Section 1" visible="true">
+      <assessmentSection identifier="S01f" title="Feedback Examples" visible="true">
         <rubricBlock view="candidate">
           <p>The following question has feedback and is asked several times with different &lt;itemSessionControl&gt;</p>
           <ul>
+            <li>allowSkipping=false</li>
             <li>allowReview=false, showFeedback=false</li>
             <li>allowReview=false, showFeedback=true</li>
             <li>allowReview=true, showFeedback=false</li>
@@ -20,18 +21,21 @@
           </ul>
         </rubricBlock>
         <assessmentItemRef identifier="item01a" href="addition-feedback.xml">
-          <itemSessionControl allowReview="false" showFeedback="false"/>
+          <itemSessionControl allowSkipping="false"/>
         </assessmentItemRef>
         <assessmentItemRef identifier="item01b" href="addition-feedback.xml">
-          <itemSessionControl allowReview="false" showFeedback="true"/>
+          <itemSessionControl allowReview="false" showFeedback="false"/>
         </assessmentItemRef>
         <assessmentItemRef identifier="item01c" href="addition-feedback.xml">
-          <itemSessionControl allowReview="true" showFeedback="false"/>
+          <itemSessionControl allowReview="false" showFeedback="true"/>
         </assessmentItemRef>
         <assessmentItemRef identifier="item01d" href="addition-feedback.xml">
-          <itemSessionControl allowReview="true" showFeedback="true"/>
+          <itemSessionControl allowReview="true" showFeedback="false"/>
         </assessmentItemRef>
         <assessmentItemRef identifier="item01e" href="addition-feedback.xml">
+          <itemSessionControl allowReview="true" showFeedback="true"/>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="item01f" href="addition-feedback.xml">
           <itemSessionControl allowReview="true" showFeedback="true" showSolution="true"/>
         </assessmentItemRef>
       </assessmentSection>
