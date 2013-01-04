@@ -77,7 +77,7 @@ public class TestItemRenderingTest {
 
             /* Select first item */
             final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
-            testSessionController.selectItem(firstItemRef.getKey());
+            testSessionController.selectItemNonlinear(firstItemRef.getKey());
             final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRef.getKey());
 
             System.out.println("\nRendering state after selection of first item");

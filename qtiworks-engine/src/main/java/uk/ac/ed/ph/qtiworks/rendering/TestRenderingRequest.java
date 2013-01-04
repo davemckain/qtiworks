@@ -50,6 +50,8 @@ interface TestRenderingRequest {
 
     boolean isTestPartNavigationAllowed();
 
+    boolean isFinishItemAllowed();
+
     boolean isEndTestPartAllowed();
 
     boolean isReviewTestPartAllowed();

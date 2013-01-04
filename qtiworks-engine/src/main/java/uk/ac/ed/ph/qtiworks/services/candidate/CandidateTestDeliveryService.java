@@ -319,8 +319,8 @@ public class CandidateTestDeliveryService {
                 renderAfterSelectItem(candidateEvent, testSessionState, renderingOptions, resultStream);
                 break;
 
-            case SELECT_NEXT_ITEM:
-                renderAfterSelectNextItem(candidateEvent, testSessionState, renderingOptions, resultStream);
+            case FINISH_ITEM:
+                renderAfterFinishItem(candidateEvent, testSessionState, renderingOptions, resultStream);
                 break;
 
             case REVIEW_ITEM:
@@ -347,8 +347,21 @@ public class CandidateTestDeliveryService {
     private void renderAfterTestInit(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        /* FIXME: Only supporting NONLINEAR so far, so only outcome is to show navigation menu */
-        renderTestPartNavigationMenu(candidateEvent, testSessionState, renderingOptions, resultStream);
+        /* FIXME: Handle the case of a degenerate test (i.e. no usable testParts, possibly because of
+         * failed preconditions).
+         *
+         * FIXME: Handle the case where there is a testPart, but it doesn't contain any usable
+         * items, so gets ended immediately.
+         */
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+        if (currentItemKey!=null) {
+            /* Item has been selected === non-degenerate linear navigation */
+            renderAfterSelectItem(candidateEvent, testSessionState, renderingOptions, resultStream);
+        }
+        else {
+            /* No item selected === non-linear navigation, show menu */
+            renderTestPartNavigationMenu(candidateEvent, testSessionState, renderingOptions, resultStream);
+        }
     }
 
     private void renderTestPartNavigationMenu(final CandidateEvent candidateEvent,
@@ -413,10 +426,12 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    private void renderAfterSelectNextItem(final CandidateEvent candidateEvent,
+    private void renderAfterFinishItem(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+
+        /* FIXME! This logic is not right! */
         if (currentItemKey==null) {
             throw new QtiWorksLogicException("Did not expect currentItemKey==null");
         }
@@ -520,7 +535,8 @@ public class CandidateTestDeliveryService {
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
-        renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
+        renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR); /* FIXME: Handle skipping! */
+        renderingRequest.setEndTestPartAllowed(false); /* (Sue prefers only allowing this in the navigation page) */
         return renderingRequest;
     }
 
@@ -599,6 +615,7 @@ public class CandidateTestDeliveryService {
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
+        renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR);
         renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
         renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
         return renderingRequest;
@@ -648,6 +665,7 @@ public class CandidateTestDeliveryService {
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);
         renderingRequest.setTestPartNavigationAllowed(false); /* (This is selection/presentation navigation, so no longer available) */
+        renderingRequest.setFinishItemAllowed(false); /* (Ditto) */
         renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
         renderingRequest.setReviewTestPartAllowed(true);
         return renderingRequest;
@@ -864,7 +882,7 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        testSessionController.selectItem(null);
+        testSessionController.selectItemNonlinear(null);
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -893,12 +911,12 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-        if (!testSessionController.maySelectItem(itemKey)) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_TEST_ITEM);
+        if (!testSessionController.maySelectItemNonlinear(itemKey)) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NONLINEAR_TEST_ITEM);
         }
 
         /* Update state */
-        testSessionController.selectItem(itemKey);
+        testSessionController.selectItemNonlinear(itemKey);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -908,13 +926,13 @@ public class CandidateTestDeliveryService {
         return candidateSession;
     }
 
-    public CandidateSession selectNextItem(final long xid, final String sessionToken)
+    public CandidateSession finishLinearItem(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return selectNextItem(candidateSession);
+        return finishLinearItem(candidateSession);
     }
 
-    public CandidateSession selectNextItem(final CandidateSession candidateSession)
+    public CandidateSession finishLinearItem(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -926,16 +944,16 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-        if (!testSessionController.maySelectNextItem()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NEXT_TEST_ITEM);
+        if (!testSessionController.mayFinishItemLinear()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
         }
 
         /* Update state */
-        testSessionController.selectNextItem();
+        testSessionController.finishItemLinear();
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.SELECT_NEXT_ITEM, null, testSessionState, notificationRecorder);
+                CandidateTestEventType.FINISH_ITEM, null, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;

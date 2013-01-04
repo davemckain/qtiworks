@@ -89,7 +89,7 @@ public final class RenderingOptions implements Serializable {
     private String selectItemUrl;
 
     @NotNull
-    private String selectNextItemUrl;
+    private String finishItemUrl;
 
     @NotNull
     private String reviewItemUrl;
@@ -222,12 +222,12 @@ public final class RenderingOptions implements Serializable {
     }
 
 
-    public String getSelectNextItemUrl() {
-        return selectNextItemUrl;
+    public String getFinishItemUrl() {
+        return finishItemUrl;
     }
 
-    public void setSelectNextItemUrl(final String selectNextItemUrl) {
-        this.selectNextItemUrl = selectNextItemUrl;
+    public void setFinishItemUrl(final String finishItemUrl) {
+        this.finishItemUrl = finishItemUrl;
     }
 
 

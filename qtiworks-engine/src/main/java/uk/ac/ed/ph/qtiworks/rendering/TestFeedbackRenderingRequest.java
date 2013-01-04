@@ -49,8 +49,6 @@ public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest
     @NotNull
     private TestSessionState testSessionState;
 
-    private boolean testPartNavigationAllowed;
-
     //----------------------------------------------------
 
     @Override
@@ -65,13 +63,13 @@ public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest
 
     @Override
     public boolean isTestPartNavigationAllowed() {
-        return testPartNavigationAllowed;
+        return false;
     }
 
-    public void setTestPartNavigationAllowed(final boolean testPartNavigationAllowed) {
-        this.testPartNavigationAllowed = testPartNavigationAllowed;
+    @Override
+    public boolean isFinishItemAllowed() {
+        return false;
     }
-
 
     @Override
     public boolean isEndTestPartAllowed() {

@@ -258,6 +258,7 @@ public class AssessmentRenderer {
 
         /* Set control parameters */
         xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(renderingRequest.isTestPartNavigationAllowed()));
+        xsltParameters.put("finishItemAllowed", Boolean.valueOf(renderingRequest.isFinishItemAllowed()));
         xsltParameters.put("reviewTestPartAllowed", Boolean.valueOf(renderingRequest.isReviewTestPartAllowed()));
         xsltParameters.put("endTestPartAllowed", Boolean.valueOf(renderingRequest.isEndTestPartAllowed()));
         xsltParameters.put("exitTestPartAllowed", Boolean.valueOf(renderingRequest.isExitTestPartAllowed()));
@@ -319,7 +320,7 @@ public class AssessmentRenderer {
         xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("selectItemUrl", renderingOptions.getSelectItemUrl());
-        xsltParameters.put("selectNextItemUrl", renderingOptions.getSelectNextItemUrl());
+        xsltParameters.put("finishItemUrl", renderingOptions.getFinishItemUrl());
         xsltParameters.put("reviewItemUrl", renderingOptions.getReviewItemUrl());
         xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
         xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());

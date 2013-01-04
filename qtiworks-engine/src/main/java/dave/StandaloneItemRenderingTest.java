@@ -136,10 +136,10 @@ public class StandaloneItemRenderingTest {
         renderingOptions.setPlaybackUrlBase("/playback");
         renderingOptions.setTerminateUrl("/terminate");
         renderingOptions.setSelectItemUrl("/select");
-        renderingOptions.setSelectNextItemUrl("/next");
-        renderingOptions.setEndTestPartUrl("/endtestpart");
+        renderingOptions.setFinishItemUrl("/finish-item");
         renderingOptions.setReviewItemUrl("/review");
-        renderingOptions.setExitTestPartUrl("/exittestpart");
+        renderingOptions.setEndTestPartUrl("/end-test-part");
+        renderingOptions.setExitTestPartUrl("/exit-test-part");
         renderingOptions.setTestPartNavigationUrl("/navigation");
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         return renderingOptions;

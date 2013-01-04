@@ -71,6 +71,11 @@ public final class TestPartNavigationRenderingRequest extends AbstractRenderingR
     }
 
     @Override
+    public boolean isFinishItemAllowed() {
+        return false;
+    }
+
+    @Override
     public boolean isEndTestPartAllowed() {
         return endTestPartAllowed;
     }

@@ -84,7 +84,7 @@ public final class TestTest {
         testSessionController.startTest();
 
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
-        testSessionController.selectItem(firstItemRefNode.getKey());
+        testSessionController.selectItemNonlinear(firstItemRefNode.getKey());
         System.out.println("First item is " + firstItemRefNode);
 
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();

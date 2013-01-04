@@ -59,8 +59,8 @@ public enum CandidateTestEventType {
     /** Selection of a particular item for interaction (in {@link NavigationMode#NONLINEAR}) */
     SELECT_ITEM,
 
-    /** Selection of next item for interaction (in {@link NavigationMode#LINEAR}) */
-    SELECT_NEXT_ITEM,
+    /** Finish interaction of item (in {@link NavigationMode#LINEAR}) */
+    FINISH_ITEM,
 
     /** Item Event within the currently-selected item */
     ITEM_EVENT,

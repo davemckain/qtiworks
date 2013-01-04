@@ -111,10 +111,10 @@ public class CandidateItemController {
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
-        renderingOptions.setSelectNextItemUrl(sessionBaseUrl + "/item");
+        renderingOptions.setFinishItemUrl(sessionBaseUrl + "/finish-item");
         renderingOptions.setReviewItemUrl(sessionBaseUrl + "/review");
-        renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/endtestpart");
-        renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exittestpart");
+        renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/end-test-part");
+        renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exit-test-part");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/navigation");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
