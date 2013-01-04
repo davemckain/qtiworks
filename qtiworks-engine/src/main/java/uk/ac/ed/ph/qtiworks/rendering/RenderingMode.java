@@ -44,8 +44,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
  */
 public enum RenderingMode {
 
-    AFTER_INITIALISATION,
-    AFTER_ATTEMPT,
+    INTERACTING,
     CLOSED,
     REVIEW, /* NB: Only supported in tests currently */
     SOLUTION,

@@ -504,7 +504,7 @@ public class CandidateTestDeliveryService {
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_INITIALISATION);
+                itemKey, testSessionState, itemSessionState, renderingOptions);
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
@@ -512,13 +512,13 @@ public class CandidateTestDeliveryService {
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
+                itemKey, testSessionState, itemSessionState, renderingOptions);
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
     private TestItemRenderingRequest initItemRenderingRequestWhenInteracting(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+            final RenderingOptions renderingOptions) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -533,7 +533,7 @@ public class CandidateTestDeliveryService {
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
+                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING, duration);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayFinishItemLinear());
         renderingRequest.setEndTestPartAllowed(false); /* (Sue prefers only allowing this in the navigation page) */
@@ -565,7 +565,7 @@ public class CandidateTestDeliveryService {
             case RESPONSE_VALID:
             case RESPONSE_INVALID:
             case RESPONSE_BAD:
-                renderItemClosedAfterResponse(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
+                renderItemClosed(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
                 break;
 
             case CLOSE:
@@ -581,14 +581,6 @@ public class CandidateTestDeliveryService {
             default:
                 throw new QtiWorksLogicException("Unexpected logic branch. Event type " + itemEventType);
         }
-    }
-
-    private void renderItemClosedAfterResponse(final CandidateEvent candidateEvent,
-            final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.AFTER_ATTEMPT);
-        doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
     private void renderItemClosed(final CandidateEvent candidateEvent,

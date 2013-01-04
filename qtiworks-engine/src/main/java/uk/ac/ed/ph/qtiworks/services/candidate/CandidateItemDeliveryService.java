@@ -284,14 +284,14 @@ public class CandidateItemDeliveryService {
             case REINIT:
             case RESET:
                 renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions,
-                        RenderingMode.AFTER_INITIALISATION, resultStream);
+                        resultStream);
                 break;
 
             case ATTEMPT_VALID:
             case RESPONSE_INVALID:
             case RESPONSE_BAD:
                 renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions,
-                        RenderingMode.AFTER_ATTEMPT, resultStream);
+                        resultStream);
                 break;
 
             default:
@@ -301,7 +301,7 @@ public class CandidateItemDeliveryService {
 
     private void renderWhenInteracting(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final RenderingMode renderingMode, final OutputStream resultStream) {
+            final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
@@ -312,7 +312,7 @@ public class CandidateItemDeliveryService {
 
         /* Initialise rendering request */
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateEvent,
-                itemSessionState, renderingOptions, renderingMode);
+                itemSessionState, renderingOptions, RenderingMode.INTERACTING);
         renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
         renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
         renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
@@ -332,10 +332,6 @@ public class CandidateItemDeliveryService {
             case ATTEMPT_VALID:
             case RESPONSE_INVALID:
             case RESPONSE_BAD:
-                renderWhenClosed(candidateEvent, itemSessionState, renderingOptions,
-                        RenderingMode.AFTER_ATTEMPT, resultStream);
-                break;
-
             case INIT:
             case REINIT:
             case RESET:
