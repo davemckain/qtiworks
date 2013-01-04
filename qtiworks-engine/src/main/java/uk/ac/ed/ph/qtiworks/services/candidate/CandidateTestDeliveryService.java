@@ -535,7 +535,7 @@ public class CandidateTestDeliveryService {
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode, duration);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
-        renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR); /* FIXME: Handle skipping! */
+        renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayFinishItemLinear());
         renderingRequest.setEndTestPartAllowed(false); /* (Sue prefers only allowing this in the navigation page) */
         return renderingRequest;
     }

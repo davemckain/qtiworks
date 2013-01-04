@@ -8,7 +8,7 @@
       <rubricBlock view="candidate">
         <p>
           The following question is asked several times with different &lt;itemSessionControl&gt;
-          to test the effect of <code>validateResposnse</code> and <code>allowSkipping</code>:
+          to test the effect of <code>validateResponses</code> and <code>allowSkipping</code>:
         </p>
         <ul>
           <li>allowSkipping=true, validateResponses=false (default)</li>

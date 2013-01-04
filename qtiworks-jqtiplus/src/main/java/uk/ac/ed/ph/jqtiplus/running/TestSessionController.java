@@ -476,20 +476,25 @@ public final class TestSessionController extends TestValidationController implem
             return false;
         }
 
-        boolean allowFinishItem = true;
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
-        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(currentItemRefNode);
-        if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
-            /* Not responded, and allowSkipping=false */
-            allowFinishItem = false;
-        }
-        if (effectiveItemSessionControl.isValidateResponses() && !itemSessionState.isRespondedValidly()) {
-            /* Invalid response, and validateResponses=true */
-            logger.debug("Item " + currentItemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so ending item will be forbidden");
-            allowFinishItem = false;
+        /* The only thing preventing submission is allowSkipping and validateResponses, which
+         * only apply in INDIVIDUAL submission mode.
+         */
+        if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
+            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(currentItemRefNode);
+            if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
+                /* Not responded, and allowSkipping=false */
+                logger.debug("Item {} has not been responded and allowSkipping=false, so finishing item is forbidden", currentItemRefNode.getKey());
+                return false;
+            }
+            if (itemSessionState.isRespondedInvalidly() && effectiveItemSessionControl.isValidateResponses()) {
+                /* Invalid response, and validateResponses=true */
+                logger.debug("Item {} has been responded with bad/invalid responses and validateResponses=true, so ending item will be forbidden", currentItemRefNode.getKey());
+                return false;
+            }
         }
 
-        return allowFinishItem;
+        return true;
     }
 
     public TestPlanNode finishItemLinear() {
@@ -504,14 +509,16 @@ public final class TestSessionController extends TestValidationController implem
         /* Make sure an item is selected and it can be finished */
         final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
 
-        /* Make sure item can be finished */
+        /* Make sure item can be finished (see mayFinishLinearItem() for logic summary) */
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
-        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(currentItemRefNode);
-        if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
-            throw new IllegalStateException("Item " + currentItemRefNode.getKey() + " has not been responded and allowSkipping=false, so finishing item is forbidden");
-        }
-        if (effectiveItemSessionControl.isValidateResponses() && !itemSessionState.isRespondedValidly()) {
-            throw new IllegalStateException("Item " + currentItemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so finishing is forbidden");
+        if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
+            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(currentItemRefNode);
+            if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
+                throw new IllegalStateException("Item " + currentItemRefNode.getKey() + " has not been responded and allowSkipping=false, so finishing item is forbidden");
+            }
+            if (itemSessionState.isRespondedInvalidly() && effectiveItemSessionControl.isValidateResponses()) {
+                throw new IllegalStateException("Item " + currentItemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so finishing is forbidden");
+            }
         }
 
         /* Mark item as closed */
@@ -615,17 +622,21 @@ public final class TestSessionController extends TestValidationController implem
      */
     public boolean mayEndTestPart() {
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
-        for (final TestPlanNode itemRefNode : itemRefNodes) {
-            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
-            if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
-                logger.debug("Item " + itemRefNode.getKey() + " has not been responded and allowSkipping=false, so ending test part will be forbidden");
-                return false;
-            }
-            if (effectiveItemSessionControl.isValidateResponses() && !itemSessionState.isRespondedValidly()) {
-                logger.debug("Item " + itemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so ending test part will be forbidden");
-                return false;
+        final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+        if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
+            /* (allowSkipping & validateResponses only apply in INDIVIDUAL submission mode) */
+            final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+            for (final TestPlanNode itemRefNode : itemRefNodes) {
+                final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+                final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
+                if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
+                    logger.debug("Item " + itemRefNode.getKey() + " has not been responded and allowSkipping=false, so ending test part will be forbidden");
+                    return false;
+                }
+                if (itemSessionState.isRespondedInvalidly() && effectiveItemSessionControl.isValidateResponses()) {
+                    logger.debug("Item " + itemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so ending test part will be forbidden");
+                    return false;
+                }
             }
         }
         return true;

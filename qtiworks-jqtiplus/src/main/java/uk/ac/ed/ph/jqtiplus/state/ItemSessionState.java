@@ -221,16 +221,21 @@ public final class ItemSessionState implements Serializable {
     }
 
 
-    public boolean isRespondedValidly() {
-        return isResponded() && unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
-    }
-
     public boolean isResponded() {
         return responded;
     }
 
     public void setResponded(final boolean responded) {
         this.responded = responded;
+    }
+
+
+    public boolean isRespondedValidly() {
+        return isResponded() && unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
+    }
+
+    public boolean isRespondedInvalidly() {
+        return isResponded() && !(unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty());
     }
 
 
