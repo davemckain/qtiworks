@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+    identifier="choice" title="Unattended Luggage" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+        <correctResponse>
+            <value>ChoiceA</value>
+            <value>ChoiceC</value>
+        </correctResponse>
+        <mapping lowerBound="0" upperBound="2" defaultValue="-2">
+            <mapEntry mapKey="ChoiceA" mappedValue="1"/>
+            <mapEntry mapKey="ChoiceB" mappedValue="-1"/>
+            <mapEntry mapKey="ChoiceC" mappedValue="1"/>
+            <mapEntry mapKey="ChoiceD" mappedValue="-1"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+        <defaultValue>
+            <value>0.0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <itemBody>
+        <p>Which of the following numbers are greater than 10?</p>
+        <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" minChoices="2" maxChoices="0">
+            <prompt>You must choose at least two answers</prompt>
+            <simpleChoice identifier="ChoiceA">15</simpleChoice>
+            <simpleChoice identifier="ChoiceB">Three</simpleChoice>
+            <simpleChoice identifier="ChoiceC">Twenty</simpleChoice>
+            <simpleChoice identifier="ChoiceD">5</simpleChoice>
+        </choiceInteraction>
+    </itemBody>
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"/>
+</assessmentItem>

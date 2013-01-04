@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+    identifier="Test01" title="Validation and Skipping with Linear/Individual">
+
+  <testPart identifier="P1" navigationMode="linear" submissionMode="individual">
+    <assessmentSection identifier="S1" title="Validation and Skipping" visible="true">
+      <rubricBlock view="candidate">
+        <p>
+          The following question is asked several times with different &lt;itemSessionControl&gt;
+          to test the effect of <code>validateResposnse</code> and <code>allowSkipping</code>:
+        </p>
+        <ul>
+          <li>allowSkipping=true, validateResponses=false (default)</li>
+          <li>allowSkipping=true, validateResponses=true</li>
+          <li>allowSkipping=false, validateResponses=false</li>
+          <li>allowSkipping=false, validateResponses=true</li>
+        </ul>
+      </rubricBlock>
+      <assessmentItemRef identifier="V1" href="choice-min.xml"/>
+      <assessmentItemRef identifier="V2" href="choice-min.xml">
+        <itemSessionControl allowSkipping="true" validateResponses="true"/>
+      </assessmentItemRef>
+      <assessmentItemRef identifier="V3" href="choice-min.xml">
+        <itemSessionControl allowSkipping="false" validateResponses="false"/>
+      </assessmentItemRef>
+      <assessmentItemRef identifier="V4" href="choice-min.xml">
+        <itemSessionControl allowSkipping="false" validateResponses="true"/>
+      </assessmentItemRef>
+    </assessmentSection>
+  </testPart>
+
+</assessmentTest>
