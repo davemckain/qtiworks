@@ -89,7 +89,7 @@ public final class HottextInteraction extends BlockInteraction {
     public static final String ATTR_MAX_CHOICES_NAME = "maxChoices";
 
     /** Default value of maxChoices attribute . */
-    public static final int ATTR_MAX_CHOICES_DEFAULT_VALUE = 1;
+    public static final int ATTR_MAX_CHOICES_DEFAULT_VALUE = 0;
 
     /** Name of minChoices attribute in xml schema. */
     public static final String ATTR_MIN_CHOICES_NAME = "minChoices";
