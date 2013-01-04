@@ -12,6 +12,18 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV20 [Development] (26/11/2012)</h3>
+  <p>
+    Minor update before Sue Milne's test pilot. This adds support for
+    <code>printedVariable/@index</code>, as well as a change to
+    <code>CandidateSessionStarter</code>'s logic. We now attempt to
+    reconnect to an existing non-terminated session if available, rather
+    than always starting a new one.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV19 [Development] (17/11/2012)</h3>
   <p>
     Filled in initial sketch of support for <code>allowReview</code> and
