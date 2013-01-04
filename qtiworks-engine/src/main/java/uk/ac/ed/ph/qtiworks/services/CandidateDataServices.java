@@ -44,7 +44,6 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
@@ -212,7 +211,6 @@ public class CandidateDataServices {
         /* Create event */
         final CandidateEvent event = new CandidateEvent();
         event.setCandidateSession(candidateSession);
-        event.setCandidateEventCategory(CandidateEventCategory.ITEM);
         event.setItemEventType(eventType);
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
         event.setPlaybackEvent(playbackEvent);
@@ -235,8 +233,6 @@ public class CandidateDataServices {
 
     public ItemSessionController createItemSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
-        ensureItemEvent(candidateEvent);
-
         final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
         final ItemSessionState itemSessionState = loadItemSessionState(candidateEvent);
         return createItemSessionController(delivery, itemSessionState, notificationRecorder);
@@ -277,16 +273,8 @@ public class CandidateDataServices {
     }
 
     public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateSession)  {
-        final CandidateEvent mostRecentItemEvent = getMostRecentItemEvent(candidateSession);
+        final CandidateEvent mostRecentItemEvent = getMostRecentEvent(candidateSession);
         return loadItemSessionState(mostRecentItemEvent);
-    }
-
-    public CandidateEvent getMostRecentItemEvent(final CandidateSession candidateSession)  {
-        final CandidateEvent mostRecentItemEvent = candidateEventDao.getNewestEventInSession(candidateSession, CandidateEventCategory.ITEM);
-        if (mostRecentItemEvent==null) {
-            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
-        }
-        return mostRecentItemEvent;
     }
 
     public void computeAndRecordItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
@@ -312,13 +300,6 @@ public class CandidateDataServices {
         Assert.notNull(delivery, "delivery");
         if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_ITEM) {
             throw new IllegalArgumentException("Expected " + delivery + " to correspond to an Item");
-        }
-    }
-
-    private void ensureItemEvent(final CandidateEvent candidateEvent) {
-        Assert.notNull(candidateEvent, "candidateEvent");
-        if (candidateEvent.getCategoryEventCategory()!=CandidateEventCategory.ITEM) {
-            throw new IllegalArgumentException("Expected" + candidateEvent + " to have category " + CandidateEventCategory.ITEM);
         }
     }
 
@@ -392,7 +373,6 @@ public class CandidateDataServices {
         /* Create event */
         final CandidateEvent event = new CandidateEvent();
         event.setCandidateSession(candidateSession);
-        event.setCandidateEventCategory(CandidateEventCategory.TEST);
         event.setTestEventType(testEventType);
         event.setItemEventType(itemEventType);
         if (itemKey!=null) {
@@ -418,8 +398,6 @@ public class CandidateDataServices {
 
     public TestSessionController createTestSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
-        ensureTestEvent(candidateEvent);
-
         final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
         final TestSessionState testSessionState = loadTestSessionState(candidateEvent);
         return createTestSessionController(delivery, testSessionState, notificationRecorder);
@@ -450,16 +428,8 @@ public class CandidateDataServices {
     }
 
     public TestSessionState computeCurrentTestSessionState(final CandidateSession candidateSession)  {
-        final CandidateEvent mostRecentTestEvent = getMostRecentTestEvent(candidateSession);
+        final CandidateEvent mostRecentTestEvent = getMostRecentEvent(candidateSession);
         return loadTestSessionState(mostRecentTestEvent);
-    }
-
-    public CandidateEvent getMostRecentTestEvent(final CandidateSession candidateSession)  {
-        final CandidateEvent mostRecentTestEvent = candidateEventDao.getNewestEventInSession(candidateSession, CandidateEventCategory.TEST);
-        if (mostRecentTestEvent==null) {
-            throw new QtiWorksLogicException("Session has no events registered. Current logic should not have allowed this!");
-        }
-        return mostRecentTestEvent;
     }
 
     public AssessmentResult computeTestAssessmentResult(final CandidateSession candidateSession, final TestSessionController testSessionController) {
@@ -480,13 +450,6 @@ public class CandidateDataServices {
         Assert.notNull(delivery, "delivery");
         if (delivery.getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
             throw new IllegalArgumentException("Expected " + delivery + " to correspond to a Test");
-        }
-    }
-
-    private void ensureTestEvent(final CandidateEvent candidateEvent) {
-        Assert.notNull(candidateEvent, "candidateEvent");
-        if (candidateEvent.getCategoryEventCategory()!=CandidateEventCategory.TEST) {
-            throw new IllegalArgumentException("Expected" + candidateEvent + " to have category " + CandidateEventCategory.TEST);
         }
     }
 

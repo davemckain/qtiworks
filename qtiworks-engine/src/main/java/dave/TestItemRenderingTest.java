@@ -89,7 +89,7 @@ public class TestItemRenderingTest {
             renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setTestSessionState(testSessionState);
             renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setRenderingMode(RenderingMode.AFTER_INITIALISATION);
+            renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setPrompt("This is an item within a test!");
             renderingRequest.setAuthorMode(true);

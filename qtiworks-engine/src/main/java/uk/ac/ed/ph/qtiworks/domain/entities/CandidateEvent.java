@@ -80,25 +80,6 @@ import javax.persistence.TemporalType;
             query="SELECT e"
                 + "  FROM CandidateEvent e"
                 + "  WHERE e.candidateSession = :candidateSession"
-                + "  ORDER BY e.id DESC"),
-    @NamedQuery(name="CandidateEvent.getInCategoryForSession",
-            query="SELECT e"
-                + "  FROM CandidateEvent e"
-                + "  WHERE e.candidateSession = :candidateSession"
-                + "    AND e.candidateEventCategory = :candidateEventCategory"
-                + "  ORDER BY e.id"),
-    @NamedQuery(name="CandidateEvent.getInCategoryForSessionReversed",
-            query="SELECT e"
-                + "  FROM CandidateEvent e"
-                + "  WHERE e.candidateSession = :candidateSession"
-                + "    AND e.candidateEventCategory = :candidateEventCategory"
-                + "  ORDER BY e.id DESC"),
-    @NamedQuery(name="CandidateEvent.getTestItemEventsForSessionReversed",
-            query="SELECT e"
-                + "  FROM CandidateEvent e"
-                + "  WHERE e.candidateSession = :candidateSession"
-                + "    AND e.testEventType = uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory.TEST"
-                + "    AND e.testItemKey = :testItemKey"
                 + "  ORDER BY e.id DESC")
 })
 public class CandidateEvent implements BaseEntity {
@@ -120,12 +101,6 @@ public class CandidateEvent implements BaseEntity {
     @Column(name="timestamp", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
-
-    /** Category of event */
-    @Basic(optional=false)
-    @Column(name="event_category", updatable=false, length=16)
-    @Enumerated(EnumType.STRING)
-    private CandidateEventCategory candidateEventCategory;
 
     /** Type of item event, or null if not an item event */
     @Basic(optional=true)
@@ -196,15 +171,6 @@ public class CandidateEvent implements BaseEntity {
     }
 
 
-    public CandidateEventCategory getCategoryEventCategory() {
-        return candidateEventCategory;
-    }
-
-    public void setCandidateEventCategory(final CandidateEventCategory categoryEventCategory) {
-        this.candidateEventCategory = categoryEventCategory;
-    }
-
-
     public CandidateItemEventType getItemEventType() {
         return itemEventType;
     }
@@ -258,7 +224,6 @@ public class CandidateEvent implements BaseEntity {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(id=" + id
-                + ",eventCategory=" + candidateEventCategory
                 + ")";
     }
 }

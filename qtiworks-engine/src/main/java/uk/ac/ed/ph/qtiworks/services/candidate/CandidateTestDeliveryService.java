@@ -222,7 +222,7 @@ public class CandidateTestDeliveryService {
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
+        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
 
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
@@ -274,18 +274,7 @@ public class CandidateTestDeliveryService {
             renderTerminated(candidateEvent, renderingOptions, resultStream);
         }
         else {
-            switch (candidateEvent.getCategoryEventCategory()) {
-                case TEST:
-                    renderTestEvent(candidateEvent, renderingOptions, resultStream);
-                    break;
-
-                case ITEM:
-                    throw new QtiWorksLogicException("Did not expect to get an event of category " + candidateEvent.getCategoryEventCategory()
-                            + " within a test");
-
-                default:
-                    throw new QtiWorksLogicException("Unexpected logic branch. Event type " + candidateEvent.getCategoryEventCategory());
-            }
+            renderTestEvent(candidateEvent, renderingOptions, resultStream);
         }
     }
 
@@ -734,7 +723,7 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
@@ -897,7 +886,7 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
@@ -930,7 +919,7 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
@@ -1011,7 +1000,7 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentTestEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 

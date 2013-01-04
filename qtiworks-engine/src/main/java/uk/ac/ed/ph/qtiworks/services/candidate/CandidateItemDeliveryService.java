@@ -43,7 +43,6 @@ import uk.ac.ed.ph.qtiworks.domain.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
@@ -212,7 +211,7 @@ public class CandidateItemDeliveryService {
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataServices.getMostRecentItemEvent(candidateSession);
+        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
 
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
@@ -481,7 +480,7 @@ public class CandidateItemDeliveryService {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Get current JQTI state and create JQTI controller */
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentItemEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, notificationRecorder);
 
         /* Make sure an attempt is allowed */
@@ -865,9 +864,6 @@ public class CandidateItemDeliveryService {
         if (targetEvent.getCandidateSession().getId().longValue()!=candidateSession.getId().longValue()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK_OTHER_SESSION);
         }
-        if (targetEvent.getCategoryEventCategory()!=CandidateEventCategory.ITEM) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK_EVENT);
-        }
         final CandidateItemEventType targetEventType = targetEvent.getItemEventType();
         if (targetEventType==CandidateItemEventType.PLAYBACK || targetEventType==CandidateItemEventType.CLOSE) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK_EVENT);
@@ -1011,7 +1007,7 @@ public class CandidateItemDeliveryService {
         ensureCallerMayViewResult(candidateSession);
 
         /* Get current state */
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentItemEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
 
         /* Generate result Object from state */
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, null);
@@ -1041,7 +1037,7 @@ public class CandidateItemDeliveryService {
      * @return
      */
     private List<CandidateEvent> getPlaybackEvents(final CandidateSession candidateSession) {
-        final List<CandidateEvent> events = candidateEventDao.getForSession(candidateSession, CandidateEventCategory.ITEM);
+        final List<CandidateEvent> events = candidateEventDao.getForSession(candidateSession);
         final List<CandidateEvent> result = new ArrayList<CandidateEvent>(events.size());
         for (final CandidateEvent event : events) {
             if (isCandidatePlaybackCapable(event)) {

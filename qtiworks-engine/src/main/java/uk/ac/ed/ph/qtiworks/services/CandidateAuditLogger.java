@@ -89,9 +89,7 @@ public class CandidateAuditLogger {
 
     public void logCandidateEvent(final CandidateEvent candidateEvent) {
         final StringBuilder messageBuilder = new StringBuilder("action=CANDIDATE_EVENT xeid=")
-            .append(candidateEvent.getId())
-            .append(" category=")
-            .append(candidateEvent.getCategoryEventCategory());
+            .append(candidateEvent.getId());
         if (candidateEvent.getTestEventType()!=null) {
             messageBuilder.append(" testEvent=").append(candidateEvent.getTestEventType());
         }
