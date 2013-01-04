@@ -55,7 +55,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -80,7 +79,7 @@ public class CandidateResponse implements BaseEntity {
     private Long id;
 
     /** {@link CandidateEvent} on which this response was submitted */
-    @OneToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
+    @ManyToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
     @JoinColumn(name="xeid")
     private CandidateEvent candidateEvent;
 
