@@ -116,16 +116,13 @@ import org.springframework.web.multipart.MultipartFile;
  * NOTE: Remember there is no {@link IdentityContext} for candidates.
  *
  * CURRENTLY SUPPORTED:
- * - nonlinear navigation mode (menu, select item)
- * - simultaneous submission mode
+ * - nonlinear & linear navigation mode (menu, select item)
+ * - simultaneous & individual submission mode
  * - test "atEnd" feedback only
  *
  * STILL TO DO:
- * - linear navigation
- * - individual submission
  * - test part "atEnd" feedback
  * - test / test part "during" feedback
- * - skipping
  * - solutions
  * - branchRule/preCondition
  *
