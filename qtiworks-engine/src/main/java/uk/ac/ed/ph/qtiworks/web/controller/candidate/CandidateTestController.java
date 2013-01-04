@@ -95,7 +95,7 @@ public class CandidateTestController {
         final RenderingOptions renderingOptions = createTestRenderingOptions(webRequest, xid, sessionToken);
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        candidateTestDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
+        candidateTestDeliveryService.renderCurrentCandidateSessionState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
     private RenderingOptions createTestRenderingOptions(final WebRequest webRequest, final long xid, final String sessionToken) {

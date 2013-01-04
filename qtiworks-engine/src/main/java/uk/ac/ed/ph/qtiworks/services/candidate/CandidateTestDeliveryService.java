@@ -79,6 +79,7 @@ import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
@@ -207,14 +208,14 @@ public class CandidateTestDeliveryService {
      * Renders the current state of the {@link CandidateSession} having
      * the given ID (xid).
      */
-    public void renderCurrentState(final long xid, final String sessionToken,
+    public void renderCurrentCandidateSessionState(final long xid, final String sessionToken,
             final RenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        renderCurrentState(candidateSession, renderingOptions, outputStreamer);
+        renderCurrentCandidateSessionState(candidateSession, renderingOptions, outputStreamer);
     }
 
-    public void renderCurrentState(final CandidateSession candidateSession,
+    public void renderCurrentCandidateSessionState(final CandidateSession candidateSession,
             final RenderingOptions renderingOptions,
             final OutputStreamer outputStreamer) throws IOException {
         Assert.notNull(candidateSession, "candidateSession");
@@ -274,7 +275,7 @@ public class CandidateTestDeliveryService {
             renderTerminated(candidateEvent, renderingOptions, resultStream);
         }
         else {
-            renderTestEvent(candidateEvent, renderingOptions, resultStream);
+            renderEvent(candidateEvent, renderingOptions, resultStream);
         }
     }
 
@@ -291,69 +292,54 @@ public class CandidateTestDeliveryService {
         assessmentRenderer.renderTeminated(renderingRequest, resultStream);
     }
 
-    private void renderTestEvent(final CandidateEvent candidateEvent,
+    private void renderEvent(final CandidateEvent candidateEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(candidateEvent);
         final CandidateTestEventType testEventType = candidateEvent.getTestEventType();
         switch (testEventType) {
-            case INIT:
-                renderAfterTestInit(candidateEvent, testSessionState, renderingOptions, resultStream);
-                break;
-
-            case ITEM_EVENT:
-                renderEventWhenItemSelected(candidateEvent, testSessionState, renderingOptions, resultStream);
-                break;
-
-            case SELECT_ITEM:
-                renderAfterSelectItem(candidateEvent, testSessionState, renderingOptions, resultStream);
-                break;
-
-            case FINISH_ITEM:
-                renderAfterFinishItem(candidateEvent, testSessionState, renderingOptions, resultStream);
-                break;
-
+            /* Handle "modal" events first. These cause a particular rendering state to be
+             * displayed, which candidate will then leave.
+             */
             case REVIEW_ITEM:
                 renderItemReview(candidateEvent, testSessionState, renderingOptions, resultStream);
                 break;
 
-            case SELECT_MENU:
-                renderTestPartNavigationMenu(candidateEvent, testSessionState, renderingOptions, resultStream);
-                break;
-
-            case END_TEST_PART:
-                renderTestPartFeedback(candidateEvent, testSessionState, renderingOptions, resultStream);
-                break;
-
-            case EXIT_TEST_PART:
-                /* FIXME: Currently EXIT_TEST_PART exits the test completely */
-                throw new QtiWorksLogicException("Unimplemented");
-
+            /* Otherwise just render current test state */
             default:
-                throw new QtiWorksLogicException("Unexpected logic branch. Event type " + testEventType);
+                renderCurrentTestState(candidateEvent, testSessionState, renderingOptions, resultStream);
+                break;
         }
     }
 
-    private void renderAfterTestInit(final CandidateEvent candidateEvent,
+    private void renderCurrentTestState(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        /* FIXME: Handle the case of a degenerate test (i.e. no usable testParts, possibly because of
-         * failed preconditions).
-         *
-         * FIXME: Handle the case where there is a testPart, but it doesn't contain any usable
-         * items, so gets ended immediately.
-         */
-        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
-        if (currentItemKey!=null) {
-            /* Item has been selected === non-degenerate linear navigation */
-            renderAfterSelectItem(candidateEvent, testSessionState, renderingOptions, resultStream);
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        if (currentTestPartKey!=null) {
+            final TestPartSessionState currentTestPartSessionState = testSessionState.getTestPartSessionStates().get(currentTestPartKey);
+            final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+            if (currentItemKey!=null) {
+                /* An item is selected, so render it in appropriate state */
+                renderSelectedItem(candidateEvent, testSessionState, renderingOptions, resultStream);
+            }
+            else {
+                /* No item selected */
+                if (currentTestPartSessionState.isEnded()) {
+                    /* testPart has ended, so must be showing testPart feedback */
+                    renderTestPartFeedback(candidateEvent, testSessionState, renderingOptions, resultStream);
+                }
+                else {
+                    /* testPart not ended, so we must be showing the navigation menu in nonlinear mode */
+                    renderTestPartNonlinearNavigationMenu(candidateEvent, testSessionState, renderingOptions, resultStream);
+                }
+            }
         }
         else {
-            /* No item selected === non-linear navigation, show menu */
-            renderTestPartNavigationMenu(candidateEvent, testSessionState, renderingOptions, resultStream);
+            throw new QtiWorksLogicException("'End of test' state rendering has not been implemeneted");
         }
     }
 
-    private void renderTestPartNavigationMenu(final CandidateEvent candidateEvent,
+    private void renderTestPartNonlinearNavigationMenu(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState, final RenderingOptions renderingOptions,
             final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
@@ -367,18 +353,14 @@ public class CandidateTestDeliveryService {
 
         final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
-        renderingRequest.setEndTestPartAllowed(testSessionController.mayEndTestPart());
         renderingRequest.setTestSessionState(testSessionState);
+        renderingRequest.setEndTestPartAllowed(testSessionController.mayEndTestPart());
 
         candidateAuditLogger.logTestPartNavigationRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderTestPartNavigation(renderingRequest, notifications, resultStream);
     }
 
-    /**
-     * FIXME: Only supporting single part tests, so the only thing this will do is show the
-     * feedback for the test as a whole.
-     */
     private void renderTestPartFeedback(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
@@ -396,110 +378,28 @@ public class CandidateTestDeliveryService {
         assessmentRenderer.renderTestFeedback(renderingRequest, notifications, resultStream);
     }
 
-    private void renderAfterSelectItem(final CandidateEvent candidateEvent,
-            final TestSessionState testSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
-        if (currentItemKey==null) {
-            throw new QtiWorksLogicException("Did not expect currentItemKey==null");
-        }
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
-        if (itemSessionState.isClosed()) {
-            /* Item session closed */
-            renderItemClosed(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
-        }
-        else {
-            /* Interacting */
-            renderItemInteractingPresentation(candidateEvent, currentItemKey, testSessionState,
-                    itemSessionState, renderingOptions, resultStream);
-        }
-    }
-
-    private void renderAfterFinishItem(final CandidateEvent candidateEvent,
-            final TestSessionState testSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
-
-        /* FIXME! This logic is not right! */
-        if (currentItemKey==null) {
-            throw new QtiWorksLogicException("Did not expect currentItemKey==null");
-        }
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
-        if (itemSessionState.isClosed()) {
-            /* Item session closed */
-            renderItemClosed(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
-        }
-        else {
-            /* Interacting */
-            renderItemInteractingPresentation(candidateEvent, currentItemKey, testSessionState,
-                    itemSessionState, renderingOptions, resultStream);
-        }
-    }
-
-    private void renderEventWhenItemSelected(final CandidateEvent candidateEvent,
-            final TestSessionState testSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
-        if (currentItemKey==null) {
-            throw new QtiWorksLogicException("Did not expect currentItemKey==null");
-        }
-        /* Item selected, so render current state of item */
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
-        renderSelectedItem(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
-    }
-
     private void renderSelectedItem(final CandidateEvent candidateEvent,
-            final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
+            final TestSessionState testSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
+
         if (itemSessionState.isClosed()) {
             /* Item session closed */
-            renderItemEventWhenClosed(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
+            renderItemEventWhenClosed(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
         }
         else {
             /* Interacting */
-            renderItemEventWhenInteracting(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
+            renderItemEventWhenInteracting(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
         }
     }
 
     private void renderItemEventWhenInteracting(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
-        switch (itemEventType) {
-            case ATTEMPT_VALID:
-            case RESPONSE_VALID:
-            case RESPONSE_INVALID:
-            case RESPONSE_BAD:
-                renderItemInteractingAfterResponse(candidateEvent, itemKey, testSessionState, itemSessionState,
-                        renderingOptions, resultStream);
-                break;
-
-            case CLOSE:
-            case PLAYBACK:
-            case SOLUTION:
-            case REINIT:
-            case RESET:
-                throw new QtiWorksLogicException("The item event " + itemEventType + " is not yet supported within tests");
-
-            case INIT:
-                throw new QtiWorksLogicException("The item event " + itemEventType + " should not occur in tests");
-
-            default:
-                throw new QtiWorksLogicException("Unexpected switch case. Event type " + itemEventType);
-        }
-    }
-
-    private void renderItemInteractingPresentation(final CandidateEvent candidateEvent,
-            final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions);
-        doRendering(candidateEvent, renderingRequest, resultStream);
-    }
-
-    private void renderItemInteractingAfterResponse(final CandidateEvent candidateEvent,
-            final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        /* (The logic here is simpler than for single items, as we don't support some of the more
+         * exotic lifecycle methods within tests)
+         */
         final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenInteracting(candidateEvent,
                 itemKey, testSessionState, itemSessionState, renderingOptions);
         doRendering(candidateEvent, renderingRequest, resultStream);
@@ -529,21 +429,6 @@ public class CandidateTestDeliveryService {
         return renderingRequest;
     }
 
-    /**
-     * Computes the current value for the <code>duration</code> variable for this session.
-     * <p>
-     * Currently, this is just the length of time since the session was first opened.
-     * We DO NOT yet support breaking sessions time-wise.
-     *
-     * @return computed value for <code>duration</code>, which will be non-negative.
-     */
-    private double computeTestSessionDuration(final CandidateSession candidateSession) {
-        final long startTime = candidateSession.getCreationTime().getTime();
-        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
-
-        final double duration = (currentTime - startTime) / 1000.0;
-        return duration;
-    }
 
     private void renderItemEventWhenClosed(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
@@ -554,7 +439,9 @@ public class CandidateTestDeliveryService {
             case RESPONSE_VALID:
             case RESPONSE_INVALID:
             case RESPONSE_BAD:
-                renderItemClosed(candidateEvent, itemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
+                final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
+                        itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
+                doRendering(candidateEvent, renderingRequest, resultStream);
                 break;
 
             case CLOSE:
@@ -570,14 +457,6 @@ public class CandidateTestDeliveryService {
             default:
                 throw new QtiWorksLogicException("Unexpected logic branch. Event type " + itemEventType);
         }
-    }
-
-    private void renderItemClosed(final CandidateEvent candidateEvent,
-            final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
-        doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
     private TestItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
@@ -702,6 +581,22 @@ public class CandidateTestDeliveryService {
         candidateAuditLogger.logTestItemRendering(candidateEvent, renderingRequest);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderTestItem(renderingRequest, notifications, resultStream);
+    }
+
+    /**
+     * Computes the current value for the <code>duration</code> variable for this session.
+     * <p>
+     * Currently, this is just the length of time since the session was first opened.
+     * We DO NOT yet support breaking sessions time-wise.
+     *
+     * @return computed value for <code>duration</code>, which will be non-negative.
+     */
+    private double computeTestSessionDuration(final CandidateSession candidateSession) {
+        final long startTime = candidateSession.getCreationTime().getTime();
+        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
+
+        final double duration = (currentTime - startTime) / 1000.0;
+        return duration;
     }
 
     //----------------------------------------------------

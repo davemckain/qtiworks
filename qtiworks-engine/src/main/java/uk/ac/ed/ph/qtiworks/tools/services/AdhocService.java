@@ -161,7 +161,7 @@ public class AdhocService {
         final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
 
         final Utf8Streamer utf8Streamer = new Utf8Streamer();
-        candidateTestDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
+        candidateTestDeliveryService.renderCurrentCandidateSessionState(candidateSession, renderingOptions, utf8Streamer);
         System.out.println("Rendering after init:\n" + utf8Streamer.getResult());
     }
 
@@ -181,7 +181,7 @@ public class AdhocService {
         final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
 
         final Utf8Streamer utf8Streamer = new Utf8Streamer();
-        candidateItemDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
+        candidateItemDeliveryService.renderCurrentCandidateSessionState(candidateSession, renderingOptions, utf8Streamer);
         System.out.println("Rendering after init:\n" + utf8Streamer.getResult());
 
         /* Do bad attempt == file submission */
@@ -200,7 +200,7 @@ public class AdhocService {
         candidateItemDeliveryService.handleAttempt(candidateSession, stringResponseMap, null);
 
         /* Render new state */
-        candidateItemDeliveryService.renderCurrentState(candidateSession, renderingOptions, utf8Streamer);
+        candidateItemDeliveryService.renderCurrentCandidateSessionState(candidateSession, renderingOptions, utf8Streamer);
         System.out.println("Rendering after first proper attempt:\n" + utf8Streamer.getResult());
 
         /* Then reinit state */

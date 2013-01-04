@@ -118,7 +118,7 @@ public class CandidateItemController {
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/navigation");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        candidateItemDeliveryService.renderCurrentState(xid, sessionToken, renderingOptions, outputStreamer);
+        candidateItemDeliveryService.renderCurrentCandidateSessionState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
     //----------------------------------------------------

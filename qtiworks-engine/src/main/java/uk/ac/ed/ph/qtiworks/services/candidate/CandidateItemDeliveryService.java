@@ -196,14 +196,14 @@ public class CandidateItemDeliveryService {
      * Renders the current state of the {@link CandidateSession} having
      * the given ID (xid).
      */
-    public void renderCurrentState(final long xid, final String sessionToken,
+    public void renderCurrentCandidateSessionState(final long xid, final String sessionToken,
             final RenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        renderCurrentState(candidateSession, renderingOptions, outputStreamer);
+        renderCurrentCandidateSessionState(candidateSession, renderingOptions, outputStreamer);
     }
 
-    public void renderCurrentState(final CandidateSession candidateSession,
+    public void renderCurrentCandidateSessionState(final CandidateSession candidateSession,
             final RenderingOptions renderingOptions,
             final OutputStreamer outputStreamer) throws IOException {
         Assert.notNull(candidateSession, "candidateSession");
@@ -260,41 +260,42 @@ public class CandidateItemDeliveryService {
             final CandidateEvent candidateEvent,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(candidateEvent);
+        final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
+        switch (itemEventType) {
+            /* Handle "modal" events first. These cause a particular rendering state to be
+             * displayed, which candidate will then leave.
+             */
+            case SOLUTION:
+                renderWhenClosed(candidateEvent, itemSessionState, renderingOptions,
+                        RenderingMode.SOLUTION, resultStream);
+                break;
+
+            case PLAYBACK:
+                renderPlayback(candidateEvent, renderingOptions, resultStream);
+                break;
+
+            /* Otherwise just render current item session state */
+            default:
+                renderCurrentItemState(candidateSession, itemSessionState, candidateEvent, renderingOptions, resultStream);
+                break;
+        }
+    }
+
+    private void renderCurrentItemState(final CandidateSession candidateSession,
+            final ItemSessionState itemSessionState,
+            final CandidateEvent candidateEvent,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
         if (candidateSession.isTerminated()) {
             /* Session is terminated */
             renderTerminated(candidateEvent, renderingOptions, resultStream);
         }
         else if (itemSessionState.isClosed()) {
             /* Item is closed */
-            renderEventWhenClosed(candidateEvent, itemSessionState, renderingOptions, resultStream);
+            renderWhenClosed(candidateEvent, itemSessionState, renderingOptions, RenderingMode.CLOSED, resultStream);
         }
         else {
             /* Interacting */
-            renderEventWhenInteracting(candidateEvent, itemSessionState, renderingOptions, resultStream);
-        }
-    }
-
-    private void renderEventWhenInteracting(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final CandidateItemEventType eventType = candidateEvent.getItemEventType();
-        switch (eventType) {
-            case INIT:
-            case REINIT:
-            case RESET:
-                renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions,
-                        resultStream);
-                break;
-
-            case ATTEMPT_VALID:
-            case RESPONSE_INVALID:
-            case RESPONSE_BAD:
-                renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions,
-                        resultStream);
-                break;
-
-            default:
-                throw new QtiWorksLogicException("Unexpected logic branch. Event type " + eventType);
+            renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions, resultStream);
         }
     }
 
@@ -321,36 +322,6 @@ public class CandidateItemDeliveryService {
 
         /* Pass to rendering layer */
         doRendering(candidateEvent, renderingRequest, resultStream);
-    }
-
-    private void renderEventWhenClosed(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final CandidateItemEventType eventType = candidateEvent.getItemEventType();
-        switch (eventType) {
-            case ATTEMPT_VALID:
-            case RESPONSE_INVALID:
-            case RESPONSE_BAD:
-            case INIT:
-            case REINIT:
-            case RESET:
-            case CLOSE:
-                renderWhenClosed(candidateEvent, itemSessionState, renderingOptions,
-                        RenderingMode.CLOSED, resultStream);
-                break;
-
-            case SOLUTION:
-                renderWhenClosed(candidateEvent, itemSessionState, renderingOptions,
-                        RenderingMode.SOLUTION, resultStream);
-                break;
-
-            case PLAYBACK:
-                renderPlayback(candidateEvent, renderingOptions, resultStream);
-                break;
-
-            default:
-                throw new QtiWorksLogicException("Unexpected logic branch. Event type " + eventType);
-        }
     }
 
     private void renderWhenClosed(final CandidateEvent candidateEvent,
