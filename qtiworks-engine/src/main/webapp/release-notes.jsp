@@ -12,6 +12,23 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV21 [Development] (07/01/2013)</h3>
+  <p>
+    This snapshot continues with the implementation of the test specification. It now supports all 4 combinations
+    of navigation and submission modes, though linear navigation is currently a bit rough and needs feedback.
+    It also shows the <code>assessmentSection</code> structure and <code>rubric</code>s when presenting the
+    navigation (in nonlinear mode); something similar will need done for linear navigation mode.
+  </p>
+  <p>
+    This snapshot also changes the default values of <code>maxChoices</code> for <code>choiceInteraction</code>,
+    <code>hotspotInteraction</code>, <code>hottextInteraction</code>, <code>positionObjectInteraction</code>
+    and <code>selectPointInteraction</code>. The default is now 0 instead of 1, reflecting a poorly-advertised
+    changed in the information model.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-M2 [Production] (07/01/2013)</h3>
   <p>
     This second Milestone release is based on the 1.0-DEV20 development snapshot (see below),
