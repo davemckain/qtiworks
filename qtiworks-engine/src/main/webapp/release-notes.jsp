@@ -12,6 +12,36 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-M2 [Production] (07/01/2013)</h3>
+  <p>
+    This second Milestone release is based on the 1.0-DEV20 development snapshot (see below),
+    which was used to pilot some of the (partial) test implementation included in this snapshot.
+  </p>
+  <p>
+    This milestone includes a partial implementation of the QTI <code>assessmentTest</code>,
+    handling test containing one <code>testPart</code> using the NONLINEAR navigation mode and
+    INDIVIDUAL submission mode. It does not yet support <code>branchRule</code> or <code>preCondition</code>,
+    or similar advanced features. If you are interested in tests, please use the development snapshots for the
+    time being. However, bear in mind that these will be subject to change at short notice so shout not be used
+    for "real" testing with students.
+  </p>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
+  <h3>1.0-DEV20 [Development] (26/11/2012)</h3>
+  <p>
+    Minor update before Sue Milne's test pilot. This adds support for
+    <code>printedVariable/@index</code>, as well as a change to
+    <code>CandidateSessionStarter</code>'s logic. We now attempt to
+    reconnect to an existing non-terminated session if available, rather
+    than always starting a new one.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV19 [Development] (17/11/2012)</h3>
   <p>
     Filled in initial sketch of support for <code>allowReview</code> and
@@ -161,8 +191,6 @@ All Rights Reserved
     You can always see the latest production snapshot at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>.
     For bleeding edge snapshots, please see the new DEV instance of QTIWorks at
     <a href="https://www2.ph.ed.ac.uk/qtiworks-dev/">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
-  </p>
-  <p>
   </p>
 
   <h3>1.0-DEV13 (04/09/2012)</h3>
