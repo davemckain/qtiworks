@@ -206,7 +206,13 @@ All Rights Reserved
     </dependency>
   </dependencies>
   <profiles>
-    <!-- To set up schema: "mvn -DSchemaSetup exec:exec" -->
+    <!--
+
+    To rebuild and set up the DB schema: "mvn -DSchemaSetup exec:exec"
+
+    BE CAREFUL! This will delete all existing data in the database!
+
+    -->
     <profile>
       <id>SchemaSetup</id>
       <activation>
@@ -225,6 +231,35 @@ All Rights Reserved
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>uk.ac.ed.ph.qtiworks.tools.SchemaSetup</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!--
+
+    To update the bundled set of sample questions: "mvn -DQtiSampleImport exec:exec"
+
+    -->
+    <profile>
+      <id>QtiSampleImport</id>
+      <activation>
+        <property>
+          <name>QtiSampleImport</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>uk.ac.ed.ph.qtiworks.tools.QtiSampleImport</argument>
               </arguments>
             </configuration>
           </plugin>

@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.tools.services.SampleResourceImporter;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -48,7 +49,7 @@ public final class QtiSampleImport {
 
     public static void main(final String[] args) {
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class);
+        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
         ctx.refresh();
 
         final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
