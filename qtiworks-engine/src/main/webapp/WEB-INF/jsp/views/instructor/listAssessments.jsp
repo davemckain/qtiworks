@@ -1,6 +1,6 @@
 <%--
 
-Copyright (c) 2012, The University of Edinburgh.
+Copyright (c) 2012-2013, The University of Edinburgh.
 All Rights Reserved
 
 Lists Assessments owned by caller

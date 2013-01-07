@@ -1,6 +1,6 @@
 /* $Id:SAXErrorHandler.java 2824 2008-08-01 15:46:17Z davemckain $
  *
- * Copyright (c) 2012, The University of Edinburgh.
+ * Copyright (c) 2012-2013, The University of Edinburgh.
  * All Rights Reserved
  */
 package dave;
