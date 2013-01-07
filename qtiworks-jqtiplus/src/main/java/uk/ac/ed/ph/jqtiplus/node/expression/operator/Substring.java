@@ -1,4 +1,4 @@
-/* Copyright (c) 2012, University of Edinburgh.
+/* Copyright (c) 2012-2013, University of Edinburgh.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
