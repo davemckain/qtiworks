@@ -430,35 +430,17 @@ public class CandidateTestDeliveryService {
     private void renderItemEventWhenClosed(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions,  final OutputStream resultStream) {
-        final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
-        switch (itemEventType) {
-            case ATTEMPT_VALID:
-            case RESPONSE_VALID:
-            case RESPONSE_INVALID:
-            case RESPONSE_BAD:
-                final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
-                        itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
-                doRendering(candidateEvent, renderingRequest, resultStream);
-                break;
-
-            case CLOSE:
-            case PLAYBACK:
-            case SOLUTION:
-            case REINIT:
-            case RESET:
-                throw new QtiWorksLogicException("The item event " + itemEventType + " is not yet supported within tests");
-
-            case INIT:
-                throw new QtiWorksLogicException("The item event " + itemEventType + " should not occur in tests");
-
-            default:
-                throw new QtiWorksLogicException("Unexpected logic branch. Event type " + itemEventType);
-        }
+        /* (The logic here is simpler than for single items, as we don't support some of the more
+         * exotic lifecycle methods within tests)
+         */
+        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
+                itemKey, testSessionState, itemSessionState, renderingOptions);
+        doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
     private TestItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+            final RenderingOptions renderingOptions) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -470,7 +452,7 @@ public class CandidateTestDeliveryService {
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode);
+                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR);
         renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
