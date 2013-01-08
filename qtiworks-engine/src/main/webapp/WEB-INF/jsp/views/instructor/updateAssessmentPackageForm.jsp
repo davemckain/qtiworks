@@ -71,7 +71,7 @@ instructorAssessmentRouting (action -> URL)
       <div class="grid_11">
         <label for="submit">Hit "Replace Assessment Package Content"</label>
         <br/>
-        <input id="submit" name="submit" type="submit" value="Replacement Assessment Package Content"/>
+        <input id="submit" name="submit" type="submit" value="Replace Assessment Package Content"/>
       </div>
     </fieldset>
 
