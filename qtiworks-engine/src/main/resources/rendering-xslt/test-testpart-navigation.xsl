@@ -85,14 +85,16 @@ Renders the navigation for the current testPart
 
   <xsl:template match="qw:node[@type='ASSESSMENT_SECTION']" mode="testPart-navigation">
     <li class="assessmentSection">
-      <!-- Section title -->
-      <header><xsl:value-of select="@sectionPartTitle"/></header>
-      <!-- Handle rubrics -->
-      <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
-      <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
-      <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+      <header>
+        <!-- Section title -->
+        <h2><xsl:value-of select="@sectionPartTitle"/></h2>
+        <!-- Handle rubrics -->
+        <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
+        <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
+        <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+      </header>
       <!-- Descend -->
-      <ul>
+      <ul class="testPartNavigationInner">
         <xsl:apply-templates mode="testPart-navigation"/>
       </ul>
     </li>
@@ -100,7 +102,7 @@ Renders the navigation for the current testPart
 
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-navigation">
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
-    <li>
+    <li class="assessmentItem">
       <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
         <button type="submit">
           <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
