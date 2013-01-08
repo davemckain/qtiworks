@@ -147,7 +147,6 @@ public class InstructorAssessmentManagementController {
         primaryRouting.put("createItemDeliverySettings", instructorRouter.buildWebUrl("/itemdeliverysettings/create"));
         primaryRouting.put("createTestDeliverySettings", instructorRouter.buildWebUrl("/testdeliverysettings/create"));
         model.addAttribute("instructorAssessmentRouting", primaryRouting);
-
     }
 
     private void setupModelForAssessment(final long aid, final Model model)

@@ -10,6 +10,7 @@ Model:
 delivery
 assessment
 assessmentRouting (action -> URL)
+instructorAssessmentRouting (action -> URL)
 deliveryRouting (action -> URL)
 deliveryCandidateSummaryReport
 
