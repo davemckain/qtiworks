@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.Charsets;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -70,6 +71,12 @@ public class InstructorAssessmentReportingController {
     private InstructorAssessmentManagementController instructorAssessmentManagementController;
 
     //------------------------------------------------------
+
+    @ModelAttribute
+    public void setupPrimaryRouting(final Model model) {
+        instructorAssessmentManagementController.setupPrimaryRouting(model);
+    }
+
     @RequestMapping(value="/delivery/{did}/candidate-summary-report", method=RequestMethod.GET)
     public String downloadDeliveryCandidateSummaryReportCsv(@PathVariable final long did, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
