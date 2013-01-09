@@ -28,13 +28,6 @@ Base templates used in test rendering
   <!-- Outcome declarations in test -->
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
 
-  <!-- Action permissions -->
-  <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="reviewTestPartAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="exitTestPartAllowed" as="xs:boolean" required="yes"/>
-
   <!-- ************************************************************ -->
 
   <!-- Current TestPart details in the TestPlan -->
@@ -179,55 +172,5 @@ Base templates used in test rendering
   </xsl:template>
 
   <!-- ************************************************************ -->
-
-  <xsl:template name="qw:test-controls">
-    <div class="sessionControl">
-      <xsl:if test="$authorMode">
-        <div class="authorMode">
-          The candidate currently has the following "test session control" options. (These
-          currently depend on the navigation &amp; submission mode of the test only.)
-        </div>
-      </xsl:if>
-      <ul class="controls test">
-        <xsl:if test="$testPartNavigationAllowed">
-          <li>
-            <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
-              <input type="submit" value="Test Question Menu"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$finishItemAllowed">
-          <li>
-            <form action="{$webappContextPath}{$finishItemUrl}" method="post">
-              <input type="submit" value="Finish Question"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$reviewTestPartAllowed">
-          <li>
-            <form action="{$webappContextPath}{$reviewItemUrl}" method="post">
-              <input type="submit" value="Back to Test Feedback"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$endTestPartAllowed">
-          <li>
-            <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
-              onsubmit="return confirm('Are you sure? This will submit your responses for marking.')">
-              <input type="submit" value="End Test"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$exitTestPartAllowed">
-          <li>
-            <form action="{$webappContextPath}{$exitTestPartUrl}" method="post"
-              onsubmit="return confirm('Are you sure? This will leave the test and you can\'t go back in.')">
-              <input type="submit" value="Exit Test"/>
-            </form>
-          </li>
-        </xsl:if>
-      </ul>
-    </div>
-  </xsl:template>
 
 </xsl:stylesheet>

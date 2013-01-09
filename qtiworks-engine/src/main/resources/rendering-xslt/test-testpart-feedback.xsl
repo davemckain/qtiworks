@@ -78,6 +78,19 @@ Renders the test(Part) feedback
     </html>
   </xsl:template>
 
+  <xsl:template name="qw:test-controls">
+    <div class="sessionControl">
+      <ul class="controls test">
+        <li>
+          <form action="{$webappContextPath}{$exitTestPartUrl}" method="post"
+            onsubmit="return confirm('Are you sure? This will leave the test and you can\'t go back in.')">
+            <input type="submit" value="Exit Test"/>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </xsl:template>
+
   <xsl:template match="qw:node[@type='TEST_PART']" mode="testPart-review">
     <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and (@allowReview='true' or @showFeedback='true')]" as="element(qw:node)*"/>
     <xsl:if test="exists($reviewable-items)">

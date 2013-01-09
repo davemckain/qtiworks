@@ -422,7 +422,6 @@ public class CandidateTestDeliveryService {
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING, duration);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayFinishItemLinear());
-        renderingRequest.setEndTestPartAllowed(false); /* (Sue prefers only allowing this in the navigation page) */
         return renderingRequest;
     }
 
@@ -455,7 +454,6 @@ public class CandidateTestDeliveryService {
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR);
-        renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
         renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
         return renderingRequest;
     }
@@ -505,7 +503,6 @@ public class CandidateTestDeliveryService {
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);
         renderingRequest.setTestPartNavigationAllowed(false); /* (This is selection/presentation navigation, so no longer available) */
         renderingRequest.setFinishItemAllowed(false); /* (Ditto) */
-        renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
         renderingRequest.setReviewTestPartAllowed(true);
         return renderingRequest;
     }

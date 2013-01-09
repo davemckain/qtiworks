@@ -3,6 +3,8 @@
 
 Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
 
+NB: This is used both while being presented, and during review.
+
 -->
 <xsl:stylesheet version="2.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -28,6 +30,11 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   when *reviewing* an item.
   -->
   <xsl:param name="itemKey" as="xs:string"/>
+
+  <!-- Action permissions -->
+  <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="reviewTestPartAllowed" as="xs:boolean" required="yes"/>
 
   <!--
   Keep reference to assesssmentItem element as the processing chain goes off on a tangent
@@ -109,6 +116,40 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
         <xsl:call-template name="qw:test-controls"/>
       </body>
     </html>
+  </xsl:template>
+
+  <xsl:template name="qw:test-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following "test session control" options. (These
+          currently depend on the navigation &amp; submission mode of the test only.)
+        </div>
+      </xsl:if>
+      <ul class="controls test">
+        <xsl:if test="$testPartNavigationAllowed">
+          <li>
+            <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
+              <input type="submit" value="Test Question Menu"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$finishItemAllowed">
+          <li>
+            <form action="{$webappContextPath}{$finishItemUrl}" method="post">
+              <input type="submit" value="Finish Question"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$reviewTestPartAllowed">
+          <li>
+            <form action="{$webappContextPath}{$reviewItemUrl}" method="post">
+              <input type="submit" value="Back to Test Feedback"/>
+            </form>
+          </li>
+        </xsl:if>
+      </ul>
+    </div>
   </xsl:template>
 
   <!-- ************************************************************ -->

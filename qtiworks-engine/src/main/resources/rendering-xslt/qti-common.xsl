@@ -42,6 +42,7 @@ rendering.
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
   <xsl:param name="endTestPartUrl" as="xs:string" required="yes"/>
   <xsl:param name="exitTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
   <xsl:param name="finishItemUrl" as="xs:string" required="yes"/>
   <xsl:param name="reviewItemUrl" as="xs:string" required="yes"/>
   <xsl:param name="testPartNavigationUrl" as="xs:string" required="yes"/>

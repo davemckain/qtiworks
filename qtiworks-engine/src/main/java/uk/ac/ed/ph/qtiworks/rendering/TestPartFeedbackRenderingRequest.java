@@ -59,30 +59,4 @@ public final class TestPartFeedbackRenderingRequest extends AbstractRenderingReq
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
     }
-
-
-    @Override
-    public boolean isTestPartNavigationAllowed() {
-        return false;
-    }
-
-    @Override
-    public boolean isFinishItemAllowed() {
-        return false;
-    }
-
-    @Override
-    public boolean isEndTestPartAllowed() {
-        return false;
-    }
-
-    @Override
-    public boolean isReviewTestPartAllowed() {
-        return false;
-    }
-
-    @Override
-    public boolean isExitTestPartAllowed() {
-        return true;
-    }
 }

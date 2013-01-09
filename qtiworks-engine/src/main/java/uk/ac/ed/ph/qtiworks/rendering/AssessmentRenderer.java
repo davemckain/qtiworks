@@ -233,6 +233,11 @@ public class AssessmentRenderer {
         xsltParameters.put("itemKey", renderingRequest.getItemKey().toString());
         xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.isShowFeedback()));
 
+        /* Set navigation action permissions */
+        xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(renderingRequest.isTestPartNavigationAllowed()));
+        xsltParameters.put("finishItemAllowed", Boolean.valueOf(renderingRequest.isFinishItemAllowed()));
+        xsltParameters.put("reviewTestPartAllowed", Boolean.valueOf(renderingRequest.isReviewTestPartAllowed()));
+
         doTransform(renderingRequest, testItemXsltUri, renderingRequest.getAssessmentItemUri(),
                 resultStream, xsltParameters);
     }
@@ -253,12 +258,6 @@ public class AssessmentRenderer {
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
 
-        /* Set control parameters */
-        xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(renderingRequest.isTestPartNavigationAllowed()));
-        xsltParameters.put("finishItemAllowed", Boolean.valueOf(renderingRequest.isFinishItemAllowed()));
-        xsltParameters.put("reviewTestPartAllowed", Boolean.valueOf(renderingRequest.isReviewTestPartAllowed()));
-        xsltParameters.put("endTestPartAllowed", Boolean.valueOf(renderingRequest.isEndTestPartAllowed()));
-        xsltParameters.put("exitTestPartAllowed", Boolean.valueOf(renderingRequest.isExitTestPartAllowed()));
     }
 
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
@@ -365,6 +364,9 @@ public class AssessmentRenderer {
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+
+        /* Set navigation action permissions */
+        xsltParameters.put("endTestPartAllowed", Boolean.valueOf(renderingRequest.isEndTestPartAllowed()));
 
         doTransform(renderingRequest, testPartNavigationXsltUri, renderingRequest.getAssessmentResourceUri(),
                 resultStream, xsltParameters);

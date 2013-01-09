@@ -63,9 +63,7 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
 
     private boolean testPartNavigationAllowed;
     private boolean finishItemAllowed;
-    private boolean endTestPartAllowed;
     private boolean reviewTestPartAllowed;
-
 
     /**
      * When in review state, this is the effective value of 'showFeedback' for this Node.
@@ -94,7 +92,6 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     }
 
 
-    @Override
     public boolean isTestPartNavigationAllowed() {
         return testPartNavigationAllowed;
     }
@@ -104,7 +101,6 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     }
 
 
-    @Override
     public boolean isFinishItemAllowed() {
         return finishItemAllowed;
     }
@@ -114,29 +110,12 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     }
 
 
-    @Override
-    public boolean isEndTestPartAllowed() {
-        return endTestPartAllowed;
-    }
-
-    public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
-        this.endTestPartAllowed = endTestPartAllowed;
-    }
-
-
-    @Override
     public boolean isReviewTestPartAllowed() {
         return reviewTestPartAllowed;
     }
 
     public void setReviewTestPartAllowed(final boolean reviewTestPartAllowed) {
         this.reviewTestPartAllowed = reviewTestPartAllowed;
-    }
-
-
-    @Override
-    public boolean isExitTestPartAllowed() {
-        return false;
     }
 
 

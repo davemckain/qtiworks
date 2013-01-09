@@ -20,8 +20,8 @@ Renders the navigation for the current testPart
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- Relevant action URLs -->
-  <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
+  <!-- Action permissions -->
+  <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
 
   <!-- ************************************************************ -->
 
@@ -63,6 +63,29 @@ Renders the navigation for the current testPart
         <xsl:call-template name="qw:test-controls"/>
        </body>
     </html>
+  </xsl:template>
+
+  <xsl:template name="qw:test-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following "test session control" options. (These
+          currently depend on the navigation &amp; submission mode of the test only.)
+        </div>
+      </xsl:if>
+      <ul class="controls test">
+        <li>
+          <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
+            onsubmit="return confirm('Are you sure?')">
+            <input type="submit" value="End Test">
+              <xsl:if test="not($endTestPartAllowed)">
+                <xsl:attribute name="disabled" select="'disabled'"/>
+              </xsl:if>
+            </input>
+          </form>
+        </li>
+      </ul>
+    </div>
   </xsl:template>
 
   <xsl:template match="qw:node" mode="testPart-navigation">
