@@ -91,14 +91,10 @@ import org.springframework.validation.Validator;
 public class AssessmentRenderer {
 
     private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
-
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
-
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
-
     private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
-
-    private static final URI testFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-feedback.xsl");
+    private static final URI testPartFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-feedback.xsl");
 
     @Resource
     private JqtiExtensionManager jqtiExtensionManager;
@@ -234,6 +230,7 @@ public class AssessmentRenderer {
         setItemRenderingParameters(xsltParameters, renderingRequest);
         setTestRenderingParameters(xsltParameters, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+        xsltParameters.put("itemKey", renderingRequest.getItemKey().toString());
         xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.isShowFeedback()));
 
         doTransform(renderingRequest, testItemXsltUri, renderingRequest.getAssessmentItemUri(),
@@ -383,7 +380,7 @@ public class AssessmentRenderer {
      *
      * @throws QtiRenderingException if an unexpected Exception happens during rendering
      */
-    public void renderTestFeedback(final TestFeedbackRenderingRequest renderingRequest,
+    public void renderTestPartFeedback(final TestPartFeedbackRenderingRequest renderingRequest,
             final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
         Assert.notNull(renderingRequest, "renderingRequest");
         Assert.notNull(resultStream, "resultStream");
@@ -413,7 +410,7 @@ public class AssessmentRenderer {
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
 
-        doTransform(renderingRequest, testFeedbackXsltUri, renderingRequest.getAssessmentResourceUri(),
+        doTransform(renderingRequest, testPartFeedbackXsltUri, renderingRequest.getAssessmentResourceUri(),
                 resultStream, xsltParameters);
     }
 

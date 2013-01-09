@@ -37,12 +37,15 @@ Base templates used in test rendering
 
   <!-- ************************************************************ -->
 
-  <!-- Current TestPart details -->
+  <!-- Current TestPart details in the TestPlan -->
   <xsl:variable name="currentTestPartKey" select="$testSessionState/@currentTestPartKey" as="xs:string"/>
-  <xsl:variable name="currentTestPart" select="$testSessionState/qw:testPlan/qw:node[@key=$currentTestPartKey]" as="element(qw:node)?"/>
+  <xsl:variable name="currentTestPartNode" select="$testSessionState/qw:testPlan/qw:node[@key=$currentTestPartKey]" as="element(qw:node)"/>
 
-  <!-- assesssmentTest document element -->
+  <!-- assesssmentTest details -->
   <xsl:variable name="assessmentTest" select="document($testSystemId)/*[1]" as="element(qti:assessmentTest)"/>
+  <xsl:variable name="currentTestPart" select="$assessmentTest/qti:testPart[@identifier=qw:extract-identifier($currentTestPartNode)]" as="element(qti:testPart)"/>
+  <xsl:variable name="hasMultipleTestParts" select="count($assessmentTest/qti:testPart) &gt; 1" as="xs:boolean"/>
+  <xsl:variable name="testOrTestPart" select="if ($hasMultipleTestParts) then 'Test Part' else 'Test'" as="xs:string"/>
 
   <!-- Test outcome values -->
   <xsl:variable name="testOutcomeValues" select="$testSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>

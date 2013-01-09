@@ -23,9 +23,6 @@ Renders the navigation for the current testPart
   <!-- Relevant action URLs -->
   <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
 
-  <!-- This test -->
-  <xsl:variable name="assessmentTest" select="/*[1]" as="element(qti:assessmentTest)"/>
-
   <!-- ************************************************************ -->
 
   <xsl:template match="/">
@@ -59,17 +56,8 @@ Renders the navigation for the current testPart
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks assessmentTest testPartNavigation">
-        <xsl:choose>
-          <xsl:when test="exists($currentTestPart)">
-            <h2>Test Question Menu</h2>
-            <xsl:apply-templates select="$currentTestPart" mode="testPart-navigation"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:message terminate="yes">
-              No current testPart
-            </xsl:message>
-          </xsl:otherwise>
-        </xsl:choose>
+        <h2>Test Question Menu</h2>
+        <xsl:apply-templates select="$currentTestPartNode" mode="testPart-navigation"/>
 
         <!-- Test session control -->
         <xsl:call-template name="qw:test-controls"/>

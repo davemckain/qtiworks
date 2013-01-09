@@ -60,11 +60,17 @@ Renders the test(Part) feedback
 
       </head>
       <body class="qtiworks assessmentTest testFeedback">
-        <!-- Show feedback -->
-        <xsl:apply-templates select="qti:testFeedback[@access='atEnd']"/>
+        <h1><xsl:value-of select="$testOrTestPart"/> Complete</h1>
+        <!-- Show testPart feedback -->
+        <xsl:apply-templates select="$currentTestPart/qti:testFeedback[@access='atEnd']"/>
+
+        <!-- Show test feedback if there's only 1 testPart -->
+        <xsl:if test="not($hasMultipleTestParts)">
+          <xsl:apply-templates select="qti:testFeedback[@access='atEnd']"/>
+        </xsl:if>
 
         <!-- Review -->
-        <xsl:apply-templates select="$currentTestPart" mode="testPart-review"/>
+        <xsl:apply-templates select="$currentTestPartNode" mode="testPart-review"/>
 
         <!-- Test session control -->
         <xsl:call-template name="qw:test-controls"/>
@@ -76,6 +82,9 @@ Renders the test(Part) feedback
     <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and (@allowReview='true' or @showFeedback='true')]" as="element(qw:node)*"/>
     <xsl:if test="exists($reviewable-items)">
       <h2>Review your responses</h2>
+      <p>
+        You may review your responses to some (or all) questions. These are listed below.
+      </p>
       <ul class="testPartNavigation">
         <xsl:apply-templates mode="testPart-review"/>
       </ul>

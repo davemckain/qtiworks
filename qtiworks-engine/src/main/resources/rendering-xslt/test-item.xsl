@@ -19,14 +19,21 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- assesssmentItem element -->
-  <xsl:variable name="assessmentItem" select="/*[1]" as="element(qti:assessmentItem)"/>
-
   <!-- Effective value of itemSessionControl/@showFeedback for this item -->
   <xsl:param name="showFeedback" as="xs:boolean"/>
 
-  <!-- Current Item within Test -->
-  <xsl:variable name="currentItemKey" select="$testSessionState/@currentItemKey" as="xs:string"/>
+  <!--
+  Key for item being rendered is passed here.
+  NB: Can't simply extract $testSessionState/@currentItemKey as this will be null
+  when *reviewing* an item.
+  -->
+  <xsl:param name="itemKey" as="xs:string"/>
+
+  <!--
+  Keep reference to assesssmentItem element as the processing chain goes off on a tangent
+  at one point.
+  -->
+  <xsl:variable name="assessmentItem" select="/*[1]" as="element(qti:assessmentItem)"/>
 
   <xsl:variable name="feedbackAllowed" as="xs:boolean"
     select="if ($renderingMode='REVIEW') then (/qti:assessentItem/@adaptive='true' or $showFeedback) else true()"/>
@@ -96,7 +103,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
       <body class="qtiworks assessmentItem assessmentTest">
 
         <!-- Drill down into current item via testPart structure -->
-        <xsl:apply-templates select="$currentTestPart" mode="testPart-drilldown"/>
+        <xsl:apply-templates select="$currentTestPartNode" mode="testPart-drilldown"/>
 
         <!-- Test Session control -->
         <xsl:call-template name="qw:test-controls"/>
@@ -113,7 +120,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   </xsl:template>
 
   <xsl:template match="qw:node[@type='ASSESSMENT_SECTION']" mode="testPart-drilldown">
-    <xsl:if test=".//qw:node[@key=$currentItemKey]">
+    <xsl:if test=".//qw:node[@key=$itemKey]">
       <!-- Only show sections that ancestors of current item -->
       <li class="assessmentSection">
         <header>
@@ -133,7 +140,7 @@ Renders an AssessmentItem within an AssessmentTest, as seen by candidates.
   </xsl:template>
 
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-drilldown">
-    <xsl:if test="@key=$currentItemKey">
+    <xsl:if test="@key=$itemKey">
       <!-- We've reached the current item -->
       <li class="currentItem">
         <xsl:apply-templates select="$assessmentItem" mode="render-item"/>

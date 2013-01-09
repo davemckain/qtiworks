@@ -47,7 +47,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class TestItemRenderingTest {
 
     public static void main(final String[] args) {
-        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-nonlinear-simultaneous.xml");
+        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/simple-nonlinear-individual.xml");
         final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/addition-feedback.xml");
 
         System.out.println("Reading");
@@ -99,6 +99,7 @@ public class TestItemRenderingTest {
             renderingRequest.setResultAllowed(false);
             renderingRequest.setSourceAllowed(false);
             renderingRequest.setPlaybackAllowed(false);
+            renderingRequest.setItemKey(firstItemRef.getKey());
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

@@ -11,7 +11,8 @@
     </defaultValue>
   </outcomeDeclaration>
   <testPart identifier="P1" navigationMode="nonlinear" submissionMode="individual">
-    <assessmentSection identifier="S1" title="Assessment" visible="true">
+    <itemSessionControl allowReview="true" showFeedback="true"/>
+    <assessmentSection identifier="S1" title="Simple Nonlinear/Individual Test" visible="true">
       <rubricBlock view="candidate">
         <p>
           This test contains a single <code>testPart</code> with 'nonlinear' navigation
@@ -23,9 +24,11 @@
           be shown immediately if it exists.
         </p>
         <p>
-          This <code>testPart</code> also uses the default <code>itemSessionControl</code>,
-          which means that <code>allowReview</code> is true, and hence candidates may review
-          their responses once the <code>testPart</code> has been completed.
+          This <code>testPart</code> has its <code>itemSessionControl</code> set so that
+          <code>allowReview</code> and <code>showFeedback</code> are both true.
+          Hence, candidates may review their responses and see the
+          question-level feedback again once the <code>testPart</code> has been
+          completed.
         </p>
       </rubricBlock>
       <assessmentItemRef identifier="Q1" href="addition-feedback.xml"/>

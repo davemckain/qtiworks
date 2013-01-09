@@ -33,7 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import javax.validation.constraints.NotNull;
@@ -50,10 +52,20 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     @NotNull
     private TestSessionState testSessionState;
 
+    /**
+     * Key of the item being rendered within the test.
+     * <p>
+     * NB: This will always be non-null, whereas {@link TestSessionState#getCurrentItemKey()}
+     * will be null when reviewing items once the {@link TestPart} has been completed.
+     */
+    @NotNull
+    private TestPlanNodeKey itemKey;
+
     private boolean testPartNavigationAllowed;
     private boolean finishItemAllowed;
     private boolean endTestPartAllowed;
     private boolean reviewTestPartAllowed;
+
 
     /**
      * When in review state, this is the effective value of 'showFeedback' for this Node.
@@ -70,6 +82,15 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
 
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
+    }
+
+
+    public TestPlanNodeKey getItemKey() {
+        return itemKey;
+    }
+
+    public void setItemKey(final TestPlanNodeKey itemKey) {
+        this.itemKey = itemKey;
     }
 
 

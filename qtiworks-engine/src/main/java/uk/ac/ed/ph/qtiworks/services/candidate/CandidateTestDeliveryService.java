@@ -57,8 +57,8 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
-import uk.ac.ed.ph.qtiworks.rendering.TestFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestPartFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
@@ -366,13 +366,13 @@ public class CandidateTestDeliveryService {
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
-        final TestFeedbackRenderingRequest renderingRequest = new TestFeedbackRenderingRequest();
+        final TestPartFeedbackRenderingRequest renderingRequest = new TestPartFeedbackRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setTestSessionState(testSessionState);
 
         candidateAuditLogger.logTestFeedbackRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
-        assessmentRenderer.renderTestFeedback(renderingRequest, notifications, resultStream);
+        assessmentRenderer.renderTestPartFeedback(renderingRequest, notifications, resultStream);
     }
 
     private void renderSelectedItem(final CandidateEvent candidateEvent,
@@ -537,6 +537,7 @@ public class CandidateTestDeliveryService {
 
         final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setItemKey(itemKey);
         renderingRequest.setAssessmentItemUri(itemSystemId);
         renderingRequest.setRenderingMode(renderingMode);
         renderingRequest.setTestSessionState(testSessionState);
