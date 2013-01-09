@@ -304,7 +304,7 @@ ul.playbackControls {
 /* Item status colours */
 
 .itemStatus.review {
-  background-color: #999999;
+  background-color: #f52887;
 }
 
 .itemStatus.closed {
