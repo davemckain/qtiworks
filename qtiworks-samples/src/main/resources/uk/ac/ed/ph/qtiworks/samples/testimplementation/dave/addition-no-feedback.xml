@@ -3,7 +3,7 @@
   xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
-  identifier="addition-no-feedback" title="Addition No Feedback" adaptive="false" timeDependent="false">
+  identifier="addition-no-feedback" title="Addition (no feedback)" adaptive="false" timeDependent="false">
 
   <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
     <correctResponse>
