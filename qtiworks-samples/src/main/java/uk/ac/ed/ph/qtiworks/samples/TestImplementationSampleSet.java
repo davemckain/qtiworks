@@ -45,9 +45,12 @@ public final class TestImplementationSampleSet {
     
     private static final QtiSampleSet instance = new QtiSampleSet(
             "Test Implementation Test Samples",
-            "Set of sample assessmentTests used to test our implementation",
+            "Set of sample assessmentTests used to test our test implementation",
             /* My sample tests (originally based on the "George" sample tests from QTIEngine) */
             new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/simple-nonlinear-individual.xml",
+                    new String[] { "addition-feedback.xml", "choice-feedback.xml", "choice-min.xml" }
+            ),
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/simple-nonlinear-simultaneous.xml",
                     new String[] { "addition-feedback.xml", "choice-feedback.xml", "choice-min.xml" }
             ),
             new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/validation-nonlinear-individual.xml",
