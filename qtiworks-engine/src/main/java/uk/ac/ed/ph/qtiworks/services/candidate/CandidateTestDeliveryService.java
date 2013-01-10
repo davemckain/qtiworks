@@ -223,9 +223,6 @@ public class CandidateTestDeliveryService {
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
 
-        /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
         try {
@@ -233,7 +230,7 @@ public class CandidateTestDeliveryService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderEvent(candidateSession, latestEvent, renderingOptions, resultOutputStream);
+                renderState(candidateSession, renderingOptions, resultOutputStream);
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -269,20 +266,20 @@ public class CandidateTestDeliveryService {
         }
     }
 
-    private void renderEvent(final CandidateSession candidateSession, final CandidateEvent candidateEvent,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+    private void renderState(final CandidateSession candidateSession, final RenderingOptions renderingOptions, final OutputStream resultStream) {
         if (candidateSession.isTerminated()) {
             /* Session is terminated */
-            renderTerminated(candidateEvent, renderingOptions, resultStream);
+            renderTerminated(candidateSession, renderingOptions, resultStream);
         }
         else {
-            renderEvent(candidateEvent, renderingOptions, resultStream);
+            /* Render most recent event */
+            final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+            renderEvent(latestEvent, renderingOptions, resultStream);
         }
     }
 
-    private void renderTerminated(final CandidateEvent candidateEvent,
+    private void renderTerminated(final CandidateSession candidateSession,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final DeliverySettings deliverySettings = delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
@@ -431,7 +428,7 @@ public class CandidateTestDeliveryService {
         final TestPart currentTestPart = testSessionController.getCurrentTestPart();
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
-        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateEvent,
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateSession,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING, duration);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayFinishItemLinear());
@@ -462,7 +459,7 @@ public class CandidateTestDeliveryService {
         final TestPart currentTestPart = testSessionController.getCurrentTestPart();
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
-        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateSession,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR);
@@ -474,6 +471,8 @@ public class CandidateTestDeliveryService {
     private void renderItemReview(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState, final RenderingOptions renderingOptions,
             final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+
         /* Extract item to review */
         final String reviewItemKeyString = candidateEvent.getTestItemKey();
 
@@ -482,7 +481,7 @@ public class CandidateTestDeliveryService {
         final TestPlanNode reviewNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(reviewItemKey);
 
         /* We'll do effectively the same thing as closed, but tweak the available options a bit */
-        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateSession,
                 reviewItemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);
         renderingRequest.setTestPartNavigationAllowed(false); /* (Not used in review state) */
         renderingRequest.setFinishItemAllowed(false); /* (Ditto) */
@@ -498,6 +497,8 @@ public class CandidateTestDeliveryService {
     private void renderItemSolution(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState, final RenderingOptions renderingOptions,
             final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+
         /* Extract item to show solution */
         final String reviewItemKeyString = candidateEvent.getTestItemKey();
         if (reviewItemKeyString==null) {
@@ -509,7 +510,7 @@ public class CandidateTestDeliveryService {
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(reviewItemKey);
         /* We'll do effectively the same thing as closed, but tweak the available options a bit */
 
-        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateSession,
                 reviewItemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.SOLUTION);
         renderingRequest.setTestPartNavigationAllowed(false); /* (Not used in review state) */
         renderingRequest.setFinishItemAllowed(false); /* (Ditto) */
@@ -523,18 +524,17 @@ public class CandidateTestDeliveryService {
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    private TestItemRenderingRequest initTestItemRenderingRequest(final CandidateEvent candidateEvent,
+    private TestItemRenderingRequest initTestItemRenderingRequest(final CandidateSession candidateSession,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-        return initTestItemRenderingRequestCustomDuration(candidateEvent, itemKey, testSessionState,
+        return initTestItemRenderingRequestCustomDuration(candidateSession, itemKey, testSessionState,
                 itemSessionState, renderingOptions, renderingMode, -1.0);
     }
 
-    private TestItemRenderingRequest initTestItemRenderingRequestCustomDuration(final CandidateEvent candidateEvent,
+    private TestItemRenderingRequest initTestItemRenderingRequestCustomDuration(final CandidateSession candidateSession,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode,
             final double durationOverride) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
@@ -564,8 +564,7 @@ public class CandidateTestDeliveryService {
             final RenderingOptions renderingOptions) {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(false); /* FIXME: Temporary override until we get decent authoring info! */
-//        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
+        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
         renderingRequest.setRenderingOptions(renderingOptions);
     }
 
