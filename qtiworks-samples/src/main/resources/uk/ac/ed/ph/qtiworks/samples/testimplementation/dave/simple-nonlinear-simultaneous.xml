@@ -11,7 +11,7 @@
     </defaultValue>
   </outcomeDeclaration>
   <testPart identifier="P1" navigationMode="nonlinear" submissionMode="simultaneous">
-    <itemSessionControl allowReview="true" showFeedback="true"/>
+    <itemSessionControl allowReview="true" showFeedback="true" showSolution="true"/>
     <assessmentSection identifier="S1" title="Simple Nonlinear/Simultaneous Test" visible="true">
       <rubricBlock view="candidate">
         <p>
@@ -26,9 +26,10 @@
         </p>
         <p>
           This <code>testPart</code> has its <code>itemSessionControl</code> set so that
-          <code>allowReview</code> and <code>showFeedback</code> are both true.
-          Some of the questions included here have question-level feedback, and this will
-          be shown once the <code>testPart</code> has been completed.
+          <code>allowReview</code>, <code>showFeedback</code> and <code>showSolution</code>
+          are all set to true.  Some of the questions included here have
+          question-level feedback, and this will be shown once the
+          <code>testPart</code> has been completed.
         </p>
       </rubricBlock>
       <assessmentItemRef identifier="Q1" href="addition-feedback.xml"/>
