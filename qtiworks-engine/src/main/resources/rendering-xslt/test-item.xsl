@@ -123,12 +123,6 @@ NB: This is used both while being presented, and during review.
 
   <xsl:template name="qw:test-controls">
     <div class="sessionControl">
-      <xsl:if test="$authorMode">
-        <div class="authorMode">
-          The candidate currently has the following "test session control" options. (These
-          currently depend on the navigation &amp; submission mode of the test only.)
-        </div>
-      </xsl:if>
       <ul class="controls test">
         <xsl:if test="$testPartNavigationAllowed">
           <li>
@@ -255,7 +249,9 @@ NB: This is used both while being presented, and during review.
     </xsl:if>
 
     <!-- Item Session control -->
+    <!-- (We are not using any of the controls present for standalone items)
     <xsl:call-template name="qw:item-controls"/>
+    -->
   </xsl:template>
 
   <xsl:template match="qti:itemBody">
@@ -268,7 +264,7 @@ NB: This is used both while being presented, and during review.
 
         <xsl:if test="$isSessionInteracting">
           <xsl:variable name="submitText" as="xs:string"
-            select="if ($currentTestPart/@submissionMode='INDIVIDUAL') then 'SUBMIT ANSWER' else 'SAVE ANSWER'"/>
+            select="if ($currentTestPart/@submissionMode='individual') then 'SUBMIT ANSWER' else 'SAVE ANSWER'"/>
           <div class="controls">
             <input id="submit_button" name="submit" type="submit" value="{$submitText}"/>
           </div>
