@@ -266,10 +266,11 @@ NB: This is used both while being presented, and during review.
 
         <xsl:apply-templates/>
 
-        <!-- FIXME: These are copied from item; might not be right here -->
         <xsl:if test="$isSessionInteracting">
+          <xsl:variable name="submitText" as="xs:string"
+            select="if ($currentTestPart/@submissionMode='INDIVIDUAL') then 'SUBMIT ANSWER' else 'SAVE ANSWER'"/>
           <div class="controls">
-            <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
+            <input id="submit_button" name="submit" type="submit" value="{$submitText}"/>
           </div>
         </xsl:if>
       </form>
