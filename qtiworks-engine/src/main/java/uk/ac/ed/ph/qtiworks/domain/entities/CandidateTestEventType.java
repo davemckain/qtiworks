@@ -65,8 +65,14 @@ public enum CandidateTestEventType {
     /** Item Event within the currently-selected item */
     ITEM_EVENT,
 
+    /** Test Part Review */
+    REVIEW_TEST_PART,
+
     /** Review of a particular item */
     REVIEW_ITEM,
+
+    /** Solution of a particular item (in review state) */
+    SOLUTION_ITEM,
 
     ;
 

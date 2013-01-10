@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,21 +101,26 @@ public class CandidateEvent implements BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
 
-    /** Type of item event, or null if not an item event */
-    @Basic(optional=true)
-    @Column(name="item_event_type", updatable=false, length=16)
-    @Enumerated(EnumType.STRING)
-    private CandidateItemEventType itemEventType;
-
-    /** Type of test event, or null if not a test event */
+    /**
+     * Records the type of a test event within a test, or null if we are not running a test.
+     */
     @Basic(optional=true)
     @Column(name="test_event_type", updatable=false, length=16)
     @Enumerated(EnumType.STRING)
     private CandidateTestEventType testEventType;
 
     /**
-     * If this is an item event for an item within a test, then this records
-     * the {@link TestPlanNodeKey} of the item. Otherwise, this is null.
+     * If {@link #testEventType} is a {@link CandidateTestEventType#ITEM_EVENT}, then this gives
+     * details about exactly what item event this was. Otherwise this will be null.
+     */
+    @Basic(optional=true)
+    @Column(name="item_event_type", updatable=false, length=16)
+    @Enumerated(EnumType.STRING)
+    private CandidateItemEventType itemEventType;
+
+    /**
+     * For "modal" events within a test, this records the key for the item upon which the event
+     * was performed. Otherwise it is null.
      */
     @Basic(optional=true)
     @Column(name="test_item_key", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH + 10)

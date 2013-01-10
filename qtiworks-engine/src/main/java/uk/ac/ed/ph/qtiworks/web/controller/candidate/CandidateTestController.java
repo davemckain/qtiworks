@@ -113,12 +113,14 @@ public class CandidateTestController {
         renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
-        renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
-        renderingOptions.setFinishItemUrl(sessionBaseUrl + "/finish-item");
-        renderingOptions.setReviewItemUrl(sessionBaseUrl + "/review");
+        renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");
+        renderingOptions.setSelectTestItemUrl(sessionBaseUrl + "/select-item");
+        renderingOptions.setFinishTestItemUrl(sessionBaseUrl + "/finish-item");
+        renderingOptions.setReviewTestPartUrl(sessionBaseUrl + "/review-test-part");
+        renderingOptions.setReviewTestItemUrl(sessionBaseUrl + "/review-item");
+        renderingOptions.setShowTestItemSolutionUrl(sessionBaseUrl + "/item-solution");
         renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/end-test-part");
         renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exit-test-part");
-        renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/navigation");
         return renderingOptions;
     }
 
@@ -209,7 +211,7 @@ public class CandidateTestController {
     /**
      * Selects the navigaton menu for the current test part
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/navigation", method=RequestMethod.POST)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/test-part-navigation", method=RequestMethod.POST)
     public String showNavigationMenu(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         candidateTestDeliveryService.selectNavigationMenu(xid, sessionToken);
@@ -221,7 +223,7 @@ public class CandidateTestController {
     /**
      * Selects the requested item instance (NONLINEAR)
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/select/{key}", method=RequestMethod.POST)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/select-item/{key}", method=RequestMethod.POST)
     public String selectItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         candidateTestDeliveryService.selectItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
@@ -256,9 +258,21 @@ public class CandidateTestController {
     }
 
     /**
+     * Shows test part review state
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/review-test-part", method=RequestMethod.POST)
+    public String reviewTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateTestDeliveryService.reviewTestPart(xid, sessionToken);
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
+    /**
      * Shows the review state of the requested item instance
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/review/{key}", method=RequestMethod.POST)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/review-item/{key}", method=RequestMethod.POST)
     public String reviewItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         candidateTestDeliveryService.reviewItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
@@ -267,17 +281,15 @@ public class CandidateTestController {
         return redirectToRenderSession(xid, sessionToken);
     }
 
-    /**
-     * Shows test part review state
-     */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/review", method=RequestMethod.POST)
-    public String reviewTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/item-solution/{key}", method=RequestMethod.POST)
+    public String showItemSolution(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateTestDeliveryService.reviewItem(xid, sessionToken, null);
+        candidateTestDeliveryService.requestSolution(xid, sessionToken, TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);
     }
+
 
     /**
      * Exits the current {@link TestPart}

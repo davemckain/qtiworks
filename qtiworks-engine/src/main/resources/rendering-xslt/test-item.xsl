@@ -21,9 +21,6 @@ NB: This is used both while being presented, and during review.
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- Effective value of itemSessionControl/@showFeedback for this item -->
-  <xsl:param name="showFeedback" as="xs:boolean"/>
-
   <!--
   Key for item being rendered is passed here.
   NB: Can't simply extract $testSessionState/@currentItemKey as this will be null
@@ -35,6 +32,10 @@ NB: This is used both while being presented, and during review.
   <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="reviewTestPartAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="testItemSolutionAllowed" as="xs:boolean" required="yes"/>
+
+  <!-- Effective value of itemSessionControl/@showFeedback for this item -->
+  <xsl:param name="showFeedback" as="xs:boolean"/>
 
   <!--
   Keep reference to assesssmentItem element as the processing chain goes off on a tangent
@@ -43,7 +44,9 @@ NB: This is used both while being presented, and during review.
   <xsl:variable name="assessmentItem" select="/*[1]" as="element(qti:assessmentItem)"/>
 
   <xsl:variable name="feedbackAllowed" as="xs:boolean"
-    select="if ($renderingMode='REVIEW') then (/qti:assessentItem/@adaptive='true' or $showFeedback) else true()"/>
+    select="if ($renderingMode='REVIEW')
+      then (/qti:assessentItem/@adaptive='true' or $showFeedback)
+      else ($renderingMode!='SOLUTION')"/>
 
   <!-- ************************************************************ -->
 
@@ -136,15 +139,31 @@ NB: This is used both while being presented, and during review.
         </xsl:if>
         <xsl:if test="$finishItemAllowed">
           <li>
-            <form action="{$webappContextPath}{$finishItemUrl}" method="post">
+            <form action="{$webappContextPath}{$finishTestItemUrl}" method="post">
               <input type="submit" value="Finish Question"/>
             </form>
           </li>
         </xsl:if>
+        <!-- Review state -->
         <xsl:if test="$reviewTestPartAllowed">
           <li>
-            <form action="{$webappContextPath}{$reviewItemUrl}" method="post">
+            <form action="{$webappContextPath}{$reviewTestPartUrl}" method="post">
               <input type="submit" value="Back to Test Feedback"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$testItemSolutionAllowed">
+          <li>
+            <form action="{$webappContextPath}{$showTestItemSolutionUrl}/{$itemKey}" method="post">
+              <input type="submit" value="Show Solution"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$renderingMode='SOLUTION'">
+          <!-- Allow return to item review state -->
+          <li>
+            <form action="{$webappContextPath}{$reviewTestItemUrl}/{$itemKey}" method="post">
+              <input type="submit" value="Hide Solution"/>
             </form>
           </li>
         </xsl:if>
@@ -198,6 +217,9 @@ NB: This is used both while being presented, and during review.
       <xsl:choose>
         <xsl:when test="$renderingMode='REVIEW'">
           <div class="itemStatus review">Review</div>
+        </xsl:when>
+        <xsl:when test="$renderingMode='SOLUTION'">
+          <div class="itemStatus review">Model Solution</div>
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates select="$itemSessionState" mode="item-status"/>

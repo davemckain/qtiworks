@@ -58,6 +58,7 @@ import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiPlus;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
@@ -97,7 +98,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 import org.w3c.dom.Document;
 
 import com.google.common.io.Closeables;
@@ -370,6 +370,10 @@ public class CandidateDataServices {
             final CandidateTestEventType testEventType, final CandidateItemEventType itemEventType,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState,
             final NotificationRecorder notificationRecorder) {
+        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(testEventType, "testEventType");
+        Assert.notNull(testSessionState, "testSessionState");
+
         /* Create event */
         final CandidateEvent event = new CandidateEvent();
         event.setCandidateSession(candidateSession);

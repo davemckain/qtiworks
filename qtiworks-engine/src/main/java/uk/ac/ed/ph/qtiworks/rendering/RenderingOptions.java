@@ -85,17 +85,27 @@ public final class RenderingOptions implements Serializable {
     @NotNull
     private String serveFileUrl;
 
-    @NotNull
-    private String selectItemUrl;
+    //----------------------------------------------
+    // Test-specific control URLs
 
     @NotNull
-    private String finishItemUrl;
+    private String selectTestItemUrl;
 
     @NotNull
-    private String reviewItemUrl;
+    private String finishTestItemUrl;
 
     @NotNull
     private String endTestPartUrl;
+
+    @NotNull
+    private String reviewTestPartUrl;
+
+    @NotNull
+    private String reviewTestItemUrl;
+
+    @NotNull
+    private String showTestItemSolutionUrl;
+
 
     @NotNull
     private String exitTestPartUrl;
@@ -213,30 +223,21 @@ public final class RenderingOptions implements Serializable {
     }
 
 
-    public String getSelectItemUrl() {
-        return selectItemUrl;
+    public String getSelectTestItemUrl() {
+        return selectTestItemUrl;
     }
 
-    public void setSelectItemUrl(final String selectItemUrl) {
-        this.selectItemUrl = selectItemUrl;
-    }
-
-
-    public String getFinishItemUrl() {
-        return finishItemUrl;
-    }
-
-    public void setFinishItemUrl(final String finishItemUrl) {
-        this.finishItemUrl = finishItemUrl;
+    public void setSelectTestItemUrl(final String selectTestItemUrl) {
+        this.selectTestItemUrl = selectTestItemUrl;
     }
 
 
-    public String getReviewItemUrl() {
-        return reviewItemUrl;
+    public String getFinishTestItemUrl() {
+        return finishTestItemUrl;
     }
 
-    public void setReviewItemUrl(final String reviewItemUrl) {
-        this.reviewItemUrl = reviewItemUrl;
+    public void setFinishTestItemUrl(final String finishTestItemUrl) {
+        this.finishTestItemUrl = finishTestItemUrl;
     }
 
 
@@ -248,6 +249,32 @@ public final class RenderingOptions implements Serializable {
         this.endTestPartUrl = endTestPartUrl;
     }
 
+
+    public String getReviewTestPartUrl() {
+        return reviewTestPartUrl;
+    }
+
+    public void setReviewTestPartUrl(final String reviewTestPartUrl) {
+        this.reviewTestPartUrl = reviewTestPartUrl;
+    }
+
+
+    public String getReviewTestItemUrl() {
+        return reviewTestItemUrl;
+    }
+
+    public void setReviewTestItemUrl(final String reviewTestItemUrl) {
+        this.reviewTestItemUrl = reviewTestItemUrl;
+    }
+
+
+    public String getShowTestItemSolutionUrl() {
+        return showTestItemSolutionUrl;
+    }
+
+    public void setShowTestItemSolutionUrl(final String showTestItemSolutionUrl) {
+        this.showTestItemSolutionUrl = showTestItemSolutionUrl;
+    }
 
     public String getExitTestPartUrl() {
         return exitTestPartUrl;

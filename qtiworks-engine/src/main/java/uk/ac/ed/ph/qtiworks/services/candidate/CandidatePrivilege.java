@@ -67,6 +67,7 @@ public enum CandidatePrivilege {
     SELECT_NONLINEAR_TEST_ITEM,
     FINISH_LINEAR_TEST_ITEM,
     REVIEW_TEST_ITEM,
+    SOLUTION_TEST_ITEM,
 
     ;
 
