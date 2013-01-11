@@ -4,7 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
   identifier="Test01"
-  title="Linear/Individual">
+  title="Linear/Individual (Needs Improvement)">
 
   <testPart identifier="P01" navigationMode="linear" submissionMode="individual">
     <assessmentSection identifier="S01" title="Assessment Section 1" visible="true">

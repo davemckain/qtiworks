@@ -4,7 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
   identifier="Test01"
-  title="Nonlinear/Simultaneous">
+  title="Nonlinear/Simultaneous (Needs Improvement)">
 
   <testPart identifier="P01" navigationMode="nonlinear" submissionMode="simultaneous">
     <assessmentSection identifier="S01" title="Section 1" visible="true">
