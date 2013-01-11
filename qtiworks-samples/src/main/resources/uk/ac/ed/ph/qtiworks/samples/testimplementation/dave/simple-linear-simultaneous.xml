@@ -2,7 +2,7 @@
 <assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
   identifier="Test01"
-  title="Simple Nonlinear/Simultaneous Test">
+  title="Simple Linear/Simultaneous Test">
 
   <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
   <outcomeDeclaration identifier="testPartFeedback" cardinality="single" baseType="identifier">
@@ -10,12 +10,12 @@
       <value>testPartFeedback</value>
     </defaultValue>
   </outcomeDeclaration>
-  <testPart identifier="P1" navigationMode="nonlinear" submissionMode="simultaneous">
+  <testPart identifier="P1" navigationMode="linear" submissionMode="simultaneous">
     <itemSessionControl allowReview="true" showFeedback="true" showSolution="true"/>
-    <assessmentSection identifier="S1" title="Simple Nonlinear/Simultaneous Test" visible="true">
+    <assessmentSection identifier="S1" title="Simple Linear/Simultaneous Test" visible="true">
       <rubricBlock view="candidate">
         <p>
-          This test contains a single <code>testPart</code> with 'nonlinear' navigation
+          This test contains a single <code>testPart</code> with 'linear' navigation
           and 'simultaneous' submission mode.
         </p>
         <p>

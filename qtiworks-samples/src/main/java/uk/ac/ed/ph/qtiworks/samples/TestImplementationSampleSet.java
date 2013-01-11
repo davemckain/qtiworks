@@ -53,6 +53,12 @@ public final class TestImplementationSampleSet {
             new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/simple-nonlinear-simultaneous.xml",
                     new String[] { "addition-feedback.xml", "choice-feedback.xml", "choice-min.xml" }
             ),
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/simple-linear-individual.xml",
+                    new String[] { "addition-feedback.xml", "choice-feedback.xml", "choice-min.xml" }
+            ),
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/simple-linear-simultaneous.xml",
+                    new String[] { "addition-feedback.xml", "choice-feedback.xml", "choice-min.xml" }
+            ),
             new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/validation-nonlinear-individual.xml",
                     new String[] { "choice-min.xml" }
             ),

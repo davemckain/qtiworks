@@ -748,15 +748,16 @@ public class CandidateItemDeliveryService {
     // Solution request
 
     /**
-     * Transitions the {@link CandidateSession} having the given ID (xid) into solution state.
+     * Logs a {@link CandidateItemEventType#SOLUTION} event, closing the item session if it hasn't
+     * already been closed (and if this is allowed).
      */
-    public CandidateSession transitionCandidateSessionToSolutionState(final long xid, final String sessionToken)
+    public CandidateSession requestSolution(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return transitionCandidateSessionToSolutionState(candidateSession);
+        return requestSolution(candidateSession);
     }
 
-    public CandidateSession transitionCandidateSessionToSolutionState(final CandidateSession candidateSession)
+    public CandidateSession requestSolution(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -774,7 +775,7 @@ public class CandidateItemDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
         }
 
-        /* Update state */
+        /* Close session if required */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);

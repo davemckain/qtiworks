@@ -114,7 +114,7 @@ Renders the navigation for the current testPart
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-navigation">
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
     <li class="assessmentItem">
-      <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
+      <form action="{$webappContextPath}{$selectTestItemUrl}/{@key}" method="post">
         <button type="submit">
           <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
           <xsl:apply-templates select="$itemSessionState" mode="item-status"/>

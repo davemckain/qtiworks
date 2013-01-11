@@ -21,9 +21,6 @@ NB: This is used both while being presented, and during review.
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- Effective value of itemSessionControl/@showFeedback for this item -->
-  <xsl:param name="showFeedback" as="xs:boolean"/>
-
   <!--
   Key for item being rendered is passed here.
   NB: Can't simply extract $testSessionState/@currentItemKey as this will be null
@@ -35,6 +32,10 @@ NB: This is used both while being presented, and during review.
   <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="reviewTestPartAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="testItemSolutionAllowed" as="xs:boolean" required="yes"/>
+
+  <!-- Effective value of itemSessionControl/@showFeedback for this item -->
+  <xsl:param name="showFeedback" as="xs:boolean"/>
 
   <!--
   Keep reference to assesssmentItem element as the processing chain goes off on a tangent
@@ -43,7 +44,9 @@ NB: This is used both while being presented, and during review.
   <xsl:variable name="assessmentItem" select="/*[1]" as="element(qti:assessmentItem)"/>
 
   <xsl:variable name="feedbackAllowed" as="xs:boolean"
-    select="if ($renderingMode='REVIEW') then (/qti:assessentItem/@adaptive='true' or $showFeedback) else true()"/>
+    select="if ($renderingMode='REVIEW')
+      then (/qti:assessentItem/@adaptive='true' or $showFeedback)
+      else ($renderingMode!='SOLUTION')"/>
 
   <!-- ************************************************************ -->
 
@@ -120,12 +123,6 @@ NB: This is used both while being presented, and during review.
 
   <xsl:template name="qw:test-controls">
     <div class="sessionControl">
-      <xsl:if test="$authorMode">
-        <div class="authorMode">
-          The candidate currently has the following "test session control" options. (These
-          currently depend on the navigation &amp; submission mode of the test only.)
-        </div>
-      </xsl:if>
       <ul class="controls test">
         <xsl:if test="$testPartNavigationAllowed">
           <li>
@@ -136,15 +133,31 @@ NB: This is used both while being presented, and during review.
         </xsl:if>
         <xsl:if test="$finishItemAllowed">
           <li>
-            <form action="{$webappContextPath}{$finishItemUrl}" method="post">
+            <form action="{$webappContextPath}{$finishTestItemUrl}" method="post">
               <input type="submit" value="Finish Question"/>
             </form>
           </li>
         </xsl:if>
+        <!-- Review state -->
         <xsl:if test="$reviewTestPartAllowed">
           <li>
-            <form action="{$webappContextPath}{$reviewItemUrl}" method="post">
+            <form action="{$webappContextPath}{$reviewTestPartUrl}" method="post">
               <input type="submit" value="Back to Test Feedback"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$testItemSolutionAllowed">
+          <li>
+            <form action="{$webappContextPath}{$showTestItemSolutionUrl}/{$itemKey}" method="post">
+              <input type="submit" value="Show Solution"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$renderingMode='SOLUTION'">
+          <!-- Allow return to item review state -->
+          <li>
+            <form action="{$webappContextPath}{$reviewTestItemUrl}/{$itemKey}" method="post">
+              <input type="submit" value="Hide Solution"/>
             </form>
           </li>
         </xsl:if>
@@ -199,6 +212,9 @@ NB: This is used both while being presented, and during review.
         <xsl:when test="$renderingMode='REVIEW'">
           <div class="itemStatus review">Review</div>
         </xsl:when>
+        <xsl:when test="$renderingMode='SOLUTION'">
+          <div class="itemStatus review">Model Solution</div>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
         </xsl:otherwise>
@@ -233,7 +249,9 @@ NB: This is used both while being presented, and during review.
     </xsl:if>
 
     <!-- Item Session control -->
+    <!-- (We are not using any of the controls present for standalone items)
     <xsl:call-template name="qw:item-controls"/>
+    -->
   </xsl:template>
 
   <xsl:template match="qti:itemBody">
@@ -244,10 +262,11 @@ NB: This is used both while being presented, and during review.
 
         <xsl:apply-templates/>
 
-        <!-- FIXME: These are copied from item; might not be right here -->
         <xsl:if test="$isSessionInteracting">
+          <xsl:variable name="submitText" as="xs:string"
+            select="if ($currentTestPart/@submissionMode='individual') then 'SUBMIT ANSWER' else 'SAVE ANSWER'"/>
           <div class="controls">
-            <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
+            <input id="submit_button" name="submit" type="submit" value="{$submitText}"/>
           </div>
         </xsl:if>
       </form>

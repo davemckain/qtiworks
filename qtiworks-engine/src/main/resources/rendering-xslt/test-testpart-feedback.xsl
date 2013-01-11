@@ -21,7 +21,7 @@ Renders the test(Part) feedback
   <xsl:import href="utils.xsl"/>
 
   <!-- Relevant action URLs -->
-  <xsl:param name="reviewItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>
 
   <!-- This test -->
   <xsl:variable name="assessmentTest" select="/*[1]" as="element(qti:assessmentTest)"/>
@@ -125,7 +125,7 @@ Renders the test(Part) feedback
     <xsl:variable name="reviewable" select="@allowReview='true' or @showFeedback='true'" as="xs:boolean"/>
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
     <li class="assessmentItem">
-      <form action="{$webappContextPath}{$reviewItemUrl}/{@key}" method="post">
+      <form action="{$webappContextPath}{$reviewTestItemUrl}/{@key}" method="post">
         <button type="submit">
           <xsl:if test="not($reviewable)">
             <xsl:attribute name="disabled" select="'disabled'"/>

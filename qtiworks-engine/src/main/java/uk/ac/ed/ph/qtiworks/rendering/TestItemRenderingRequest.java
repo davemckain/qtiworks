@@ -64,6 +64,7 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     private boolean testPartNavigationAllowed;
     private boolean finishItemAllowed;
     private boolean reviewTestPartAllowed;
+    private boolean testItemSolutionAllowed;
 
     /**
      * When in review state, this is the effective value of 'showFeedback' for this Node.
@@ -116,6 +117,15 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
 
     public void setReviewTestPartAllowed(final boolean reviewTestPartAllowed) {
         this.reviewTestPartAllowed = reviewTestPartAllowed;
+    }
+
+
+    public boolean isTestItemSolutionAllowed() {
+        return testItemSolutionAllowed;
+    }
+
+    public void setTestItemSolutionAllowed(final boolean testItemSolutionAllowed) {
+        this.testItemSolutionAllowed = testItemSolutionAllowed;
     }
 
 

@@ -40,12 +40,14 @@ rendering.
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
-  <xsl:param name="endTestPartUrl" as="xs:string" required="yes"/>
-  <xsl:param name="exitTestPartUrl" as="xs:string" required="yes"/>
-  <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
-  <xsl:param name="finishItemUrl" as="xs:string" required="yes"/>
-  <xsl:param name="reviewItemUrl" as="xs:string" required="yes"/>
   <xsl:param name="testPartNavigationUrl" as="xs:string" required="yes"/>
+  <xsl:param name="selectTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="finishTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="endTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reviewTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="showTestItemSolutionUrl" as="xs:string" required="yes"/>
+  <xsl:param name="exitTestPartUrl" as="xs:string" required="yes"/>
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>

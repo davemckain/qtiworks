@@ -237,6 +237,7 @@ public class AssessmentRenderer {
         xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(renderingRequest.isTestPartNavigationAllowed()));
         xsltParameters.put("finishItemAllowed", Boolean.valueOf(renderingRequest.isFinishItemAllowed()));
         xsltParameters.put("reviewTestPartAllowed", Boolean.valueOf(renderingRequest.isReviewTestPartAllowed()));
+        xsltParameters.put("testItemSolutionAllowed", Boolean.valueOf(renderingRequest.isTestItemSolutionAllowed()));
 
         doTransform(renderingRequest, testItemXsltUri, renderingRequest.getAssessmentItemUri(),
                 resultStream, xsltParameters);
@@ -315,12 +316,14 @@ public class AssessmentRenderer {
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
-        xsltParameters.put("selectItemUrl", renderingOptions.getSelectItemUrl());
-        xsltParameters.put("finishItemUrl", renderingOptions.getFinishItemUrl());
-        xsltParameters.put("reviewItemUrl", renderingOptions.getReviewItemUrl());
-        xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
-        xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());
         xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
+        xsltParameters.put("selectTestItemUrl", renderingOptions.getSelectTestItemUrl());
+        xsltParameters.put("finishTestItemUrl", renderingOptions.getFinishTestItemUrl());
+        xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
+        xsltParameters.put("reviewTestPartUrl", renderingOptions.getReviewTestPartUrl());
+        xsltParameters.put("reviewTestItemUrl", renderingOptions.getReviewTestItemUrl());
+        xsltParameters.put("showTestItemSolutionUrl", renderingOptions.getShowTestItemSolutionUrl());
+        xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());
     }
 
     //----------------------------------------------------

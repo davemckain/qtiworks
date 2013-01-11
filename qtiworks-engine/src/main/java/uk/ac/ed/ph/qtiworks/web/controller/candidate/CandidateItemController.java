@@ -110,12 +110,14 @@ public class CandidateItemController {
         renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
-        renderingOptions.setSelectItemUrl(sessionBaseUrl + "/select");
-        renderingOptions.setFinishItemUrl(sessionBaseUrl + "/finish-item");
-        renderingOptions.setReviewItemUrl(sessionBaseUrl + "/review");
-        renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/end-test-part");
-        renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exit-test-part");
-        renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/navigation");
+        renderingOptions.setSelectTestItemUrl("");
+        renderingOptions.setFinishTestItemUrl("");
+        renderingOptions.setEndTestPartUrl("");
+        renderingOptions.setReviewTestPartUrl("");
+        renderingOptions.setReviewTestItemUrl("");
+        renderingOptions.setShowTestItemSolutionUrl("");
+        renderingOptions.setExitTestPartUrl("");
+        renderingOptions.setTestPartNavigationUrl("");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateItemDeliveryService.renderCurrentCandidateSessionState(xid, sessionToken, renderingOptions, outputStreamer);
@@ -245,7 +247,7 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/{sessionToken}/solution", method=RequestMethod.POST)
     public String transitionSessionToSolutionState(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateItemDeliveryService.transitionCandidateSessionToSolutionState(xid, sessionToken);
+        candidateItemDeliveryService.requestSolution(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);

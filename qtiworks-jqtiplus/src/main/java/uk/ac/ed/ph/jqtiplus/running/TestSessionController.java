@@ -521,9 +521,8 @@ public final class TestSessionController extends TestValidationController implem
             }
         }
 
-        /* Mark item as closed */
+        /* Log what's happened */
         logger.debug("Finished item {}", currentItemRefNode.getKey());
-        itemSessionState.setClosed(true);
 
         /* Select next item (if one is available) or end the testPart */
         return selectNextItemOrEndTestPart();
@@ -697,8 +696,24 @@ public final class TestSessionController extends TestValidationController implem
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
         final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
 
-        return itemSessionState.isClosed() && (effectiveItemSessionControl.isAllowReview()
+        return itemSessionState.isClosed()
+                && (effectiveItemSessionControl.isAllowReview()
                 || effectiveItemSessionControl.isShowFeedback());
+    }
+
+    public boolean mayAccessItemSolution(final TestPlanNodeKey itemKey) {
+        Assert.notNull(itemKey);
+        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPartNode)) {
+            return false;
+        }
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
+
+        return itemSessionState.isClosed()
+                && (effectiveItemSessionControl.isAllowReview() || effectiveItemSessionControl.isShowFeedback())
+                && effectiveItemSessionControl.isShowSolution();
     }
 
     //-------------------------------------------------------------------
