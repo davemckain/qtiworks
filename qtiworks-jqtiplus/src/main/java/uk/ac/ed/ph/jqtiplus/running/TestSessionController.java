@@ -521,9 +521,8 @@ public final class TestSessionController extends TestValidationController implem
             }
         }
 
-        /* Mark item as closed */
+        /* Log what's happened */
         logger.debug("Finished item {}", currentItemRefNode.getKey());
-        itemSessionState.setClosed(true);
 
         /* Select next item (if one is available) or end the testPart */
         return selectNextItemOrEndTestPart();
