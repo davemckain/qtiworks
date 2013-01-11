@@ -43,7 +43,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
+public final class TestPartFeedbackRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
 
     /** Required {@link TestSessionState} to be rendered */
     @NotNull
@@ -58,31 +58,5 @@ public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest
 
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
-    }
-
-
-    @Override
-    public boolean isTestPartNavigationAllowed() {
-        return false;
-    }
-
-    @Override
-    public boolean isFinishItemAllowed() {
-        return false;
-    }
-
-    @Override
-    public boolean isEndTestPartAllowed() {
-        return false;
-    }
-
-    @Override
-    public boolean isReviewTestPartAllowed() {
-        return false;
-    }
-
-    @Override
-    public boolean isExitTestPartAllowed() {
-        return true;
     }
 }

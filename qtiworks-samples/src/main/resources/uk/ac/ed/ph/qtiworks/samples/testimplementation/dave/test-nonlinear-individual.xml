@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<assessmentTest
-  xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
   identifier="Test01"
   title="Nonlinear/Individual">
 
+  <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
+  <outcomeDeclaration identifier="testPartFeedback" cardinality="single" baseType="identifier">
+    <defaultValue>
+      <value>testPartFeedback</value>
+    </defaultValue>
+  </outcomeDeclaration>
   <testPart identifier="P01" navigationMode="nonlinear" submissionMode="individual">
     <assessmentSection identifier="S01" title="Section 1" visible="true">
-      <assessmentSection identifier="S01f" title="Feedback" visible="true">
+      <assessmentSection identifier="S01f" title="Questions with Feedback" visible="true">
         <rubricBlock view="candidate">
-          <p>The following question has feedback and is asked several times with different &lt;itemSessionControl&gt;</p>
+          <p>
+            This section asks the same question (with feedback) several times with different feedback-related
+            <code>itemSessionControl</code> options.
+            It has individual submission mode, so your answers will be "marked"
+            immediately after submission and, depending on the value of
+            <code>itemSessionControl</code>, you may or may not get
+            feedback and/or a solution. Likewise, you may or may not be able to
+            review the question once the <code>testPart</code> is complete.
+          </p>
+          <p>
+            The values of <code>itemSessionControl</code> used here are (in order):
+          </p>
           <ul>
             <li>allowReview=false, showFeedback=false</li>
             <li>allowReview=false, showFeedback=true</li>
@@ -35,11 +50,17 @@
           <itemSessionControl allowReview="true" showFeedback="true" showSolution="true"/>
         </assessmentItemRef>
       </assessmentSection>
-      <assessmentSection identifier="S01fm" title="Max Attempts" visible="true">
+      <assessmentSection identifier="S01fm" title="Questions using Max Attempts" visible="true">
         <rubricBlock view="candidate">
-          <p>The following question has feedback and is asked several times with different &lt;itemSessionControl&gt;</p>
+          <p>
+            This section asks the same non-adpative question multiple times, using different values of
+            <code>maxAttempts</code> in the <code>itemSessionControl</code>. You should see this
+            manifest itself in the number of times you are allowed to submit an answer before the question
+            closes.
+          </p>
+          <p>In order, the values of <code>maxAttempts</code> used are:</p>
           <ul>
-            <li>maxAttempts=0</li>
+            <li>maxAttempts=0 (i.e. unlimited attempts)</li>
             <li>maxAttempts=1</li>
             <li>maxAttempts=2</li>
           </ul>
@@ -54,8 +75,9 @@
           <itemSessionControl maxAttempts="2"/>
         </assessmentItemRef>
       </assessmentSection>
-      <assessmentSection identifier="S01nf" title="No Feedback" visible="true">
+      <assessmentSection identifier="S01nf" title="Questions with Solutions but no Feedback" visible="true">
         <rubricBlock view="candidate">
+          <p>FIXME: Solutions aren't implemented yet, so this doesn't do very much!</p>
           <p>The following question has no feedback and is asked several times with different &lt;itemSessionControl&gt;</p>
           <ul>
             <li>showSolution=false</li>
@@ -68,6 +90,20 @@
         </assessmentItemRef>
       </assessmentSection>
     </assessmentSection>
+    <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+      <p>
+        This is feedback shown at the end of the single <code>testPart</code> in this test.
+      </p>
+      <p>
+        Your total score is <printedVariable identifier="totalScore"/>.
+      </p>
+    </testFeedback>
   </testPart>
-
+  <outcomeProcessing>
+    <setOutcomeValue identifier="totalScore">
+      <sum>
+        <testVariables variableIdentifier="SCORE"/>
+      </sum>
+    </setOutcomeValue>
+  </outcomeProcessing>
 </assessmentTest>

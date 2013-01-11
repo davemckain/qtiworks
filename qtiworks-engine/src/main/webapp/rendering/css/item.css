@@ -301,68 +301,10 @@ ul.playbackControls {
   margin-right: 0.5em;
 }
 
-/************************************************************/
-/* Test stuff */
-
-ul.testPartNavigation {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-li.assessmentSection {
-  border: 1px dotted #cccccc;
-  padding: 1em;
-}
-
-li.assessmentSection header {
-  font-size: larger;
-  font-weight: bold;
-  padding: 0.5em 0;
-}
-
-li.assessmentSection div.rubric {
-  font-style: italic;
-}
-
-li.assessmentSection ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-ul.assessmentSection li {
-  padding: 0.3em 0;
-}
-
-ul.testPartNavigation button {
-  padding: 0.3em 0;
-}
-
-.testPartNavigation .questionTitle {
-  padding: 0 0.8em;
-}
-
-.testPartNavigation .itemStatus {
-  display: inline-block;
-  padding: 0.3em;
-  border-radius: 0.3em;
-  color: white;
-  font-size: 0.7em;
-}
-
-.assessmentItem .itemStatus {
-  float: right;
-  display: block;
-  padding: 0.3em;
-  border-radius: 0.3em;
-  color: white;
-  font-size: 0.7em;
-}
-
+/* Item status colours */
 
 .itemStatus.review {
-  background-color: #999999;
+  background-color: #f52887;
 }
 
 .itemStatus.closed {
@@ -383,6 +325,110 @@ ul.testPartNavigation button {
 
 .itemStatus.notPresented {
   background-color: green;
+}
+
+/************************************************************/
+/* Test stuff */
+/************************************************************/
+
+/* Test Navigation */
+
+ul.testPartNavigation {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.testPartNavigation li.assessmentSection {
+  border: 1px dotted #cccccc;
+  padding: 0 1em 0.5em 1em;
+  margin: 0.5em 0;
+}
+
+ul.testPartNavigation li.assessmentSection header {
+  margin: 0 0 1em 0;
+}
+
+ul.testPartNavigation li.assessmentSection header h2 {
+  font-size: larger;
+  font-weight: bold;
+}
+
+ul.testPartNavigation li.assessmentSection header div.rubric {
+  font-style: italic;
+}
+
+ul.testPartNavigation li.assessmentSection ul.testPartNavigationInner {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.testPartNavigation li.assessmentItem {
+  padding: 0.3em 0;
+}
+
+ul.testPartNavigation li.assessmentItem button {
+  padding: 0.3em 0;
+}
+
+ul.testPartNavigation li.assessmentItem .questionTitle {
+  padding: 0 0.8em;
+}
+
+ul.testPartNavigation li.assessmentItem .assessmentItemStatus {
+  display: inline-block;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  color: white;
+  font-size: 0.7em;
+}
+
+.assessmentItem .itemStatus {
+  float: right;
+  display: block;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  color: white;
+  font-size: 0.7em;
+}
+
+/* Test Item Presentation */
+
+ul.testPartDrilldown {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.testPartDrilldown li.assessmentSection {
+  border: 1px dotted #cccccc;
+  padding: 0 1em 0.5em 1em;
+}
+
+ul.testPartDrilldown li.assessmentSection header {
+  margin: 0 0 1em 0;
+}
+
+ul.testPartDrilldown li.assessmentSection header h2 {
+  font-size: larger;
+  font-weight: bold;
+}
+
+ul.testPartDrilldown li.assessmentSection header div.rubric {
+  font-style: italic;
+}
+
+ul.testPartDrilldown li.assessmentSection ul.testPartDrilldownInner {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul.testPartDrilldown li.currentItem {
+  border: 1px dotted #cccccc;
+  padding: 0 1em;
+  margin-top: 1em;
 }
 
 /************************************************************/

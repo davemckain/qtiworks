@@ -48,14 +48,4 @@ interface TestRenderingRequest {
 
     TestSessionState getTestSessionState();
 
-    boolean isTestPartNavigationAllowed();
-
-    boolean isFinishItemAllowed();
-
-    boolean isEndTestPartAllowed();
-
-    boolean isReviewTestPartAllowed();
-
-    boolean isExitTestPartAllowed();
-
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="Test01"
+  title="Simple Nonlinear/Simultaneous Test">
+
+  <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
+  <outcomeDeclaration identifier="testPartFeedback" cardinality="single" baseType="identifier">
+    <defaultValue>
+      <value>testPartFeedback</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <testPart identifier="P1" navigationMode="nonlinear" submissionMode="simultaneous">
+    <itemSessionControl allowReview="true" showFeedback="true"/>
+    <assessmentSection identifier="S1" title="Simple Nonlinear/Simultaneous Test" visible="true">
+      <rubricBlock view="candidate">
+        <p>
+          This test contains a single <code>testPart</code> with 'nonlinear' navigation
+          and 'simultaneous' submission mode.
+        </p>
+        <p>
+          In this submission mode, candidate responses are saved but not
+          processed until the candidate clicks the 'End Test' button. Some of
+          the questions included here have question-level feedback, and this
+          will be shown immediately if it exists.
+        </p>
+        <p>
+          This <code>testPart</code> has its <code>itemSessionControl</code> set so that
+          <code>allowReview</code> and <code>showFeedback</code> are both true.
+          Some of the questions included here have question-level feedback, and this will
+          be shown once the <code>testPart</code> has been completed.
+        </p>
+      </rubricBlock>
+      <assessmentItemRef identifier="Q1" href="addition-feedback.xml"/>
+      <assessmentItemRef identifier="Q2" href="choice-feedback.xml"/>
+      <assessmentItemRef identifier="Q3" href="choice-min.xml"/>
+    </assessmentSection>
+    <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+      <p>
+        This is feedback shown at the end of the single <code>testPart</code> in this test.
+      </p>
+      <p>
+        Your total score is <printedVariable identifier="totalScore"/>.
+      </p>
+    </testFeedback>
+  </testPart>
+  <outcomeProcessing>
+    <setOutcomeValue identifier="totalScore">
+      <sum>
+        <testVariables variableIdentifier="SCORE"/>
+      </sum>
+    </setOutcomeValue>
+  </outcomeProcessing>
+</assessmentTest>

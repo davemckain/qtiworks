@@ -1,33 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
-  identifier="addition-feedback" title="Addition (with feedback)" adaptive="false" timeDependent="false">
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="choice" title="Simple MCQ (with feedback)" adaptive="false" timeDependent="false">
 
-  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
     <correctResponse>
-      <value>2</value>
+      <value>blue</value>
     </correctResponse>
-    <mapping defaultValue="0">
-      <mapEntry mapKey="2" mappedValue="1"/>
+    <mapping lowerBound="0" upperBound="2" defaultValue="-2">
+      <mapEntry mapKey="ChoiceA" mappedValue="1"/>
+      <mapEntry mapKey="ChoiceB" mappedValue="-1"/>
+      <mapEntry mapKey="ChoiceC" mappedValue="1"/>
+      <mapEntry mapKey="ChoiceD" mappedValue="-1"/>
     </mapping>
   </responseDeclaration>
 
-  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float" normalMaximum="1.0">
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
     <defaultValue>
-      <value>0</value>
+      <value>0.0</value>
     </defaultValue>
   </outcomeDeclaration>
   <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
 
   <itemBody>
-    <p>Please calculate the following:</p>
-    <p>1+1=<textEntryInteraction responseIdentifier="RESPONSE" expectedLength="15"/></p>
+    <p>Which of the following colours are blue?</p>
+    <choiceInteraction responseIdentifier="RESPONSE" shuffle="true" maxChoices="1">
+      <simpleChoice identifier="blue">Blue</simpleChoice>
+      <simpleChoice identifier="red">Red</simpleChoice>
+      <simpleChoice identifier="yellow">Yellow</simpleChoice>
+      <simpleChoice identifier="green">Green</simpleChoice>
+    </choiceInteraction>
     <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="CORRECT" showHide="show">
-      <p>Yes, that is correct.</p>
+      <p>Yes, that is correct!</p>
     </feedbackBlock>
     <feedbackBlock outcomeIdentifier="FEEDBACK" identifier="INCORRECT" showHide="show">
-      <p>No, that is wrong.</p>
+      <p>No, that is wrong!</p>
     </feedbackBlock>
   </itemBody>
 
@@ -66,3 +73,4 @@
   </responseProcessing>
 
 </assessmentItem>
+

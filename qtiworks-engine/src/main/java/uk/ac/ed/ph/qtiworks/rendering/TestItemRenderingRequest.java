@@ -33,7 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import javax.validation.constraints.NotNull;
@@ -50,9 +52,17 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     @NotNull
     private TestSessionState testSessionState;
 
+    /**
+     * Key of the item being rendered within the test.
+     * <p>
+     * NB: This will always be non-null, whereas {@link TestSessionState#getCurrentItemKey()}
+     * will be null when reviewing items once the {@link TestPart} has been completed.
+     */
+    @NotNull
+    private TestPlanNodeKey itemKey;
+
     private boolean testPartNavigationAllowed;
     private boolean finishItemAllowed;
-    private boolean endTestPartAllowed;
     private boolean reviewTestPartAllowed;
 
     /**
@@ -73,7 +83,15 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     }
 
 
-    @Override
+    public TestPlanNodeKey getItemKey() {
+        return itemKey;
+    }
+
+    public void setItemKey(final TestPlanNodeKey itemKey) {
+        this.itemKey = itemKey;
+    }
+
+
     public boolean isTestPartNavigationAllowed() {
         return testPartNavigationAllowed;
     }
@@ -83,7 +101,6 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     }
 
 
-    @Override
     public boolean isFinishItemAllowed() {
         return finishItemAllowed;
     }
@@ -93,29 +110,12 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
     }
 
 
-    @Override
-    public boolean isEndTestPartAllowed() {
-        return endTestPartAllowed;
-    }
-
-    public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
-        this.endTestPartAllowed = endTestPartAllowed;
-    }
-
-
-    @Override
     public boolean isReviewTestPartAllowed() {
         return reviewTestPartAllowed;
     }
 
     public void setReviewTestPartAllowed(final boolean reviewTestPartAllowed) {
         this.reviewTestPartAllowed = reviewTestPartAllowed;
-    }
-
-
-    @Override
-    public boolean isExitTestPartAllowed() {
-        return false;
     }
 
 

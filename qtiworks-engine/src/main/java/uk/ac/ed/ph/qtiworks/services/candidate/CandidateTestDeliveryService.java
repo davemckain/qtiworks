@@ -57,8 +57,8 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
-import uk.ac.ed.ph.qtiworks.rendering.TestFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestPartFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
@@ -366,13 +366,13 @@ public class CandidateTestDeliveryService {
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
-        final TestFeedbackRenderingRequest renderingRequest = new TestFeedbackRenderingRequest();
+        final TestPartFeedbackRenderingRequest renderingRequest = new TestPartFeedbackRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setTestSessionState(testSessionState);
 
         candidateAuditLogger.logTestFeedbackRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
-        assessmentRenderer.renderTestFeedback(renderingRequest, notifications, resultStream);
+        assessmentRenderer.renderTestPartFeedback(renderingRequest, notifications, resultStream);
     }
 
     private void renderSelectedItem(final CandidateEvent candidateEvent,
@@ -422,7 +422,6 @@ public class CandidateTestDeliveryService {
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING, duration);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayFinishItemLinear());
-        renderingRequest.setEndTestPartAllowed(false); /* (Sue prefers only allowing this in the navigation page) */
         return renderingRequest;
     }
 
@@ -430,35 +429,17 @@ public class CandidateTestDeliveryService {
     private void renderItemEventWhenClosed(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions,  final OutputStream resultStream) {
-        final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
-        switch (itemEventType) {
-            case ATTEMPT_VALID:
-            case RESPONSE_VALID:
-            case RESPONSE_INVALID:
-            case RESPONSE_BAD:
-                final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
-                        itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
-                doRendering(candidateEvent, renderingRequest, resultStream);
-                break;
-
-            case CLOSE:
-            case PLAYBACK:
-            case SOLUTION:
-            case REINIT:
-            case RESET:
-                throw new QtiWorksLogicException("The item event " + itemEventType + " is not yet supported within tests");
-
-            case INIT:
-                throw new QtiWorksLogicException("The item event " + itemEventType + " should not occur in tests");
-
-            default:
-                throw new QtiWorksLogicException("Unexpected logic branch. Event type " + itemEventType);
-        }
+        /* (The logic here is simpler than for single items, as we don't support some of the more
+         * exotic lifecycle methods within tests)
+         */
+        final TestItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
+                itemKey, testSessionState, itemSessionState, renderingOptions);
+        doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
     private TestItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+            final RenderingOptions renderingOptions) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -470,10 +451,9 @@ public class CandidateTestDeliveryService {
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateEvent,
-                itemKey, testSessionState, itemSessionState, renderingOptions, renderingMode);
+                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.CLOSED);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR);
-        renderingRequest.setEndTestPartAllowed(false); /* Sue prefers this */
         renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
         return renderingRequest;
     }
@@ -523,7 +503,6 @@ public class CandidateTestDeliveryService {
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.REVIEW);
         renderingRequest.setTestPartNavigationAllowed(false); /* (This is selection/presentation navigation, so no longer available) */
         renderingRequest.setFinishItemAllowed(false); /* (Ditto) */
-        renderingRequest.setEndTestPartAllowed(false); /* (Already closed) */
         renderingRequest.setReviewTestPartAllowed(true);
         return renderingRequest;
     }
@@ -555,6 +534,7 @@ public class CandidateTestDeliveryService {
 
         final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setItemKey(itemKey);
         renderingRequest.setAssessmentItemUri(itemSystemId);
         renderingRequest.setRenderingMode(renderingMode);
         renderingRequest.setTestSessionState(testSessionState);

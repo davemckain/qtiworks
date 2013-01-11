@@ -60,11 +60,17 @@ Renders the test(Part) feedback
 
       </head>
       <body class="qtiworks assessmentTest testFeedback">
-        <!-- Show feedback -->
-        <xsl:apply-templates select="qti:testFeedback[@access='atEnd']"/>
+        <h1><xsl:value-of select="$testOrTestPart"/> Complete</h1>
+        <!-- Show testPart feedback -->
+        <xsl:apply-templates select="$currentTestPart/qti:testFeedback[@access='atEnd']"/>
+
+        <!-- Show test feedback if there's only 1 testPart -->
+        <xsl:if test="not($hasMultipleTestParts)">
+          <xsl:apply-templates select="qti:testFeedback[@access='atEnd']"/>
+        </xsl:if>
 
         <!-- Review -->
-        <xsl:apply-templates select="$currentTestPart" mode="testPart-review"/>
+        <xsl:apply-templates select="$currentTestPartNode" mode="testPart-review"/>
 
         <!-- Test session control -->
         <xsl:call-template name="qw:test-controls"/>
@@ -72,10 +78,26 @@ Renders the test(Part) feedback
     </html>
   </xsl:template>
 
+  <xsl:template name="qw:test-controls">
+    <div class="sessionControl">
+      <ul class="controls test">
+        <li>
+          <form action="{$webappContextPath}{$exitTestPartUrl}" method="post"
+            onsubmit="return confirm('Are you sure? This will leave the test and you can\'t go back in.')">
+            <input type="submit" value="Exit Test"/>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </xsl:template>
+
   <xsl:template match="qw:node[@type='TEST_PART']" mode="testPart-review">
     <xsl:variable name="reviewable-items" select=".//qw:node[@type='ASSESSMENT_ITEM_REF' and (@allowReview='true' or @showFeedback='true')]" as="element(qw:node)*"/>
     <xsl:if test="exists($reviewable-items)">
       <h2>Review your responses</h2>
+      <p>
+        You may review your responses to some (or all) questions. These are listed below.
+      </p>
       <ul class="testPartNavigation">
         <xsl:apply-templates mode="testPart-review"/>
       </ul>
@@ -84,14 +106,16 @@ Renders the test(Part) feedback
 
   <xsl:template match="qw:node[@type='ASSESSMENT_SECTION']" mode="testPart-review">
     <li class="assessmentSection">
-      <!-- Section title -->
-      <header><xsl:value-of select="@sectionPartTitle"/></header>
-      <!-- Handle rubrics -->
-      <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
-      <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
-      <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+      <header>
+        <!-- Section title -->
+        <h2><xsl:value-of select="@sectionPartTitle"/></h2>
+        <!-- Handle rubrics -->
+        <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
+        <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
+        <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+      </header>
       <!-- Descend -->
-      <ul>
+      <ul class="testPartNavigationInner">
         <xsl:apply-templates mode="testPart-review"/>
       </ul>
     </li>
@@ -100,7 +124,7 @@ Renders the test(Part) feedback
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-review">
     <xsl:variable name="reviewable" select="@allowReview='true' or @showFeedback='true'" as="xs:boolean"/>
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
-    <li>
+    <li class="assessmentItem">
       <form action="{$webappContextPath}{$reviewItemUrl}/{@key}" method="post">
         <button type="submit">
           <xsl:if test="not($reviewable)">

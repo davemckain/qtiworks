@@ -20,11 +20,8 @@ Renders the navigation for the current testPart
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- Relevant action URLs -->
-  <xsl:param name="selectItemUrl" as="xs:string" required="yes"/>
-
-  <!-- This test -->
-  <xsl:variable name="assessmentTest" select="/*[1]" as="element(qti:assessmentTest)"/>
+  <!-- Action permissions -->
+  <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
 
   <!-- ************************************************************ -->
 
@@ -59,22 +56,36 @@ Renders the navigation for the current testPart
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks assessmentTest testPartNavigation">
-        <xsl:choose>
-          <xsl:when test="exists($currentTestPart)">
-            <h2>Test Question Menu</h2>
-            <xsl:apply-templates select="$currentTestPart" mode="testPart-navigation"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:message terminate="yes">
-              No current testPart
-            </xsl:message>
-          </xsl:otherwise>
-        </xsl:choose>
+        <h2>Test Question Menu</h2>
+        <xsl:apply-templates select="$currentTestPartNode" mode="testPart-navigation"/>
 
         <!-- Test session control -->
         <xsl:call-template name="qw:test-controls"/>
        </body>
     </html>
+  </xsl:template>
+
+  <xsl:template name="qw:test-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following "test session control" options. (These
+          currently depend on the navigation &amp; submission mode of the test only.)
+        </div>
+      </xsl:if>
+      <ul class="controls test">
+        <li>
+          <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
+            onsubmit="return confirm('Are you sure?')">
+            <input type="submit" value="End Test">
+              <xsl:if test="not($endTestPartAllowed)">
+                <xsl:attribute name="disabled" select="'disabled'"/>
+              </xsl:if>
+            </input>
+          </form>
+        </li>
+      </ul>
+    </div>
   </xsl:template>
 
   <xsl:template match="qw:node" mode="testPart-navigation">
@@ -85,14 +96,16 @@ Renders the navigation for the current testPart
 
   <xsl:template match="qw:node[@type='ASSESSMENT_SECTION']" mode="testPart-navigation">
     <li class="assessmentSection">
-      <!-- Section title -->
-      <header><xsl:value-of select="@sectionPartTitle"/></header>
-      <!-- Handle rubrics -->
-      <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
-      <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
-      <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+      <header>
+        <!-- Section title -->
+        <h2><xsl:value-of select="@sectionPartTitle"/></h2>
+        <!-- Handle rubrics -->
+        <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
+        <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
+        <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+      </header>
       <!-- Descend -->
-      <ul>
+      <ul class="testPartNavigationInner">
         <xsl:apply-templates mode="testPart-navigation"/>
       </ul>
     </li>
@@ -100,7 +113,7 @@ Renders the navigation for the current testPart
 
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-navigation">
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
-    <li>
+    <li class="assessmentItem">
       <form action="{$webappContextPath}{$selectItemUrl}/{@key}" method="post">
         <button type="submit">
           <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
