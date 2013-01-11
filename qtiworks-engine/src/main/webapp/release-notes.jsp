@@ -12,6 +12,19 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV22 [Development] (11/01/2013)</h3>
+  <p>
+    This snapshot continues with the implementation of the test specification, refining and slightly extending
+    what was added in DEV21, as well as adding some improved test samples.
+  </p>
+  <p>
+    We now support <code>testPart</code> feedback (albeit still only with single <code>testPart</code>s), the
+    showing of item solutions and the display of section/rubric information within test item rendering.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV21 [Development] (07/01/2013)</h3>
   <p>
     This snapshot continues with the implementation of the test specification. It now supports all 4 combinations
