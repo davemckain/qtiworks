@@ -116,21 +116,32 @@ public final class FilespaceManager {
         return new File(candidateResponseFolder, createUniqueRequestComponent());
     }
 
+    public boolean deleteCandidateUploads(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+        return recursivelyDeleteDirectory(getCandidateSessionUploadBaseUri(delivery));
+    }
+
     public boolean deleteCandidateUploads(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
         return recursivelyDeleteDirectory(getCandidateSessionUploadBaseUri(candidateSession));
     }
 
-    private String getCandidateSessionUploadBaseUri(final CandidateSession candidateSession) {
-        final User candidate = candidateSession.getCandidate();
-        final Delivery delivery = candidateSession.getDelivery();
+    private String getCandidateSessionUploadBaseUri(final Delivery delivery) {
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = filesystemBaseDirectory.toURI().toString()
                 + "/responses/assessment" + assessment.getId()
                 + "/package" + assessmentPackage.getId()
-                + "/delivery" + delivery.getId()
+                + "/delivery" + delivery.getId();
+        return folderUri;
+    }
+
+    private String getCandidateSessionUploadBaseUri(final CandidateSession candidateSession) {
+        final User candidate = candidateSession.getCandidate();
+        final Delivery delivery = candidateSession.getDelivery();
+
+        final String folderUri = getCandidateSessionUploadBaseUri(delivery)
                 + "/" + candidate.getBusinessKey()
                 + "/session" + candidateSession.getId();
         return folderUri;
@@ -143,24 +154,36 @@ public final class FilespaceManager {
         return ensureCreateDirectory(getCandidateSessionStoreUri(candidateSession));
     }
 
+    public boolean deleteCandidateSessionData(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+        return recursivelyDeleteDirectory(getCandidateSessionStoreBaseUri(delivery));
+    }
+
     public boolean deleteCandidateSessionStore(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
         return recursivelyDeleteDirectory(getCandidateSessionStoreUri(candidateSession));
     }
 
+    private final String getCandidateSessionStoreBaseUri(final Delivery delivery) {
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final Assessment assessment = assessmentPackage.getAssessment();
+        final String folderBaseUri = filesystemBaseDirectory.toURI().toString()
+                + "/sessions/assessment" + assessment.getId()
+                + "/package" + assessmentPackage.getId()
+                + "/delivery" + delivery.getId();
+        return folderBaseUri;
+    }
+
     private final String getCandidateSessionStoreUri(final CandidateSession candidateSession) {
         final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-        final Assessment assessment = assessmentPackage.getAssessment();
-        final String folderUri = filesystemBaseDirectory.toURI().toString()
-                + "/sessions/assessment" + assessment.getId()
-                + "/package" + assessmentPackage.getId()
-                + "/delivery" + delivery.getId()
+        final String folderUri = getCandidateSessionStoreBaseUri(delivery)
                 + "/" + candidate.getBusinessKey()
                 + "/session" + candidateSession.getId();
         return folderUri;
     }
+
+    //-------------------------------------------------
 
     public void deleteSandbox(final File sandboxDirectory) {
         Assert.notNull(sandboxDirectory, "sandboxDirectory");

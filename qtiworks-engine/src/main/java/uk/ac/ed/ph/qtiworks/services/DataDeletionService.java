@@ -34,7 +34,9 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
@@ -75,11 +77,14 @@ public class DataDeletionService {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
+    @Resource
+    private DeliveryDao deliveryDao;
+
     /**
      * Deletes the given {@link CandidateSession} and all data that was stored for it.
      * @param candidateSession
      */
-    public void purgeCandidateSession(final CandidateSession candidateSession) {
+    public void deleteCandidateSession(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Delete candidate uploads & stored state information */
@@ -92,5 +97,20 @@ public class DataDeletionService {
 
         /* Delete entities, taking advantage of cascading */
         candidateSessionDao.remove(candidateSession); /* (This will cascade) */
+    }
+
+    public void deleteDelivery(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+
+        /* Delete candidate uploads & stored state information */
+        if (!filespaceManager.deleteCandidateUploads(delivery)) {
+            logger.error("Failed to delete upload folder for Delivery {}", delivery.getId());
+        }
+        if (!filespaceManager.deleteCandidateSessionData(delivery)) {
+            logger.error("Failed to delete stored session data for Delivery {}", delivery.getId());
+        }
+
+        /* Delete entities, taking advantage of cascading */
+        deliveryDao.remove(delivery); /* (This will cascade) */
     }
 }
