@@ -128,6 +128,9 @@ public class AssessmentManagementService {
     private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
+    private DataDeletionService dataDeletionService;
+
+    @Resource
     private AssessmentPackageFileImporter assessmentPackageFileImporter;
 
     @Resource
@@ -317,19 +320,32 @@ public class AssessmentManagementService {
         return assessment;
     }
 
+    /**
+     * Deletes the {@link Assessment} having the given aid and owned by the caller.
+     *
+     * NOTE: This deletes ALL associated data, including candidate data. Use with care!
+     *
+     * @param aid
+     * @throws DomainEntityNotFoundException
+     * @throws PrivilegeException
+     */
+    @Transactional(propagation=Propagation.REQUIRED)
+    public void deleteAssessment(final long aid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up assessment and check permissions */
+        final Assessment assessment = assessmentDao.requireFindById(aid);
+        ensureCallerOwns(assessment);
+
+        /* Now delete it and all associated data */
+        dataDeletionService.deleteAssessment(assessment);
+
+        /* Log what happened */
+        logger.debug("Deleted Assessment #{}", assessment.getId());
+        auditor.recordEvent("Deleted Assessment #" + assessment.getId());
+    }
+
     //-------------------------------------------------
     // Not implemented
-
-    @Transactional(propagation=Propagation.REQUIRED)
-    @SuppressWarnings("unused")
-    @ToRefactor
-    public void deleteAssessment(final Assessment assessment)
-            throws AssessmentStateException, PrivilegeException {
-        /* In order to do this correctly, we need to delete all state that might have
-         * been associated with this assessment as well, so we'll come back to this...
-         */
-        throw new QtiLogicException("Not yet implemented!");
-    }
 
     /**
      * DEV NOTES:

@@ -114,7 +114,7 @@ public final class FilespaceManager {
         if (assessmentPackage.getSandboxPath()==null) {
             throw new IllegalStateException("Built-in AssessmentPackages may not be deleted");
         }
-        return recursivelyDeleteDirectory(assessmentPackage.getSandboxPath());
+        return recursivelyDeleteDirectory(new File(assessmentPackage.getSandboxPath()));
     }
 
     //-------------------------------------------------

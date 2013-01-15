@@ -8,8 +8,8 @@ Lists Assessments owned by caller
 Model:
 
 assessmentList
-assessmentRouting: aid -> action -> URL
-instructorAssessmentRouting
+assessmentRouting (aid -> action -> URL)
+instructorAssessmentRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>

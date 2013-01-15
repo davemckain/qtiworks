@@ -132,6 +132,7 @@ public class InstructorAssessmentManagementController {
         result.put("edit", instructorRouter.buildWebUrl("/assessment/" + aid + "/edit"));
         result.put("upload", instructorRouter.buildWebUrl("/assessment/" + aid + "/upload"));
         result.put("validate", instructorRouter.buildWebUrl("/assessment/" + aid + "/validate"));
+        result.put("delete", instructorRouter.buildWebUrl("/assessment/" + aid + "/delete"));
         result.put("try", instructorRouter.buildWebUrl("/assessment/" + aid + "/try"));
         result.put("deliveries", instructorRouter.buildWebUrl("/assessment/" + aid + "/deliveries"));
         result.put("createDelivery", instructorRouter.buildWebUrl("/assessment/" + aid + "/deliveries/create"));
@@ -174,7 +175,8 @@ public class InstructorAssessmentManagementController {
      * these into 2 steps and find some way of showing progress.
      */
     @RequestMapping(value="/assessments/upload", method=RequestMethod.POST)
-    public String handleUploadAssessmentForm(final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
+    public String handleUploadAssessmentForm(final @Valid @ModelAttribute UploadAssessmentPackageCommand command,
+            final BindingResult result, final RedirectAttributes redirectAttributes)
             throws PrivilegeException {
         /* Validate command Object */
         if (result.hasErrors()) {
@@ -198,6 +200,7 @@ public class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
+        redirectAttributes.addFlashAttribute("flashMessage", "Your Assessment has been successfully uploaded");
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
@@ -298,6 +301,16 @@ public class InstructorAssessmentManagementController {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
         return instructorRouter.buildInstructorRedirect("/assessment/{aid}");
+    }
+
+    //------------------------------------------------------
+
+    @RequestMapping(value="/assessment/{aid}/delete", method=RequestMethod.POST)
+    public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        assessmentManagementService.deleteAssessment(aid);
+        redirectAttributes.addFlashAttribute("flashMessage", "The Assessment has been deleted");
+        return instructorRouter.buildInstructorRedirect("/assessments");
     }
 
     //------------------------------------------------------

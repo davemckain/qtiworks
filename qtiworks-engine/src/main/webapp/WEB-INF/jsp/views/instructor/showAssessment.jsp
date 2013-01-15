@@ -125,5 +125,6 @@ instructorAssessmentRouting (action -> URL)
     </li>
     <li>Delete Assignment (coming soon)</li>
     <li><a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Manage deliveries of this Assessment</a></li>
+    <li><page:postLink path="${assessmentRouting['delete']}" title="Delete Assessment"/></li>
   </ul>
 </page:page>
