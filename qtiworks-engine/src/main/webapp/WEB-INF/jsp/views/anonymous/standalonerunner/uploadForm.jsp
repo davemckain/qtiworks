@@ -12,7 +12,7 @@ itemDeliverySettingsList
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="QTI Validator">
+<page:page title="QTI Quick Run">
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/public/')}">Demos</a> &#xbb;
