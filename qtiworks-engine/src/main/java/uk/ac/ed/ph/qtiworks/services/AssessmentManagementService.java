@@ -251,6 +251,25 @@ public class AssessmentManagementService {
         return assessment;
     }
 
+    /**
+     * Deletes the {@link Assessment} having the given aid and owned by the caller.
+     *
+     * NOTE: This deletes ALL associated data, including candidate data. Use with care!
+     */
+    public void deleteAssessment(final long aid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up assessment and check permissions */
+        final Assessment assessment = assessmentDao.requireFindById(aid);
+        ensureCallerOwns(assessment);
+
+        /* Now delete it and all associated data */
+        dataDeletionService.deleteAssessment(assessment);
+
+        /* Log what happened */
+        logger.debug("Deleted Assessment #{}", assessment.getId());
+        auditor.recordEvent("Deleted Assessment #" + assessment.getId());
+    }
+
     public Assessment updateAssessment(final long aid, final UpdateAssessmentCommand command)
             throws BindException, DomainEntityNotFoundException, PrivilegeException {
         /* Validate data */
@@ -320,32 +339,8 @@ public class AssessmentManagementService {
         return assessment;
     }
 
-    /**
-     * Deletes the {@link Assessment} having the given aid and owned by the caller.
-     *
-     * NOTE: This deletes ALL associated data, including candidate data. Use with care!
-     *
-     * @param aid
-     * @throws DomainEntityNotFoundException
-     * @throws PrivilegeException
-     */
-    @Transactional(propagation=Propagation.REQUIRED)
-    public void deleteAssessment(final long aid)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        /* Look up assessment and check permissions */
-        final Assessment assessment = assessmentDao.requireFindById(aid);
-        ensureCallerOwns(assessment);
-
-        /* Now delete it and all associated data */
-        dataDeletionService.deleteAssessment(assessment);
-
-        /* Log what happened */
-        logger.debug("Deleted Assessment #{}", assessment.getId());
-        auditor.recordEvent("Deleted Assessment #" + assessment.getId());
-    }
-
     //-------------------------------------------------
-    // Not implemented
+    // Not implemented yet
 
     /**
      * DEV NOTES:
@@ -729,6 +724,29 @@ public class AssessmentManagementService {
         delivery.setLtiConsumerSecret(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
         deliveryDao.persist(delivery);
         return delivery;
+    }
+
+    /**
+     * Deletes the {@link Delivery} having the given did and owned by the caller.
+     *
+     * NOTE: This deletes ALL associated data, including candidate data. Use with care!
+     * @return
+     */
+    @Transactional(propagation=Propagation.REQUIRED)
+    public Assessment deleteDelivery(final long did)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up assessment and check permissions */
+        final Delivery delivery = deliveryDao.requireFindById(did);
+        final Assessment assessment = delivery.getAssessment();
+        ensureCallerOwns(assessment);
+
+        /* Now delete it and all associated data */
+        dataDeletionService.deleteDelivery(delivery);
+
+        /* Log what happened */
+        logger.debug("Deleted Delivery #{}", did);
+        auditor.recordEvent("Deleted Delivery #" + did);
+        return assessment;
     }
 
     public Delivery updateDelivery(final long did, final DeliveryTemplate template)

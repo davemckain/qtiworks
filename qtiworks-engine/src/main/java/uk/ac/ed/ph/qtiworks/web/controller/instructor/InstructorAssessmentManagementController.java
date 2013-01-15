@@ -311,10 +311,10 @@ public class InstructorAssessmentManagementController {
     //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/delete", method=RequestMethod.POST)
-    public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
+    public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes model)
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentManagementService.deleteAssessment(aid);
-        redirectAttributes.addFlashAttribute(FLASH, "The Assessment has been deleted");
+        addFlashMessage(model, "Assessment successfully deleted");
         return instructorRouter.buildInstructorRedirect("/assessments");
     }
 
@@ -399,6 +399,14 @@ public class InstructorAssessmentManagementController {
         return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId().longValue());
     }
 
+    @RequestMapping(value="/delivery/{did}/delete", method=RequestMethod.POST)
+    public String deleteDelivery(final @PathVariable long did, final RedirectAttributes redirectAttributes)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.deleteDelivery(did);
+        redirectAttributes.addFlashAttribute(FLASH, "Delivery has been deleted");
+        return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId() + "/deliveries");
+    }
+
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.GET)
     public String showEditDeliveryForm(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -454,6 +462,7 @@ public class InstructorAssessmentManagementController {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", instructorRouter.buildWebUrl("/delivery/" + did));
         result.put("edit", instructorRouter.buildWebUrl("/delivery/" + did + "/edit"));
+        result.put("delete", instructorRouter.buildWebUrl("/delivery/" + did + "/delete"));
         result.put("try", instructorRouter.buildWebUrl("/delivery/" + did + "/try"));
         result.put("candidateSummaryReport", instructorRouter.buildWebUrl("/delivery/" + did + "/candidate-summary-report"));
         result.put("candidateSummaryReportCsv", instructorRouter.buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
