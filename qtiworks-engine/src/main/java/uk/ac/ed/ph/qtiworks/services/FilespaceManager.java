@@ -98,6 +98,8 @@ public final class FilespaceManager {
         return new File(candidateItemSessionFolder, createUniqueRequestComponent());
     }
 
+    //-------------------------------------------------
+
     public File createAssessmentPackageSandbox(final User owner) {
         Assert.notNull(owner, "owner");
         final String filespaceUri = filesystemBaseDirectory.toURI().toString()
@@ -105,6 +107,14 @@ public final class FilespaceManager {
                 + owner.getBusinessKey()
                 + "/" + createUniqueRequestComponent();
         return ensureCreateDirectory(filespaceUri);
+    }
+
+    public boolean deleteAssessmentPackageSandbox(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        if (assessmentPackage.getSandboxPath()==null) {
+            throw new IllegalStateException("Built-in AssessmentPackages may not be deleted");
+        }
+        return recursivelyDeleteDirectory(assessmentPackage.getSandboxPath());
     }
 
     //-------------------------------------------------

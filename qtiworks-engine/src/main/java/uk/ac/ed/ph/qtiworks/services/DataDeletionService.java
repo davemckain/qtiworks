@@ -33,8 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 
@@ -80,6 +84,12 @@ public class DataDeletionService {
     @Resource
     private DeliveryDao deliveryDao;
 
+    @Resource
+    private AssessmentPackageDao assessmentPackageDao;
+
+    @Resource
+    private AssessmentDao assessmentDao;
+
     /**
      * Deletes the given {@link CandidateSession} and all data that was stored for it.
      * @param candidateSession
@@ -112,5 +122,35 @@ public class DataDeletionService {
 
         /* Delete entities, taking advantage of cascading */
         deliveryDao.remove(delivery); /* (This will cascade) */
+    }
+
+    public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+
+        /* Delete package sandbox in filesystem (if appropriate) */
+        if (assessmentPackage.getSandboxPath()!=null) {
+            if (!filespaceManager.deleteAssessmentPackageSandbox(assessmentPackage)) {
+                logger.error("Failed to delete sandbox for AssessmentPackage {}", assessmentPackage.getId());
+            }
+        }
+
+        /* Delete entities, taking advantage of cascading */
+        assessmentPackageDao.remove(assessmentPackage); /* (This will cascade) */
+    }
+
+    public void deleteAssessment(final Assessment assessment) {
+        Assert.notNull(assessment, "assessment");
+
+        /* Delete sandboxes for all packages */
+        for (final AssessmentPackage assessmentPackage : assessment.getAssessmentPackages()) {
+            if (assessmentPackage.getSandboxPath()!=null) {
+                if (!filespaceManager.deleteAssessmentPackageSandbox(assessmentPackage)) {
+                    logger.error("Failed to delete sandbox for AssessmentPackage {}", assessmentPackage.getId());
+                }
+            }
+        }
+
+        /* Delete entities, taking advantage of cascading */
+        assessmentDao.remove(assessment); /* (This will cascade) */
     }
 }
