@@ -97,7 +97,7 @@ public class InstructorAssessmentReportingController {
         final CsvWriter csvWriter = new CsvWriter(response.getOutputStream(), ',', Charsets.UTF_8);
 
         /* Write header */
-        final StringBuilder headerBuilder = new StringBuilder("Session ID,Email Address,First Name,Last Name,Email Address,Launch Time,Session Status");
+        final StringBuilder headerBuilder = new StringBuilder("Session ID,Email Address,First Name,Last Name,Launch Time,Session Status");
         for (final String outcomeName : report.getOutcomeNames()) {
             headerBuilder.append(',').append(outcomeName);
         }
