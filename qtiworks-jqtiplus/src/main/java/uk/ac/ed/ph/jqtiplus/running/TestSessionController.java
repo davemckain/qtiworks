@@ -868,7 +868,9 @@ public final class TestSessionController extends TestValidationController implem
                             "Reference to variable " + targetVariableIdentifier
                             + " in instance " + instanceNumber
                             + " of assessmentItemRef " + assessmentItemRef
-                            + " yielded no result. Returning NULL");
+                            + " yielded no result."
+                            + " This can happen if the assessmentItemRef was being selected, or if the item was not usable."
+                            + " Returning NULL");
                     return NullValue.INSTANCE;
                 }
                 if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
@@ -881,12 +883,14 @@ public final class TestSessionController extends TestValidationController implem
             }
             else {
                 /* No instance number specified, so assume we mean 1 */
-                final List<TestPlanNode> testPlanNodes = testPlan.getNodes(assessmentItemRef.getIdentifier());
-                if (testPlanNodes==null || testPlanNodes.isEmpty()) {
+                final List<TestPlanNode> testPlanNodes = testPlan.getNodes(assessmentItemRef.getIdentifier()); /* Not empty, but may be null */
+                if (testPlanNodes==null) {
                     fireRuntimeWarning(caller,
                             "Reference to variable " + targetVariableIdentifier
                             + " in assessmentItemRef " + assessmentItemRef
-                            + " yielded no result. Returning NULL");
+                            + " yielded no result."
+                            + " This can happen if the assessmentItemRef was being selected, or if the item was not usable."
+                            + " Returning NULL");
                     return NullValue.INSTANCE;
                 }
                 testPlanNode = testPlanNodes.get(0);
@@ -922,7 +926,10 @@ public final class TestSessionController extends TestValidationController implem
              */
             final List<AssessmentItemRef> assessmentItemRefs = findAssessmentItemRefsInSections(sectionIdentifier);
             for (final AssessmentItemRef assessmentItemRef : assessmentItemRefs) {
-                itemRefNodes.addAll(testPlan.getNodes(assessmentItemRef.getIdentifier()));
+                final List<TestPlanNode> selectedItemRefNodes = testPlan.getNodes(assessmentItemRef.getIdentifier());
+                if (selectedItemRefNodes!=null) { /* (May be null if assessmentItemRef wasn't selected */
+                    itemRefNodes.addAll(selectedItemRefNodes);
+                }
             }
         }
         else {

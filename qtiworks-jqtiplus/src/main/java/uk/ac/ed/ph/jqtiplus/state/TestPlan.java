@@ -35,10 +35,13 @@ package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.Ordering;
+import uk.ac.ed.ph.jqtiplus.node.test.SectionPart;
 import uk.ac.ed.ph.jqtiplus.node.test.Selection;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -49,10 +52,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Represents the shape of an {@link AssessmentTest} once
- * {@link Ordering} and {@link Selection} have been applied.
+ * {@link Ordering} and {@link Selection} has been applied.
  * <p>
  * Nodes corresponding to {@link AssessmentItemRef}s in the plan will satisfy
  * the following properties:
@@ -78,19 +82,33 @@ public final class TestPlan implements Serializable {
     private final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMap;
 
     /**
-     * Map of the {@link TestPlanNode}s corresponding to each {@link Identifier}.
+     * Map of the {@link TestPlanNode}s corresponding to the {@link Identifier}s of each
+     * {@link AbstractPart} selected in this {@link TestPlan}.
+     * <p>
      * There will be multiple elements in the case of non-unique {@link Identifier}s and
      * selection with replacement.
      */
     private final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap;
 
-    /** (This is the most efficient constructor) */
+    /**
+     * (This is the most efficient constructor)
+     *
+     * @param testPlanRootNode root Node for this {@link TestPlan}
+     * @param Map of Nodes in the {@link TestPlan}, keyed on {@link Identifier}, mapping to list of
+     *   all corresponding instances of the resulting {@link AbstractPart} (taking into account
+     *   selection rules). The value for each key must NOT be null.
+     */
     public TestPlan(final TestPlanNode testPlanRootNode, final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMap) {
         this.testPlanRootNode = testPlanRootNode;
         this.testPlanNodesByIdentifierMap = testPlanNodesByIdentifierMap;
 
         final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new LinkedHashMap<TestPlanNodeKey, TestPlanNode>();
-        for (final List<TestPlanNode> testPlanNodeList : testPlanNodesByIdentifierMap.values()) {
+        for (final Entry<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMapEntry : testPlanNodesByIdentifierMap.entrySet()) {
+            final Identifier identifier = testPlanNodesByIdentifierMapEntry.getKey();
+            final List<TestPlanNode> testPlanNodeList = testPlanNodesByIdentifierMapEntry.getValue();
+            if (testPlanNodeList==null) {
+                throw new IllegalArgumentException("Value for entry " + identifier + " must not be null");
+            }
             for (final TestPlanNode testPlanNode : testPlanNodeList) {
                 testPlanNodeMapBuilder.put(testPlanNode.getKey(), testPlanNode);
             }
@@ -98,7 +116,7 @@ public final class TestPlan implements Serializable {
         this.testPlanNodeMap = Collections.unmodifiableMap(testPlanNodeMapBuilder);
     }
 
-    /** (Convenience constructor) */
+    /** (Convenience constructor used only during XML unmarshalling. Do not use normally) */
     public TestPlan(final TestPlanNode testPlanRootNode) {
         final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMapBuilder = new LinkedHashMap<Identifier, List<TestPlanNode>>();
         final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new LinkedHashMap<TestPlanNodeKey, TestPlanNode>();
@@ -132,6 +150,27 @@ public final class TestPlan implements Serializable {
         return testPlanRootNode.getChildren();
     }
 
+    /**
+     * Returns a List of all {@link TestPlanNode}s corresponding to the {@link AbstractPart}
+     * having the given {@link Identifier}. The result may be null if:
+     * <ul>
+     *   <li>
+     *     The {@link Identifier} is invalid
+     *   </li>
+     *   <li>
+     *     The {@link Identifier} referred to an {@link AssessmentItemRef}
+     *     which was not successfully resolved
+     *   </li>
+     *   <li>
+     *     The {@link Identifier} successfully referred to a {@link SectionPart},
+     *     but the {@link SectionPart} was not selected in this {@link TestPlan} as the result
+     *     of a {@link Selection} rule.
+     *   </li>
+     * </ul>
+     *
+     * @param identifier Identifier to check
+     * @return List of corresponding {@link TestPlanNode}. This will never by empty, but may be null.
+     */
     public List<TestPlanNode> getNodes(final Identifier identifier) {
         final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
         if (nodesForIdentifier==null) {
@@ -140,6 +179,31 @@ public final class TestPlan implements Serializable {
         return Collections.unmodifiableList(nodesForIdentifier);
     }
 
+    /**
+     * Returns the {@link TestPlanNode}s corresponding to the given instance of the {@link AbstractPart}
+     * having the given {@link Identifier}. The result may be null if:
+     * <ul>
+     *   <li>
+     *     The {@link Identifier} is invalid
+     *   </li>
+     *   <li>
+     *     The {@link Identifier} referred to an {@link AssessmentItemRef}
+     *     which was not successfully resolved
+     *   </li>
+     *   <li>
+     *     The {@link Identifier} successfully referred to a {@link SectionPart},
+     *     but the {@link SectionPart} was not selected in this {@link TestPlan} as the result
+     *     of a {@link Selection} rule.
+     *   </li>
+     *   <li>
+     *     The instance number was out of bounds of the number of instances that were actually
+     *     selected in this {@link TestPart} as the result of a {@link Selection} rule.
+     *   </li>
+     * </ul>
+     *
+     * @param identifier Identifier to check
+     * @return List of corresponding {@link TestPlanNode}. This may be null.
+     */
     public TestPlanNode getNodeInstance(final Identifier identifier, final int instanceNumber) {
         final List<TestPlanNode> nodesForIdentifier = testPlanNodesByIdentifierMap.get(identifier);
         if (nodesForIdentifier==null) {
