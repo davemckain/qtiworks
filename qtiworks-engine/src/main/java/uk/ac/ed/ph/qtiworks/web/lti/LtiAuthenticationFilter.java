@@ -156,12 +156,12 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         catch (final OAuthProblemException e) {
             /* FIXME: Log this better */
             logger.warn("OAuthProblemException", e);
-            httpResponse.sendError(SC_BAD_REQUEST, "Bad Request - Please submit a valid BasicLTI request.");
+            httpResponse.sendError(SC_BAD_REQUEST, "Bad Request - Please submit a valid BasicLTI request");
         }
         catch (final OAuthException e) {
             /* FIXME: Log this better */
             logger.warn("OAuthException", e);
-            httpResponse.sendError(SC_FORBIDDEN, "Forbidden - Please submit a valid BasicLTI request.");
+            httpResponse.sendError(SC_FORBIDDEN, "Forbidden - Please submit a valid BasicLTI request");
         }
         catch (final URISyntaxException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -234,7 +234,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             logicalKey = delivery.getId() + "/" + contextId + "/" + userId;
         }
         else {
-            /* No userId specified, so we'll have to synthesise something that will be unique enough */
+            /* No user_id or context_id specified, so we'll have to synthesise something that will be unique enough */
             logicalKey = delivery.getId() + "-" + Thread.currentThread().getId()
                     + "-" + requestTimestampContext.getCurrentRequestTimestamp().getTime();
         }
@@ -244,16 +244,20 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         if (ltiUser==null) {
             ltiUser = new LtiUser();
             ltiUser.setLogicalKey(logicalKey);
-            ltiUser.setLtiUserId(userId);
-            ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull());
-            ltiUser.setFirstName(ServiceUtilities.trimString(ltiLaunchData.getLisPersonNameGiven(), DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
-            ltiUser.setLastName(ServiceUtilities.trimString(ltiLaunchData.getLisPersonNameFamily(), DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
-            ltiUser.setEmailAddress(ServiceUtilities.trimString(ltiLaunchData.getLisPersonContactEmailPrimary(), DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
+            ltiUser.setLtiUserId(userId); /* (May be null) */
+            ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull()); /* (May be null) */
+            ltiUser.setFirstName(safelyTrim(ltiLaunchData.getLisPersonNameGiven(), "Name", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
+            ltiUser.setLastName(safelyTrim(ltiLaunchData.getLisPersonNameFamily(), "Not Provided", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
+            ltiUser.setEmailAddress(safelyTrim(ltiLaunchData.getLisPersonContactEmailPrimary(), null, DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
             ltiUserDao.persist(ltiUser);
         }
 
         logger.info("Obtained LTI user {}", ltiUser);
         return ltiUser;
+    }
+
+    private String safelyTrim(final String string, final String resultIfNull, final int maxLength) {
+        return string!=null ? ServiceUtilities.trimString(string, maxLength) : resultIfNull;
     }
 
     private void doFilterWithIdentity(final HttpServletRequest httpRequest,
