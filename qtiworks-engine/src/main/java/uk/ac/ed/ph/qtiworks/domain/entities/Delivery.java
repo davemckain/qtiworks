@@ -83,17 +83,28 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name="Delivery.getForAssessment",
             query="SELECT d"
                 + "  FROM Delivery d"
-                + "  WHERE d.assessment = :assessment"),
+                + "  WHERE d.assessment = :assessment"
+                + "  ORDER BY d.id"),
     @NamedQuery(name="Delivery.getForAssessmentAndType",
             query="SELECT d"
                 + "  FROM Delivery d"
                 + "  WHERE d.assessment = :assessment"
-                + "    AND d.deliveryType = :deliveryType"),
+                + "    AND d.deliveryType = :deliveryType"
+                + "  ORDER BY d.id"),
     @NamedQuery(name="Delivery.countForAssessmentAndType",
             query="SELECT COUNT(*)"
                 + "  FROM Delivery d"
                 + "  WHERE d.assessment = :assessment"
-                + "    AND d.deliveryType = :deliveryType")
+                + "    AND d.deliveryType = :deliveryType"),
+    @NamedQuery(name="Delivery.getUsingSettings",
+            query="SELECT d"
+                + "  FROM Delivery d"
+                + "  WHERE d.deliverySettings = :deliverySettings"
+                + "  ORDER BY d.id"),
+    @NamedQuery(name="Delivery.countUsingSettings",
+            query="SELECT COUNT(*)"
+                + "  FROM Delivery d"
+                + "  WHERE d.deliverySettings = :deliverySettings")
 })
 public class Delivery implements BaseEntity, TimestampedOnCreation {
 

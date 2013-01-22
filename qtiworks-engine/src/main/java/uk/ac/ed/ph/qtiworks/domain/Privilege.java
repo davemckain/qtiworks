@@ -70,6 +70,8 @@ public enum Privilege {
     LAUNCH_DELIVERY,
     LAUNCH_CLOSED_DELIVERY,
 
+    DELETE_USED_DELIVERY_SETTINGS,
+
     ;
 
 }

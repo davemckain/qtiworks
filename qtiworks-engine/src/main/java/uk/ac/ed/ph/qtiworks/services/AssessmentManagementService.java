@@ -465,25 +465,27 @@ public class AssessmentManagementService {
         return deliverySettings;
     }
 
-    private void ensureCallerMayAccess(final DeliverySettings deliverySettings)
+    private User ensureCallerMayAccess(final DeliverySettings deliverySettings)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!deliverySettings.isPublic() && !caller.equals(deliverySettings.getOwner())) {
             throw new PrivilegeException(caller, Privilege.ACCESS_DELIVERY_SETTINGS, deliverySettings);
         }
+        return caller;
     }
 
-    private void ensureCallerOwns(final DeliverySettings deliverySettings)
+    private User ensureCallerOwns(final DeliverySettings deliverySettings)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!caller.equals(deliverySettings.getOwner())) {
             throw new PrivilegeException(caller, Privilege.OWN_DELIVERY_SETTINGS, deliverySettings);
         }
+        return caller;
     }
 
-    private void ensureCallerMayChange(final DeliverySettings deliverySettings)
+    private User ensureCallerMayChange(final DeliverySettings deliverySettings)
             throws PrivilegeException {
-        ensureCallerOwns(deliverySettings);
+        return ensureCallerOwns(deliverySettings);
     }
 
     private User ensureCallerMayCreateDeliverySettings() throws PrivilegeException {
@@ -652,6 +654,27 @@ public class AssessmentManagementService {
         target.setAuthorMode(template.isAuthorMode());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
         target.setTitle(template.getTitle());
+    }
+
+    //-------------------------------------------------
+
+    public void deleteDeliverySettings(final long dsid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up entity and check permissions */
+        final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
+        final User caller = ensureCallerOwns(deliverySettings);
+
+        /* Make sure settings aren't being used */
+        if (deliveryDao.countUsingSettings(deliverySettings) > 0) {
+            throw new PrivilegeException(caller, deliverySettings, Privilege.DELETE_USED_DELIVERY_SETTINGS);
+        }
+
+        /* Delete entity */
+        deliverySettingsDao.remove(deliverySettings);
+
+        /* Log what happened */
+        logger.debug("Deleted DeliverySettings #{}", deliverySettings.getId());
+        auditor.recordEvent("Deleted DeliverySettings #" + deliverySettings.getId());
     }
 
     //-------------------------------------------------
