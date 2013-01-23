@@ -40,8 +40,10 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -71,15 +73,15 @@ import javax.persistence.TemporalType;
 @SequenceGenerator(name="candidateEventSequence", sequenceName="candidate_event_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
     @NamedQuery(name="CandidateEvent.getForSession",
-            query="SELECT e"
-                + "  FROM CandidateEvent e"
-                + "  WHERE e.candidateSession = :candidateSession"
-                + "  ORDER BY e.id"),
+            query="SELECT xe"
+                + "  FROM CandidateEvent xe"
+                + "  WHERE xe.candidateSession = :candidateSession"
+                + "  ORDER BY xe.id"),
     @NamedQuery(name="CandidateEvent.getForSessionReversed",
-            query="SELECT e"
-                + "  FROM CandidateEvent e"
-                + "  WHERE e.candidateSession = :candidateSession"
-                + "  ORDER BY e.id DESC")
+            query="SELECT xe"
+                + "  FROM CandidateEvent xe"
+                + "  WHERE xe.candidateSession = :candidateSession"
+                + "  ORDER BY xe.id DESC")
 })
 public class CandidateEvent implements BaseEntity {
 
@@ -138,11 +140,14 @@ public class CandidateEvent implements BaseEntity {
     /**
      * Notifications generated during this event
      */
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateEvent")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateEvent", cascade=CascadeType.REMOVE)
     @OrderBy("id")
     private List<CandidateEventNotification> notifications;
 
-    //------------------------------------------------------------
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="candidateEvent", cascade=CascadeType.REMOVE)
+    private Set<CandidateResponse> candidateResponses;
 
     //------------------------------------------------------------
 

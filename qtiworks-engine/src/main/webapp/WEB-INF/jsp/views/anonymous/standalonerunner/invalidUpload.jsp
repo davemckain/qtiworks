@@ -12,7 +12,7 @@ validationResult (AssessmentObjectValidationResult)
 --%>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="QTI Validator Result">
+<page:page title="QTI Quick Run - Validation Result">
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/public/')}">Demos</a> &#xbb;

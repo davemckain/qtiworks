@@ -40,8 +40,10 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -51,6 +53,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -145,6 +148,21 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="terminated")
     private boolean terminated;
+
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
+    private Set<CandidateEvent> candidateEvents;
+
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
+    private Set<CandidateFileSubmission> candidateFileSubmissions;
+
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
+    private Set<CandidateSessionOutcome> candidateSessionOutcomes;
 
     //------------------------------------------------------------
 

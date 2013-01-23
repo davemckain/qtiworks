@@ -94,9 +94,11 @@ public final class FilespaceManager {
     public File createTempFile() {
         final String tmpFolderUri = filesystemBaseDirectory.toURI().toString()
                 + "/tmp";
-        final File candidateItemSessionFolder = createDirectoryPath(tmpFolderUri);
+        final File candidateItemSessionFolder = ensureCreateDirectory(tmpFolderUri);
         return new File(candidateItemSessionFolder, createUniqueRequestComponent());
     }
+
+    //-------------------------------------------------
 
     public File createAssessmentPackageSandbox(final User owner) {
         Assert.notNull(owner, "owner");
@@ -104,64 +106,143 @@ public final class FilespaceManager {
                 + "/assessments/"
                 + owner.getBusinessKey()
                 + "/" + createUniqueRequestComponent();
-        return createDirectoryPath(filespaceUri);
+        return ensureCreateDirectory(filespaceUri);
     }
+
+    public boolean deleteAssessmentPackageSandbox(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        if (assessmentPackage.getSandboxPath()==null) {
+            throw new IllegalStateException("Built-in AssessmentPackages may not be deleted");
+        }
+        return recursivelyDeleteDirectory(new File(assessmentPackage.getSandboxPath()));
+    }
+
+    //-------------------------------------------------
 
     public File createCandidateUploadFile(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
-        final User candidate = candidateSession.getCandidate();
-        final Delivery delivery = candidateSession.getDelivery();
+        final String uploadBaseUri = getCandidateSessionUploadBaseUri(candidateSession);
+        final File candidateResponseFolder = ensureCreateDirectory(uploadBaseUri);
+        return new File(candidateResponseFolder, createUniqueRequestComponent());
+    }
+
+    public boolean deleteCandidateUploads(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+        return recursivelyDeleteDirectory(getCandidateSessionUploadBaseUri(delivery));
+    }
+
+    public boolean deleteCandidateUploads(final CandidateSession candidateSession) {
+        Assert.notNull(candidateSession, "candidateSession");
+        return recursivelyDeleteDirectory(getCandidateSessionUploadBaseUri(candidateSession));
+    }
+
+    private String getCandidateSessionUploadBaseUri(final Delivery delivery) {
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = filesystemBaseDirectory.toURI().toString()
                 + "/responses/assessment" + assessment.getId()
                 + "/package" + assessmentPackage.getId()
-                + "/delivery" + delivery.getId()
+                + "/delivery" + delivery.getId();
+        return folderUri;
+    }
+
+    private String getCandidateSessionUploadBaseUri(final CandidateSession candidateSession) {
+        final User candidate = candidateSession.getCandidate();
+        final Delivery delivery = candidateSession.getDelivery();
+
+        final String folderUri = getCandidateSessionUploadBaseUri(delivery)
                 + "/" + candidate.getBusinessKey()
                 + "/session" + candidateSession.getId();
-        final File candidateResponseFolder = createDirectoryPath(folderUri);
-        return new File(candidateResponseFolder, createUniqueRequestComponent());
+        return folderUri;
     }
+
+    //-------------------------------------------------
 
     public File obtainCandidateSessionStateStore(final CandidateSession candidateSession) {
         Assert.notNull(candidateSession, "candidateSession");
-        final User candidate = candidateSession.getCandidate();
-        final Delivery delivery = candidateSession.getDelivery();
+        return ensureCreateDirectory(getCandidateSessionStoreUri(candidateSession));
+    }
+
+    public boolean deleteCandidateSessionData(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+        return recursivelyDeleteDirectory(getCandidateSessionStoreBaseUri(delivery));
+    }
+
+    public boolean deleteCandidateSessionStore(final CandidateSession candidateSession) {
+        Assert.notNull(candidateSession, "candidateSession");
+        return recursivelyDeleteDirectory(getCandidateSessionStoreUri(candidateSession));
+    }
+
+    private final String getCandidateSessionStoreBaseUri(final Delivery delivery) {
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
-
-        final String folderUri = filesystemBaseDirectory.toURI().toString()
+        final String folderBaseUri = filesystemBaseDirectory.toURI().toString()
                 + "/sessions/assessment" + assessment.getId()
                 + "/package" + assessmentPackage.getId()
-                + "/delivery" + delivery.getId()
+                + "/delivery" + delivery.getId();
+        return folderBaseUri;
+    }
+
+    private final String getCandidateSessionStoreUri(final CandidateSession candidateSession) {
+        final User candidate = candidateSession.getCandidate();
+        final Delivery delivery = candidateSession.getDelivery();
+        final String folderUri = getCandidateSessionStoreBaseUri(delivery)
                 + "/" + candidate.getBusinessKey()
                 + "/session" + candidateSession.getId();
-        return createDirectoryPath(folderUri);
+        return folderUri;
     }
+
+    //-------------------------------------------------
 
     public void deleteSandbox(final File sandboxDirectory) {
         Assert.notNull(sandboxDirectory, "sandboxDirectory");
-        try {
-            IoUtilities.recursivelyDelete(sandboxDirectory);
-        }
-        catch (final IOException e) {
-            /* We won't fail here, but this is probably a bad sign so let's log it! */
-            logger.warn("Could not delete sandbox directory {}", sandboxDirectory, e);
-        }
+        recursivelyDeleteDirectory(sandboxDirectory);
     }
 
-    private File createDirectoryPath(final String uri) {
+    //-------------------------------------------------
+
+    private final File ensureCreateDirectory(final String fileUri) {
         final File directory;
         try {
-            directory = new File(URI.create(uri));
+            directory = new File(URI.create(fileUri));
             return IoUtilities.ensureDirectoryCreated(directory);
         }
         catch (final RuntimeException e) {
-            throw new QtiWorksLogicException("Unexpected failure parsing File URI " + uri);
+            throw new QtiWorksLogicException("Unexpected failure parsing File URI " + fileUri);
         }
         catch (final IOException e) {
-            throw new QtiWorksLogicException("Unexpected IO failure creating File URI " + uri);
+            throw new QtiWorksLogicException("Unexpected IO failure creating directory at URI " + fileUri);
+        }
+    }
+
+    private final boolean recursivelyDeleteDirectory(final String fileUri) {
+        return recursivelyDeleteDirectory(fileUriToFile(fileUri));
+    }
+
+    private final boolean recursivelyDeleteDirectory(final File directory) {
+        if (directory.exists()) {
+            /* Do sanity check */
+            if (!directory.isDirectory()) {
+                throw new QtiWorksLogicException("Expected " + directory.getAbsolutePath() + " to be a directory");
+            }
+            try {
+                IoUtilities.recursivelyDelete(directory);
+            }
+            catch (final IOException e) {
+                logger.warn("Failed to recursively delete directory at {}", directory.getAbsolutePath(), e);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private File fileUriToFile(final String fileUri) {
+        try {
+            return new File(URI.create(fileUri));
+        }
+        catch (final RuntimeException e) {
+            throw new QtiWorksLogicException("Unexpected failure parsing File URI " + fileUri);
         }
     }
 

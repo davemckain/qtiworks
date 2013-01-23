@@ -42,8 +42,10 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -56,6 +58,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -80,17 +83,28 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name="Delivery.getForAssessment",
             query="SELECT d"
                 + "  FROM Delivery d"
-                + "  WHERE d.assessment = :assessment"),
+                + "  WHERE d.assessment = :assessment"
+                + "  ORDER BY d.id"),
     @NamedQuery(name="Delivery.getForAssessmentAndType",
             query="SELECT d"
                 + "  FROM Delivery d"
                 + "  WHERE d.assessment = :assessment"
-                + "    AND d.deliveryType = :deliveryType"),
+                + "    AND d.deliveryType = :deliveryType"
+                + "  ORDER BY d.id"),
     @NamedQuery(name="Delivery.countForAssessmentAndType",
             query="SELECT COUNT(*)"
                 + "  FROM Delivery d"
                 + "  WHERE d.assessment = :assessment"
-                + "    AND d.deliveryType = :deliveryType")
+                + "    AND d.deliveryType = :deliveryType"),
+    @NamedQuery(name="Delivery.getUsingSettings",
+            query="SELECT d"
+                + "  FROM Delivery d"
+                + "  WHERE d.deliverySettings = :deliverySettings"
+                + "  ORDER BY d.id"),
+    @NamedQuery(name="Delivery.countUsingSettings",
+            query="SELECT COUNT(*)"
+                + "  FROM Delivery d"
+                + "  WHERE d.deliverySettings = :deliverySettings")
 })
 public class Delivery implements BaseEntity, TimestampedOnCreation {
 
@@ -153,6 +167,11 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=true)
     @Column(name="lti_consumer_secret", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
     private String ltiConsumerSecret;
+
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="delivery", cascade=CascadeType.REMOVE)
+    private Set<CandidateSession> candidateSessions;
 
     //------------------------------------------------------------
 

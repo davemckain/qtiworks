@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 
 import java.util.List;
@@ -83,4 +84,17 @@ public class DeliveryDao extends GenericDao<Delivery> {
         query.setParameter("deliveryType", deliveryType);
         return extractCountResult(query);
     }
+
+    public List<Delivery> getUsingSettings(final DeliverySettings deliverySettings) {
+        final TypedQuery<Delivery> query = em.createNamedQuery("Delivery.getUsingSettings", Delivery.class);
+        query.setParameter("deliverySettings", deliverySettings);
+        return query.getResultList();
+    }
+
+    public long countUsingSettings(final DeliverySettings deliverySettings) {
+        final Query query = em.createNamedQuery("Delivery.countUsingSettings");
+        query.setParameter("deliverySettings", deliverySettings);
+        return extractCountResult(query);
+    }
+
 }
