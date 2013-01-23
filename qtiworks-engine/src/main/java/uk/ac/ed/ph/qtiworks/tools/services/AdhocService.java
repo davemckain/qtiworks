@@ -51,6 +51,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
@@ -131,7 +132,7 @@ public class AdhocService {
             csvWriter.write(Long.toString(row.getSessionId()));
             csvWriter.write(row.getFirstName());
             csvWriter.write(row.getLastName());
-            csvWriter.write(row.getEmailAddress());
+            csvWriter.write(StringUtilities.emptyIfNull(row.getEmailAddress()));
             csvWriter.write(row.isSessionClosed() ? "Finished" : "In Progress");
             final List<String> outcomeValues = row.getOutcomeValues();
             if (outcomeValues!=null) {

@@ -3,6 +3,8 @@
 /* NB: This now includes test stuff and needs tidied up! */
 
 body {
+  background-color: white;
+  color: black;
   font-family: Sans-Serif;
   margin: 1em;
   padding: 0;
