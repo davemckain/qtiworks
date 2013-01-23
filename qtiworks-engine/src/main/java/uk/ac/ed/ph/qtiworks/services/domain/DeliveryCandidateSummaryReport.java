@@ -54,9 +54,9 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
         private static final long serialVersionUID = 9044689689638050265L;
         private final long sessionId;
         private final Date launchTime;
-        private final String firstName;
-        private final String lastName;
-        private final String emailAddress;
+        private final String firstName; /* Not null */
+        private final String lastName; /* Not null */
+        private final String emailAddress; /* May be null */
         private final boolean sessionClosed;
         private final List<String> outcomeValues;
 
