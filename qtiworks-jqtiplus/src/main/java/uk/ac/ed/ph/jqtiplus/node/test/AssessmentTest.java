@@ -52,6 +52,7 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -220,6 +221,17 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
 
     public List<TestFeedback> getTestFeedbacks() {
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
+    }
+
+    public List<TestFeedback> findTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
+        Assert.notNull(testFeedbackAccess, "testFeedbackAccess");
+        final List<TestFeedback> result = new ArrayList<TestFeedback>();
+        for (final TestFeedback testFeedback : getTestFeedbacks()) {
+            if (testFeedbackAccess.equals(testFeedback.getTestFeedbackAccess())) {
+                result.add(testFeedback);
+            }
+        }
+        return result;
     }
 
     //---------------------------------------------------------------
