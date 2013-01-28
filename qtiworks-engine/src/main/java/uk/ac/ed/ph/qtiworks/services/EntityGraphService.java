@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
@@ -75,9 +74,6 @@ public class EntityGraphService {
     private IdentityContext identityContext;
 
     @Resource
-    private AssessmentDao assessmentDao;
-
-    @Resource
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
@@ -89,7 +85,7 @@ public class EntityGraphService {
     //-------------------------------------------------
 
     public List<Assessment> getCallerAssessments() {
-        return assessmentDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+        return identityContext.getCurrentThreadEffectiveIdentity().getAssessments();
     }
 
     /**

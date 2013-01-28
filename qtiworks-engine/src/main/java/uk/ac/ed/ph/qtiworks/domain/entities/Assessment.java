@@ -80,11 +80,6 @@ import javax.persistence.Version;
 @Table(name="assessments")
 @SequenceGenerator(name="assessmentSequence", sequenceName="assessment_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
-    @NamedQuery(name="Assessment.getForOwner",
-            query="SELECT a"
-                + "  FROM Assessment a"
-                + "  WHERE a.owner = :user"
-                + "  ORDER BY creationTime"),
     @NamedQuery(name="Assessment.getForSampleCategory",
             query="SELECT a"
                 + "  FROM Assessment a"
@@ -280,9 +275,5 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
             assessmentPackages = new ArrayList<AssessmentPackage>();
         }
         return assessmentPackages;
-    }
-
-    public void setAssessmentPackages(final List<AssessmentPackage> assessmentPackages) {
-        this.assessmentPackages = assessmentPackages;
     }
 }

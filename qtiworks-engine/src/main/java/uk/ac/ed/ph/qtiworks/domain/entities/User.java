@@ -38,9 +38,12 @@ import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -49,6 +52,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -100,6 +105,16 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=true)
     @Column(name="email_address", length=DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH)
     private String emailAddress;
+
+    /** {@link Assessment}s owned by this {@link User} */
+    @OneToMany(mappedBy="owner", cascade=CascadeType.ALL)
+    @OrderBy("id")
+    private List<Assessment> assessments;
+
+    /** {@link CandiateSession}s created for this {@link User} */
+    @OneToMany(mappedBy="candidate", cascade=CascadeType.ALL)
+    @OrderBy("id")
+    private List<CandidateSession> candidateSessions;
 
     //------------------------------------------------------------
 
@@ -201,6 +216,22 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     public boolean isSysAdmin() {
         return userType==UserType.INSTRUCTOR && ((InstructorUser) this).isSysAdmin();
+    }
+
+    //------------------------------------------------------------
+
+    public List<Assessment> getAssessments() {
+        if (assessments==null) {
+            assessments = new ArrayList<Assessment>();
+        }
+        return assessments;
+    }
+
+    public List<CandidateSession> getCandidateSessions() {
+        if (candidateSessions==null) {
+            candidateSessions = new ArrayList<CandidateSession>();
+        }
+        return candidateSessions;
     }
 
     //------------------------------------------------------------

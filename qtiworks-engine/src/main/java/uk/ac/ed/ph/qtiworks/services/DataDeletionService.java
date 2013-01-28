@@ -33,16 +33,22 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.domain.dao.AnonymousUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.domain.dao.UserDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -89,6 +95,12 @@ public class DataDeletionService {
 
     @Resource
     private AssessmentDao assessmentDao;
+
+    @Resource
+    private AnonymousUserDao anonymousUserDao;
+
+    @Resource
+    private UserDao userDao;
 
     /**
      * Deletes the given {@link CandidateSession} and all data that was stored for it.
@@ -152,5 +164,40 @@ public class DataDeletionService {
 
         /* Delete entities, taking advantage of cascading */
         assessmentDao.remove(assessment); /* (This will cascade) */
+    }
+
+    /**
+     * Deletes the given {@link User} from the system, removing all data owned
+     * or accumulated by it.
+     *
+     * @param user User to delete, which must not be null
+     */
+    public void deleteUser(final User user) {
+        Assert.notNull(user, "user");
+
+        for (final Assessment assessment : user.getAssessments()) {
+            deleteAssessment(assessment);
+        }
+        for (final CandidateSession candidateSession : user.getCandidateSessions()) {
+            deleteCandidateSession(candidateSession);
+        }
+        userDao.remove(user);
+    }
+
+    /**
+     * Deletes all {@link AnonymousUser}s created before the given time, removing
+     * all data owner or accumulated by them.
+     * <p>
+     * Returns the number of users deleted.
+     *
+     * @param latestCreationTime
+     */
+    public int deleteAnonymousUsers(final Date latestCreationTime) {
+        int deleted = 0;
+        for (final AnonymousUser toDelete : anonymousUserDao.getCreatedBefore(latestCreationTime)) {
+            deleteUser(toDelete);
+            deleted++;
+        }
+        return deleted;
     }
 }

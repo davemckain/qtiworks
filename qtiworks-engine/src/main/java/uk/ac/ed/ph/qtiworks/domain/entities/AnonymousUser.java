@@ -54,7 +54,11 @@ import javax.persistence.Table;
     @NamedQuery(name="AnonymousUser.findBySessionId",
             query="SELECT u"
                 + "  FROM AnonymousUser u"
-                +"   WHERE u.sessionId = :sessionId")
+                +"   WHERE u.sessionId = :sessionId"),
+    @NamedQuery(name="AnonymousUser.getCreatedBefore",
+            query="SELECT u"
+                + "  FROM AnonymousUser u"
+                +"   WHERE u.creationTime < :creationTime")
 })
 public class AnonymousUser extends User implements BaseEntity, Comparable<AnonymousUser> {
 
