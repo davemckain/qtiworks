@@ -80,6 +80,11 @@ import javax.persistence.Version;
 @Table(name="assessments")
 @SequenceGenerator(name="assessmentSequence", sequenceName="assessment_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
+    @NamedQuery(name="Assessment.getForOwner",
+            query="SELECT a"
+                + "  FROM Assessment a"
+                + "  WHERE a.owner = :owner"
+                + "  ORDER BY creationTime"),
     @NamedQuery(name="Assessment.getForSampleCategory",
             query="SELECT a"
                 + "  FROM Assessment a"
@@ -160,9 +165,9 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @OrderBy("apid")
     private List<AssessmentPackage> assessmentPackages;
 
-    /** (Currently used for cascading deletion only - upgrade if required) */
+    /** (Currently used for cascading deletion only) */
     @SuppressWarnings("unused")
-    @OneToMany(mappedBy="assessment", cascade=CascadeType.REMOVE)
+    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
     private Set<Delivery> deliveries;
 
     //------------------------------------------------------------

@@ -332,7 +332,7 @@ public class SampleResourceImporter {
     }
 
     private Map<String, Assessment> getImportedSampleAssessments(final InstructorUser sampleOwner) {
-        final List<Assessment> sampleAssessments = sampleOwner.getAssessments();
+        final List<Assessment> sampleAssessments = assessmentDao.getForOwner(sampleOwner);
         final Map<String, Assessment> result = new HashMap<String, Assessment>();
         for (final Assessment sampleAssessment : sampleAssessments) {
             final AssessmentPackage assessmentPackage = assessmentPackageDao.getCurrentAssessmentPackage(sampleAssessment);

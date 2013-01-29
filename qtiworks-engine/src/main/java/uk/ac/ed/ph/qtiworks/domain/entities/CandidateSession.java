@@ -69,6 +69,11 @@ import javax.persistence.TemporalType;
 @Table(name="candidate_sessions")
 @SequenceGenerator(name="candidateSessionSequence", sequenceName="candidate_session_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
+    @NamedQuery(name="CandidateSession.getForCandidate",
+            query="SELECT x"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.candidate = :candidate"
+                + "  ORDER BY x.id"),
     @NamedQuery(name="CandidateSession.getForDelivery",
             query="SELECT x"
                 + "  FROM CandidateSession x"

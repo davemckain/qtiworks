@@ -175,10 +175,10 @@ public class DataDeletionService {
     public void deleteUser(final User user) {
         Assert.notNull(user, "user");
 
-        for (final Assessment assessment : user.getAssessments()) {
+        for (final Assessment assessment : assessmentDao.getForOwner(user)) {
             deleteAssessment(assessment);
         }
-        for (final CandidateSession candidateSession : user.getCandidateSessions()) {
+        for (final CandidateSession candidateSession : candidateSessionDao.getForCandidate(user)) {
             deleteCandidateSession(candidateSession);
         }
         userDao.remove(user);

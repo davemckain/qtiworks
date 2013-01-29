@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import java.util.List;
 
@@ -60,6 +61,12 @@ public class AssessmentDao extends GenericDao<Assessment> {
 
     public AssessmentDao() {
         super(Assessment.class);
+    }
+
+    public List<Assessment> getForOwner(final User user) {
+        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForOwner", Assessment.class);
+        query.setParameter("owner", user);
+        return query.getResultList();
     }
 
     public List<Assessment> getForSampleCategory(final SampleCategory sampleCategory) {
