@@ -13,7 +13,16 @@ All Rights Reserved
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ attribute name="path" required="true" type="java.lang.String" %>
 <%@ attribute name="title" required="true" type="java.lang.String" %>
+<%@ attribute name="confirm" required="false" type="java.lang.String" %>
 
-<form action="${utils:escapeLink(path)}" method="post" class="postLink">
+<c:set var="actionUrl" value="${utils:escapeLink(path)}"/>
+<form action="${actionUrl}" method="post" class="postLink">
   <input type="submit" value="${fn:escapeXml(title)}">
 </form>
+<c:if test="${!empty confirm}">
+  <script>
+    $("form[action='${actionUrl}']").submit(function() {
+      return confirm('${confirm}');
+    });
+  </script>
+</c:if>

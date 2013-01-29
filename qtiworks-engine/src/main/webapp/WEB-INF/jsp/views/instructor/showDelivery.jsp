@@ -83,7 +83,9 @@ instructorAssessmentRouting (action -> URL)
   <ul>
     <li><a href="${utils:escapeLink(deliveryRouting['edit'])}">Edit Delivery Properties</a></li>
     <li><page:postLink path="${utils:escapeLink(deliveryRouting['try'])}" title="Try Out"/></li>
-    <li><page:postLink path="${deliveryRouting['delete']}" title="Delete Delivery"/></li>
+    <li><page:postLink path="${deliveryRouting['delete']}"
+      confirm="Are you sure? This will delete the Delivery and all candidate data collected for it."
+      title="Delete Delivery"/></li>
     <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReport'])}">View Candidate Reports</a></li>
   </ul>
 
