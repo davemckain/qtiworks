@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -76,7 +76,7 @@ public class LtiMvcConfiguration extends WebMvcConfigurerAdapter {
               new MediaType("text", "plain", UTF8),
       }));
       converters.add(stringConverter);
-      converters.add(new MappingJacksonHttpMessageConverter());
+      converters.add(new MappingJackson2HttpMessageConverter());
     }
 
     @Bean
