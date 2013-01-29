@@ -70,8 +70,11 @@ public final class SchemaSetup {
 
         logger.info("Importing QTI samples");
         final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-        sampleResourceImporter.importQtiSamples();
-
-        ctx.close();
+        try {
+            sampleResourceImporter.importQtiSamples();
+        }
+        finally {
+            ctx.close();
+        }
     }
 }

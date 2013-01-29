@@ -53,6 +53,11 @@ public final class AdhocRunner {
         ctx.refresh();
 
         final AdhocService adhocService = ctx.getBean(AdhocService.class);
-        adhocService.doWork();
+        try {
+            adhocService.doWork();
+        }
+        finally {
+            ctx.close();
+        }
     }
 }

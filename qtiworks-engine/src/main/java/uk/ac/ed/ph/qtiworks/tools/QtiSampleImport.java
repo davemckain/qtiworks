@@ -53,8 +53,11 @@ public final class QtiSampleImport {
         ctx.refresh();
 
         final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-        sampleResourceImporter.importQtiSamples();
-
-        ctx.close();
+        try {
+            sampleResourceImporter.importQtiSamples();
+        }
+        finally {
+            ctx.close();
+        }
     }
 }
