@@ -12,6 +12,15 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV23 [Development] (29/01/2013)</h3>
+  <p>
+    Minor update that finally includes front-end functionality for deleting Assessments
+    and Deliverables. (There is more back-end deletion functionality included too.)
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV22 [Development] (11/01/2013)</h3>
   <p>
     This snapshot continues with the implementation of the test specification, refining and slightly extending
