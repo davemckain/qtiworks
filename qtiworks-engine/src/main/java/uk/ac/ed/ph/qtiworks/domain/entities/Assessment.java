@@ -162,7 +162,7 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     private SampleCategory sampleCategory;
 
     @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
-    @OrderBy("id")
+    @OrderBy("apid")
     private List<AssessmentPackage> assessmentPackages;
 
     /** (Currently used for cascading deletion only - upgrade if required) */
