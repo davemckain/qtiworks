@@ -61,7 +61,7 @@ All Rights Reserved
     handling test containing one <code>testPart</code> using the NONLINEAR navigation mode and
     INDIVIDUAL submission mode. It does not yet support <code>branchRule</code> or <code>preCondition</code>,
     or similar advanced features. If you are interested in tests, please use the development snapshots for the
-    time being. However, bear in mind that these will be subject to change at short notice so shout not be used
+    time being. However, bear in mind that these will be subject to change at short notice so should not be used
     for "real" testing with students.
   </p>
   <p>
