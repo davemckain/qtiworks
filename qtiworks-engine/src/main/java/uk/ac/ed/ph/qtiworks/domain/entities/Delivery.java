@@ -104,7 +104,18 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name="Delivery.countUsingSettings",
             query="SELECT COUNT(*)"
                 + "  FROM Delivery d"
-                + "  WHERE d.deliverySettings = :deliverySettings")
+                + "  WHERE d.deliverySettings = :deliverySettings"),
+    @NamedQuery(name="Delivery.getForTypeCreatedBefore",
+            query="SELECT d"
+                + "  FROM Delivery d"
+                + "  WHERE d.deliveryType = :deliveryType"
+                + "    AND d.creationTime < :creationTime"),
+    @NamedQuery(name="Delivery.getForOwnerAndTypeCreatedBefore",
+            query="SELECT d"
+                + "  FROM Delivery d"
+                + "  WHERE d.assessment.owner = :owner"
+                + "    AND d.deliveryType = :deliveryType"
+                + "    AND d.creationTime < :creationTime")
 })
 public class Delivery implements BaseEntity, TimestampedOnCreation {
 

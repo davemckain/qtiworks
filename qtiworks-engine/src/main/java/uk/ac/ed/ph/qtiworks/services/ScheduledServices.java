@@ -58,7 +58,7 @@ public class ScheduledServices {
     private DataDeletionService dataDeletionService;
 
     /**
-     * Purges all anonymous users from the system who were created more than
+     * Purges all anonymous users and transient deliveries that were created more than
      * {@link #ANONYMOUS_USER_KEEP_HOURS} hours ago. All associated data is removed.
      */
     @Scheduled(fixedRate=1000L * 60 * 60)
@@ -67,6 +67,10 @@ public class ScheduledServices {
         final int usersDeleted = dataDeletionService.deleteAnonymousUsers(creationTimeThreshold);
         if (usersDeleted > 0) {
             logger.info("Purged {} anonymous users from the system", usersDeleted);
+        }
+        final int transientDeliveriesDeleted = dataDeletionService.deleteTransientDeliveries(creationTimeThreshold);
+        if (transientDeliveriesDeleted > 0) {
+            logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
         }
     }
 }

@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -185,12 +186,46 @@ public class DataDeletionService {
     }
 
     /**
+     * Deletes old transient Deliveries created for the given User, removing all data associated
+     * with them.
+     * <p>
+     * Returns the number of deliveries deleted
+     *
+     * @param latestCreationTime cut-off creation time for deleting old {@link Delivery) entities
+     */
+    public int deleteTransientDeliveries(final User user, final Date latestCreationTime) {
+        int deleted = 0;
+        for (final Delivery delivery : deliveryDao.getForOwnerAndTypeCreatedBefore(user, DeliveryType.USER_TRANSIENT, latestCreationTime)) {
+            deleteDelivery(delivery);
+            deleted++;
+        }
+        return deleted;
+    }
+
+    /**
+     * Deletes old transient Deliveries for all Users, removing all data associated
+     * with them.
+     * <p>
+     * Returns the number of deliveries deleted
+     *
+     * @param latestCreationTime cut-off creation time for deleting old {@link Delivery) entities
+     */
+    public int deleteTransientDeliveries(final Date latestCreationTime) {
+        int deleted = 0;
+        for (final Delivery delivery : deliveryDao.getForTypeCreatedBefore(DeliveryType.USER_TRANSIENT, latestCreationTime)) {
+            deleteDelivery(delivery);
+            deleted++;
+        }
+        return deleted;
+    }
+
+    /**
      * Deletes all {@link AnonymousUser}s created before the given time, removing
      * all data owner or accumulated by them.
      * <p>
      * Returns the number of users deleted.
      *
-     * @param latestCreationTime
+     * @param latestCreationTime cut-off creation time for deleting old {@link User} entities
      */
     public int deleteAnonymousUsers(final Date latestCreationTime) {
         int deleted = 0;
