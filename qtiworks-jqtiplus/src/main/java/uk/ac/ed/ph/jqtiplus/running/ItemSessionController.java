@@ -76,6 +76,7 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationController;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.net.URI;
@@ -417,15 +418,8 @@ public final class ItemSessionController extends ItemValidationController implem
 
         /* First set all responses bound to <endAttemptInteractions> to false initially.
          * These may be overridden for responses to the presented interactions below.
-         *
-         * (The spec seems to indicate that ALL responses bound to these interactions
-         * should be set, which is why we have this special code here.)
          */
-        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
-            if (interaction instanceof EndAttemptInteraction) {
-                itemSessionState.setResponseValue(interaction, BooleanValue.FALSE);
-            }
-        }
+        initEndAttemptInteractionResponseValues();
 
         /* Save raw responses */
         itemSessionState.setRawResponseDataMap(responseMap);
@@ -471,6 +465,7 @@ public final class ItemSessionController extends ItemValidationController implem
         return unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
+
     /**
      * Resets all responses
      */
@@ -490,15 +485,30 @@ public final class ItemSessionController extends ItemValidationController implem
         logger.debug("Response processing starting on item {}", getSubject().getSystemId());
         fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
-            /* We always count the attempt, unless the response was to an endAttemptInteraction
+            /* If no responses have been bound, then set responses for all endAttemptInteractions to false now */
+            if (!itemSessionState.isResponded()) {
+                initEndAttemptInteractionResponseValues();
+            }
+
+            /* We with always count the attempt, unless the response was to an endAttemptInteraction
              * with countAttempt set to false.
              */
             boolean countAttempt = true;
             for (final Interaction interaction : itemProcessingMap.getInteractions()) {
                 if (interaction instanceof EndAttemptInteraction) {
                     final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
-                    final BooleanValue value = (BooleanValue) itemSessionState.getResponseValue(interaction);
-                    if (value != null && value.booleanValue() == true) {
+                    final Value responseValue = itemSessionState.getResponseValue(interaction);
+                    if (responseValue==null) {
+                        throw new IllegalStateException("Expected to find a response value for identifier " + interaction.getResponseDeclaration());
+                    }
+                    if (!responseValue.hasSignature(Signature.SINGLE_BOOLEAN)) {
+                        fireRuntimeWarning(getSubjectItem().getResponseProcessing(),
+                                "Expected value " + responseValue + " bound to endAttemptInteraction "
+                                + endAttemptInteraction.getResponseIdentifier() + " to be a "
+                                + Signature.SINGLE_BOOLEAN
+                                + " but got " + responseValue.getSignature());
+                    }
+                    else if (((BooleanValue) responseValue).booleanValue()) {
                         countAttempt = !endAttemptInteraction.getCountAttempt();
                         break;
                     }
@@ -795,7 +805,7 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setResponded(false);
         itemSessionState.clearRawResponseDataMap();
         itemSessionState.clearUnboundResponseIdentifiers();
-        itemSessionState.clearInvalidResponseIdentifier();
+        itemSessionState.clearInvalidResponseIdentifiers();
     }
 
     private void resetResponseVariables() {
@@ -807,7 +817,20 @@ public final class ItemSessionController extends ItemValidationController implem
         }
         itemSessionState.clearRawResponseDataMap();
         itemSessionState.clearUnboundResponseIdentifiers();
-        itemSessionState.clearInvalidResponseIdentifier();
+        itemSessionState.clearInvalidResponseIdentifiers();
+    }
+
+    /**
+     * Sets the value of all response variables bound to {@link EndAttemptInteraction}s
+     * to {@link BooleanValue#FALSE}. This happens at the start of response binding, or at
+     * the start of response processing if no responses were made.
+     */
+    private void initEndAttemptInteractionResponseValues() {
+        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
+            if (interaction instanceof EndAttemptInteraction) {
+                itemSessionState.setResponseValue(interaction, BooleanValue.FALSE);
+            }
+        }
     }
 
     private void resetOutcomeVariables() {

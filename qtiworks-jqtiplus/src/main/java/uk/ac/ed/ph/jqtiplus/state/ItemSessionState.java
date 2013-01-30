@@ -538,7 +538,7 @@ public final class ItemSessionState implements Serializable {
         this.invalidResponseIdentifiers.addAll(invalidResponseIdentifiers);
     }
 
-    public void clearInvalidResponseIdentifier() {
+    public void clearInvalidResponseIdentifiers() {
         this.invalidResponseIdentifiers.clear();
     }
 
