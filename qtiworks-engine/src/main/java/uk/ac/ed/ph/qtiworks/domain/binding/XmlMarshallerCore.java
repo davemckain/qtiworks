@@ -49,6 +49,7 @@ import uk.ac.ed.ph.jqtiplus.value.RecordValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -164,6 +165,7 @@ public final class XmlMarshallerCore {
         if (value instanceof FileValue) {
             /* FIXME: Not sure how much we'll do with this */
             final FileValue fileValue = (FileValue) value;
+            singleValueElement.setAttribute("absolutePath", fileValue.getFile().getAbsolutePath());
             singleValueElement.setAttribute("contentType", fileValue.getContentType());
             singleValueElement.setAttribute("fileName", fileValue.getFileName());
         }
@@ -295,17 +297,32 @@ public final class XmlMarshallerCore {
 
     static SingleValue parseSingleValue(final Element element) {
         final BaseType baseType = parseBaseTypeAttribute(element);
-        final List<String> valueStrings = parseValueChildren(element);
-        if (valueStrings.size()!=1) {
-            throw new MarshallingException("Expected precisely 1 <value> child of " + element + " but got " + valueStrings.size());
+        final SingleValue result;
+        if (baseType==BaseType.FILE) {
+            final List<Element> children = expectElementChildren(element);
+            if (children.size()!=1) {
+                throw new MarshallingException("Expected precisely 1 <value> child of " + element + " but got " + children.size());
+            }
+            final Element fileValueElement = children.get(0);
+            final File file = new File(requireAttribute(fileValueElement, "absolutePath"));
+            final String contentType = requireAttribute(fileValueElement, "contentType");
+            final String fileName = requireAttribute(fileValueElement, "fileName");
+            result = new FileValue(file, contentType, fileName);
         }
-        final String singleValueString = valueStrings.get(0);
-        try {
-            return baseType.parseSingleValue(singleValueString);
+        else {
+            final List<String> valueStrings = parseValueChildren(element);
+            if (valueStrings.size()!=1) {
+                throw new MarshallingException("Expected precisely 1 <value> child of " + element + " but got " + valueStrings.size());
+            }
+            final String singleValueString = valueStrings.get(0);
+            try {
+                result = baseType.parseSingleValue(singleValueString);
+            }
+            catch (final QtiParseException e) {
+                throw new MarshallingException("Could not parse single value " + singleValueString + " of baseType " + baseType, e);
+            }
         }
-        catch (final QtiParseException e) {
-            throw new MarshallingException("Could not parse single value " + singleValueString + " of baseType " + baseType, e);
-        }
+        return result;
     }
 
     static List<SingleValue> parseListValues(final Element element) {
