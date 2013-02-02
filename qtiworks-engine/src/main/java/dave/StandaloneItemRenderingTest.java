@@ -17,8 +17,8 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -52,9 +52,9 @@ public class StandaloneItemRenderingTest {
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, new ClassPathResourceLocator());
+            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
 
-            final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(itemUri);
+            final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectXmlLoader.loadAndResolveAssessmentItem(itemUri);
             final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
             final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, true).initialize();
             final ItemSessionState itemSessionState = new ItemSessionState();
@@ -72,7 +72,7 @@ public class StandaloneItemRenderingTest {
             final RenderingOptions renderingOptions = createRenderingOptions();
             final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
             renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
-            renderingRequest.setAssessmentResourceLocator(objectManager.getInputResourceLocator());
+            renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setItemSessionState(itemSessionState);

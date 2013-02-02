@@ -31,7 +31,6 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.provision;
 
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
@@ -43,12 +42,12 @@ import uk.ac.ed.ph.jqtiplus.node.RootNode;
  * @author David McKain
  */
 public class DynamicResourceHolder<E extends RootNode> implements RootNodeHolder<E> {
-    
+
     private static final long serialVersionUID = 4290353525740628687L;
-    
+
     private final E rootNode;
-    
-    public DynamicResourceHolder(E rootNode) {
+
+    public DynamicResourceHolder(final E rootNode) {
         this.rootNode = rootNode;
     }
 
@@ -56,13 +55,13 @@ public class DynamicResourceHolder<E extends RootNode> implements RootNodeHolder
     public E getRootNode() {
         return rootNode;
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     public Class<E> getRequestedRootNodeClass() {
         return (Class<E>) rootNode.getClass();
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

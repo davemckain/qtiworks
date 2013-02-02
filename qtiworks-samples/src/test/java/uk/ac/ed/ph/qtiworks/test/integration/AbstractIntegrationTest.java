@@ -37,9 +37,9 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -108,26 +108,26 @@ public abstract class AbstractIntegrationTest {
         return sampleXmlReader.createQtiObjectReader(sampleResourceLocator, schemaValidating);
     }
     
-    protected AssessmentObjectManager createSampleAssessmentObjectManager() {
-        return new AssessmentObjectManager(sampleXmlReader, sampleResourceLocator);
+    protected AssessmentObjectXmlLoader createSampleAssessmentXmlLoader() {
+        return new AssessmentObjectXmlLoader(sampleXmlReader, sampleResourceLocator);
     }
     
     protected AssessmentObjectValidationResult<?> validateSampleObject() {
         AssessmentObjectValidationResult<?> result = null;
         switch (qtiSampleAssessment.getType()) {
             case ASSESSMENT_ITEM:
-                result = createSampleAssessmentObjectManager().resolveAndValidateItem(sampleResourceUri);
+                result = createSampleAssessmentXmlLoader().loadResolveAndValidateItem(sampleResourceUri);
                 break;
                 
             case ASSESSMENT_TEST:
-                result = createSampleAssessmentObjectManager().resolveAndValidateTest(sampleResourceUri);
+                result = createSampleAssessmentXmlLoader().loadResolveAndValidateTest(sampleResourceUri);
                 break;
         }
         return result;
     }
     
     protected ItemSessionController createItemSessionController(boolean isValid) {
-        final ResolvedAssessmentItem resolvedAssessmentItem = createSampleAssessmentObjectManager().resolveAssessmentItem(sampleResourceUri);
+        final ResolvedAssessmentItem resolvedAssessmentItem = createSampleAssessmentXmlLoader().loadAndResolveAssessmentItem(sampleResourceUri);
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
         final ItemSessionState itemSessionState = new ItemSessionState();

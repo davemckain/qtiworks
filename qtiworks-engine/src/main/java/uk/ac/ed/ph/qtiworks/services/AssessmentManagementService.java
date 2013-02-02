@@ -68,8 +68,8 @@ import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
@@ -368,7 +368,7 @@ public class AssessmentManagementService {
         final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
 
         /* Run the validation process */
-        final AssessmentObjectValidationResult<?> validationResult = validateAssessment(currentAssessmentPackage);
+        final AssessmentObjectValidationResult<?> validationResult = loadAndValidateAssessment(currentAssessmentPackage);
 
         /* Persist results */
         currentAssessmentPackage.setValidated(true);
@@ -386,17 +386,17 @@ public class AssessmentManagementService {
      */
     @SuppressWarnings("unchecked")
     <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
-    validateAssessment(final AssessmentPackage assessmentPackage) {
+    loadAndValidateAssessment(final AssessmentPackage assessmentPackage) {
         final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
         final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, inputResourceLocator);
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
         final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
         E result;
         if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) objectManager.resolveAndValidateItem(assessmentObjectSystemId);
+            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateItem(assessmentObjectSystemId);
         }
         else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) objectManager.resolveAndValidateTest(assessmentObjectSystemId);
+            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateTest(assessmentObjectSystemId);
         }
         else {
             throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);

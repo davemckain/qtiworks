@@ -8,8 +8,8 @@ package dave;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
@@ -23,9 +23,9 @@ public class RPTemplateTest {
         System.out.println("Reading and validating");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
         final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, new ClassPathResourceLocator());
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
 
-        final ItemValidationResult result = objectManager.resolveAndValidateItem(inputUri);
+        final ItemValidationResult result = assessmentObjectXmlLoader.loadResolveAndValidateItem(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(result, DumpMode.DEEP));
     }
 }

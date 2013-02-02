@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.provision;
 
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReadResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 
 import java.io.Serializable;
@@ -46,6 +47,7 @@ import java.net.URI;
  * that may prove useful. (E.g. {@link QtiObjectReader} adds in XML parsing information.)
  *
  * @see QtiObjectReader
+ * @see QtiObjectReadResult
  *
  * @author David McKain
  */

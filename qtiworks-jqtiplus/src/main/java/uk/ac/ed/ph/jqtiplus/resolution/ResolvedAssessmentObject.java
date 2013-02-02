@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 
 import java.io.Serializable;
@@ -44,7 +45,7 @@ import java.io.Serializable;
 /**
  * Base class for the result of "resolving" an {@link AssessmentObject}.
  *
- * @see AssessmentObjectManager
+ * @see AssessmentObjectXmlLoader
  * @see AssessmentObjectValidator
  *
  * @author David McKain

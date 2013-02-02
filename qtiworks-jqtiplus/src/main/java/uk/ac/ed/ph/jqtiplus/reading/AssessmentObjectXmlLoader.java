@@ -31,10 +31,13 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.resolution;
+package uk.ac.ed.ph.jqtiplus.reading;
 
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectResolver;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
@@ -43,29 +46,22 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import java.net.URI;
 
 /**
- * FIXME: Document this type
+ * Convenient facade for loading, resolving and validating {@link AssessmentItem}s
+ * and {@link AssessmentTest}s from XML using a {@link QtiXmlReader} for the low
+ * level XML parsing and a {@link ResourceLocator} for locating and finding the
+ * required XML resources.
  *
- * Item validation: read item, full validation. use cache RP template if available, otherwise look up new one (schema validating)
- * and record the lookup within the validation result. Will then return a ValidationResult
- * that contains full details of the item + RP template reads within.
- *
- * Item evaluation: read item, no validation, resolve RP template. Return state ready to go.
- *
- * Test validation: read test, full validation, use cache to locate items, recording validated lookups on each unique resolved System ID.
- * Will need to resolve (and validate) each RP template as well, which should hit cache as it's
- * likely that the same template will be used frequently within a test. ValidationResult should
- * contain full details.
- * Only validate each unique item (identified by URI).
- * Validation of items would use caching on RP templates as above.
+ * @see QtiXmlReader
+ * @see ResourceLocator
  *
  * @author David McKain
  */
-public final class AssessmentObjectManager {
+public final class AssessmentObjectXmlLoader {
 
     private final QtiXmlReader qtiXmlReader;
     private final ResourceLocator inputResourceLocator;
 
-    public AssessmentObjectManager(final QtiXmlReader qtiXmlReader, final ResourceLocator inputResourceLocator) {
+    public AssessmentObjectXmlLoader(final QtiXmlReader qtiXmlReader, final ResourceLocator inputResourceLocator) {
         this.qtiXmlReader = qtiXmlReader;
         this.inputResourceLocator = inputResourceLocator;
     }
@@ -81,13 +77,13 @@ public final class AssessmentObjectManager {
     //-------------------------------------------------------------------
     // AssessmentItem resolution & validation
 
-    public ResolvedAssessmentItem resolveAssessmentItem(final URI systemId) {
+    public ResolvedAssessmentItem loadAndResolveAssessmentItem(final URI systemId) {
         final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, false);
         final AssessmentObjectResolver assessmentObjectResolver = new AssessmentObjectResolver(qtiObjectReader);
         return assessmentObjectResolver.resolveAssessmentItem(systemId);
     }
 
-    public ItemValidationResult resolveAndValidateItem(final URI systemId) {
+    public ItemValidationResult loadResolveAndValidateItem(final URI systemId) {
         final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, true);
         final ResolvedAssessmentItem resolvedAssessmentItem = new AssessmentObjectResolver(qtiObjectReader).resolveAssessmentItem(systemId);
         final AssessmentObjectValidator assessmentObjectValidator = new AssessmentObjectValidator(qtiObjectReader.getJqtiExtensionManager());
@@ -97,13 +93,13 @@ public final class AssessmentObjectManager {
     //-------------------------------------------------------------------
     // AssessmentTest resolution & validation
 
-    public ResolvedAssessmentTest resolveAssessmentTest(final URI systemId) {
+    public ResolvedAssessmentTest loadAndResolveAssessmentTest(final URI systemId) {
         final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, false);
         final AssessmentObjectResolver assessmentObjectResolver = new AssessmentObjectResolver(qtiObjectReader);
         return assessmentObjectResolver.resolveAssessmentTest(systemId);
     }
 
-    public TestValidationResult resolveAndValidateTest(final URI systemId) {
+    public TestValidationResult loadResolveAndValidateTest(final URI systemId) {
         final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, true);
         final ResolvedAssessmentTest resolvedAssessmentTest = new AssessmentObjectResolver(qtiObjectReader).resolveAssessmentTest(systemId);
         final AssessmentObjectValidator assessmentObjectValidator = new AssessmentObjectValidator(qtiObjectReader.getJqtiExtensionManager());

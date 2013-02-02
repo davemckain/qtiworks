@@ -14,8 +14,8 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
@@ -54,9 +54,9 @@ public class TestItemRenderingTest {
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, new ClassPathResourceLocator());
+            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
 
-            final ResolvedAssessmentTest resolvedAssessmentTest = objectManager.resolveAssessmentTest(testUri);
+            final ResolvedAssessmentTest resolvedAssessmentTest = assessmentObjectXmlLoader.loadAndResolveAssessmentTest(testUri);
             final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, true).initialize();
 
             final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
@@ -82,7 +82,7 @@ public class TestItemRenderingTest {
 
             final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
             final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
-            renderingRequest.setAssessmentResourceLocator(objectManager.getInputResourceLocator());
+            renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setTestSessionState(testSessionState);

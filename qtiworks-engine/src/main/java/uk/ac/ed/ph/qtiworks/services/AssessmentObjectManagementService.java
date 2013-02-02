@@ -39,8 +39,8 @@ import uk.ac.ed.ph.qtiworks.utils.LruHashMap;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
@@ -102,7 +102,7 @@ public class AssessmentObjectManagementService {
             else {
                 logger.debug("Cache MISS for package {}. Reading and resolving XML", assessmentPackage);
                 cacheMissCount++;
-                final ResolvedAssessmentItem resolvedAssessmentItem = resolveAssessmentObject(assessmentPackage);
+                final ResolvedAssessmentItem resolvedAssessmentItem = loadAndResolveAssessmentObject(assessmentPackage);
                 result = new ItemProcessingInitializer(resolvedAssessmentItem, assessmentPackage.isValid()).initialize();
                 cache.put(assessmentPackageId, result);
             }
@@ -122,7 +122,7 @@ public class AssessmentObjectManagementService {
             else {
                 logger.debug("Cache MISS for package {}. Reading and resolving XML", assessmentPackage);
                 cacheMissCount++;
-                final ResolvedAssessmentTest resolvedAssessmentTest = resolveAssessmentObject(assessmentPackage);
+                final ResolvedAssessmentTest resolvedAssessmentTest = loadAndResolveAssessmentObject(assessmentPackage);
                 result = new TestProcessingInitializer(resolvedAssessmentTest, assessmentPackage.isValid()).initialize();
                 cache.put(assessmentPackageId, result);
             }
@@ -132,17 +132,17 @@ public class AssessmentObjectManagementService {
 
     @SuppressWarnings("unchecked")
     private <E extends ResolvedAssessmentObject<?>>
-    E resolveAssessmentObject(final AssessmentPackage assessmentPackage) {
+    E loadAndResolveAssessmentObject(final AssessmentPackage assessmentPackage) {
         final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
         final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, inputResourceLocator);
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
         final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
         E result;
         if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) objectManager.resolveAssessmentItem(assessmentObjectSystemId);
+            result = (E) assessmentObjectXmlLoader.loadAndResolveAssessmentItem(assessmentObjectSystemId);
         }
         else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) objectManager.resolveAssessmentTest(assessmentObjectSystemId);
+            result = (E) assessmentObjectXmlLoader.loadAndResolveAssessmentTest(assessmentObjectSystemId);
         }
         else {
             throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);

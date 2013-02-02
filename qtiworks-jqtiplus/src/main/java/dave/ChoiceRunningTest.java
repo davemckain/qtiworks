@@ -8,8 +8,8 @@ package dave;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -33,8 +33,8 @@ public class ChoiceRunningTest {
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
         final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, new ClassPathResourceLocator());
-        final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(inputUri);
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
+        final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectXmlLoader.loadAndResolveAssessmentItem(inputUri);
 
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, false).initialize();
         System.out.println("Run map is: " + ObjectDumper.dumpObject(itemProcessingMap, DumpMode.DEEP));

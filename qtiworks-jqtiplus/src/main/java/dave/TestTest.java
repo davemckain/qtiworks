@@ -9,8 +9,8 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
@@ -46,9 +46,9 @@ public final class TestTest {
         System.out.println("Reading and validating");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
         final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, new ClassPathResourceLocator());
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
 
-        final TestValidationResult testValidationResult = objectManager.resolveAndValidateTest(inputUri);
+        final TestValidationResult testValidationResult = assessmentObjectXmlLoader.loadResolveAndValidateTest(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(testValidationResult, DumpMode.DEEP));
 
         final TestProcessingMap testProcessingMap = new TestProcessingInitializer(testValidationResult).initialize();

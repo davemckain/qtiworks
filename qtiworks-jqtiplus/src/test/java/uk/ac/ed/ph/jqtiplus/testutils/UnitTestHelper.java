@@ -34,9 +34,9 @@
 package uk.ac.ed.ph.jqtiplus.testutils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
@@ -79,21 +79,21 @@ public final class UnitTestHelper {
         return createUnitTestQtiXmlReader().createQtiObjectReader(testFileResourceLocator, schemaValidating);
     }
 
-    public static AssessmentObjectManager createUnitTestAssessmentObjectManager() {
+    public static AssessmentObjectXmlLoader createUnitTestAssessmentObjectXmlLoader() {
         final QtiXmlReader qtiXmlReader = createUnitTestQtiXmlReader();
-        return new AssessmentObjectManager(qtiXmlReader, new FileResourceLocator());
+        return new AssessmentObjectXmlLoader(qtiXmlReader, new FileResourceLocator());
     }
 
     public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final Class<?> baseClass, final String fileName) {
-        final AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager();
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = createUnitTestAssessmentObjectXmlLoader();
         final URI fileUri = createTestResourceUri(baseClass, fileName);
-        return objectManager.resolveAssessmentItem(fileUri);
+        return assessmentObjectXmlLoader.loadAndResolveAssessmentItem(fileUri);
     }
 
     public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final Class<?> baseClass, final String fileName) {
-        final AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager();
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = createUnitTestAssessmentObjectXmlLoader();
         final URI fileUri = createTestResourceUri(baseClass, fileName);
-        return objectManager.resolveAssessmentTest(fileUri);
+        return assessmentObjectXmlLoader.loadAndResolveAssessmentTest(fileUri);
     }
 
     public static ItemSessionController loadUnitTestAssessmentItemForControl(final String fileName, final Class<?> baseClass, final boolean isValid) {

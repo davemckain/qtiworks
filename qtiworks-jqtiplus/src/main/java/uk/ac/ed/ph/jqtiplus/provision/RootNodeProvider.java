@@ -45,8 +45,10 @@ import java.net.URI;
  * The usual implementation of this is {@link QtiObjectReader}, which reads and parses
  * QTI XML and builds the appropriate {@link RootNode} from the result.
  * <p>
- * Developers may want to create their own implementation of this if creating QTI
- * Object dynamically.
+ * Developers may want to create their own implementation of this when creating QTI
+ * Objects dynamically.
+ *
+ * @see QtiObjectReader
  *
  * @author David McKain
  */

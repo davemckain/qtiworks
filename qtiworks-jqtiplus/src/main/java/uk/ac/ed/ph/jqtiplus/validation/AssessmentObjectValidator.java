@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
@@ -57,10 +57,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Performs model validation on a {@link ResolvedAssessmentItem} or {@link ResolvedAssessmentTest}.
  * <p>
- * You won't normally want to use this on its own. See {@link AssessmentObjectManager} for a more
+ * You won't normally want to use this on its own. See {@link AssessmentObjectXmlLoader} for a more
  * end-to-end solution.
  *
- * @see AssessmentObjectManager
+ * @see AssessmentObjectXmlLoader
  *
  * @author David McKain
  */
