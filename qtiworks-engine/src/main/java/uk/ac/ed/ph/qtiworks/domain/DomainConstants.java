@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain;
 
-
 /**
  * Various constants for the domain layer
  *
@@ -46,7 +45,7 @@ public final class DomainConstants {
     public static final int USER_NAME_COMPONENT_MAX_LENGTH = 256;
     public static final int USER_PASSWORD_SALT_LENGTH = 16;
     public static final int SHA1_DIGEST_LENGTH = 40;
-    public static final int FILE_CONTENT_TYPE_LENGTH = 64;
+    public static final int FILE_CONTENT_TYPE_LENGTH = 256;
 
     public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
     public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
