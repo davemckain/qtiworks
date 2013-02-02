@@ -44,11 +44,10 @@ import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReadResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.serialization.SaxFiringOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -109,10 +108,10 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
     @Test
     public void test() throws Exception {
         final ResourceLocator sampleResourceLocator = new ClassPathResourceLocator();
-        final QtiObjectReader objectReader = createSampleObjectReader();
+        final QtiObjectReader objectReader = createSampleQtiObjectReader(false);
         QtiObjectReadResult<AssessmentItem> itemReadResult;
         try {
-            itemReadResult = objectReader.lookupRootNode(qtiSampleAssessment.assessmentClassPathUri(), ModelRichness.FULL_ASSUMED_VALID, AssessmentItem.class);
+            itemReadResult = objectReader.lookupRootNode(qtiSampleAssessment.assessmentClassPathUri(), AssessmentItem.class);
         }
         catch (QtiXmlInterpretationException e) {
             System.out.println("Model building errors: " + ObjectDumper.dumpObject(e.getQtiModelBuildingErrors(), DumpMode.DEEP));

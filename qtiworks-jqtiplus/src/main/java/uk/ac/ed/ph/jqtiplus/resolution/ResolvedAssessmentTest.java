@@ -36,7 +36,6 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -76,13 +75,12 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     /** {@link ResolvedAssessmentItem} for each unique item System ID. */
     private final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemBySystemIdMap;
 
-    public ResolvedAssessmentTest(final ModelRichness modelRichness,
-            final RootNodeLookup<AssessmentTest> testLookup,
+    public ResolvedAssessmentTest(final RootNodeLookup<AssessmentTest> testLookup,
             final List<AssessmentItemRef> assessmentItemRefs,
             final Map<AssessmentItemRef, URI> systemIdByItemRefMap,
             final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap,
             final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap) {
-        super(modelRichness, testLookup);
+        super(testLookup);
         this.testLookup = testLookup;
         this.assessmentItemRefs = Collections.unmodifiableList(assessmentItemRefs);
         this.systemIdByItemRefMap = Collections.unmodifiableMap(systemIdByItemRefMap);
@@ -254,8 +252,7 @@ public final class ResolvedAssessmentTest extends ResolvedAssessmentObject<Asses
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(modelRichness=" + modelRichness
-                + ",testLookup=" + testLookup
+                + "(testLookup=" + testLookup
                 + ",systemIdByItemRefMap=" + systemIdByItemRefMap
                 + ",itemRefsBySystemIdMap=" + itemRefsBySystemIdMap
                 + ",resolvedAssessmentItemMap=" + resolvedAssessmentItemBySystemIdMap

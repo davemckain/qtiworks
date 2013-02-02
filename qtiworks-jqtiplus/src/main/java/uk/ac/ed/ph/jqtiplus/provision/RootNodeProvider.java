@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.provision;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 
@@ -56,7 +55,7 @@ public interface RootNodeProvider {
     JqtiExtensionManager getJqtiExtensionManager();
 
     <E extends RootNode> RootNodeHolder<E> lookupRootNode(URI systemId,
-            ModelRichness requiredModelRichness, Class<E> requiredResultClass)
+            Class<E> requiredResultClass)
         throws ResourceNotFoundException, BadResourceException;
 
 }

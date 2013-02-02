@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.provision;
 
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 
@@ -45,18 +44,17 @@ import java.net.URI;
  * <p>
  * Implementations of {@link RootNodeProvider} should implement this and add any more information
  * that may prove useful. (E.g. {@link QtiObjectReader} adds in XML parsing information.)
- * 
+ *
  * @see QtiObjectReader
- * 
+ *
  * @author David McKain
  */
 public interface RootNodeHolder<E extends RootNode> extends Serializable {
-    
+
     Class<E> getRequestedRootNodeClass();
-    
-    /** 
+
+    /**
      * Resulting {@link RootNode}, which will not be null. It will have had its
-     * {@link RootNode#setModelRichness(ModelRichness)} and
      * {@link RootNode#setSystemId(URI)} called appropriately.
      */
     E getRootNode();

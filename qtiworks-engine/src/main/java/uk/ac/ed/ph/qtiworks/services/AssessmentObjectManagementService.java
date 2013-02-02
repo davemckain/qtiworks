@@ -39,8 +39,6 @@ import uk.ac.ed.ph.qtiworks.utils.LruHashMap;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -137,15 +135,14 @@ public class AssessmentObjectManagementService {
     E resolveAssessmentObject(final AssessmentPackage assessmentPackage) {
         final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
         final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        E result;
+        final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, inputResourceLocator);
         final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
+        E result;
         if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) objectManager.resolveAssessmentItem(assessmentObjectSystemId, ModelRichness.FULL_ASSUMED_VALID);
+            result = (E) objectManager.resolveAssessmentItem(assessmentObjectSystemId);
         }
         else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) objectManager.resolveAssessmentTest(assessmentObjectSystemId, ModelRichness.FULL_ASSUMED_VALID);
+            result = (E) objectManager.resolveAssessmentTest(assessmentObjectSystemId);
         }
         else {
             throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);

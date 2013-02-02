@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.validation;
 
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
-import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
@@ -56,7 +55,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Validates a {@link ResolvedAssessmentItem} or {@link ResolvedAssessmentTest}.
+ * Performs model validation on a {@link ResolvedAssessmentItem} or {@link ResolvedAssessmentTest}.
+ * <p>
+ * You won't normally want to use this on its own. See {@link AssessmentObjectManager} for a more
+ * end-to-end solution.
  *
  * @see AssessmentObjectManager
  *
@@ -66,17 +68,14 @@ public final class AssessmentObjectValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectValidator.class);
 
-    final RootNodeProvider rootNodeProvider;
+    private final JqtiExtensionManager jqtiExtensionManager;
 
-    public AssessmentObjectValidator(final RootNodeProvider resourceProvider) {
-        this.rootNodeProvider = resourceProvider;
+    public AssessmentObjectValidator(final JqtiExtensionManager jqtiExtensionManager) {
+        this.jqtiExtensionManager = jqtiExtensionManager;
     }
 
     public ItemValidationResult validateItem(final ResolvedAssessmentItem resolvedAssessmentItem) {
         Assert.notNull(resolvedAssessmentItem);
-        if (resolvedAssessmentItem.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
-            throw new IllegalArgumentException("ReeolvedAssessmentItem must have modelRichness " + ModelRichness.FOR_VALIDATION);
-        }
         logger.debug("Validating {}", resolvedAssessmentItem);
         final ItemValidationResult result = new ItemValidationResult(resolvedAssessmentItem);
         final AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
@@ -86,7 +85,7 @@ public final class AssessmentObjectValidator {
                 result.add(new Notification(item.getResponseProcessing(), null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
                         "Resolution of ResponseProcessing template failed. Further details are attached elsewhere."));
             }
-            final ItemValidationController itemValidationController = new ItemValidationController(rootNodeProvider.getJqtiExtensionManager(), resolvedAssessmentItem);
+            final ItemValidationController itemValidationController = new ItemValidationController(jqtiExtensionManager, resolvedAssessmentItem);
             itemValidationController.addNotificationListener(result);
             item.validate(itemValidationController);
         }
@@ -99,9 +98,6 @@ public final class AssessmentObjectValidator {
 
     public TestValidationResult validateTest(final ResolvedAssessmentTest resolvedAssessmentTest) {
         Assert.notNull(resolvedAssessmentTest);
-        if (resolvedAssessmentTest.getModelRichness()!=ModelRichness.FOR_VALIDATION) {
-            throw new IllegalArgumentException("ReeolvedAssessmentTest must have modelRichness " + ModelRichness.FOR_VALIDATION);
-        }
         logger.debug("Validating {}", resolvedAssessmentTest);
         final TestValidationResult result = new TestValidationResult(resolvedAssessmentTest);
         final AssessmentTest test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
@@ -148,7 +144,7 @@ public final class AssessmentObjectValidator {
             }
 
             /* Then validate the test itself */
-            final TestValidationController testValidationController = new TestValidationController(rootNodeProvider.getJqtiExtensionManager(), resolvedAssessmentTest);
+            final TestValidationController testValidationController = new TestValidationController(jqtiExtensionManager, resolvedAssessmentTest);
             testValidationController.addNotificationListener(result);
             test.validate(testValidationController);
         }
@@ -164,7 +160,7 @@ public final class AssessmentObjectValidator {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(resourceProvider=" + rootNodeProvider
+                + "(jqtiExtensionManager=" + jqtiExtensionManager
                 + ")";
     }
 }

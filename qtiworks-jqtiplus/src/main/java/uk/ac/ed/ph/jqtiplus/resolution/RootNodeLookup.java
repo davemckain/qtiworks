@@ -47,7 +47,7 @@ import java.io.Serializable;
 import java.net.URI;
 
 /**
- * Memoises the result of a call to {@link RootNodeProvider#lookupRootNode(URI, uk.ac.ed.ph.jqtiplus.node.ModelRichness, Class)}
+ * Memoises the result of a call to {@link RootNodeProvider#lookupRootNode(URI, Class)}
  * (This wraps up the resulting {@link ResourceNotFoundException} and {@link BadResourceException}s.)
  *
  * @author David McKain

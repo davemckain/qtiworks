@@ -33,26 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.resolution;
 
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
-import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
+import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * FIXME: Document this type
@@ -74,151 +62,61 @@ import org.slf4j.LoggerFactory;
  */
 public final class AssessmentObjectManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectManager.class);
+    private final QtiXmlReader qtiXmlReader;
+    private final ResourceLocator inputResourceLocator;
 
-    private final RootNodeProvider resourceProvider;
+    public AssessmentObjectManager(final QtiXmlReader qtiXmlReader, final ResourceLocator inputResourceLocator) {
+        this.qtiXmlReader = qtiXmlReader;
+        this.inputResourceLocator = inputResourceLocator;
+    }
 
-    public AssessmentObjectManager(final RootNodeProvider resourceProvider) {
-        this.resourceProvider = resourceProvider;
+    public QtiXmlReader getQtiXmlReader() {
+        return qtiXmlReader;
+    }
+
+    public ResourceLocator getInputResourceLocator() {
+        return inputResourceLocator;
     }
 
     //-------------------------------------------------------------------
     // AssessmentItem resolution & validation
 
-    public ResolvedAssessmentItem resolveAssessmentItem(final URI systemId, final ModelRichness modelRichness) {
-        return resolveAssessmentItem(systemId, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
-    }
-
-    private ResolvedAssessmentItem resolveAssessmentItem(final URI systemId, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
-        final RootNodeLookup<AssessmentItem> itemLookup = cachedResourceProvider.getLookup(systemId, AssessmentItem.class);
-        return initResolvedAssessmentItem(itemLookup, modelRichness, cachedResourceProvider);
-    }
-
-    public ResolvedAssessmentItem resolveAssessmentItem(final AssessmentItem assessmentItem, final ModelRichness modelRichness) {
-        final RootNodeLookup<AssessmentItem> itemWrapper = new RootNodeLookup<AssessmentItem>(assessmentItem);
-        return initResolvedAssessmentItem(itemWrapper, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
-    }
-
-    private ResolvedAssessmentItem initResolvedAssessmentItem(final RootNodeLookup<AssessmentItem> itemLookup, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
-        RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = null;
-        final AssessmentItem item = itemLookup.extractIfSuccessful();
-        if (item!=null) {
-            resolvedResponseProcessingTemplateLookup = resolveResponseProcessingTemplate(item, cachedResourceProvider);
-        }
-        return new ResolvedAssessmentItem(modelRichness, itemLookup, resolvedResponseProcessingTemplateLookup);
-    }
-
-    private RootNodeLookup<ResponseProcessing> resolveResponseProcessingTemplate(final AssessmentItem item, final CachedResourceProvider cachedResourceProvider) {
-        final ResponseProcessing responseProcessing = item.getResponseProcessing();
-        RootNodeLookup<ResponseProcessing> result = null;
-        if (responseProcessing!=null) {
-            if (responseProcessing.getResponseRules().isEmpty()) {
-                /* ResponseProcessing present but no rules, so should be a template. First make sure there's a URI specified */
-                URI templateSystemId = null;
-                if (responseProcessing.getTemplate() != null) {
-                    /* We try template attribute first... */
-                    templateSystemId = resolveUri(item, responseProcessing.getTemplate());
-                }
-                else if (responseProcessing.getTemplateLocation() != null) {
-                    /* ... then templateLocation */
-                    templateSystemId = resolveUri(item, responseProcessing.getTemplateLocation());
-                }
-                if (templateSystemId!=null) {
-                    /* If here, then a template should exist */
-                    logger.debug("Resolving RP template at system ID {} " + templateSystemId);
-                    result = cachedResourceProvider.getLookup(templateSystemId, ResponseProcessing.class);
-                }
-                else {
-                    /* No template supplied */
-                    logger.debug("responseProcessing contains no rules and does not declare a template or templateLocation, so returning null template");
-                }
-            }
-            else {
-                logger.debug("AssessmentItem contains ResponseRules, so no template will be resolved");
-            }
-        }
-        else {
-            logger.debug("AssessmentItem contains no ResponseProcessing, so no template can be resolved");
-        }
-        return result;
+    public ResolvedAssessmentItem resolveAssessmentItem(final URI systemId) {
+        final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, false);
+        final AssessmentObjectResolver assessmentObjectResolver = new AssessmentObjectResolver(qtiObjectReader);
+        return assessmentObjectResolver.resolveAssessmentItem(systemId);
     }
 
     public ItemValidationResult resolveAndValidateItem(final URI systemId) {
-        return new AssessmentObjectValidator(resourceProvider).validateItem(resolveAssessmentItem(systemId, ModelRichness.FOR_VALIDATION));
+        final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, true);
+        final ResolvedAssessmentItem resolvedAssessmentItem = new AssessmentObjectResolver(qtiObjectReader).resolveAssessmentItem(systemId);
+        final AssessmentObjectValidator assessmentObjectValidator = new AssessmentObjectValidator(qtiObjectReader.getJqtiExtensionManager());
+        return assessmentObjectValidator.validateItem(resolvedAssessmentItem);
     }
 
     //-------------------------------------------------------------------
     // AssessmentTest resolution & validation
 
-    public ResolvedAssessmentTest resolveAssessmentTest(final URI systemId, final ModelRichness modelRichness) {
-        return resolveAssessmentTest(systemId, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
+    public ResolvedAssessmentTest resolveAssessmentTest(final URI systemId) {
+        final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, false);
+        final AssessmentObjectResolver assessmentObjectResolver = new AssessmentObjectResolver(qtiObjectReader);
+        return assessmentObjectResolver.resolveAssessmentTest(systemId);
     }
-
-    private ResolvedAssessmentTest resolveAssessmentTest(final URI systemId, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
-        final RootNodeLookup<AssessmentTest> testLookup = cachedResourceProvider.getLookup(systemId, AssessmentTest.class);
-        return initResolvedAssessmentTest(testLookup, modelRichness, cachedResourceProvider);
-    }
-
-    public ResolvedAssessmentTest resolveAssessmentTest(final AssessmentTest assessmentTest, final ModelRichness modelRichness) {
-        final RootNodeLookup<AssessmentTest> testWrapper = new RootNodeLookup<AssessmentTest>(assessmentTest);
-        return initResolvedAssessmentTest(testWrapper, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
-    }
-
-    private ResolvedAssessmentTest initResolvedAssessmentTest(final RootNodeLookup<AssessmentTest> testLookup, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
-        final List<AssessmentItemRef> assessmentItemRefs = new ArrayList<AssessmentItemRef>();
-        final Map<AssessmentItemRef, URI> systemIdByItemRefMap = new LinkedHashMap<AssessmentItemRef, URI>();
-        final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new LinkedHashMap<URI, List<AssessmentItemRef>>();
-        final Map<URI, ResolvedAssessmentItem> resolvedAssessmentItemMap = new LinkedHashMap<URI, ResolvedAssessmentItem>();
-
-        /* Look up test */
-        if (testLookup.wasSuccessful()) {
-            final AssessmentTest test = testLookup.extractIfSuccessful();
-
-            /* Resolve the system ID of each assessmentItemRef */
-            assessmentItemRefs.addAll(QueryUtils.search(AssessmentItemRef.class, test));
-            for (final AssessmentItemRef itemRef : assessmentItemRefs) {
-                final URI itemHref = itemRef.getHref();
-                if (itemHref!=null) {
-                    final URI itemSystemId = resolveUri(test, itemHref);
-                    systemIdByItemRefMap.put(itemRef, itemSystemId);
-                    List<AssessmentItemRef> itemRefs = itemRefsBySystemIdMap.get(itemSystemId);
-                    if (itemRefs==null) {
-                        itemRefs = new ArrayList<AssessmentItemRef>();
-                        itemRefsBySystemIdMap.put(itemSystemId, itemRefs);
-                    }
-                    itemRefs.add(itemRef);
-                }
-            }
-
-            /* Resolve each unique item */
-            for (final URI itemSystemId : itemRefsBySystemIdMap.keySet()) {
-                resolvedAssessmentItemMap.put(itemSystemId, resolveAssessmentItem(itemSystemId, modelRichness, cachedResourceProvider));
-            }
-        }
-        return new ResolvedAssessmentTest(modelRichness, testLookup, assessmentItemRefs,
-                systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
-    }
-
-    //-------------------------------------------------------------------
 
     public TestValidationResult resolveAndValidateTest(final URI systemId) {
-        return new AssessmentObjectValidator(resourceProvider).validateTest(resolveAssessmentTest(systemId, ModelRichness.FOR_VALIDATION));
+        final QtiObjectReader qtiObjectReader = qtiXmlReader.createQtiObjectReader(inputResourceLocator, true);
+        final ResolvedAssessmentTest resolvedAssessmentTest = new AssessmentObjectResolver(qtiObjectReader).resolveAssessmentTest(systemId);
+        final AssessmentObjectValidator assessmentObjectValidator = new AssessmentObjectValidator(qtiObjectReader.getJqtiExtensionManager());
+        return assessmentObjectValidator.validateTest(resolvedAssessmentTest);
     }
 
     //-------------------------------------------------------------------
-
-    private URI resolveUri(final RootNode baseObject, final URI href) {
-        final URI baseUri = baseObject.getSystemId();
-        if (baseUri==null) {
-            throw new IllegalStateException("baseObject " + baseObject + " does not have a systemId set, so cannot resolve references against it");
-        }
-        return baseUri.resolve(href);
-    }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(resourceProvider=" + resourceProvider
+                + "(qtiXmlReader=" + qtiXmlReader
+                + ",inputResourceLocator=" + inputResourceLocator
                 + ")";
     }
 }

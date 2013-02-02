@@ -16,9 +16,7 @@ import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -54,10 +52,9 @@ public class StandaloneItemRenderingTest {
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
+            final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlReader, new ClassPathResourceLocator());
 
-            final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-            final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(itemUri, ModelRichness.FULL_ASSUMED_VALID);
+            final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(itemUri);
             final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
             final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, true).initialize();
             final ItemSessionState itemSessionState = new ItemSessionState();
@@ -75,7 +72,7 @@ public class StandaloneItemRenderingTest {
             final RenderingOptions renderingOptions = createRenderingOptions();
             final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
             renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
-            renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
+            renderingRequest.setAssessmentResourceLocator(objectManager.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setItemSessionState(itemSessionState);

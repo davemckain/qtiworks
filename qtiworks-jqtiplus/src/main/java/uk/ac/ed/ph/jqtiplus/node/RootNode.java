@@ -42,13 +42,13 @@ import java.net.URI;
 
 /**
  * Marker interface for a "root" QTI Node.
- * 
+ *
  * @see RootNodeTypes
  * @see AssessmentItem
  * @see AssessmentTest
  * @see AssessmentResult
  * @see ResponseProcessing
- * 
+ *
  * @author David McKain
  */
 public interface RootNode extends QtiNode {
@@ -58,9 +58,5 @@ public interface RootNode extends QtiNode {
 
     /** Sets the systemId for this tree */
     void setSystemId(URI systemId);
-    
-    ModelRichness getModelRichness();
-    
-    void setModelRichness(ModelRichness modelRichness);
 
 }

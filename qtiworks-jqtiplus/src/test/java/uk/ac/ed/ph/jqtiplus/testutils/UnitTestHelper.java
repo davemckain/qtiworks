@@ -34,11 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.testutils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
-import uk.ac.ed.ph.jqtiplus.node.RootNode;
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReadResult;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlInterpretationException;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -48,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
@@ -62,54 +57,7 @@ import java.net.URISyntaxException;
  */
 public final class UnitTestHelper {
 
-    public static JqtiExtensionManager createJqtiExtensionManager() {
-        return new JqtiExtensionManager();
-    }
-
-    public static QtiXmlReader createUnitTestXmlReader() {
-        return new QtiXmlReader(createJqtiExtensionManager());
-    }
-
-    public static QtiObjectReader createUnitTestXmlObjectReader() {
-        final ResourceLocator testFileResourceLocator = new FileResourceLocator();
-        return createUnitTestXmlReader().createQtiXmlObjectReader(testFileResourceLocator);
-    }
-
-    public static AssessmentObjectManager createUnitTestAssessmentObjectManager() {
-        final QtiObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
-        return new AssessmentObjectManager(qtiXmlObjectReader);
-    }
-
-    public static <E extends RootNode> E loadUnitTestRootNode(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness, final Class<E> requiredResultClass)
-            throws XmlResourceNotFoundException, QtiXmlInterpretationException {
-        final URI fileUri = createTestFileUri(baseClass, fileName);
-        final QtiObjectReadResult<E> rootNodeLookup = createUnitTestXmlObjectReader().lookupRootNode(fileUri, modelRichness, requiredResultClass);
-        return rootNodeLookup.getRootNode();
-    }
-
-    public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness) {
-        final AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager();
-        final URI fileUri = createTestFileUri(baseClass, fileName);
-        return objectManager.resolveAssessmentItem(fileUri, modelRichness);
-    }
-
-    public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final Class<?> baseClass, final String fileName, final ModelRichness modelRichness) {
-        final QtiObjectReader qtiXmlObjectReader = createUnitTestXmlObjectReader();
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(qtiXmlObjectReader);
-        final URI fileUri = createTestFileUri(baseClass, fileName);
-        return objectManager.resolveAssessmentTest(fileUri, modelRichness);
-    }
-
-    public static ItemSessionController loadUnitTestAssessmentItemForControl(final String fileName, final Class<?> baseClass, final boolean isValid) {
-        final ResolvedAssessmentItem resolvedAssessmentItem = resolveUnitTestAssessmentItem(baseClass, fileName, ModelRichness.EXECUTION_ONLY);
-        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
-        final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
-        final ItemSessionState itemSessionState = new ItemSessionState();
-        return new ItemSessionController(createJqtiExtensionManager(), itemSessionControllerSettings,
-                itemProcessingMap, itemSessionState);
-    }
-
-    public static URI createTestFileUri(final Class<?> baseClass, final String fileName) {
+    public static URI createTestResourceUri(final Class<?> baseClass, final String fileName) {
         try {
             return baseClass.getResource(fileName).toURI();
         }
@@ -117,4 +65,45 @@ public final class UnitTestHelper {
             throw new RuntimeException("Unexpected Exception", e);
         }
     }
+
+    public static JqtiExtensionManager createJqtiExtensionManager() {
+        return new JqtiExtensionManager();
+    }
+
+    public static QtiXmlReader createUnitTestQtiXmlReader() {
+        return new QtiXmlReader(createJqtiExtensionManager());
+    }
+
+    public static QtiObjectReader createUnitTestQtiObjectReader(final boolean schemaValidating) {
+        final ResourceLocator testFileResourceLocator = new FileResourceLocator();
+        return createUnitTestQtiXmlReader().createQtiObjectReader(testFileResourceLocator, schemaValidating);
+    }
+
+    public static AssessmentObjectManager createUnitTestAssessmentObjectManager() {
+        final QtiXmlReader qtiXmlReader = createUnitTestQtiXmlReader();
+        return new AssessmentObjectManager(qtiXmlReader, new FileResourceLocator());
+    }
+
+    public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final Class<?> baseClass, final String fileName) {
+        final AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager();
+        final URI fileUri = createTestResourceUri(baseClass, fileName);
+        return objectManager.resolveAssessmentItem(fileUri);
+    }
+
+    public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final Class<?> baseClass, final String fileName) {
+        final AssessmentObjectManager objectManager = createUnitTestAssessmentObjectManager();
+        final URI fileUri = createTestResourceUri(baseClass, fileName);
+        return objectManager.resolveAssessmentTest(fileUri);
+    }
+
+    public static ItemSessionController loadUnitTestAssessmentItemForControl(final String fileName, final Class<?> baseClass, final boolean isValid) {
+        final ResolvedAssessmentItem resolvedAssessmentItem = resolveUnitTestAssessmentItem(baseClass, fileName);
+
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
+        final ItemSessionState itemSessionState = new ItemSessionState();
+        return new ItemSessionController(createJqtiExtensionManager(), itemSessionControllerSettings,
+                itemProcessingMap, itemSessionState);
+    }
+
 }

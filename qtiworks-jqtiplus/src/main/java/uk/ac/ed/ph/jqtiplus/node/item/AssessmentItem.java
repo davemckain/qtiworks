@@ -48,7 +48,6 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.content.ItemBody;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -131,7 +130,6 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal(VARIABLE_DURATION);
 
     private URI systemId;
-    private ModelRichness modelRichness;
 
     private final OutcomeDeclaration completionStatusOutcomeDeclaration;
 
@@ -198,18 +196,6 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public void setSystemId(final URI systemId) {
         this.systemId = systemId;
     }
-
-
-    @Override
-    public ModelRichness getModelRichness() {
-        return modelRichness;
-    }
-
-    @Override
-    public void setModelRichness(final ModelRichness modelRichness) {
-        this.modelRichness = modelRichness;
-    }
-
 
     /**
      * Gets value of identifier attribute.
@@ -603,7 +589,6 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     public String toString() {
         return super.toString()
                 + "(systemId=" + systemId
-                + ",modelRichness=" + modelRichness
                 + ")";
     }
 

@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.resolution;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
 import uk.ac.ed.ph.jqtiplus.provision.ResourceNotFoundException;
@@ -50,7 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Helper class that caches the results of calls to {@link RootNodeProvider} during
+ * Helper class that caches the results of calls to {@link AssessmentObjectResolver} during
  * resolution so that we only need to build once.
  *
  * @author David McKain
@@ -60,21 +59,15 @@ final class CachedResourceProvider {
     private static final Logger logger = LoggerFactory.getLogger(CachedResourceProvider.class);
 
     private final RootNodeProvider rootNodeProvider;
-    private final ModelRichness modelRichness;
     private final Map<URI, RootNodeLookup<?>> cacheData;
 
-    public CachedResourceProvider(final RootNodeProvider rootNodeProvider, final ModelRichness modelRichness) {
+    public CachedResourceProvider(final RootNodeProvider rootNodeProvider) {
         this.rootNodeProvider = rootNodeProvider;
-        this.modelRichness = modelRichness;
         this.cacheData = new HashMap<URI, RootNodeLookup<?>>();
     }
 
     public RootNodeProvider getRootNodeProvider() {
         return rootNodeProvider;
-    }
-
-    public ModelRichness getModelRichness() {
-        return modelRichness;
     }
 
     @ObjectDumperOptions(DumpMode.DEEP)
@@ -92,7 +85,7 @@ final class CachedResourceProvider {
         else {
             /* Cache miss */
             try {
-                final RootNodeHolder<E> result = rootNodeProvider.lookupRootNode(systemId, modelRichness, resultClass);
+                final RootNodeHolder<E> result = rootNodeProvider.lookupRootNode(systemId, resultClass);
                 frozenResult = new RootNodeLookup<E>(systemId, result);
             }
             catch (final BadResourceException e) {
@@ -111,7 +104,6 @@ final class CachedResourceProvider {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(rootNodeProvider=" + rootNodeProvider
-                + ",modelRichness=" + modelRichness
                 + ",cacheData=" + cacheData
                 + ")";
     }

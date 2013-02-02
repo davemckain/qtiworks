@@ -119,7 +119,7 @@ public final class QtiXmlReader {
         return jqtiExtensionManager;
     }
 
-    public SchemaCache getSchemaCacheMap() {
+    public SchemaCache getSchemaCache() {
         return xmlResourceReader.getSchemaCache();
     }
 
@@ -131,18 +131,19 @@ public final class QtiXmlReader {
      * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
      *             if any of the required schemas could not be located.
      */
-    public XmlReadResult read(final URI systemIdUri, final ResourceLocator inputResourceLocator, final boolean schemaValidating)
+    public XmlReadResult read(final URI systemIdUri, final ResourceLocator inputResourceLocator,
+            final boolean performSchemaValidation)
             throws XmlResourceNotFoundException {
         final ResourceLocator entityResourceLocator = new ChainedResourceLocator(JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
-        return xmlResourceReader.read(systemIdUri, inputResourceLocator, entityResourceLocator, schemaValidating);
+        return xmlResourceReader.read(systemIdUri, inputResourceLocator, entityResourceLocator, performSchemaValidation);
     }
 
     /**
      * Creates a new {@link QtiObjectReader} from this reader and the given
      * input {@link ResourceLocator}.
      */
-    public QtiObjectReader createQtiXmlObjectReader(final ResourceLocator inputResourceLocator) {
-        return new QtiObjectReader(this, inputResourceLocator);
+    public QtiObjectReader createQtiObjectReader(final ResourceLocator inputResourceLocator, final boolean schemaValidating) {
+        return new QtiObjectReader(this, inputResourceLocator, schemaValidating);
     }
 
     //--------------------------------------------------
@@ -151,7 +152,7 @@ public final class QtiXmlReader {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(jqtiExtensionManager=" + jqtiExtensionManager
-                + ",schemaCache=" + getSchemaCacheMap()
+                + ",schemaCache=" + getSchemaCache()
                 + ")";
     }
 }
