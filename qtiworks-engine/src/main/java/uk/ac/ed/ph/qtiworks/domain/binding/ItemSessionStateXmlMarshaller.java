@@ -134,7 +134,7 @@ public final class ItemSessionStateXmlMarshaller {
                 final Element fileElement = XmlMarshallerCore.appendElement(element, "file");
                 fileElement.setAttribute("contentType", fileResponseData.getContentType());
                 fileElement.setAttribute("fileName", fileResponseData.getFileName());
-                fileElement.setAttribute("filePath", fileResponseData.getFile().getAbsolutePath());
+                fileElement.setAttribute("absoluteFilePath", fileResponseData.getFile().getAbsolutePath());
                 break;
 
             default:
@@ -187,8 +187,8 @@ public final class ItemSessionStateXmlMarshaller {
                     final Element fileResponseElement = responseElements.get(0);
                     final String contentType = XmlMarshallerCore.requireAttribute(fileResponseElement, "contentType");
                     final String fileName = XmlMarshallerCore.requireAttribute(fileResponseElement, "fileName");
-                    final String filePath = XmlMarshallerCore.requireAttribute(fileResponseElement, "filePath");
-                    final FileResponseData fileResponseData = new FileResponseData(new File(filePath), contentType, fileName);
+                    final String absoluteFilePath = XmlMarshallerCore.requireAttribute(fileResponseElement, "absoluteFilePath");
+                    final FileResponseData fileResponseData = new FileResponseData(new File(absoluteFilePath), contentType, fileName);
                     result.setRawResponseData(identifier, fileResponseData);
                 }
                 else {

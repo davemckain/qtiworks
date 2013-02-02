@@ -638,10 +638,12 @@ public class CandidateTestDeliveryService {
             for (final Entry<Identifier, MultipartFile> fileResponseEntry : fileResponseMap.entrySet()) {
                 final Identifier identifier = fileResponseEntry.getKey();
                 final MultipartFile multipartFile = fileResponseEntry.getValue();
-                final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
-                final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType(), fileSubmission.getFileName());
-                responseDataMap.put(identifier, fileResponseData);
-                fileSubmissionMap.put(identifier, fileSubmission);
+                if (!multipartFile.isEmpty()) {
+                    final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
+                    final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType(), fileSubmission.getFileName());
+                    responseDataMap.put(identifier, fileResponseData);
+                    fileSubmissionMap.put(identifier, fileSubmission);
+                }
             }
         }
 
