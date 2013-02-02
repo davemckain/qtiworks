@@ -98,8 +98,7 @@ public class MathAssessTest {
             final XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
             serializationOptions.setIndenting(true);
 
-            final XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
-            final TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
+            final TransformerHandler serializerHandler = XsltStylesheetManager.createSerializerHandler(serializationOptions);
 
             final StringWriter serializedXmlWriter = new StringWriter();
             serializerHandler.setResult(new StreamResult(serializedXmlWriter));

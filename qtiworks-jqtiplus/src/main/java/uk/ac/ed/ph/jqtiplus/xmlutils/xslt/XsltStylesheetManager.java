@@ -35,8 +35,7 @@ package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NullResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;
 
@@ -56,7 +55,14 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamSource;
 
 /**
- * FIXME: Document this type!
+ * Convenient facade for managing the caching and compilation
+ * of XSLT stylesheets. Mainly intended for internal use, but
+ * is handy enough to be useful in other places. (E.g. the MathAssess
+ * extensions use it for managing its XSLT stylesheets.)
+ *
+ * @see XsltStylesheetCache
+ * @see XsltResourceResolver
+ * @see ResourceLocator
  *
  * This class is thread-safe.
  *
@@ -64,53 +70,66 @@ import javax.xml.transform.stream.StreamSource;
  */
 public final class XsltStylesheetManager {
 
-    private final XsltStylesheetCache stylesheetCache;
-    private final ResourceLocator customXsltResourceLocator;
+    private final XsltStylesheetCache xsltStylesheetCache;
     private final ResourceLocator xsltResourceLocator;
     private final XsltResourceResolver xsltResourceResolver;
 
     /**
-     * Creates a new {@link XsltStylesheetManager} with no {@link XsltStylesheetCache} and no custom
-     * {@link ResourceLocator} for locating your own XSLT resources.
+     * Creates a new {@link XsltStylesheetManager} using the given {@link ResourceLocator}
+     * to load XSLT resources and with no {@link XsltStylesheetCache}
+     *
+     * @param xsltResourceLocator {@link ResourceLocator} to be used for reading XSLT resources,
+     *   which must not be null.
      */
-    public XsltStylesheetManager() {
-        this(null, null);
+    public XsltStylesheetManager(final ResourceLocator xsltResourceLocator) {
+        this(xsltResourceLocator, null);
     }
 
     /**
-     * Creates a new {@link XsltStylesheetManager} with the specified @link StylesheetCache}
+     * Creates a new {@link XsltStylesheetManager} with the specified {@link XsltStylesheetCache}
      * and custom {@link ResourceLocator} for locating your own XSLT resources.
+     *
+     * @param xsltResourceLocator {@link ResourceLocator} to be used for reading XSLT resources,
+     *   which must not be null.
+     * @param xsltStylesheetCache optional {@link XsltStylesheetCache} for caching compiled stylesheets
      */
-    public XsltStylesheetManager(ResourceLocator customXsltResourceLocator, XsltStylesheetCache cache) {
-        this.customXsltResourceLocator = customXsltResourceLocator;
-        this.stylesheetCache = cache;
+    public XsltStylesheetManager(final ResourceLocator xsltResourceLocator, final XsltStylesheetCache xsltStylesheetCache) {
+        Assert.notNull(xsltResourceLocator, "xsltResourceLocator");
+        this.xsltResourceLocator = xsltResourceLocator;
+        this.xsltStylesheetCache = xsltStylesheetCache;
+        this.xsltResourceResolver = new XsltResourceResolver(xsltResourceLocator);
+    }
 
-        ResourceLocator internalXsltResourceLocator = new ClassPathResourceLocator();
-        ResourceLocator resultingXsltResourceLocator;
-        if (customXsltResourceLocator!=null) {
-            resultingXsltResourceLocator = new ChainedResourceLocator(customXsltResourceLocator, internalXsltResourceLocator);
-        }
-        else {
-            resultingXsltResourceLocator = internalXsltResourceLocator;
-        }
-        this.xsltResourceLocator = resultingXsltResourceLocator;
-        this.xsltResourceResolver = new XsltResourceResolver(resultingXsltResourceLocator);
+    /**
+     * Convenient static factory method for creating a simple serialization {@link Transformer}
+     * configured using the given {@link XsltSerializationOptions}
+     */
+    public static Transformer createSerializer(final XsltSerializationOptions xsltSerializationOptions) {
+        return new XsltStylesheetManager(NullResourceLocator.getInstance()).getSerializer(xsltSerializationOptions);
+    }
+
+    /**
+     * Convenient static factory method for creating a simple serialization {@link TransformerHandler}
+     * configured using the given {@link XsltSerializationOptions}
+     */
+    public static TransformerHandler createSerializerHandler(final XsltSerializationOptions xsltSerializationOptions) {
+        return new XsltStylesheetManager(NullResourceLocator.getInstance()).getSerializerHandler(xsltSerializationOptions);
     }
 
     //----------------------------------------------------------
 
     /**
-     * Returns the {@link XsltStylesheetCache} for this manager, which may be null.
+     * Returns the XSLT {@link ResourceLocator} for this manager, which will not be null
      */
-    public XsltStylesheetCache getStylesheetCache() {
-        return stylesheetCache;
+    public ResourceLocator getXsltResourceLocator() {
+        return xsltResourceLocator;
     }
 
     /**
-     * Returns the custom XSLT {@link ResourceLocator} for this manager, which may be null.
+     * Returns the {@link XsltStylesheetCache} for this manager, which may be null.
      */
-    public ResourceLocator getCustomXsltResourceLocator() {
-        return customXsltResourceLocator;
+    public XsltStylesheetCache getStylesheetCache() {
+        return xsltStylesheetCache;
     }
 
     //----------------------------------------------------------
@@ -127,15 +146,15 @@ public final class XsltStylesheetManager {
     public Templates getCompiledStylesheet(final URI xsltUri) {
         Assert.notNull(xsltUri, "xsltUri");
         Templates result;
-        if (stylesheetCache==null) {
+        if (xsltStylesheetCache==null) {
             result = compileStylesheet(xsltUri);
         }
         else {
-            synchronized(stylesheetCache) {
-                result = stylesheetCache.getStylesheet(xsltUri.toString());
+            synchronized(xsltStylesheetCache) {
+                result = xsltStylesheetCache.getStylesheet(xsltUri.toString());
                 if (result==null) {
                     result = compileStylesheet(xsltUri);
-                    stylesheetCache.putStylesheet(xsltUri.toString(), result);
+                    xsltStylesheetCache.putStylesheet(xsltUri.toString(), result);
                 }
             }
         }
@@ -148,40 +167,40 @@ public final class XsltStylesheetManager {
         try {
             transformerHandler = getSaxTransformerFactory().newTransformerHandler(getCompiledStylesheet(xsltUri));
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Unexpected failure instantiating TransformerHandler " + xsltUri, e);
         }
         return transformerHandler;
     }
 
     private Templates compileStylesheet(final URI xsltUri) {
-        TransformerFactory transformerFactory = getTransformerFactory();
+        final TransformerFactory transformerFactory = getTransformerFactory();
         Source resolved;
         try {
-            InputStream resolvedStream = xsltResourceLocator.findResource(xsltUri);
+            final InputStream resolvedStream = xsltResourceLocator.findResource(xsltUri);
             if (resolvedStream==null) {
                 throw new QtiSerializationException("Could not locate XSLT resource at system ID " + xsltUri);
             }
             resolved = new StreamSource(resolvedStream, xsltUri.toString());
             return transformerFactory.newTemplates(resolved);
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Could not compile stylesheet at " + xsltUri, e);
         }
     }
 
     public Templates getCompiledStylesheetDriver(final List<URI> xsltUris) {
         Templates result;
-        if (stylesheetCache==null) {
+        if (xsltStylesheetCache==null) {
             result = compileStylesheetDriver(xsltUris);
         }
         else {
-            String cacheKey = "xslt-driver(" + StringUtilities.join(xsltUris, ",") + ")";
-            synchronized(stylesheetCache) {
-                result = stylesheetCache.getStylesheet(cacheKey);
+            final String cacheKey = "xslt-driver(" + StringUtilities.join(xsltUris, ",") + ")";
+            synchronized(xsltStylesheetCache) {
+                result = xsltStylesheetCache.getStylesheet(cacheKey);
                 if (result==null) {
                     result = compileStylesheetDriver(xsltUris);
-                    stylesheetCache.putStylesheet(cacheKey, result);
+                    xsltStylesheetCache.putStylesheet(cacheKey, result);
                 }
             }
         }
@@ -190,122 +209,122 @@ public final class XsltStylesheetManager {
 
     private Templates compileStylesheetDriver(final List<URI> xsltUris) {
         /* Build up driver XSLT that simply imports the required stylesheets */
-        TransformerFactory transformerFactory = getTransformerFactory();
-        StringBuilder xsltBuilder = new StringBuilder("<stylesheet version='1.0' xmlns='http://www.w3.org/1999/XSL/Transform'>\n");
-        for (URI importUri : xsltUris) {
+        final TransformerFactory transformerFactory = getTransformerFactory();
+        final StringBuilder xsltBuilder = new StringBuilder("<stylesheet version='1.0' xmlns='http://www.w3.org/1999/XSL/Transform'>\n");
+        for (final URI importUri : xsltUris) {
             xsltBuilder.append("<import href='").append(importUri.toString()).append("'/>\n");
         }
         xsltBuilder.append("</stylesheet>");
-        String xslt = xsltBuilder.toString();
+        final String xslt = xsltBuilder.toString();
 
         /* Now compile and return result */
         try {
             return transformerFactory.newTemplates(new StreamSource(new StringReader(xslt)));
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Could not compile stylesheet driver " + xslt, e);
         }
     }
 
     //----------------------------------------------------------
 
-    public Transformer getSerializer(final XsltSerializationOptions serializationOptions) {
+    public Transformer getSerializer(final XsltSerializationOptions xsltSerializationOptions) {
         /* Create serializer */
         Transformer serializer;
         try {
             serializer = getTransformerFactory().newTransformer();
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Unexpected failure instantiating default serializer", e);
         }
 
         /* Then configure it as per options */
-        return configureSerializer(serializer, serializationOptions);
+        return configureSerializer(serializer, xsltSerializationOptions);
     }
 
-    public TransformerHandler getSerializerHandler(final XsltSerializationOptions serializationOptions) {
+    public TransformerHandler getSerializerHandler(final XsltSerializationOptions xsltSerializationOptions) {
         /* Create serializer */
         TransformerHandler serializerHandler;
         try {
             serializerHandler = getSaxTransformerFactory().newTransformerHandler();
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Unexpected failure instantiating default serializer", e);
         }
 
         /* Then configure it as per options */
-        return configureSerializerHandler(serializerHandler, serializationOptions);
+        return configureSerializerHandler(serializerHandler, xsltSerializationOptions);
     }
 
-    public Transformer getSerializer(final URI serializerUri, final XsltSerializationOptions serializationOptions) {
+    public Transformer getSerializer(final URI serializerUri, final XsltSerializationOptions xsltSerializationOptions) {
         Assert.notNull(serializerUri, "serializerUri");
         /* Create serializer */
         Transformer serializer;
         try {
             serializer = getCompiledStylesheet(serializerUri).newTransformer();
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Unexpected failure instantiating serializer " + serializerUri, e);
         }
 
         /* Then configure it as per options */
-        return configureSerializer(serializer, serializationOptions);
+        return configureSerializer(serializer, xsltSerializationOptions);
     }
 
 
-    public TransformerHandler getSerializerHandler(final URI serializerUri, final XsltSerializationOptions serializationOptions) {
+    public TransformerHandler getSerializerHandler(final URI serializerUri, final XsltSerializationOptions xsltSerializationOptions) {
         Assert.notNull(serializerUri, "serializerUri");
         TransformerHandler serializerHandler;
         try {
             serializerHandler = getSaxTransformerFactory().newTransformerHandler(getCompiledStylesheet(serializerUri));
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Unexpected failure instantiating serializing TransformerHandler " + serializerUri, e);
         }
 
         /* Then configure it as per options */
-        return configureSerializerHandler(serializerHandler, serializationOptions);
+        return configureSerializerHandler(serializerHandler, xsltSerializationOptions);
     }
 
-    public Transformer getSerializerDriver(final List<URI> serializerUris, final XsltSerializationOptions serializationOptions) {
+    public Transformer getSerializerDriver(final List<URI> serializerUris, final XsltSerializationOptions xsltSerializationOptions) {
         Assert.notNull(serializerUris, "serializerUris");
         Transformer serializer;
         try {
             serializer = getCompiledStylesheetDriver(serializerUris).newTransformer();
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Unexpected failure instantiating serializer driver from " + serializerUris, e);
         }
 
         /* Then configure it as per options */
-        return configureSerializer(serializer, serializationOptions);
+        return configureSerializer(serializer, xsltSerializationOptions);
     }
 
-    public TransformerHandler getSerializerDriverHandler(final List<URI> serializerUris, final XsltSerializationOptions serializationOptions) {
+    public TransformerHandler getSerializerDriverHandler(final List<URI> serializerUris, final XsltSerializationOptions xsltSerializationOptions) {
         /* Create serializer */
         Assert.notNull(serializerUris, "serializerUris");
         TransformerHandler serializerHandler;
         try {
             serializerHandler = getSaxTransformerFactory().newTransformerHandler(getCompiledStylesheetDriver(serializerUris));
         }
-        catch (TransformerConfigurationException e) {
+        catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Unexpected failure instantiating serializer driver from " + serializerUris, e);
         }
 
         /* Then configure it as per options */
-        return configureSerializerHandler(serializerHandler, serializationOptions);
+        return configureSerializerHandler(serializerHandler, xsltSerializationOptions);
     }
 
-    private TransformerHandler configureSerializerHandler(TransformerHandler serializerHandler, final XsltSerializationOptions serializationOptions) {
-        configureSerializer(serializerHandler.getTransformer(), serializationOptions);
+    private TransformerHandler configureSerializerHandler(final TransformerHandler serializerHandler, final XsltSerializationOptions xsltSerializationOptions) {
+        configureSerializer(serializerHandler.getTransformer(), xsltSerializationOptions);
         return serializerHandler;
     }
 
-    private Transformer configureSerializer(Transformer serializer, final XsltSerializationOptions serializationOptions) {
+    private Transformer configureSerializer(final Transformer serializer, final XsltSerializationOptions xsltSerializationOptions) {
         /* Then configure it as per options */
-        final boolean supportsXSLT20 = XsltFactoryUtilities.supportsXSLT20(serializer);
-        if (serializationOptions!=null) {
-            XsltSerializationMethod serializationMethod = serializationOptions.getSerializationMethod();
+        if (xsltSerializationOptions!=null) {
+            final boolean supportsXSLT20 = XsltFactoryUtilities.supportsXSLT20(serializer);
+            XsltSerializationMethod serializationMethod = xsltSerializationOptions.getSerializationMethod();
             if (serializationMethod==XsltSerializationMethod.XHTML && !supportsXSLT20) {
                 /* Really want XHTML serialization, but we don't have an XSLT 2.0 processor
                  * so downgrading to XML.
@@ -313,17 +332,17 @@ public final class XsltStylesheetManager {
                 serializationMethod = XsltSerializationMethod.XML;
             }
             serializer.setOutputProperty(OutputKeys.METHOD, serializationMethod.getName());
-            serializer.setOutputProperty(OutputKeys.INDENT, StringUtilities.toYesNo(serializationOptions.isIndenting()));
-            if (serializationOptions.isIndenting()) {
-                XsltFactoryUtilities.setIndentation(serializer, serializationOptions.getIndent());
+            serializer.setOutputProperty(OutputKeys.INDENT, StringUtilities.toYesNo(xsltSerializationOptions.isIndenting()));
+            if (xsltSerializationOptions.isIndenting()) {
+                XsltFactoryUtilities.setIndentation(serializer, xsltSerializationOptions.getIndent());
             }
-            serializer.setOutputProperty(OutputKeys.ENCODING, serializationOptions.getEncoding());
-            serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, StringUtilities.toYesNo(!serializationOptions.isIncludingXMLDeclaration()));
-            if (serializationOptions.getDoctypePublic()!=null) {
-                serializer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, serializationOptions.getDoctypePublic());
+            serializer.setOutputProperty(OutputKeys.ENCODING, xsltSerializationOptions.getEncoding());
+            serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, StringUtilities.toYesNo(!xsltSerializationOptions.isIncludingXMLDeclaration()));
+            if (xsltSerializationOptions.getDoctypePublic()!=null) {
+                serializer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, xsltSerializationOptions.getDoctypePublic());
             }
-            if (serializationOptions.getDoctypeSystem()!=null) {
-                serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, serializationOptions.getDoctypeSystem());
+            if (xsltSerializationOptions.getDoctypeSystem()!=null) {
+                serializer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, xsltSerializationOptions.getDoctypeSystem());
             }
         }
         return serializer;
@@ -333,7 +352,7 @@ public final class XsltStylesheetManager {
 
     private TransformerFactory getTransformerFactory() {
         /* Choose appropriate TransformerFactory implementation */
-        TransformerFactory transformerFactory = XsltFactoryUtilities.createJAXPTransformerFactory();
+        final TransformerFactory transformerFactory = XsltFactoryUtilities.createJAXPTransformerFactory();
 
         /* Configure URIResolver */
         transformerFactory.setURIResolver(xsltResourceResolver);
@@ -342,7 +361,7 @@ public final class XsltStylesheetManager {
 
     private SAXTransformerFactory getSaxTransformerFactory() {
         /* Choose appropriate TransformerFactory implementation */
-        TransformerFactory transformerFactory = XsltFactoryUtilities.createJAXPTransformerFactory();
+        final TransformerFactory transformerFactory = XsltFactoryUtilities.createJAXPTransformerFactory();
         XsltFactoryUtilities.requireFeature(transformerFactory, SAXTransformerFactory.FEATURE);
 
         /* Configure URIResolver */
@@ -353,8 +372,8 @@ public final class XsltStylesheetManager {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(stylesheetCache=" + stylesheetCache
-                + ",customXsltResourceLocator=" + customXsltResourceLocator
+                + "(xsltResourceLocator=" + xsltResourceLocator
+                + ",xsltStylesheetCache=" + xsltStylesheetCache
                 + ")";
     }
 }

@@ -121,7 +121,7 @@ public class SerializationSampleTests extends AbstractIntegrationTest {
         
         XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
         serializationOptions.setIndenting(true);
-        TransformerHandler serializerHandler = new XsltStylesheetManager().getSerializerHandler(serializationOptions);
+        TransformerHandler serializerHandler = XsltStylesheetManager.createSerializerHandler(serializationOptions);
         StringWriter serializedXmlWriter = new StringWriter();
         serializerHandler.setResult(new StreamResult(serializedXmlWriter));
         

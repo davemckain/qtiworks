@@ -38,13 +38,25 @@ import java.net.URI;
 
 /**
  * Trivial resource locator that simply fails automatically.
- * 
+ *
  * @author David McKain
  */
 public class NullResourceLocator implements ResourceLocator {
-    
+
+    /** (Singleton instance) */
+    private static final NullResourceLocator instance = new NullResourceLocator();
+
+    public static NullResourceLocator getInstance() {
+        return instance;
+    }
+
+    protected NullResourceLocator() {
+        /* Do nothing */
+    }
+
     @Override
-    public InputStream findResource(URI systemId) {
+    public InputStream findResource(final URI systemId) {
         return null;
     }
+
 }

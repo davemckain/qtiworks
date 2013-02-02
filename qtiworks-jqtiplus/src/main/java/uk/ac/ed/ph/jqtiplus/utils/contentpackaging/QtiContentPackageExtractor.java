@@ -93,7 +93,7 @@ public final class QtiContentPackageExtractor {
 
     public QtiContentPackageExtractor(final File packageSandboxDirectory) {
         Assert.notNull(packageSandboxDirectory);
-        this.xmlResourceReader = new XmlResourceReader(new NullResourceLocator()); /* (Not doing schema validation so no XSDs to register) */
+        this.xmlResourceReader = new XmlResourceReader(NullResourceLocator.getInstance()); /* (Not doing schema validation so no XSDs to register) */
         this.packageResourceLocator = new FileSandboxResourceLocator(PACKAGE_URI_SCHEME, packageSandboxDirectory);
     }
 

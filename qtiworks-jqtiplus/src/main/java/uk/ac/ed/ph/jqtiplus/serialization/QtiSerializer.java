@@ -53,23 +53,17 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * Simple entry point into the JQTI serialization logic, serializing JQTI Objects as XML
- * in a number of simple ways.
+ * Simple entry point into the JQTI serialization logic, serializing JQTI
+ * Objects as XML in a number of simple ways.
  *
  * @author David McKain
  */
 public final class QtiSerializer {
 
     private final JqtiExtensionManager jqtiExtensionManager;
-    private final XsltStylesheetManager xsltStylesheetManager;
 
     public QtiSerializer(final JqtiExtensionManager jqtiExtensionManager) {
-        this(jqtiExtensionManager, new XsltStylesheetManager(null, null));
-    }
-
-    public QtiSerializer(final JqtiExtensionManager jqtiExtensionManager, final XsltStylesheetManager xsltStylesheetManager) {
         this.jqtiExtensionManager = jqtiExtensionManager;
-        this.xsltStylesheetManager = xsltStylesheetManager;
     }
 
     //----------------------------------------------------
@@ -80,7 +74,8 @@ public final class QtiSerializer {
         return resultWriter.toString();
     }
 
-    public String serializeJqtiObject(final QtiNode jqtiObject, final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
+    public String
+            serializeJqtiObject(final QtiNode jqtiObject, final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
         final StringWriter resultWriter = new StringWriter();
         serializeJqtiObject(jqtiObject, new StreamResult(resultWriter), saxFiringOptions, xsltSerializationOptions);
         return resultWriter.toString();
@@ -99,7 +94,7 @@ public final class QtiSerializer {
 
     public void serializeJqtiObject(final QtiNode jqtiObject, final StreamResult result,
             final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
-        final TransformerHandler serializerHandler = xsltStylesheetManager.getSerializerHandler(xsltSerializationOptions);
+        final TransformerHandler serializerHandler = XsltStylesheetManager.createSerializerHandler(xsltSerializationOptions);
         serializerHandler.setResult(result);
         final QtiSaxDocumentFirer qtiSaxDocumentFirer = new QtiSaxDocumentFirer(jqtiExtensionManager, serializerHandler, saxFiringOptions);
         try {

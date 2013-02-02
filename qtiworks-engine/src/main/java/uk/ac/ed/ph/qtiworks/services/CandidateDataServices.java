@@ -473,7 +473,7 @@ public class CandidateDataServices {
         final XsltSerializationOptions xsltSerializationOptions = new XsltSerializationOptions();
         xsltSerializationOptions.setIndenting(true);
         xsltSerializationOptions.setIncludingXMLDeclaration(false);
-        final Transformer serializer = new XsltStylesheetManager().getSerializer(xsltSerializationOptions);
+        final Transformer serializer = XsltStylesheetManager.createSerializer(xsltSerializationOptions);
         try {
             serializer.transform(new DOMSource(stateXml), new StreamResult(sessionFile));
         }
