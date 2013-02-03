@@ -172,10 +172,8 @@ public final class TestSessionController extends TestValidationController implem
     //-------------------------------------------------------------------
 
     private void fireLifecycleEvent(final JqtiLifecycleEventType eventType) {
-        if (jqtiExtensionManager!=null) {
-            for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
-                extensionPackage.lifecycleEvent(this, eventType);
-            }
+        for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
+            extensionPackage.lifecycleEvent(this, eventType);
         }
     }
 

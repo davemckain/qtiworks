@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.validation;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -57,6 +58,8 @@ abstract class AbstractValidationContext<E extends AssessmentObject> extends Lis
     protected final E subject;
 
     public AbstractValidationContext(final JqtiExtensionManager jqtiExtensionManager, final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
+        Assert.notNull(jqtiExtensionManager, "jqtiExtensionManager");
+        Assert.notNull(resolvedAssessmentObject, "resolvedAssessmentObject");
         this.jqtiExtensionManager = jqtiExtensionManager;
         this.resolvedAssessmentObject = resolvedAssessmentObject;
         this.subject = resolvedAssessmentObject.getRootNodeLookup().extractAssumingSuccessful();

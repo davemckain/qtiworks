@@ -181,10 +181,8 @@ public final class ItemSessionController extends ItemValidationController implem
     //-------------------------------------------------------------------
 
     private void fireJqtiLifecycleEvent(final JqtiLifecycleEventType eventType) {
-        if (jqtiExtensionManager!=null) {
-            for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
-                extensionPackage.lifecycleEvent(this, eventType);
-            }
+        for (final JqtiExtensionPackage<?> jqtiExtensionPackage : jqtiExtensionManager.getExtensionPackages()) {
+            jqtiExtensionPackage.lifecycleEvent(this, eventType);
         }
     }
 
