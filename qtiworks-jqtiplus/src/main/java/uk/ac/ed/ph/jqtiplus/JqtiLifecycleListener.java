@@ -34,26 +34,18 @@
 package uk.ac.ed.ph.jqtiplus;
 
 /**
- * Enumerates the different types of lifecycle events fired off
- * during item & test processing
- * 
+ * Interface for classes who want to hear about JQTI+ lifecycle events.
+ * <p>
+ * Extensions may use this if they need to do any complex initialisation
+ * work. For example the MathAssess extensions use these to set up and
+ * tear down pooled Maxima communication processes.
+ *
+ * @see JqtiLifecycleEventType
+ *
  * @author David McKain
  */
-public enum LifecycleEventType {
-    
-    MANAGER_INITIALISED,
-    MANAGER_DESTROYED,
+public interface JqtiLifecycleListener {
 
-    ITEM_TEMPLATE_PROCESSING_STARTING,
-    ITEM_TEMPLATE_PROCESSING_FINISHED,
-
-    ITEM_RESPONSE_PROCESSING_STARTING,
-    ITEM_RESPONSE_PROCESSING_FINISHED,
-
-    TEST_INITIALISATION_STARTING,
-    TEST_INITIALISATION_FINISHED,
-
-    TEST_OUTCOME_PROCESSING_STARTING,
-    TEST_OUTCOME_PROCESSING_FINISHED,
+    void lifecycleEvent(Object source, JqtiLifecycleEventType eventType);
 
 }

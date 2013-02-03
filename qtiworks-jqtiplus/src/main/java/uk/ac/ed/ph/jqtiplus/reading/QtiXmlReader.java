@@ -105,7 +105,7 @@ public final class QtiXmlReader {
         /* Merge extension schemas with core QTI 2.0 and 2.1 schemas */
         final Map<String, String> resultingSchemaMapTemplate = new HashMap<String, String>();
         for (final Entry<String, ExtensionNamespaceInfo> entry : jqtiExtensionManager.getExtensionNamepaceInfoMap().entrySet()) {
-            resultingSchemaMapTemplate.put(entry.getKey(), entry.getValue().getSchemaUri());
+            resultingSchemaMapTemplate.put(entry.getKey(), entry.getValue().getSchemaLocationUri());
         }
         resultingSchemaMapTemplate.put(QtiConstants.QTI_21_NAMESPACE_URI, QtiConstants.QTI_21_SCHEMA_LOCATION);
         resultingSchemaMapTemplate.put(QtiConstants.QTI_RESULT_21_NAMESPACE_URI, QtiConstants.QTI_RESULT_21_SCHEMA_LOCATION);

@@ -34,14 +34,44 @@
 package uk.ac.ed.ph.jqtiplus;
 
 /**
- * Interface for classes that want to hear about lifecycle events.
- * 
- * @see LifecycleEventType
- * 
+ * Enumerates the different types of JQTI+ lifecycle events fired off
+ * during assessment processing.
+ *
+ *
+ * @see JqtiLifecycleListener
+ *
  * @author David McKain
  */
-public interface LifecycleListener {
+public enum JqtiLifecycleEventType {
 
-    void lifecycleEvent(Object source, LifecycleEventType eventType);
+    /** {@link JqtiExtensionManager} initialisation */
+    MANAGER_INITIALISED,
+
+    /** {@link JqtiExtensionManager} destruction */
+    MANAGER_DESTROYED,
+
+    /** (Item) Template processing is about to start */
+    ITEM_TEMPLATE_PROCESSING_STARTING,
+
+    /** (Item) Template processing has ended */
+    ITEM_TEMPLATE_PROCESSING_FINISHED,
+
+    /** (Item) Response processing is about to start */
+    ITEM_RESPONSE_PROCESSING_STARTING,
+
+    /** (Item) Response processing has ended */
+    ITEM_RESPONSE_PROCESSING_FINISHED,
+
+    /** Test initialisation is about to start */
+    TEST_INITIALISATION_STARTING,
+
+    /** Test initialisation has ended */
+    TEST_INITIALISATION_FINISHED,
+
+    /** (Test) Outcome processing is about to start */
+    TEST_OUTCOME_PROCESSING_STARTING,
+
+    /** (Test) Outcome processing has ended */
+    TEST_OUTCOME_PROCESSING_FINISHED,
 
 }

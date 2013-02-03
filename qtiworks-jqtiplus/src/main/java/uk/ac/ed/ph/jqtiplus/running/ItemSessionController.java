@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception2.ResponseBindingException;
@@ -180,7 +180,7 @@ public final class ItemSessionController extends ItemValidationController implem
 
     //-------------------------------------------------------------------
 
-    private void fireLifecycleEvent(final LifecycleEventType eventType) {
+    private void fireJqtiLifecycleEvent(final JqtiLifecycleEventType eventType) {
         if (jqtiExtensionManager!=null) {
             for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
                 extensionPackage.lifecycleEvent(this, eventType);
@@ -267,7 +267,7 @@ public final class ItemSessionController extends ItemValidationController implem
     public void performTemplateProcessing(final List<TemplateDefault> templateDefaults) {
         ensureInitialized();
         logger.debug("Template processing starting on item {}", getSubject().getSystemId());
-        fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
+        fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
         try {
             /* Initialise template defaults with any externally provided defaults */
             if (templateDefaults != null) {
@@ -304,7 +304,7 @@ public final class ItemSessionController extends ItemValidationController implem
             resetItemSession();
         }
         finally {
-            fireLifecycleEvent(LifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
+            fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
             logger.debug("Template processing finished on item {}", getSubject().getSystemId());
         }
     }
@@ -483,7 +483,7 @@ public final class ItemSessionController extends ItemValidationController implem
     public void performResponseProcessing() {
         ensureOpen();
         logger.debug("Response processing starting on item {}", getSubject().getSystemId());
-        fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
+        fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
             /* If no responses have been bound, then set responses for all endAttemptInteractions to false now */
             if (!itemSessionState.isResponded()) {
@@ -547,7 +547,7 @@ public final class ItemSessionController extends ItemValidationController implem
             updateClosedStatus();
         }
         finally {
-            fireLifecycleEvent(LifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
+            fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
             logger.debug("Response processing finished on item {}", getSubject().getSystemId());
         }
     }

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -171,7 +171,7 @@ public final class TestSessionController extends TestValidationController implem
 
     //-------------------------------------------------------------------
 
-    private void fireLifecycleEvent(final LifecycleEventType eventType) {
+    private void fireLifecycleEvent(final JqtiLifecycleEventType eventType) {
         if (jqtiExtensionManager!=null) {
             for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionManager.getExtensionPackages()) {
                 extensionPackage.lifecycleEvent(this, eventType);
@@ -805,7 +805,7 @@ public final class TestSessionController extends TestValidationController implem
 
     public void performOutcomeProcessing() {
         logger.debug("Outcome processing starting on test {}", getSubject().getSystemId());
-        fireLifecycleEvent(LifecycleEventType.TEST_OUTCOME_PROCESSING_STARTING);
+        fireLifecycleEvent(JqtiLifecycleEventType.TEST_OUTCOME_PROCESSING_STARTING);
         try {
             resetOutcomeVariables();
 
@@ -815,7 +815,7 @@ public final class TestSessionController extends TestValidationController implem
             }
         }
         finally {
-            fireLifecycleEvent(LifecycleEventType.TEST_OUTCOME_PROCESSING_FINISHED);
+            fireLifecycleEvent(JqtiLifecycleEventType.TEST_OUTCOME_PROCESSING_FINISHED);
             logger.debug("Outcome processing finished on test {}", getSubject().getSystemId());
         }
     }

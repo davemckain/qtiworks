@@ -185,7 +185,7 @@ public final class QtiSaxDocumentFirer {
             /* Now record schema information for extensions */
             for (final JqtiExtensionPackage<?> usedExtensionPackage : usedExtensionPackages) {
                 for (final ExtensionNamespaceInfo extensionNamespaceInfo : usedExtensionPackage.getNamespaceInfoMap().values()) {
-                    schemaLocationMap.put(extensionNamespaceInfo.getNamespaceUri(), extensionNamespaceInfo.getSchemaUri());
+                    schemaLocationMap.put(extensionNamespaceInfo.getNamespaceUri(), extensionNamespaceInfo.getSchemaLocationUri());
                 }
             }
         }

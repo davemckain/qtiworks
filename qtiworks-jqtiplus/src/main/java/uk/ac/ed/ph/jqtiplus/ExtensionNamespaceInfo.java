@@ -41,16 +41,21 @@ import java.io.Serializable;
  * @author David McKain
  */
 public final class ExtensionNamespaceInfo implements Serializable {
-    
+
     private static final long serialVersionUID = -8191755193016965572L;
-    
+
+    /** XML namespace */
     private final String namespaceUri;
-    private final String schemaUri;
+
+    /** Schema location URI for this namespace */
+    private final String schemaLocationUri;
+
+    /** Default prefix to be used for XML serialization */
     private final String defaultPrefix;
-    
-    public ExtensionNamespaceInfo(String namespaceUri, String schemaUri, String defaultPrefix) {
+
+    public ExtensionNamespaceInfo(final String namespaceUri, final String schemaLocationUri, final String defaultPrefix) {
         this.namespaceUri = namespaceUri;
-        this.schemaUri = schemaUri;
+        this.schemaLocationUri = schemaLocationUri;
         this.defaultPrefix = defaultPrefix;
     }
 
@@ -58,19 +63,19 @@ public final class ExtensionNamespaceInfo implements Serializable {
         return namespaceUri;
     }
 
-    public String getSchemaUri() {
-        return schemaUri;
+    public String getSchemaLocationUri() {
+        return schemaLocationUri;
     }
 
     public String getDefaultPrefix() {
         return defaultPrefix;
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(namespaceUri=" + namespaceUri
-                + ",schemaUri=" + schemaUri
+                + ",schemaUri=" + schemaLocationUri
                 + ",defaultPrefix=" + defaultPrefix
                 + ")";
     }
