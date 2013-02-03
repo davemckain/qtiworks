@@ -184,6 +184,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
 
             case ITEM_TEMPLATE_PROCESSING_STARTING:
             case ITEM_RESPONSE_PROCESSING_STARTING:
+            case TEST_OUTCOME_PROCESSING_STARTING:
                 /* Rather than creating a Maxima process at this point that may
                  * not be used,
                  * we'll wait until it is first needed. */
@@ -191,6 +192,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
 
             case ITEM_TEMPLATE_PROCESSING_FINISHED:
             case ITEM_RESPONSE_PROCESSING_FINISHED:
+            case TEST_OUTCOME_PROCESSING_FINISHED:
                 releaseMaximaSessionForThread();
                 break;
 
