@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -89,14 +87,17 @@ public class CandidateSessionOutcome implements BaseEntity {
     private CandidateSession candidateSession;
 
     /** Identifier of the underlying outcome variable */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
-    @Column(name="outcome_identifier", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH)
+    @Column(name="outcome_identifier", updatable=false)
     private String outcomeIdentifier;
 
     /** Variable as string */
     @Lob
     @Type(type="org.hibernate.type.TextType")
-    @Column(name="string_value")
+    @Basic(optional=false)
+    @Column(name="string_value", updatable=false)
     private String stringValue;
 
     //------------------------------------------------------------

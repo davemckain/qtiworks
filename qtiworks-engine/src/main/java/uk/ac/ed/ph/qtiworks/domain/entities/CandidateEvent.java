@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.util.ArrayList;
@@ -52,6 +50,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -62,6 +61,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Represents each "event" generated during a {@link CandidateSession}
@@ -124,8 +125,10 @@ public class CandidateEvent implements BaseEntity {
      * For "modal" events within a test, this records the key for the item upon which the event
      * was performed. Otherwise it is null.
      */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
-    @Column(name="test_item_key", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH + 10)
+    @Column(name="test_item_key", updatable=false)
     private String testItemKey;
 
     /**

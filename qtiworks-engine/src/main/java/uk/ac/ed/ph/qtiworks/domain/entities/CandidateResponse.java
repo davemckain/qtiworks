@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
@@ -84,8 +82,10 @@ public class CandidateResponse implements BaseEntity {
     private CandidateEvent candidateEvent;
 
     /** Identifier of the underlying response variable */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
-    @Column(name="response_identifier", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH)
+    @Column(name="response_identifier", updatable=false)
     private String responseIdentifier;
 
     /** Type of response */

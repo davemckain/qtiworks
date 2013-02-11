@@ -45,7 +45,6 @@ public final class DomainConstants {
     public static final int USER_NAME_COMPONENT_MAX_LENGTH = 256;
     public static final int USER_PASSWORD_SALT_LENGTH = 16;
     public static final int SHA1_DIGEST_LENGTH = 40;
-    public static final int FILE_CONTENT_TYPE_LENGTH = 256;
 
     public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
     public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
@@ -54,9 +53,6 @@ public final class DomainConstants {
     public static final int CANDIDATE_SESSION_EXIT_URL_LENGTH = 128;
 
     public static final int LTI_TOKEN_LENGTH = 32;
-
-    /** FIXME: What limit should we use here? */
-    public static final int QTI_IDENTIFIER_MAX_LENGTH = 64;
 
     /**
      * NB: Should be set to the maximum length of the permitted values of
