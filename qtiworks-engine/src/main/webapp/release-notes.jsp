@@ -12,6 +12,20 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV24 [Development] (11/02/2013)</h3>
+  <p>
+    Minor update including mainly low-level code refactoring and documentation improvements.
+    Visible changes are:
+  </p>
+  <ul>
+    <li>Temporary removal of 32 character constraint check on identifiers (for Uniqurate questions)</li>
+    <li>Fixed corner case in response processing with endAttemptInteractions if no responses had previously been bound</li>
+    <li>Minor improvement to rendering of uploadInteraction</li>
+  </ul>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV23 [Development] (29/01/2013)</h3>
   <p>
     Minor update that finally includes front-end functionality for deleting Assessments
