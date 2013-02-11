@@ -12,6 +12,15 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-M3 [Production] (12/02/2013)</h3>
+  <p>
+    Third production milestone, equivalent to the 1.0-DEV24 development snapshot.
+  </p>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV24 [Development] (11/02/2013)</h3>
   <p>
     Minor update including mainly low-level code refactoring and documentation improvements.
