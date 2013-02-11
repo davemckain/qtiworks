@@ -166,7 +166,8 @@ public interface Attribute<V> extends Serializable {
      * Converts this Attribute's value to the String form used in
      * the QTI information model.
      *
-     * @return attribute's value converted to string
+     * @return attribute's value converted to string, which will never be null
+     *   but may be an empty string.
      */
     String valueToQtiString();
 
@@ -174,7 +175,8 @@ public interface Attribute<V> extends Serializable {
      * Converts this Attribute's defaultValue to the String form used in
      * the QTI information model.
      *
-     * @return attribute's defaultValue converted to string
+     * @return attribute's defaultValue converted to string, which will never be
+     *   null may be an empty string.
      */
     String defaultValueToQtiString();
 }

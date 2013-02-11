@@ -153,7 +153,9 @@ public abstract class AbstractAttribute<V> implements Attribute<V> {
 
     /**
      * Subclasses should implement to convert the given value to
-     * the String format used in the QTI information model
+     * the String format used in the QTI information model.
+     * <p>
+     * Subclasses must not return null here.
      */
     protected abstract String toQtiString(V value);
 
