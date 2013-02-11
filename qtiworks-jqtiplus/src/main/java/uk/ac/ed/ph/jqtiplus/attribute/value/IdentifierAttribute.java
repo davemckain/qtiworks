@@ -68,10 +68,11 @@ public final class IdentifierAttribute extends SingleAttribute<Identifier> {
     public void validateBasic(final ValidationContext context) {
         super.validateBasic(context);
 
-        /* Spec recommends identifiers are not more than 32 characters */
-        if (value!=null && value.toString().length() > 32) {
-            context.fireAttributeValidationWarning(this, "Identifiers are recommended to be no more than 32 characters long");
-        }
+// FIXME: Re-enable this once we relax constraints on running invalid assessments
+//        /* Spec recommends identifiers are not more than 32 characters */
+//        if (value!=null && value.toString().length() > 32) {
+//            context.fireAttributeValidationWarning(this, "Identifiers are recommended to be no more than 32 characters long");
+//        }
     }
 
     @Override
