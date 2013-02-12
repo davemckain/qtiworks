@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationFirer;
 import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
 
 /**
@@ -102,7 +101,7 @@ public interface ValidationContext extends NotificationFirer {
 
     /**
      * Checks that the variable reference {@link Identifier} resolves successfully and uniquely
-     * dereferenced. A validation error is recorded and {@link NullValue} is returned if this is unsuccessful.
+     * dereferenced. A validation error is recorded if this is unsuccessful.
      * <p>
      * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
      * otherwise null.
@@ -117,7 +116,7 @@ public interface ValidationContext extends NotificationFirer {
 
     /**
      * Checks that the variable reference {@link Identifier} resolves successfully and uniquely
-     * dereferenced. A validation error is recorded and {@link NullValue} is returned if this is unsuccessful.
+     * dereferenced. A validation error is recorded if this is unsuccessful.
      * <p>
      * Returns a valid {@link VariableDeclaration} corresponding to the resulting variable if successful,
      * otherwise null.

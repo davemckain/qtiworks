@@ -55,19 +55,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Represents the shape of an {@link AssessmentTest} once
- * {@link Ordering} and {@link Selection} has been applied.
+ * Represents the shape of an {@link AssessmentTest} once {@link Ordering} and
+ * {@link Selection} rules have been applied.
  * <p>
- * Nodes corresponding to {@link AssessmentItemRef}s in the plan will satisfy
- * the following properties:
+ * {@link AbstractPart}s within the {@link AssessmentTest} are represented by
+ * {@link TestPlanNode}s within this {@link TestPlan}. These Nodes are uniquely
+ * identified using synthesised {@link TestPlanNodeKey} Objects, which are derived
+ * from {@link Identifier}s but are unique, even if the same {@link SectionPart}s is selected
+ * more than once (with replacement).
+ * <p>
+ * Nodes corresponding to {@link AssessmentItemRef}s will <strong>not</strong> be included in the plan if
+ * they fail to satisfy the following properties:
  * <ul>
- *   <li>Their identifier is unique amongst other such Nodes</li>
- *   <li>The resulting item was successfully looked up</li>
+ * <li>Their identifier is unique amongst other such Nodes</li>
+ * <li>The resulting item was successfully looked up</li>
  * </ul>
  * <p>
  * An instance of this class should be consider immutable once created.
  *
  * @see TestPlanNode
+ * @see TestPlanNodeKey
  * @see TestPlanner
  */
 @ObjectDumperOptions(DumpMode.DEEP)
