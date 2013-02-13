@@ -34,8 +34,6 @@
 package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.web.AbstractFilterUsingApplicationContext;
 
 import java.io.IOException;
@@ -49,14 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Base authentication filter, supporting the {@link IdentityContext} notion
- * and the {@link User} entity.
- *
- * <h2>Tomcat Note</h2>
- *
- * Tomcat's AccessLogValve logs the <strong>original</strong> request, which will only contain
- * user ID information if there is some kind of front-end authentication going on. In this case,
- * you will want to log the {@link #EFFECTIVE_IDENTITY_ATTRIBUTE_NAME} request attribute instead.
+ * Base web authentication filter
  *
  * @author David McKain
  */
