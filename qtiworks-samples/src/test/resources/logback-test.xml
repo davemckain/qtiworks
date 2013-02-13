@@ -1,0 +1,14 @@
+<configuration debug="false">
+
+  <!-- Create usual appender sending messages to STDOUT -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%date{HH:mm:ss.SSS} %-5level %logger{48} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <root level="warn">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>

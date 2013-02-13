@@ -28,7 +28,7 @@ All Rights Reserved
     <jacomax.version>0.2.3</jacomax.version>
     <commons-pool.version>1.5.7</commons-pool.version>
     <slf4j.version>1.7.2</slf4j.version>
-    <log4j.version>1.2.17</log4j.version>
+    <logback.version>1.0.9</logback.version>
     <saxon9.version>9.1.0.8</saxon9.version>
     <xerces.version>2.10.0</xerces.version>
     <servlet-api.version>2.5</servlet-api.version>
