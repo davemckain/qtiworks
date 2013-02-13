@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction.choice;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.IntegerAttribute;
+import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
@@ -59,7 +59,7 @@ public final class GapImg extends GapChoice {
     public GapImg(final QtiNode parent) {
         super(parent, QTI_CLASS_NAME);
 
-        getAttributes().add(new IntegerAttribute(this, ATTR_OBJECT_LABEL_NAME, false));
+        getAttributes().add(new StringAttribute(this, ATTR_OBJECT_LABEL_NAME, false));
 
         getNodeGroups().add(new ObjectGroup(this, true));
     }
