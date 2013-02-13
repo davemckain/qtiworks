@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -57,19 +57,18 @@ public final class InstructorFakeAuthenticationFilter extends AbstractInstructor
 
     private static final Logger logger = LoggerFactory.getLogger(InstructorFakeAuthenticationFilter.class);
 
-    /** Filter init parameter specifying the Login Name of the assumed User */
-    public static final String FAKE_LOGIN_NAME_PARAM = "fakeLoginName";
-
     /** Login Name for the assumed User */
     private String fakeLoginName;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext) throws Exception {
         super.initWithApplicationContext(filterConfig, webApplicationContext);
-        this.fakeLoginName = WebUtilities.getRequiredInitParameter(filterConfig, FAKE_LOGIN_NAME_PARAM);
+        final QtiWorksSettings qtiWorksSettings = webApplicationContext.getBean(QtiWorksSettings.class);
+
+        this.fakeLoginName = qtiWorksSettings.getFakeLoginName();
         final InstructorUser fakeUser = lookupFakeUser(); /* (Make sure user exists now) */
         logger.warn("Fake authentication is enabled and attached to user {}. This should not be used in production deployments!",
-                fakeUser);
+                fakeUser.getLoginName());
     }
 
     @Override

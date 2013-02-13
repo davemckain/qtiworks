@@ -59,7 +59,7 @@ public final class RequestTimestampFilter extends AbstractFilterUsingApplication
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
-        requestTimestampContext = applicationContext.getBean(RequestTimestampContext.class);
+        requestTimestampContext = webApplicationContext.getBean(RequestTimestampContext.class);
     }
 
     @Override

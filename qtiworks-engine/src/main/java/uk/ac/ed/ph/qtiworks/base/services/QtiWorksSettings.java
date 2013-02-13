@@ -64,6 +64,7 @@ public final class QtiWorksSettings implements Serializable {
     private @Value("${qtiworks.email.smtp.host}") String emailSmtpHost;
     private @Value("${qtiworks.filesystem.base}") String filesystemBase;
     private @Value("${qtiworks.base.url}") String baseUrl;
+    private @Value("${qtiworks.web.authn.fake.login:}") String fakeLoginName;
 
     public String getJdbcDriverClassName() {
         return jdbcDriverClassName;
@@ -111,6 +112,10 @@ public final class QtiWorksSettings implements Serializable {
 
     public String getBaseUrl() {
         return baseUrl;
+    }
+
+    public String getFakeLoginName() {
+        return fakeLoginName;
     }
 
     @Override

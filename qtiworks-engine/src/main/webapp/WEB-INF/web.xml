@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 
-Web deployment descriptor
+QTIWorks Delivery Engine web deployment descriptor
 
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" version="2.5"
@@ -70,15 +70,10 @@ Web deployment descriptor
     <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFormAuthenticationFilter</filter-class>
     <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFakeAuthenticationFilter</filter-class>
     -->
-    <!-- Params for InstructorFormAuthenticationFilter (if used) -->
+    <!-- Params for InstructorFormAuthenticationFilter -->
     <init-param>
       <param-name>formLoginJspPath</param-name>
       <param-value>/WEB-INF/jsp/login/instructorLogin.jsp</param-value>
-    </init-param>
-    <!-- Params for InstructorFakeAuthenticationFilter (if used) -->
-    <init-param>
-      <param-name>fakeLoginName</param-name>
-      <param-value>${qtiworks.web.authn.fake.login}</param-value>
     </init-param>
   </filter>
   <filter-mapping>

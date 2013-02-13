@@ -61,7 +61,7 @@ public final class ExceptionLoggingFilter extends AbstractFilterUsingApplication
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
-        auditor = applicationContext.getBean(Auditor.class);
+        auditor = webApplicationContext.getBean(Auditor.class);
     }
 
     @Override

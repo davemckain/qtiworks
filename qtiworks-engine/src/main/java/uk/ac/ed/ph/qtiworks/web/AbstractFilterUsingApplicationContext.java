@@ -43,8 +43,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * Trivial convenience base class for filters which need access to the {@link WebApplicationContext}
- * when initialising themselves.
+ * Convenience base class for filters that need access to the Spring
+ * {@link WebApplicationContext} when initialising themselves.
  *
  * @author David McKain
  */
@@ -53,7 +53,7 @@ public abstract class AbstractFilterUsingApplicationContext implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(AbstractFilterUsingApplicationContext.class);
 
     /** Spring {@link WebApplicationContext} */
-    protected WebApplicationContext applicationContext;
+    private WebApplicationContext applicationContext;
 
     @Override
     public final void init(final FilterConfig filterConfig) throws ServletException {

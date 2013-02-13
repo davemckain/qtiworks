@@ -87,9 +87,9 @@ public abstract class AbstractInstructorAuthenticationFilter extends AbstractWeb
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
-        identityContext = applicationContext.getBean(IdentityContext.class);
-        userDao = applicationContext.getBean(UserDao.class);
-        instructorUserDao = applicationContext.getBean(InstructorUserDao.class);
+        identityContext = webApplicationContext.getBean(IdentityContext.class);
+        userDao = webApplicationContext.getBean(UserDao.class);
+        instructorUserDao = webApplicationContext.getBean(InstructorUserDao.class);
     }
 
     @Override
