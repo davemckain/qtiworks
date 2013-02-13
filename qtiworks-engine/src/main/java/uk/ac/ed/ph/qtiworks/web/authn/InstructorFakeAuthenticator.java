@@ -33,11 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
-import javax.servlet.FilterConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,29 +43,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Trivial concrete implementation of {@link AbstractWebAuthenticationFilter} that just
- * assumes a configured identity for the current User.
- * <p>
- * (This is extremely useful during development but probably shouldn't be used in production.)
+ * Implementation of {@link AbstractInstructorAuthenticator} performing "fake" authentication
  *
  * @author David McKain
  */
-public final class InstructorFakeAuthenticationFilter extends AbstractInstructorAuthenticationFilter {
+public final class InstructorFakeAuthenticator extends AbstractInstructorAuthenticator {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstructorFakeAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(InstructorFakeAuthenticator.class);
 
     /** Login Name for the assumed User */
-    private String fakeLoginName;
+    private final String fakeLoginName;
 
-    @Override
-    protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext) throws Exception {
-        super.initWithApplicationContext(filterConfig, webApplicationContext);
-        final QtiWorksSettings qtiWorksSettings = webApplicationContext.getBean(QtiWorksSettings.class);
-
-        this.fakeLoginName = qtiWorksSettings.getFakeLoginName();
-        final InstructorUser fakeUser = lookupFakeUser(); /* (Make sure user exists now) */
-        logger.warn("Fake authentication is enabled and attached to user {}. This should not be used in production deployments!",
-                fakeUser.getLoginName());
+    public InstructorFakeAuthenticator(final WebApplicationContext webApplicationContext, final String fakeLoginName) {
+        super(webApplicationContext);
+        this.fakeLoginName = fakeLoginName;
     }
 
     @Override
@@ -79,10 +67,12 @@ public final class InstructorFakeAuthenticationFilter extends AbstractInstructor
     private InstructorUser lookupFakeUser() {
         final InstructorUser user = instructorUserDao.findByLoginName(fakeLoginName);
         if (user==null) {
-            throw new QtiWorksLogicException("Could not find specified fake InstructorUser with loginName " + fakeLoginName);
+            logger.warn("Could not find specified fake InstructorUser with loginName {}" + fakeLoginName);
+            return null;
         }
         else if (user.isLoginDisabled()) {
-            throw new QtiWorksLogicException("Fake InstructorUser " + fakeLoginName + " has their account marked as disabled");
+            logger.warn("Fake InstructorUser {} has their account marked as disabled", fakeLoginName);
+            return null;
         }
         return user;
     }

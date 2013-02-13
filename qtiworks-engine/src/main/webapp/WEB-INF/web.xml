@@ -64,13 +64,7 @@ QTIWorks Delivery Engine web deployment descriptor
   <!-- Authentication filter for instructor-only resources -->
   <filter>
     <filter-name>InstructorAuthenticationFilter</filter-name>
-    <filter-class>${qtiworks.web.authn.filter}</filter-class>
-    <!--
-    Allowed target values for the above placeholder are:
-    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFormAuthenticationFilter</filter-class>
-    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFakeAuthenticationFilter</filter-class>
-    -->
-    <!-- Params for InstructorFormAuthenticationFilter -->
+    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorAuthenticationFilter</filter-class>
     <init-param>
       <param-name>formLoginJspPath</param-name>
       <param-value>/WEB-INF/jsp/login/instructorLogin.jsp</param-value>
