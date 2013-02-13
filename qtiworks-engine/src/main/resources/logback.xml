@@ -1,3 +1,11 @@
+<!--
+
+Basic default logback configuration for QTIWorks Engine.
+
+(You can select a custom configuration to use within the webapp
+if you prefer. See the documentation.
+
+-->
 <configuration debug="false">
 
   <!-- Create basic appender sending messages to STDOUT -->
@@ -7,48 +15,12 @@
     </encoder>
   </appender>
 
-  <!-- Main file logger -->
-  <appender name="QTIWORKS"  class="ch.qos.logback.core.FileAppender">
-    <file>${qtiworks.logging.general}</file>
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>%-5level %date %thread [%logger{1}/%line%method\(\)] - %msg%n</pattern>
-    </encoder>
-  </appender>
-
-  <!-- Appender for logging audit messages for logged in users -->
-  <appender name="AUDITOR" class="ch.qos.logback.core.FileAppender">
-    <file>${qtiworks.logging.auditing}</file>
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>[%date] %msg%n</pattern>
-    </encoder>
-  </appender>
-
-  <!-- Appender for logging audit messages for candidates -->
-  <appender name="CANDIDATE_AUDITOR" class="ch.qos.logback.core.FileAppender">
-    <file>${qtiworks.logging.auditing.candidate}</file>
-    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>[%date] %msg%n</pattern>
-    </encoder>
-  </appender>
-
-  <!-- Auditing log -->
-  <logger name="Auditor" additivity="false" level="info">
-    <appender-ref ref="AUDITOR"/>
-  </logger>
-
-  <!-- Candidate Auditing log -->
-  <logger name="CandidateAuditor" additivity="false" level="info">
-    <appender-ref ref="CANDIDATE_AUDITOR"/>
-  </logger>
-
-  <!--
-  <logger name="uk.ac.ed.ph.jqtiplus" level="debug"/>
-  -->
+  <!-- Log logback configuration messages -->
+  <logger name="uk.ac.ed.ph.qtiworks.web.LogbackConfigurationContextListener" level="debug"/>
 
   <!-- Root logger -->
   <root level="warn">
     <appender-ref ref="STDOUT"/>
-    <appender-ref ref="QTIWORKS"/>
   </root>
 
 </configuration>

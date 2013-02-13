@@ -16,6 +16,11 @@ Web deployment descriptor
     <session-timeout>600</session-timeout>
   </session-config>
 
+  <!-- Listener to allow external logback configuration -->
+  <listener>
+    <listener-class>uk.ac.ed.ph.qtiworks.web.LogbackConfigurationContextListener</listener-class>
+  </listener>
+
   <!-- Root ApplicationContext bootstrap -->
   <context-param>
     <param-name>contextClass</param-name>
