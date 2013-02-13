@@ -50,6 +50,9 @@ public class JpaSetupConfiguration {
     public Properties extraJpaProperties() {
         final Properties extraJpaProperties = new Properties();
 
+        /* As recommended, and required for sequence generation 'initialValue' */
+        extraJpaProperties.put("hibernate.id.new_generator_mappings", "true");
+
         /* Tell Hibernate to recreate the DB schema */
         extraJpaProperties.put("hibernate.hbm2ddl.auto", "create");
 
