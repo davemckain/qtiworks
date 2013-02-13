@@ -61,7 +61,7 @@ public final class ElFunctions {
      * stringification within the JSTL.
      */
     public static String extractContentPackagePath(final String uriString) {
-        return QtiContentPackageExtractor.PACKAGE_URI_SCHEME.uriToPath(uriString);
+        return QtiContentPackageExtractor.PACKAGE_URI_SCHEME.uriToDecodedPath(uriString);
     }
 
     public static String dumpObject(final Object object) {

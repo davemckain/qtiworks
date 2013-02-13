@@ -150,7 +150,7 @@ public final class QtiContentPackageExtractor {
     private ImsManifestReadResult readManifestFile(final String manifestHref)
             throws XmlResourceNotFoundException, ImsManifestException {
         /* Attempt to parse the manifest XML */
-        final URI manifestSystemId = PACKAGE_URI_SCHEME.pathToUri(manifestHref);
+        final URI manifestSystemId = PACKAGE_URI_SCHEME.decodedPathToUri(manifestHref);
         logger.debug("Reading manifest file at system ID {} using locator {}", manifestSystemId, packageResourceLocator);
         final XmlReadResult xmlReadResult = xmlResourceReader.read(manifestSystemId, packageResourceLocator, packageResourceLocator, false);
         final XmlParseResult xmlParseResult = xmlReadResult.getXmlParseResult();

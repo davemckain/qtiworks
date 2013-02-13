@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -47,6 +49,10 @@ import java.net.URISyntaxException;
  *
  * in a filesystem subtree, sandbox or something similar.
  *
+ * Note the difference between <code>decoded</code> and <code>raw</code> paths in the methods
+ * below. They differentiate between ones that have had their special characters decoded and
+ * those that haven't. See {@link URI#getPath()} versus {@link URI#getRawPath()} for details.
+ *
  * @author David McKain
  */
 public final class CustomUriScheme {
@@ -54,14 +60,32 @@ public final class CustomUriScheme {
     private final String schemeName;
 
     public CustomUriScheme(final String schemeName) {
+        Assert.notNull(schemeName);
         this.schemeName = schemeName;
     }
 
-    public URI pathToUri(final String path) {
-        return URI.create(schemeName + ":/" + path);
+    /**
+     * Creates a {@link URI} in this scheme from the given decoded path.
+     *
+     * @param decodedPath
+     */
+    public URI decodedPathToUri(final String decodedPath) {
+        Assert.notNull(decodedPath);
+        try {
+            return new URI(schemeName, null, "/" + decodedPath, null);
+        }
+        catch (final URISyntaxException e) {
+            throw new IllegalArgumentException("Could not create URI from scheme " + schemeName + " and decoded path " + decodedPath);
+        }
+    }
+
+    public URI rawPathToUri(final String rawPath) {
+        Assert.notNull(rawPath);
+        return URI.create(schemeName + ":/" + rawPath);
     }
 
     public boolean isInScheme(final URI uri) {
+        Assert.notNull(uri);
         final String path = uri.getPath();
         return schemeName.equals(uri.getScheme())
                 && uri.getAuthority()==null
@@ -70,9 +94,10 @@ public final class CustomUriScheme {
                 && path.charAt(0)=='/';
     }
 
-    public String uriToPath(final String uriString) {
+    public String uriToDecodedPath(final String uriString) {
+        Assert.notNull(uriString);
         try {
-            return uriToPath(new URI(uriString));
+            return uriToDecodedPath(new URI(uriString));
         }
         catch (final URISyntaxException e) {
             /* Bad URI, so leave as-is */
@@ -80,9 +105,29 @@ public final class CustomUriScheme {
         }
     }
 
-    public String uriToPath(final URI uri) {
+    public String uriToDecodedPath(final URI uri) {
+        Assert.notNull(uri);
         if (isInScheme(uri)) {
             return uri.getPath().substring(1);
+        }
+        return uri.toString();
+    }
+
+    public String uriToRawPath(final String uriString) {
+        Assert.notNull(uriString);
+        try {
+            return uriToRawPath(new URI(uriString));
+        }
+        catch (final URISyntaxException e) {
+            /* Bad URI, so leave as-is */
+            return uriString;
+        }
+    }
+
+    public String uriToRawPath(final URI uri) {
+        Assert.notNull(uri);
+        if (isInScheme(uri)) {
+            return uri.getRawPath().substring(1);
         }
         return uri.toString();
     }
