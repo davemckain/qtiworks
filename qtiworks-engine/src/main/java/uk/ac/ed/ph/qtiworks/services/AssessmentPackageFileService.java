@@ -197,7 +197,7 @@ public class AssessmentPackageFileService {
         }
         else {
             final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-            result = packageUriScheme.pathToUri(fileHref);
+            result = packageUriScheme.decodedPathToUri(fileHref);
         }
         return result;
     }
@@ -272,7 +272,7 @@ public class AssessmentPackageFileService {
             final File sandboxDirectory = new File(assessmentPackage.getSandboxPath());
             final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
             final FileSandboxResourceLocator fileSandboxResourceLocator = new FileSandboxResourceLocator(packageUriScheme, sandboxDirectory);
-            final File sandboxFile = fileSandboxResourceLocator.findSandboxFile(packageUriScheme.pathToUri(fileHref));
+            final File sandboxFile = fileSandboxResourceLocator.findSandboxFile(packageUriScheme.decodedPathToUri(fileHref));
             if (sandboxFile==null) {
                 throw new QtiWorksRuntimeException("Uploaded AssessmentPackage file with href " + fileHref
                         + " in package " + assessmentPackage + " yielded null lookup");

@@ -93,14 +93,14 @@ public class FileSandboxResourceLocator implements ResourceLocator {
     public File findSandboxFile(final URI systemIdUri) {
         final URI normalizedUri = systemIdUri.normalize();
         if (uriScheme.isInScheme(normalizedUri)) {
-            final String normalizedPath = uriScheme.uriToPath(normalizedUri);
-            if (normalizedPath!=null) {
-                if (normalizedPath.startsWith("..")) {
+            final String normalizedRawPath = uriScheme.uriToRawPath(normalizedUri);
+            if (normalizedRawPath!=null) {
+                if (normalizedRawPath.startsWith("..")) {
                     /* This is trying to go outside the package, so we'll return null here */
-                    logger.trace("URI {} normalized to path {} which is 'outside' the package so returning null for safety", systemIdUri, normalizedPath);
+                    logger.trace("URI {} normalized to path {} which is 'outside' the package so returning null for safety", systemIdUri, normalizedRawPath);
                     return null;
                 }
-                final File resultingFile = new File(sandboxBaseDirectory.toURI().resolve(normalizedPath));
+                final File resultingFile = new File(sandboxBaseDirectory.toURI().resolve(normalizedRawPath));
                 if (!resultingFile.exists()) {
                     logger.trace("URI {} successfully mapped to non-existent file {}", systemIdUri, resultingFile);
                     return null;
