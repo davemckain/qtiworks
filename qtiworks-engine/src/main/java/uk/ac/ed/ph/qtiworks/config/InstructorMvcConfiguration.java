@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import uk.ac.ed.ph.qtiworks.web.LoggingHandlerExceptionResolver;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -60,5 +62,11 @@ public class InstructorMvcConfiguration extends WebMvcConfigurerAdapter {
         result.setPrefix("/WEB-INF/jsp/views/instructor/");
         result.setSuffix(".jsp");
         return result;
+    }
+
+    /** Bean to log any intercepted Exceptions */
+    @Bean
+    LoggingHandlerExceptionResolver loggingHandlerExceptionResolver() {
+        return new LoggingHandlerExceptionResolver();
     }
 }

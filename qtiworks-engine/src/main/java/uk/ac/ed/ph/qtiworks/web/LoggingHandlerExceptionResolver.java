@@ -33,47 +33,39 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.base.services.Auditor;
-
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.core.Ordered;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Filter that intercepts any {@link RuntimeException}s and logs them in an appropriate way.
+ * Implementation of {@link HandlerExceptionResolver} that logs any Exceptions.
+ * <p>
+ * An instance of this should be declared for each {@link DispatcherServlet} used;
+ * the {@link #getOrder()} method will ensure that this resolver gets called first.
  *
  * @author David McKain
  */
-public final class ExceptionLoggingFilter extends AbstractFilterUsingApplicationContext {
+public class LoggingHandlerExceptionResolver implements HandlerExceptionResolver, Ordered {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionLoggingFilter.class);
-
-    private Auditor auditor;
+    private static final Logger logger = LoggerFactory.getLogger(LoggingHandlerExceptionResolver.class);
 
     @Override
-    protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
-            throws Exception {
-        auditor = webApplicationContext.getBean(Auditor.class);
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
     }
 
     @Override
-    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
-            throws IOException, ServletException {
-        try {
-            filterChain.doFilter(request, response);
-        }
-        catch (final RuntimeException e) {
-            logger.warn("Intercepted RuntimeException", e);
-            auditor.recordEvent("Intercepted RuntimeException: " + e.getMessage());
-            throw e;
-        }
+    public ModelAndView resolveException(final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Object handler,
+            final Exception ex) {
+        logger.error("Intercepted Exception from handler {}", handler, ex);
+        return null;
     }
 }
