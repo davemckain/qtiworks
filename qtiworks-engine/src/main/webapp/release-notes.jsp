@@ -12,7 +12,7 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
-  <h3>1.0-M3 [Production] (12/02/2013)</h3>
+  <h3>1.0-M3 [Production] (14/02/2013)</h3>
   <p>
     Third production milestone, equivalent to the 1.0-DEV24 development snapshot.
   </p>
