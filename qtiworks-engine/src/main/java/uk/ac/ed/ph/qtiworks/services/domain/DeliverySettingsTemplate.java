@@ -55,8 +55,6 @@ public abstract class DeliverySettingsTemplate {
     @Size(min=1)
     private String title;
 
-    private boolean isPublic;
-
     private boolean authorMode;
     private String prompt;
 
@@ -80,15 +78,6 @@ public abstract class DeliverySettingsTemplate {
 
     public final void setTitle(final String title) {
         this.title = title;
-    }
-
-
-    public final boolean isPublic() {
-        return isPublic;
-    }
-
-    public final void setPublic(final boolean isPublic) {
-        this.isPublic = isPublic;
     }
 
 

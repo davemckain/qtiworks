@@ -23,7 +23,7 @@ instructorAssessmentRouting (action -> URL)
   </nav>
   <h2>Assessment '${fn:escapeXml(assessment.name)}'</h2>
 
-  <div class="grid_4">
+  <div class="grid_6">
     <div class="infoBox">
       <div class="cat">Title</div>
       <div class="value">${fn:escapeXml(assessment.title)}</div>
@@ -34,13 +34,6 @@ instructorAssessmentRouting (action -> URL)
     <div class="infoBox">
       <div class="cat">Assessment Type</div>
       <div class="value">${utils:formatAssessmentType(assessment.assessmentType)}</div>
-    </div>
-  </div>
-
-  <div class="grid_1">
-    <div class="infoBox">
-      <div class="cat">Shared?</div>
-      <div class="value">${assessment.public ? 'Yes' : 'No'}</div>
     </div>
   </div>
 
@@ -73,7 +66,7 @@ instructorAssessmentRouting (action -> URL)
     </div>
   </div>
 
-  <div class="grid_1">
+  <div class="grid_2">
     <div class="infoBox">
       <div class="cat">Valid?</div>
       <div class="value">

@@ -228,7 +228,6 @@ public class InstructorAssessmentManagementController {
         final UpdateAssessmentCommand command = new UpdateAssessmentCommand();
         command.setName(assessment.getName());
         command.setTitle(assessment.getTitle());
-        command.setPublic(assessment.isPublic());
         model.addAttribute(command);
 
         setupModelForAssessment(assessment, model);

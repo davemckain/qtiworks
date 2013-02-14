@@ -58,24 +58,11 @@ instructorAssessmentRouting (action -> URL)
         </div>
       </div>
       <div class="clear"></div>
-      <div class="stdFormRow">
-        <div class="grid_1">
-          <div class="workflowStep">3&#xa0;</div>
-        </div>
-        <div class="grid_2">
-          <label for="public">Visible to public?</label>
-        </div>
-        <div class="grid_5">
-          <form:radiobutton path="public" value="true" /> Yes
-          <form:radiobutton path="public" value="false" /> No
-        </div>
-      </div>
-      <div class="clear"></div>
     </fieldset>
     <fieldset>
       <div class="stdFormRow">
         <div class="grid_1">
-          <div class="workflowStep">4</div>
+          <div class="workflowStep">3</div>
         </div>
         <div class="grid_2">
           <label for="submit">Hit "Save"</label>

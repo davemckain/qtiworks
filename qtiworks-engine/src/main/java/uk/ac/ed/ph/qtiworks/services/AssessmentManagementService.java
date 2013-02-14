@@ -286,7 +286,6 @@ public class AssessmentManagementService {
         /* Make changes */
         assessment.setName(command.getName().trim());
         assessment.setTitle(command.getTitle().trim());
-        assessment.setPublic(command.isPublic());
         assessmentDao.update(assessment);
         return assessment;
     }

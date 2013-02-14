@@ -50,24 +50,6 @@ itemDeliverySettingsTemplate - form backing template
          </aside>
       </div>
       <div class="clear"></div>
-      <div class="stdFormRow">
-        <div class="grid_4">
-          <label for="public">Share with others?</label>
-        </div>
-        <div class="grid_3">
-          <div class="booleanButtons">
-            <form:radiobutton path="public" value="true" /> Yes
-            <form:radiobutton path="public" value="false" /> No
-          </div>
-        </div>
-        <div class="grid_5">
-          <aside>
-            This allows other people to use these settings.
-            (Not fully implemeneted yet!)
-          </aside>
-        </div>
-      </div>
-      <div class="clear"></div>
     </fieldset>
 
     <fieldset>
