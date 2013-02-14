@@ -15,8 +15,26 @@ if you prefer. See the documentation.
     </encoder>
   </appender>
 
+  <!-- Appender for the various audit messages -->
+  <appender name="AUDITOR_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%-5level %date %thread [%logger{1}] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
   <!-- Log logback configuration messages -->
   <logger name="uk.ac.ed.ph.qtiworks.web.LogbackConfigurationContextListener" level="debug"/>
+
+  <!-- Log auditing messages quite simply -->
+  <logger name="Auditor" additivity="false" level="info">
+    <appender-ref ref="AUDITOR_STDOUT"/>
+  </logger>
+  <logger name="CandidateAuditor" additivity="false" level="info">
+    <appender-ref ref="AUDITOR_STDOUT"/>
+  </logger>
+
+  <!-- Also log certain other services at info level -->
+  <logger name="uk.ac.ed.ph.qtiworks.services.ScheduledServices" level="info"/>
 
   <!-- Root logger -->
   <root level="warn">
