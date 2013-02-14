@@ -79,7 +79,7 @@ public class CandidateSessionOutcome implements BaseEntity {
     @Id
     @GeneratedValue(generator="candidateSessionOutcomeSequence")
     @Column(name="xoid")
-    private Long id;
+    private Long xoid;
 
     /** Session owning this outcome */
     @ManyToOne(optional=false)
@@ -104,12 +104,12 @@ public class CandidateSessionOutcome implements BaseEntity {
 
     @Override
     public Long getId() {
-        return id;
+        return xoid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.xoid = id;
     }
 
 
@@ -143,7 +143,7 @@ public class CandidateSessionOutcome implements BaseEntity {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
+                + "(xoid=" + xoid
                 + ",outcomeIdentifier=" + outcomeIdentifier
                 + ",stringValue=" + stringValue
                 + ")";

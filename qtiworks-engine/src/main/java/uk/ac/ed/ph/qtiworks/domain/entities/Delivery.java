@@ -127,7 +127,7 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Id
     @GeneratedValue(generator="deliverySequence")
     @Column(name="did")
-    private Long id;
+    private Long did;
 
     @Basic(optional=false)
     @Column(name="creation_time", updatable=false)
@@ -188,12 +188,12 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public Long getId() {
-        return id;
+        return did;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.did = id;
     }
 
 
@@ -285,6 +285,8 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public String toString() {
-        return ObjectUtilities.beanToString(this);
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(did=" + did
+                + ")";
     }
 }

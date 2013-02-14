@@ -295,4 +295,13 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
         this.safeFileHrefs = fileHrefs;
     }
 
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(apid=" + apid
+                + ")";
+    }
+
 }

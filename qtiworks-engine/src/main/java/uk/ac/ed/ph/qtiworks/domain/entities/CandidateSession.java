@@ -94,7 +94,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Id
     @GeneratedValue(generator="candidateSessionSequence")
     @Column(name="xid")
-    private Long id;
+    private Long xid;
 
     /** Session creation timestamp */
     @Basic(optional=false)
@@ -173,12 +173,12 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public Long getId() {
-        return id;
+        return xid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.xid = id;
     }
 
 
@@ -252,7 +252,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
+                + "(xid=" + xid
                 + ",closed=" + closed
                 + ",terminated=" + terminated
                 + ")";

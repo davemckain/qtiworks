@@ -67,7 +67,7 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
     @Id
     @GeneratedValue(generator="candidateFileSubmissionSequence")
     @Column(name="fid")
-    private Long id;
+    private Long fid;
 
     /** {@link CandidateSession} in which this submission was made */
     @ManyToOne(optional=false)
@@ -105,12 +105,12 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
 
     @Override
     public Long getId() {
-        return id;
+        return fid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.fid = id;
     }
 
 
@@ -158,5 +158,14 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
 
     public void setStoredFilePath(final String storedFilePath) {
         this.storedFilePath = storedFilePath;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(fid=" + fid
+                + ")";
     }
 }

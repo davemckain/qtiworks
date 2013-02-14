@@ -90,7 +90,7 @@ public class CandidateEvent implements BaseEntity {
     @Id
     @GeneratedValue(generator="candidateEventSequence")
     @Column(name="xeid")
-    private Long id;
+    private Long xeid;
 
     /** {@link CandidateSession} owning this event */
     @ManyToOne(optional=false)
@@ -146,12 +146,12 @@ public class CandidateEvent implements BaseEntity {
 
     @Override
     public Long getId() {
-        return id;
+        return xeid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.xeid = id;
     }
 
 
@@ -216,7 +216,7 @@ public class CandidateEvent implements BaseEntity {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
+                + "(xeid=" + xeid
                 + ")";
     }
 }

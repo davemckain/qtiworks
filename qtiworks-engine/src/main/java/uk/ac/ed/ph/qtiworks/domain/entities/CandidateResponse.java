@@ -74,7 +74,7 @@ public class CandidateResponse implements BaseEntity {
     @Id
     @GeneratedValue(generator="candidateResponseSequence")
     @Column(name="xrid")
-    private Long id;
+    private Long xrid;
 
     /** {@link CandidateEvent} on which this response was submitted */
     @ManyToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.REMOVE)
@@ -117,12 +117,12 @@ public class CandidateResponse implements BaseEntity {
 
     @Override
     public Long getId() {
-        return id;
+        return xrid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.xrid = id;
     }
 
 
@@ -184,7 +184,7 @@ public class CandidateResponse implements BaseEntity {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
+                + "(xrid=" + xrid
                 + ",responseIdentifier=" + responseIdentifier
                 + ",responseType=" + responseDataType
                 + ",responseLegality=" + responseLegality

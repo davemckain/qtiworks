@@ -281,4 +281,14 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
         }
         return assessmentPackages;
     }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(aid=" + aid
+                + ",name=" + name
+                + ")";
+    }
 }

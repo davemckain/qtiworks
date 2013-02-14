@@ -73,7 +73,7 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Id
     @GeneratedValue(generator="userSequence")
     @Column(name="uid")
-    private Long id;
+    private Long uid;
 
     @Basic(optional=false)
     @Column(name="creation_time",updatable=false)
@@ -115,12 +115,12 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public Long getId() {
-        return id;
+        return uid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.uid = id;
     }
 
 
