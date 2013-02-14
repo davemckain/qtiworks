@@ -46,8 +46,8 @@ import org.springframework.web.servlet.ModelAndView;
 /**
  * Implementation of {@link HandlerExceptionResolver} that logs any Exceptions.
  * <p>
- * An instance of this should be declared for each {@link DispatcherServlet} used;
- * the {@link #getOrder()} method will ensure that this resolver gets called first.
+ * A bean instance of this will be detected by the {@link DispatcherServlet}(s).
+ * We have used the {@link #getOrder()} method to ensure that this resolver gets called first.
  *
  * @author David McKain
  */

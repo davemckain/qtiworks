@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import uk.ac.ed.ph.qtiworks.web.LoggingHandlerExceptionResolver;
+
 import javax.annotation.Resource;
 
 import org.springframework.context.MessageSource;
@@ -43,6 +45,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.DispatcherServlet;
 
 /**
  * Defines webapp-level configuration
@@ -76,5 +79,16 @@ public class WebApplicationConfiguration {
         final CommonsMultipartResolver resolver = new CommonsMultipartResolver();
         resolver.setMaxUploadSize(MAX_UPLOAD_SIZE);
         return resolver;
+    }
+
+    /**
+     * Bean to log any intercepted Exceptions.
+     * <p>
+     * This will be noticed by each {@link DispatcherServlet} set up for
+     * the various MVC configurations.
+     */
+    @Bean
+    LoggingHandlerExceptionResolver loggingHandlerExceptionResolver() {
+        return new LoggingHandlerExceptionResolver();
     }
 }

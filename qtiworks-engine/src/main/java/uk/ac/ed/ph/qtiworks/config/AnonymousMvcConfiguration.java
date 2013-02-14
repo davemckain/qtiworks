@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.web.LoggingHandlerExceptionResolver;
-
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -89,11 +87,5 @@ public class AnonymousMvcConfiguration extends WebMvcConfigurerAdapter {
         result.setPrefix("/WEB-INF/jsp/views/anonymous/");
         result.setSuffix(".jsp");
         return result;
-    }
-
-    /** Bean to log any intercepted Exceptions */
-    @Bean
-    LoggingHandlerExceptionResolver loggingHandlerExceptionResolver() {
-        return new LoggingHandlerExceptionResolver();
     }
 }
