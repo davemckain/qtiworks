@@ -318,10 +318,8 @@ public class SampleResourceImporter {
         final ItemDeliverySettings settings = new ItemDeliverySettings();
         settings.setMaxAttempts(Integer.valueOf(0));
         settings.setAuthorMode(true);
-        settings.setAllowPlayback(true);
         settings.setAllowResult(true);
         settings.setAllowSource(true);
-        settings.setAllowPlayback(true);
         return settings;
     }
 

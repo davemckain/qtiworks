@@ -28,12 +28,6 @@ body {
   background-color: #f7f7ff;
 }
 
-ul.playbackControls {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
 .itemPrompt {
   margin: 1em 0;
   font-weight: bold;

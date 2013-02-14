@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -52,7 +51,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -278,25 +276,6 @@ public class AssessmentRenderer {
         /* Pass ItemSessionState (as DOM Document) */
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
         xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
-
-        /* Playback control */
-        xsltParameters.put("playbackAllowed", Boolean.valueOf(renderingRequest.isPlaybackAllowed()));
-        final List<CandidateEvent> playbackEvents = renderingRequest.getPlaybackEvents();
-        if (playbackEvents!=null) {
-            final List<Long> playbackEventIds = new ArrayList<Long>();
-            final List<String> playbackEventTypes = new ArrayList<String>();
-            for (final CandidateEvent playbackEvent : playbackEvents) {
-                playbackEventIds.add(playbackEvent.getId());
-                playbackEventTypes.add(playbackEvent.getItemEventType().toString());
-            }
-            xsltParameters.put("playbackEventIds", playbackEventIds);
-            xsltParameters.put("playbackEventTypes", playbackEventTypes);
-        }
-        final CandidateEvent currentPlaybackEvent = renderingRequest.getCurrentPlaybackEvent();
-        if (currentPlaybackEvent!=null) {
-            xsltParameters.put("currentPlaybackEventId", currentPlaybackEvent.getId());
-            xsltParameters.put("currentPlaybackEventType", currentPlaybackEvent.getItemEventType().toString());
-        }
     }
 
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters,

@@ -102,7 +102,7 @@ Renders a standalone assessmentItem
         </xsl:if>
 
         <!-- Candidate status -->
-        <xsl:if test="$renderingMode=('SOLUTION', 'CLOSED', 'PLAYBACK')">
+        <xsl:if test="$renderingMode=('SOLUTION', 'CLOSED')">
           <div class="candidateStatus">
             <xsl:choose>
               <xsl:when test="$renderingMode='SOLUTION'">
@@ -110,27 +110,6 @@ Renders a standalone assessmentItem
               </xsl:when>
               <xsl:when test="$renderingMode='CLOSED'">
                 This assessment is now complete.
-              </xsl:when>
-              <xsl:when test="$renderingMode='PLAYBACK'">
-                <p>
-                  You are currently playing back your interaction with this assessment.
-                </p>
-                <p>
-                  Currently showing: <xsl:value-of select="qw:describe-candidate-event($currentPlaybackEventType)"/>
-                  (Event #<xsl:value-of select="for $i in 1 to count($playbackEventIds), $id in $playbackEventIds[$i]
-                    return if ($id = $currentPlaybackEventId) then $i else ()"/>
-                  of <xsl:value-of select="count($playbackEventIds)"/>)
-                </p>
-                <ul class="playbackControls">
-                  <xsl:for-each select="$playbackEventIds">
-                    <xsl:variable name="eventIndex" select="position()" as="xs:integer"/>
-                    <li>
-                      <form action="{$webappContextPath}{$playbackUrlBase}/{.}" method="post">
-                        <input type="submit" value="Play back event #{$eventIndex} ({qw:describe-candidate-event($playbackEventTypes[$eventIndex])})"/>
-                      </form>
-                    </li>
-                  </xsl:for-each>
-                </ul>
               </xsl:when>
             </xsl:choose>
           </div>
@@ -312,9 +291,6 @@ Renders a standalone assessmentItem
 
         <dt>View <code>&lt;itemResult&gt;</code> XML?</dt>
         <dd><xsl:value-of select="$resultAllowed"/></dd>
-
-        <dt>Play back actions?</dt>
-        <dd><xsl:value-of select="$playbackAllowed"/></dd>
       </dl>
     </div>
   </xsl:template>

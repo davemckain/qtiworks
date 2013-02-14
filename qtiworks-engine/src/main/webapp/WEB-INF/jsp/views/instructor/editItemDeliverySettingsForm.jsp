@@ -256,24 +256,6 @@ itemDeliverySettingsTemplate - form backing template
         </div>
       </div>
       <div class="clear"></div>
-      <div class="stdFormRow">
-        <div class="grid_4">
-          <label for="allowPlayback">Play back / review interactions</label>
-        </div>
-        <div class="grid_3">
-          <div class="booleanButtons">
-            <form:radiobutton path="allowPlayback" value="true" /> Yes
-            <form:radiobutton path="allowPlayback" value="false" /> No
-          </div>
-        </div>
-        <div class="grid_5">
-          <aside>
-            If 'Yes', the candidate will be allowed to step through each
-            interaction made with the item.
-          </aside>
-        </div>
-      </div>
-      <div class="clear"></div>
     </fieldset>
     <fieldset>
       <legend>Permitted geek / debugging actions</legend>

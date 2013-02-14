@@ -55,7 +55,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -132,15 +131,6 @@ public class CandidateEvent implements BaseEntity {
     private String testItemKey;
 
     /**
-     * For a {@link CandidateItemEventType#PLAYBACK} event, this points to the event in
-     * the same session that the candidate has requested to see
-     * {@link CandidateItemEvent}
-     */
-    @OneToOne(optional=true)
-    @JoinColumn(name="playback_xeid", updatable=false)
-    private CandidateEvent playbackEvent;
-
-    /**
      * Notifications generated during this event
      */
     @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateEvent", cascade=CascadeType.REMOVE)
@@ -207,15 +197,6 @@ public class CandidateEvent implements BaseEntity {
 
     public void setTestItemKey(final String testItemKey) {
         this.testItemKey = testItemKey;
-    }
-
-
-    public CandidateEvent getPlaybackEvent() {
-        return playbackEvent;
-    }
-
-    public void setPlaybackEvent(final CandidateEvent playbackEvent) {
-        this.playbackEvent = playbackEvent;
     }
 
 

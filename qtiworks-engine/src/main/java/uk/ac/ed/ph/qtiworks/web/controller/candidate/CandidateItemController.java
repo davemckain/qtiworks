@@ -254,19 +254,6 @@ public class CandidateItemController {
     }
 
     /**
-     * Transitions the state of the {@link CandidateSession} so that it plays back the
-     * {@link CandidateItemEvent} having the given ID (xeid).
-     */
-    @RequestMapping(value="/session/{xid}/{sessionToken}/playback/{xeid}", method=RequestMethod.POST)
-    public String setPlaybackEvent(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final long xeid)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateItemDeliveryService.setPlaybackState(xid, sessionToken, xeid);
-
-        /* Redirect to rendering of current session state */
-        return redirectToRenderSession(xid, sessionToken);
-    }
-
-    /**
      * Terminates the given {@link CandidateSession}
      */
     @RequestMapping(value="/session/{xid}/{sessionToken}/terminate", method=RequestMethod.POST)

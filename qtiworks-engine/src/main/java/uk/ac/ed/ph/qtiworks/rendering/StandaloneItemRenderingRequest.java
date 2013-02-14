@@ -33,13 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
-
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
 import java.net.URI;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -71,10 +68,6 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
     private boolean solutionAllowed;
     private boolean sourceAllowed;
     private boolean resultAllowed;
-    private boolean playbackAllowed;
-
-    private CandidateEvent currentPlaybackEvent;
-    private List<CandidateEvent> playbackEvents;
 
     //----------------------------------------------------
 
@@ -165,32 +158,5 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
 
     public void setResultAllowed(final boolean resultAllowed) {
         this.resultAllowed = resultAllowed;
-    }
-
-
-    public boolean isPlaybackAllowed() {
-        return playbackAllowed;
-    }
-
-    public void setPlaybackAllowed(final boolean playbackAllowed) {
-        this.playbackAllowed = playbackAllowed;
-    }
-
-
-    public CandidateEvent getCurrentPlaybackEvent() {
-        return currentPlaybackEvent;
-    }
-
-    public void setCurrentPlaybackEvent(final CandidateEvent currentPlaybackEvent) {
-        this.currentPlaybackEvent = currentPlaybackEvent;
-    }
-
-
-    public List<CandidateEvent> getPlaybackEvents() {
-        return playbackEvents;
-    }
-
-    public void setPlaybackEvents(final List<CandidateEvent> playbackEvents) {
-        this.playbackEvents = playbackEvents;
     }
 }

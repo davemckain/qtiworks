@@ -52,7 +52,6 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
     private boolean allowReinitWhenClosed;
     private boolean allowSolutionWhenInteracting;
     private boolean allowSolutionWhenClosed;
-    private boolean allowPlayback;
     private boolean allowSource;
     private boolean allowResult;
 
@@ -153,14 +152,5 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
 
     public void setAllowSolutionWhenClosed(final boolean allowSolutionWhenClosed) {
         this.allowSolutionWhenClosed = allowSolutionWhenClosed;
-    }
-
-
-    public boolean isAllowPlayback() {
-        return allowPlayback;
-    }
-
-    public void setAllowPlayback(final boolean allowPlayback) {
-        this.allowPlayback = allowPlayback;
     }
 }

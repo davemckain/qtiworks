@@ -553,7 +553,6 @@ public class AssessmentManagementService {
 
     private void mergeItemDeliverySettings(final ItemDeliverySettingsTemplate template, final ItemDeliverySettings target) {
         target.setAllowClose(template.isAllowClose());
-        target.setAllowPlayback(template.isAllowPlayback());
         target.setAllowReinitWhenClosed(template.isAllowReinitWhenClosed());
         target.setAllowReinitWhenInteracting(template.isAllowReinitWhenInteracting());
         target.setAllowResetWhenClosed(template.isAllowResetWhenClosed());
@@ -570,7 +569,6 @@ public class AssessmentManagementService {
 
     public void mergeItemDeliverySettings(final ItemDeliverySettings template, final ItemDeliverySettingsTemplate target) {
         target.setAllowClose(template.isAllowClose());
-        target.setAllowPlayback(template.isAllowPlayback());
         target.setAllowReinitWhenClosed(template.isAllowReinitWhenClosed());
         target.setAllowReinitWhenInteracting(template.isAllowReinitWhenInteracting());
         target.setAllowResetWhenClosed(template.isAllowResetWhenClosed());
@@ -898,7 +896,6 @@ public class AssessmentManagementService {
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
         template.setAllowClose(true);
-        template.setAllowPlayback(true);
         template.setAllowReinitWhenClosed(true);
         template.setAllowReinitWhenInteracting(true);
         template.setAllowResetWhenClosed(true);
