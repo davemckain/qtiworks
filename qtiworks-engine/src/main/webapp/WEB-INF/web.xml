@@ -135,7 +135,6 @@ QTIWorks Delivery Engine web deployment descriptor
     <url-pattern>/lti/*</url-pattern>
   </servlet-mapping>
 
-
   <!-- ========== ANONYMOUS ACCESS SERVICES ========== -->
 
   <!-- "Authentication" filter for anonymous services -->
@@ -191,5 +190,52 @@ QTIWorks Delivery Engine web deployment descriptor
     <servlet-name>CandidateDispatcher</servlet-name>
     <url-pattern>/candidate/*</url-pattern>
   </servlet-mapping>
+
+  <!-- ========== ERROR PAGES ========== -->
+
+  <!--
+  DEV NOTE: As we're using Servlet 2.X, we need to declare each error code here.
+  Make sure you add an entry to errors.properties to explain any new codes added here.
+  -->
+  <error-page>
+    <error-code>400</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>401</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>402</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>405</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>406</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>409</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>415</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
 
 </web-app>
