@@ -642,6 +642,10 @@ public final class TestSessionController extends TestValidationController implem
     /**
      * Marks the current test part as ended, if allowed, performing any processing
      * required at this time and updating state as appropriate.
+     *
+     * PRECONDITION: {@link #mayEndTestPart()} must return true
+     * POSTCONDITIONS: all item states in testPart will be closed, current test
+     *   state marked as ended, current item cleared.
      */
     public void endTestPart() {
         if (!mayEndTestPart()) {
