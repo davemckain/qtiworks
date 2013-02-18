@@ -27,13 +27,8 @@ QTIWorks Delivery Engine web deployment descriptor
     <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
   </context-param>
   <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-      uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration
-      uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration
-      uk.ac.ed.ph.qtiworks.config.ServicesConfiguration
-      uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration
-    </param-value>
+    <param-name>contextInitializerClasses</param-name>
+    <param-value>uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer</param-value>
   </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
