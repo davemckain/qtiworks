@@ -11,14 +11,14 @@ if you prefer. See the documentation.
   <!-- Create basic appender sending messages to STDOUT -->
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>%-5level %date %thread [%logger{1}/%line%method\(\)] - %msg%n</pattern>
+      <pattern>%-5level %date %thread [%logger{0}/%line#%method\(\)] - %msg%n</pattern>
     </encoder>
   </appender>
 
   <!-- Appender for the various audit messages -->
   <appender name="AUDITOR_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-      <pattern>%-5level %date %thread [%logger{1}] - %msg%n</pattern>
+      <pattern>%-5level %date %thread [%logger{0}] - %msg%n</pattern>
     </encoder>
   </appender>
 

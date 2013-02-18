@@ -65,7 +65,7 @@ public class LoggingHandlerExceptionResolver implements HandlerExceptionResolver
             final HttpServletResponse response,
             final Object handler,
             final Exception ex) {
-        logger.error("Intercepted Exception from handler {}", handler, ex);
+        logger.warn("Intercepted Exception from handler {}", handler, ex);
         return null;
     }
 }
