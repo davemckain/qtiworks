@@ -53,25 +53,38 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  *
  * @author David McKain
  */
-public final class UserImporter {
+public final class UserImporter extends StandaloneRunTemplate {
 
     private static final Logger logger = LoggerFactory.getLogger(UserImporter.class);
 
     public static void main(final String[] args) throws Exception {
-        if (args.length!=1) {
-            System.err.println("Required argument: location of CSV file containing user data");
+        new UserImporter().run(args);
+    }
+
+    @Override
+    protected Class<?>[] getConfigClasses() {
+        return new Class<?>[] {
+                JpaProductionConfiguration.class,
+                BaseServicesConfiguration.class,
+                ServicesConfiguration.class
+        };
+    }
+
+    @Override
+    protected void validateRemainingArguments(final String[] remainingArgs) {
+        if (remainingArgs.length!=1) {
+            logger.error("Expecting argument indicating path to user import CSV file");
             System.exit(1);
         }
+    }
 
-        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
-        ctx.refresh();
-        final BootstrapServices bootstrapServices = ctx.getBean(BootstrapServices.class);
-
-        final String importFile = args[0];
+    @Override
+    protected void doWork(final AnnotationConfigApplicationContext ctx, final String[] remainingArgs) throws Exception {
+        final String importFile = remainingArgs[0];
         final BufferedReader importReader = new BufferedReader(new InputStreamReader(new FileInputStream(importFile), "UTF-8"));
         String line;
         String[] fields;
+        final BootstrapServices bootstrapServices = ctx.getBean(BootstrapServices.class);
         try {
             /* (Cheapo CSV parse) */
             while ((line = importReader.readLine())!=null) {
@@ -89,11 +102,10 @@ public final class UserImporter {
         }
         finally {
             IOUtils.closeQuietly(importReader);
-            ctx.close();
         }
     }
 
-    public static void handleUserLine(final BootstrapServices bootstrapServices, final String[] fields) {
+    private void handleUserLine(final BootstrapServices bootstrapServices, final String[] fields) {
         if (fields.length!=6) {
             logger.warn("Expected 6 fields per line: ignoring " + Arrays.toString(fields));
             return;

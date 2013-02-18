@@ -50,19 +50,24 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  *
  * @author David McKain
  */
-public final class SchemaSetup {
+public final class SchemaSetup extends StandaloneRunTemplate {
 
     public static void main(final String[] args) throws Exception {
-        new StandaloneRunner(
+        new SchemaSetup().run(args);
+    }
+
+    @Override
+    protected Class<?>[] getConfigClasses() {
+        return new Class<?>[] {
                 JpaSetupConfiguration.class, /* Recreates DB schema */
                 BaseServicesConfiguration.class,
                 ServicesConfiguration.class
-        ) {
-            @Override
-            protected void doWork(final AnnotationConfigApplicationContext ctx) throws Exception {
-                final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-                sampleResourceImporter.importQtiSamples();
-            }
-        }.run(args);
+        };
+    }
+
+    @Override
+    protected void doWork(final AnnotationConfigApplicationContext ctx, final String[] remainingArgs) throws Exception {
+        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
+        sampleResourceImporter.importQtiSamples();
     }
 }

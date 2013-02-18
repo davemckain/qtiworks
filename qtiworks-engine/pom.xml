@@ -228,6 +228,7 @@ All Rights Reserved
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>uk.ac.ed.ph.qtiworks.tools.SchemaSetup</argument>
+                <argument>qtiworks-deployment.properties</argument>
               </arguments>
             </configuration>
           </plugin>
@@ -293,6 +294,7 @@ All Rights Reserved
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>uk.ac.ed.ph.qtiworks.tools.UserImporter</argument>
+                <argument>qtiworks-deployment.properties</argument>
                 <argument>user-import.csv</argument>
               </arguments>
             </configuration>

@@ -34,10 +34,11 @@
 package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,27 +46,37 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.io.support.ResourcePropertySource;
 
 /**
- * FIXME: Document this type
+ * Base template for standalone launches
  *
  * @author David McKain
  */
-public abstract class StandaloneRunner {
+public abstract class StandaloneRunTemplate {
 
-    private static final Logger logger = LoggerFactory.getLogger(StandaloneRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(StandaloneRunTemplate.class);
 
-    private final Class<?>[] configClasses;
+    protected abstract Class<?>[] getConfigClasses();
 
-    protected StandaloneRunner(final Class<?>... configClasses) {
-        this.configClasses = configClasses;
+    protected void validateRemainingArguments(@SuppressWarnings("unused") final String[] remainingArgs) {
+        /* Do nothing */
     }
 
-    void run(final String[] args) throws Exception {
+    protected abstract void doWork(AnnotationConfigApplicationContext ctx, String[] remainingArgs)
+            throws Exception;
+
+    protected void run(final String[] args) throws Exception {
+        /* Extract first argument, which would be a Spring Resource URI pointing to the
+         * location of the QTIWorks deployment properties file
+         */
         if (args.length==0) {
             throw new QtiWorksRuntimeException("Provide a path to the QTIWorks deployment properties file (relative to current directory)");
         }
-        final String configPath = args[0];
-        final File configFile = new File(System.getProperty("user.dir"), configPath);
-        final String springResourceUri = configFile.toURI().toString();
+        final String springResourceUri = extractDeploymentPropertiesUri(args[0]);
+
+        /* Pop first argument and check what's left */
+        final String[] remainingArgs = new String[args.length-1];
+        System.arraycopy(args, 1, remainingArgs, 0, remainingArgs.length);
+        validateRemainingArguments(remainingArgs);
+
         logger.info("Loading QTIWorks deployment properties from {}", springResourceUri);
         ResourcePropertySource resourcePropertySource;
         try {
@@ -78,20 +89,35 @@ public abstract class StandaloneRunner {
         logger.info("Setting up Spring ApplicationContext");
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
         ctx.getEnvironment().getPropertySources().addFirst(resourcePropertySource);
-        ctx.register(configClasses);
+        ctx.register(getConfigClasses());
         ctx.refresh();
 
-        final QtiWorksDeploymentSettings qtiWorksDeploymentSettings = ctx.getBean(QtiWorksDeploymentSettings.class);
-        System.out.println("TEST: " + qtiWorksDeploymentSettings.getJdbcUsername());
-
+        /* Now let subclass do work */
         try {
-            doWork(ctx);
+            doWork(ctx, remainingArgs);
         }
         finally {
             ctx.close();
         }
     }
 
-    protected abstract void doWork(AnnotationConfigApplicationContext ctx)
-            throws Exception;
+    private String extractDeploymentPropertiesUri(final String path) {
+        String result = null;
+        try {
+            /* First check if we were passed an absolute URI */
+            final URI pathAsUri = new URI(path);
+            if (pathAsUri.isAbsolute()) {
+                result = path;
+            }
+        }
+        catch (final URISyntaxException e) {
+            /* Handled below */
+        }
+        if (result==null) {
+            final File configFile = new File(System.getProperty("user.dir"), path);
+            result = configFile.toURI().toString();
+        }
+        return result;
+    }
+
 }
