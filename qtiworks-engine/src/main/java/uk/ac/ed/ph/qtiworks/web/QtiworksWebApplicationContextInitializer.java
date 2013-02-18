@@ -33,14 +33,18 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
@@ -53,8 +57,28 @@ public class QtiworksWebApplicationContextInitializer implements ApplicationCont
 
     private static final Logger logger = LoggerFactory.getLogger(QtiworksWebApplicationContextInitializer.class);
 
+    public static final String DEPLOYMENT_PROPERTIES_FILE_PARAM = "qtiWorksDeploymentProperties";
+
     @Override
     public void initialize(final AnnotationConfigWebApplicationContext applicationContext) {
+        /* Extract URI of deployment configuration. */
+        final String deploymentPropertiesPath = applicationContext.getEnvironment().getProperty(DEPLOYMENT_PROPERTIES_FILE_PARAM);
+        if (deploymentPropertiesPath==null) {
+            throw new QtiWorksRuntimeException("QTIWorks configuration error - property " + DEPLOYMENT_PROPERTIES_FILE_PARAM + " not set");
+        }
+
+        final String springResourceUri = "file:" + deploymentPropertiesPath;
+        ResourcePropertySource resourcePropertySource;
+        try {
+            resourcePropertySource = new ResourcePropertySource(springResourceUri);
+        }
+        catch (final IOException e) {
+            throw new QtiWorksRuntimeException("Failed to load QTIWorks deployment properties from " + springResourceUri);
+        }
+
+        logger.info("Read QTIWorks deployment configuration from {}", springResourceUri);
+        applicationContext.getEnvironment().getPropertySources().addFirst(resourcePropertySource);
+
         logger.info("Initialising QTIWorks webapp ApplicationContext");
         applicationContext.register(
             JpaProductionConfiguration.class,

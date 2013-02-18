@@ -46,7 +46,11 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 /**
- * FIXME: Document this type
+ * Implementation of {@link ServletContextListener} that allows a custom logback configuration
+ * file to be loaded instead of the bundled default configuration.
+ * <p>
+ * Deployers should specify the location of the file using the {@value #LOGBACK_CONFIG_FILE_PARAM}
+ * parameter.
  *
  * @author David McKain
  */

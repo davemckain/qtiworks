@@ -35,6 +35,7 @@ if you prefer. See the documentation.
 
   <!-- Also log certain other services at info level -->
   <logger name="uk.ac.ed.ph.qtiworks.services.ScheduledServices" level="info"/>
+  <logger name="uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer" level="info"/>
 
   <!-- Root logger -->
   <root level="warn">
