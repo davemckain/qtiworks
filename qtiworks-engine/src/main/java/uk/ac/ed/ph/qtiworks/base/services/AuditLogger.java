@@ -48,10 +48,10 @@ import org.springframework.stereotype.Service;
  * @author David McKain
  */
 @Service
-public final class Auditor {
+public final class AuditLogger {
 
     /** NOTE: The name of this logger is specially defined in log4j.xml to go to correct appender */
-    private static final Logger logger = LoggerFactory.getLogger("Auditor");
+    private static final Logger logger = LoggerFactory.getLogger("AuditLogger");
 
     @Resource
     private IdentityContext identityContext;

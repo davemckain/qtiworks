@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.base.services.Auditor;
+import uk.ac.ed.ph.qtiworks.base.services.AuditLogger;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
@@ -78,7 +78,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AssessmentReportingService {
 
     @Resource
-    private Auditor auditor;
+    private AuditLogger auditLogger;
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -151,7 +151,7 @@ public class AssessmentReportingService {
             rows.add(row);
         }
 
-        auditor.recordEvent("Generated candidate summary report for delivery #" + delivery.getId());
+        auditLogger.recordEvent("Generated candidate summary report for delivery #" + delivery.getId());
         return new DeliveryCandidateSummaryReport(new ArrayList<String>(outcomeNames), rows);
     }
 
@@ -182,7 +182,7 @@ public class AssessmentReportingService {
             }
         }
         safelyFinishZipStream(zipOutputStream, includedSomething);
-        auditor.recordEvent("Generated assessmentResult ZIP file for delviery #" + did);
+        auditLogger.recordEvent("Generated assessmentResult ZIP file for delviery #" + did);
     }
 
     private void addAssessmentReport(final ZipOutputStream zipOutputStream, final CandidateSession candidateSession)

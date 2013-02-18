@@ -26,10 +26,10 @@ if you prefer. See the documentation.
   <logger name="uk.ac.ed.ph.qtiworks.web.LogbackConfigurationContextListener" level="debug"/>
 
   <!-- Log auditing messages quite simply -->
-  <logger name="Auditor" additivity="false" level="info">
+  <logger name="AuditLogger" additivity="false" level="info">
     <appender-ref ref="AUDITOR_STDOUT"/>
   </logger>
-  <logger name="CandidateAuditor" additivity="false" level="info">
+  <logger name="CandidateAuditLogger" additivity="false" level="info">
     <appender-ref ref="AUDITOR_STDOUT"/>
   </logger>
 

@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.Auditor;
+import uk.ac.ed.ph.qtiworks.base.services.AuditLogger;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
@@ -109,7 +109,7 @@ public class AssessmentManagementService {
     public static final String DEFAULT_IMPORT_TITLE = "My Assessment";
 
     @Resource
-    private Auditor auditor;
+    private AuditLogger auditLogger;
 
     @Resource
     private IdentityContext identityContext;
@@ -246,7 +246,7 @@ public class AssessmentManagementService {
             throw new QtiWorksRuntimeException("Failed to persist AssessmentPackage " + assessmentPackage, e);
         }
         logger.debug("Created new Assessment #{} with package #{}", assessment.getId(), assessmentPackage.getId());
-        auditor.recordEvent("Created Assessment #" + assessment.getId() + " and AssessmentPackage #" + assessmentPackage.getId());
+        auditLogger.recordEvent("Created Assessment #" + assessment.getId() + " and AssessmentPackage #" + assessmentPackage.getId());
         return assessment;
     }
 
@@ -266,7 +266,7 @@ public class AssessmentManagementService {
 
         /* Log what happened */
         logger.debug("Deleted Assessment #{}", assessment.getId());
-        auditor.recordEvent("Deleted Assessment #" + assessment.getId());
+        auditLogger.recordEvent("Deleted Assessment #" + assessment.getId());
     }
 
     public Assessment updateAssessment(final long aid, final UpdateAssessmentCommand command)
@@ -333,7 +333,7 @@ public class AssessmentManagementService {
             throw new QtiWorksRuntimeException("Failed to update AssessmentPackage entity " + assessment, e);
         }
         logger.debug("Updated Assessment #{} to have package #{}", assessment.getId(), newAssessmentPackage.getId());
-        auditor.recordEvent("Updated Assessment #" + assessment.getId() + " with AssessmentPackage #" + newAssessmentPackage.getId());
+        auditLogger.recordEvent("Updated Assessment #" + assessment.getId() + " with AssessmentPackage #" + newAssessmentPackage.getId());
         return assessment;
     }
 
@@ -519,7 +519,7 @@ public class AssessmentManagementService {
         mergeItemDeliverySettings(template, result);
         deliverySettingsDao.persist(result);
 
-        auditor.recordEvent("Created ItemDeliverySettings #" + result.getId());
+        auditLogger.recordEvent("Created ItemDeliverySettings #" + result.getId());
         return result;
     }
 
@@ -546,7 +546,7 @@ public class AssessmentManagementService {
         mergeItemDeliverySettings(template, itemDeliverySettings);
         deliverySettingsDao.update(itemDeliverySettings);
 
-        auditor.recordEvent("Updated ItemDeliverySettings #" + itemDeliverySettings.getId());
+        auditLogger.recordEvent("Updated ItemDeliverySettings #" + itemDeliverySettings.getId());
         return itemDeliverySettings;
     }
 
@@ -608,7 +608,7 @@ public class AssessmentManagementService {
         mergeTestDeliverySettings(template, result);
         deliverySettingsDao.persist(result);
 
-        auditor.recordEvent("Created TestDeliverySettings #" + result.getId());
+        auditLogger.recordEvent("Created TestDeliverySettings #" + result.getId());
         return result;
     }
 
@@ -635,7 +635,7 @@ public class AssessmentManagementService {
         mergeTestDeliverySettings(template, testDeliverySettings);
         deliverySettingsDao.update(testDeliverySettings);
 
-        auditor.recordEvent("Updated TestDeliverySettings #" + testDeliverySettings.getId());
+        auditLogger.recordEvent("Updated TestDeliverySettings #" + testDeliverySettings.getId());
         return testDeliverySettings;
     }
 
@@ -669,7 +669,7 @@ public class AssessmentManagementService {
 
         /* Log what happened */
         logger.debug("Deleted DeliverySettings #{}", deliverySettings.getId());
-        auditor.recordEvent("Deleted DeliverySettings #" + deliverySettings.getId());
+        auditLogger.recordEvent("Deleted DeliverySettings #" + deliverySettings.getId());
     }
 
     //-------------------------------------------------
@@ -763,7 +763,7 @@ public class AssessmentManagementService {
 
         /* Log what happened */
         logger.debug("Deleted Delivery #{}", did);
-        auditor.recordEvent("Deleted Delivery #" + did);
+        auditLogger.recordEvent("Deleted Delivery #" + did);
         return assessment;
     }
 
@@ -845,7 +845,7 @@ public class AssessmentManagementService {
         deliveryDao.persist(delivery);
 
         /* That's it! */
-        auditor.recordEvent("Created demo Delivery #" + delivery.getId() + " for Assessment #" + assessment.getId());
+        auditLogger.recordEvent("Created demo Delivery #" + delivery.getId() + " for Assessment #" + assessment.getId());
         return delivery;
     }
 
@@ -870,7 +870,7 @@ public class AssessmentManagementService {
                         + " which you can edit or remove to suit.");
 
                 deliverySettingsDao.persist(itemDeliverySettings);
-                auditor.recordEvent("Created default ItemDeliverySettings for this user");
+                auditLogger.recordEvent("Created default ItemDeliverySettings for this user");
                 return itemDeliverySettings;
             }
 
@@ -882,7 +882,7 @@ public class AssessmentManagementService {
                 testDeliverySettings.setTitle("Default test delivery settings");
 
                 deliverySettingsDao.persist(testDeliverySettings);
-                auditor.recordEvent("Created default TestDeliverySettings for this user");
+                auditLogger.recordEvent("Created default TestDeliverySettings for this user");
                 return testDeliverySettings;
             }
 
