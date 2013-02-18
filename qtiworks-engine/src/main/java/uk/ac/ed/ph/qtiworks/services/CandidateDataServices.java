@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
@@ -113,7 +113,7 @@ import com.google.common.io.Closeables;
 public class CandidateDataServices {
 
     @Resource
-    private QtiWorksSettings qtiWorksSettings;
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -269,7 +269,7 @@ public class CandidateDataServices {
     }
 
     public AssessmentResult computeItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
-        final URI sessionIdentifierSourceId = URI.create(qtiWorksSettings.getBaseUrl());
+        final URI sessionIdentifierSourceId = URI.create(qtiWorksDeploymentSettings.getBaseUrl());
         final String sessionIdentifier = "itemsession/" + candidateSession.getId();
         return itemSessionController.computeAssessmentResult(requestTimestampContext.getCurrentRequestTimestamp(), sessionIdentifier, sessionIdentifierSourceId);
     }
@@ -423,7 +423,7 @@ public class CandidateDataServices {
     }
 
     public AssessmentResult computeTestAssessmentResult(final CandidateSession candidateSession, final TestSessionController testSessionController) {
-        final URI sessionIdentifierSourceId = URI.create(qtiWorksSettings.getBaseUrl());
+        final URI sessionIdentifierSourceId = URI.create(qtiWorksDeploymentSettings.getBaseUrl());
         final String sessionIdentifier = "testsession/" + candidateSession.getId();
         return testSessionController.computeAssessmentResult(requestTimestampContext.getCurrentRequestTimestamp(), sessionIdentifier, sessionIdentifierSourceId);
     }

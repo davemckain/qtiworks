@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.base.services;
 
+import uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
@@ -41,12 +43,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Bean injected with the settings from <code>qtiworks.properties</code>
+ * Bean injected with the runtime deployment settings for the webapp.
+ *
+ * @see QtiworksWebApplicationContextInitializer
  *
  * @author David McKain
  */
 @Component
-public final class QtiWorksSettings implements Serializable {
+public final class QtiWorksDeploymentSettings implements Serializable {
 
     private static final long serialVersionUID = -8920166056971525690L;
 

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,8 +81,8 @@ public abstract class StandaloneRunner {
         ctx.register(configClasses);
         ctx.refresh();
 
-        final QtiWorksSettings qtiWorksSettings = ctx.getBean(QtiWorksSettings.class);
-        System.out.println("TEST: " + qtiWorksSettings.getJdbcUsername());
+        final QtiWorksDeploymentSettings qtiWorksDeploymentSettings = ctx.getBean(QtiWorksDeploymentSettings.class);
+        System.out.println("TEST: " + qtiWorksDeploymentSettings.getJdbcUsername());
 
         try {
             doWork(ctx);

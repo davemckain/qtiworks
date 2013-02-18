@@ -60,7 +60,7 @@ import org.springframework.validation.Validator;
 /**
  * System email service
  * <p>
- * This can be enabled or disabled within {@link QtiWorksSettings}; it falls back
+ * This can be enabled or disabled within {@link QtiWorksDeploymentSettings}; it falls back
  * to logging the messages when disabled.
  *
  * @author David McKain
@@ -71,7 +71,7 @@ public final class SystemEmailService {
     private static final Logger logger = LoggerFactory.getLogger(SystemEmailService.class);
 
     @Resource
-    private QtiWorksSettings qtiWorksSettings;
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
     private Validator jsr303Validator;
@@ -93,7 +93,7 @@ public final class SystemEmailService {
         final SimpleMailMessage simpleMailMessage = constructSimpleMailMessage(message);
 
         /* Send email (if turned on) */
-        if (qtiWorksSettings.isEmailEnabled()) {
+        if (qtiWorksDeploymentSettings.isEmailEnabled()) {
             try {
                 mailSender.send(simpleMailMessage);
             }
@@ -124,7 +124,7 @@ public final class SystemEmailService {
 
         /* Register "global" pattern for admin email address that can be used within any
          * mail message template */
-        message.addPattern("$ADMIN_EMAIL$", qtiWorksSettings.getEmailAdminAddress());
+        message.addPattern("$ADMIN_EMAIL$", qtiWorksDeploymentSettings.getEmailAdminAddress());
 
         /* Apply replacements */
         for (final Pair<String,?> pattern : message.getPatterns()) {
@@ -142,8 +142,8 @@ public final class SystemEmailService {
         for (int i=0; i<toUsersAsStrings.length; i++) {
             toUsersAsStrings[i] = formatEmailAddress(toUsers.get(i));
         }
-        if (qtiWorksSettings.isEmailDevMode()) {
-            final String adminAddress = qtiWorksSettings.getEmailAdminName() + " <" + qtiWorksSettings.getEmailAdminAddress() + ">";
+        if (qtiWorksDeploymentSettings.isEmailDevMode()) {
+            final String adminAddress = qtiWorksDeploymentSettings.getEmailAdminName() + " <" + qtiWorksDeploymentSettings.getEmailAdminAddress() + ">";
             result.setText("(Developer Mode is on - this would have been sent to "
                     + StringUtilities.join(toUsersAsStrings, " ")
                     + ")\n\n" + template);

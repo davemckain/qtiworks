@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
@@ -71,7 +71,7 @@ public final class FilespaceManager {
     private static final Logger logger = LoggerFactory.getLogger(FilespaceManager.class);
 
     @Resource
-    private QtiWorksSettings qtiWorksSettings;
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -83,7 +83,7 @@ public final class FilespaceManager {
 
     @PostConstruct
     public void init() {
-        final String filesystemBaseString = qtiWorksSettings.getFilesystemBase();
+        final String filesystemBaseString = qtiWorksDeploymentSettings.getFilesystemBase();
         logger.info("Filesystem base for client data is {}", filesystemBaseString);
         this.filesystemBaseDirectory = new File(filesystemBaseString);
         if (!filesystemBaseDirectory.isDirectory()) {

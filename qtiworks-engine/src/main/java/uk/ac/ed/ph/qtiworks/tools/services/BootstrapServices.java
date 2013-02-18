@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.tools.services;
 
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
@@ -64,7 +64,7 @@ public class BootstrapServices {
     private static final Logger logger = LoggerFactory.getLogger(BootstrapServices.class);
 
     @Resource
-    private QtiWorksSettings qtiWorksSettings;
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
     private InstructorUserDao instructorUserDao;
@@ -75,7 +75,7 @@ public class BootstrapServices {
     public InstructorUser createInternalSystemUser(final String loginName, final String firstName,
             final String lastName) {
         final InstructorUser user = createUserIfRequired(loginName, firstName, lastName,
-                qtiWorksSettings.getEmailAdminAddress(), "(Login is disabled)", false, true);
+                qtiWorksDeploymentSettings.getEmailAdminAddress(), "(Login is disabled)", false, true);
         logger.info("Created internal system user {}", user);
         return user;
     }

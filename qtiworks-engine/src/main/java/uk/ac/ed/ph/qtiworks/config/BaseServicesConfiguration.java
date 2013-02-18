@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.base.services.SystemEmailService;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
@@ -69,7 +69,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class BaseServicesConfiguration {
 
     @Resource
-    private QtiWorksSettings qtiWorksSettings;
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -94,7 +94,7 @@ public class BaseServicesConfiguration {
     @Bean
     public MailSender mailSender() {
         final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(qtiWorksSettings.getEmailSmtpHost());
+        mailSender.setHost(qtiWorksDeploymentSettings.getEmailSmtpHost());
         return mailSender;
     }
 
@@ -110,17 +110,17 @@ public class BaseServicesConfiguration {
     @Bean(destroyMethod="close")
     public DataSource dataSource() {
         final BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName(qtiWorksSettings.getJdbcDriverClassName());
-        dataSource.setUrl(qtiWorksSettings.getJdbcUrl());
-        dataSource.setUsername(qtiWorksSettings.getJdbcUsername());
-        dataSource.setPassword(qtiWorksSettings.getJdbcPassword());
+        dataSource.setDriverClassName(qtiWorksDeploymentSettings.getJdbcDriverClassName());
+        dataSource.setUrl(qtiWorksDeploymentSettings.getJdbcUrl());
+        dataSource.setUsername(qtiWorksDeploymentSettings.getJdbcUsername());
+        dataSource.setPassword(qtiWorksDeploymentSettings.getJdbcPassword());
         return dataSource;
     }
 
     @Bean
     public Properties jpaProperties() {
         final Properties jpaProperties = new Properties();
-        jpaProperties.put("hibernate.dialect", qtiWorksSettings.getHibernateDialect());
+        jpaProperties.put("hibernate.dialect", qtiWorksDeploymentSettings.getHibernateDialect());
         jpaProperties.put("hibernate.id.new_generator_mappings", Boolean.TRUE);
         jpaProperties.putAll(extraJpaProperties);
         return jpaProperties;
