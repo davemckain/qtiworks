@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.QtiWorksDeploymentException;
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
@@ -44,12 +44,22 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.context.support.StandardServletEnvironment;
 
 /**
  * Initialises the {@link AnnotationConfigWebApplicationContext} used for the QTIWorks
  * web application.
+ * <p>
+ * This first searches for a required parameter called {@value #DEPLOYMENT_PROPERTIES_FILE_PARAM}
+ * using the standard properties set in the Spring {@link StandardServletEnvironment}.
+ * This parameter specifies the Spring {@link Resource} URI of a file providing the runtime
+ * deployment configuration for the QTIWorks web application. If no parameter is found, or if it
+ * resolves to something which can't be loaded then a {@link QtiWorksDeploymentException} is
+ * thrown and the application will not start.
  *
  * @author David McKain
  */
@@ -57,27 +67,35 @@ public class QtiworksWebApplicationContextInitializer implements ApplicationCont
 
     private static final Logger logger = LoggerFactory.getLogger(QtiworksWebApplicationContextInitializer.class);
 
-    public static final String DEPLOYMENT_PROPERTIES_FILE_PARAM = "qtiWorksDeploymentProperties";
+    /**
+     * Name of the parameter specifying the URI of the <code>qtiworks-deployment.properties</code>
+     * providing the runtime configuration for the application.
+     */
+    public static final String DEPLOYMENT_PROPERTIES_FILE_PARAM = "qtiWorksDeploymentPropertiesUri";
 
     @Override
     public void initialize(final AnnotationConfigWebApplicationContext applicationContext) {
         /* Extract URI of deployment configuration. */
-        final String deploymentPropertiesPath = applicationContext.getEnvironment().getProperty(DEPLOYMENT_PROPERTIES_FILE_PARAM);
-        if (deploymentPropertiesPath==null) {
-            throw new QtiWorksRuntimeException("QTIWorks configuration error - property " + DEPLOYMENT_PROPERTIES_FILE_PARAM + " not set");
+        final ConfigurableEnvironment environment = applicationContext.getEnvironment(); /* (Should be StandardServletEnvironment) */
+        logger.info("Searching for required paremeter {} within {}", DEPLOYMENT_PROPERTIES_FILE_PARAM, environment.getPropertySources());
+        final String deploymentPropertiesUri = environment.getProperty(DEPLOYMENT_PROPERTIES_FILE_PARAM);
+        if (deploymentPropertiesUri==null) {
+            throw new QtiWorksDeploymentException("QTIWorks configuration error - required parameter " + DEPLOYMENT_PROPERTIES_FILE_PARAM
+                    + " was not found after searching " + environment.getPropertySources());
         }
 
-        final String springResourceUri = "file:" + deploymentPropertiesPath;
+        /* Try to load properties */
+        logger.info("Loading QTIWorks deployment configuration resource from {}", deploymentPropertiesUri);
         ResourcePropertySource resourcePropertySource;
         try {
-            resourcePropertySource = new ResourcePropertySource(springResourceUri);
+            resourcePropertySource = new ResourcePropertySource(deploymentPropertiesUri);
         }
         catch (final IOException e) {
-            throw new QtiWorksRuntimeException("Failed to load QTIWorks deployment properties from " + springResourceUri);
+            throw new QtiWorksDeploymentException("Failed to load QTIWorks deployment properties from " + deploymentPropertiesUri);
         }
 
-        logger.info("Read QTIWorks deployment configuration from {}", springResourceUri);
-        applicationContext.getEnvironment().getPropertySources().addFirst(resourcePropertySource);
+        /* Add these properties to the environment for the rest of the bootstrap */
+        environment.getPropertySources().addFirst(resourcePropertySource);
 
         logger.info("Initialising QTIWorks webapp ApplicationContext");
         applicationContext.register(

@@ -49,8 +49,12 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * Implementation of {@link ServletContextListener} that allows a custom logback configuration
  * file to be loaded instead of the bundled default configuration.
  * <p>
- * Deployers should specify the location of the file using the {@value #LOGBACK_CONFIG_FILE_PARAM}
- * parameter.
+ * Deployers should specify the full path of the desired <code>logback.xml</code> file
+ * using the {@value #LOGBACK_CONFIG_FILE_PARAM} parameter. An error will be logged if
+ * this path doesn't exist or the file can't be read.
+ * <p>
+ * If no parameter is provided, QTIWorks will use a reasonable bundled default logback
+ * configuration.
  *
  * @author David McKain
  */
@@ -58,7 +62,7 @@ public final class LogbackConfigurationContextListener implements ServletContext
 
     private static final Logger logger = LoggerFactory.getLogger(LogbackConfigurationContextListener.class);
 
-    public static final String LOGBACK_CONFIG_FILE_PARAM = "logbackConfigFile";
+    public static final String LOGBACK_CONFIG_FILE_PARAM = "logbackConfigFilePath";
 
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {

@@ -319,7 +319,7 @@ All Rights Reserved
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>uk.ac.ed.ph.qtiworks.tools.AdhocRunner</argument>
-                <argument>qtiworks.properties</argument>
+                <argument>qtiworks-deployment.properties</argument>
               </arguments>
             </configuration>
           </plugin>
@@ -334,72 +334,6 @@ All Rights Reserved
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
-      <!-- Copy qtiworks.properties into target/classes -->
-      <resource>
-        <directory>.</directory>
-        <filtering>false</filtering>
-        <includes>
-          <include>qtiworks.properties</include>
-        </includes>
-      </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <!-- Make sure user has created qtiworks.properties -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-files-exist</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireFilesExist>
-                  <message>
-======================================================================
-Please first create qtiworks.properties in order to configure your
-build for the QTIWorks Engine webapp.
-
-You should use default.qtiworks.properties as a template
-======================================================================
-                  </message>
-                  <files>
-                   <file>${basedir}/qtiworks.properties</file>
-                  </files>
-                </requireFilesExist>
-              </rules>
-              <fail>true</fail>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <!-- Filtering configuration for src/main/resources (as defined above) -->
-          <filters>
-            <filter>${basedir}/qtiworks.properties</filter>
-          </filters>
-          <nonFilteredFileExtensions>
-            <nonFileteredFileExtension>png</nonFileteredFileExtension>
-            <nonFileteredFileExtension>gif</nonFileteredFileExtension>
-            <nonFileteredFileExtension>jpg</nonFileteredFileExtension>
-            <nonFileteredFileExtension>zip</nonFileteredFileExtension>
-          </nonFilteredFileExtensions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <warName>qtiworks</warName>
-          <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-          <filters>
-            <filter>${basedir}/qtiworks.properties</filter>
-          </filters>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 </project>
