@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksDeploymentException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
@@ -45,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -95,7 +97,14 @@ public class QtiworksWebApplicationContextInitializer implements ApplicationCont
         }
 
         /* Add these properties to the environment for the rest of the bootstrap */
-        environment.getPropertySources().addFirst(resourcePropertySource);
+        final MutablePropertySources propertySources = environment.getPropertySources();
+        try {
+            propertySources.addFirst(new ResourcePropertySource("classpath:/qtiworks.properties"));
+        }
+        catch (final IOException e) {
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        propertySources.addFirst(resourcePropertySource);
 
         logger.info("Initialising QTIWorks webapp ApplicationContext");
         applicationContext.register(

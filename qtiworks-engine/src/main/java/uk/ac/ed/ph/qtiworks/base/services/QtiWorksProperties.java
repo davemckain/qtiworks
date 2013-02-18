@@ -31,34 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks;
+package uk.ac.ed.ph.qtiworks.base.services;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
- * Used to propagate unexpected/logic/unexpected errors.
+ * Bean injected with static properties for QTIWorks, as found
+ * in <code>src/main/resources/qtiworks.properties</code>.
  *
  * @author David McKain
  */
-public final class QtiWorksLogicException extends QtiWorksRuntimeException {
+@Component
+public final class QtiWorksProperties implements Serializable {
 
-    private static final long serialVersionUID = 2526848963219875046L;
+    private static final long serialVersionUID = 3009333005579416035L;
 
-    public static QtiWorksLogicException unexpectedException(final Throwable cause) {
-        return new QtiWorksLogicException("Unexpected Exception", cause);
+    private @Value("${qtiworks.version}") String qtiWorksVersion;
+
+    public String getQtiWorksVersion() {
+        return qtiWorksVersion;
     }
 
-    public QtiWorksLogicException() {
-        super();
-    }
-
-    public QtiWorksLogicException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public QtiWorksLogicException(final String message) {
-        super(message);
-    }
-
-    public QtiWorksLogicException(final Throwable cause) {
-        super(cause);
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

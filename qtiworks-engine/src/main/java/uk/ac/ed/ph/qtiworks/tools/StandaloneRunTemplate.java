@@ -43,6 +43,7 @@ import java.net.URISyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 /**
@@ -88,7 +89,9 @@ public abstract class StandaloneRunTemplate {
 
         logger.info("Setting up Spring ApplicationContext");
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.getEnvironment().getPropertySources().addFirst(resourcePropertySource);
+        final MutablePropertySources propertySources = ctx.getEnvironment().getPropertySources();
+        propertySources.addFirst(new ResourcePropertySource("classpath:/qtiworks.properties"));
+        propertySources.addFirst(resourcePropertySource);
         ctx.register(getConfigClasses());
         ctx.refresh();
 
