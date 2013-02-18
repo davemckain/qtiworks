@@ -319,6 +319,7 @@ All Rights Reserved
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>uk.ac.ed.ph.qtiworks.tools.AdhocRunner</argument>
+                <argument>qtiworks.properties</argument>
               </arguments>
             </configuration>
           </plugin>

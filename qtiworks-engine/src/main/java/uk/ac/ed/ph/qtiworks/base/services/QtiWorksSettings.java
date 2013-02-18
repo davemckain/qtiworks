@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import java.io.Serializable;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -47,7 +46,6 @@ import org.springframework.stereotype.Component;
  * @author David McKain
  */
 @Component
-@ImportResource("classpath:/qtiworks-config.xml")
 public final class QtiWorksSettings implements Serializable {
 
     private static final long serialVersionUID = -8920166056971525690L;
@@ -57,8 +55,8 @@ public final class QtiWorksSettings implements Serializable {
     private @Value("${qtiworks.jdbc.username}") String jdbcUsername;
     private @Value("${qtiworks.jdbc.password}") String jdbcPassword;
     private @Value("${qtiworks.hibernate.dialect}") String hibernateDialect;
-    private @Value("${qtiworks.email.enabled}") boolean emailEnabled;
-    private @Value("${qtiworks.email.devmode}") boolean emailDevMode;
+    private @Value("${qtiworks.email.enabled:false}") boolean emailEnabled;
+    private @Value("${qtiworks.email.devmode:false}") boolean emailDevMode;
     private @Value("${qtiworks.email.admin.name}") String emailAdminName;
     private @Value("${qtiworks.email.admin.address}") String emailAdminAddress;
     private @Value("${qtiworks.email.smtp.host}") String emailSmtpHost;

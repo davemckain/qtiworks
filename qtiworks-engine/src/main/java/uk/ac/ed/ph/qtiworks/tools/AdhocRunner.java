@@ -48,16 +48,16 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public final class AdhocRunner {
 
     public static void main(final String[] args) throws Exception {
-        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
-        ctx.refresh();
-
-        final AdhocService adhocService = ctx.getBean(AdhocService.class);
-        try {
-            adhocService.doWork();
-        }
-        finally {
-            ctx.close();
-        }
+        new StandaloneRunner(
+                JpaProductionConfiguration.class,
+                BaseServicesConfiguration.class,
+                ServicesConfiguration.class
+        ) {
+            @Override
+            protected void doWork(final AnnotationConfigApplicationContext ctx) throws Exception {
+                final AdhocService adhocService = ctx.getBean(AdhocService.class);
+                adhocService.doWork();
+            }
+        }.run(args);
     }
 }

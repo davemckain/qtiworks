@@ -36,11 +36,8 @@ package uk.ac.ed.ph.qtiworks.tools;
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaSetupConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.tools.services.BootstrapServices;
 import uk.ac.ed.ph.qtiworks.tools.services.SampleResourceImporter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -55,26 +52,17 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public final class SchemaSetup {
 
-    private static final Logger logger = LoggerFactory.getLogger(SchemaSetup.class);
-
-    public static void main(final String[] args) {
-        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-
-        logger.info("Recreating the DB schema");
-        ctx.register(JpaSetupConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
-        ctx.refresh();
-
-        logger.info("Added system default user and default public options");
-        final BootstrapServices bootstrapServices = ctx.getBean(BootstrapServices.class);
-        bootstrapServices.setupSystemDefaults();
-
-        logger.info("Importing QTI samples");
-        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-        try {
-            sampleResourceImporter.importQtiSamples();
-        }
-        finally {
-            ctx.close();
-        }
+    public static void main(final String[] args) throws Exception {
+        new StandaloneRunner(
+                JpaSetupConfiguration.class, /* Recreates DB schema */
+                BaseServicesConfiguration.class,
+                ServicesConfiguration.class
+        ) {
+            @Override
+            protected void doWork(final AnnotationConfigApplicationContext ctx) throws Exception {
+                final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
+                sampleResourceImporter.importQtiSamples();
+            }
+        }.run(args);
     }
 }

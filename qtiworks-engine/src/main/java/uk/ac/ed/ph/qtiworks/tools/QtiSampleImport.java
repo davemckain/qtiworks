@@ -47,17 +47,17 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public final class QtiSampleImport {
 
-    public static void main(final String[] args) {
-        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(JpaProductionConfiguration.class, BaseServicesConfiguration.class, ServicesConfiguration.class);
-        ctx.refresh();
-
-        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-        try {
-            sampleResourceImporter.importQtiSamples();
-        }
-        finally {
-            ctx.close();
-        }
+    public static void main(final String[] args) throws Exception {
+        new StandaloneRunner(
+                JpaProductionConfiguration.class,
+                BaseServicesConfiguration.class,
+                ServicesConfiguration.class
+        ) {
+            @Override
+            protected void doWork(final AnnotationConfigApplicationContext ctx) throws Exception {
+                final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
+                sampleResourceImporter.importQtiSamples();
+            }
+        }.run(args);
     }
 }

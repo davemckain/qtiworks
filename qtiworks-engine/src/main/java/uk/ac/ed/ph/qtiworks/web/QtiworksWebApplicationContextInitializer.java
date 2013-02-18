@@ -55,12 +55,12 @@ public class QtiworksWebApplicationContextInitializer implements ApplicationCont
 
     @Override
     public void initialize(final AnnotationConfigWebApplicationContext applicationContext) {
-        logger.info("Initialising QTI Works webapp ApplicationContext");
-        applicationContext.register(new Class[] {
-                JpaProductionConfiguration.class,
-                BaseServicesConfiguration.class,
-                ServicesConfiguration.class,
-                WebApplicationConfiguration.class
-        });
+        logger.info("Initialising QTIWorks webapp ApplicationContext");
+        applicationContext.register(
+            JpaProductionConfiguration.class,
+            BaseServicesConfiguration.class,
+            ServicesConfiguration.class,
+            WebApplicationConfiguration.class
+        );
     }
 }
