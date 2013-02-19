@@ -33,12 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 

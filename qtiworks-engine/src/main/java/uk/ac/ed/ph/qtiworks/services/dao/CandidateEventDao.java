@@ -31,11 +31,10 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.dao;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import java.util.List;
 
@@ -48,37 +47,37 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link CandidateSession} entity.
+ * DAO implementation for the {@link CandidateEvent} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateSessionDao extends GenericDao<CandidateSession> {
+public class CandidateEventDao extends GenericDao<CandidateEvent> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public CandidateSessionDao() {
-        super(CandidateSession.class);
+    public CandidateEventDao() {
+        super(CandidateEvent.class);
     }
 
-    public List<CandidateSession> getForCandidate(final User candidate) {
-        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForCandidate", CandidateSession.class);
-        query.setParameter("candidate", candidate);
+    public List<CandidateEvent> getForSession(final CandidateSession candidateSession) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSession", CandidateEvent.class);
+        query.setParameter("candidateSession", candidateSession);
         return query.getResultList();
     }
 
-    public List<CandidateSession> getForDelivery(final Delivery delivery) {
-        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForDelivery", CandidateSession.class);
-        query.setParameter("delivery", delivery);
+    public List<CandidateEvent> getForSessionReversed(final CandidateSession candidateSession) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSessionReversed", CandidateEvent.class);
+        query.setParameter("candidateSession", candidateSession);
         return query.getResultList();
     }
 
-    public List<CandidateSession> getNonTerminatedForDeliveryAndCandidate(final Delivery delivery, final User candidate) {
-        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getNonTerminatedForDeliveryAndCandidate", CandidateSession.class);
-        query.setParameter("delivery", delivery);
-        query.setParameter("candidate", candidate);
-        return query.getResultList();
+    public CandidateEvent getNewestEventInSession(final CandidateSession candidateSession) {
+        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSessionReversed", CandidateEvent.class);
+        query.setParameter("candidateSession", candidateSession);
+        query.setMaxResults(1);
+        return extractNullableFindResult(query);
     }
 }

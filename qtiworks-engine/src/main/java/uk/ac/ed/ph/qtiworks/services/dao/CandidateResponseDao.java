@@ -31,46 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
-
-import java.util.Date;
-import java.util.List;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateResponse;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link AnonymousUser} entity.
+ * DAO implementation for the {@link CandidateResponse} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class AnonymousUserDao extends GenericDao<AnonymousUser> {
+public class CandidateResponseDao extends GenericDao<CandidateResponse> {
 
+    @SuppressWarnings("unused")
     @PersistenceContext
     private EntityManager em;
 
-    public AnonymousUserDao() {
-        super(AnonymousUser.class);
-    }
-
-    public AnonymousUser findBySessionId(final String sessionId) {
-        final TypedQuery<AnonymousUser> query = em.createNamedQuery("AnonymousUser.findBySessionId", AnonymousUser.class);
-        query.setParameter("sessionId", sessionId);
-        return extractNullableFindResult(query);
-    }
-
-    public List<AnonymousUser> getCreatedBefore(final Date creationTime) {
-        final TypedQuery<AnonymousUser> query = em.createNamedQuery("AnonymousUser.getCreatedBefore", AnonymousUser.class);
-        query.setParameter("creationTime", creationTime);
-        return query.getResultList();
+    public CandidateResponseDao() {
+        super(CandidateResponse.class);
     }
 }

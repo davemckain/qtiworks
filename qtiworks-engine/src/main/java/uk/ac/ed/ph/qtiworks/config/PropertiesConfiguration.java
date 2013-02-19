@@ -31,49 +31,28 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.base.services;
+package uk.ac.ed.ph.qtiworks.config;
 
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 /**
- * Special logging wrapper for recording events that need to logged for auditing purposes.
+ * Configures {@link QtiWorksProperties} and {@link QtiWorksDeploymentSettings}
  *
  * @author David McKain
  */
-@Service
-public final class AuditLogger {
+@Configuration
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.config.beans"})
+public class PropertiesConfiguration {
 
-    /** NOTE: The name of this logger is specially defined in log4j.xml to go to correct appender */
-    private static final Logger logger = LoggerFactory.getLogger("AuditLogger");
-
-    @Resource
-    private IdentityContext identityContext;
-
-    public void recordEvent(final String message) {
-        logger.info(createEventLogEntry(message));
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 
-    private String createEventLogEntry(final String message) {
-        final User currentThreadUnderlyingIdentity = identityContext.getCurrentThreadUnderlyingIdentity();
-        final User currentThreadEffectiveIdentity = identityContext.getCurrentThreadEffectiveIdentity();
-        final String underlyingIdentity = currentThreadUnderlyingIdentity!=null ? currentThreadUnderlyingIdentity.getBusinessKey() : "<unknown>";
-        final String effectiveIdentity = currentThreadEffectiveIdentity!=null ? currentThreadEffectiveIdentity.getBusinessKey() : "<unknown>";
-        String logEntry;
-        if (underlyingIdentity.equals(effectiveIdentity)) {
-            /* Normal identity */
-            logEntry = underlyingIdentity + ": " + message;
-        }
-        else {
-            /* Split personality - show underlying and effective identities */
-            logEntry = underlyingIdentity + "/" + effectiveIdentity + ": " + message;
-        }
-        return logEntry;
-    }
 }

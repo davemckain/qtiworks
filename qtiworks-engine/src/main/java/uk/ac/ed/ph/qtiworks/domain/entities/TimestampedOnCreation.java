@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.dao.GenericDao;
+import uk.ac.ed.ph.qtiworks.services.dao.GenericDao;
 
 import java.util.Date;
 

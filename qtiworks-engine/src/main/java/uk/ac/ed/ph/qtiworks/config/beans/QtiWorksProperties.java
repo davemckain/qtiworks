@@ -31,40 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.config.beans;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import java.util.List;
+import java.io.Serializable;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
- * DAO implementation for the {@link CandidateEventNotification} entity.
+ * Bean injected with static properties for QTIWorks, as found
+ * in <code>src/main/resources/qtiworks.properties</code>.
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateEventNotificationDao extends GenericDao<CandidateEventNotification> {
+@Component
+public final class QtiWorksProperties implements Serializable {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final long serialVersionUID = 3009333005579416035L;
 
-    public CandidateEventNotificationDao() {
-        super(CandidateEventNotification.class);
+    private @Value("${qtiworks.version}") String qtiWorksVersion;
+
+    public String getQtiWorksVersion() {
+        return qtiWorksVersion;
     }
 
-    public List<CandidateEventNotification> getForEvent(final CandidateEvent event) {
-        final TypedQuery<CandidateEventNotification> query = em.createNamedQuery("CandidateEventNotification.getForEvent", CandidateEventNotification.class);
-        query.setParameter("candidateEvent", event);
-        return query.getResultList();
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

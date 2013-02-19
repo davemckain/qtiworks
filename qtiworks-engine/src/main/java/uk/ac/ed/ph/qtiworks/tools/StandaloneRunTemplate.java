@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.web.QtiWorksApplicationContextHelper;
+import uk.ac.ed.ph.qtiworks.config.QtiWorksApplicationContextHelper;
 
 import java.io.File;
 import java.net.URI;

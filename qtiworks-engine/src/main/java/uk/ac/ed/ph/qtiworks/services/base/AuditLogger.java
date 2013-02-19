@@ -31,31 +31,49 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.base;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.annotation.Resource;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 /**
- * DAO implementation for the {@link CandidateFileSubmission} entity.
+ * Special logging wrapper for recording events that need to logged for auditing purposes.
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateFileSubmissionDao extends GenericDao<CandidateFileSubmission> {
+@Service
+public final class AuditLogger {
 
-    @SuppressWarnings("unused")
-    @PersistenceContext
-    private EntityManager em;
+    /** NOTE: The name of this logger is specially defined in log4j.xml to go to correct appender */
+    private static final Logger logger = LoggerFactory.getLogger("AuditLogger");
 
-    public CandidateFileSubmissionDao() {
-        super(CandidateFileSubmission.class);
+    @Resource
+    private IdentityContext identityContext;
+
+    public void recordEvent(final String message) {
+        logger.info(createEventLogEntry(message));
+    }
+
+    private String createEventLogEntry(final String message) {
+        final User currentThreadUnderlyingIdentity = identityContext.getCurrentThreadUnderlyingIdentity();
+        final User currentThreadEffectiveIdentity = identityContext.getCurrentThreadEffectiveIdentity();
+        final String underlyingIdentity = currentThreadUnderlyingIdentity!=null ? currentThreadUnderlyingIdentity.getBusinessKey() : "<unknown>";
+        final String effectiveIdentity = currentThreadEffectiveIdentity!=null ? currentThreadEffectiveIdentity.getBusinessKey() : "<unknown>";
+        String logEntry;
+        if (underlyingIdentity.equals(effectiveIdentity)) {
+            /* Normal identity */
+            logEntry = underlyingIdentity + ": " + message;
+        }
+        else {
+            /* Split personality - show underlying and effective identities */
+            logEntry = underlyingIdentity + "/" + effectiveIdentity + ": " + message;
+        }
+        return logEntry;
     }
 }

@@ -31,12 +31,10 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools.services;
+package uk.ac.ed.ph.qtiworks.services.tools;
 
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
@@ -45,6 +43,8 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;

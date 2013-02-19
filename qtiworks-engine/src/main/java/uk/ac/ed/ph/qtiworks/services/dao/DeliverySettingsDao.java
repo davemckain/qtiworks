@@ -31,15 +31,18 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -47,36 +50,51 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link CandidateEvent} entity.
+ * DAO implementation for the {@link DeliverySettings} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateEventDao extends GenericDao<CandidateEvent> {
+public class DeliverySettingsDao extends GenericDao<DeliverySettings> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public CandidateEventDao() {
-        super(CandidateEvent.class);
+    public DeliverySettingsDao() {
+        super(DeliverySettings.class);
     }
 
-    public List<CandidateEvent> getForSession(final CandidateSession candidateSession) {
-        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSession", CandidateEvent.class);
-        query.setParameter("candidateSession", candidateSession);
+    public long countForOwnerAndType(final User user, final AssessmentObjectType assessmentType) {
+        final Query query = em.createNamedQuery("DeliverySettings.countForOwnerAndType");
+        query.setParameter("user", user);
+        query.setParameter("assessmentType", assessmentType);
+        return extractCountResult(query);
+    }
+
+    public List<DeliverySettings> getAllPublicSettingsForType(final AssessmentObjectType assessmentType) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getAllPublicSettingsForType", DeliverySettings.class);
+        query.setParameter("assessmentType", assessmentType);
         return query.getResultList();
     }
 
-    public List<CandidateEvent> getForSessionReversed(final CandidateSession candidateSession) {
-        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSessionReversed", CandidateEvent.class);
-        query.setParameter("candidateSession", candidateSession);
+    public List<DeliverySettings> getForOwner(final User user) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwner", DeliverySettings.class);
+        query.setParameter("user", user);
         return query.getResultList();
     }
 
-    public CandidateEvent getNewestEventInSession(final CandidateSession candidateSession) {
-        final TypedQuery<CandidateEvent> query = em.createNamedQuery("CandidateEvent.getForSessionReversed", CandidateEvent.class);
-        query.setParameter("candidateSession", candidateSession);
+    public List<DeliverySettings> getForOwnerAndType(final User user, final AssessmentObjectType assessmentType) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerAndType", DeliverySettings.class);
+        query.setParameter("user", user);
+        query.setParameter("assessmentType", assessmentType);
+        return query.getResultList();
+    }
+
+    public DeliverySettings getFirstForOwner(final User user, final AssessmentObjectType assessmentType) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerAndType", DeliverySettings.class);
+        query.setParameter("user", user);
+        query.setParameter("assessmentType", assessmentType);
         query.setMaxResults(1);
         return extractNullableFindResult(query);
     }

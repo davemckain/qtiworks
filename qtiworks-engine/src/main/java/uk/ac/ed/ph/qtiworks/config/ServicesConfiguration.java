@@ -33,7 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
+import uk.ac.ed.ph.qtiworks.services.base.SystemEmailService;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -43,25 +47,121 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
+import java.util.Properties;
+
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
+import javax.annotation.Resource;
+import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
+import org.hibernate.ejb.HibernatePersistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * Defines service-level configuration
+ * Configuration for the main QTIWorks services
  *
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.rendering", "uk.ac.ed.ph.qtiworks.services", "uk.ac.ed.ph.qtiworks.tools.services"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.rendering", "uk.ac.ed.ph.qtiworks.services"})
 @EnableTransactionManagement
 @EnableScheduling
 public class ServicesConfiguration {
+
+    @Resource
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
+
+    @Bean
+    public IdentityContext identityContext() {
+        return new IdentityContext();
+    }
+
+    @Bean
+    RequestTimestampContext requestTimestampContext() {
+        return new RequestTimestampContext();
+    }
+
+    @Bean
+    public LocalValidatorFactoryBean jsr303Validator() {
+        return new LocalValidatorFactoryBean();
+    }
+
+    @Bean
+    public MailSender mailSender() {
+        final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(qtiWorksDeploymentSettings.getEmailSmtpHost());
+        return mailSender;
+    }
+
+    @Bean
+    public SystemEmailService systemEmailService() {
+        final SystemEmailService emailService = new SystemEmailService();
+        return emailService;
+    }
+
+    @Resource(name="extraJpaProperties")
+    private Properties extraJpaProperties;
+
+    @Bean(destroyMethod="close")
+    public DataSource dataSource() {
+        final BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(qtiWorksDeploymentSettings.getJdbcDriverClassName());
+        dataSource.setUrl(qtiWorksDeploymentSettings.getJdbcUrl());
+        dataSource.setUsername(qtiWorksDeploymentSettings.getJdbcUsername());
+        dataSource.setPassword(qtiWorksDeploymentSettings.getJdbcPassword());
+        return dataSource;
+    }
+
+    @Bean
+    public Properties jpaProperties() {
+        final Properties jpaProperties = new Properties();
+        jpaProperties.put("hibernate.dialect", qtiWorksDeploymentSettings.getHibernateDialect());
+        jpaProperties.put("hibernate.id.new_generator_mappings", Boolean.TRUE);
+        jpaProperties.putAll(extraJpaProperties);
+        return jpaProperties;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
+        final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setPersistenceProviderClass(HibernatePersistence.class);
+        emf.setDataSource(dataSource());
+        emf.setJpaProperties(jpaProperties());
+        emf.setPackagesToScan("uk.ac.ed.ph.qtiworks.domain.entities");
+        return emf;
+    }
+
+    /**
+     * Translates persistence Exceptions thrown by {@link Repository} classes like DAOs.
+     * See section 12.6.4 of Spring documentation.
+     * You don't need to use this bean anywhere.
+     */
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor persistenceExceptionTranslationPostProcessor() {
+        return new PersistenceExceptionTranslationPostProcessor();
+    }
+
+    /**
+     * (See also use of {@link EnableTransactionManagement} above)
+     */
+    @Bean
+    public JpaTransactionManager jpaTransactionManager() {
+        final JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
+        jpaTransactionManager.setEntityManagerFactory(localContainerEntityManagerFactoryBean().getObject());
+        return jpaTransactionManager;
+    }
 
     @Bean
     public SchemaCache schemaCache() {

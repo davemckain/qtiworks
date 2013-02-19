@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.tools;
 
-import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.tools.services.AdhocService;
+import uk.ac.ed.ph.qtiworks.services.tools.AdhocService;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -54,8 +54,8 @@ public final class AdhocRunner extends StandaloneRunTemplate {
     @Override
     protected Class<?>[] getConfigClasses() {
         return new Class<?>[] {
+                PropertiesConfiguration.class,
                 JpaProductionConfiguration.class,
-                BaseServicesConfiguration.class,
                 ServicesConfiguration.class
         };
     }

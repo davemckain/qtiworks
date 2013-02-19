@@ -31,15 +31,10 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools.services;
+package uk.ac.ed.ph.qtiworks.services.tools;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
@@ -62,7 +57,12 @@ import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.TestImplementationSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.dao.SampleCategoryDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
@@ -87,8 +87,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author David McKain
  */
-@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 @Service
+@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 public class SampleResourceImporter {
 
     private static final Logger logger = LoggerFactory.getLogger(SampleResourceImporter.class);

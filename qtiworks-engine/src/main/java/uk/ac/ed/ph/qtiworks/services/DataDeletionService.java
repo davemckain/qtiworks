@@ -33,12 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.domain.dao.AnonymousUserDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentPackageDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
@@ -46,6 +40,12 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 

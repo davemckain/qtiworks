@@ -31,17 +31,14 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionOutcome;
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -49,36 +46,23 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link CandidateSessionOutcome} entity.
+ * DAO implementation for the {@link SampleCategory} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class CandidateSessionOutcomeDao extends GenericDao<CandidateSessionOutcome> {
+public class SampleCategoryDao extends GenericDao<SampleCategory> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public CandidateSessionOutcomeDao() {
-        super(CandidateSessionOutcome.class);
+    public SampleCategoryDao() {
+        super(SampleCategory.class);
     }
 
-    public List<CandidateSessionOutcome> getForSession(final CandidateSession candidateSession) {
-        final TypedQuery<CandidateSessionOutcome> query = em.createNamedQuery("CandidateSessionOutcome.getForSession", CandidateSessionOutcome.class);
-        query.setParameter("candidateSession", candidateSession);
+    public List<SampleCategory> getAll() {
+        final TypedQuery<SampleCategory> query = em.createNamedQuery("SampleCategory.getAll", SampleCategory.class);
         return query.getResultList();
-    }
-
-    public List<CandidateSessionOutcome> getForDelivery(final Delivery delivery) {
-        final TypedQuery<CandidateSessionOutcome> query = em.createNamedQuery("CandidateSessionOutcome.getForDelivery", CandidateSessionOutcome.class);
-        query.setParameter("delivery", delivery);
-        return query.getResultList();
-    }
-
-    public int deleteForCandidateSession(final CandidateSession candidateSession) {
-        final Query query = em.createNamedQuery("CandidateSessionOutcome.deleteForSession");
-        query.setParameter("candidateSession", candidateSession);
-        return query.executeUpdate();
     }
 }

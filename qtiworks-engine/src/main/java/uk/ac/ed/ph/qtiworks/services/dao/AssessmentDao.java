@@ -31,50 +31,47 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.authn;
+package uk.ac.ed.ph.qtiworks.services.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
-import java.io.IOException;
+import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Base delegate class for authentication instructor users.
- *
- * @see InstructorAuthenticationFilter
+ * DAO implementation for the {@link Assessment} entity.
  *
  * @author David McKain
  */
-public abstract class AbstractInstructorAuthenticator {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class AssessmentDao extends GenericDao<Assessment> {
 
-    protected IdentityContext identityContext;
-    protected UserDao userDao;
-    protected InstructorUserDao instructorUserDao;
+    @PersistenceContext
+    private EntityManager em;
 
-    public AbstractInstructorAuthenticator(final WebApplicationContext webApplicationContext) {
-        identityContext = webApplicationContext.getBean(IdentityContext.class);
-        userDao = webApplicationContext.getBean(UserDao.class);
-        instructorUserDao = webApplicationContext.getBean(InstructorUserDao.class);
+    public AssessmentDao() {
+        super(Assessment.class);
     }
 
-    /**
-     * Subclasses should fill in to "do" the actual authentication work. Return a non-null
-     * {@link InstructorUser} if authorisation succeeds, otherwise set up the {@link HttpServletResponse} as
-     * appropriate (e.g. redirect to login page) and return null.
-     *
-     * @param request
-     * @param response
-     * @throws IOException
-     * @throws ServletException
-     */
-    protected abstract InstructorUser doAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException;
+    public List<Assessment> getForOwner(final User user) {
+        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForOwner", Assessment.class);
+        query.setParameter("owner", user);
+        return query.getResultList();
+    }
+
+    public List<Assessment> getForSampleCategory(final SampleCategory sampleCategory) {
+        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForSampleCategory", Assessment.class);
+        query.setParameter("sampleCategory", sampleCategory);
+        return query.getResultList();
+    }
 }

@@ -34,10 +34,10 @@
 package uk.ac.ed.ph.qtiworks.services.candidate;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateFileSubmissionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateFileSubmissionDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 

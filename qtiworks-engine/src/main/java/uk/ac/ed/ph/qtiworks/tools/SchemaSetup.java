@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.tools;
 
-import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaSetupConfiguration;
+import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.tools.services.SampleResourceImporter;
+import uk.ac.ed.ph.qtiworks.services.tools.SampleResourceImporter;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -59,8 +59,8 @@ public final class SchemaSetup extends StandaloneRunTemplate {
     @Override
     protected Class<?>[] getConfigClasses() {
         return new Class<?>[] {
+                PropertiesConfiguration.class,
                 JpaSetupConfiguration.class, /* Recreates DB schema */
-                BaseServicesConfiguration.class,
                 ServicesConfiguration.class
         };
     }

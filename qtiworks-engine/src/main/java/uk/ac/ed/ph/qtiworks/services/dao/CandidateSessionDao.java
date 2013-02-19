@@ -31,11 +31,11 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.dao;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import java.util.List;
 
@@ -48,36 +48,37 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link AssessmentPackage} entity.
+ * DAO implementation for the {@link CandidateSession} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
+public class CandidateSessionDao extends GenericDao<CandidateSession> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public AssessmentPackageDao() {
-        super(AssessmentPackage.class);
+    public CandidateSessionDao() {
+        super(CandidateSession.class);
     }
 
-    public long getNewestImportVersion(final Assessment assessment) {
-        final TypedQuery<Long> query = em.createNamedQuery("AssessmentPackage.getNewestImportVersion", Long.class);
-        query.setParameter("assessment", assessment);
-        return extractCountResult(query);
+    public List<CandidateSession> getForCandidate(final User candidate) {
+        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForCandidate", CandidateSession.class);
+        query.setParameter("candidate", candidate);
+        return query.getResultList();
     }
 
-    public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
-        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getCurrentForAssessment", AssessmentPackage.class);
-        query.setParameter("assessment", assessment);
-        return extractNullableFindResult(query);
+    public List<CandidateSession> getForDelivery(final Delivery delivery) {
+        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForDelivery", CandidateSession.class);
+        query.setParameter("delivery", delivery);
+        return query.getResultList();
     }
 
-    public List<AssessmentPackage> getForSampleCategory(final SampleCategory sampleCategory) {
-        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getForSampleCategory", AssessmentPackage.class);
-        query.setParameter("sampleCategory", sampleCategory);
+    public List<CandidateSession> getNonTerminatedForDeliveryAndCandidate(final Delivery delivery, final User candidate) {
+        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getNonTerminatedForDeliveryAndCandidate", CandidateSession.class);
+        query.setParameter("delivery", delivery);
+        query.setParameter("candidate", candidate);
         return query.getResultList();
     }
 }

@@ -34,8 +34,9 @@
 package uk.ac.ed.ph.qtiworks.web;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksDeploymentException;
-import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
+import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.config.QtiWorksApplicationContextHelper;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration;
 
@@ -88,7 +89,7 @@ public class QtiWorksWebApplicationContextInitializer implements ApplicationCont
         logger.info("Initialising QTIWorks webapp ApplicationContext");
         applicationContext.register(
             JpaProductionConfiguration.class,
-            BaseServicesConfiguration.class,
+            PropertiesConfiguration.class,
             ServicesConfiguration.class,
             WebApplicationConfiguration.class
         );

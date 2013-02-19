@@ -39,7 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;

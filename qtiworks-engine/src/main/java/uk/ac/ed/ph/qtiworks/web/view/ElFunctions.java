@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.view;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;

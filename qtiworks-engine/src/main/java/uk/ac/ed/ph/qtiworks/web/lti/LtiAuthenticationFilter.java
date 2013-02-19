@@ -41,11 +41,11 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
 import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
 
 import java.io.IOException;

@@ -31,34 +31,40 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.base.services;
+package uk.ac.ed.ph.qtiworks.services.dao;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
-import java.io.Serializable;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Bean injected with static properties for QTIWorks, as found
- * in <code>src/main/resources/qtiworks.properties</code>.
+ * DAO implementation for the {@link CandidateEventNotification} entity.
  *
  * @author David McKain
  */
-@Component
-public final class QtiWorksProperties implements Serializable {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class CandidateEventNotificationDao extends GenericDao<CandidateEventNotification> {
 
-    private static final long serialVersionUID = 3009333005579416035L;
+    @PersistenceContext
+    private EntityManager em;
 
-    private @Value("${qtiworks.version}") String qtiWorksVersion;
-
-    public String getQtiWorksVersion() {
-        return qtiWorksVersion;
+    public CandidateEventNotificationDao() {
+        super(CandidateEventNotification.class);
     }
 
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
+    public List<CandidateEventNotification> getForEvent(final CandidateEvent event) {
+        final TypedQuery<CandidateEventNotification> query = em.createNamedQuery("CandidateEventNotification.getForEvent", CandidateEventNotification.class);
+        query.setParameter("candidateEvent", event);
+        return query.getResultList();
     }
 }

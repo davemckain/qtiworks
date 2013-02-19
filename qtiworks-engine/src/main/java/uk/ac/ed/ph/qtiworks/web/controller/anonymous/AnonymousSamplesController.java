@@ -35,13 +35,13 @@ package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.SampleCategoryDao;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 
 import java.util.LinkedHashMap;

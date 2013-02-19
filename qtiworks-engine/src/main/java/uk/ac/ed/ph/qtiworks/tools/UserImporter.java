@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.tools;
 
-import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.tools.services.BootstrapServices;
+import uk.ac.ed.ph.qtiworks.services.tools.BootstrapServices;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -64,8 +64,8 @@ public final class UserImporter extends StandaloneRunTemplate {
     @Override
     protected Class<?>[] getConfigClasses() {
         return new Class<?>[] {
+                PropertiesConfiguration.class,
                 JpaProductionConfiguration.class,
-                BaseServicesConfiguration.class,
                 ServicesConfiguration.class
         };
     }

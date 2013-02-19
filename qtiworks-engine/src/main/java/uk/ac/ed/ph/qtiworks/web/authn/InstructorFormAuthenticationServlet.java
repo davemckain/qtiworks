@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.base.services.AuditLogger;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 
 import java.io.IOException;
 import java.util.ArrayList;

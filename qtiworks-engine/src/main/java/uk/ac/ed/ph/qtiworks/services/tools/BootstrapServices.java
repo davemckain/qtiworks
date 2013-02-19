@@ -31,16 +31,16 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools.services;
+package uk.ac.ed.ph.qtiworks.services.tools;
 
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.domain.dao.DeliverySettingsDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
-import uk.ac.ed.ph.qtiworks.services.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
@@ -57,8 +57,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author David McKain
  */
-@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 @Service
+@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 public class BootstrapServices {
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapServices.class);

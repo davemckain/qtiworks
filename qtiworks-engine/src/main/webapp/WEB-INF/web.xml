@@ -87,9 +87,7 @@ QTIWorks Delivery Engine web deployment descriptor
     </init-param>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>
-        uk.ac.ed.ph.qtiworks.config.InstructorMvcConfiguration
-      </param-value>
+      <param-value>uk.ac.ed.ph.qtiworks.config.InstructorMvcConfiguration</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
@@ -120,9 +118,7 @@ QTIWorks Delivery Engine web deployment descriptor
     </init-param>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>
-        uk.ac.ed.ph.qtiworks.config.LtiMvcConfiguration
-      </param-value>
+      <param-value>uk.ac.ed.ph.qtiworks.config.LtiMvcConfiguration</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
@@ -153,9 +149,7 @@ QTIWorks Delivery Engine web deployment descriptor
     </init-param>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>
-        uk.ac.ed.ph.qtiworks.config.AnonymousMvcConfiguration
-      </param-value>
+      <param-value>uk.ac.ed.ph.qtiworks.config.AnonymousMvcConfiguration</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
@@ -176,9 +170,7 @@ QTIWorks Delivery Engine web deployment descriptor
     </init-param>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>
-        uk.ac.ed.ph.qtiworks.config.CandidateMvcConfiguration
-      </param-value>
+      <param-value>uk.ac.ed.ph.qtiworks.config.CandidateMvcConfiguration</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>

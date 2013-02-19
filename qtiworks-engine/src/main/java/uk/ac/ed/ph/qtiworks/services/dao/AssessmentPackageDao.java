@@ -31,8 +31,10 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.dao;
+package uk.ac.ed.ph.qtiworks.services.dao;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 
 import java.util.List;
@@ -46,23 +48,36 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * DAO implementation for the {@link SampleCategory} entity.
+ * DAO implementation for the {@link AssessmentPackage} entity.
  *
  * @author David McKain
  */
 @Repository
 @Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class SampleCategoryDao extends GenericDao<SampleCategory> {
+public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
 
     @PersistenceContext
     private EntityManager em;
 
-    public SampleCategoryDao() {
-        super(SampleCategory.class);
+    public AssessmentPackageDao() {
+        super(AssessmentPackage.class);
     }
 
-    public List<SampleCategory> getAll() {
-        final TypedQuery<SampleCategory> query = em.createNamedQuery("SampleCategory.getAll", SampleCategory.class);
+    public long getNewestImportVersion(final Assessment assessment) {
+        final TypedQuery<Long> query = em.createNamedQuery("AssessmentPackage.getNewestImportVersion", Long.class);
+        query.setParameter("assessment", assessment);
+        return extractCountResult(query);
+    }
+
+    public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
+        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getCurrentForAssessment", AssessmentPackage.class);
+        query.setParameter("assessment", assessment);
+        return extractNullableFindResult(query);
+    }
+
+    public List<AssessmentPackage> getForSampleCategory(final SampleCategory sampleCategory) {
+        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getForSampleCategory", AssessmentPackage.class);
+        query.setParameter("sampleCategory", sampleCategory);
         return query.getResultList();
     }
 }

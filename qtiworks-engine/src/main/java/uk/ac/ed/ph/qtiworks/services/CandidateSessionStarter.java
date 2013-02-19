@@ -34,15 +34,11 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.base.services.AuditLogger;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
-import uk.ac.ed.ph.qtiworks.domain.dao.AssessmentDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
@@ -53,7 +49,12 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
+import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;

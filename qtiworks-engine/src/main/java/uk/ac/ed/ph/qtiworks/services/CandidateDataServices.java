@@ -35,13 +35,10 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventNotificationDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
@@ -53,6 +50,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
