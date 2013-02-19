@@ -258,6 +258,7 @@ All Rights Reserved
                 <argument>-classpath</argument>
                 <classpath/>
                 <argument>uk.ac.ed.ph.qtiworks.tools.QtiSampleImporter</argument>
+                <argument>qtiworks-deployment.properties</argument>
               </arguments>
             </configuration>
           </plugin>
