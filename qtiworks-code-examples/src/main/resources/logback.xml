@@ -1,0 +1,45 @@
+<!--
+
+Basic default logback configuration for QTIWorks Engine.
+
+(You can select a custom configuration to use within the webapp
+if you prefer. See the documentation.
+
+-->
+<configuration debug="false">
+
+  <!-- Create basic appender sending messages to STDOUT -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%-5level %date %thread [%logger{0}/%line#%method\(\)] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Appender for the various audit messages -->
+  <appender name="AUDITOR_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%-5level %date %thread [%logger{0}] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Log logback configuration messages -->
+  <logger name="uk.ac.ed.ph.qtiworks.web.LogbackConfigurationContextListener" level="debug"/>
+
+  <!-- Log auditing messages quite simply -->
+  <logger name="AuditLogger" additivity="false" level="info">
+    <appender-ref ref="AUDITOR_STDOUT"/>
+  </logger>
+  <logger name="CandidateAuditLogger" additivity="false" level="info">
+    <appender-ref ref="AUDITOR_STDOUT"/>
+  </logger>
+
+  <!-- Also log certain other services at info level -->
+  <logger name="uk.ac.ed.ph.qtiworks.services.ScheduledServices" level="info"/>
+  <logger name="uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer" level="info"/>
+
+  <!-- Root logger -->
+  <root level="warn">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>

@@ -33,46 +33,29 @@
  */
 package uk.ac.ed.ph.qtiworks.services.tools;
 
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
-import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
-import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
-import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
-import uk.ac.ed.ph.qtiworks.utils.NullMultipartFile;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.csvreader.CsvWriter;
-
-import dave.StandaloneItemRenderingTest;
 
 /**
  * Dev utility class for running arbitrary JPA code
@@ -84,24 +67,6 @@ import dave.StandaloneItemRenderingTest;
 public class AdhocService {
 
     @Resource
-    private IdentityContext identityContext;
-
-    @Resource
-    private RequestTimestampContext requestTimestampContext;
-
-    @Resource
-    private CandidateItemDeliveryService candidateItemDeliveryService;
-
-    @Resource
-    private CandidateTestDeliveryService candidateTestDeliveryService;
-
-    @Resource
-    private CandidateSessionStarter candidateSessionStarter;
-
-    @Resource
-    private InstructorUserDao instructorUserDao;
-
-    @Resource
     private AssessmentReportingService assessmentReportingService;
 
     @Resource
@@ -109,8 +74,6 @@ public class AdhocService {
 
     public void doWork() throws Exception {
         doReport();
-//        doWorkItem();
-//        doWorkTest();
     }
 
     public void doReport() throws Exception {
@@ -144,77 +107,6 @@ public class AdhocService {
         }
         csvWriter.close();
         System.out.println(stringWriter);
-    }
-
-    public void doWorkTest() throws Exception {
-        requestTimestampContext.setCurrentRequestTimestamp(new Date());
-
-        final InstructorUser dave = instructorUserDao.requireFindByLoginName("dmckain");
-        identityContext.setCurrentThreadEffectiveIdentity(dave);
-        identityContext.setCurrentThreadUnderlyingIdentity(dave);
-
-        final long did = 93L; /* ID of test delivery */
-        final String exitUrl = "/exit";
-
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
-
-        /* Render initial state */
-        final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
-
-        final Utf8Streamer utf8Streamer = new Utf8Streamer();
-        candidateTestDeliveryService.renderCurrentCandidateSessionState(candidateSession, renderingOptions, utf8Streamer);
-        System.out.println("Rendering after init:\n" + utf8Streamer.getResult());
-    }
-
-    public void doWorkItem() throws Exception {
-        requestTimestampContext.setCurrentRequestTimestamp(new Date());
-
-        final InstructorUser dave = instructorUserDao.requireFindByLoginName("dmckain");
-        identityContext.setCurrentThreadEffectiveIdentity(dave);
-        identityContext.setCurrentThreadUnderlyingIdentity(dave);
-
-        final long did = 4L; /* ID of delivery to try out (choice.xml) */
-        final String exitUrl = "/exit";
-
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
-
-        /* Render initial state */
-        final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
-
-        final Utf8Streamer utf8Streamer = new Utf8Streamer();
-        candidateItemDeliveryService.renderCurrentCandidateSessionState(candidateSession, renderingOptions, utf8Streamer);
-        System.out.println("Rendering after init:\n" + utf8Streamer.getResult());
-
-        /* Do bad attempt == file submission */
-        final Map<Identifier, MultipartFile> fileResponseMap = new HashMap<Identifier, MultipartFile>();
-        fileResponseMap.put(Identifier.parseString("RESPONSE"), new NullMultipartFile());
-        candidateItemDeliveryService.handleAttempt(candidateSession, null, fileResponseMap);
-
-        /* Do invalid attempt */
-        final Map<Identifier, StringResponseData> stringResponseMap = new HashMap<Identifier, StringResponseData>();
-        stringResponseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("x"));
-        candidateItemDeliveryService.handleAttempt(candidateSession, stringResponseMap, null);
-
-        /* Then valid attempt */
-        stringResponseMap.clear();
-        stringResponseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
-        candidateItemDeliveryService.handleAttempt(candidateSession, stringResponseMap, null);
-
-        /* Render new state */
-        candidateItemDeliveryService.renderCurrentCandidateSessionState(candidateSession, renderingOptions, utf8Streamer);
-        System.out.println("Rendering after first proper attempt:\n" + utf8Streamer.getResult());
-
-        /* Then reinit state */
-        candidateItemDeliveryService.reinitCandidateSession(candidateSession);
-
-        /* Then reset state */
-        candidateItemDeliveryService.resetCandidateSession(candidateSession);
-
-        /* Then end session */
-        candidateItemDeliveryService.closeCandidateSession(candidateSession);
-
-        /* Then close session */
-        candidateItemDeliveryService.terminateCandidateSession(candidateSession);
     }
 
     public static class Utf8Streamer implements OutputStreamer {
