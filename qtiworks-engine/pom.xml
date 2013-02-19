@@ -237,14 +237,14 @@ All Rights Reserved
     </profile>
     <!--
 
-    To update the bundled set of sample questions: "mvn -DQtiSampleImport exec:exec"
+    To update the bundled set of sample questions: "mvn -DQtiSampleImporter exec:exec"
 
     -->
     <profile>
-      <id>QtiSampleImport</id>
+      <id>QtiSampleImporter</id>
       <activation>
         <property>
-          <name>QtiSampleImport</name>
+          <name>QtiSampleImporter</name>
         </property>
       </activation>
       <build>
@@ -257,7 +257,7 @@ All Rights Reserved
               <arguments>
                 <argument>-classpath</argument>
                 <classpath/>
-                <argument>uk.ac.ed.ph.qtiworks.tools.QtiSampleImport</argument>
+                <argument>uk.ac.ed.ph.qtiworks.tools.QtiSampleImporter</argument>
               </arguments>
             </configuration>
           </plugin>

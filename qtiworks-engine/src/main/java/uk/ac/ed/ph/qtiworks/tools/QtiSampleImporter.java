@@ -45,10 +45,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  *
  * @author David McKain
  */
-public final class QtiSampleImport extends StandaloneRunTemplate {
+public final class QtiSampleImporter extends StandaloneRunTemplate {
 
     public static void main(final String[] args) throws Exception {
-        new QtiSampleImport().run(args);
+        new QtiSampleImporter().run(args);
     }
 
     @Override
