@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.base.services;
 
-import uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer;
+import uk.ac.ed.ph.qtiworks.web.QtiWorksWebApplicationContextInitializer;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
@@ -45,7 +45,7 @@ import org.springframework.stereotype.Component;
 /**
  * Bean injected with the runtime deployment settings for the webapp.
  *
- * @see QtiworksWebApplicationContextInitializer
+ * @see QtiWorksWebApplicationContextInitializer
  *
  * @author David McKain
  */

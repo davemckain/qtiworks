@@ -65,9 +65,9 @@ import org.springframework.web.context.support.StandardServletEnvironment;
  *
  * @author David McKain
  */
-public class QtiworksWebApplicationContextInitializer implements ApplicationContextInitializer<AnnotationConfigWebApplicationContext> {
+public class QtiWorksWebApplicationContextInitializer implements ApplicationContextInitializer<AnnotationConfigWebApplicationContext> {
 
-    private static final Logger logger = LoggerFactory.getLogger(QtiworksWebApplicationContextInitializer.class);
+    private static final Logger logger = LoggerFactory.getLogger(QtiWorksWebApplicationContextInitializer.class);
 
     /**
      * Name of the parameter specifying the URI of the <code>qtiworks-deployment.properties</code>

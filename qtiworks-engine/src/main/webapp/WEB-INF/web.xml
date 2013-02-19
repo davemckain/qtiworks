@@ -28,7 +28,7 @@ QTIWorks Delivery Engine web deployment descriptor
   </context-param>
   <context-param>
     <param-name>contextInitializerClasses</param-name>
-    <param-value>uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer</param-value>
+    <param-value>uk.ac.ed.ph.qtiworks.web.QtiWorksWebApplicationContextInitializer</param-value>
   </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
