@@ -31,11 +31,10 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.binding;
-
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -59,15 +58,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Core for the horribly cheap and nasty XML marshalling we do within the QTIWorks engine
- * to transport certain state Objects to/from XML for storage and passing to the rendering
- * layers.
+ * Core for the (horribly cheap and nasty) XML marshalling we do for serializing JQTI+ state
+ * Objects to/from XML. This is used in the QTIWorks Engine for storage and passing to the
+ * rendering layers, but might be useful in other applications too.
  *
  * @author David McKain
  */
@@ -154,7 +157,7 @@ public final class XmlMarshallerCore {
                     break;
 
                 default:
-                    throw new QtiWorksLogicException("Unexpected logic branch: " + cardinality);
+                    throw new QtiLogicException("Unexpected logic branch: " + cardinality);
 
             }
         }
@@ -291,7 +294,7 @@ public final class XmlMarshallerCore {
                 return parseRecordValue(element);
 
             default:
-                throw new QtiWorksLogicException("Unexpected logic branch " + cardinality);
+                throw new QtiLogicException("Unexpected logic branch " + cardinality);
         }
     }
 
@@ -395,6 +398,17 @@ public final class XmlMarshallerCore {
             throw new MarshallingException("Value "
                     + identifierAttrValue + " of attribute "
                     + identifierAttrName + " is not a valid QTI Identifier");
+        }
+    }
+
+    static final DocumentBuilder createNsAwareDocumentBuilder() {
+        try {
+            final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            documentBuilderFactory.setNamespaceAware(true);
+            return documentBuilderFactory.newDocumentBuilder();
+        }
+        catch (final ParserConfigurationException e) {
+            throw new QtiLogicException("Could not create NS Aware DocumentBuilder. Check deployment/runtime ClassPath", e);
         }
     }
 }

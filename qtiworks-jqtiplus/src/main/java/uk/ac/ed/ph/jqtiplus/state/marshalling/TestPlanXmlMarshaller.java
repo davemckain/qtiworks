@@ -31,9 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.binding;
-
-import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
+package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
@@ -62,7 +60,7 @@ import org.xml.sax.InputSource;
 public final class TestPlanXmlMarshaller {
 
     public static Document marshal(final TestPlan testPlan) {
-        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
+        final DocumentBuilder documentBuilder = XmlMarshallerCore.createNsAwareDocumentBuilder();
         final Document document = documentBuilder.newDocument();
         appendTestPlan(document, testPlan);
         return document;
@@ -109,7 +107,7 @@ public final class TestPlanXmlMarshaller {
     //----------------------------------------------
 
     public static TestPlan unmarshal(final String xmlString) {
-        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
+        final DocumentBuilder documentBuilder = XmlMarshallerCore.createNsAwareDocumentBuilder();
         Document document;
         try {
             document = documentBuilder.parse(new InputSource(new StringReader(xmlString)));

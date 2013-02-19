@@ -31,16 +31,16 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.binding;
+package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 /**
  * FIXME: Document this type
  *
  * @author David McKain
  */
-public final class MarshallingException extends QtiWorksRuntimeException {
+public final class MarshallingException extends QtiRuntimeException {
 
     private static final long serialVersionUID = -6528489239978493663L;
 

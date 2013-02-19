@@ -33,14 +33,14 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
-import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.state.marshalling.ItemSessionStateXmlMarshaller;
+import uk.ac.ed.ph.jqtiplus.state.marshalling.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;

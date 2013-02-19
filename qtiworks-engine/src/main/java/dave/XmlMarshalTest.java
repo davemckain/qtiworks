@@ -33,10 +33,6 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.domain.binding.ItemSessionStateXmlMarshaller;
-import uk.ac.ed.ph.qtiworks.domain.binding.TestPlanXmlMarshaller;
-import uk.ac.ed.ph.qtiworks.domain.binding.TestSessionStateXmlMarshaller;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
@@ -46,6 +42,9 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.state.marshalling.ItemSessionStateXmlMarshaller;
+import uk.ac.ed.ph.jqtiplus.state.marshalling.TestPlanXmlMarshaller;
+import uk.ac.ed.ph.jqtiplus.state.marshalling.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;

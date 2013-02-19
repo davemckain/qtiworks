@@ -31,12 +31,10 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.binding;
-
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
+package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -68,7 +66,7 @@ import org.xml.sax.InputSource;
 public final class ItemSessionStateXmlMarshaller {
 
     public static Document marshal(final ItemSessionState itemSessionState) {
-        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
+        final DocumentBuilder documentBuilder = XmlMarshallerCore.createNsAwareDocumentBuilder();
         final Document document = documentBuilder.newDocument();
         appendItemSessionState(document, itemSessionState);
         return document;
@@ -138,14 +136,14 @@ public final class ItemSessionStateXmlMarshaller {
                 break;
 
             default:
-                throw new QtiWorksLogicException("Unexpected switch case " + responseData.getType());
+                throw new QtiLogicException("Unexpected switch case " + responseData.getType());
         }
     }
 
     //----------------------------------------------
 
     public static ItemSessionState unmarshal(final String xmlString) {
-        final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
+        final DocumentBuilder documentBuilder = XmlMarshallerCore.createNsAwareDocumentBuilder();
         Document document;
         try {
             document = documentBuilder.parse(new InputSource(new StringReader(xmlString)));
