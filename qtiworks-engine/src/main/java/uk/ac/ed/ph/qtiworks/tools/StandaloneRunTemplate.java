@@ -34,17 +34,15 @@
 package uk.ac.ed.ph.qtiworks.tools;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.web.QtiWorksApplicationContextHelper;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.io.support.ResourcePropertySource;
 
 /**
  * Base template for standalone launches
@@ -71,27 +69,17 @@ public abstract class StandaloneRunTemplate {
         if (args.length==0) {
             throw new QtiWorksRuntimeException("Provide a path to the QTIWorks deployment properties file (relative to current directory)");
         }
-        final String springResourceUri = extractDeploymentPropertiesUri(args[0]);
+        final String deploymentPropertiesResourceUri = extractDeploymentPropertiesUri(args[0]);
+        logger.info("Will load deployment properties from Spring Resource URI {}", deploymentPropertiesResourceUri);
 
         /* Pop first argument and check what's left */
         final String[] remainingArgs = new String[args.length-1];
         System.arraycopy(args, 1, remainingArgs, 0, remainingArgs.length);
         validateRemainingArguments(remainingArgs);
 
-        logger.info("Loading QTIWorks deployment properties from {}", springResourceUri);
-        ResourcePropertySource resourcePropertySource;
-        try {
-            resourcePropertySource = new ResourcePropertySource(springResourceUri);
-        }
-        catch (final IOException e) {
-            throw new QtiWorksRuntimeException("Failed to load QTIWorks deployment properties from " + springResourceUri);
-        }
-
         logger.info("Setting up Spring ApplicationContext");
         final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        final MutablePropertySources propertySources = ctx.getEnvironment().getPropertySources();
-        propertySources.addFirst(new ResourcePropertySource("classpath:/qtiworks.properties"));
-        propertySources.addFirst(resourcePropertySource);
+        QtiWorksApplicationContextHelper.registerConfigPropertySources(ctx, deploymentPropertiesResourceUri);
         ctx.register(getConfigClasses());
         ctx.refresh();
 

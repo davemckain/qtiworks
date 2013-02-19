@@ -34,21 +34,16 @@
 package uk.ac.ed.ph.qtiworks.web;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksDeploymentException;
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.ResourcePropertySource;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
@@ -86,26 +81,10 @@ public class QtiWorksWebApplicationContextInitializer implements ApplicationCont
                     + " was not found after searching " + environment.getPropertySources());
         }
 
-        /* Try to load properties */
-        logger.info("Loading QTIWorks deployment configuration resource from {}", deploymentPropertiesUri);
-        ResourcePropertySource resourcePropertySource;
-        try {
-            resourcePropertySource = new ResourcePropertySource(deploymentPropertiesUri);
-        }
-        catch (final IOException e) {
-            throw new QtiWorksDeploymentException("Failed to load QTIWorks deployment properties from " + deploymentPropertiesUri);
-        }
+        /* Register property sources */
+        QtiWorksApplicationContextHelper.registerConfigPropertySources(applicationContext, deploymentPropertiesUri);
 
-        /* Add these properties to the environment for the rest of the bootstrap */
-        final MutablePropertySources propertySources = environment.getPropertySources();
-        try {
-            propertySources.addFirst(new ResourcePropertySource("classpath:/qtiworks.properties"));
-        }
-        catch (final IOException e) {
-            throw QtiWorksRuntimeException.unexpectedException(e);
-        }
-        propertySources.addFirst(resourcePropertySource);
-
+        /* Then set up ApplicationContext */
         logger.info("Initialising QTIWorks webapp ApplicationContext");
         applicationContext.register(
             JpaProductionConfiguration.class,
