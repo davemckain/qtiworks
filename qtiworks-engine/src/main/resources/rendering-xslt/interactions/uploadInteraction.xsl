@@ -16,11 +16,40 @@
           <xsl:apply-templates select="qti:prompt"/>
         </div>
       </xsl:if>
-      <input type="file" name="qtiworks_uploadresponse_{@responseIdentifier}">
-        <xsl:if test="$isSessionClosed">
-          <xsl:attribute name="disabled">disabled</xsl:attribute>
-        </xsl:if>
-      </input>
+      <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
+      <xsl:choose>
+        <xsl:when test="not(empty($responseValue))">
+          <!-- Already uploaded something, so show file and ability to replace it -->
+          <div class="fileUploadStatus">
+            Uploaded: <xsl:value-of select="$responseValue/qw:value/@fileName"/>
+          </div>
+          <xsl:choose>
+            <xsl:when test="$isSessionInteracting">
+              <div class="fileUploadInstruction">
+                Upload New File
+              </div>
+              <input type="file" name="qtiworks_uploadresponse_{@responseIdentifier}"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <input type="file" name="qtiworks_uploadresponse_{@responseIdentifier}" disabled="disabled"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <!-- Nothing uploaded yet -->
+          <xsl:choose>
+            <xsl:when test="$isSessionInteracting">
+              <div class="fileUploadInstruction">
+                Upload File
+              </div>
+              <input type="file" name="qtiworks_uploadresponse_{@responseIdentifier}"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <input type="file" name="qtiworks_uploadresponse_{@responseIdentifier}" disabled="disabled"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
     </div>
   </xsl:template>
 

@@ -68,9 +68,8 @@ import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
@@ -126,6 +125,9 @@ public class AssessmentManagementService {
 
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
+
+    @Resource
+    private DataDeletionService dataDeletionService;
 
     @Resource
     private AssessmentPackageFileImporter assessmentPackageFileImporter;
@@ -248,6 +250,25 @@ public class AssessmentManagementService {
         return assessment;
     }
 
+    /**
+     * Deletes the {@link Assessment} having the given aid and owned by the caller.
+     *
+     * NOTE: This deletes ALL associated data, including candidate data. Use with care!
+     */
+    public void deleteAssessment(final long aid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up assessment and check permissions */
+        final Assessment assessment = assessmentDao.requireFindById(aid);
+        ensureCallerOwns(assessment);
+
+        /* Now delete it and all associated data */
+        dataDeletionService.deleteAssessment(assessment);
+
+        /* Log what happened */
+        logger.debug("Deleted Assessment #{}", assessment.getId());
+        auditor.recordEvent("Deleted Assessment #" + assessment.getId());
+    }
+
     public Assessment updateAssessment(final long aid, final UpdateAssessmentCommand command)
             throws BindException, DomainEntityNotFoundException, PrivilegeException {
         /* Validate data */
@@ -265,7 +286,6 @@ public class AssessmentManagementService {
         /* Make changes */
         assessment.setName(command.getName().trim());
         assessment.setTitle(command.getTitle().trim());
-        assessment.setPublic(command.isPublic());
         assessmentDao.update(assessment);
         return assessment;
     }
@@ -318,18 +338,7 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-    // Not implemented
-
-    @Transactional(propagation=Propagation.REQUIRED)
-    @SuppressWarnings("unused")
-    @ToRefactor
-    public void deleteAssessment(final Assessment assessment)
-            throws AssessmentStateException, PrivilegeException {
-        /* In order to do this correctly, we need to delete all state that might have
-         * been associated with this assessment as well, so we'll come back to this...
-         */
-        throw new QtiLogicException("Not yet implemented!");
-    }
+    // Not implemented yet
 
     /**
      * DEV NOTES:
@@ -358,7 +367,7 @@ public class AssessmentManagementService {
         final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
 
         /* Run the validation process */
-        final AssessmentObjectValidationResult<?> validationResult = validateAssessment(currentAssessmentPackage);
+        final AssessmentObjectValidationResult<?> validationResult = loadAndValidateAssessment(currentAssessmentPackage);
 
         /* Persist results */
         currentAssessmentPackage.setValidated(true);
@@ -376,18 +385,17 @@ public class AssessmentManagementService {
      */
     @SuppressWarnings("unchecked")
     <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
-    validateAssessment(final AssessmentPackage assessmentPackage) {
+    loadAndValidateAssessment(final AssessmentPackage assessmentPackage) {
         final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
         final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(inputResourceLocator);
-        final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-        E result;
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
         final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
+        E result;
         if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) objectManager.resolveAndValidateItem(assessmentObjectSystemId);
+            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateItem(assessmentObjectSystemId);
         }
         else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) objectManager.resolveAndValidateTest(assessmentObjectSystemId);
+            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateTest(assessmentObjectSystemId);
         }
         else {
             throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
@@ -454,25 +462,27 @@ public class AssessmentManagementService {
         return deliverySettings;
     }
 
-    private void ensureCallerMayAccess(final DeliverySettings deliverySettings)
+    private User ensureCallerMayAccess(final DeliverySettings deliverySettings)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!deliverySettings.isPublic() && !caller.equals(deliverySettings.getOwner())) {
             throw new PrivilegeException(caller, Privilege.ACCESS_DELIVERY_SETTINGS, deliverySettings);
         }
+        return caller;
     }
 
-    private void ensureCallerOwns(final DeliverySettings deliverySettings)
+    private User ensureCallerOwns(final DeliverySettings deliverySettings)
             throws PrivilegeException {
         final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         if (!caller.equals(deliverySettings.getOwner())) {
             throw new PrivilegeException(caller, Privilege.OWN_DELIVERY_SETTINGS, deliverySettings);
         }
+        return caller;
     }
 
-    private void ensureCallerMayChange(final DeliverySettings deliverySettings)
+    private User ensureCallerMayChange(final DeliverySettings deliverySettings)
             throws PrivilegeException {
-        ensureCallerOwns(deliverySettings);
+        return ensureCallerOwns(deliverySettings);
     }
 
     private User ensureCallerMayCreateDeliverySettings() throws PrivilegeException {
@@ -542,7 +552,6 @@ public class AssessmentManagementService {
 
     private void mergeItemDeliverySettings(final ItemDeliverySettingsTemplate template, final ItemDeliverySettings target) {
         target.setAllowClose(template.isAllowClose());
-        target.setAllowPlayback(template.isAllowPlayback());
         target.setAllowReinitWhenClosed(template.isAllowReinitWhenClosed());
         target.setAllowReinitWhenInteracting(template.isAllowReinitWhenInteracting());
         target.setAllowResetWhenClosed(template.isAllowResetWhenClosed());
@@ -559,7 +568,6 @@ public class AssessmentManagementService {
 
     public void mergeItemDeliverySettings(final ItemDeliverySettings template, final ItemDeliverySettingsTemplate target) {
         target.setAllowClose(template.isAllowClose());
-        target.setAllowPlayback(template.isAllowPlayback());
         target.setAllowReinitWhenClosed(template.isAllowReinitWhenClosed());
         target.setAllowReinitWhenInteracting(template.isAllowReinitWhenInteracting());
         target.setAllowResetWhenClosed(template.isAllowResetWhenClosed());
@@ -644,6 +652,27 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
+
+    public void deleteDeliverySettings(final long dsid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up entity and check permissions */
+        final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
+        final User caller = ensureCallerOwns(deliverySettings);
+
+        /* Make sure settings aren't being used */
+        if (deliveryDao.countUsingSettings(deliverySettings) > 0) {
+            throw new PrivilegeException(caller, deliverySettings, Privilege.DELETE_USED_DELIVERY_SETTINGS);
+        }
+
+        /* Delete entity */
+        deliverySettingsDao.remove(deliverySettings);
+
+        /* Log what happened */
+        logger.debug("Deleted DeliverySettings #{}", deliverySettings.getId());
+        auditor.recordEvent("Deleted DeliverySettings #" + deliverySettings.getId());
+    }
+
+    //-------------------------------------------------
     // CRUD for Delivery
     // (access controls are governed by owning Assessment)
 
@@ -713,6 +742,29 @@ public class AssessmentManagementService {
         delivery.setLtiConsumerSecret(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
         deliveryDao.persist(delivery);
         return delivery;
+    }
+
+    /**
+     * Deletes the {@link Delivery} having the given did and owned by the caller.
+     *
+     * NOTE: This deletes ALL associated data, including candidate data. Use with care!
+     * @return
+     */
+    @Transactional(propagation=Propagation.REQUIRED)
+    public Assessment deleteDelivery(final long did)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up assessment and check permissions */
+        final Delivery delivery = deliveryDao.requireFindById(did);
+        final Assessment assessment = delivery.getAssessment();
+        ensureCallerOwns(assessment);
+
+        /* Now delete it and all associated data */
+        dataDeletionService.deleteDelivery(delivery);
+
+        /* Log what happened */
+        logger.debug("Deleted Delivery #{}", did);
+        auditor.recordEvent("Deleted Delivery #" + did);
+        return assessment;
     }
 
     public Delivery updateDelivery(final long did, final DeliveryTemplate template)
@@ -843,7 +895,6 @@ public class AssessmentManagementService {
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
         template.setAllowClose(true);
-        template.setAllowPlayback(true);
         template.setAllowReinitWhenClosed(true);
         template.setAllowReinitWhenInteracting(true);
         template.setAllowResetWhenClosed(true);

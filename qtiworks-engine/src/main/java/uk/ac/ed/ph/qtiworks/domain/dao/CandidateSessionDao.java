@@ -63,6 +63,12 @@ public class CandidateSessionDao extends GenericDao<CandidateSession> {
         super(CandidateSession.class);
     }
 
+    public List<CandidateSession> getForCandidate(final User candidate) {
+        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForCandidate", CandidateSession.class);
+        query.setParameter("candidate", candidate);
+        return query.getResultList();
+    }
+
     public List<CandidateSession> getForDelivery(final Delivery delivery) {
         final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForDelivery", CandidateSession.class);
         query.setParameter("delivery", delivery);

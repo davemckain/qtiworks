@@ -61,14 +61,15 @@ public final class IdentifierMultipleAttribute extends MultipleAttribute<Identif
     public void validateBasic(final ValidationContext context) {
         super.validateBasic(context);
 
-        /* Spec recommends identifiers are not more than 32 characters */
-        if (value!=null) {
-            for (final Identifier item : value) {
-                if (item.toString().length() > 32) {
-                    context.fireAttributeValidationWarning(this, "The identifiers " + item + " is recommended to be no more than 32 characters long");
-                }
-            }
-        }
+// FIXME: Re-enable this once we relax constraints on running invalid assessments
+//        /* Spec recommends identifiers are not more than 32 characters */
+//        if (value!=null) {
+//            for (final Identifier item : value) {
+//                if (item.toString().length() > 32) {
+//                    context.fireAttributeValidationWarning(this, "The identifiers " + item + " is recommended to be no more than 32 characters long");
+//                }
+//            }
+//        }
     }
 
     @Override

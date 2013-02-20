@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.reading;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
@@ -51,9 +50,9 @@ import java.util.List;
  * @author David McKain
  */
 public final class QtiXmlInterpretationException extends BadResourceException {
-    
+
     private static final long serialVersionUID = 5190957743384561923L;
-    
+
     public static enum InterpretationFailureReason {
         XML_PARSE_FAILED,
         XML_SCHEMA_VALIDATION_FAILED,
@@ -64,43 +63,37 @@ public final class QtiXmlInterpretationException extends BadResourceException {
     }
 
     private final InterpretationFailureReason interpretationFailureReason;
-    private final ModelRichness requiredModelRichness;
     private final Class<? extends RootNode> requiredResultClass;
     private final XmlParseResult xmlParseResult;
     private final RootNode rootNode;
     private final List<QtiModelBuildingError> qtiModelBuildingErrors;
-    
-    QtiXmlInterpretationException(InterpretationFailureReason interpretationFailureReason, String message, 
-            ModelRichness modelRichness,
-            Class<? extends RootNode> requiredResultClass, XmlParseResult xmlParseResult) {
-        this(interpretationFailureReason, message, modelRichness, requiredResultClass, xmlParseResult, null, null);
+
+    QtiXmlInterpretationException(final InterpretationFailureReason interpretationFailureReason, final String message,
+            final Class<? extends RootNode> requiredResultClass,
+            final XmlParseResult xmlParseResult) {
+        this(interpretationFailureReason, message, requiredResultClass, xmlParseResult, null, null);
     }
-    
-    QtiXmlInterpretationException(InterpretationFailureReason interpretationFailureReason, String message,
-            ModelRichness modelRichness,
-            Class<? extends RootNode> requiredResultClass, XmlParseResult xmlParseResult,
-            RootNode rootNode, List<QtiModelBuildingError> qtiModelBuildingErrors) {
+
+    QtiXmlInterpretationException(final InterpretationFailureReason interpretationFailureReason, final String message,
+            final Class<? extends RootNode> requiredResultClass,
+            final XmlParseResult xmlParseResult, final RootNode rootNode,
+            final List<QtiModelBuildingError> qtiModelBuildingErrors) {
         super(message);
         this.interpretationFailureReason = interpretationFailureReason;
-        this.requiredModelRichness = modelRichness;
         this.requiredResultClass = requiredResultClass;
         this.xmlParseResult = xmlParseResult;
         this.rootNode = rootNode;
         this.qtiModelBuildingErrors = qtiModelBuildingErrors;
     }
-    
+
     public InterpretationFailureReason getInterpretationFailureReason() {
         return interpretationFailureReason;
     }
-    
+
     public URI getSystemId() {
         return xmlParseResult.getSystemId();
     }
 
-    public ModelRichness getRequiredModelRichness() {
-        return requiredModelRichness;
-    }
-    
     public Class<? extends RootNode> getRequiredResultClass() {
         return requiredResultClass;
     }
@@ -109,7 +102,7 @@ public final class QtiXmlInterpretationException extends BadResourceException {
     public XmlParseResult getXmlParseResult() {
         return xmlParseResult;
     }
-    
+
     public RootNode getRootNode() {
         return rootNode;
     }

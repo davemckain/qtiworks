@@ -40,8 +40,10 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -51,6 +53,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -66,6 +69,11 @@ import javax.persistence.TemporalType;
 @Table(name="candidate_sessions")
 @SequenceGenerator(name="candidateSessionSequence", sequenceName="candidate_session_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
+    @NamedQuery(name="CandidateSession.getForCandidate",
+            query="SELECT x"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.candidate = :candidate"
+                + "  ORDER BY x.id"),
     @NamedQuery(name="CandidateSession.getForDelivery",
             query="SELECT x"
                 + "  FROM CandidateSession x"
@@ -86,7 +94,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Id
     @GeneratedValue(generator="candidateSessionSequence")
     @Column(name="xid")
-    private Long id;
+    private Long xid;
 
     /** Session creation timestamp */
     @Basic(optional=false)
@@ -146,16 +154,31 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Column(name="terminated")
     private boolean terminated;
 
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
+    private Set<CandidateEvent> candidateEvents;
+
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
+    private Set<CandidateFileSubmission> candidateFileSubmissions;
+
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
+    private Set<CandidateSessionOutcome> candidateSessionOutcomes;
+
     //------------------------------------------------------------
 
     @Override
     public Long getId() {
-        return id;
+        return xid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.xid = id;
     }
 
 
@@ -229,7 +252,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
+                + "(xid=" + xid
                 + ",closed=" + closed
                 + ",terminated=" + terminated
                 + ")";

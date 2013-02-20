@@ -43,7 +43,9 @@ import java.io.Serializable;
  * This value can be single, multiple, ordered, record or NULL.
  * <p>
  * In JQTI+, all {@link Value}s are now immutable. (Some implementations were mutable in the
- * original JQTI.) A NULL value is always represented by {@link NullValue}.
+ * original JQTI.)
+ * <p>
+ * A NULL value is always represented by {@link NullValue}.
  *
  * @author Jiri Kajaba
  * @author David McKain (revised)
@@ -51,24 +53,71 @@ import java.io.Serializable;
 public interface Value extends Serializable, Stringifiable {
 
     /**
-     * Returns true if this value is NULL or false otherwise.
+     * Returns true if this value is NULL, false otherwise.
      */
     boolean isNull();
 
     /**
      * Returns cardinality of this value.
      * <p>
-     * If value is NULL returns null.
+     * If this value is NULL then null is returned.
+     *
+     * @return the {@link Cardinality} of this value, or null if this
+     * value is NULL.
      */
     Cardinality getCardinality();
 
     /**
      * Returns baseType of this value.
      * <p>
-     * If value is NULL or record cardinality returns null.
+     * If value is NULL or record cardinality then null is returned.
+     *
+     * @return the {@link BaseType} of this value, or null if this value
+     * is NULL or has record cardinality.
      */
     BaseType getBaseType();
 
+    /**
+     * Returns the computed {@link Signature} for this value.
+     * <p>
+     * If this value is NULL then null is returned.
+     *
+     * @return the {@link Signature} of this value, or null if this
+     *   value is NULL
+     */
+    Signature getSignature();
+
+    /**
+     * Tests whether this value has the given {@link Cardinality}.
+     *
+     * @return true if this value is null, the requested cardinality
+     * is not null and this value's cardinality equals the requested
+     * cardinality. Otherwise returns false.
+     *
+     * @param cardinality cardinality to test
+     */
+    boolean hasCardinality(Cardinality cardinality);
+
+    /**
+     * Tests whether this value has the given {@link BaseType}.
+     *
+     * @return true if this value is null, the requested baseType
+     * is not null and this value's baseType is not null and
+     * equals the requested baseType. Otherwise returns false.
+     *
+     * @param baseType baseType to test
+     */
+    boolean hasBaseType(BaseType baseType);
+
+    /**
+     * Tests whether this value has the given {@link Signature}.
+     *
+     * @return true if this value is null, the requested signature
+     * is not null and this value's computed {@link Signature} matches
+     * the provided {@link Signature}. Otherwise returns false.
+     *
+     * @param baseType baseType to test
+     */
     boolean hasSignature(Signature signature);
 
     /**
@@ -79,7 +128,7 @@ public interface Value extends Serializable, Stringifiable {
      * default {@link #equals(Object)} method for this.
      *
      * @param other value to compare with, which will not be
-     *   Java null (but might respresent a QTI NULL value!)
+     *   Java null (but might be a {@link NullValue})
      */
     boolean qtiEquals(Value other);
 

@@ -42,7 +42,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.pooling.QtiMaximaProcessPoolManager;
 
 import uk.ac.ed.ph.jqtiplus.ExtensionNamespaceInfo;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
-import uk.ac.ed.ph.jqtiplus.LifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
@@ -143,16 +143,6 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
     }
 
     @Override
-    public Set<String> getImplementedCustomInteractionClasses() {
-        return customInteractionClasses;
-    }
-
-    @Override
-    public Set<String> getImplementedCustomOperatorClasses() {
-        return customOperatorClasses;
-    }
-
-    @Override
     public CustomOperator<MathAssessExtensionPackage> createCustomOperator(final ExpressionParent expressionParent, final String operatorClassName) {
         if (MathAssessConstants.CAS_COMPARE_CLASS.equals(operatorClassName)) {
             return new CasCompare(expressionParent);
@@ -181,7 +171,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
     // ------------------------------------------------------------------------
 
     @Override
-    public void lifecycleEvent(final Object source, final LifecycleEventType eventType) {
+    public void lifecycleEvent(final Object source, final JqtiLifecycleEventType eventType) {
         logger.trace("Received lifecycle event {}", eventType);
         switch (eventType) {
             case MANAGER_INITIALISED:
@@ -194,6 +184,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
 
             case ITEM_TEMPLATE_PROCESSING_STARTING:
             case ITEM_RESPONSE_PROCESSING_STARTING:
+            case TEST_OUTCOME_PROCESSING_STARTING:
                 /* Rather than creating a Maxima process at this point that may
                  * not be used,
                  * we'll wait until it is first needed. */
@@ -201,6 +192,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
 
             case ITEM_TEMPLATE_PROCESSING_FINISHED:
             case ITEM_RESPONSE_PROCESSING_FINISHED:
+            case TEST_OUTCOME_PROCESSING_FINISHED:
                 releaseMaximaSessionForThread();
                 break;
 

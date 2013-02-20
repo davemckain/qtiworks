@@ -55,8 +55,6 @@ import org.springframework.web.context.WebApplicationContext;
  * This filter "authenticates" an anonymous user when accessing stateful resources,
  * by creating a DB entity that store the user's state during her visit to the system.
  *
- * FIXME: We need to come up with a strategy for deleting these entities once the session expires
- *
  * @author David McKain
  */
 public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticationFilter {

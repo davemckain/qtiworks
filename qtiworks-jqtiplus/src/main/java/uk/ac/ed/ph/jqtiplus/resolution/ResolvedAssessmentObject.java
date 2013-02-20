@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
 
 import java.io.Serializable;
@@ -45,7 +45,7 @@ import java.io.Serializable;
 /**
  * Base class for the result of "resolving" an {@link AssessmentObject}.
  *
- * @see AssessmentObjectManager
+ * @see AssessmentObjectXmlLoader
  * @see AssessmentObjectValidator
  *
  * @author David McKain
@@ -57,11 +57,8 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
     /** {@link AssessmentObject} lookup */
     protected final RootNodeLookup<E> rootNodeLookup;
 
-    protected final ModelRichness modelRichness;
-
-    public ResolvedAssessmentObject(final ModelRichness modelRichness, final RootNodeLookup<E> rootNodeLookup) {
+    public ResolvedAssessmentObject(final RootNodeLookup<E> rootNodeLookup) {
         this.rootNodeLookup = rootNodeLookup;
-        this.modelRichness = modelRichness;
     }
 
     public abstract AssessmentObjectType getType();
@@ -69,9 +66,5 @@ public abstract class ResolvedAssessmentObject<E extends AssessmentObject> imple
     @ObjectDumperOptions(DumpMode.IGNORE)
     public RootNodeLookup<E> getRootNodeLookup() {
         return rootNodeLookup;
-    }
-
-    public ModelRichness getModelRichness() {
-        return modelRichness;
     }
 }

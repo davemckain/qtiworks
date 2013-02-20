@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.resolution;
 
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -41,9 +40,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
-import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidator;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationResult;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -55,57 +51,49 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Document this type
- *
- * Item validation: read item, full validation. use cache RP template if available, otherwise look up new one (schema validating)
- * and record the lookup within the validation result. Will then return a ValidationResult
- * that contains full details of the item + RP template reads within.
- *
- * Item evaluation: read item, no validation, resolve RP template. Return state ready to go.
- *
- * Test validation: read test, full validation, use cache to locate items, recording validated lookups on each unique resolved System ID.
- * Will need to resolve (and validate) each RP template as well, which should hit cache as it's
- * likely that the same template will be used frequently within a test. ValidationResult should
- * contain full details.
- * Only validate each unique item (identified by URI).
- * Validation of items would use caching on RP templates as above.
+ * Performs "resolution" of an {@link AssessmentItem} or {@link AssessmentTest}, using
+ * a {@link RootNodeProvider} to obtain the item/test and referenced RP templates and test
+ * items.
+ * <p>
+ * This provides a rich {@link ResolvedAssessmentItem} or {@link ResolvedAssessmentTest}
+ * which is useful for the running/delivery of assessments.
  *
  * @author David McKain
  */
-public final class AssessmentObjectManager {
+public final class AssessmentObjectResolver {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentObjectResolver.class);
 
-    private final RootNodeProvider resourceProvider;
+    private final RootNodeProvider rootNodeProvider;
 
-    public AssessmentObjectManager(final RootNodeProvider resourceProvider) {
-        this.resourceProvider = resourceProvider;
+    public AssessmentObjectResolver(final RootNodeProvider rootNodeProvider) {
+        this.rootNodeProvider = rootNodeProvider;
     }
 
     //-------------------------------------------------------------------
-    // AssessmentItem resolution & validation
+    // AssessmentItem resolution
 
-    public ResolvedAssessmentItem resolveAssessmentItem(final URI systemId, final ModelRichness modelRichness) {
-        return resolveAssessmentItem(systemId, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
+    public ResolvedAssessmentItem resolveAssessmentItem(final URI systemId) {
+        return resolveAssessmentItem(systemId, new CachedResourceProvider(rootNodeProvider));
     }
 
-    private ResolvedAssessmentItem resolveAssessmentItem(final URI systemId, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
+    private ResolvedAssessmentItem resolveAssessmentItem(final URI systemId, final CachedResourceProvider cachedResourceProvider) {
         final RootNodeLookup<AssessmentItem> itemLookup = cachedResourceProvider.getLookup(systemId, AssessmentItem.class);
-        return initResolvedAssessmentItem(itemLookup, modelRichness, cachedResourceProvider);
+        return initResolvedAssessmentItem(itemLookup, cachedResourceProvider);
     }
 
-    public ResolvedAssessmentItem resolveAssessmentItem(final AssessmentItem assessmentItem, final ModelRichness modelRichness) {
+    public ResolvedAssessmentItem resolveAssessmentItem(final AssessmentItem assessmentItem) {
         final RootNodeLookup<AssessmentItem> itemWrapper = new RootNodeLookup<AssessmentItem>(assessmentItem);
-        return initResolvedAssessmentItem(itemWrapper, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
+        return initResolvedAssessmentItem(itemWrapper, new CachedResourceProvider(rootNodeProvider));
     }
 
-    private ResolvedAssessmentItem initResolvedAssessmentItem(final RootNodeLookup<AssessmentItem> itemLookup, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
+    private ResolvedAssessmentItem initResolvedAssessmentItem(final RootNodeLookup<AssessmentItem> itemLookup, final CachedResourceProvider cachedResourceProvider) {
         RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup = null;
         final AssessmentItem item = itemLookup.extractIfSuccessful();
         if (item!=null) {
             resolvedResponseProcessingTemplateLookup = resolveResponseProcessingTemplate(item, cachedResourceProvider);
         }
-        return new ResolvedAssessmentItem(modelRichness, itemLookup, resolvedResponseProcessingTemplateLookup);
+        return new ResolvedAssessmentItem(itemLookup, resolvedResponseProcessingTemplateLookup);
     }
 
     private RootNodeLookup<ResponseProcessing> resolveResponseProcessingTemplate(final AssessmentItem item, final CachedResourceProvider cachedResourceProvider) {
@@ -143,28 +131,24 @@ public final class AssessmentObjectManager {
         return result;
     }
 
-    public ItemValidationResult resolveAndValidateItem(final URI systemId) {
-        return new AssessmentObjectValidator(resourceProvider).validateItem(resolveAssessmentItem(systemId, ModelRichness.FOR_VALIDATION));
-    }
-
     //-------------------------------------------------------------------
-    // AssessmentTest resolution & validation
+    // AssessmentTest resolution
 
-    public ResolvedAssessmentTest resolveAssessmentTest(final URI systemId, final ModelRichness modelRichness) {
-        return resolveAssessmentTest(systemId, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
+    public ResolvedAssessmentTest resolveAssessmentTest(final URI systemId) {
+        return resolveAssessmentTest(systemId, new CachedResourceProvider(rootNodeProvider));
     }
 
-    private ResolvedAssessmentTest resolveAssessmentTest(final URI systemId, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
+    private ResolvedAssessmentTest resolveAssessmentTest(final URI systemId, final CachedResourceProvider cachedResourceProvider) {
         final RootNodeLookup<AssessmentTest> testLookup = cachedResourceProvider.getLookup(systemId, AssessmentTest.class);
-        return initResolvedAssessmentTest(testLookup, modelRichness, cachedResourceProvider);
+        return initResolvedAssessmentTest(testLookup, cachedResourceProvider);
     }
 
-    public ResolvedAssessmentTest resolveAssessmentTest(final AssessmentTest assessmentTest, final ModelRichness modelRichness) {
+    public ResolvedAssessmentTest resolveAssessmentTest(final AssessmentTest assessmentTest) {
         final RootNodeLookup<AssessmentTest> testWrapper = new RootNodeLookup<AssessmentTest>(assessmentTest);
-        return initResolvedAssessmentTest(testWrapper, modelRichness, new CachedResourceProvider(resourceProvider, modelRichness));
+        return initResolvedAssessmentTest(testWrapper, new CachedResourceProvider(rootNodeProvider));
     }
 
-    private ResolvedAssessmentTest initResolvedAssessmentTest(final RootNodeLookup<AssessmentTest> testLookup, final ModelRichness modelRichness, final CachedResourceProvider cachedResourceProvider) {
+    private ResolvedAssessmentTest initResolvedAssessmentTest(final RootNodeLookup<AssessmentTest> testLookup, final CachedResourceProvider cachedResourceProvider) {
         final List<AssessmentItemRef> assessmentItemRefs = new ArrayList<AssessmentItemRef>();
         final Map<AssessmentItemRef, URI> systemIdByItemRefMap = new LinkedHashMap<AssessmentItemRef, URI>();
         final Map<URI, List<AssessmentItemRef>> itemRefsBySystemIdMap = new LinkedHashMap<URI, List<AssessmentItemRef>>();
@@ -192,17 +176,11 @@ public final class AssessmentObjectManager {
 
             /* Resolve each unique item */
             for (final URI itemSystemId : itemRefsBySystemIdMap.keySet()) {
-                resolvedAssessmentItemMap.put(itemSystemId, resolveAssessmentItem(itemSystemId, modelRichness, cachedResourceProvider));
+                resolvedAssessmentItemMap.put(itemSystemId, resolveAssessmentItem(itemSystemId, cachedResourceProvider));
             }
         }
-        return new ResolvedAssessmentTest(modelRichness, testLookup, assessmentItemRefs,
+        return new ResolvedAssessmentTest(testLookup, assessmentItemRefs,
                 systemIdByItemRefMap, itemRefsBySystemIdMap, resolvedAssessmentItemMap);
-    }
-
-    //-------------------------------------------------------------------
-
-    public TestValidationResult resolveAndValidateTest(final URI systemId) {
-        return new AssessmentObjectValidator(resourceProvider).validateTest(resolveAssessmentTest(systemId, ModelRichness.FOR_VALIDATION));
     }
 
     //-------------------------------------------------------------------
@@ -218,7 +196,7 @@ public final class AssessmentObjectManager {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(resourceProvider=" + resourceProvider
+                + "(rootNodeProvider=" + rootNodeProvider
                 + ")";
     }
 }

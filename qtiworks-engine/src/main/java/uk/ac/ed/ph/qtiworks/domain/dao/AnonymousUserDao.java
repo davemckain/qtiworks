@@ -35,6 +35,9 @@ package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -63,5 +66,11 @@ public class AnonymousUserDao extends GenericDao<AnonymousUser> {
         final TypedQuery<AnonymousUser> query = em.createNamedQuery("AnonymousUser.findBySessionId", AnonymousUser.class);
         query.setParameter("sessionId", sessionId);
         return extractNullableFindResult(query);
+    }
+
+    public List<AnonymousUser> getCreatedBefore(final Date creationTime) {
+        final TypedQuery<AnonymousUser> query = em.createNamedQuery("AnonymousUser.getCreatedBefore", AnonymousUser.class);
+        query.setParameter("creationTime", creationTime);
+        return query.getResultList();
     }
 }

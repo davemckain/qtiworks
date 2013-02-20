@@ -33,15 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -50,16 +50,18 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Represents each "event" generated during a {@link CandidateSession}
@@ -71,15 +73,15 @@ import javax.persistence.TemporalType;
 @SequenceGenerator(name="candidateEventSequence", sequenceName="candidate_event_sequence", initialValue=1, allocationSize=50)
 @NamedQueries({
     @NamedQuery(name="CandidateEvent.getForSession",
-            query="SELECT e"
-                + "  FROM CandidateEvent e"
-                + "  WHERE e.candidateSession = :candidateSession"
-                + "  ORDER BY e.id"),
+            query="SELECT xe"
+                + "  FROM CandidateEvent xe"
+                + "  WHERE xe.candidateSession = :candidateSession"
+                + "  ORDER BY xe.id"),
     @NamedQuery(name="CandidateEvent.getForSessionReversed",
-            query="SELECT e"
-                + "  FROM CandidateEvent e"
-                + "  WHERE e.candidateSession = :candidateSession"
-                + "  ORDER BY e.id DESC")
+            query="SELECT xe"
+                + "  FROM CandidateEvent xe"
+                + "  WHERE xe.candidateSession = :candidateSession"
+                + "  ORDER BY xe.id DESC")
 })
 public class CandidateEvent implements BaseEntity {
 
@@ -88,7 +90,7 @@ public class CandidateEvent implements BaseEntity {
     @Id
     @GeneratedValue(generator="candidateEventSequence")
     @Column(name="xeid")
-    private Long id;
+    private Long xeid;
 
     /** {@link CandidateSession} owning this event */
     @ManyToOne(optional=false)
@@ -122,38 +124,34 @@ public class CandidateEvent implements BaseEntity {
      * For "modal" events within a test, this records the key for the item upon which the event
      * was performed. Otherwise it is null.
      */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
-    @Column(name="test_item_key", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH + 10)
+    @Column(name="test_item_key", updatable=false)
     private String testItemKey;
-
-    /**
-     * For a {@link CandidateItemEventType#PLAYBACK} event, this points to the event in
-     * the same session that the candidate has requested to see
-     * {@link CandidateItemEvent}
-     */
-    @OneToOne(optional=true)
-    @JoinColumn(name="playback_xeid", updatable=false)
-    private CandidateEvent playbackEvent;
 
     /**
      * Notifications generated during this event
      */
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateEvent")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="candidateEvent", cascade=CascadeType.REMOVE)
     @OrderBy("id")
     private List<CandidateEventNotification> notifications;
 
-    //------------------------------------------------------------
+    /** (Currently used for cascading deletion only - upgrade if required) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="candidateEvent", cascade=CascadeType.REMOVE)
+    private Set<CandidateResponse> candidateResponses;
 
     //------------------------------------------------------------
 
     @Override
     public Long getId() {
-        return id;
+        return xeid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.xeid = id;
     }
 
 
@@ -202,15 +200,6 @@ public class CandidateEvent implements BaseEntity {
     }
 
 
-    public CandidateEvent getPlaybackEvent() {
-        return playbackEvent;
-    }
-
-    public void setPlaybackEvent(final CandidateEvent playbackEvent) {
-        this.playbackEvent = playbackEvent;
-    }
-
-
     public List<CandidateEventNotification> getNotifications() {
         if (notifications==null) {
             notifications = new ArrayList<CandidateEventNotification>();
@@ -227,7 +216,7 @@ public class CandidateEvent implements BaseEntity {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
+                + "(xeid=" + xeid
                 + ")";
     }
 }

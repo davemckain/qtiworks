@@ -98,11 +98,6 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
     @Column(name="allow_solution_when_closed")
     private boolean allowSolutionWhenClosed;
 
-    /** Allow candidate to see the actions they performed */
-    @Basic(optional=false)
-    @Column(name="allow_playback")
-    private boolean allowPlayback;
-
     /** Allow candidate to view assessment source(s) */
     @Basic(optional=false)
     @Column(name="allow_source")
@@ -208,15 +203,6 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
 
     public void setAllowSolutionWhenClosed(final boolean allowSolutionWhenClosed) {
         this.allowSolutionWhenClosed = allowSolutionWhenClosed;
-    }
-
-
-    public boolean isAllowPlayback() {
-        return allowPlayback;
-    }
-
-    public void setAllowPlayback(final boolean allowPlayback) {
-        this.allowPlayback = allowPlayback;
     }
 
     //------------------------------------------------------------

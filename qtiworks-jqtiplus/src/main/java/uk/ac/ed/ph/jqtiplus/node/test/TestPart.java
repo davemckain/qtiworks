@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.attribute.enumerate.NavigationModeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.SubmissionModeAttribute;
 import uk.ac.ed.ph.jqtiplus.group.test.AssessmentSectionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -108,31 +109,38 @@ public final class TestPart extends AbstractPart {
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }
 
-    /**
-     * Gets all viewable testFeedbacks with given access.
-     * Tests if feedbacks can be displayed.
-     *
-     * @param requestedAccess given access
-     * @return all testFeedbacks with given access
-     */
-    @ToRefactor
-    public List<TestFeedback> getTestFeedbacks(final TestSessionState testSessionState, final TestFeedbackAccess requestedAccess)
-    {
+    public List<TestFeedback> findTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
+        Assert.notNull(testFeedbackAccess, "testFeedbackAccess");
         final List<TestFeedback> result = new ArrayList<TestFeedback>();
-
-        for (final TestFeedback feedback : getTestFeedbacks()) {
-            if (feedback.isVisible(testSessionState, requestedAccess)) {
-                result.add(feedback);
+        for (final TestFeedback testFeedback : getTestFeedbacks()) {
+            if (testFeedbackAccess.equals(testFeedback.getTestFeedbackAccess())) {
+                result.add(testFeedback);
             }
         }
-
         return result;
     }
 
     /**
-     * FIXME: This is out of date! Branches and preconditions are allowed in {@link NavigationMode#LINEAR}
-     * and ANY {@link SubmissionMode}. This method should no longer be used in future.
+     * Gets all viewable testFeedbacks with given access.
+     * Tests if feedbacks can be displayed.
      *
+     * @param testFeedbackAccess given access
+     * @return all testFeedbacks with given access
+     */
+    @ToRefactor
+    public List<TestFeedback> findVisibleTestFeedbacks(final TestSessionState testSessionState, final TestFeedbackAccess testFeedbackAccess) {
+        Assert.notNull(testSessionState, "testSessionState");
+        Assert.notNull(testFeedbackAccess, "testFeedbackAccess");
+        final List<TestFeedback> result = new ArrayList<TestFeedback>();
+        for (final TestFeedback testFeedback : getTestFeedbacks()) {
+            if (testFeedback.isVisible(testSessionState, testFeedbackAccess)) {
+                result.add(testFeedback);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Returns true if jumps (preConditions and branchRules) are enabled; false otherwise.
      * Jumps (preConditions and branchRules) are enabled only in linear individual mode.
      * This is only convenient method for testing linear individual mode.

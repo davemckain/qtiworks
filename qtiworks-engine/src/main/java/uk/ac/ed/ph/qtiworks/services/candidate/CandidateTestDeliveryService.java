@@ -638,10 +638,12 @@ public class CandidateTestDeliveryService {
             for (final Entry<Identifier, MultipartFile> fileResponseEntry : fileResponseMap.entrySet()) {
                 final Identifier identifier = fileResponseEntry.getKey();
                 final MultipartFile multipartFile = fileResponseEntry.getValue();
-                final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
-                final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType());
-                responseDataMap.put(identifier, fileResponseData);
-                fileSubmissionMap.put(identifier, fileSubmission);
+                if (!multipartFile.isEmpty()) {
+                    final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
+                    final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType(), fileSubmission.getFileName());
+                    responseDataMap.put(identifier, fileResponseData);
+                    fileSubmissionMap.put(identifier, fileSubmission);
+                }
             }
         }
 
@@ -853,12 +855,12 @@ public class CandidateTestDeliveryService {
         /* FIXME: This is probably not the right logic in general but works OK in this restricted case */
         testSessionController.endTestPart();
 
-        /* Record result and close session if this action finished the test */
-        if (testSessionState.isExited()) {
-            /* Record assessmentResult */
-            final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
-            candidateDataServices.recordTestAssessmentResult(candidateSession, assessmentResult);
+        /* Record assessmentResult (not necessarily final) */
+        final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataServices.recordTestAssessmentResult(candidateSession, assessmentResult);
 
+        /* See if this action has ended the final testPart (i.e. ended the test) */
+        if (!testSessionController.hasMoreTestParts()) {
             /* Update CandidateSession */
             candidateSession.setClosed(true);
             candidateSessionDao.update(candidateSession);

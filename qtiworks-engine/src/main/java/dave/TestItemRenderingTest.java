@@ -13,11 +13,9 @@ import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
@@ -56,9 +54,9 @@ public class TestItemRenderingTest {
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
-            final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-            final ResolvedAssessmentTest resolvedAssessmentTest = objectManager.resolveAssessmentTest(testUri, ModelRichness.FULL_ASSUMED_VALID);
+            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
+
+            final ResolvedAssessmentTest resolvedAssessmentTest = assessmentObjectXmlLoader.loadAndResolveAssessmentTest(testUri);
             final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, true).initialize();
 
             final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
@@ -84,7 +82,7 @@ public class TestItemRenderingTest {
 
             final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
             final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
-            renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
+            renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setTestSessionState(testSessionState);
@@ -98,7 +96,6 @@ public class TestItemRenderingTest {
             renderingRequest.setReinitAllowed(false);
             renderingRequest.setResultAllowed(false);
             renderingRequest.setSourceAllowed(false);
-            renderingRequest.setPlaybackAllowed(false);
             renderingRequest.setItemKey(firstItemRef.getKey());
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();

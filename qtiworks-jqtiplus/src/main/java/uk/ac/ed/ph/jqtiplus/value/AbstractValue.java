@@ -43,7 +43,31 @@ public abstract class AbstractValue implements Value {
     private static final long serialVersionUID = -2658294172416932855L;
 
     @Override
-    public boolean hasSignature(final Signature signature) {
+    public final Signature getSignature() {
+        if (isNull()) {
+            return null;
+        }
+        return Signature.getSignature(getCardinality(), getBaseType());
+    }
+
+    @Override
+    public final boolean hasCardinality(final Cardinality cardinality) {
+        if (cardinality==null || isNull()) {
+            return false;
+        }
+        return cardinality==getCardinality();
+    }
+
+    @Override
+    public final boolean hasBaseType(final BaseType baseType) {
+        if (baseType==null || isNull()) {
+            return false;
+        }
+        return baseType==getBaseType();
+    }
+
+    @Override
+    public final boolean hasSignature(final Signature signature) {
         if (signature==null || isNull()) {
             return false;
         }

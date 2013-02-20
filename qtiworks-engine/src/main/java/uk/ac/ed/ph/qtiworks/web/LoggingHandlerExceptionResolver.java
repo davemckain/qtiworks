@@ -31,29 +31,41 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus;
+package uk.ac.ed.ph.qtiworks.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Enumerates the different types of lifecycle events fired off
- * during item & test processing
- * 
+ * Implementation of {@link HandlerExceptionResolver} that logs any Exceptions.
+ * <p>
+ * A bean instance of this will be detected by the {@link DispatcherServlet}(s).
+ * We have used the {@link #getOrder()} method to ensure that this resolver gets called first.
+ *
  * @author David McKain
  */
-public enum LifecycleEventType {
-    
-    MANAGER_INITIALISED,
-    MANAGER_DESTROYED,
+public class LoggingHandlerExceptionResolver implements HandlerExceptionResolver, Ordered {
 
-    ITEM_TEMPLATE_PROCESSING_STARTING,
-    ITEM_TEMPLATE_PROCESSING_FINISHED,
+    private static final Logger logger = LoggerFactory.getLogger(LoggingHandlerExceptionResolver.class);
 
-    ITEM_RESPONSE_PROCESSING_STARTING,
-    ITEM_RESPONSE_PROCESSING_FINISHED,
+    @Override
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
 
-    TEST_INITIALISATION_STARTING,
-    TEST_INITIALISATION_FINISHED,
-
-    TEST_OUTCOME_PROCESSING_STARTING,
-    TEST_OUTCOME_PROCESSING_FINISHED,
-
+    @Override
+    public ModelAndView resolveException(final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Object handler,
+            final Exception ex) {
+        logger.warn("Intercepted Exception from handler {}", handler, ex);
+        return null;
+    }
 }

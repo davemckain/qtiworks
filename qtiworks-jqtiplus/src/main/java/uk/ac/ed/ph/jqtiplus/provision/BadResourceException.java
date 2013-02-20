@@ -31,7 +31,6 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-
 package uk.ac.ed.ph.jqtiplus.provision;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiException;
@@ -53,15 +52,15 @@ public class BadResourceException extends QtiException {
         super();
     }
 
-    public BadResourceException(String message, Throwable cause) {
+    public BadResourceException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public BadResourceException(String message) {
+    public BadResourceException(final String message) {
         super(message);
     }
 
-    public BadResourceException(Throwable cause) {
+    public BadResourceException(final Throwable cause) {
         super(cause);
     }
 

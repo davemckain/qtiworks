@@ -35,8 +35,11 @@ package uk.ac.ed.ph.qtiworks.domain.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -82,5 +85,32 @@ public class DeliveryDao extends GenericDao<Delivery> {
         query.setParameter("assessment", assessment);
         query.setParameter("deliveryType", deliveryType);
         return extractCountResult(query);
+    }
+
+    public List<Delivery> getUsingSettings(final DeliverySettings deliverySettings) {
+        final TypedQuery<Delivery> query = em.createNamedQuery("Delivery.getUsingSettings", Delivery.class);
+        query.setParameter("deliverySettings", deliverySettings);
+        return query.getResultList();
+    }
+
+    public long countUsingSettings(final DeliverySettings deliverySettings) {
+        final Query query = em.createNamedQuery("Delivery.countUsingSettings");
+        query.setParameter("deliverySettings", deliverySettings);
+        return extractCountResult(query);
+    }
+
+    public List<Delivery> getForTypeCreatedBefore(final DeliveryType deliveryType, final Date creationTime) {
+        final TypedQuery<Delivery> query = em.createNamedQuery("Delivery.getForTypeCreatedBefore", Delivery.class);
+        query.setParameter("deliveryType", deliveryType);
+        query.setParameter("creationTime", creationTime);
+        return query.getResultList();
+    }
+
+    public List<Delivery> getForOwnerAndTypeCreatedBefore(final User user, final DeliveryType deliveryType, final Date creationTime) {
+        final TypedQuery<Delivery> query = em.createNamedQuery("Delivery.getForOwnerAndTypeCreatedBefore", Delivery.class);
+        query.setParameter("owner", user);
+        query.setParameter("deliveryType", deliveryType);
+        query.setParameter("creationTime", creationTime);
+        return query.getResultList();
     }
 }

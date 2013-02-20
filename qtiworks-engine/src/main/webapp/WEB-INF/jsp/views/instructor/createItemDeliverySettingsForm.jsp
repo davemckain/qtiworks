@@ -43,24 +43,6 @@ itemDeliverySettingsTemplate - form backing template
          </aside>
       </div>
       <div class="clear"></div>
-      <div class="stdFormRow">
-        <div class="grid_4">
-          <label for="public">Share with others?</label>
-        </div>
-        <div class="grid_3">
-          <div class="booleanButtons">
-            <form:radiobutton path="public" value="true" /> Yes
-            <form:radiobutton path="public" value="false" /> No
-          </div>
-        </div>
-        <div class="grid_5">
-          <aside>
-            This allows other people to use these settings.
-            (Not fully implemeneted yet!)
-          </aside>
-        </div>
-      </div>
-      <div class="clear"></div>
     </fieldset>
 
     <fieldset>
@@ -245,24 +227,6 @@ itemDeliverySettingsTemplate - form backing template
         <div class="grid_5">
           <aside>
             If 'Yes', the candidate will be allowed to request a model solution
-          </aside>
-        </div>
-      </div>
-      <div class="clear"></div>
-      <div class="stdFormRow">
-        <div class="grid_4">
-          <label for="allowPlayback">Play back / review interactions</label>
-        </div>
-        <div class="grid_3">
-          <div class="booleanButtons">
-            <form:radiobutton path="allowPlayback" value="true" /> Yes
-            <form:radiobutton path="allowPlayback" value="false" /> No
-          </div>
-        </div>
-        <div class="grid_5">
-          <aside>
-            If 'Yes', the candidate will be allowed to step through each
-            interaction made with the item.
           </aside>
         </div>
       </div>

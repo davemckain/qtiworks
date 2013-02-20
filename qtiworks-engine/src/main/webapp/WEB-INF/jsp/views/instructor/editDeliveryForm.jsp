@@ -102,7 +102,7 @@ primaryRouting
             </c:forEach>
           </ul>
           <p>
-          <a href="${utils:escapeLink(instructorAssessmentRouting['listItemDeliverySettings'])}">(You can create additional settings to choose from.)</a></p>
+          <a href="${utils:escapeLink(instructorAssessmentRouting['listDeliverySettings'])}">(You can create additional settings to choose from.)</a></p>
         </div>
       </div>
       <div class="clear"></div>

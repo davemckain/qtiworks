@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -52,6 +51,7 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,10 +82,9 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     /** Identifier of duration built-in variable. */
     public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal(VARIABLE_DURATION_NAME);
 
-    private URI systemId;
-    private ModelRichness modelRichness;
-
     private final ResponseDeclaration durationResponseDeclaration;
+
+    private URI systemId;
 
     public AssessmentTest() {
         super(null, QTI_CLASS_NAME); // Test doesn't have any parent.
@@ -121,17 +120,6 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     @Override
     public void setSystemId(final URI systemId) {
         this.systemId = systemId;
-    }
-
-
-    @Override
-    public ModelRichness getModelRichness() {
-        return modelRichness;
-    }
-
-    @Override
-    public void setModelRichness(final ModelRichness modelRichness) {
-        this.modelRichness = modelRichness;
     }
 
 
@@ -222,6 +210,17 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }
 
+    public List<TestFeedback> findTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
+        Assert.notNull(testFeedbackAccess, "testFeedbackAccess");
+        final List<TestFeedback> result = new ArrayList<TestFeedback>();
+        for (final TestFeedback testFeedback : getTestFeedbacks()) {
+            if (testFeedbackAccess.equals(testFeedback.getTestFeedbackAccess())) {
+                result.add(testFeedback);
+            }
+        }
+        return result;
+    }
+
     //---------------------------------------------------------------
     // Built-in variables
 
@@ -239,7 +238,6 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     public String toString() {
         return super.toString()
                 + "(systemId=" + systemId
-                + ",modelRichness=" + modelRichness
                 + ")";
     }
 }

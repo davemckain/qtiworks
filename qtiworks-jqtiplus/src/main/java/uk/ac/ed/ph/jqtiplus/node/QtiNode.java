@@ -47,8 +47,8 @@ import org.xml.sax.SAXException;
 /**
  * Base class for all QTI Nodes
  *
- * @author Jiri Kajaba
- * @author David McKain
+ * @author Jiri Kajaba (original XmlNode/XmlObject interfaces in JQTI)
+ * @author David McKain (refactored)
  */
 public interface QtiNode extends Serializable, Iterable<QtiNode> {
 

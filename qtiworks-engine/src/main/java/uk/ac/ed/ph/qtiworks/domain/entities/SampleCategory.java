@@ -112,4 +112,14 @@ public class SampleCategory implements BaseEntity {
     public void setDescription(final String description) {
         this.description = description;
     }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(id=" + id
+                + ",title=" + title
+                + ")";
+    }
 }

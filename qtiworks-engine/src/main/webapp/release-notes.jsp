@@ -12,6 +12,38 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-M3 [Production] (14/02/2013)</h3>
+  <p>
+    Third production milestone, equivalent to the 1.0-DEV24 development snapshot.
+  </p>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
+  <h3>1.0-DEV24 [Development] (11/02/2013)</h3>
+  <p>
+    Minor update including mainly low-level code refactoring and documentation improvements.
+    Visible changes are:
+  </p>
+  <ul>
+    <li>Temporary removal of 32 character constraint check on identifiers (for Uniqurate questions)</li>
+    <li>Fixed corner case in response processing with endAttemptInteractions if no responses had previously been bound</li>
+    <li>Minor improvement to rendering of uploadInteraction</li>
+  </ul>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
+  <h3>1.0-DEV23 [Development] (29/01/2013)</h3>
+  <p>
+    Minor update that finally includes front-end functionality for deleting Assessments
+    and Deliverables. (There is more back-end deletion functionality included too.)
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV22 [Development] (11/01/2013)</h3>
   <p>
     This snapshot continues with the implementation of the test specification, refining and slightly extending
@@ -52,7 +84,7 @@ All Rights Reserved
     handling test containing one <code>testPart</code> using the NONLINEAR navigation mode and
     INDIVIDUAL submission mode. It does not yet support <code>branchRule</code> or <code>preCondition</code>,
     or similar advanced features. If you are interested in tests, please use the development snapshots for the
-    time being. However, bear in mind that these will be subject to change at short notice so shout not be used
+    time being. However, bear in mind that these will be subject to change at short notice so should not be used
     for "real" testing with students.
   </p>
   <p>

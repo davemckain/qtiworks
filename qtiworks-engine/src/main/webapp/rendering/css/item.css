@@ -3,6 +3,8 @@
 /* NB: This now includes test stuff and needs tidied up! */
 
 body {
+  background-color: white;
+  color: black;
   font-family: Sans-Serif;
   margin: 1em;
   padding: 0;
@@ -24,12 +26,6 @@ body {
   border: 2px solid #eeeeee;
   border-radius: 0.5em;
   background-color: #f7f7ff;
-}
-
-ul.playbackControls {
-  list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
 .itemPrompt {

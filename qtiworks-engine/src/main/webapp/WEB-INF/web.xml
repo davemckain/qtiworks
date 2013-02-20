@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 
-Web deployment descriptor
+QTIWorks Delivery Engine web deployment descriptor
 
 -->
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" version="2.5"
@@ -16,33 +16,23 @@ Web deployment descriptor
     <session-timeout>600</session-timeout>
   </session-config>
 
+  <!-- Listener to allow external logback configuration -->
+  <listener>
+    <listener-class>uk.ac.ed.ph.qtiworks.web.LogbackConfigurationContextListener</listener-class>
+  </listener>
+
   <!-- Root ApplicationContext bootstrap -->
   <context-param>
     <param-name>contextClass</param-name>
     <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
   </context-param>
   <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-      uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration
-      uk.ac.ed.ph.qtiworks.config.BaseServicesConfiguration
-      uk.ac.ed.ph.qtiworks.config.ServicesConfiguration
-      uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration
-    </param-value>
+    <param-name>contextInitializerClasses</param-name>
+    <param-value>uk.ac.ed.ph.qtiworks.web.QtiworksWebApplicationContextInitializer</param-value>
   </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
-
-  <!-- This global filter makes sure we carefully log any Exceptions that might happen -->
-  <filter>
-    <filter-name>ExceptionLoggingFilter</filter-name>
-    <filter-class>uk.ac.ed.ph.qtiworks.web.ExceptionLoggingFilter</filter-class>
-  </filter>
-  <filter-mapping>
-    <filter-name>ExceptionLoggingFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
 
   <!-- This global filter sets a timestamp for the current request -->
   <filter>
@@ -59,21 +49,10 @@ Web deployment descriptor
   <!-- Authentication filter for instructor-only resources -->
   <filter>
     <filter-name>InstructorAuthenticationFilter</filter-name>
-    <filter-class>${qtiworks.web.authn.filter}</filter-class>
-    <!--
-    Allowed target values for the above placeholder are:
-    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFormAuthenticationFilter</filter-class>
-    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFakeAuthenticationFilter</filter-class>
-    -->
-    <!-- Params for InstructorFormAuthenticationFilter (if used) -->
+    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorAuthenticationFilter</filter-class>
     <init-param>
       <param-name>formLoginJspPath</param-name>
       <param-value>/WEB-INF/jsp/login/instructorLogin.jsp</param-value>
-    </init-param>
-    <!-- Params for InstructorFakeAuthenticationFilter (if used) -->
-    <init-param>
-      <param-name>fakeLoginName</param-name>
-      <param-value>${qtiworks.web.authn.fake.login}</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -151,7 +130,6 @@ Web deployment descriptor
     <url-pattern>/lti/*</url-pattern>
   </servlet-mapping>
 
-
   <!-- ========== ANONYMOUS ACCESS SERVICES ========== -->
 
   <!-- "Authentication" filter for anonymous services -->
@@ -207,5 +185,52 @@ Web deployment descriptor
     <servlet-name>CandidateDispatcher</servlet-name>
     <url-pattern>/candidate/*</url-pattern>
   </servlet-mapping>
+
+  <!-- ========== ERROR PAGES ========== -->
+
+  <!--
+  DEV NOTE: As we're using Servlet 2.X, we need to declare each error code here.
+  Make sure you add an entry to errors.properties to explain any new codes added here.
+  -->
+  <error-page>
+    <error-code>400</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>401</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>402</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>405</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>406</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>409</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>415</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/jsp/errors/error.jsp</location>
+  </error-page>
 
 </web-app>

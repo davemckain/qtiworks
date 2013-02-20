@@ -60,9 +60,9 @@ public final class ItemProcessingInitializer {
 
     private final ResolvedAssessmentItem resolvedAssessmentItem;
     private final boolean isValid;
-    private final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder;
-    private final LinkedHashMap<Identifier, ResponseDeclaration> responseDeclarationMapBuilder;
-    private final LinkedHashMap<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder;
+    private final LinkedHashMap<Identifier, TemplateDeclaration> validTemplateDeclarationMapBuilder;
+    private final LinkedHashMap<Identifier, ResponseDeclaration> validResponseDeclarationMapBuilder;
+    private final LinkedHashMap<Identifier, OutcomeDeclaration> validOutcomeDeclarationMapBuilder;
 
     public ItemProcessingInitializer(final ItemValidationResult itemValidationResult) {
         this(itemValidationResult.getResolvedAssessmentItem(), itemValidationResult.isValid());
@@ -71,9 +71,9 @@ public final class ItemProcessingInitializer {
     public ItemProcessingInitializer(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid) {
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.isValid = isValid;
-        this.templateDeclarationMapBuilder = new LinkedHashMap<Identifier, TemplateDeclaration>();
-        this.responseDeclarationMapBuilder = new LinkedHashMap<Identifier, ResponseDeclaration>();
-        this.outcomeDeclarationMapBuilder = new LinkedHashMap<Identifier, OutcomeDeclaration>();
+        this.validTemplateDeclarationMapBuilder = new LinkedHashMap<Identifier, TemplateDeclaration>();
+        this.validResponseDeclarationMapBuilder = new LinkedHashMap<Identifier, ResponseDeclaration>();
+        this.validOutcomeDeclarationMapBuilder = new LinkedHashMap<Identifier, OutcomeDeclaration>();
     }
 
     public ItemProcessingMap initialize() {
@@ -83,9 +83,9 @@ public final class ItemProcessingInitializer {
         final AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
 
         /* We will always use the built-in variables in their expected way, even if their identifiers end up non-unique */
-        responseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_DURATION_IDENTIFIER, item.getDurationResponseDeclaration());
-        responseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, item.getNumAttemptsResponseDeclaration());
-        outcomeDeclarationMapBuilder.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, item.getCompletionStatusOutcomeDeclaration());
+        validResponseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_DURATION_IDENTIFIER, item.getDurationResponseDeclaration());
+        validResponseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, item.getNumAttemptsResponseDeclaration());
+        validOutcomeDeclarationMapBuilder.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, item.getCompletionStatusOutcomeDeclaration());
 
         /* Then go through rest of variables, rejecting ones whose identifiers are non-unique */
         for (final TemplateDeclaration declaration : item.getTemplateDeclarations()) {
@@ -103,28 +103,27 @@ public final class ItemProcessingInitializer {
 
         /* That's it! */
         return new ItemProcessingMap(resolvedAssessmentItem, isValid, interactions,
-                templateDeclarationMapBuilder, responseDeclarationMapBuilder, outcomeDeclarationMapBuilder);
+                validTemplateDeclarationMapBuilder, validResponseDeclarationMapBuilder, validOutcomeDeclarationMapBuilder);
     }
 
     private void doTemplateVariable(final TemplateDeclaration declaration) {
         final List<VariableDeclaration> declarations = resolvedAssessmentItem.resolveVariableReference(declaration.getIdentifier());
         if (declarations.size()==1) {
-            templateDeclarationMapBuilder.put(declaration.getIdentifier(), declaration);
+            validTemplateDeclarationMapBuilder.put(declaration.getIdentifier(), declaration);
         }
     }
 
     private void doResponseVariable(final ResponseDeclaration declaration) {
         final List<VariableDeclaration> declarations = resolvedAssessmentItem.resolveVariableReference(declaration.getIdentifier());
         if (declarations.size()==1) {
-            responseDeclarationMapBuilder.put(declaration.getIdentifier(), declaration);
+            validResponseDeclarationMapBuilder.put(declaration.getIdentifier(), declaration);
         }
     }
 
     private void doOutcomeVariable(final OutcomeDeclaration declaration) {
         final List<VariableDeclaration> declarations = resolvedAssessmentItem.resolveVariableReference(declaration.getIdentifier());
         if (declarations.size()==1) {
-            outcomeDeclarationMapBuilder.put(declaration.getIdentifier(), declaration);
+            validOutcomeDeclarationMapBuilder.put(declaration.getIdentifier(), declaration);
         }
     }
-
 }

@@ -75,9 +75,11 @@ public final class ItemProcessingMap implements Serializable {
     private final Map<Identifier, ResponseDeclaration> validResponseDeclarationMap;
     private final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMap;
 
-    public ItemProcessingMap(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid, final List<Interaction> interactionsBuilder,
-            final LinkedHashMap<Identifier, TemplateDeclaration> templateDeclarationMapBuilder, final Map<Identifier, ResponseDeclaration> responseDeclarationMapBuilder,
-            final Map<Identifier, OutcomeDeclaration> outcomeDeclarationMapBuilder) {
+    public ItemProcessingMap(final ResolvedAssessmentItem resolvedAssessmentItem, final boolean isValid,
+            final List<Interaction> interactionsBuilder,
+            final LinkedHashMap<Identifier, TemplateDeclaration> validTemplateDeclarationMapBuilder,
+            final Map<Identifier, ResponseDeclaration> validResponseDeclarationMapBuilder,
+            final Map<Identifier, OutcomeDeclaration> validOutcomeDeclarationMapBuilder) {
         this.resolvedAssessmentItem = resolvedAssessmentItem;
         this.isValid = isValid;
 
@@ -90,9 +92,9 @@ public final class ItemProcessingMap implements Serializable {
         this.interactionByResponseIdentifierMap = Collections.unmodifiableMap(interactionMapBuilder);
 
         /* Record (valid) variable declarations */
-        this.validTemplateDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, TemplateDeclaration>(templateDeclarationMapBuilder));
-        this.validResponseDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, ResponseDeclaration>(responseDeclarationMapBuilder));
-        this.validOutcomeDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, OutcomeDeclaration>(outcomeDeclarationMapBuilder));
+        this.validTemplateDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, TemplateDeclaration>(validTemplateDeclarationMapBuilder));
+        this.validResponseDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, ResponseDeclaration>(validResponseDeclarationMapBuilder));
+        this.validOutcomeDeclarationMap = Collections.unmodifiableMap(new LinkedHashMap<Identifier, OutcomeDeclaration>(validOutcomeDeclarationMapBuilder));
 
         /* Build set of all variable declarations */
         final Set<Identifier> variableIdentifierSetBuilder = new HashSet<Identifier>();

@@ -189,31 +189,17 @@ public class CandidateDataServices {
 
     public CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType itemEventType, final ItemSessionState itemSessionState) {
-        return recordCandidateItemEvent(candidateSession, itemEventType, itemSessionState, null, null);
+        return recordCandidateItemEvent(candidateSession, itemEventType, itemSessionState, null);
     }
 
     public CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
             final CandidateItemEventType itemEventType, final ItemSessionState itemSessionState,
             final NotificationRecorder notificationRecorder) {
-        return recordCandidateItemEvent(candidateSession, itemEventType, itemSessionState, notificationRecorder, null);
-    }
-
-    public CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
-            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
-            final CandidateEvent playbackEvent) {
-        return recordCandidateItemEvent(candidateSession, eventType, itemSessionState, null, playbackEvent);
-    }
-
-    private CandidateEvent recordCandidateItemEvent(final CandidateSession candidateSession,
-            final CandidateItemEventType eventType, final ItemSessionState itemSessionState,
-            final NotificationRecorder notificationRecorder,
-            final CandidateEvent playbackEvent) {
         /* Create event */
         final CandidateEvent event = new CandidateEvent();
         event.setCandidateSession(candidateSession);
-        event.setItemEventType(eventType);
+        event.setItemEventType(itemEventType);
         event.setTimestamp(requestTimestampContext.getCurrentRequestTimestamp());
-        event.setPlaybackEvent(playbackEvent);
 
         /* Store event */
         candidateEventDao.persist(event);
@@ -473,7 +459,7 @@ public class CandidateDataServices {
         final XsltSerializationOptions xsltSerializationOptions = new XsltSerializationOptions();
         xsltSerializationOptions.setIndenting(true);
         xsltSerializationOptions.setIncludingXMLDeclaration(false);
-        final Transformer serializer = new XsltStylesheetManager().getSerializer(xsltSerializationOptions);
+        final Transformer serializer = XsltStylesheetManager.createSerializer(xsltSerializationOptions);
         try {
             serializer.transform(new DOMSource(stateXml), new StreamResult(sessionFile));
         }

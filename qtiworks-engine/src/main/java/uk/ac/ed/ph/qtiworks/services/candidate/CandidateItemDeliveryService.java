@@ -38,7 +38,6 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
@@ -87,7 +86,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,9 +146,6 @@ public class CandidateItemDeliveryService {
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
-
-    @Resource
-    private CandidateEventDao candidateEventDao;
 
     @Resource
     private CandidateResponseDao candidateResponseDao;
@@ -270,10 +265,6 @@ public class CandidateItemDeliveryService {
                         RenderingMode.SOLUTION, resultStream);
                 break;
 
-            case PLAYBACK:
-                renderPlayback(candidateEvent, renderingOptions, resultStream);
-                break;
-
             /* Otherwise just render current item session state */
             default:
                 renderCurrentItemState(candidateSession, itemSessionState, candidateEvent, renderingOptions, resultStream);
@@ -332,20 +323,6 @@ public class CandidateItemDeliveryService {
         doRendering(candidateEvent, renderingRequest, resultStream);
     }
 
-    private void renderPlayback(final CandidateEvent candidateEvent,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
-        final CandidateEvent playbackEvent = candidateEvent.getPlaybackEvent();
-        final ItemSessionState playbackItemSessionState = candidateDataServices.loadItemSessionState(playbackEvent);
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(playbackEvent,
-                playbackItemSessionState, renderingOptions, RenderingMode.PLAYBACK);
-
-        /* Record which event we're playing back */
-        renderingRequest.setCurrentPlaybackEvent(playbackEvent);
-
-        /* Do rendering */
-        doRendering(candidateEvent, renderingRequest, resultStream);
-    }
-
     private StandaloneItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
             final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
             final RenderingMode renderingMode) {
@@ -362,10 +339,6 @@ public class CandidateItemDeliveryService {
         renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
         renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
 
-        renderingRequest.setPlaybackAllowed(itemDeliverySettings.isAllowPlayback());
-        if (itemDeliverySettings.isAllowPlayback()) {
-            renderingRequest.setPlaybackEvents(getPlaybackEvents(candidateSession));
-        }
         return renderingRequest;
     }
 
@@ -477,10 +450,12 @@ public class CandidateItemDeliveryService {
             for (final Entry<Identifier, MultipartFile> fileResponseEntry : fileResponseMap.entrySet()) {
                 final Identifier identifier = fileResponseEntry.getKey();
                 final MultipartFile multipartFile = fileResponseEntry.getValue();
-                final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
-                final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType());
-                responseDataMap.put(identifier, fileResponseData);
-                fileSubmissionMap.put(identifier, fileSubmission);
+                if (!multipartFile.isEmpty()) {
+                    final CandidateFileSubmission fileSubmission = candidateUploadService.importFileSubmission(candidateSession, multipartFile);
+                    final FileResponseData fileResponseData = new FileResponseData(new File(fileSubmission.getStoredFilePath()), fileSubmission.getContentType(), fileSubmission.getFileName());
+                    responseDataMap.put(identifier, fileResponseData);
+                    fileSubmissionMap.put(identifier, fileSubmission);
+                }
             }
         }
 
@@ -801,56 +776,6 @@ public class CandidateItemDeliveryService {
     }
 
     //----------------------------------------------------
-    // Playback request
-
-    /**
-     * Updates the state of the {@link CandidateSession} having the given ID (xid)
-     * so that it will play back the {@link CandidateEvent} having the given ID (xeid).
-     */
-    public CandidateSession setPlaybackState(final long xid, final String sessionToken, final long xeid)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return setPlaybackState(candidateSession, xeid);
-    }
-
-    public CandidateSession setPlaybackState(final CandidateSession candidateSession, final long xeid)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
-        Assert.notNull(candidateSession, "candidateSession");
-
-        /* Get current session state */
-        final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
-
-        /* Make sure caller may do this */
-        ensureSessionNotTerminated(candidateSession);
-        final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isClosed()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK_WHEN_INTERACTING);
-        }
-        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowPlayback()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK);
-        }
-
-        /* Look up target event, make sure it belongs to this session and make sure it can be played back */
-        final CandidateEvent targetEvent = candidateEventDao.requireFindById(xeid);
-        if (targetEvent.getCandidateSession().getId().longValue()!=candidateSession.getId().longValue()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK_OTHER_SESSION);
-        }
-        final CandidateItemEventType targetEventType = targetEvent.getItemEventType();
-        if (targetEventType==CandidateItemEventType.PLAYBACK || targetEventType==CandidateItemEventType.CLOSE) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.PLAYBACK_EVENT);
-        }
-
-        /* Record and event */
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
-                CandidateItemEventType.PLAYBACK, itemSessionState, targetEvent);
-        candidateAuditLogger.logPlaybackEvent(candidateSession, candidateEvent, targetEvent);
-
-        return candidateSession;
-    }
-
-    //----------------------------------------------------
     // Session termination (by candidate)
 
     /**
@@ -996,36 +921,5 @@ public class CandidateItemDeliveryService {
         if (!itemDeliverySettings.isAllowResult()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.VIEW_ASSESSMENT_RESULT);
         }
-    }
-
-    //----------------------------------------------------
-    // Utilities
-
-    /**
-     * Returns a List of IDs (xeid) of all {@link CandidateEvent}s in the given
-     * {@link CandidateSession} that a candidate may play back.
-     *
-     * @param candidateSession
-     * @return
-     */
-    private List<CandidateEvent> getPlaybackEvents(final CandidateSession candidateSession) {
-        final List<CandidateEvent> events = candidateEventDao.getForSession(candidateSession);
-        final List<CandidateEvent> result = new ArrayList<CandidateEvent>(events.size());
-        for (final CandidateEvent event : events) {
-            if (isCandidatePlaybackCapable(event)) {
-                result.add(event);
-            }
-        }
-        return result;
-    }
-
-    private boolean isCandidatePlaybackCapable(final CandidateEvent event) {
-        final CandidateItemEventType eventType = event.getItemEventType();
-        return eventType==CandidateItemEventType.ATTEMPT_VALID
-                || eventType==CandidateItemEventType.RESPONSE_INVALID
-                || eventType==CandidateItemEventType.RESPONSE_BAD
-                || eventType==CandidateItemEventType.INIT
-                || eventType==CandidateItemEventType.REINIT
-                || eventType==CandidateItemEventType.RESET;
     }
 }

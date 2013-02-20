@@ -126,7 +126,6 @@ public class BootstrapServices {
         /* Full-featured settings */
         final ItemDeliverySettings fullSettings = new ItemDeliverySettings();
         fullSettings.setAllowClose(true);
-        fullSettings.setAllowPlayback(true);
         fullSettings.setAllowReinitWhenClosed(true);
         fullSettings.setAllowReinitWhenInteracting(true);
         fullSettings.setAllowResetWhenClosed(true);

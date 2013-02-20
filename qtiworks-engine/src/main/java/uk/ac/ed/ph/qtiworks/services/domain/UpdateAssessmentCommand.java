@@ -63,9 +63,6 @@ public final class UpdateAssessmentCommand {
     @Size(min=1, max=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
     private String title;
 
-    private boolean isPublic;
-
-
     public String getName() {
         return name;
     }
@@ -81,14 +78,5 @@ public final class UpdateAssessmentCommand {
 
     public void setTitle(final String title) {
         this.title = title;
-    }
-
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(final boolean isPublic) {
-        this.isPublic = isPublic;
     }
 }

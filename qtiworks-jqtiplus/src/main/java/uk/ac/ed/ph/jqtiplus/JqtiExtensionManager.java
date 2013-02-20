@@ -48,7 +48,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +63,7 @@ public final class JqtiExtensionManager {
 
     private static final Logger logger = LoggerFactory.getLogger(JqtiExtensionManager.class);
 
-    private final List<JqtiExtensionPackage<?>> extensionPackages;
+    private final List<JqtiExtensionPackage<?>> jqtiExtensionPackages;
     private final Map<String, ExtensionNamespaceInfo> extensionNamepaceInfoMap;
 
     public JqtiExtensionManager(final JqtiExtensionPackage<?>... jqtiExtensionPackages) {
@@ -72,12 +71,12 @@ public final class JqtiExtensionManager {
     }
 
     public JqtiExtensionManager(final List<JqtiExtensionPackage<?>> jqtiExtensionPackages) {
-        this.extensionPackages = ObjectUtilities.unmodifiableList(jqtiExtensionPackages);
+        this.jqtiExtensionPackages = ObjectUtilities.unmodifiableList(jqtiExtensionPackages);
         this.extensionNamepaceInfoMap = ObjectUtilities.unmodifiableMap(buildExtensionNamespaceInfoMap());
     }
 
     public List<JqtiExtensionPackage<?>> getExtensionPackages() {
-        return extensionPackages;
+        return jqtiExtensionPackages;
     }
 
     public Map<String, ExtensionNamespaceInfo> getExtensionNamepaceInfoMap() {
@@ -86,7 +85,7 @@ public final class JqtiExtensionManager {
 
     private Map<String, ExtensionNamespaceInfo> buildExtensionNamespaceInfoMap() {
         final Map<String, ExtensionNamespaceInfo> result = new HashMap<String, ExtensionNamespaceInfo>();
-        for (final JqtiExtensionPackage<?> extensionPackage : extensionPackages) {
+        for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionPackages) {
             for (final Entry<String, ExtensionNamespaceInfo> entry : extensionPackage.getNamespaceInfoMap().entrySet()) {
                 final String namespaceUri = entry.getKey();
                 if (QtiConstants.QTI_21_NAMESPACE_URI.equals(namespaceUri)
@@ -97,7 +96,7 @@ public final class JqtiExtensionManager {
                 }
                 if (result.containsKey(namespaceUri)) {
                     throw new IllegalArgumentException("Namespace URI " + namespaceUri
-                            + " is used by more than one extension in " + extensionPackages
+                            + " is used by more than one extension in " + jqtiExtensionPackages
                             + ". We can only support one at a time.");
                 }
                 final ExtensionNamespaceInfo extensionNamespaceInfo = entry.getValue();
@@ -112,12 +111,12 @@ public final class JqtiExtensionManager {
 
     public void init() {
         logger.info("Initialising all registered JqtiExtensionPackages");
-        fireLifecycleEvent(this, LifecycleEventType.MANAGER_INITIALISED);
+        fireJqtiLifecycleEvent(this, JqtiLifecycleEventType.MANAGER_INITIALISED);
     }
 
     public void destroy() {
         logger.info("Destroying all registered JqtiExtensionPackages");
-        fireLifecycleEvent(this, LifecycleEventType.MANAGER_DESTROYED);
+        fireJqtiLifecycleEvent(this, JqtiLifecycleEventType.MANAGER_DESTROYED);
     }
 
     /**
@@ -125,9 +124,9 @@ public final class JqtiExtensionManager {
      * <p>
      * This should only be used INTERNALLY.
      */
-    public void fireLifecycleEvent(final Object source, final LifecycleEventType eventType) {
-        for (final JqtiExtensionPackage<?> extensionPackage : extensionPackages) {
-            extensionPackage.lifecycleEvent(source, eventType);
+    private void fireJqtiLifecycleEvent(final Object source, final JqtiLifecycleEventType eventType) {
+        for (final JqtiExtensionPackage<?> jqtiExtensionPackage : jqtiExtensionPackages) {
+            jqtiExtensionPackage.lifecycleEvent(source, eventType);
         }
     }
 
@@ -140,7 +139,7 @@ public final class JqtiExtensionManager {
      * interaction.
      */
     public JqtiExtensionPackage<?> getJqtiExtensionPackageImplementingInteraction(final String interactionClassName) {
-        for (final JqtiExtensionPackage<?> extensionPackage : extensionPackages) {
+        for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionPackages) {
             if (extensionPackage.implementsCustomInteraction(interactionClassName)) {
                 return extensionPackage;
             }
@@ -173,7 +172,7 @@ public final class JqtiExtensionManager {
     }
 
     public JqtiExtensionPackage<?> getJqtiExtensionPackageImplementingOperator(final String operatorClassName) {
-        for (final JqtiExtensionPackage<?> extensionPackage : extensionPackages) {
+        for (final JqtiExtensionPackage<?> extensionPackage : jqtiExtensionPackages) {
             if (extensionPackage.implementsCustomOperator(operatorClassName)) {
                 return extensionPackage;
             }
@@ -220,7 +219,7 @@ public final class JqtiExtensionManager {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(extensionPackages=" + extensionPackages
+                + "(extensionPackages=" + jqtiExtensionPackages
                 + ")";
     }
 
@@ -244,7 +243,7 @@ public final class JqtiExtensionManager {
         }
 
         @Override
-        public void lifecycleEvent(final Object source, final LifecycleEventType eventType) {
+        public void lifecycleEvent(final Object source, final JqtiLifecycleEventType eventType) {
             /* Do nothing */
         }
 
@@ -266,16 +265,6 @@ public final class JqtiExtensionManager {
         @Override
         public boolean implementsCustomInteraction(final String interactionClassName) {
             return true;
-        }
-
-        @Override
-        public Set<String> getImplementedCustomOperatorClasses() {
-            return Collections.emptySet();
-        }
-
-        @Override
-        public Set<String> getImplementedCustomInteractionClasses() {
-            return Collections.emptySet();
         }
 
         @Override

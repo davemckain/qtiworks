@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.util.Date;
@@ -69,7 +67,7 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
     @Id
     @GeneratedValue(generator="candidateFileSubmissionSequence")
     @Column(name="fid")
-    private Long id;
+    private Long fid;
 
     /** {@link CandidateSession} in which this submission was made */
     @ManyToOne(optional=false)
@@ -83,8 +81,10 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
     private Date creationTime;
 
     /** Content type of submitted file */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
-    @Column(name="content_type", updatable=false, length=DomainConstants.FILE_CONTENT_TYPE_LENGTH)
+    @Column(name="content_type", updatable=false)
     private String contentType;
 
     /** Client name of submitted file, if provided */
@@ -105,12 +105,12 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
 
     @Override
     public Long getId() {
-        return id;
+        return fid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.fid = id;
     }
 
 
@@ -158,5 +158,14 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
 
     public void setStoredFilePath(final String storedFilePath) {
         this.storedFilePath = storedFilePath;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(fid=" + fid
+                + ")";
     }
 }

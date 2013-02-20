@@ -58,7 +58,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * process and determine
  * what to do next.
  *
- * @see InstructorFormAuthenticationFilter
+ * @see InstructorFormAuthenticator
  * @author David McKain
  */
 public final class InstructorFormAuthenticationServlet extends HttpServlet {
@@ -134,7 +134,7 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
              */
             auditor.recordEvent("Instructor authentication succeeded for " + userId);
             logger.debug("Authentication succeeded - redirecting to {}", protectedRequestUrl);
-            request.getSession().setAttribute(AbstractInstructorAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
+            request.getSession().setAttribute(InstructorAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
             response.sendRedirect(protectedRequestUrl);
         }
         else {

@@ -40,9 +40,13 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -54,6 +58,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -77,7 +83,7 @@ import javax.persistence.Version;
     @NamedQuery(name="Assessment.getForOwner",
             query="SELECT a"
                 + "  FROM Assessment a"
-                + "  WHERE a.owner = :user"
+                + "  WHERE a.owner = :owner"
                 + "  ORDER BY creationTime"),
     @NamedQuery(name="Assessment.getForSampleCategory",
             query="SELECT a"
@@ -154,6 +160,15 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @ManyToOne(optional=true, fetch=FetchType.LAZY)
     @JoinColumn(name="sample_category_id", updatable=false)
     private SampleCategory sampleCategory;
+
+    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @OrderBy("apid")
+    private List<AssessmentPackage> assessmentPackages;
+
+    /** (Currently used for cascading deletion only) */
+    @SuppressWarnings("unused")
+    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
+    private Set<Delivery> deliveries;
 
     //------------------------------------------------------------
 
@@ -257,5 +272,23 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
 
     public void setSampleCategory(final SampleCategory sampleCategory) {
         this.sampleCategory = sampleCategory;
+    }
+
+
+    public List<AssessmentPackage> getAssessmentPackages() {
+        if (assessmentPackages==null) {
+            assessmentPackages = new ArrayList<AssessmentPackage>();
+        }
+        return assessmentPackages;
+    }
+
+    //------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(aid=" + aid
+                + ",name=" + name
+                + ")";
     }
 }

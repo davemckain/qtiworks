@@ -41,23 +41,19 @@ import java.io.File;
  * @author David McKain
  */
 public final class FileResponseData implements ResponseData {
-    
+
     private static final long serialVersionUID = -7780168487104250697L;
-    
+
     private File file;
     private String contentType;
     private String fileName;
-    
-    public FileResponseData(File file, String contentType) {
-        this(file, contentType, null);
-    }
-    
-    public FileResponseData(File file, String contentType, String fileName) {
+
+    public FileResponseData(final File file, final String contentType, final String fileName) {
         this.file = file;
         this.contentType = contentType;
         this.fileName = fileName;
     }
-    
+
     @Override
     public ResponseDataType getType() {
         return ResponseDataType.FILE;
@@ -67,29 +63,29 @@ public final class FileResponseData implements ResponseData {
         return file;
     }
 
-    public void setFile(File file) {
+    public void setFile(final File file) {
         this.file = file;
     }
 
-    
+
     public String getContentType() {
         return contentType;
     }
-    
-    public void setContentType(String contentType) {
+
+    public void setContentType(final String contentType) {
         this.contentType = contentType;
     }
 
-    
+
     public String getFileName() {
         return fileName;
     }
-    
-    public void setFileName(String fileName) {
+
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
-    
-    
+
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

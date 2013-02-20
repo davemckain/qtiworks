@@ -40,6 +40,8 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -97,7 +99,7 @@ public class InstructorAssessmentReportingController {
         final CsvWriter csvWriter = new CsvWriter(response.getOutputStream(), ',', Charsets.UTF_8);
 
         /* Write header */
-        final StringBuilder headerBuilder = new StringBuilder("Session ID,Email Address,First Name,Last Name,Email Address,Launch Time,Session Status");
+        final StringBuilder headerBuilder = new StringBuilder("Session ID,Email Address,First Name,Last Name,Launch Time,Session Status");
         for (final String outcomeName : report.getOutcomeNames()) {
             headerBuilder.append(',').append(outcomeName);
         }
@@ -106,7 +108,7 @@ public class InstructorAssessmentReportingController {
         /* Write each row */
         for (final DcsrRow row : report.getRows()) {
             csvWriter.write(Long.toString(row.getSessionId()));
-            csvWriter.write(row.getEmailAddress());
+            csvWriter.write(StringUtilities.emptyIfNull(row.getEmailAddress()));
             csvWriter.write(row.getFirstName());
             csvWriter.write(row.getLastName());
             csvWriter.write(row.getLaunchTime().toString());

@@ -31,49 +31,49 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web;
+package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.base.services.Auditor;
+import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Filter that intercepts any {@link RuntimeException}s and logs them in an appropriate way.
+ * Implementation of {@link AbstractInstructorAuthenticator} performing "fake" authentication
  *
  * @author David McKain
  */
-public final class ExceptionLoggingFilter extends AbstractFilterUsingApplicationContext {
+public final class InstructorFakeAuthenticator extends AbstractInstructorAuthenticator {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExceptionLoggingFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(InstructorFakeAuthenticator.class);
 
-    private Auditor auditor;
+    /** Login Name for the assumed User */
+    private final String fakeLoginName;
 
-    @Override
-    protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
-            throws Exception {
-        auditor = applicationContext.getBean(Auditor.class);
+    public InstructorFakeAuthenticator(final WebApplicationContext webApplicationContext, final String fakeLoginName) {
+        super(webApplicationContext);
+        this.fakeLoginName = fakeLoginName;
     }
 
     @Override
-    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain filterChain)
-            throws IOException, ServletException {
-        try {
-            filterChain.doFilter(request, response);
+    protected InstructorUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
+        return lookupFakeUser();
+    }
+
+    private InstructorUser lookupFakeUser() {
+        final InstructorUser user = instructorUserDao.findByLoginName(fakeLoginName);
+        if (user==null) {
+            logger.warn("Could not find specified fake InstructorUser with loginName {}" + fakeLoginName);
+            return null;
         }
-        catch (final RuntimeException e) {
-            logger.warn("Intercepted RuntimeException", e);
-            auditor.recordEvent("Intercepted RuntimeException: " + e.getMessage());
-            throw e;
+        else if (user.isLoginDisabled()) {
+            logger.warn("Fake InstructorUser {} has their account marked as disabled", fakeLoginName);
+            return null;
         }
+        return user;
     }
 }

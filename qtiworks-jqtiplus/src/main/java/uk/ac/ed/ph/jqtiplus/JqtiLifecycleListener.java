@@ -31,45 +31,21 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node;
-
-import uk.ac.ed.ph.jqtiplus.provision.BadResourceException;
-import uk.ac.ed.ph.jqtiplus.provision.RootNodeProvider;
+package uk.ac.ed.ph.jqtiplus;
 
 /**
- * Defines the amount of "richness" that is provided in a JQTI Object Model.
+ * Interface for classes who want to hear about JQTI+ lifecycle events.
  * <p>
- * This is mainly used when instantiating resources to control how much work should be done.
- * 
- * THIS IS STILL SLIGHLTY EXPERIMENTAL!
+ * Extensions may use this if they need to do any complex initialisation
+ * work. For example the MathAssess extensions use these to set up and
+ * tear down pooled Maxima communication processes.
+ *
+ * @see JqtiLifecycleEventType
  *
  * @author David McKain
  */
-public enum ModelRichness {
-    
-    /**
-     * FIXME: Not yet implemented!
-     * 
-     * This might be useful during processing... it would omit presentational stuff from the
-     * model and focus only on logic. Resources would need to be reloaded for subsequent
-     * presentation though...
-     */
-    EXECUTION_ONLY,
-    
-    /**
-     * Indicates that the model is known to be valid, so implementors can bypass checks
-     * such as schema validation.
-     */
-    FULL_ASSUMED_VALID,
-    
-    /**
-     * Indicates that the resource is going to be fully validated. Implementors of
-     * {@link RootNodeProvider} should do anything else that supports this, such as
-     * schema validation of XML resources. Failure of this lower-level validation should
-     * cause Object provision to fail, with lower level errors reported via 
-     * {@link BadResourceException}.
-     */
-    FOR_VALIDATION,
-    ;
+public interface JqtiLifecycleListener {
+
+    void lifecycleEvent(Object source, JqtiLifecycleEventType eventType);
 
 }

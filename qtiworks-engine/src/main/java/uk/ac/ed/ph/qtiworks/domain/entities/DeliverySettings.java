@@ -86,13 +86,13 @@ import org.hibernate.annotations.Type;
             query="SELECT ds"
                 + "  FROM DeliverySettings ds"
                 + "  WHERE ds.owner = :user"
-                + "  ORDER BY creationTime, id"),
+                + "  ORDER BY creationTime, dsid"),
     @NamedQuery(name="DeliverySettings.getForOwnerAndType",
             query="SELECT ds"
                 + "  FROM DeliverySettings ds"
                 + "  WHERE ds.owner = :user"
                 + "  AND ds.assessmentType = :assessmentType"
-                + "  ORDER BY creationTime, id"),
+                + "  ORDER BY creationTime, dsid"),
     @NamedQuery(name="DeliverySettings.countForOwnerAndType",
             query="SELECT COUNT(ds)"
                 + "  FROM DeliverySettings ds"
@@ -109,7 +109,7 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Id
     @GeneratedValue(generator="deliverySettingsSequence")
     @Column(name="dsid")
-    private Long id;
+    private Long dsid;
 
     /** Item or Test? */
     @Basic(optional=false)
@@ -183,12 +183,12 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public Long getId() {
-        return id;
+        return dsid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.dsid = id;
     }
 
 
@@ -271,6 +271,8 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     @Override
     public String toString() {
-        return ObjectUtilities.beanToString(this);
+        return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
+                + "(dsid=" + dsid
+                + ")";
     }
 }

@@ -5,8 +5,6 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
@@ -16,11 +14,9 @@ import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -31,7 +27,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
-import java.util.Arrays;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -54,10 +49,9 @@ public class StandaloneItemRenderingTest {
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
+            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
 
-            final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
-            final ResolvedAssessmentItem resolvedAssessmentItem = objectManager.resolveAssessmentItem(itemUri, ModelRichness.FULL_ASSUMED_VALID);
+            final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectXmlLoader.loadAndResolveAssessmentItem(itemUri);
             final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
             final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, true).initialize();
             final ItemSessionState itemSessionState = new ItemSessionState();
@@ -74,8 +68,8 @@ public class StandaloneItemRenderingTest {
 
             final RenderingOptions renderingOptions = createRenderingOptions();
             final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
-            renderingRequest.setRenderingMode(RenderingMode.PLAYBACK);
-            renderingRequest.setAssessmentResourceLocator(objectReader.getInputResourceLocator());
+            renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
+            renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setItemSessionState(itemSessionState);
@@ -87,18 +81,6 @@ public class StandaloneItemRenderingTest {
             renderingRequest.setReinitAllowed(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
-            renderingRequest.setPlaybackAllowed(true);
-
-            final CandidateEvent playback1 = new CandidateEvent();
-            playback1.setId(1L);
-            playback1.setItemEventType(CandidateItemEventType.INIT);
-
-            final CandidateEvent playback2 = new CandidateEvent();
-            playback2.setId(2L);
-            playback2.setItemEventType(CandidateItemEventType.ATTEMPT_VALID);
-
-            renderingRequest.setPlaybackEvents(Arrays.asList(playback1, playback2));
-            renderingRequest.setCurrentPlaybackEvent(playback1);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

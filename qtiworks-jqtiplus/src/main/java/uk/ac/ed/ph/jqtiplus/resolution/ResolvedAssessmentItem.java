@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.jqtiplus.resolution;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
@@ -62,8 +61,8 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
     /** Resolved {@link ResponseProcessing} template, if specified, otherwise null */
     private final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup;
 
-    public ResolvedAssessmentItem(final ModelRichness modelRichness, final RootNodeLookup<AssessmentItem> itemLookup, final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup) {
-        super(modelRichness, itemLookup);
+    public ResolvedAssessmentItem(final RootNodeLookup<AssessmentItem> itemLookup, final RootNodeLookup<ResponseProcessing> resolvedResponseProcessingTemplateLookup) {
+        super(itemLookup);
         this.itemLookup = itemLookup;
         this.resolvedResponseProcessingTemplateLookup = resolvedResponseProcessingTemplateLookup;
     }
@@ -130,8 +129,7 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(modelRichness=" + modelRichness
-                + ",itemLookup=" + itemLookup
+                + "(itemLookup=" + itemLookup
                 + ",resolvedResponseProcessingTemplateLookup=" + resolvedResponseProcessingTemplateLookup
                 + ")";
     }

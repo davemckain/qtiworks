@@ -39,19 +39,30 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Interface for connecting QTI extensions, such as MathAssess.
+ * Interface for defining QTI extensions, such as MathAssess.
+ * <p>
+ * To create a QTI extension, you should implement this interface
+ * and register it with your {@link JqtiExtensionManager}.
+ * <p>
+ * We currently support the <code>customOperator</code> and
+ * <code>customInteraction</code> extension points. The QTI 2.1
+ * specification does mention the possibility of having custom
+ * selection & ordering classes but doesn't define how these should
+ * work, so we don't support these yet.
+ * <p>
+ * See the <code>qtiworks-mathassess</code> package for a concrete
+ * (and rather complex) example of a working package.
  *
  * @param <E> the final implementation of this class
  *
  * @author David McKain
  */
-public interface JqtiExtensionPackage<E extends JqtiExtensionPackage<E>> extends LifecycleListener {
+public interface JqtiExtensionPackage<E extends JqtiExtensionPackage<E>> extends JqtiLifecycleListener {
 
     /**
-     * Returns a displayable name for this extension package.
+     * Return a displayable name for this extension package.
      * <p>
      * (This may change in future if we ever have some kind of centralised
      * registry for extensions...)
@@ -62,32 +73,47 @@ public interface JqtiExtensionPackage<E extends JqtiExtensionPackage<E>> extends
      * Return details about each namespace used by this extension, in the form
      * of a {@link Map} keyed on namespace URI.
      * <p>
-     * In JQTI, it is illegal to register more than one package handling the same namespace URI.
+     * In JQTI+, it is illegal to register more than one package handling the same namespace URI.
      * <p>
-     * This must not be null.
+     * This must not return null.
      */
     Map<String, ExtensionNamespaceInfo> getNamespaceInfoMap();
 
+    /**
+     * Return whether or not this extension package supports the
+     * <code>customOperator</code> having the given "class" name.
+     *
+     * @param operatorClassName class name to test
+     * @return true if this package supports this operator, false otherwise.
+     */
     boolean implementsCustomOperator(String operatorClassName);
 
+    /**
+     * Return whether or not this extension package supports the
+     * <code>customInteraction</code> having the given "class" name.
+     *
+     * @param interactionClassName class name to test
+     * @return true if this package supports this interaction, false otherwise.
+     */
     boolean implementsCustomInteraction(String interactionClassName);
 
-    Set<String> getImplementedCustomOperatorClasses();
-
-    Set<String> getImplementedCustomInteractionClasses();
-
     /**
-     * Instantiate and return a new {@link CustomOperator} corresponding to the given class name,
-     * returning null if this package does not support the stated class.
+     * Instantiate and return a new {@link CustomOperator} corresponding to the given class name.
+     * <p>
+     * Return null if this package does not support the stated class.
      *
-     * @param expressionParent
-     * @param operatorClassName
+     * @param expressionParent parent QTI object owning this operator
+     * @param operatorClassName class name to instantiate
      */
     CustomOperator<E> createCustomOperator(ExpressionParent expressionParent, String operatorClassName);
 
     /**
-     * Instantiate and return a new {@link CustomInteraction} corresponding to the given class name,
-     * returning null if this package does not support the stated class.
+     * Instantiate and return a new {@link CustomInteraction} corresponding to the given class name.
+     * <p>
+     * Return null if this package does not support the stated class.
+     *
+     * @param parentObject parent QTI object owning this interaction
+     * @param operatorClassName class name to instantiates
      */
     CustomInteraction<E> createCustomInteraction(QtiNode parentObject, String interactionClassName);
 

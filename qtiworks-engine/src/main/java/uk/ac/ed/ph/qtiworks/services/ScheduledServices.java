@@ -31,17 +31,46 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus;
+package uk.ac.ed.ph.qtiworks.services;
+
+import java.util.Date;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 /**
- * Interface for classes that want to hear about lifecycle events.
- * 
- * @see LifecycleEventType
- * 
+ * Houses all scheduled tasks performed within the system
+ *
  * @author David McKain
  */
-public interface LifecycleListener {
+@Service
+public class ScheduledServices {
 
-    void lifecycleEvent(Object source, LifecycleEventType eventType);
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledServices.class);
 
+    public static final int ANONYMOUS_USER_KEEP_HOURS = 24;
+
+    @Resource
+    private DataDeletionService dataDeletionService;
+
+    /**
+     * Purges all anonymous users and transient deliveries that were created more than
+     * {@link #ANONYMOUS_USER_KEEP_HOURS} hours ago. All associated data is removed.
+     */
+    @Scheduled(fixedRate=1000L * 60 * 60)
+    public void purgeAnonymousData() {
+        final Date creationTimeThreshold = new Date(System.currentTimeMillis() - ANONYMOUS_USER_KEEP_HOURS * 60 * 60 * 1000);
+        final int usersDeleted = dataDeletionService.deleteAnonymousUsers(creationTimeThreshold);
+        if (usersDeleted > 0) {
+            logger.info("Purged {} anonymous users from the system", usersDeleted);
+        }
+        final int transientDeliveriesDeleted = dataDeletionService.deleteTransientDeliveries(creationTimeThreshold);
+        if (transientDeliveriesDeleted > 0) {
+            logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
+        }
+    }
 }

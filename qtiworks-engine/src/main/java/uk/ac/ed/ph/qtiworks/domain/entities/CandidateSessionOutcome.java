@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -81,7 +79,7 @@ public class CandidateSessionOutcome implements BaseEntity {
     @Id
     @GeneratedValue(generator="candidateSessionOutcomeSequence")
     @Column(name="xoid")
-    private Long id;
+    private Long xoid;
 
     /** Session owning this outcome */
     @ManyToOne(optional=false)
@@ -89,26 +87,29 @@ public class CandidateSessionOutcome implements BaseEntity {
     private CandidateSession candidateSession;
 
     /** Identifier of the underlying outcome variable */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=false)
-    @Column(name="outcome_identifier", updatable=false, length=DomainConstants.QTI_IDENTIFIER_MAX_LENGTH)
+    @Column(name="outcome_identifier", updatable=false)
     private String outcomeIdentifier;
 
     /** Variable as string */
     @Lob
     @Type(type="org.hibernate.type.TextType")
-    @Column(name="string_value")
+    @Basic(optional=false)
+    @Column(name="string_value", updatable=false)
     private String stringValue;
 
     //------------------------------------------------------------
 
     @Override
     public Long getId() {
-        return id;
+        return xoid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.xoid = id;
     }
 
 
@@ -142,7 +143,7 @@ public class CandidateSessionOutcome implements BaseEntity {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
+                + "(xoid=" + xoid
                 + ",outcomeIdentifier=" + outcomeIdentifier
                 + ",stringValue=" + stringValue
                 + ")";

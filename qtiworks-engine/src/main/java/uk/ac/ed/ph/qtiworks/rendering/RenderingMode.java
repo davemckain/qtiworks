@@ -48,7 +48,6 @@ public enum RenderingMode {
     CLOSED,
     REVIEW, /* NB: Only supported in tests currently */
     SOLUTION,
-    PLAYBACK,
     TERMINATED,
     ;
 

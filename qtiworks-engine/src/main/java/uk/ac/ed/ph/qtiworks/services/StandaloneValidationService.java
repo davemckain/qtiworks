@@ -80,7 +80,7 @@ public class StandaloneValidationService {
         final String contentType = multipartFile.getContentType();
         try {
             importedPackage = assessmentPackageImporter.importAssessmentPackageData(sandboxDirectory, inputStream, contentType);
-            return assessmentManagementService.validateAssessment(importedPackage);
+            return assessmentManagementService.loadAndValidateAssessment(importedPackage);
         }
         finally {
             filespaceManager.deleteSandbox(sandboxDirectory);

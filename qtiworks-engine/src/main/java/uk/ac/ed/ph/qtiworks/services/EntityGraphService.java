@@ -45,6 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -75,9 +76,6 @@ public class EntityGraphService {
     private IdentityContext identityContext;
 
     @Resource
-    private AssessmentDao assessmentDao;
-
-    @Resource
     private AssessmentPackageDao assessmentPackageDao;
 
     @Resource
@@ -86,10 +84,14 @@ public class EntityGraphService {
     @Resource
     private DeliverySettingsDao deliverySettingsDao;
 
+    @Resource
+    private AssessmentDao assessmentDao;
+
     //-------------------------------------------------
 
     public List<Assessment> getCallerAssessments() {
-        return assessmentDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+        final User currentUser = identityContext.getCurrentThreadEffectiveIdentity();
+        return assessmentDao.getForOwner(currentUser);
     }
 
     /**

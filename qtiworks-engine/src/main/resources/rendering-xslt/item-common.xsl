@@ -33,14 +33,6 @@ rendering.
   <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="playbackAllowed" as="xs:boolean" required="yes"/>
-
-  <!-- Playback -->
-  <xsl:param name="playbackUrlBase" as="xs:string" required="yes"/>
-  <xsl:param name="currentPlaybackEventId" select="()" as="xs:integer?"/>
-  <xsl:param name="currentPlaybackEventType" select="()" as="xs:string?"/>
-  <xsl:param name="playbackEventIds" select="()" as="xs:integer*"/>
-  <xsl:param name="playbackEventTypes" select="()" as="xs:string*"/>
 
   <xsl:function name="qw:describe-candidate-event" as="xs:string">
     <xsl:param name="candidate-event-type" as="xs:string"/>
@@ -52,7 +44,6 @@ rendering.
       <qw:description type="REINIT">Re-initialisation of your assessment</qw:description>
       <qw:description type="RESET">Reset of your assessment</qw:description>
       <qw:description type="SOLUTION">Display of a model solution for this assessment</qw:description>
-      <qw:description type="PLAYBACK">Playback of your assessment</qw:description>
       <qw:description type="CLOSE">Completion of your assessment</qw:description>
       <qw:description type="TERMINATE">Termination of your assessment</qw:description>
     </xsl:variable>
@@ -280,13 +271,6 @@ rendering.
           <li>
             <form action="{$webappContextPath}{$closeUrl}" method="post">
               <input type="submit" value="Finish and review"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$playbackAllowed and exists($playbackEventIds) and $renderingMode!='PLAYBACK'">
-          <li>
-            <form action="{$webappContextPath}{$playbackUrlBase}/{$playbackEventIds[1]}" method="post">
-              <input type="submit" value="Enter playback mode"/>
             </form>
           </li>
         </xsl:if>

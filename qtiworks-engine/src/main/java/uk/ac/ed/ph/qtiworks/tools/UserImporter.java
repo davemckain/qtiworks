@@ -89,8 +89,8 @@ public final class UserImporter {
         }
         finally {
             IOUtils.closeQuietly(importReader);
+            ctx.close();
         }
-        ctx.close();
     }
 
     public static void handleUserLine(final BootstrapServices bootstrapServices, final String[] fields) {

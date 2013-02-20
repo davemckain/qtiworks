@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.group.result.ContextGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.ItemResultGroup;
 import uk.ac.ed.ph.jqtiplus.group.result.TestResultGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 import java.net.URI;
@@ -59,11 +58,7 @@ public final class AssessmentResult extends AbstractNode implements RootNode, Re
     public static final String QTI_CLASS_NAME = "assessmentResult";
 
     private URI systemId;
-    private ModelRichness modelRichness;
 
-    /**
-     * Constructs assessmentResult.
-     */
     public AssessmentResult() {
         super(null, QTI_CLASS_NAME);
 
@@ -80,17 +75,6 @@ public final class AssessmentResult extends AbstractNode implements RootNode, Re
     @Override
     public void setSystemId(final URI systemId) {
         this.systemId = systemId;
-    }
-
-
-    @Override
-    public ModelRichness getModelRichness() {
-        return modelRichness;
-    }
-
-    @Override
-    public void setModelRichness(final ModelRichness modelRichness) {
-        this.modelRichness = modelRichness;
     }
 
 
@@ -136,7 +120,6 @@ public final class AssessmentResult extends AbstractNode implements RootNode, Re
     public String toString() {
         return super.toString()
                 + "(systemId=" + systemId
-                + ",modelRichness=" + modelRichness
                 + ")";
     }
 

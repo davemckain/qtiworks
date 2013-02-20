@@ -48,7 +48,12 @@ public class JpaProductionConfiguration {
 
     @Bean(name="extraJpaProperties")
     public Properties extraJpaProperties() {
-        return new Properties();
+        final Properties extraJpaProperties = new Properties();
+
+        /* As recommended, and required for sequence generation 'initialValue' */
+        extraJpaProperties.put("hibernate.id.new_generator_mappings", "true");
+
+        return extraJpaProperties;
     }
 
 }

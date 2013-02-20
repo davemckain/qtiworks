@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.group.item.response.processing.ResponseRuleGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.ModelRichness;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -73,7 +72,6 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
     public static final String ATTR_TEMPLATE_LOCATION_NAME = "templateLocation";
 
     private URI systemId;
-    private ModelRichness modelRichness;
 
     public ResponseProcessing() {
         this(null);
@@ -96,17 +94,6 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
     @Override
     public void setSystemId(final URI systemId) {
         this.systemId = systemId;
-    }
-
-
-    @Override
-    public ModelRichness getModelRichness() {
-        return modelRichness;
-    }
-
-    @Override
-    public void setModelRichness(final ModelRichness modelRichness) {
-        this.modelRichness = modelRichness;
     }
 
 
@@ -165,7 +152,6 @@ public final class ResponseProcessing extends AbstractNode implements RootNode {
     public String toString() {
         return super.toString()
                 + "(systemId=" + systemId
-                + ",modelRichness=" + modelRichness
                 + ")";
     }
 }

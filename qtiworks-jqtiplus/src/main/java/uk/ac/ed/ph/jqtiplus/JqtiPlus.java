@@ -34,12 +34,14 @@
 package uk.ac.ed.ph.jqtiplus;
 
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConstraint;
+import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 
 /**
  * JQTI+ public definitions
  *
  * @author David McKain
- * @author Jonathon Hare
+ * @author Jonathon Hare (original from JQTI)
  */
 public final class JqtiPlus {
 
@@ -51,7 +53,11 @@ public final class JqtiPlus {
      * Default number of tries for running template processing rules before giving
      * up and using default values.
      * <p>
-     * This is to support {@link TemplateConstraint}
+     * This is to support {@link TemplateConstraint}.
+     *
+     * @see ItemSessionControllerSettings
+     * @see TestSessionControllerSettings
+     * @see TemplateConstraint
      */
     public static final int DEFAULT_TEMPLATE_PROCESSING_LIMIT = 100;
 

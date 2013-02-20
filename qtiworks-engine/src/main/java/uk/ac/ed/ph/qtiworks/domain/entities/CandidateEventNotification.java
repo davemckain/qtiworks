@@ -76,7 +76,7 @@ public class CandidateEventNotification implements BaseEntity {
     @Id
     @GeneratedValue(generator="candidateEventNotificationSequence")
     @Column(name="xnid")
-    private Long id;
+    private Long xnid;
 
     /** {@link CandidateEvent} owning this notification */
     @ManyToOne(optional=false)
@@ -137,12 +137,12 @@ public class CandidateEventNotification implements BaseEntity {
 
     @Override
     public Long getId() {
-        return id;
+        return xnid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.id = id;
+        this.xnid = id;
     }
 
 
@@ -240,7 +240,7 @@ public class CandidateEventNotification implements BaseEntity {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(id=" + id
+                + "(xnid=" + xnid
                 + ",notificationType=" + notificationType
                 + ",notificationLevel=" + notificationLevel
                 + ",message=" + message

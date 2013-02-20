@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Concrete implementation of {@link AbstractWebAuthenticationFilter} that uses a simple form-based
+ * Concrete implementation of {@link AbstractWebAuthenticator} that uses the simple form-based
  * log-in process to authenticate the current user.
  *
  * <h2>How it works</h2>
@@ -71,9 +71,9 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author David McKain
  */
-public final class InstructorFormAuthenticationFilter extends AbstractInstructorAuthenticationFilter {
+public final class InstructorFormAuthenticator extends AbstractInstructorAuthenticator {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstructorFormAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(InstructorFormAuthenticator.class);
 
     /**
      * Name of attribute used to store request URL if we need to go to login form so that
@@ -86,14 +86,12 @@ public final class InstructorFormAuthenticationFilter extends AbstractInstructor
     public static final String FORM_LOGIN_JSP_PATH_PARAMETER_NAME = "formLoginJspPath";
 
     /** Location of form login JSP page, supplied via context <init-param/> */
-    private String loginFormJspPath;
+    private final String loginFormJspPath;
 
-    @Override
-    protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext) throws Exception {
-        super.initWithApplicationContext(filterConfig, webApplicationContext);
-
-        /* Look up location of login form */
-        loginFormJspPath = WebUtilities.getRequiredInitParameter(filterConfig, FORM_LOGIN_JSP_PATH_PARAMETER_NAME);
+    public InstructorFormAuthenticator(final WebApplicationContext webApplicationContext, final FilterConfig filterConfig)
+            throws ServletException {
+        super(webApplicationContext);
+        this.loginFormJspPath = WebUtilities.getRequiredInitParameter(filterConfig, FORM_LOGIN_JSP_PATH_PARAMETER_NAME);
         logger.info("Form login JSP has been set to {}", loginFormJspPath);
     }
 

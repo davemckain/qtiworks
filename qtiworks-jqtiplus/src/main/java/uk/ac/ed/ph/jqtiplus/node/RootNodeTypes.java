@@ -124,7 +124,7 @@ public enum RootNodeTypes {
      * @throws IllegalArgumentException if the given qtiClassName does not correspond to a QTI root Node
      * @throws QtiLogicException if the resulting {@link RootNode} could not be instantiated
      */
-    public static RootNode getInstance(final String qtiClassName, final URI systemId, final ModelRichness modelRichness) {
+    public static RootNode getInstance(final String qtiClassName, final URI systemId) {
         final RootNodeTypes rootNodeType = rootNodeTypesMap.get(qtiClassName);
         RootNode result = null;
         if (rootNodeType == null) {
@@ -137,7 +137,6 @@ public enum RootNodeTypes {
             throw new QtiLogicException("Could not instantiate root node Class " + qtiClassName, e);
         }
         result.setSystemId(systemId);
-        result.setModelRichness(modelRichness);
         return result;
     }
 
@@ -149,8 +148,8 @@ public enum RootNodeTypes {
      * @throws IllegalArgumentException if the given qtiClassName does not correspond to a root Node
      * @throws QtiLogicException if the resulting {@link RootNode} could not be instantiated
      */
-    public static RootNode load(final Element sourceElement, final URI systemId, final ModelRichness modelRichness, final LoadingContext context) {
-        final RootNode root = getInstance(sourceElement.getLocalName(), systemId, modelRichness);
+    public static RootNode load(final Element sourceElement, final URI systemId, final LoadingContext context) {
+        final RootNode root = getInstance(sourceElement.getLocalName(), systemId);
 
         /* Check namespaces */
         final String namespaceUri = sourceElement.getNamespaceURI();

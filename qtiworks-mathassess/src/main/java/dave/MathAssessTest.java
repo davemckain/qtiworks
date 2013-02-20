@@ -38,9 +38,8 @@ import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
-import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.AssessmentObjectManager;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -86,10 +85,9 @@ public class MathAssessTest {
 
             System.out.println("Reading " + inputUri);
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final QtiObjectReader objectReader = qtiXmlReader.createQtiXmlObjectReader(new ClassPathResourceLocator());
-            final AssessmentObjectManager objectManager = new AssessmentObjectManager(objectReader);
+            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
 
-            final ItemValidationResult itemValidationResult = objectManager.resolveAndValidateItem(inputUri);
+            final ItemValidationResult itemValidationResult = assessmentObjectXmlLoader.loadResolveAndValidateItem(inputUri);
             final ResolvedAssessmentItem resolvedAssessmentItem = itemValidationResult.getResolvedAssessmentItem();
             System.out.println("Validation result: " + ObjectDumper.dumpObject(itemValidationResult, DumpMode.DEEP));
             System.out.println("Extensions used: " + QueryUtils.findExtensionsUsed(jqtiExtensionManager, resolvedAssessmentItem));
@@ -100,8 +98,7 @@ public class MathAssessTest {
             final XsltSerializationOptions serializationOptions = new XsltSerializationOptions();
             serializationOptions.setIndenting(true);
 
-            final XsltStylesheetManager stylesheetManager = new XsltStylesheetManager();
-            final TransformerHandler serializerHandler = stylesheetManager.getSerializerHandler(serializationOptions);
+            final TransformerHandler serializerHandler = XsltStylesheetManager.createSerializerHandler(serializationOptions);
 
             final StringWriter serializedXmlWriter = new StringWriter();
             serializerHandler.setResult(new StreamResult(serializedXmlWriter));

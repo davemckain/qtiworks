@@ -75,11 +75,6 @@ public enum CandidateItemEventType {
     SOLUTION,
 
     /**
-     * Candidate has requested to "playback" a particular event.
-     */
-    PLAYBACK,
-
-    /**
      * Candidate has closed the current session and moved it into
      * {@link CandidateSessionState#CLOSED} state
      */

@@ -33,11 +33,14 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
+import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.domain.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
 import java.io.IOException;
 
@@ -53,8 +56,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Base authentication filter, supporting the {@link IdentityContext} notion
- * and the {@link User} entity.
+ * Authentication filter for instructor users. This selects a delegating
+ * {@link AbstractInstructorAuthenticator} as directed by the webapp config.
+ * It supports the {@link IdentityContext} notion and the {@link User} entity.
  *
  * <h2>Tomcat Note</h2>
  *
@@ -64,9 +68,9 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author David McKain
  */
-public abstract class AbstractInstructorAuthenticationFilter extends AbstractWebAuthenticationFilter {
+public final class InstructorAuthenticationFilter extends AbstractWebAuthenticationFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractInstructorAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(InstructorAuthenticationFilter.class);
 
     /** Name of request Attribute that will contain the underlying {@link InstructorUser} identity of the client */
     public static final String UNDERLYING_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.underlyingIdentity";
@@ -83,13 +87,28 @@ public abstract class AbstractInstructorAuthenticationFilter extends AbstractWeb
     protected IdentityContext identityContext;
     protected UserDao userDao;
     protected InstructorUserDao instructorUserDao;
+    protected AbstractInstructorAuthenticator abstractInstructorAuthenticator;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
-        identityContext = applicationContext.getBean(IdentityContext.class);
-        userDao = applicationContext.getBean(UserDao.class);
-        instructorUserDao = applicationContext.getBean(InstructorUserDao.class);
+        identityContext = webApplicationContext.getBean(IdentityContext.class);
+        userDao = webApplicationContext.getBean(UserDao.class);
+        instructorUserDao = webApplicationContext.getBean(InstructorUserDao.class);
+
+        /* Decide whether to do fake or form authentication */
+        final QtiWorksSettings qtiWorksSettings = webApplicationContext.getBean(QtiWorksSettings.class);
+        final String fakeLoginName = qtiWorksSettings.getFakeLoginName();
+        if (StringUtilities.isNullOrBlank(fakeLoginName)) {
+            /* Use standard form authentication */
+            abstractInstructorAuthenticator = new InstructorFormAuthenticator(webApplicationContext, filterConfig);
+
+        }
+        else {
+            /* Use fake authentication */
+            logger.warn("Fake authentication is being enabled and attached to user {}. This should not be used in production deployments!", fakeLoginName);
+            abstractInstructorAuthenticator = new InstructorFakeAuthenticator(webApplicationContext, fakeLoginName);
+        }
     }
 
     @Override
@@ -102,7 +121,7 @@ public abstract class AbstractInstructorAuthenticationFilter extends AbstractWeb
             /* If there are no User details, we ask subclass to do whatever is required to
              * authenticate
              */
-            underlyingUser = doAuthentication(httpRequest, httpResponse);
+            underlyingUser = abstractInstructorAuthenticator.doAuthentication(httpRequest, httpResponse);
             if (underlyingUser!=null) {
                 /* Store back into Session so that we can avoid later lookups, and allow things
                  * further down the chain to access
@@ -155,20 +174,5 @@ public abstract class AbstractInstructorAuthenticationFilter extends AbstractWeb
             identityContext.setCurrentThreadEffectiveIdentity(null);
             identityContext.setCurrentThreadUnderlyingIdentity(null);
         }
-
-
     }
-
-    /**
-     * Subclasses should fill in to "do" the actual authentication work. Return a non-null
-     * {@link InstructorUser} if authorisation succeeds, otherwise set up the {@link HttpServletResponse} as
-     * appropriate (e.g. redirect to login page) and return null.
-     *
-     * @param request
-     * @param response
-     * @throws IOException
-     * @throws ServletException
-     */
-    protected abstract InstructorUser doAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException;
 }
