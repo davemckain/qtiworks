@@ -113,7 +113,7 @@ public final class TestPlanXmlMarshaller {
             document = documentBuilder.parse(new InputSource(new StringReader(xmlString)));
         }
         catch (final Exception e) {
-            throw new MarshallingException("XML parsing failed", e);
+            throw new XmlUnmarshallingException("XML parsing failed", e);
         }
         return unmarshal(document.getDocumentElement());
     }
@@ -132,7 +132,7 @@ public final class TestPlanXmlMarshaller {
         for (final Element childElement : childElements) {
             final String elementName = childElement.getLocalName();
             if (!elementName.equals("node")) {
-                throw new MarshallingException("Unexpected element " + elementName);
+                throw new XmlUnmarshallingException("Unexpected element " + elementName);
             }
             final TestNodeType type = requireTestNodeTypeAttribute(childElement, "type");
             final TestPlanNodeKey key = requireTestPlanNodeKeyAttribute(childElement, "key");
@@ -161,7 +161,7 @@ public final class TestPlanXmlMarshaller {
             return TestNodeType.valueOf(stringValue);
         }
         catch (final IllegalArgumentException e) {
-            throw new MarshallingException("Bad " + TestNodeType.class.getSimpleName()
+            throw new XmlUnmarshallingException("Bad " + TestNodeType.class.getSimpleName()
                     + " value '" + stringValue
                     + "' in attribute " + localName);
         }
@@ -173,7 +173,7 @@ public final class TestPlanXmlMarshaller {
             return TestPlanNodeKey.fromString(stringValue);
         }
         catch (final IllegalArgumentException e) {
-            throw new MarshallingException("Bad " + TestPlanNodeKey.class.getSimpleName()
+            throw new XmlUnmarshallingException("Bad " + TestPlanNodeKey.class.getSimpleName()
                     + " value '" + stringValue
                     + "' in attribute " + localName);
         }

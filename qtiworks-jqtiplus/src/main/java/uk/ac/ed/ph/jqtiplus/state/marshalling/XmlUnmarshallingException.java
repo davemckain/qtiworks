@@ -31,65 +31,26 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception;
+package uk.ac.ed.ph.jqtiplus.state.marshalling;
+
+import uk.ac.ed.ph.jqtiplus.exception.JqtiRuntimeException;
 
 /**
- * Superclass of all unchecked exceptions.
- * <p>
- * It is abstract class because you should <em>never</em> use this class directly. For example:
- * </p>
- * 
- * <pre>
- * throw new QTIRuntimeException()
- * </pre>
- * 
- * (this is not possible anyway)
- * <p>
- * And you should <em>never</em> use this class in method header also. For example:
- * </p>
- * 
- * <pre>
- * void someMethod() throws QTIRuntimeException
- * </pre>
- * <p>
- * Only two legal usages are as superclass of all unchecked exceptions and in catch block, when you don't need to distinguish between different exceptions
- * types. For example:
- * </p>
- * 
- * <pre>
- * try
- * {
- *   ... some code here ...
- * }
- * catch (QTIRuntimeException ex)
- * {
- *   ... some code here ...
- * }
- * </pre>
- * <p>
- * We have decided to use only unchecked exceptions in JQTI library. There is big discussion on Internet about checked/unchecked exceptions (see Google).
- * 
- * @see QtiException
- * 
- * @author Jiri Kajaba
+ * Thrown when the XML -> JQTI+ state Object unmarshalling process cannot handle
+ * the incoming XML.
+ *
+ * @author David McKain
  */
-public abstract class QtiRuntimeException extends RuntimeException {
+public final class XmlUnmarshallingException extends JqtiRuntimeException {
 
-    private static final long serialVersionUID = -3977994907885787808L;
+    private static final long serialVersionUID = -6528489239978493663L;
 
-    public QtiRuntimeException() {
-        super();
-    }
-
-    public QtiRuntimeException(String message) {
-        super(message);
-    }
-
-    public QtiRuntimeException(String message, Throwable cause) {
+    public XmlUnmarshallingException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public QtiRuntimeException(Throwable cause) {
-        super(cause);
+    public XmlUnmarshallingException(final String message) {
+        super(message);
     }
+
 }

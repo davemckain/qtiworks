@@ -31,19 +31,31 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception2;
+package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * This exception is used for reporting expectation failures when constructing
- * and manipulating container types.
+ * Base class for {@link Exception}s related to the JQTI Object model.
  *
  * @author David McKain
  */
-public final class QtiContainerException extends QtiModelException {
+public abstract class QtiModelException extends JqtiRuntimeException {
 
-    private static final long serialVersionUID = 543586953995447052L;
+    private static final long serialVersionUID = -357903886560490898L;
 
-    public QtiContainerException(final String message) {
+    public QtiModelException() {
+        super();
+    }
+
+    public QtiModelException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public QtiModelException(final String message) {
         super(message);
     }
+
+    public QtiModelException(final Throwable cause) {
+        super(cause);
+    }
+
 }

@@ -31,10 +31,8 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception2;
+package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiException;
-import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 
@@ -43,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
  *
  * @author David McKain
  */
-public final class ResponseBindingException extends QtiException {
+public final class ResponseBindingException extends JqtiException {
 
     private static final long serialVersionUID = 1727673548938417208L;
 

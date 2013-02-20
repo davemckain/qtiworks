@@ -31,33 +31,19 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception2;
-
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * Exception thrown when trying to add an inappropriate child to a {@link QtiNode}.
+ * This exception is used for reporting expectation failures when constructing
+ * and manipulating container types.
  *
  * @author David McKain
  */
-public final class QtiIllegalChildException extends QtiModelException {
+public final class QtiContainerException extends QtiModelException {
 
-    private static final long serialVersionUID = 8810282210478664633L;
+    private static final long serialVersionUID = 543586953995447052L;
 
-    private final QtiNode parent;
-    private final String childQtiClassName;
-
-    public QtiIllegalChildException(final QtiNode parent, final String childQtiClassName) {
-        super("Illegal child with QTI class name " + childQtiClassName + " for parent " + parent.getQtiClassName());
-        this.parent = parent;
-        this.childQtiClassName = childQtiClassName;
-    }
-
-    public QtiNode getParent() {
-        return parent;
-    }
-
-    public String getChildQtiClassName() {
-        return childQtiClassName;
+    public QtiContainerException(final String message) {
+        super(message);
     }
 }

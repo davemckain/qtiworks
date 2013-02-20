@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
-
 /**
  * This exception is used for propagating errors when parsing/converting literal Strings
  * into QTI types, allowed attribute values etc.
@@ -44,10 +42,6 @@ import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
 public final class QtiParseException extends QtiModelException {
 
     private static final long serialVersionUID = -696709617768595326L;
-
-    protected QtiParseException() {
-        super();
-    }
 
     public QtiParseException(final String message) {
         super(message);

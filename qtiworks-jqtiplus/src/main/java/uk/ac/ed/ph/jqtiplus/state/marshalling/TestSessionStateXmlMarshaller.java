@@ -119,7 +119,7 @@ public final class TestSessionStateXmlMarshaller {
             document = documentBuilder.parse(new InputSource(new StringReader(xmlString)));
         }
         catch (final Exception e) {
-            throw new MarshallingException("XML parsing failed", e);
+            throw new XmlUnmarshallingException("XML parsing failed", e);
         }
         return unmarshal(document.getDocumentElement());
     }
@@ -132,7 +132,7 @@ public final class TestSessionStateXmlMarshaller {
          */
         final List<Element> childElements = XmlMarshallerCore.expectElementChildren(element);
         if (childElements.isEmpty() || !"testPlan".equals(childElements.get(0).getLocalName())) {
-            throw new MarshallingException("Expected first child of <testSessionState> to be <testPlan>");
+            throw new XmlUnmarshallingException("Expected first child of <testSessionState> to be <testPlan>");
         }
         final TestPlan testPlan = TestPlanXmlMarshaller.unmarshal(childElements.get(0));
 
@@ -148,7 +148,7 @@ public final class TestSessionStateXmlMarshaller {
             result.setDurationValue(new FloatValue(durationString));
         }
         catch (final QtiParseException e) {
-            throw new MarshallingException("Could not parse duration " + durationString, e);
+            throw new XmlUnmarshallingException("Could not parse duration " + durationString, e);
         }
 
         /* Handle rest of children */
@@ -163,7 +163,7 @@ public final class TestSessionStateXmlMarshaller {
             else if ("testPart".equals(childElementName)) {
                 final List<Element> testPartElements = XmlMarshallerCore.expectElementChildren(childElement);
                 if (testPartElements.size()!=1) {
-                    throw new MarshallingException("Expected exactly one child of <testPart>");
+                    throw new XmlUnmarshallingException("Expected exactly one child of <testPart>");
                 }
                 final TestPlanNodeKey key = TestPlanXmlMarshaller.requireTestPlanNodeKeyAttribute(childElement, "key");
                 final TestPartSessionState testPartSessionState = TestPartSessionStateXmlMarshaller.unmarshal(testPartElements.get(0));
@@ -172,14 +172,14 @@ public final class TestSessionStateXmlMarshaller {
             else if ("item".equals(childElementName)) {
                 final List<Element> itemElements = XmlMarshallerCore.expectElementChildren(childElement);
                 if (itemElements.size()!=1) {
-                    throw new MarshallingException("Expected exactly one child of <item>");
+                    throw new XmlUnmarshallingException("Expected exactly one child of <item>");
                 }
                 final TestPlanNodeKey key = TestPlanXmlMarshaller.requireTestPlanNodeKeyAttribute(childElement, "key");
                 final ItemSessionState itemSessionState = ItemSessionStateXmlMarshaller.unmarshal(itemElements.get(0));
                 result.getItemSessionStates().put(key, itemSessionState);
             }
             else {
-                throw new MarshallingException("Unexpected element with localName " + childElementName);
+                throw new XmlUnmarshallingException("Unexpected element with localName " + childElementName);
             }
         }
         return result;

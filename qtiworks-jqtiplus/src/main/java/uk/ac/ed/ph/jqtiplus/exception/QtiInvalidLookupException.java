@@ -31,9 +31,8 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception2;
+package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -47,7 +46,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  *
  * @author David McKain
  */
-public final class QtiInvalidLookupException extends QtiRuntimeException {
+public final class QtiInvalidLookupException extends JqtiRuntimeException {
 
     private static final long serialVersionUID = 2827334569953049498L;
 

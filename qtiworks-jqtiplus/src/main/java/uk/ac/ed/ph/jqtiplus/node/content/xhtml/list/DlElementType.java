@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.content.xhtml.list;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 
 import java.util.HashMap;

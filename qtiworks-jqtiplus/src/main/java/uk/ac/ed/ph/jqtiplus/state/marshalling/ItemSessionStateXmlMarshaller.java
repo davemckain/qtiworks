@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
+import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -149,7 +149,7 @@ public final class ItemSessionStateXmlMarshaller {
             document = documentBuilder.parse(new InputSource(new StringReader(xmlString)));
         }
         catch (final Exception e) {
-            throw new MarshallingException("XML parsing failed", e);
+            throw new XmlUnmarshallingException("XML parsing failed", e);
         }
         return unmarshal(document.getDocumentElement());
     }
@@ -170,7 +170,7 @@ public final class ItemSessionStateXmlMarshaller {
                 result.setSessionStatus(SessionStatus.parseSessionStatus(sessionStatusAttr));
             }
             catch (final IllegalArgumentException e) {
-                throw new MarshallingException("Unexpected value for sessionStatus: " + sessionStatusAttr);
+                throw new XmlUnmarshallingException("Unexpected value for sessionStatus: " + sessionStatusAttr);
             }
         }
 
@@ -196,7 +196,7 @@ public final class ItemSessionStateXmlMarshaller {
                             stringResponseBuilder.add(XmlMarshallerCore.expectTextContent(responseElement));
                         }
                         else {
-                            throw new MarshallingException("Expeted 1 <file> or multiple <string> children");
+                            throw new XmlUnmarshallingException("Expeted 1 <file> or multiple <string> children");
                         }
                     }
                     result.setRawResponseData(identifier, new StringResponseData(stringResponseBuilder));
@@ -246,7 +246,7 @@ public final class ItemSessionStateXmlMarshaller {
                 result.setOverriddenCorrectResponseValue(identifier, value);
             }
             else {
-                throw new MarshallingException("Unexpected element " + elementName);
+                throw new XmlUnmarshallingException("Unexpected element " + elementName);
             }
         }
         return result;
@@ -264,7 +264,7 @@ public final class ItemSessionStateXmlMarshaller {
                 result.add(Identifier.parseString(identifierString));
             }
             catch (final QtiParseException e) {
-                throw new MarshallingException("Item '"
+                throw new XmlUnmarshallingException("Item '"
                         + identifierString + "' extracted from value '"
                         + identifierListAttrValue + "' of list attribute "
                         + identifierAttrListName + " is not a valid QTI Identifier");

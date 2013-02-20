@@ -75,7 +75,7 @@ public final class TestPartSessionStateXmlMarshaller {
             document = documentBuilder.parse(new InputSource(new StringReader(xmlString)));
         }
         catch (final Exception e) {
-            throw new MarshallingException("XML parsing failed", e);
+            throw new XmlUnmarshallingException("XML parsing failed", e);
         }
         return unmarshal(document.getDocumentElement());
     }

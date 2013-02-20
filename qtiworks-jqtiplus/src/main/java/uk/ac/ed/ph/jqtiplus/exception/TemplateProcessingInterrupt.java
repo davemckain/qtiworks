@@ -31,32 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.state.marshalling;
+package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.ExitTemplate;
+import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConstraint;
 
 /**
- * FIXME: Document this type
- *
+ * Interrupt exception thrown to stop the normal flow of template processing, which
+ * happens if {@link ExitTemplate} is encountered or if a {@link TemplateConstraint} fails.
+ * 
  * @author David McKain
  */
-public final class MarshallingException extends QtiRuntimeException {
+public final class TemplateProcessingInterrupt extends QtiProcessingInterrupt {
 
-    private static final long serialVersionUID = -6528489239978493663L;
+    private static final long serialVersionUID = -5065976029182961590L;
 
-    public MarshallingException() {
+    public static enum InterruptType {
+        EXIT_TEMPLATE,
+        TEMPLATE_CONSTRAINT_FAILURE, ;
+    }
+
+    private final InterruptType interruptType;
+
+    public TemplateProcessingInterrupt(InterruptType interruptType) {
         super();
+        this.interruptType = interruptType;
     }
 
-    public MarshallingException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public MarshallingException(final String message) {
-        super(message);
-    }
-
-    public MarshallingException(final Throwable cause) {
-        super(cause);
+    public InterruptType getInterruptType() {
+        return interruptType;
     }
 }

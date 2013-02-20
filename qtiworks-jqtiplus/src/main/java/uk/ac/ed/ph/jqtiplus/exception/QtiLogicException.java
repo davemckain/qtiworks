@@ -31,33 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception2;
+package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
 
 /**
- * Base class for {@link Exception}s related to the JQTI Object model.
- * 
+ * Exception used to denote a logic failure or unexpected internal condition.
+ * <p>
+ * This should NOT be used for an error with bad client data.
+ *
  * @author David McKain
  */
-public abstract class QtiModelException extends QtiRuntimeException {
+public class QtiLogicException extends JqtiRuntimeException {
 
-    private static final long serialVersionUID = -357903886560490898L;
+    private static final long serialVersionUID = -6501850546437845744L;
 
-    public QtiModelException() {
-        super();
-    }
-
-    public QtiModelException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public QtiModelException(String message) {
+    public QtiLogicException(String message) {
         super(message);
     }
 
-    public QtiModelException(Throwable cause) {
-        super(cause);
+    public QtiLogicException(String message, Throwable cause) {
+        super(message, cause);
     }
-
 }

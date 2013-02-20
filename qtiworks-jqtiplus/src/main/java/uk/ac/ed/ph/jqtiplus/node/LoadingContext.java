@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiModelException;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

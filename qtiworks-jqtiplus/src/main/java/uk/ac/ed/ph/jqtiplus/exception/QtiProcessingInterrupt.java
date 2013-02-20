@@ -43,7 +43,7 @@ package uk.ac.ed.ph.jqtiplus.exception;
  * 
  * @author Jonathon Hare
  */
-public class QtiProcessingInterrupt extends QtiException {
+public class QtiProcessingInterrupt extends JqtiException {
 
     private static final long serialVersionUID = -3235593970976829701L;
 

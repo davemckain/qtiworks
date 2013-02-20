@@ -33,63 +33,31 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
+import uk.ac.ed.ph.jqtiplus.node.QtiNode;
+
 /**
- * Superclass of all checked exceptions (currently not used anywhere).
- * <p>
- * It is abstract class because you should <em>never</em> use this class directly. For example:
- * </p>
+ * Exception thrown when trying to add an inappropriate child to a {@link QtiNode}.
  *
- * <pre>
- * throw new QTIException()
- * </pre>
- *
- * (this is not possible anyway)
- * <p>
- * And you should <em>never</em> use this class in method header also. For example:
- * </p>
- *
- * <pre>
- * void someMethod() throws QTIException
- * </pre>
- * <p>
- * Only two legal usages are as superclass of all checked exceptions and in catch block, when you don't need to distinguish between different exceptions types.
- * For example:
- * </p>
- *
- * <pre>
- * try
- * {
- *   ... some code here ...
- * }
- * catch (QTIException ex)
- * {
- *   ... some code here ...
- * }
- * </pre>
- * <p>
- * Checked exceptions are reserved for special purposes. In general case you should use unchecked exception instead.
- * </p>
- *
- * @see uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException
- * @author Jiri Kajaba
+ * @author David McKain
  */
-public abstract class QtiException extends Exception {
+public final class QtiIllegalChildException extends QtiModelException {
 
-    private static final long serialVersionUID = 4870005618050972243L;
+    private static final long serialVersionUID = 8810282210478664633L;
 
-    public QtiException() {
-        super();
+    private final QtiNode parent;
+    private final String childQtiClassName;
+
+    public QtiIllegalChildException(final QtiNode parent, final String childQtiClassName) {
+        super("Illegal child with QTI class name " + childQtiClassName + " for parent " + parent.getQtiClassName());
+        this.parent = parent;
+        this.childQtiClassName = childQtiClassName;
     }
 
-    public QtiException(final String message) {
-        super(message);
+    public QtiNode getParent() {
+        return parent;
     }
 
-    public QtiException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public QtiException(final Throwable cause) {
-        super(cause);
+    public String getChildQtiClassName() {
+        return childQtiClassName;
     }
 }

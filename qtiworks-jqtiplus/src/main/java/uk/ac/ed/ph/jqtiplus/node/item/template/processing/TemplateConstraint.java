@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt.InterruptType;
+import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt.InterruptType;
 import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;

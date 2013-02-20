@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.reading;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiModelException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 
 import java.io.Serializable;

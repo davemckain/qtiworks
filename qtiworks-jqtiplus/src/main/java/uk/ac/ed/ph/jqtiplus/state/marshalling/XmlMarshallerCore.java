@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
+import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -183,7 +183,7 @@ public final class XmlMarshallerCore {
     static void expectThisElement(final Element element, final String localName) {
         if (!(QTIWORKS_NAMESPACE.equals(element.getNamespaceURI())
                 && localName.equals(element.getLocalName()))) {
-            throw new MarshallingException("Expected element " + element.getLocalName()
+            throw new XmlUnmarshallingException("Expected element " + element.getLocalName()
                     + " in namespace " + element.getNamespaceURI()
                     + " to be " + localName + " in " + QTIWORKS_NAMESPACE);
         }
@@ -198,7 +198,7 @@ public final class XmlMarshallerCore {
                 resultBuilder.append(childNode.getNodeValue());
             }
             else {
-                throw new MarshallingException("Expected only text content of element " + element);
+                throw new XmlUnmarshallingException("Expected only text content of element " + element);
             }
         }
         return resultBuilder.toString();
@@ -213,11 +213,11 @@ public final class XmlMarshallerCore {
                 continue;
             }
             if (childNode.getNodeType()!=Node.ELEMENT_NODE) {
-                throw new MarshallingException("Expected only element children of " + element);
+                throw new XmlUnmarshallingException("Expected only element children of " + element);
             }
             final Element childElement = (Element) childNode;
             if (!QTIWORKS_NAMESPACE.equals(childElement.getNamespaceURI())) {
-                throw new MarshallingException("Expected Element " + childElement + " to have namepsace URI " + QTIWORKS_NAMESPACE);
+                throw new XmlUnmarshallingException("Expected Element " + childElement + " to have namepsace URI " + QTIWORKS_NAMESPACE);
             }
             result.add(childElement);
         }
@@ -226,7 +226,7 @@ public final class XmlMarshallerCore {
 
     static String requireAttribute(final Element element, final String attrName) {
         if (!element.hasAttribute(attrName)) {
-            throw new MarshallingException("Attribute " + attrName + " of element " + element.getLocalName() + " is required");
+            throw new XmlUnmarshallingException("Attribute " + attrName + " of element " + element.getLocalName() + " is required");
         }
         return element.getAttribute(attrName);
     }
@@ -240,7 +240,7 @@ public final class XmlMarshallerCore {
             return StringUtilities.fromTrueFalse(attrValue);
         }
         catch (final IllegalArgumentException e) {
-            throw new MarshallingException("Could not parse boolean attribute value " + attrValue + " for " + attrName);
+            throw new XmlUnmarshallingException("Could not parse boolean attribute value " + attrValue + " for " + attrName);
         }
     }
 
@@ -253,7 +253,7 @@ public final class XmlMarshallerCore {
             return Integer.parseInt(attrValue);
         }
         catch (final NumberFormatException e) {
-            throw new MarshallingException("Could not parse integer attribute value " + attrValue + " for " + attrName);
+            throw new XmlUnmarshallingException("Could not parse integer attribute value " + attrValue + " for " + attrName);
         }
     }
 
@@ -266,7 +266,7 @@ public final class XmlMarshallerCore {
             return element.hasAttribute(attrName) ? new URI(element.getAttribute(attrName)) : null;
         }
         catch (final URISyntaxException e) {
-            throw new MarshallingException("Could not parse URI attribute", e);
+            throw new XmlUnmarshallingException("Could not parse URI attribute", e);
         }
     }
 
@@ -274,7 +274,7 @@ public final class XmlMarshallerCore {
         if (!element.hasAttribute("cardinality")) {
             /* This would correspond to null, which would also have no children */
             if (element.hasChildNodes()) {
-                throw new MarshallingException("Value-containing element " + element
+                throw new XmlUnmarshallingException("Value-containing element " + element
                         + " has no cardinality attribute but has child nodes");
             }
             return NullValue.INSTANCE;
@@ -304,7 +304,7 @@ public final class XmlMarshallerCore {
         if (baseType==BaseType.FILE) {
             final List<Element> children = expectElementChildren(element);
             if (children.size()!=1) {
-                throw new MarshallingException("Expected precisely 1 <value> child of " + element + " but got " + children.size());
+                throw new XmlUnmarshallingException("Expected precisely 1 <value> child of " + element + " but got " + children.size());
             }
             final Element fileValueElement = children.get(0);
             final File file = new File(requireAttribute(fileValueElement, "absolutePath"));
@@ -315,14 +315,14 @@ public final class XmlMarshallerCore {
         else {
             final List<String> valueStrings = parseValueChildren(element);
             if (valueStrings.size()!=1) {
-                throw new MarshallingException("Expected precisely 1 <value> child of " + element + " but got " + valueStrings.size());
+                throw new XmlUnmarshallingException("Expected precisely 1 <value> child of " + element + " but got " + valueStrings.size());
             }
             final String singleValueString = valueStrings.get(0);
             try {
                 result = baseType.parseSingleValue(singleValueString);
             }
             catch (final QtiParseException e) {
-                throw new MarshallingException("Could not parse single value " + singleValueString + " of baseType " + baseType, e);
+                throw new XmlUnmarshallingException("Could not parse single value " + singleValueString + " of baseType " + baseType, e);
             }
         }
         return result;
@@ -337,7 +337,7 @@ public final class XmlMarshallerCore {
                 itemValues.add(baseType.parseSingleValue(itemValueString));
             }
             catch (final QtiParseException e) {
-                throw new MarshallingException("Could not parse single value " + itemValueString + " of baseType " + baseType, e);
+                throw new XmlUnmarshallingException("Could not parse single value " + itemValueString + " of baseType " + baseType, e);
             }
         }
         return itemValues;
@@ -348,7 +348,7 @@ public final class XmlMarshallerCore {
         final Map<Identifier, SingleValue> recordBuilder = new HashMap<Identifier, SingleValue>();
         for (final Element childElement : childElements) {
             if (!"value".equals(childElement.getLocalName())) {
-                throw new MarshallingException("Expected only <value> children of " + element);
+                throw new XmlUnmarshallingException("Expected only <value> children of " + element);
             }
             final Identifier itemIdentifier = parseIdentifierAttribute(childElement, "fieldIdentifier");
             final SingleValue itemValue = parseSingleValue(childElement);
@@ -363,7 +363,7 @@ public final class XmlMarshallerCore {
             return Cardinality.parseCardinality(cardinalityString);
         }
         catch (final IllegalArgumentException e) {
-            throw new MarshallingException("Bad cardinality attribute " + cardinalityString);
+            throw new XmlUnmarshallingException("Bad cardinality attribute " + cardinalityString);
         }
     }
 
@@ -373,7 +373,7 @@ public final class XmlMarshallerCore {
             return BaseType.parseBaseType(baseTypeString);
         }
         catch (final IllegalArgumentException e) {
-            throw new MarshallingException("Bad baseType attribute " + baseTypeString);
+            throw new XmlUnmarshallingException("Bad baseType attribute " + baseTypeString);
         }
     }
 
@@ -382,7 +382,7 @@ public final class XmlMarshallerCore {
         final List<String> result = new ArrayList<String>();
         for (final Element childElement : childElements) {
             if (!"value".equals(childElement.getLocalName())) {
-                throw new MarshallingException("Expected only <value> children of " + element);
+                throw new XmlUnmarshallingException("Expected only <value> children of " + element);
             }
             result.add(expectTextContent(childElement));
         }
@@ -395,7 +395,7 @@ public final class XmlMarshallerCore {
             return Identifier.parseString(identifierAttrValue);
         }
         catch (final QtiParseException e) {
-            throw new MarshallingException("Value "
+            throw new XmlUnmarshallingException("Value "
                     + identifierAttrValue + " of attribute "
                     + identifierAttrName + " is not a valid QTI Identifier");
         }

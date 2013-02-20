@@ -31,35 +31,33 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception2;
-
-import uk.ac.ed.ph.jqtiplus.exception.QtiProcessingInterrupt;
-import uk.ac.ed.ph.jqtiplus.node.item.template.processing.ExitTemplate;
-import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateConstraint;
+package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * Interrupt exception thrown to stop the normal flow of template processing, which
- * happens if {@link ExitTemplate} is encountered or if a {@link TemplateConstraint} fails.
- * 
+ * Base for all JQTI+ unchecked Exceptions
+ *
+ * @see JqtiException
+ *
  * @author David McKain
+ * @author Jiri Kajaba (original)
  */
-public final class TemplateProcessingInterrupt extends QtiProcessingInterrupt {
+public abstract class JqtiRuntimeException extends RuntimeException {
 
-    private static final long serialVersionUID = -5065976029182961590L;
+    private static final long serialVersionUID = -3977994907885787808L;
 
-    public static enum InterruptType {
-        EXIT_TEMPLATE,
-        TEMPLATE_CONSTRAINT_FAILURE, ;
-    }
-
-    private final InterruptType interruptType;
-
-    public TemplateProcessingInterrupt(InterruptType interruptType) {
+    public JqtiRuntimeException() {
         super();
-        this.interruptType = interruptType;
     }
 
-    public InterruptType getInterruptType() {
-        return interruptType;
+    public JqtiRuntimeException(final String message) {
+        super(message);
+    }
+
+    public JqtiRuntimeException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public JqtiRuntimeException(final Throwable cause) {
+        super(cause);
     }
 }
