@@ -1,4 +1,8 @@
 */target
 *.sw?
-qtiworks-engine/user-import.csv
-qtiworks-engine/tw
+*/.classpath
+*/.project
+*/.settings/org.eclipse.core.resources.prefs
+*/.settings/org.eclipse.jdt.launching.prefs
+*/.settings/org.eclipse.wst.common.component
+
