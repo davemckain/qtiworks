@@ -332,10 +332,13 @@ All Rights Reserved
   </profiles>
   <build>
     <resources>
-      <!-- Filter files in src/main/resources (as defined below) -->
+      <!-- Filter the "static" properties file qtiworks.properties -->
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
+        <includes>
+          <include>qtiworks.properties</include>
+        </includes>
       </resource>
     </resources>
   </build>
