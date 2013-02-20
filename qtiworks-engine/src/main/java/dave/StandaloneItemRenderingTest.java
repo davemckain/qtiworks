@@ -3,7 +3,7 @@
  * Copyright (c) 2012-2013, The University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.qtiworks.examples;
+package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
@@ -41,7 +41,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class StandaloneItemRenderingTest {
 
     public static void main(final String[] args) {
-        final URI itemUri = URI.create("classpath:/choice.xml");
+        final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
 
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();

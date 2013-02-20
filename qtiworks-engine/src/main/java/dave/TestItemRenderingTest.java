@@ -3,7 +3,7 @@
  * Copyright (c) 2012-2013, The University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.qtiworks.examples;
+package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;

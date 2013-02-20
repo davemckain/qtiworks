@@ -18,7 +18,12 @@ All Rights Reserved
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>qtiworks-engine</artifactId>
+      <artifactId>qtiworks-jqtiplus</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>qtiworks-mathassess</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

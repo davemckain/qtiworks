@@ -18,9 +18,9 @@ All Rights Reserved
     <module>qtiworks-jqtiplus</module>
     <module>qtiworks-mathassess-glue</module>
     <module>qtiworks-mathassess</module>
+    <module>qtiworks-code-examples</module>
     <module>qtiworks-samples</module>
     <module>qtiworks-engine</module>
-    <module>qtiworks-code-examples</module>
     <module>qtiworks-unrefactored</module>
   </modules>
   <properties>
@@ -147,12 +147,8 @@ All Rights Reserved
           </configuration>
         </plugin>
         <plugin>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.0.1</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.12</version>
+          <version>2.13</version>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
@@ -160,11 +156,11 @@ All Rights Reserved
         </plugin>
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
-          <version>2.2</version>
+          <version>2.3</version>
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.1.2</version>
+          <version>2.2.1</version>
           <executions>
             <execution>
               <phase>verify</phase>
@@ -176,12 +172,12 @@ All Rights Reserved
         </plugin>
         <plugin>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.3</version>
+          <version>2.4</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
-          <version>2.4.0</version>
+          <version>2.5.2</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

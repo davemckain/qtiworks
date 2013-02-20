@@ -331,6 +331,20 @@ All Rights Reserved
     </profile>
   </profiles>
   <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>engine-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
     <resources>
       <!-- Filter the "static" properties file qtiworks.properties -->
       <resource>

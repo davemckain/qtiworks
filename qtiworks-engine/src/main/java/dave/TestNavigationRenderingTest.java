@@ -3,7 +3,7 @@
  * Copyright (c) 2012-2013, The University of Edinburgh.
  * All Rights Reserved
  */
-package uk.ac.ed.ph.qtiworks.examples;
+package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
@@ -41,7 +41,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class TestNavigationRenderingTest {
 
     public static void main(final String[] args) {
-        final URI testUri = URI.create("classpath:/testimplementation/selection.xml");
+        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/simple-nonlinear-individual.xml");
 
         System.out.println("Reading");
         final NotificationLogListener notificationLogListener = new NotificationLogListener();
