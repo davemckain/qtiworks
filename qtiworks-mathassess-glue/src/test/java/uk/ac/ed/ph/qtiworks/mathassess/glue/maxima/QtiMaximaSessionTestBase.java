@@ -33,8 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
+import uk.ac.ed.ph.jacomax.JacomaxConfigurationException;
+import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
+import uk.ac.ed.ph.jacomax.MaximaConfiguration;
+
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Trivial base for tests of {@link QtiMaximaProcess}s
@@ -43,17 +50,39 @@ import org.junit.Before;
  */
 public abstract class QtiMaximaSessionTestBase {
 
+    private static final Logger logger = LoggerFactory.getLogger(QtiMaximaSessionTestBase.class);
+
     private QtiMaximaProcessManager processManager;
     protected QtiMaximaProcess process;
     
     @Before
     public void setup() {
-        processManager = new SimpleQtiMaximaProcessManager();
+        /* Use the JacomaxSimplerConfigurer to try to establish a working
+         * Maxima configuration. If this fails, we shall skip the test so
+         * that people can build the full QTIWorks project successfully,
+         * even if they don't have Maxima installed and/or don't plan to use
+         * the MathAssess extensions.
+         */
+        MaximaConfiguration maximaConfiguration = null;
+        try {
+            maximaConfiguration = JacomaxSimpleConfigurator.configure();
+        }
+        catch (JacomaxConfigurationException e) {
+            /* Configuration failed, so use JUnit's Assume class to skip */ 
+            logger.warn("Failed to establish a Maxima configuration. Assuming Maxima is not installed and allowing test to succeed");
+            Assume.assumeNoException(e);
+            return;
+        }
+        
+        /* Configuration was successful, so set up test */
+        processManager = new SimpleQtiMaximaProcessManager(maximaConfiguration);
         process = processManager.obtainProcess();
     }
     
     @After
     public void teardown() {
-        processManager.returnProcess(process);
+        if (process!=null && processManager!=null) {
+            processManager.returnProcess(process);
+        }
     }
 }
