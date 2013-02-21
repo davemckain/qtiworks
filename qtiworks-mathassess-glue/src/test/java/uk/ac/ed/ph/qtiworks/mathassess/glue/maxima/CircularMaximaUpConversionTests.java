@@ -57,9 +57,9 @@ import org.slf4j.LoggerFactory;
  * @author David McKain
  */
 @RunWith(Parameterized.class)
-public class CircularMaximaUpconversionTests extends QtiMaximaSessionTestBase {
+public class CircularMaximaUpConversionTests extends QtiMaximaSessionTestBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(CircularMaximaUpconversionTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(CircularMaximaUpConversionTests.class);
     
     public static final String TEST_RESOURCE_NAME = "circular-maxima-upconversion-tests.txt";
     
@@ -71,7 +71,7 @@ public class CircularMaximaUpconversionTests extends QtiMaximaSessionTestBase {
     private final String inputMaxima;
     private final String expectedOutputMaxima;
     
-    public CircularMaximaUpconversionTests(final String inputMaxima, final String expectedOutputMaxima) {
+    public CircularMaximaUpConversionTests(final String inputMaxima, final String expectedOutputMaxima) {
         this.inputMaxima = inputMaxima;
         this.expectedOutputMaxima = expectedOutputMaxima;
     }

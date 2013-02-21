@@ -114,14 +114,14 @@ public final class QtiMaximaProcess {
     private final MaximaInteractiveProcess maximaInteractiveProcess;
     
     /** Helper to up-convert Maxima MathML output */
-    private final MaximaMathmlUpConverter maximaMathMLUpconverter;
+    private final MaximaMathmlUpConverter maximaMathmlUpConverter;
     
     /** Maxima Data Binding helper */
     private final MaximaDataBinder maximaDataBinder;
     
     public QtiMaximaProcess(MaximaInteractiveProcess maximaInteractiveProcess, StylesheetCache stylesheetCache) {
         this.maximaInteractiveProcess = maximaInteractiveProcess;
-        this.maximaMathMLUpconverter = new MaximaMathmlUpConverter(stylesheetCache);
+        this.maximaMathmlUpConverter = new MaximaMathmlUpConverter(stylesheetCache);
         this.maximaDataBinder = new MaximaDataBinder();
     }
     
@@ -171,7 +171,7 @@ public final class QtiMaximaProcess {
      *   is a {@link MathsContentValueWrapper} with a missing maximaInput field.
      * @throws MaximaProcessTerminatedException
      */
-    public void passQTIVariableToMaxima(final String variableIdentifier, final ValueWrapper valueWrapper) {
+    public void passQtiVariableToMaxima(final String variableIdentifier, final ValueWrapper valueWrapper) {
         logger.debug("passQTIVariableToMaxima: var={}, value={}", variableIdentifier, valueWrapper);
         checkVariableIdentifier(variableIdentifier);
         Assert.notNull(valueWrapper, "valueWrapper");
@@ -417,7 +417,7 @@ public final class QtiMaximaProcess {
         String rawMaximaMathMLOutput = maximaInteractiveProcess.executeCall(resultingExpression).trim();
         
         /* Up-convert the raw MathML and create appropriate wrapper */
-        Document upconvertedDocument = maximaMathMLUpconverter.upconvertRawMaximaMathML(rawMaximaMathMLOutput);
+        Document upconvertedDocument = maximaMathmlUpConverter.upconvertRawMaximaMathML(rawMaximaMathMLOutput);
         
         /* Create appropriate wrapper */
         return WrapperUtilities.createFromUpconvertedMaximaOutput(upconvertedDocument);

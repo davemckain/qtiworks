@@ -75,7 +75,7 @@ public class QtiMaximaSessionQueryVariableTests extends QtiMaximaSessionTestBase
     
     @Test
     public void runTest() throws Exception {
-        process.passQTIVariableToMaxima("x", valueWrapper);
+        process.passQtiVariableToMaxima("x", valueWrapper);
         ValueWrapper result = process.queryMaximaVariable("x", valueWrapper.getClass());
         if (!result.equals(valueWrapper)) {
             logger.warn("Input: " + valueWrapper);

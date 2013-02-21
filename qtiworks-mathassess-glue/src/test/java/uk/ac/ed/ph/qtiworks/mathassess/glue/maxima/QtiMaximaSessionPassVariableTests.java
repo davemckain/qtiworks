@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Tests {@link QtiMaximaProcess#passQTIVariableToMaxima(String, ValueWrapper)} using the sample data
+ * Tests {@link QtiMaximaProcess#passQtiVariableToMaxima(String, ValueWrapper)} using the sample data
  * provided by {@link MaximaDataBindingSamples#CIRCULAR_EXAMPLES}
  *
  * @author David McKain
@@ -76,7 +76,7 @@ public class QtiMaximaSessionPassVariableTests extends QtiMaximaSessionTestBase 
     @Test
     public void runTest() throws Exception {
         /* Set variable */
-        process.passQTIVariableToMaxima("x", valueWrapper);
+        process.passQtiVariableToMaxima("x", valueWrapper);
         
         /* Then we'll extract and check */
         ValueWrapper variableChecked = process.executeStringOutput("x", false, valueWrapper.getClass());
