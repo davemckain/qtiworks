@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services.tools;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
@@ -50,7 +51,6 @@ import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
-import uk.ac.ed.ph.qtiworks.samples.QtiSampleCollection;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
@@ -96,6 +96,9 @@ public class SampleResourceImporter {
     public static final String DEFAULT_IMPORT_TITLE = "QTI Sample";
 
     @Resource
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
+
+    @Resource
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
@@ -137,15 +140,25 @@ public class SampleResourceImporter {
         final Map<String, Assessment> importedSampleAssessments = getImportedSampleAssessments(sampleOwner);
         logger.info("Existing samples are {}", importedSampleAssessments);
 
-        final QtiSampleCollection qtiSampleCollection = new QtiSampleCollection(
+        /* Pick out all of the valid samples */
+        final QtiSampleSet[] qtiSampleSets = new QtiSampleSet[] {
                 StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 MathAssessSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 UpmcSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 StompSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 LanguageSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
                 TestImplementationSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
-        );
-        for (final QtiSampleSet qtiSampleSet : qtiSampleCollection) {
+        };
+
+        /* If MathAssess extensions are not enabled, filter out assessments that need them */
+        if (!qtiWorksDeploymentSettings.isEnableMathAssessExtension()) {
+            for (int i=0; i<qtiSampleSets.length; i++) {
+                qtiSampleSets[i] = qtiSampleSets[i].withoutFeature(Feature.REQUIRES_MATHASSES);
+            }
+        }
+
+        /* Now import assessments (if not done already) */
+        for (final QtiSampleSet qtiSampleSet : qtiSampleSets) {
             importSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments, deliverySettingsMap);
         }
     }
