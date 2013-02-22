@@ -54,6 +54,7 @@ public final class QtiSampleAssessment implements Serializable {
         /* Add things here as required */
         NOT_SCHEMA_VALID, /* Example is not schema valid, but kept for historic purposes */
         NOT_FULLY_VALID,  /* Example isn't fully valid (according to our validation process) */
+        REQUIRES_MATHASSES, /* Requires MathAssess extensions */
     }
     
     private final AssessmentObjectType type;
