@@ -15,7 +15,11 @@ All Rights Reserved
 <%@ attribute name="cssClass" required="false" %>
 
 <jsp:useBean id="now" class="java.util.Date"/>
-<c:set var="qtiWorksVersion" value="1.0-M3"/>
+
+<%-- Extract config beans stashed in ServletContext during AppContext setup --%>
+<c:set var="qtiWorksProperties" value="${applicationScope['qtiWorksProperties']}"/>
+<c:set var="qtiWorksDeploymentSettings" value="${applicationScope['qtiWorksDeploymentSettings']}"/>
+<c:set var="qtiWorksVersion" value="${qtiWorksProperties.qtiWorksVersion}"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -68,6 +72,9 @@ All Rights Reserved
             Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
             <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
             <a href="http://www.ed.ac.uk">The University of Edinburgh</a>.
+          </p>
+          <p>
+            Contact: <a href="mailto:${qtiWorksDeploymentSettings.emailAdminAddress}"><c:out value="${qtiWorksDeploymentSettings.emailAdminName}"/></a>
           </p>
           <p>
             The University of Edinburgh is a charitable body, registered in Scotland,
