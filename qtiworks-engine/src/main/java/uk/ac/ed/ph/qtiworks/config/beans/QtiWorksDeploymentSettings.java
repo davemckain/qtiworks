@@ -65,6 +65,7 @@ public final class QtiWorksDeploymentSettings implements Serializable {
     private @Value("${qtiworks.email.admin.address}") String emailAdminAddress;
     private @Value("${qtiworks.email.smtp.host}") String emailSmtpHost;
     private @Value("${qtiworks.filesystem.base}") String filesystemBase;
+    private @Value("${qtiworks.extensions.mathassess}") boolean enableMathAssessExtension;
     private @Value("${qtiworks.base.url}") String baseUrl;
     private @Value("${qtiworks.web.authn.fake.login:}") String fakeLoginName;
 
@@ -114,6 +115,10 @@ public final class QtiWorksDeploymentSettings implements Serializable {
 
     public String getBaseUrl() {
         return baseUrl;
+    }
+
+    public boolean isEnableMathAssessExtension() {
+        return enableMathAssessExtension;
     }
 
     public String getFakeLoginName() {

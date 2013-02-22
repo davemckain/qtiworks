@@ -40,6 +40,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
 import uk.ac.ed.ph.qtiworks.services.base.SystemEmailService;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.xmlutils.SchemaCache;
@@ -47,6 +48,8 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.SimpleSchemaCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.FileTypeMap;
@@ -56,6 +59,8 @@ import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.ejb.HibernatePersistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -79,6 +84,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @EnableTransactionManagement
 @EnableScheduling
 public class ServicesConfiguration {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServicesConfiguration.class);
 
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
@@ -173,14 +180,17 @@ public class ServicesConfiguration {
         return new SimpleXsltStylesheetCache();
     }
 
-    @Bean
-    public MathAssessExtensionPackage mathAssessExtensionPackage() {
-        return new MathAssessExtensionPackage(stylesheetCache());
-    }
-
     @Bean(initMethod="init", destroyMethod="destroy")
     public JqtiExtensionManager jqtiExtensionManager() {
-        return new JqtiExtensionManager(mathAssessExtensionPackage());
+        final List<JqtiExtensionPackage<?>> extensionPackages = new ArrayList<JqtiExtensionPackage<?>>();
+
+        /* Enable MathAssess extensions if requested */
+        if (qtiWorksDeploymentSettings.isEnableMathAssessExtension()) {
+            logger.info("Enabling the MathAssess extensions");
+            extensionPackages.add(new MathAssessExtensionPackage(stylesheetCache()));
+        }
+
+        return new JqtiExtensionManager(extensionPackages);
     }
 
     @Bean
