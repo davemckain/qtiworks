@@ -21,6 +21,9 @@ rendering.
   <!-- Web Application contextPath. Starts with a '/' -->
   <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
 
+  <!-- QTIWorks version number -->
+  <xsl:param name="qtiWorksVersion" as="xs:string" required="yes"/>
+
   <!-- URI of the Item or Test being rendered -->
   <xsl:param name="systemId" as="xs:string" required="yes"/>
 

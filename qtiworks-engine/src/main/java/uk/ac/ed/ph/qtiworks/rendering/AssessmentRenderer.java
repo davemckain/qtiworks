@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -93,6 +94,9 @@ public class AssessmentRenderer {
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
     private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
     private static final URI testPartFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-feedback.xsl");
+
+    @Resource
+    private QtiWorksProperties qtiWorksProperties;
 
     @Resource
     private JqtiExtensionManager jqtiExtensionManager;
@@ -283,6 +287,7 @@ public class AssessmentRenderer {
         final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
         /* Set config & control parameters */
         xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
+        xsltParameters.put("qtiWorksVersion", qtiWorksProperties.getQtiWorksVersion());
         xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
         xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
         xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
@@ -425,7 +430,6 @@ public class AssessmentRenderer {
         transformer.setParameter("serializationMethod", serializationMethod.toString());
         transformer.setParameter("outputMethod", serializationMethod.getMethod());
         transformer.setParameter("contentType", serializationMethod.getContentType());
-
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");

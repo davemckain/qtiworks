@@ -45,11 +45,11 @@ Renders a standalone assessmentItem
       </xsl:if>
       <head>
         <title><xsl:value-of select="@title"/></title>
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
-        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
-        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js" type="text/javascript"/>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"/>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}" type="text/javascript"/>
         <xsl:if test="$authorMode">
-          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}" type="text/javascript"/>
         </xsl:if>
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
@@ -57,8 +57,8 @@ Renders a standalone assessmentItem
         part of the result generation directly.)
         -->
         <xsl:if test="$containsMathEntryInteraction">
-          <script src="{$webappContextPath}/rendering/javascript/UpConversionAjaxController.js" type="text/javascript"/>
-          <script src="{$webappContextPath}/rendering/javascript/AsciiMathInputController.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/UpConversionAjaxController.js?{$qtiWorksVersion}" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/AsciiMathInputController.js?{$qtiWorksVersion}" type="text/javascript"/>
           <script type="text/javascript">
             UpConversionAjaxController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/candidate/verifyAsciiMath');
             UpConversionAjaxController.setDelay(300);
@@ -69,7 +69,7 @@ Renders a standalone assessmentItem
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
 
         <!-- QTIWorks Item styling -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
 
         <!-- Include stylesheet declared within item -->
         <xsl:apply-templates select="qti:stylesheet"/>

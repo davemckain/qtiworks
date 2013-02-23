@@ -73,9 +73,9 @@ NB: This is used both while being presented, and during review.
         <title><xsl:value-of select="@title"/></title>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
         <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
-        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js" type="text/javascript"/>
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}" type="text/javascript"/>
         <xsl:if test="$authorMode">
-          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}" type="text/javascript"/>
         </xsl:if>
 
         <!-- Timer setup (requires controls to be displayed) -->
@@ -96,8 +96,8 @@ NB: This is used both while being presented, and during review.
         part of the result generation directly.)
         -->
         <xsl:if test="$containsMathEntryInteraction">
-          <script src="{$webappContextPath}/rendering/javascript/UpConversionAjaxController.js" type="text/javascript"/>
-          <script src="{$webappContextPath}/rendering/javascript/AsciiMathInputController.js" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/UpConversionAjaxController.js?{$qtiWorksVersion}" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/AsciiMathInputController.js?{$qtiWorksVersion}" type="text/javascript"/>
           <script type="text/javascript">
             UpConversionAjaxController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/candidate/verifyAsciiMath');
             UpConversionAjaxController.setDelay(300);
@@ -108,7 +108,7 @@ NB: This is used both while being presented, and during review.
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
 
         <!-- QTIWorks Item styling -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks assessmentItem assessmentTest">
 
