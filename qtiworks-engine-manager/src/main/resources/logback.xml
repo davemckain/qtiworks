@@ -1,0 +1,16 @@
+<!--
+
+Basic default logback configuration for QTIWorks Engine.
+
+(You can select a custom configuration to use within the webapp
+if you prefer. See the documentation.
+
+-->
+<configuration debug="false">
+
+  <logger name="uk.ac.ed.ph.qtiworks.manager" level="info"/>
+
+  <!-- Root logger -->
+  <root level="warn"/>
+
+</configuration>

@@ -31,24 +31,25 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools;
+package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
 import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.services.tools.AdhocService;
+import uk.ac.ed.ph.qtiworks.manager.config.ManagerConfiguration;
+import uk.ac.ed.ph.qtiworks.manager.services.SampleResourceImporter;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * Dev utility class for calling arbitrary bits of service code
+ * Imports/updates all of the QTI sample resources
  *
  * @author David McKain
  */
-public final class AdhocRunner extends StandaloneRunTemplate {
+public final class QtiSampleImporter extends StandaloneRunTemplate {
 
     public static void main(final String[] args) throws Exception {
-        new AdhocRunner().run(args);
+        new QtiSampleImporter().run(args);
     }
 
     @Override
@@ -56,13 +57,14 @@ public final class AdhocRunner extends StandaloneRunTemplate {
         return new Class<?>[] {
                 PropertiesConfiguration.class,
                 JpaProductionConfiguration.class,
-                ServicesConfiguration.class
+                ServicesConfiguration.class,
+                ManagerConfiguration.class
         };
     }
 
     @Override
     protected void doWork(final AnnotationConfigApplicationContext ctx, final String[] remainingArgs) throws Exception {
-        final AdhocService adhocService = ctx.getBean(AdhocService.class);
-        adhocService.doWork();
+        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
+        sampleResourceImporter.importQtiSamples();
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/qtiworks-engine/src/main/java/uk/ac/ed/ph/qtiworks/tools/AdhocRunner.java"/>
+<listEntry value="/qtiworks-engine-manager/src/main/java/uk/ac/ed/ph/qtiworks/manager/SchemaSetup.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -15,8 +15,8 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
-<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="uk.ac.ed.ph.qtiworks.tools.AdhocRunner"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="uk.ac.ed.ph.qtiworks.manager.SchemaSetup"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="qtiworks-deployment.properties"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="qtiworks-engine"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="qtiworks-engine-manager"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>

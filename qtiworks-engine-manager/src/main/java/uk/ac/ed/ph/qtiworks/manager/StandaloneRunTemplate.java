@@ -31,7 +31,7 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools;
+package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.config.QtiWorksApplicationContextHelper;
@@ -55,7 +55,7 @@ public abstract class StandaloneRunTemplate {
 
     protected abstract Class<?>[] getConfigClasses();
 
-    protected void validateRemainingArguments(@SuppressWarnings("unused") final String[] remainingArgs) {
+    protected void validateRemainingArguments(final String[] remainingArgs) {
         /* Do nothing */
     }
 

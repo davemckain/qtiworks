@@ -31,43 +31,22 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools;
+package uk.ac.ed.ph.qtiworks.manager.config;
 
-import uk.ac.ed.ph.qtiworks.config.JpaSetupConfiguration;
-import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
-import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.services.tools.SampleResourceImporter;
-
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * Entry point that sets up the DB schema, imports base data and then exits.
- * <p>
- * This will change as development proceeds.
- * <p>
- * <strong>DANGER:</strong> Do not run this on a production server as it WILL delete all of the
- * existing data!!!
+ * Configuration for the QTIWorks Engine Manager services
  *
  * @author David McKain
  */
-public final class SchemaSetup extends StandaloneRunTemplate {
+@Configuration
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.manager.services"})
+@EnableTransactionManagement
+public class ManagerConfiguration {
 
-    public static void main(final String[] args) throws Exception {
-        new SchemaSetup().run(args);
-    }
+	/* Nothing to add here */
 
-    @Override
-    protected Class<?>[] getConfigClasses() {
-        return new Class<?>[] {
-                PropertiesConfiguration.class,
-                JpaSetupConfiguration.class, /* Recreates DB schema */
-                ServicesConfiguration.class
-        };
-    }
-
-    @Override
-    protected void doWork(final AnnotationConfigApplicationContext ctx, final String[] remainingArgs) throws Exception {
-        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-        sampleResourceImporter.importQtiSamples();
-    }
 }

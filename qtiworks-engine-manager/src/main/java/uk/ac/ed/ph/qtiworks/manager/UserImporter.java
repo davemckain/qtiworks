@@ -31,12 +31,13 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.tools;
+package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
 import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.services.tools.BootstrapServices;
+import uk.ac.ed.ph.qtiworks.manager.config.ManagerConfiguration;
+import uk.ac.ed.ph.qtiworks.manager.services.BootstrapServices;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -66,7 +67,8 @@ public final class UserImporter extends StandaloneRunTemplate {
         return new Class<?>[] {
                 PropertiesConfiguration.class,
                 JpaProductionConfiguration.class,
-                ServicesConfiguration.class
+                ServicesConfiguration.class,
+                ManagerConfiguration.class
         };
     }
 

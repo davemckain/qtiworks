@@ -5,6 +5,15 @@ Copyright (c) 2012-2013, The University of Edinburgh
 All Rights Reserved
 
 -->
+<!--
+
+Temporary instructions:
+
+java -classpath target/qtiworks-engine-manager-$VERSION.jar uk.ac.ed.ph.qtiworks.manager.SchemaSetup $PROPERTIES_LOCATION
+
+etc...
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <name>QTIWorks Delivery Engine Offline Manager</name>
