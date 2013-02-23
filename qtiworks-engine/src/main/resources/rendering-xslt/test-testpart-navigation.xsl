@@ -42,15 +42,15 @@ Renders the navigation for the current testPart
       </xsl:if>
       <head>
         <title><xsl:value-of select="@title"/></title>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
-        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"/>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"/>
         <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}"/>
         <xsl:if test="$authorMode">
           <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}"/>
         </xsl:if>
 
         <!-- Styling for JQuery -->
-        <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/redmond/jquery-ui.css"/>
+        <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.css"/>
 
         <!-- QTIWorks styling -->
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
