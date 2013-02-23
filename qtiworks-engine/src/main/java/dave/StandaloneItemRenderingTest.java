@@ -5,6 +5,7 @@
  */
 package dave;
 
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
@@ -85,7 +86,11 @@ public class StandaloneItemRenderingTest {
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
 
+            final QtiWorksProperties qtiWorksProperties = new QtiWorksProperties();
+            qtiWorksProperties.setQtiWorksVersion("VERSION");
+
             final AssessmentRenderer renderer = new AssessmentRenderer();
+            renderer.setQtiWorksProperties(qtiWorksProperties);
             renderer.setJsr303Validator(validator);
             renderer.setJqtiExtensionManager(jqtiExtensionManager);
             renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());

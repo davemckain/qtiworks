@@ -111,6 +111,15 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
+    public QtiWorksProperties getQtiWorksProperties() {
+        return qtiWorksProperties;
+    }
+
+    public void setQtiWorksProperties(final QtiWorksProperties qtiWorksProperties) {
+        this.qtiWorksProperties = qtiWorksProperties;
+    }
+
+
     public JqtiExtensionManager getJqtiExtensionManager() {
         return jqtiExtensionManager;
     }

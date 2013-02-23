@@ -57,6 +57,10 @@ public final class QtiWorksProperties implements Serializable {
         return qtiWorksVersion;
     }
 
+    public void setQtiWorksVersion(final String qtiWorksVersion) {
+        this.qtiWorksVersion = qtiWorksVersion;
+    }
+
     @Override
     public String toString() {
         return ObjectUtilities.beanToString(this);
