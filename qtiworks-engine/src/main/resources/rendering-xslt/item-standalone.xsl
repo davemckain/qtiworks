@@ -45,11 +45,11 @@ Renders a standalone assessmentItem
       </xsl:if>
       <head>
         <title><xsl:value-of select="@title"/></title>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"/>
-        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"/>
-        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}" type="text/javascript"/>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"/>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"/>
+        <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}"/>
         <xsl:if test="$authorMode">
-          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}" type="text/javascript"/>
+          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}"/>
         </xsl:if>
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
@@ -57,9 +57,9 @@ Renders a standalone assessmentItem
         part of the result generation directly.)
         -->
         <xsl:if test="$containsMathEntryInteraction">
-          <script src="{$webappContextPath}/rendering/javascript/UpConversionAjaxController.js?{$qtiWorksVersion}" type="text/javascript"/>
-          <script src="{$webappContextPath}/rendering/javascript/AsciiMathInputController.js?{$qtiWorksVersion}" type="text/javascript"/>
-          <script type="text/javascript">
+          <script src="{$webappContextPath}/rendering/javascript/UpConversionAjaxController.js?{$qtiWorksVersion}"/>
+          <script src="{$webappContextPath}/rendering/javascript/AsciiMathInputController.js?{$qtiWorksVersion}"/>
+          <script>
             UpConversionAjaxController.setUpConversionServiceUrl('<xsl:value-of select="$webappContextPath"/>/candidate/verifyAsciiMath');
             UpConversionAjaxController.setDelay(300);
           </script>
@@ -83,7 +83,7 @@ Renders a standalone assessmentItem
               that would not normally be shown to candidates.
             </p>
           </div>
-          <script type="text/javascript"><![CDATA[
+          <script><![CDATA[
             AuthorMode.setupAuthorModeToggler();
           ]]></script>
         </xsl:if>
@@ -373,7 +373,7 @@ Renders a standalone assessmentItem
               <xsl:with-param name="valueHolders" select="$valueHolder/qw:value"/>
             </xsl:call-template>
           </div>
-          <script type="text/javascript">
+          <script>
             $(document).ready(function() {
               $('a#qtiworks_id_toggle_debugMathsContent_<xsl:value-of select="@identifier"/>').click(function() {
                 $('#qtiworks_id_debugMathsContent_<xsl:value-of select="@identifier"/>').toggle();
