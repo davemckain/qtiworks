@@ -69,7 +69,7 @@ Renders a standalone assessmentItem
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.css"/>
 
         <!-- QTIWorks Item styling -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
 
         <!-- Include stylesheet declared within item -->
         <xsl:apply-templates select="qti:stylesheet"/>

@@ -53,7 +53,7 @@ Renders the navigation for the current testPart
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.css"/>
 
         <!-- QTIWorks styling -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks assessmentTest testPartNavigation">
         <h2>Test Question Menu</h2>
