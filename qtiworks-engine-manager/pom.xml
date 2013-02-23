@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+
+Copyright (c) 2012-2013, The University of Edinburgh
+All Rights Reserved
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <name>QTIWorks Delivery Engine Offline Manager</name>
+  <artifactId>qtiworks-engine-manager</artifactId>
+  <packaging>jar</packaging>
+  <parent>
+    <groupId>uk.ac.ed.ph.qtiworks</groupId>
+    <artifactId>qtiworks</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>qtiworks-engine</artifactId>
+      <version>${project.version}</version>
+      <classifier>classes</classifier>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <!-- Generates a flat über-JAR for easy offline use -->
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <artifactSet>
+            <excludes>
+              <exclude>javax.servlet:servlet-api</exclude>
+              <exclude>javax.servlet.jsp:jsp-api</exclude>
+            </excludes>
+          </artifactSet>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
