@@ -93,7 +93,7 @@ public final class ImportUsersAction extends ManagerAction {
         String line;
         String[] fields;
         final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
-        int usersCreated = 0;
+        int usersCreatedCount = 0;
         try {
             /* (Cheapo CSV parse) */
             while ((line = importReader.readLine())!=null) {
@@ -104,7 +104,7 @@ public final class ImportUsersAction extends ManagerAction {
                 }
                 fields = line.split(",\\s*", -1);
                 if (handleUserLine(managerServices, fields)) {
-                	++usersCreated;
+                	++usersCreatedCount;
                 }
             }
         }
@@ -114,7 +114,7 @@ public final class ImportUsersAction extends ManagerAction {
         finally {
             IOUtils.closeQuietly(importReader);
         }
-        logger.info("Imported {} new users", usersCreated);
+        logger.info("Created {} new user(s)", usersCreatedCount);
     }
 
     private boolean handleUserLine(final ManagerServices managerServices, final String[] fields) {
@@ -129,7 +129,7 @@ public final class ImportUsersAction extends ManagerAction {
         final boolean sysAdmin = "t".equals(fields[4]);
         final String password = fields[5];
 
-        final InstructorUser created = managerServices.createInstructorUser(loginName, firstName, lastName, emailAddress, sysAdmin, password);
+        final InstructorUser created = managerServices.maybeCreateInstructorUser(loginName, firstName, lastName, emailAddress, sysAdmin, password);
         return created!=null;
     }
 

@@ -92,12 +92,18 @@ public class ManagerServices {
         return result;
     }
 
-    public InstructorUser createInstructorUser(final String loginName, final String firstName,
+    /**
+     * Creates a new {@link InstructorUser} having the given details if there does not already exist an
+     * {@link InstructorUser} having the given <code>loginName</code>.
+     *
+     * @return newly created {@link InstructorUser}, or null if a user already existed.
+     */
+    public InstructorUser maybeCreateInstructorUser(final String loginName, final String firstName,
             final String lastName, final String emailAddress, final boolean sysAdmin, final String password) {
         final InstructorUser created = createUserIfRequired(loginName, firstName, lastName,
                 emailAddress, password, sysAdmin, false);
         if (created!=null) {
-        	logger.info("Created instructor user {}", created);
+        	logger.info("Created instructor user {}", created.getLoginName());
         }
         return created;
     }
@@ -106,11 +112,11 @@ public class ManagerServices {
             final String lastName, final String emailAddress, final String password,
             final boolean sysAdmin, final boolean loginDisabled) {
         final InstructorUser result = instructorUserDao.findByLoginName(loginName);
-        if (result==null) {
-        	createUser(loginName, firstName, lastName, emailAddress, password, sysAdmin, loginDisabled);
-        	return result;
+        if (result!=null) {
+        	/* User already exists */
+        	return null;
         }
-        return null;
+        return createUser(loginName, firstName, lastName, emailAddress, password, sysAdmin, loginDisabled);
     }
 
     private InstructorUser createUser(final String loginName, final String firstName,
