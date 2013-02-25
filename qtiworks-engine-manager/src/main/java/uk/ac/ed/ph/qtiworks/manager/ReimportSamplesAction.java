@@ -42,31 +42,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Bootstraps the database schema and imports the sample items
+ * Reimports the set of sample assessments. Existing samples (and data
+ * gathered about them) will be deleted first.
  *
  * @author David McKain
  */
-public final class BootstrapAction extends ManagerAction {
+public final class ReimportSamplesAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(BootstrapAction.class);
-
-	@Override
-	public String getSpringProfileName() {
-		return "bootstrap";
-	}
-
-	@Override
-	public void beforeApplicationContextInit() {
-		logger.warn("QTIWorks database is being bootstrapped. Any existing data will be deleted!!!");
-		logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
-	}
+	private static final Logger logger = LoggerFactory.getLogger(ReimportSamplesAction.class);
 
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-    	logger.info("Importing QTI samples");
+    	logger.info("Reimporting QTI samples");
 
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
-        sampleResourceImporter.updateQtiSamples();
+        sampleResourceImporter.reimportQtiSamples();
 	}
 
 }

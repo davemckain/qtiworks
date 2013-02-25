@@ -72,14 +72,15 @@ public class BootstrapServices {
     @Resource
     private DeliverySettingsDao deliverySettingsDao;
 
-    public InstructorUser createInternalSystemUser(final String loginName, final String firstName,
+    public InstructorUser ensureInternalSystemUser(final String loginName, final String firstName,
             final String lastName) {
-        final InstructorUser created = createUserIfRequired(loginName, firstName, lastName,
-                qtiWorksDeploymentSettings.getEmailAdminAddress(), "(Login is disabled)", false, true);
-        if (created!=null) {
-        	logger.info("Created internal system user {}", created);
-        }
-        return created;
+    	InstructorUser result = instructorUserDao.findByLoginName(loginName);
+    	if (result==null) {
+            result = createUserIfRequired(loginName, firstName, lastName,
+                    qtiWorksDeploymentSettings.getEmailAdminAddress(), "(Login is disabled)", false, true);
+        	logger.info("Created internal system user {}", result);
+    	}
+        return result;
     }
 
     public InstructorUser createInstructorUser(final String loginName, final String firstName,
@@ -114,7 +115,7 @@ public class BootstrapServices {
 
     public void setupSystemDefaults() {
         /* Create system defalt user */
-        final InstructorUser systemDefaultUser = createInternalSystemUser(DomainConstants.QTI_DEFAULT_OWNER_LOGIN_NAME,
+        final InstructorUser systemDefaultUser = ensureInternalSystemUser(DomainConstants.QTI_DEFAULT_OWNER_LOGIN_NAME,
                 DomainConstants.QTI_DEFAULT_OWNER_FIRST_NAME, DomainConstants.QTI_DEFAULT_OWNER_LAST_NAME);
 
         /* Add some default delivery settings (if they don't already exist) */

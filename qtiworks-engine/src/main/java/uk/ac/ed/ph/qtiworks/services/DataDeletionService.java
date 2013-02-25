@@ -171,9 +171,25 @@ public class DataDeletionService {
      * Deletes the given {@link User} from the system, removing all data owned
      * or accumulated by it.
      *
+     * @see #resetUser(User)
+     *
      * @param user User to delete, which must not be null
      */
     public void deleteUser(final User user) {
+        Assert.notNull(user, "user");
+        resetUser(user);
+        userDao.remove(user);
+    }
+
+    /**
+     * "Resets" the given {@link User} from the system, removing all data owned
+     * or accumulated by it.
+     *
+     * @see #deleteUser(User)
+     *
+     * @param user User to reset, which must not be null
+     */
+    public void resetUser(final User user) {
         Assert.notNull(user, "user");
 
         for (final Assessment assessment : assessmentDao.getForOwner(user)) {
@@ -182,7 +198,6 @@ public class DataDeletionService {
         for (final CandidateSession candidateSession : candidateSessionDao.getForCandidate(user)) {
             deleteCandidateSession(candidateSession);
         }
-        userDao.remove(user);
     }
 
     /**

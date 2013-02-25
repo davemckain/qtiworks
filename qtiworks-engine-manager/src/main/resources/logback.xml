@@ -15,7 +15,7 @@ if you prefer. See the documentation.
     </encoder>
   </appender>
 
-  <logger name="uk.ac.ed.ph.qtiworks.manager" level="debug"/>
+  <logger name="uk.ac.ed.ph.qtiworks.manager" level="info"/>
 
   <!-- Root logger -->
   <root level="warn">

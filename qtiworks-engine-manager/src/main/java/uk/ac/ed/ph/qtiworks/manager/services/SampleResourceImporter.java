@@ -57,6 +57,7 @@ import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.TestImplementationSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
@@ -119,17 +120,41 @@ public class SampleResourceImporter {
     @Resource
     private DeliverySettingsDao deliverySettingsDao;
 
+    @Resource
+    private DataDeletionService dataDeletionService;
+
     //-------------------------------------------------
+
+    /**
+     * Wipes then re-imports the QTI samples. Any data collected from existing samples will
+     * be deleted in the process.
+     */
+    public void reimportQtiSamples() {
+        /* Get sample owner, creating if required */
+        final InstructorUser sampleOwner = ensureSampleOwner();
+
+        /* Reset user (which will delete all existing samples) */
+    	dataDeletionService.resetUser(sampleOwner);
+
+    	/* Then import samples */
+    	doUpdateQtiSamples(sampleOwner);
+    }
 
     /**
      * Imports any (valid) QTI samples that are not already registered in the DB.
      * This creates a user to own these samples if this hasn't been done so already.
      */
-    public void importQtiSamples() {
-        /* Create sample owner if required */
-        final InstructorUser sampleOwner = bootstrapServices.createInternalSystemUser(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
-                DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME, DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
+    public void updateQtiSamples() {
+        /* Get sample owner, creating if required */
+        final InstructorUser sampleOwner = ensureSampleOwner();
 
+        /* Then update samples */
+        doUpdateQtiSamples(sampleOwner);
+    }
+
+    //-------------------------------------------------
+
+    private void doUpdateQtiSamples(final InstructorUser sampleOwner) {
         /* Set up sample DeliverySettings */
         final Map<DeliveryStyle, DeliverySettings> deliverySettingsMap = importDeliverySettings(sampleOwner);
 
@@ -138,7 +163,7 @@ public class SampleResourceImporter {
 
         /* Find out what sample Assessments are already loaded in the DB */
         final Map<String, Assessment> importedSampleAssessments = getImportedSampleAssessments(sampleOwner);
-        logger.info("Existing samples are {}", importedSampleAssessments);
+        logger.debug("Existing samples are {}", importedSampleAssessments);
 
         /* Pick out all of the valid samples */
         final QtiSampleSet[] qtiSampleSets = new QtiSampleSet[] {
@@ -159,8 +184,16 @@ public class SampleResourceImporter {
 
         /* Now import assessments (if not done already) */
         for (final QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            importSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments, deliverySettingsMap);
+            final int importCount = handleSampleSet(sampleOwner, qtiSampleSet, sampleCategories, importedSampleAssessments, deliverySettingsMap);
+            if (importCount>0) {
+            	logger.info("Imported {} sample(s) into set '{}'", importCount, qtiSampleSet.getTitle());
+            }
         }
+    }
+
+    private InstructorUser ensureSampleOwner() {
+        return bootstrapServices.ensureInternalSystemUser(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
+                DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME, DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
     }
 
     private List<SampleCategory> getExistingSampleCategories() {
@@ -183,7 +216,7 @@ public class SampleResourceImporter {
                 options.setOwner(sampleOwner);
                 options.setPublic(true);
                 deliverySettingsDao.persist(options);
-                logger.info("Created ItemDeliverySettings {}", options);
+                logger.debug("Created ItemDeliverySettings {}", options);
                 deliverySettingsByTitleMap.put(options.getTitle(), options);
             }
         }
@@ -355,7 +388,7 @@ public class SampleResourceImporter {
         return result;
     }
 
-    private void importSampleSet(final InstructorUser sampleOwner,
+    private int handleSampleSet(final InstructorUser sampleOwner,
             final QtiSampleSet qtiSampleSet, final List<SampleCategory> existingSampleCategories,
             final Map<String, Assessment> importedSampleAssessments,
             final Map<DeliveryStyle, DeliverySettings> deliverySettingsMap) {
@@ -372,22 +405,25 @@ public class SampleResourceImporter {
             resultingSampleCategory = new SampleCategory();
             resultingSampleCategory.setTitle(sampleCategoryTitle);
             resultingSampleCategory.setDescription(qtiSampleSet.getDescription());
-            logger.info("Creating new sample category {}", sampleCategoryTitle);
+            logger.debug("Creating new sample category {}", sampleCategoryTitle);
             sampleCategoryDao.persist(resultingSampleCategory);
 
         }
+        int importCount = 0;
         for (final QtiSampleAssessment qtiSampleAssessment : qtiSampleSet.getQtiSampleAssessments()) {
             if (!importedSampleAssessments.containsKey(qtiSampleAssessment.getAssessmentHref())) {
                 importSampleAssessment(sampleOwner, qtiSampleAssessment, resultingSampleCategory, deliverySettingsMap);
+                importCount++;
             }
         }
+        return importCount;
     }
 
     private Assessment importSampleAssessment(final InstructorUser owner,
             final QtiSampleAssessment qtiSampleAssessment, final SampleCategory sampleCategory,
             final Map<DeliveryStyle, DeliverySettings> deliverySettingsMap) {
         Assert.notNull(qtiSampleAssessment, "qtiSampleAssessment");
-        logger.info("Importing QTI sample {}", qtiSampleAssessment);
+        logger.debug("Importing QTI sample {}", qtiSampleAssessment);
 
         /* Create AssessmentPackage entity */
         final AssessmentPackage assessmentPackage = new AssessmentPackage();

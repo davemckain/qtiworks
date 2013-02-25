@@ -71,6 +71,8 @@ public final class QtiWorksEngineManager {
     	actionMap.put("bootstrap", new BootstrapAction());
     	actionMap.put("rebuildSchema", new RebuildSchemaAction());
     	actionMap.put("importUsers", new ImportUsersAction());
+    	actionMap.put("reimportSamples", new ReimportSamplesAction());
+    	actionMap.put("updateSamples", new UpdateSamplesAction());
     	actionMap.put("adhoc", new AdhocAction());
     }
 
