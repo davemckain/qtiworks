@@ -74,18 +74,22 @@ public class BootstrapServices {
 
     public InstructorUser createInternalSystemUser(final String loginName, final String firstName,
             final String lastName) {
-        final InstructorUser user = createUserIfRequired(loginName, firstName, lastName,
+        final InstructorUser created = createUserIfRequired(loginName, firstName, lastName,
                 qtiWorksDeploymentSettings.getEmailAdminAddress(), "(Login is disabled)", false, true);
-        logger.info("Created internal system user {}", user);
-        return user;
+        if (created!=null) {
+        	logger.info("Created internal system user {}", created);
+        }
+        return created;
     }
 
     public InstructorUser createInstructorUser(final String loginName, final String firstName,
             final String lastName, final String emailAddress, final boolean sysAdmin, final String password) {
-        final InstructorUser user = createUserIfRequired(loginName, firstName, lastName,
+        final InstructorUser created = createUserIfRequired(loginName, firstName, lastName,
                 emailAddress, password, sysAdmin, false);
-        logger.info("Created instructor user {}", user);
-        return user;
+        if (created!=null) {
+        	logger.info("Created instructor user {}", created);
+        }
+        return created;
     }
 
     private InstructorUser createUserIfRequired(final String loginName, final String firstName,
@@ -105,7 +109,7 @@ public class BootstrapServices {
             result.setLoginDisabled(loginDisabled);
             instructorUserDao.persist(result);
         }
-        return result;
+        return null;
     }
 
     public void setupSystemDefaults() {

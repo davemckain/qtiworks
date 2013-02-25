@@ -27,44 +27,46 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
-import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
-import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.manager.config.ManagerConfiguration;
-import uk.ac.ed.ph.qtiworks.manager.services.AdhocService;
+import uk.ac.ed.ph.qtiworks.manager.services.SampleResourceImporter;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Dev utility class for calling arbitrary bits of service code
+ * Bootstraps the database schema and imports the sample items
  *
  * @author David McKain
  */
-public final class AdhocRunner extends StandaloneRunTemplate {
+public final class BootstrapAction extends ManagerAction {
 
-    public static void main(final String[] args) throws Exception {
-        new AdhocRunner().run(args);
-    }
+	private static final Logger logger = LoggerFactory.getLogger(BootstrapAction.class);
 
-    @Override
-    protected Class<?>[] getConfigClasses() {
-        return new Class<?>[] {
-                PropertiesConfiguration.class,
-                JpaProductionConfiguration.class,
-                ServicesConfiguration.class,
-                ManagerConfiguration.class
-        };
-    }
+	@Override
+	public String getSpringProfileName() {
+		return "bootstrap";
+	}
 
-    @Override
-    protected void doWork(final AnnotationConfigApplicationContext ctx, final String[] remainingArgs) throws Exception {
-        final AdhocService adhocService = ctx.getBean(AdhocService.class);
-        adhocService.doWork();
-    }
+	@Override
+	public void beforeApplicationContextInit() {
+		logger.warn("QTIWorks database is being bootstrapped. Any existing data will be deleted!!!");
+		logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
+	}
+
+	@Override
+	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+    	logger.info("Importing QTI samples");
+
+        final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
+        sampleResourceImporter.importQtiSamples();
+	}
+
 }

@@ -27,36 +27,35 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.config;
+package uk.ac.ed.ph.qtiworks.manager;
 
-import java.util.Properties;
+import uk.ac.ed.ph.qtiworks.manager.services.AdhocService;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Hibernate/JPA properties to be used when setting up the DB
+ * Hooks into {@link AdhocService}, which can sometimes be useful during
+ * development.
  *
  * @author David McKain
  */
-@Configuration
-public class JpaSetupConfiguration {
+public final class AdhocAction extends ManagerAction {
 
-    @Bean(name="extraJpaProperties")
-    public Properties extraJpaProperties() {
-        final Properties extraJpaProperties = new Properties();
+	private static final Logger logger = LoggerFactory.getLogger(AdhocAction.class);
 
-        /* As recommended, and required for sequence generation 'initialValue' */
-        extraJpaProperties.put("hibernate.id.new_generator_mappings", "true");
-
-        /* Tell Hibernate to recreate the DB schema */
-        extraJpaProperties.put("hibernate.hbm2ddl.auto", "create");
-
-        return extraJpaProperties;
+	@Override
+	public void run(final ApplicationContext applicationContext, final List<String> parameters)
+			throws Exception {
+		logger.warn("Running 'adhoc' developer code");
+		final AdhocService adhocService = applicationContext.getBean(AdhocService.class);
+		adhocService.doWork();
     }
-
 }

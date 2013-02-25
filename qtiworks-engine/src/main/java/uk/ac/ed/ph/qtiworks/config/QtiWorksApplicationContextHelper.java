@@ -36,6 +36,8 @@ package uk.ac.ed.ph.qtiworks.config;
 import uk.ac.ed.ph.qtiworks.QtiWorksDeploymentException;
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -45,6 +47,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySources;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 /**
@@ -62,6 +65,15 @@ public class QtiWorksApplicationContextHelper {
 
     public static void registerConfigPropertySources(final AbstractApplicationContext applicationContext,
             final String deploymentPropertiesUri) {
+        Assert.notNull(applicationContext, "applicationContext");
+        Assert.notNull(deploymentPropertiesUri, "deploymentPropertiesUri");
+        registerConfigPropertySources(applicationContext, applicationContext.getResource(deploymentPropertiesUri));
+    }
+
+    public static void registerConfigPropertySources(final AbstractApplicationContext applicationContext,
+            final Resource deploymentPropertiesResource) {
+        Assert.notNull(applicationContext, "applicationContext");
+        Assert.notNull(deploymentPropertiesResource, "deploymentPropertiesResources");
         /* Load static properties, bundled within application */
         final ConfigurableEnvironment environment = applicationContext.getEnvironment();
         final MutablePropertySources propertySources = environment.getPropertySources();
@@ -74,13 +86,13 @@ public class QtiWorksApplicationContextHelper {
         }
 
         /* Next try to load deployment properties from provided URI */
-        logger.info("Loading QTIWorks deployment configuration resource from {} via Spring Resource API", deploymentPropertiesUri);
+        logger.info("Loading QTIWorks deployment configuration resource {} via Spring Resource API", deploymentPropertiesResource);
         ResourcePropertySource deploymentPropertiesSource;
         try {
-            deploymentPropertiesSource = new ResourcePropertySource(deploymentPropertiesUri);
+            deploymentPropertiesSource = new ResourcePropertySource(deploymentPropertiesResource);
         }
         catch (final IOException e) {
-            throw new QtiWorksDeploymentException("Failed to load QTIWorks deployment properties from " + deploymentPropertiesUri);
+            throw new QtiWorksDeploymentException("Failed to load QTIWorks deployment properties from " + deploymentPropertiesResource);
         }
 
         /* Register these property sources with the environment for the rest of the bootstrap */

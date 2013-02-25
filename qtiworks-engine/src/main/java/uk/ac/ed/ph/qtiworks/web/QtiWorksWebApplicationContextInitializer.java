@@ -34,8 +34,9 @@
 package uk.ac.ed.ph.qtiworks.web;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksDeploymentException;
-import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
+import uk.ac.ed.ph.qtiworks.config.JpaBootstrapConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
+import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.QtiWorksApplicationContextHelper;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration;
@@ -73,8 +74,11 @@ public class QtiWorksWebApplicationContextInitializer implements ApplicationCont
 
     @Override
     public void initialize(final AnnotationConfigWebApplicationContext applicationContext) {
-        /* Extract URI of deployment configuration. */
+        /* Set appropriate profile */
         final ConfigurableEnvironment environment = applicationContext.getEnvironment(); /* (Should be StandardServletEnvironment) */
+        environment.setActiveProfiles("webapp");
+
+        /* Extract URI of deployment configuration. */
         logger.info("Searching for required paremeter {} within {}", DEPLOYMENT_PROPERTIES_FILE_PARAM, environment.getPropertySources());
         final String deploymentPropertiesUri = environment.getProperty(DEPLOYMENT_PROPERTIES_FILE_PARAM);
         if (deploymentPropertiesUri==null) {
@@ -87,9 +91,11 @@ public class QtiWorksWebApplicationContextInitializer implements ApplicationCont
 
         /* Then set up ApplicationContext */
         logger.info("Initialising QTIWorks webapp ApplicationContext");
+
         applicationContext.register(
-            JpaProductionConfiguration.class,
             PropertiesConfiguration.class,
+            JpaProductionConfiguration.class,
+            JpaBootstrapConfiguration.class,
             ServicesConfiguration.class,
             WebApplicationConfiguration.class
         );

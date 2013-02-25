@@ -8,9 +8,18 @@ if you prefer. See the documentation.
 -->
 <configuration debug="false">
 
-  <logger name="uk.ac.ed.ph.qtiworks.manager" level="info"/>
+  <!-- Create basic appender sending messages to STDOUT -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <pattern>%-5level %date [%logger{0}/%line#%method\(\)] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="uk.ac.ed.ph.qtiworks.manager" level="debug"/>
 
   <!-- Root logger -->
-  <root level="warn"/>
+  <root level="warn">
+    <appender-ref ref="STDOUT"/>
+  </root>
 
 </configuration>

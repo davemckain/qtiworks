@@ -27,44 +27,49 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
-import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
-import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.manager.config.ManagerConfiguration;
-import uk.ac.ed.ph.qtiworks.manager.services.SampleResourceImporter;
+import java.util.List;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Imports/updates all of the QTI sample resources
+ * Partial implementations of each manager "action" that we support.
  *
  * @author David McKain
  */
-public final class QtiSampleImporter extends StandaloneRunTemplate {
+public abstract class ManagerAction {
 
-    public static void main(final String[] args) throws Exception {
-        new QtiSampleImporter().run(args);
-    }
+	/**
+	 * Returns name of the Spring <code>@Profile</code> to use.
+	 */
+	public String getSpringProfileName() {
+		return "manager";
+	}
 
-    @Override
-    protected Class<?>[] getConfigClasses() {
-        return new Class<?>[] {
-                PropertiesConfiguration.class,
-                JpaProductionConfiguration.class,
-                ServicesConfiguration.class,
-                ManagerConfiguration.class
-        };
-    }
+	/**
+	 * Perform any action-specific validation on the user-provided parameters.
+	 * Return null on success, otherwise an error message.
+	 */
+	public String validateParameters(final List<String> parameters) {
+		return null;
+	}
 
-    @Override
-    protected void doWork(final AnnotationConfigApplicationContext ctx, final String[] remainingArgs) throws Exception {
-        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-        sampleResourceImporter.importQtiSamples();
-    }
+	/**
+	 * Override if you want to say or do something before the Spring
+	 * ApplicationContext is set up.
+	 */
+	public void beforeApplicationContextInit() {
+		/* Do nothing */
+	}
+
+	/**
+	 * Put the action logic in here.
+	 */
+	public abstract void run(ApplicationContext applicationContext, List<String> parameters) throws Exception;
+
 }

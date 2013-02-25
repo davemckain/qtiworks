@@ -27,49 +27,41 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.config.JpaSetupConfiguration;
-import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
-import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
-import uk.ac.ed.ph.qtiworks.manager.config.ManagerConfiguration;
-import uk.ac.ed.ph.qtiworks.manager.services.SampleResourceImporter;
+import java.util.List;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Entry point that sets up the DB schema, imports base data and then exits.
- * <p>
- * This will change as development proceeds.
- * <p>
- * <strong>DANGER:</strong> Do not run this on a production server as it WILL delete all of the
- * existing data!!!
+ * Resets the database schema
  *
  * @author David McKain
  */
-public final class SchemaSetup extends StandaloneRunTemplate {
+public final class RebuildSchemaAction extends ManagerAction {
 
-    public static void main(final String[] args) throws Exception {
-        new SchemaSetup().run(args);
-    }
+	private static final Logger logger = LoggerFactory.getLogger(RebuildSchemaAction.class);
 
-    @Override
-    protected Class<?>[] getConfigClasses() {
-        return new Class<?>[] {
-                PropertiesConfiguration.class,
-                JpaSetupConfiguration.class, /* Recreates DB schema */
-                ServicesConfiguration.class,
-                ManagerConfiguration.class
-        };
-    }
+	@Override
+	public String getSpringProfileName() {
+		return "bootstrap";
+	}
 
-    @Override
-    protected void doWork(final AnnotationConfigApplicationContext ctx, final String[] remainingArgs) throws Exception {
-        final SampleResourceImporter sampleResourceImporter = ctx.getBean(SampleResourceImporter.class);
-        sampleResourceImporter.importQtiSamples();
-    }
+	@Override
+	public void beforeApplicationContextInit() {
+		logger.warn("QTIWorks database schema is being reset!!!");
+		logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
+	}
+
+	@Override
+	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+		/* Nothing to do here */
+	}
+
 }
