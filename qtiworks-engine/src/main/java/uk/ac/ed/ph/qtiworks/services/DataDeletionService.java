@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
@@ -45,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -90,6 +92,9 @@ public class DataDeletionService {
 
     @Resource
     private DeliveryDao deliveryDao;
+
+    @Resource
+    private DeliverySettingsDao deliverySettingsDao;
 
     @Resource
     private AssessmentPackageDao assessmentPackageDao;
@@ -197,6 +202,9 @@ public class DataDeletionService {
         }
         for (final CandidateSession candidateSession : candidateSessionDao.getForCandidate(user)) {
             deleteCandidateSession(candidateSession);
+        }
+        for (final DeliverySettings deliverySettings : deliverySettingsDao.getForOwner(user)) {
+            deliverySettingsDao.remove(deliverySettings);
         }
     }
 
