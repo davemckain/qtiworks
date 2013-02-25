@@ -198,19 +198,10 @@ public class ManagerServices {
         deliverySettingsDao.persist(fullSettings);
     }
 
+    //-------------------------------------------------
+
     public boolean findAndDeleteUser(final String loginNameOrUid) {
-		/* Try to look up by loginName first */
-		User user = instructorUserDao.findByLoginName(loginNameOrUid);
-		if (user==null) {
-			/* Try by ID */
-			try {
-				final long uid = Long.parseLong(loginNameOrUid);
-				user = userDao.findById(uid);
-			}
-			catch (final NumberFormatException e) {
-				/* Handled below */
-			}
-		}
+		final User user = findUserByLoginNameOrUid(loginNameOrUid);
 		if (user!=null) {
 			logger.info("Deleting user {}", user);
 			dataDeletionService.deleteUser(user);
@@ -220,5 +211,35 @@ public class ManagerServices {
 			logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
 			return false;
 		}
+    }
+
+    public boolean findAndResetUser(final String loginNameOrUid) {
+		/* Try to look up by loginName first */
+		final User user = findUserByLoginNameOrUid(loginNameOrUid);
+		if (user!=null) {
+			logger.info("Resetting user {}", user);
+			dataDeletionService.resetUser(user);
+			return true;
+		}
+		else {
+			logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
+			return false;
+		}
+    }
+
+    private User findUserByLoginNameOrUid(final String loginNameOrUid) {
+		/* Try to look up by loginName first */
+		User user = instructorUserDao.findByLoginName(loginNameOrUid);
+		if (user==null) {
+			/* Try by ID */
+			try {
+				final long uid = Long.parseLong(loginNameOrUid);
+				user = userDao.findById(uid);
+			}
+			catch (final NumberFormatException e) {
+				/* (Continue) */
+			}
+		}
+		return user;
     }
 }

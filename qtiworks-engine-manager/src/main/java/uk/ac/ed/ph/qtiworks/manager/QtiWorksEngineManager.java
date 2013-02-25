@@ -75,6 +75,7 @@ public final class QtiWorksEngineManager {
     	actionMap.put("reimportSamples", new ReimportSamplesAction());
     	actionMap.put("updateSamples", new UpdateSamplesAction());
     	actionMap.put("deleteUsers", new DeleteUsersAction());
+    	actionMap.put("resetUsers", new ResetUsersAction());
     	actionMap.put("adhoc", new AdhocAction());
     }
 
