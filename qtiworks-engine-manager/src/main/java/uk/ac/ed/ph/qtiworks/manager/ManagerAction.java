@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
+import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
+
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -61,7 +63,7 @@ public abstract class ManagerAction {
 	 * Returns name of the Spring <code>@Profile</code> to use.
 	 */
 	public String getSpringProfileName() {
-		return "manager";
+		return QtiWorksProfiles.MANAGER;
 	}
 
 	/**

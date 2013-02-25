@@ -33,7 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
+import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
 import uk.ac.ed.ph.qtiworks.manager.services.SampleResourceImporter;
+import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 
 import java.util.List;
 
@@ -57,7 +59,7 @@ public final class BootstrapAction extends ManagerAction {
 
 	@Override
 	public String getSpringProfileName() {
-		return "bootstrap";
+		return QtiWorksProfiles.BOOTSTRAP;
 	}
 
 	@Override
@@ -68,10 +70,13 @@ public final class BootstrapAction extends ManagerAction {
 
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-    	logger.info("Importing QTI samples");
+		/* Delete filesystem data too */
+		logger.info("Deleting any existing user data from filesystem");
+		final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
+		filespaceManager.deleteAllUserData();
 
+    	logger.info("Importing QTI samples");
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
         sampleResourceImporter.updateQtiSamples();
 	}
-
 }

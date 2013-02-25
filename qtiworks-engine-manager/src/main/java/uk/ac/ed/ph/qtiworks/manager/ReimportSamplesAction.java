@@ -59,9 +59,10 @@ public final class ReimportSamplesAction extends ManagerAction {
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
     	logger.info("Reimporting QTI samples");
-
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
         sampleResourceImporter.reimportQtiSamples();
+
+		logger.info("Completed successfully");
 	}
 
 }

@@ -40,6 +40,8 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -48,6 +50,8 @@ import org.springframework.context.ApplicationContext;
  * @author David McKain
  */
 public final class DeleteUsersAction extends ManagerAction {
+
+	private static final Logger logger = LoggerFactory.getLogger(DeleteUsersAction.class);
 
 	@Override
 	public String getActionSummary() {
@@ -71,8 +75,12 @@ public final class DeleteUsersAction extends ManagerAction {
 	public void run(final ApplicationContext applicationContext, final List<String> parameters)
 			throws UnsupportedEncodingException, FileNotFoundException {
 		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+		int deletedCount = 0;
 		for (final String param : parameters) {
-			managerServices.findAndDeleteUser(param);
+			if (managerServices.findAndDeleteUser(param)) {
+				++deletedCount;
+			}
 		}
+		logger.info("Deleted {} user(s) from the system", deletedCount);
     }
 }

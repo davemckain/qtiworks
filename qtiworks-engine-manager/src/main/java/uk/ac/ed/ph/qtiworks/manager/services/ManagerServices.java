@@ -85,7 +85,7 @@ public class ManagerServices {
             final String lastName) {
     	InstructorUser result = instructorUserDao.findByLoginName(loginName);
     	if (result==null) {
-            result = createUserIfRequired(loginName, firstName, lastName,
+            result = createUser(loginName, firstName, lastName,
                     qtiWorksDeploymentSettings.getEmailAdminAddress(), "(Login is disabled)", false, true);
         	logger.info("Created internal system user {}", result);
     	}
@@ -105,22 +105,31 @@ public class ManagerServices {
     private InstructorUser createUserIfRequired(final String loginName, final String firstName,
             final String lastName, final String emailAddress, final String password,
             final boolean sysAdmin, final boolean loginDisabled) {
-        InstructorUser result = instructorUserDao.findByLoginName(loginName);
+        final InstructorUser result = instructorUserDao.findByLoginName(loginName);
         if (result==null) {
-            final String passwordSalt = ServiceUtilities.createSalt();
-            result = new InstructorUser();
-            result.setLoginName(loginName);
-            result.setFirstName(firstName);
-            result.setLastName(lastName);
-            result.setEmailAddress(emailAddress);
-            result.setPasswordSalt(passwordSalt);
-            result.setPasswordDigest(ServiceUtilities.computePasswordDigest(passwordSalt, password));
-            result.setSysAdmin(sysAdmin);
-            result.setLoginDisabled(loginDisabled);
-            instructorUserDao.persist(result);
+        	createUser(loginName, firstName, lastName, emailAddress, password, sysAdmin, loginDisabled);
+        	return result;
         }
         return null;
     }
+
+    private InstructorUser createUser(final String loginName, final String firstName,
+            final String lastName, final String emailAddress, final String password,
+            final boolean sysAdmin, final boolean loginDisabled) {
+    	final String passwordSalt = ServiceUtilities.createSalt();
+        final InstructorUser result = new InstructorUser();
+        result.setLoginName(loginName);
+        result.setFirstName(firstName);
+        result.setLastName(lastName);
+        result.setEmailAddress(emailAddress);
+        result.setPasswordSalt(passwordSalt);
+        result.setPasswordDigest(ServiceUtilities.computePasswordDigest(passwordSalt, password));
+        result.setSysAdmin(sysAdmin);
+        result.setLoginDisabled(loginDisabled);
+        instructorUserDao.persist(result);
+        return result;
+    }
+
 
     public void setupSystemDefaults() {
         /* Create system defalt user */
@@ -183,7 +192,7 @@ public class ManagerServices {
         deliverySettingsDao.persist(fullSettings);
     }
 
-    public void findAndDeleteUser(final String loginNameOrUid) {
+    public boolean findAndDeleteUser(final String loginNameOrUid) {
 		/* Try to look up by loginName first */
 		User user = instructorUserDao.findByLoginName(loginNameOrUid);
 		if (user==null) {
@@ -199,9 +208,11 @@ public class ManagerServices {
 		if (user!=null) {
 			logger.info("Deleting user {}", user);
 			dataDeletionService.deleteUser(user);
+			return true;
 		}
 		else {
 			logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
+			return false;
 		}
     }
 }

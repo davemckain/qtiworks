@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
+import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
+
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -40,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Resets the database schema
+ * Resets the database schema and wipes the file store
  *
  * @author David McKain
  */
@@ -50,7 +52,7 @@ public final class RebuildSchemaAction extends ManagerAction {
 
 	@Override
 	public String getActionSummary() {
-		return "Rebuilds the QTIWorks database schema without loading any samples";
+		return "Rebuilds the QTIWorks database schema and file store without loading any samples";
 	}
 
 	@Override
@@ -60,13 +62,18 @@ public final class RebuildSchemaAction extends ManagerAction {
 
 	@Override
 	public void beforeApplicationContextInit() {
-		logger.warn("QTIWorks database schema is being reset!!!");
+		logger.warn("QTIWorks database and file store is being reset!!!");
 		logger.warn("Make sure you have created the QTIWorks database already. Refer to the documentation for help");
 	}
 
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-		/* Nothing to do here */
+		/* Delete filesystem data too */
+		logger.info("Deleting all user data from filesystem");
+		final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
+		filespaceManager.deleteAllUserData();
+
+		logger.info("Completed successfully");
 	}
 
 }

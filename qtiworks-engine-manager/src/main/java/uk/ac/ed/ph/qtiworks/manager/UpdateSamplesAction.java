@@ -59,9 +59,10 @@ public final class UpdateSamplesAction extends ManagerAction {
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
     	logger.info("Updating QTI samples");
-
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);
         sampleResourceImporter.updateQtiSamples();
+
+		logger.info("Completed successfully");
 	}
 
 }
