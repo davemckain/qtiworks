@@ -40,13 +40,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Hibernate/JPA properties for use in production setting
+ * Hibernate/JPA properties to be used only when bootstrapping the schema
  *
  * @author David McKain
  */
 @Configuration
-@Profile("!bootstrap")
-public class JpaProductionConfiguration {
+@Profile("bootstrap")
+public class JpaBootstrapConfiguration {
 
     @Bean(name="extraJpaProperties")
     public Properties extraJpaProperties() {
@@ -54,6 +54,9 @@ public class JpaProductionConfiguration {
 
         /* As recommended, and required for sequence generation 'initialValue' */
         extraJpaProperties.put("hibernate.id.new_generator_mappings", "true");
+
+        /* Tell Hibernate to recreate the DB schema */
+        extraJpaProperties.put("hibernate.hbm2ddl.auto", "create");
 
         return extraJpaProperties;
     }
