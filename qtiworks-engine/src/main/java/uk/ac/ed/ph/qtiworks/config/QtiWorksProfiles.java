@@ -27,38 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.config;
 
-import java.util.Properties;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Hibernate/JPA properties to be used only when bootstrapping the schema
+ * Defines the Spring {@link Profile}s used by QTIWorks
  *
  * @author David McKain
  */
-@Configuration
-@Profile(QtiWorksProfiles.BOOTSTRAP)
-public class JpaBootstrapConfiguration {
+public final class QtiWorksProfiles {
 
-    @Bean(name="extraJpaProperties")
-    public Properties extraJpaProperties() {
-        final Properties extraJpaProperties = new Properties();
-
-        /* As recommended, and required for sequence generation 'initialValue' */
-        extraJpaProperties.put("hibernate.id.new_generator_mappings", "true");
-
-        /* Tell Hibernate to recreate the DB schema */
-        extraJpaProperties.put("hibernate.hbm2ddl.auto", "create");
-
-        return extraJpaProperties;
-    }
+    public static final String BOOTSTRAP = "bootstrap";
+    public static final String WEBAPP = "webapp";
+    public static final String MANAGER = "manager";
 
 }

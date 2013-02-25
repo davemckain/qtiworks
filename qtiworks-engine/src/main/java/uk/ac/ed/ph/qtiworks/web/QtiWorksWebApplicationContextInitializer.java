@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.config.JpaBootstrapConfiguration;
 import uk.ac.ed.ph.qtiworks.config.JpaProductionConfiguration;
 import uk.ac.ed.ph.qtiworks.config.PropertiesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.QtiWorksApplicationContextHelper;
+import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
 import uk.ac.ed.ph.qtiworks.config.ServicesConfiguration;
 import uk.ac.ed.ph.qtiworks.config.WebApplicationConfiguration;
 
@@ -76,7 +77,7 @@ public class QtiWorksWebApplicationContextInitializer implements ApplicationCont
     public void initialize(final AnnotationConfigWebApplicationContext applicationContext) {
         /* Set appropriate profile */
         final ConfigurableEnvironment environment = applicationContext.getEnvironment(); /* (Should be StandardServletEnvironment) */
-        environment.setActiveProfiles("webapp");
+        environment.setActiveProfiles(QtiWorksProfiles.WEBAPP);
 
         /* Extract URI of deployment configuration. */
         logger.info("Searching for required paremeter {} within {}", DEPLOYMENT_PROPERTIES_FILE_PARAM, environment.getPropertySources());

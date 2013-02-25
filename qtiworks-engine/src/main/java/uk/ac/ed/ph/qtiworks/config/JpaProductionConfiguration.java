@@ -45,7 +45,7 @@ import org.springframework.context.annotation.Profile;
  * @author David McKain
  */
 @Configuration
-@Profile("!bootstrap")
+@Profile("!" + QtiWorksProfiles.BOOTSTRAP)
 public class JpaProductionConfiguration {
 
     @Bean(name="extraJpaProperties")

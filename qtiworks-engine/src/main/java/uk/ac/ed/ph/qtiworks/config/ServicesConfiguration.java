@@ -69,7 +69,6 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -82,7 +81,6 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @Configuration
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.rendering", "uk.ac.ed.ph.qtiworks.services"})
 @EnableTransactionManagement
-@EnableScheduling
 public class ServicesConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ServicesConfiguration.class);

@@ -56,7 +56,7 @@ import org.springframework.core.io.support.ResourcePropertySource;
  *
  * @author David McKain
  */
-public class QtiWorksApplicationContextHelper {
+public final class QtiWorksApplicationContextHelper {
 
     /** Resoure URI for fixed QTIWorks properties */
     public static final String QTIWORKS_PROPERTIES_URI = "classpath:/qtiworks.properties";
