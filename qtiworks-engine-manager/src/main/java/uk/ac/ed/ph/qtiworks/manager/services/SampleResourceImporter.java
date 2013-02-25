@@ -103,7 +103,7 @@ public class SampleResourceImporter {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private BootstrapServices bootstrapServices;
+    private ManagerServices managerServices;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -192,7 +192,7 @@ public class SampleResourceImporter {
     }
 
     private InstructorUser ensureSampleOwner() {
-        return bootstrapServices.ensureInternalSystemUser(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
+        return managerServices.ensureInternalSystemUser(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
                 DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME, DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
     }
 

@@ -34,7 +34,7 @@
 package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.manager.services.BootstrapServices;
+import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -82,7 +82,7 @@ public final class ImportUsersAction extends ManagerAction {
         final BufferedReader importReader = new BufferedReader(new InputStreamReader(new FileInputStream(userImportCsv), "UTF-8"));
         String line;
         String[] fields;
-        final BootstrapServices bootstrapServices = applicationContext.getBean(BootstrapServices.class);
+        final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
         int usersCreated = 0;
         try {
             /* (Cheapo CSV parse) */
@@ -93,7 +93,7 @@ public final class ImportUsersAction extends ManagerAction {
                     continue;
                 }
                 fields = line.split(",\\s*", -1);
-                if (handleUserLine(bootstrapServices, fields)) {
+                if (handleUserLine(managerServices, fields)) {
                 	++usersCreated;
                 }
             }
@@ -107,7 +107,7 @@ public final class ImportUsersAction extends ManagerAction {
         logger.info("Imported {} new users", usersCreated);
     }
 
-    private boolean handleUserLine(final BootstrapServices bootstrapServices, final String[] fields) {
+    private boolean handleUserLine(final ManagerServices managerServices, final String[] fields) {
         if (fields.length!=6) {
             logger.warn("Expected 6 fields per line: ignoring " + Arrays.toString(fields));
             return false;
@@ -119,7 +119,7 @@ public final class ImportUsersAction extends ManagerAction {
         final boolean sysAdmin = "t".equals(fields[4]);
         final String password = fields[5];
 
-        final InstructorUser created = bootstrapServices.createInstructorUser(loginName, firstName, lastName, emailAddress, sysAdmin, password);
+        final InstructorUser created = managerServices.createInstructorUser(loginName, firstName, lastName, emailAddress, sysAdmin, password);
         return created!=null;
     }
 

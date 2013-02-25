@@ -38,9 +38,12 @@ import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
@@ -59,15 +62,21 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
-public class BootstrapServices {
+public class ManagerServices {
 
-    private static final Logger logger = LoggerFactory.getLogger(BootstrapServices.class);
+    private static final Logger logger = LoggerFactory.getLogger(ManagerServices.class);
 
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
+    private DataDeletionService dataDeletionService;
+
+    @Resource
     private InstructorUserDao instructorUserDao;
+
+    @Resource
+    private UserDao userDao;
 
     @Resource
     private DeliverySettingsDao deliverySettingsDao;
@@ -172,5 +181,27 @@ public class BootstrapServices {
         fullSettings.setOwner(systemDefaultUser);
         fullSettings.setTitle("Example QTI debugging settings for tests");
         deliverySettingsDao.persist(fullSettings);
+    }
+
+    public void findAndDeleteUser(final String loginNameOrUid) {
+		/* Try to look up by loginName first */
+		User user = instructorUserDao.findByLoginName(loginNameOrUid);
+		if (user==null) {
+			/* Try by ID */
+			try {
+				final long uid = Long.parseLong(loginNameOrUid);
+				user = userDao.findById(uid);
+			}
+			catch (final NumberFormatException e) {
+				/* Handled below */
+			}
+		}
+		if (user!=null) {
+			logger.info("Deleting user {}", user);
+			dataDeletionService.deleteUser(user);
+		}
+		else {
+			logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
+		}
     }
 }
