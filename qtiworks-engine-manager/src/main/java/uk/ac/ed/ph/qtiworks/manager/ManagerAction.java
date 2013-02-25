@@ -45,6 +45,19 @@ import org.springframework.context.ApplicationContext;
 public abstract class ManagerAction {
 
 	/**
+	 * Return details about any required parameters
+	 */
+	public String getActionParameterSummary() {
+		/* None usually required */
+		return "";
+	}
+
+	/**
+	 * Return a one line summary of usage for this action
+	 */
+	public abstract String getActionSummary();
+
+	/**
 	 * Returns name of the Spring <code>@Profile</code> to use.
 	 */
 	public String getSpringProfileName() {

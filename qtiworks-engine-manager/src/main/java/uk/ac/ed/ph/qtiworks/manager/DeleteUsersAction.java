@@ -50,6 +50,16 @@ import org.springframework.context.ApplicationContext;
 public final class DeleteUsersAction extends ManagerAction {
 
 	@Override
+	public String getActionSummary() {
+		return "Deletes the user(s) having the given login name(s) or ID(s)";
+	}
+
+	@Override
+	public String getActionParameterSummary() {
+		return "<loginNameOrUid> ...";
+	}
+
+	@Override
 	public String validateParameters(final List<String> parameters) {
 		if (parameters.isEmpty()) {
 			return "Required parameters: <loginName|uid> ...";

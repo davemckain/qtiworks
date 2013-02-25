@@ -49,6 +49,11 @@ public final class RebuildSchemaAction extends ManagerAction {
 	private static final Logger logger = LoggerFactory.getLogger(RebuildSchemaAction.class);
 
 	@Override
+	public String getActionSummary() {
+		return "Rebuilds the QTIWorks database schema without loading any samples";
+	}
+
+	@Override
 	public String getSpringProfileName() {
 		return "bootstrap";
 	}

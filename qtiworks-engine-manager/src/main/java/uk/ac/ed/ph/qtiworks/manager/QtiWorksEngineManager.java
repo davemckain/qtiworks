@@ -42,9 +42,10 @@ import uk.ac.ed.ph.qtiworks.manager.config.ManagerConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,7 @@ public final class QtiWorksEngineManager {
 
     private static final Map<String, ManagerAction> actionMap;
     static {
-    	actionMap = new HashMap<String, ManagerAction>();
+    	actionMap = new LinkedHashMap<String, ManagerAction>();
     	actionMap.put("bootstrap", new BootstrapAction());
     	actionMap.put("rebuildSchema", new RebuildSchemaAction());
     	actionMap.put("importUsers", new ImportUsersAction());
@@ -194,11 +195,46 @@ public final class QtiWorksEngineManager {
         return null;
     }
 
+    public static void printUsage() {
+		final String separator = System.getProperty("line.separator");
+		System.out.println("QTIWorks Engine Manager" + separator + separator
+				+ "Specify final required action as final a command final line argument,"
+				+ separator
+				+ "plus any further parameters required by chosen action."
+				+ separator + separator
+				+ "Manager will load your QTIWorks deployment properties from a file "
+				+ separator
+				+ DEFAULT_DEPLOYMENT_PROPERTIES_NAME
+				+ separator
+				+ "in the current directory, use -config <path> to specify an"
+				+ "alternate location."
+				+ separator + separator
+				+ "Avilable actions are:"
+				+ separator);
+		for (final Entry<String, ManagerAction> actionEntry : actionMap.entrySet()) {
+			final String actionKey = actionEntry.getKey();
+			final ManagerAction action = actionEntry.getValue();
+			System.out.println(actionKey
+					+ " "
+					+ action.getActionParameterSummary()
+					+ separator
+					+ "    "
+					+ actionEntry.getValue().getActionSummary()
+					+ separator);
+		}
+    }
+
     public static void main(final String[] args) {
+    	if (args.length==0) {
+    		/* No args provided, so print usage summary and exit */
+    		printUsage();
+    		System.exit(1);
+    	}
     	final QtiWorksEngineManager qtiWorksEngineManager = new QtiWorksEngineManager();
-    	final String error = qtiWorksEngineManager.parseArguments(args);
-    	if (error!=null) {
-    		System.err.println(error);
+    	final String errorMessage = qtiWorksEngineManager.parseArguments(args);
+    	if (errorMessage!=null) {
+    		System.err.println(errorMessage);
+    		printUsage();
     		System.exit(1);
     	}
     	qtiWorksEngineManager.performAction();

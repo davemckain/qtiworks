@@ -51,6 +51,11 @@ public final class BootstrapAction extends ManagerAction {
 	private static final Logger logger = LoggerFactory.getLogger(BootstrapAction.class);
 
 	@Override
+	public String getActionSummary() {
+		return "Bootstraps the QTIWorks database and imports sample assessments";
+	}
+
+	@Override
 	public String getSpringProfileName() {
 		return "bootstrap";
 	}

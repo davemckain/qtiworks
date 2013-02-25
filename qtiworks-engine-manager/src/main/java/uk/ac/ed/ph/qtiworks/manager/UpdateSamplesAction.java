@@ -52,6 +52,11 @@ public final class UpdateSamplesAction extends ManagerAction {
 	private static final Logger logger = LoggerFactory.getLogger(UpdateSamplesAction.class);
 
 	@Override
+	public String getActionSummary() {
+		return "Merges new QTIWorks sample assessments into database";
+	}
+
+	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
     	logger.info("Updating QTI samples");
 

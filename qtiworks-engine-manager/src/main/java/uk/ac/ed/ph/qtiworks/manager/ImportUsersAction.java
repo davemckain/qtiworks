@@ -62,6 +62,16 @@ public final class ImportUsersAction extends ManagerAction {
 	private File userImportCsv;
 
 	@Override
+	public String getActionSummary() {
+		return "Imports users into the system using data from a CSV file";
+	}
+
+	@Override
+	public String getActionParameterSummary() {
+		return "<importFile.csv>";
+	}
+
+	@Override
 	public String validateParameters(final List<String> parameters) {
 		if (parameters.size()!=1) {
 			return "Required parameter: path to user import CSV";
