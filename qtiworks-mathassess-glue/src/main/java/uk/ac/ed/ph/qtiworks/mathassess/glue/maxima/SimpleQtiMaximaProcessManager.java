@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 import uk.ac.ed.ph.jacomax.MaximaInteractiveProcess;
 import uk.ac.ed.ph.jacomax.MaximaProcessLauncher;
-import uk.ac.ed.ph.qtiworks.mathassess.glue.MathAssessCasException;
 import uk.ac.ed.ph.snuggletex.utilities.SimpleStylesheetCache;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
@@ -64,12 +63,8 @@ public class SimpleQtiMaximaProcessManager implements QtiMaximaProcessManager {
     public QtiMaximaProcess obtainProcess() {
         MaximaInteractiveProcess process = maximaProcessLauncher.launchInteractiveProcess();
         QtiMaximaProcess session = new QtiMaximaProcess(process, stylesheetCache);
-        try {
-            session.init();
-        }
-        catch (Exception e) {
-            throw new MathAssessCasException("Failed to start and fully initialise Maxima process for use with MathAssess QTI", e);
-        }
+        session.init();
+        session.setRandomState();
         return session;
     }
     

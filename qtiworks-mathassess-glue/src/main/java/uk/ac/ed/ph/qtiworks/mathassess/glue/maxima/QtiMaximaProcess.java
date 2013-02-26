@@ -155,6 +155,21 @@ public final class QtiMaximaProcess {
         maximaInteractiveProcess.softReset();
     }
     
+    /**
+     * Sets a new Maxima random state using the system clock time (in milliseconds). This is
+     * more useful than Maxmia's own <code>make_random_state(true)</code>, which only seems to
+     * resolve to the second.
+     */
+    public void setRandomState() {
+        logger.trace("Setting new random state based on System clock time");
+        try {
+            maximaInteractiveProcess.executeCallDiscardOutput("set_random_state(make_random_state(" + System.currentTimeMillis() + "))$");
+        }
+        catch (Exception e) {
+            throw new MathAssessCasException("Failed to set a new random state", e);
+        }
+    }
+    
     //------------------------------------------------
     // Passing variables from the QTI code to Maxima
     
