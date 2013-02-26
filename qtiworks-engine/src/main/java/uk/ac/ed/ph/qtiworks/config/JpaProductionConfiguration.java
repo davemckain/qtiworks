@@ -37,6 +37,7 @@ import java.util.Properties;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Hibernate/JPA properties for use in production setting
@@ -44,6 +45,7 @@ import org.springframework.context.annotation.Configuration;
  * @author David McKain
  */
 @Configuration
+@Profile("!" + QtiWorksProfiles.BOOTSTRAP)
 public class JpaProductionConfiguration {
 
     @Bean(name="extraJpaProperties")

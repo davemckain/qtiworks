@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiModelException;
-
 /**
  * This exception is used for reporting problems with attributes.
  *

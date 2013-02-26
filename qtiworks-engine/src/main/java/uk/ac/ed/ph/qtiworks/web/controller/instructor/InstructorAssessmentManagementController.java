@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
@@ -91,7 +91,7 @@ public class InstructorAssessmentManagementController {
     public static final String FLASH = "flashMessage";
 
     @Resource
-    private QtiWorksSettings qtiWorksSettings;
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
     private InstructorRouter instructorRouter;
@@ -466,7 +466,7 @@ public class InstructorAssessmentManagementController {
         result.put("candidateSummaryReport", instructorRouter.buildWebUrl("/delivery/" + did + "/candidate-summary-report"));
         result.put("candidateSummaryReportCsv", instructorRouter.buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
         result.put("candidateResultsZip", instructorRouter.buildWebUrl("/delivery/candidate-results-" + did + ".zip"));
-        result.put("ltiLaunch", qtiWorksSettings.getBaseUrl() + "/lti/launch/" + did);
+        result.put("ltiLaunch", qtiWorksDeploymentSettings.getBaseUrl() + "/lti/launch/" + did);
         return result;
     }
 

@@ -1,3 +1,5 @@
-qtiworks.properties
-qtiworks.xml
-logback.xml
+/qtiworks-deployment.properties
+/qtiworks.xml
+/logback.xml
+/user-import.csv
+/tw

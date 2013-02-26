@@ -53,7 +53,7 @@ import org.springframework.stereotype.Service;
 public class CandidateAuditLogger {
 
     /** Special logger for auditing candidate actions */
-    private static final Logger candidateLogger = LoggerFactory.getLogger("CandidateAuditor");
+    private static final Logger candidateLogger = LoggerFactory.getLogger("CandidateAuditLogger");
 
     private void logSessionAction(final CandidateSession candidateSession, final String message) {
         candidateLogger.info("user={} xid={} did={} aid={} {}",

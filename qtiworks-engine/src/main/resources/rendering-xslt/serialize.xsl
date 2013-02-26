@@ -55,7 +55,7 @@ hence slightly easier to debug.
           </xsl:if>
           <!-- Pull in <head/> stuff added by other stylesheets -->
           <xsl:for-each select="xhtml:head/*">
-            <xsl:copy-of select="."/>
+            <xsl:apply-templates select="." mode="serialize"/>
             <xsl:text>&#x0a;</xsl:text>
           </xsl:for-each>
           <!-- Finally pull in MathJax if required -->
@@ -66,7 +66,11 @@ hence slightly easier to debug.
               </script>
             </xsl:if>
             <xsl:text>&#x0a;</xsl:text>
-            <script type="text/javascript" src="{$mathJaxUrl}"/>
+            <script src="{$mathJaxUrl}">
+              <xsl:if test="not($serializationMethod='XHTML5_MATHJAX')">
+                <xsl:attribute name="type" select="'text/javascript'"/>
+              </xsl:if>
+            </script>
             <xsl:text>&#x0a;</xsl:text>
           </xsl:if>
         </head>
@@ -86,6 +90,16 @@ hence slightly easier to debug.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <!-- Add @type attribute to <script> if we're not generating HTML5 -->
+  <xsl:template match="xhtml:script[not($serializationMethod='HTML5_MATHJAX') and not(@type)]" mode="serialize">
+    <xsl:copy>
+      <xsl:copy-of select="@*"/>
+      <xsl:attribute name="type" select="'text/javascript'"/>
+    </xsl:copy>
+  </xsl:template>
+
+  <!-- ************************************************************ -->
 
   <xsl:template match="xhtml:*" mode="serialize">
     <xsl:copy>

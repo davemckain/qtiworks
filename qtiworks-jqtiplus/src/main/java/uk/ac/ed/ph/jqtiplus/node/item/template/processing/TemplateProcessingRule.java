@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.template.processing;
 
-import uk.ac.ed.ph.jqtiplus.exception2.TemplateProcessingInterrupt;
+import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;

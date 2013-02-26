@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.expression.operator.math;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiEvaluationException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -58,13 +58,13 @@ final class ReflectionEvaluator implements MathOperatorEvaluator {
         this(methodName, false);
     }
 
-    public ReflectionEvaluator(final String methodName, boolean wantInteger) {
+    public ReflectionEvaluator(final String methodName, final boolean wantInteger) {
         this.methodName = methodName;
         this.wantInteger = wantInteger;
     }
 
     @Override
-    public Value evaluate(double[] arguments) {
+    public Value evaluate(final double[] arguments) {
         try {
             final Class<?> mathClass = Class.forName("java.lang.Math");
             final Method method = mathClass.getMethod(methodName, Double.TYPE);
@@ -72,7 +72,7 @@ final class ReflectionEvaluator implements MathOperatorEvaluator {
             return wantInteger ? new IntegerValue((int) result) : new FloatValue(result);
         }
         catch (final Exception e) {
-            throw new QtiEvaluationException("Unexpected error evaluating math operator", e);
+            throw new QtiLogicException("Unexpected error evaluating math operator", e);
         }
     }
 }

@@ -33,15 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.JqtiRuntimeException;
 
 /**
- * Extension of {@link QtiRuntimeException} used when an unexpected {@link Exception}
+ * Extension of {@link JqtiRuntimeException} used when an unexpected {@link Exception}
  * occurs during rendering.
  * 
  * @author David McKain
  */
-public class QtiRenderingException extends QtiRuntimeException {
+public class QtiRenderingException extends JqtiRuntimeException {
 
     private static final long serialVersionUID = -2343145716203604174L;
 

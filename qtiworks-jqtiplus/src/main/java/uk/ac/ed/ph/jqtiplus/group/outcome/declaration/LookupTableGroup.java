@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.group.outcome.declaration;
 
-import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.ComplexNodeGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.InterpolationTable;

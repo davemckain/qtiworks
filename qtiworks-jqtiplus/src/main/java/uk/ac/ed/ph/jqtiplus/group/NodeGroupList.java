@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.group;
 
+import uk.ac.ed.ph.jqtiplus.exception.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiNodeGroupException;
-import uk.ac.ed.ph.jqtiplus.exception2.QtiIllegalChildException;
 import uk.ac.ed.ph.jqtiplus.group.block.InteractionGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockGroup;
 import uk.ac.ed.ph.jqtiplus.group.content.BlockStaticGroup;

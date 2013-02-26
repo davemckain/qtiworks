@@ -5,6 +5,7 @@
  */
 package dave;
 
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
@@ -41,7 +42,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class TestNavigationRenderingTest {
 
     public static void main(final String[] args) {
-        final URI testUri = URI.create("classpath:/testimplementation/selection.xml");
+        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/simple-nonlinear-individual.xml");
 
         System.out.println("Reading");
         final NotificationLogListener notificationLogListener = new NotificationLogListener();
@@ -80,7 +81,11 @@ public class TestNavigationRenderingTest {
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
 
+            final QtiWorksProperties qtiWorksProperties = new QtiWorksProperties();
+            qtiWorksProperties.setQtiWorksVersion("VERSION");
+
             final AssessmentRenderer renderer = new AssessmentRenderer();
+            renderer.setQtiWorksProperties(qtiWorksProperties);
             renderer.setJsr303Validator(validator);
             renderer.setJqtiExtensionManager(jqtiExtensionManager);
             renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());

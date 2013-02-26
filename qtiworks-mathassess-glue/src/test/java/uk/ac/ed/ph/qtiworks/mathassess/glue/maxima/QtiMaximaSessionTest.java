@@ -138,28 +138,28 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     
     @Test(expected=IllegalArgumentException.class)
     public void testPassVariableNull1() throws Exception {
-        process.passQTIVariableToMaxima(null, new BooleanValueWrapper(false));
+        process.passQtiVariableToMaxima(null, new BooleanValueWrapper(false));
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void testPassVariableBlank() throws Exception {
-        process.passQTIVariableToMaxima("", new BooleanValueWrapper(false));
+        process.passQtiVariableToMaxima("", new BooleanValueWrapper(false));
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void testPassVariableUnicode() throws Exception {
-        process.passQTIVariableToMaxima("\u00eb", new BooleanValueWrapper(false));
+        process.passQtiVariableToMaxima("\u00eb", new BooleanValueWrapper(false));
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void testPassVariableMathNoMaxima() throws Exception {
-        process.passQTIVariableToMaxima("\u00eb", new MathsContentValueWrapper());
+        process.passQtiVariableToMaxima("\u00eb", new MathsContentValueWrapper());
     }
     
     @Test
     public void testPassVariableBooleanGood() throws Exception {
         /* Set 'x' to the boolean value true */
-        process.passQTIVariableToMaxima("x", new BooleanValueWrapper(true));
+        process.passQtiVariableToMaxima("x", new BooleanValueWrapper(true));
         
         /* Extract value using string() then we'll just check directly ourselves */
         String output = process.executeStringOutput("x", false);
@@ -169,10 +169,10 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     @Test
     public void testPassVariableUnsetGood1() throws Exception {
         /* Temporarily set 'x' to the boolean value true */
-        process.passQTIVariableToMaxima("x", new BooleanValueWrapper(true));
+        process.passQtiVariableToMaxima("x", new BooleanValueWrapper(true));
         
         /* Then we'll clear it */
-        process.passQTIVariableToMaxima("x", NullValueWrapper.INSTANCE);
+        process.passQtiVariableToMaxima("x", NullValueWrapper.INSTANCE);
         
         /* Make sure it is really unset */
         String output = process.executeStringOutput("x", false);
@@ -182,10 +182,10 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     @Test
     public void testPassVariableUnsetGood2() throws Exception {
         /* Temporarily set 'x' to the boolean value true */
-        process.passQTIVariableToMaxima("x", new BooleanValueWrapper(true));
+        process.passQtiVariableToMaxima("x", new BooleanValueWrapper(true));
         
         /* Then we'll clear it (but differently to the first test) */
-        process.passQTIVariableToMaxima("x", new BooleanValueWrapper(null));
+        process.passQtiVariableToMaxima("x", new BooleanValueWrapper(null));
         
         /* Make sure it is really unset */
         String output = process.executeStringOutput("x", false);
@@ -225,7 +225,7 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     @Test()
     public void testQueryMaximaVariableGood() throws Exception {
         ValueWrapper input = new BooleanValueWrapper(true);
-        process.passQTIVariableToMaxima("x", input);
+        process.passQtiVariableToMaxima("x", input);
         BooleanValueWrapper result = process.queryMaximaVariable("x", BooleanValueWrapper.class);
         
         Assert.assertEquals(input, result);
@@ -234,7 +234,7 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     @Test()
     public void testQueryMaximaVariableGoodCastToMath() throws Exception {
         ValueWrapper input = new BooleanValueWrapper(true);
-        process.passQTIVariableToMaxima("x", input);
+        process.passQtiVariableToMaxima("x", input);
         
         /* We'll extract the result in a different form */
         MathsContentValueWrapper result = process.queryMaximaVariable("x", MathsContentValueWrapper.class);
@@ -244,7 +244,7 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     @Test(expected=QtiMaximaTypeConversionException.class)
     public void testQueryMaximaVariableBadCast() throws Exception {
         ValueWrapper input = new BooleanValueWrapper(true);
-        process.passQTIVariableToMaxima("x", input);
+        process.passQtiVariableToMaxima("x", input);
         
         /* We'll extract the result in a different form */
         process.queryMaximaVariable("x", IntegerValueWrapper.class);
@@ -468,7 +468,7 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     @Test()
     public void testSubstituteSimple() throws Exception {
         /* This substitutes the value of 'n' in the given expression */
-        process.passQTIVariableToMaxima("n", new IntegerValueWrapper(23));
+        process.passQtiVariableToMaxima("n", new IntegerValueWrapper(23));
 
         Element mathmlElement = makeAuthoredMathML("<mi>n</mi><mi>x</mi>");
         process.substituteVariables(mathmlElement);
@@ -478,7 +478,7 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     
     @Test()
     public void testSubstituteSimpleRepeated() throws Exception {
-        process.passQTIVariableToMaxima("n", new IntegerValueWrapper(23));
+        process.passQtiVariableToMaxima("n", new IntegerValueWrapper(23));
         
         Element mathmlElement = makeAuthoredMathML("<mi>n</mi><mi>n</mi>");
         process.substituteVariables(mathmlElement);
@@ -489,7 +489,7 @@ public class QtiMaximaSessionTest extends QtiMaximaSessionTestBase {
     @Test()
     public void testSubstituteComplex() throws Exception {
         MathsContentValueWrapper nValue = new AsciiMathHelper().createMathsContentFromASCIIMath("sin x");
-        process.passQTIVariableToMaxima("n", nValue);
+        process.passQtiVariableToMaxima("n", nValue);
         
         Element mathmlElement = makeAuthoredMathML("<mi>n</mi><mi>x</mi>");
         process.substituteVariables(mathmlElement);

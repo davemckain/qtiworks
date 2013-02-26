@@ -96,7 +96,9 @@ final class PoolableQtiMaximaProcessFactory implements PoolableObjectFactory {
 
     @Override
     public void activateObject(final Object obj) {
-        /* (Nothing to do here) */
+        logger.debug("Activating Maxima process and setting new random state");
+        final QtiMaximaProcess process = (QtiMaximaProcess) obj;
+        process.setRandomState();
     }
 
     @Override

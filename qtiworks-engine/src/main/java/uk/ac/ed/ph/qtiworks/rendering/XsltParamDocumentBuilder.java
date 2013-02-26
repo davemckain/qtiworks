@@ -55,7 +55,7 @@ import org.xml.sax.SAXException;
  */
 public final class XsltParamDocumentBuilder {
 
-    public interface SaxFirerCallback {
+    public static interface SaxFirerCallback {
 
         List<? extends QtiNode> getQtiNodes();
 

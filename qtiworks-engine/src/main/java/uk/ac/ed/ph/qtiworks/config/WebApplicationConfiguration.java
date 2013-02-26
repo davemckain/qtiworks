@@ -33,10 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.config;
 
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.web.LoggingHandlerExceptionResolver;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -56,10 +62,27 @@ import org.springframework.web.servlet.DispatcherServlet;
 @ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.services"})
 public class WebApplicationConfiguration {
 
+    private static final Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);
+
     public static final long MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
 
     @Resource
     private WebApplicationContext applicationContext;
+
+    @Resource
+    private QtiWorksProperties qtiWorksProperties;
+
+    @Resource
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
+
+    @PostConstruct
+    public void passConfigToServletContext() {
+        /* Stash configuration beans into the ServletContext to make them available to JSPs */
+        final ServletContext servletContext = applicationContext.getServletContext();
+        servletContext.setAttribute("qtiWorksProperties", qtiWorksProperties);
+        servletContext.setAttribute("qtiWorksDeploymentSettings", qtiWorksDeploymentSettings);
+        logger.info("Stashed configuration beans {} and {} into ServletContext", qtiWorksProperties, qtiWorksDeploymentSettings);
+    }
 
     @Bean
     public String contextPath() {

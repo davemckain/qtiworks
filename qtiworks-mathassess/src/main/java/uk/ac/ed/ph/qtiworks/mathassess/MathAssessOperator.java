@@ -183,7 +183,7 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
         if (value!=null) {
             final ValueWrapper valueWrapper = GlueValueBinder.jqtiToCas(value);
             if (valueWrapper!=null) {
-                qtiMaximaProcess.passQTIVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
+                qtiMaximaProcess.passQtiVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
             }
             else {
                 context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier() + " is not of a type supported by the MathAssess extensions so has not been passed to Maxima");
