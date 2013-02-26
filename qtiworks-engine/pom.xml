@@ -52,12 +52,6 @@ All Rights Reserved
       <version>${hibernate.version}</version>
     </dependency>
     <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>${postgresql-jdbc.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>${spring.version}</version>

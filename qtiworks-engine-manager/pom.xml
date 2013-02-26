@@ -31,6 +31,18 @@ etc...
       <version>${project.version}</version>
       <classifier>classes</classifier>
     </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql-connector.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgresql-jdbc.version}</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
