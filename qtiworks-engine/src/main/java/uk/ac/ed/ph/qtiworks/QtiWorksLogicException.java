@@ -42,6 +42,10 @@ public final class QtiWorksLogicException extends QtiWorksRuntimeException {
 
     private static final long serialVersionUID = 2526848963219875046L;
 
+    public static QtiWorksLogicException unexpectedException(final Throwable cause) {
+        return new QtiWorksLogicException("Unexpected Exception", cause);
+    }
+
     public QtiWorksLogicException() {
         super();
     }

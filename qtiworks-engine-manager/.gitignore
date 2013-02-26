@@ -1,0 +1,5 @@
+/qtiworks-deployment.properties*
+/logback.xml
+/user-import.csv
+/dependency-reduced-pom.xml
+/postgresql*jdbc*

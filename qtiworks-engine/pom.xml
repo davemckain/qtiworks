@@ -52,12 +52,6 @@ All Rights Reserved
       <version>${hibernate.version}</version>
     </dependency>
     <dependency>
-      <groupId>postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>${postgresql-jdbc.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>${spring.version}</version>
@@ -202,203 +196,23 @@ All Rights Reserved
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <profiles>
-    <!--
-
-    To rebuild and set up the DB schema: "mvn -DSchemaSetup exec:exec"
-
-    BE CAREFUL! This will delete all existing data in the database!
-
-    -->
-    <profile>
-      <id>SchemaSetup</id>
-      <activation>
-        <property>
-          <name>SchemaSetup</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-classpath</argument>
-                <classpath/>
-                <argument>uk.ac.ed.ph.qtiworks.tools.SchemaSetup</argument>
-              </arguments>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!--
-
-    To update the bundled set of sample questions: "mvn -DQtiSampleImport exec:exec"
-
-    -->
-    <profile>
-      <id>QtiSampleImport</id>
-      <activation>
-        <property>
-          <name>QtiSampleImport</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-classpath</argument>
-                <classpath/>
-                <argument>uk.ac.ed.ph.qtiworks.tools.QtiSampleImport</argument>
-              </arguments>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!--
-
-    To import users: "mvn -DUserImporter exec:exec"
-
-    This will look for a file called user-import.csv in the current directory.
-    This should be a CSV of the form:
-
-    loginName,firstName,lastName,emailAddress,sysAdmin?(t|f),password
-
-    Blank lines and lines starting with '#' will be ignored.
-
-    -->
-    <profile>
-      <id>UserImporter</id>
-      <activation>
-        <property>
-          <name>UserImporter</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-classpath</argument>
-                <classpath/>
-                <argument>uk.ac.ed.ph.qtiworks.tools.UserImporter</argument>
-                <argument>user-import.csv</argument>
-              </arguments>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- To run JPA custom code: "mvn -DAdhocRunner exec:exec" -->
-    <profile>
-      <id>AdhocRunner</id>
-      <activation>
-        <property>
-          <name>AdhocRunner</name>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <configuration>
-              <executable>java</executable>
-              <arguments>
-                <argument>-classpath</argument>
-                <classpath/>
-                <argument>uk.ac.ed.ph.qtiworks.tools.AdhocRunner</argument>
-              </arguments>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
   <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <!-- Generate a classes-only JAR as well -->
+          <attachClasses>true</attachClasses>
+          <classesClassifier>classes</classesClassifier>
+        </configuration>
+      </plugin>
+    </plugins>
     <resources>
-      <!-- Filter files in src/main/resources (as defined below) -->
+      <!-- Filter the "static" properties file (qtiworks.properties) -->
       <resource>
         <directory>src/main/resources</directory>
         <filtering>true</filtering>
       </resource>
-      <!-- Copy qtiworks.properties into target/classes -->
-      <resource>
-        <directory>.</directory>
-        <filtering>false</filtering>
-        <includes>
-          <include>qtiworks.properties</include>
-        </includes>
-      </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <!-- Make sure user has created qtiworks.properties -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-files-exist</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireFilesExist>
-                  <message>
-======================================================================
-Please first create qtiworks.properties in order to configure your
-build for the QTIWorks Engine webapp.
-
-You should use default.qtiworks.properties as a template
-======================================================================
-                  </message>
-                  <files>
-                   <file>${basedir}/qtiworks.properties</file>
-                  </files>
-                </requireFilesExist>
-              </rules>
-              <fail>true</fail>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <!-- Filtering configuration for src/main/resources (as defined above) -->
-          <filters>
-            <filter>${basedir}/qtiworks.properties</filter>
-          </filters>
-          <nonFilteredFileExtensions>
-            <nonFileteredFileExtension>png</nonFileteredFileExtension>
-            <nonFileteredFileExtension>gif</nonFileteredFileExtension>
-            <nonFileteredFileExtension>jpg</nonFileteredFileExtension>
-            <nonFileteredFileExtension>zip</nonFileteredFileExtension>
-          </nonFilteredFileExtensions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <configuration>
-          <warName>qtiworks</warName>
-          <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
-          <filters>
-            <filter>${basedir}/qtiworks.properties</filter>
-          </filters>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 </project>

@@ -33,14 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiRuntimeException;
+import uk.ac.ed.ph.jqtiplus.exception.JqtiRuntimeException;
 
 /**
  * Encapsulates an unexpected problem when serializing QTI Objects.
  *
  * @author David McKain
  */
-public class QtiSerializationException extends QtiRuntimeException {
+public class QtiSerializationException extends JqtiRuntimeException {
 
     private static final long serialVersionUID = 3186932966331958775L;
 

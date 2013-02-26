@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.provision;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiException;
+import uk.ac.ed.ph.jqtiplus.exception.JqtiException;
 import uk.ac.ed.ph.jqtiplus.node.RootNode;
 
 /**
@@ -44,7 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.RootNode;
  *
  * @author David McKain
  */
-public class BadResourceException extends QtiException {
+public class BadResourceException extends JqtiException {
 
     private static final long serialVersionUID = 2958233535819021682L;
 

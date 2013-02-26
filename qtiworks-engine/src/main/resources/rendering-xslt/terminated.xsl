@@ -35,7 +35,7 @@ Renders a terminated assessment
       <head>
         <title>Assessment Completed</title>
         <!-- QTIWorks Item styling -->
-        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/item.css" type="text/css" media="screen"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks">
         <p>

@@ -33,12 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
@@ -97,8 +97,8 @@ public final class InstructorAuthenticationFilter extends AbstractWebAuthenticat
         instructorUserDao = webApplicationContext.getBean(InstructorUserDao.class);
 
         /* Decide whether to do fake or form authentication */
-        final QtiWorksSettings qtiWorksSettings = webApplicationContext.getBean(QtiWorksSettings.class);
-        final String fakeLoginName = qtiWorksSettings.getFakeLoginName();
+        final QtiWorksDeploymentSettings qtiWorksDeploymentSettings = webApplicationContext.getBean(QtiWorksDeploymentSettings.class);
+        final String fakeLoginName = qtiWorksDeploymentSettings.getFakeLoginName();
         if (StringUtilities.isNullOrBlank(fakeLoginName)) {
             /* Use standard form authentication */
             abstractInstructorAuthenticator = new InstructorFormAuthenticator(webApplicationContext, filterConfig);

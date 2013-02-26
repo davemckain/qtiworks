@@ -15,7 +15,11 @@ All Rights Reserved
 <%@ attribute name="cssClass" required="false" %>
 
 <jsp:useBean id="now" class="java.util.Date"/>
-<c:set var="qtiWorksVersion" value="1.0-M3"/>
+
+<%-- Extract config beans stashed in ServletContext during AppContext setup --%>
+<c:set var="qtiWorksProperties" value="${applicationScope['qtiWorksProperties']}"/>
+<c:set var="qtiWorksDeploymentSettings" value="${applicationScope['qtiWorksDeploymentSettings']}"/>
+<c:set var="qtiWorksVersion" value="${qtiWorksProperties.qtiWorksVersion}"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,10 +31,10 @@ All Rights Reserved
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/960/text.css')}">
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/lib/960/960.css')}">
     <link rel="stylesheet" href="${utils:internalLink(pageContext, '/includes/qtiworks.css')}?${qtiWorksVersion}">
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/smoothness/jquery-ui.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.5.3/modernizr.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/smoothness/jquery-ui.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
     <%-- TODO: Move the next script into a single library --%>
     <script src="${utils:internalLink(pageContext, '/includes/qtiworks.js')}?${qtiWorksVersion}"></script>
     <script src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}?${qtiWorksVersion}"></script>
@@ -68,6 +72,9 @@ All Rights Reserved
             Copyright &#xa9; <fmt:formatDate value="${now}" type="date" pattern="yyyy"/>
             <a href="http://www.ph.ed.ac.uk">The School of Physics and Astronomy</a>,
             <a href="http://www.ed.ac.uk">The University of Edinburgh</a>.
+          </p>
+          <p>
+            Contact: <a href="mailto:${qtiWorksDeploymentSettings.emailAdminAddress}"><c:out value="${qtiWorksDeploymentSettings.emailAdminName}"/></a>
           </p>
           <p>
             The University of Edinburgh is a charitable body, registered in Scotland,

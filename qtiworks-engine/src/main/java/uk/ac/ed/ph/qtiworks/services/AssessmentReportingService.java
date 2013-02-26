@@ -34,15 +34,15 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.base.services.Auditor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionDao;
-import uk.ac.ed.ph.qtiworks.domain.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionOutcome;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
@@ -78,7 +78,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AssessmentReportingService {
 
     @Resource
-    private Auditor auditor;
+    private AuditLogger auditLogger;
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -151,7 +151,7 @@ public class AssessmentReportingService {
             rows.add(row);
         }
 
-        auditor.recordEvent("Generated candidate summary report for delivery #" + delivery.getId());
+        auditLogger.recordEvent("Generated candidate summary report for delivery #" + delivery.getId());
         return new DeliveryCandidateSummaryReport(new ArrayList<String>(outcomeNames), rows);
     }
 
@@ -182,7 +182,7 @@ public class AssessmentReportingService {
             }
         }
         safelyFinishZipStream(zipOutputStream, includedSomething);
-        auditor.recordEvent("Generated assessmentResult ZIP file for delviery #" + did);
+        auditLogger.recordEvent("Generated assessmentResult ZIP file for delviery #" + did);
     }
 
     private void addAssessmentReport(final ZipOutputStream zipOutputStream, final CandidateSession candidateSession)

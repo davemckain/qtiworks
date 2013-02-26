@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.base.services.QtiWorksSettings;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
@@ -71,7 +71,7 @@ public final class FilespaceManager {
     private static final Logger logger = LoggerFactory.getLogger(FilespaceManager.class);
 
     @Resource
-    private QtiWorksSettings qtiWorksSettings;
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -83,7 +83,7 @@ public final class FilespaceManager {
 
     @PostConstruct
     public void init() {
-        final String filesystemBaseString = qtiWorksSettings.getFilesystemBase();
+        final String filesystemBaseString = qtiWorksDeploymentSettings.getFilesystemBase();
         logger.info("Filesystem base for client data is {}", filesystemBaseString);
         this.filesystemBaseDirectory = new File(filesystemBaseString);
         if (!filesystemBaseDirectory.isDirectory()) {
@@ -102,9 +102,8 @@ public final class FilespaceManager {
 
     public File createAssessmentPackageSandbox(final User owner) {
         Assert.notNull(owner, "owner");
-        final String filespaceUri = filesystemBaseDirectory.toURI().toString()
-                + "/assessments/"
-                + owner.getBusinessKey()
+        final String filespaceUri = getAssessmentPackageSandboxBaseUri()
+                + "/" + owner.getBusinessKey()
                 + "/" + createUniqueRequestComponent();
         return ensureCreateDirectory(filespaceUri);
     }
@@ -115,6 +114,15 @@ public final class FilespaceManager {
             throw new IllegalStateException("Built-in AssessmentPackages may not be deleted");
         }
         return recursivelyDeleteDirectory(new File(assessmentPackage.getSandboxPath()));
+    }
+
+    public boolean deleteAllAssessmentPackages() {
+        return recursivelyDeleteDirectory(getAssessmentPackageSandboxBaseUri());
+    }
+
+    private String getAssessmentPackageSandboxBaseUri() {
+        return filesystemBaseDirectory.toURI().toString()
+                + "/assessments";
     }
 
     //-------------------------------------------------
@@ -136,12 +144,21 @@ public final class FilespaceManager {
         return recursivelyDeleteDirectory(getCandidateSessionUploadBaseUri(candidateSession));
     }
 
+    public boolean deleteAllCandidateUploads() {
+        return recursivelyDeleteDirectory(getCandidateUploadBaseUri());
+    }
+
+    private String getCandidateUploadBaseUri() {
+        return filesystemBaseDirectory.toURI().toString()
+                + "/responses";
+    }
+
     private String getCandidateSessionUploadBaseUri(final Delivery delivery) {
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 
-        final String folderUri = filesystemBaseDirectory.toURI().toString()
-                + "/responses/assessment" + assessment.getId()
+        final String folderUri = getCandidateUploadBaseUri()
+                + "/assessment" + assessment.getId()
                 + "/package" + assessmentPackage.getId()
                 + "/delivery" + delivery.getId();
         return folderUri;
@@ -174,11 +191,20 @@ public final class FilespaceManager {
         return recursivelyDeleteDirectory(getCandidateSessionStoreUri(candidateSession));
     }
 
+    public boolean deleteAllCandidateSessionData() {
+        return recursivelyDeleteDirectory(getCandidateSessionStoreBaseUri());
+    }
+
+    private final String getCandidateSessionStoreBaseUri() {
+        return filesystemBaseDirectory.toURI().toString()
+                + "/sessions";
+    }
+
     private final String getCandidateSessionStoreBaseUri(final Delivery delivery) {
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
-        final String folderBaseUri = filesystemBaseDirectory.toURI().toString()
-                + "/sessions/assessment" + assessment.getId()
+        final String folderBaseUri = getCandidateSessionStoreBaseUri()
+                + "/assessment" + assessment.getId()
                 + "/package" + assessmentPackage.getId()
                 + "/delivery" + delivery.getId();
         return folderBaseUri;
@@ -194,6 +220,21 @@ public final class FilespaceManager {
     }
 
     //-------------------------------------------------
+
+    /**
+     * Deletes all assignment and candidate data from the system.
+     * <p>
+     * This corresponds to having the database schema wiped.
+     * Use with caution!!!
+     */
+    public void deleteAllUserData() {
+        deleteAllAssessmentPackages();
+        deleteAllCandidateSessionData();
+        deleteAllCandidateUploads();
+    }
+
+    //-------------------------------------------------
+
 
     public void deleteSandbox(final File sandboxDirectory) {
         Assert.notNull(sandboxDirectory, "sandboxDirectory");

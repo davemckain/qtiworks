@@ -5,6 +5,7 @@
  */
 package dave;
 
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
@@ -41,7 +42,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class StandaloneItemRenderingTest {
 
     public static void main(final String[] args) {
-        final URI itemUri = URI.create("classpath:/choice.xml");
+        final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
 
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
@@ -85,7 +86,11 @@ public class StandaloneItemRenderingTest {
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
 
+            final QtiWorksProperties qtiWorksProperties = new QtiWorksProperties();
+            qtiWorksProperties.setQtiWorksVersion("VERSION");
+
             final AssessmentRenderer renderer = new AssessmentRenderer();
+            renderer.setQtiWorksProperties(qtiWorksProperties);
             renderer.setJsr303Validator(validator);
             renderer.setJqtiExtensionManager(jqtiExtensionManager);
             renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
