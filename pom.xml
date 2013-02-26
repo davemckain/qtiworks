@@ -22,7 +22,6 @@ All Rights Reserved
     <module>qtiworks-samples</module>
     <module>qtiworks-engine</module>
     <module>qtiworks-engine-manager</module>
-    <module>qtiworks-unrefactored</module>
   </modules>
   <properties>
     <asciimath-parser.version>1.0</asciimath-parser.version>
