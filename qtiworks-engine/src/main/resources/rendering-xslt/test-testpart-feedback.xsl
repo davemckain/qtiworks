@@ -16,6 +16,7 @@ Renders the test(Part) feedback
 
   <!-- ************************************************************ -->
 
+  <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>

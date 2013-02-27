@@ -410,13 +410,6 @@ rendering.
     <xsl:copy-of select="."/>
   </xsl:template>
 
-  <!-- Catch-all for QTI elements not handled elsewhere. -->
-  <xsl:template match="qti:*" priority="-10">
-    <xsl:message terminate="yes">
-      QTI element <xsl:value-of select="local-name()"/> was not handled by a template
-    </xsl:message>
-  </xsl:template>
-
   <!-- ************************************************************ -->
 
   <xsl:template match="qw:itemSessionState" mode="item-status">

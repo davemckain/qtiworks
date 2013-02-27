@@ -16,6 +16,8 @@ Renders a standalone assessmentItem
 
   <!-- ************************************************************ -->
 
+  <xsl:import href="qti-fallback.xsl"/>
+  <xsl:import href="item-common.xsl"/>
   <xsl:import href="item-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
@@ -477,6 +479,5 @@ Renders a standalone assessmentItem
       </xsl:for-each>
     </ul>
   </xsl:template>
-
 
 </xsl:stylesheet>

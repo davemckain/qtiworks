@@ -122,10 +122,10 @@ import org.springframework.web.multipart.MultipartFile;
  * - testPart "atEnd" feedback
  * - test "atEnd" feedback only (when single testPart only)
  * - solutions
+ * - test / test part "during" feedback
  *
  * STILL TO DO:
  * - test part "atEnd" feedback
- * - test / test part "during" feedback
  * - multiple testParts
  * - branchRule
  * - preCondition

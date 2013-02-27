@@ -46,7 +46,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class TestItemRenderingTest {
 
     public static void main(final String[] args) {
-        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/simple-nonlinear-individual.xml");
+        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-testFeedback.xml");
         final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/addition-feedback.xml");
 
         System.out.println("Reading");
