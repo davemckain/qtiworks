@@ -309,7 +309,7 @@ public enum Shape implements Stringifiable {
 
     private Shape(final String shape) {
         this.shape = shape;
-    };
+    }
 
     /**
      * Validates coords attribute.

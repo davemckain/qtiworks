@@ -135,7 +135,7 @@ public enum ToleranceMode implements Stringifiable {
 
     private ToleranceMode(final String toleranceMode) {
         this.toleranceMode = toleranceMode;
-    };
+    }
 
     /**
      * Returns true if given numbers are equal; false otherwise.

@@ -174,13 +174,11 @@ public class CandidateTestDeliveryService {
     /**
      * Looks up the {@link CandidateSession} having the given ID (xid)
      * and checks the given sessionToken against that stored in the session as a means of
-     * "authentication" and that
+     * "authentication".
      *
      * @param xid
-     * @return
      * @throws DomainEntityNotFoundException
      * @throws CandidateForbiddenException
-     * @throws CandidateCandidatePrivilegeException
      */
     public CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {

@@ -56,7 +56,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = 5952861432197925478L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(1.0 / Math.cos(arguments[0]));
         }
     }),
@@ -65,7 +65,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = 2211612606822387935L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(1.0 / Math.sin(arguments[0]));
         }
     }),
@@ -74,7 +74,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = -7829778905281551485L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(1.0 / Math.tan(arguments[0]));
         }
     }),
@@ -86,16 +86,16 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = -8627119856230662538L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(Math.atan2(arguments[0], arguments[1]));
-        };
+        }
     }),
     ASEC("asec", 1, new MathOperatorEvaluator() {
 
         private static final long serialVersionUID = 810517144482158120L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(Math.acos(1.0 / arguments[0]));
         }
     }),
@@ -104,7 +104,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = 26830091793676045L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(Math.asin(1.0 / arguments[0]));
         }
     }),
@@ -113,7 +113,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = -8608437044005964279L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(Math.atan(1.0 / arguments[0]));
         }
     }),
@@ -125,7 +125,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = -2842606985174060779L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(1.0 / Math.cosh(arguments[0]));
         }
     }),
@@ -134,7 +134,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = 6866168553708026037L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(1.0 / Math.sinh(arguments[0]));
         }
     }),
@@ -143,7 +143,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = 2969228173093469241L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(1.0 / Math.tanh(arguments[0]));
         }
     }),
@@ -159,7 +159,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = -2561656693154640426L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(arguments[0] * 180.0 / Math.PI);
         }
     }),
@@ -168,7 +168,7 @@ enum MathOperatorTarget implements Stringifiable {
         private static final long serialVersionUID = -5278220909027742114L;
 
         @Override
-        public Value evaluate(double[] arguments) {
+        public Value evaluate(final double[] arguments) {
             return new FloatValue(arguments[0] * Math.PI / 180.0);
         }
     })
@@ -212,7 +212,7 @@ enum MathOperatorTarget implements Stringifiable {
         return name;
     }
 
-    public static MathOperatorTarget parseOperation(String name) {
+    public static MathOperatorTarget parseOperation(final String name) {
         final MathOperatorTarget result = operations.get(name);
         if (result == null) {
             throw new QtiParseException("Invalid mathOperator " + name);

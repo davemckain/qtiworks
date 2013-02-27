@@ -169,7 +169,6 @@ public class AssessmentPackageFileService {
      * For the bundled samples, this will be a ClassPath URI
      *
      * @param assessmentPackage
-     * @return
      */
     public URI createAssessmentObjectUri(final AssessmentPackage assessmentPackage) {
         return createAssessmentFileUri(assessmentPackage, assessmentPackage.getAssessmentHref());
@@ -188,7 +187,6 @@ public class AssessmentPackageFileService {
      * (NOTE: This does not check the existence of the resulting resource)
      *
      * @param assessmentPackage
-     * @return
      */
     public URI createAssessmentFileUri(final AssessmentPackage assessmentPackage, final String fileHref) {
         URI result;
@@ -208,7 +206,6 @@ public class AssessmentPackageFileService {
      * Streams the source of the given {@link AssessmentPackage} to the required {@link OutputStreamer}
      *
      * @param assessmentPackage
-     * @return
      */
     public void streamAssessmentPackageSource(final AssessmentPackage assessmentPackage,
             final OutputStreamer outputStreamer)
@@ -224,7 +221,6 @@ public class AssessmentPackageFileService {
      * in advance.)
      *
      * @param assessmentPackage
-     * @return
      */
     public void streamAssessmentPackageFile(final AssessmentPackage assessmentPackage,
             final String fileHref, final OutputStreamer outputStreamer)

@@ -159,10 +159,9 @@ public class CandidateItemDeliveryService {
      * "authentication".
      *
      * @param xid
-     * @return
+     *
      * @throws DomainEntityNotFoundException
      * @throws CandidateForbiddenException
-     * @throws CandidateCandidatePrivilegeException
      */
     public CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
