@@ -78,18 +78,6 @@ NB: This is used both while being presented, and during review.
           <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}"/>
         </xsl:if>
 
-        <!-- Timer setup (requires controls to be displayed) -->
-        <!-- HAS NOT BEEN PORTED OVER YET
-        <xsl:if test="$displayControls and $timeRemaining >= 0">
-          <script src="{$webappContextPath}/Jscript/TimeLimit.js"/>
-          <script>
-            $(document).ready(function() {
-              initTimer('<xsl:value-of select="$timeRemaining"/>');
-            });
-          </script>
-        </xsl:if>
-        -->
-
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
         (It would be quite nice if we could allow each interaction to hook into this
