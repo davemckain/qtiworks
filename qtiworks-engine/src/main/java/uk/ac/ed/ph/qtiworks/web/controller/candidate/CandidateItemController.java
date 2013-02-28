@@ -107,9 +107,9 @@ public class CandidateItemController {
         renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
         renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
-        renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
+        renderingOptions.setEnterTestUrl("");
         renderingOptions.setSelectTestItemUrl("");
         renderingOptions.setFinishTestItemUrl("");
         renderingOptions.setEndTestPartUrl("");

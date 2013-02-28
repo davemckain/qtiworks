@@ -67,9 +67,10 @@ public final class AssessmentTestExample {
         testSessionController.addNotificationListener(notificationLogListener);
 
         testSessionController.initialize();
-        System.out.println("Test state after init: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+        testSessionController.enterTest();
+        testSessionController.enterNextAvailableTestPart();
+        System.out.println("Test state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
-        testSessionController.startTest();
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
         testSessionController.selectItemNonlinear(firstItemRefNode.getKey());
         System.out.println("First item is " + firstItemRefNode);

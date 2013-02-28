@@ -69,10 +69,12 @@ public class TestItemRenderingTest {
             final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
             testSessionController.addNotificationListener(notificationLogListener);
 
-            System.out.println("\nInitialising");
+            System.out.println("\nInitialising and entering test and first part");
             testSessionController.initialize();
-            testSessionController.startTest();
-            System.out.println("Test session state after init: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+            testSessionController.enterTest();
+            System.out.println("First available testPart is " + testSessionController.getNextAvailableTestPart());
+            testSessionController.enterNextAvailableTestPart();
+            System.out.println("Test session state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
             /* Select first item */
             final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);

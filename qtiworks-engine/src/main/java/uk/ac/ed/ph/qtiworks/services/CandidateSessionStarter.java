@@ -288,11 +288,23 @@ public class CandidateSessionStarter {
         final TestSessionController testSessionController = candidateDataServices.createNewTestSessionStateAndController(delivery, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
-        /* Initialise state */
+        /* Initialise test state and enter test */
         testSessionController.initialize();
+        final int testPartCount = testSessionController.enterTest();
+        if (testPartCount==1) {
+            /* If there is only testPart, then enter this (if possible).
+             * (Note that this may cause the test to exit immediately if there is a failed
+             * PreCondition on this part.)
+             */
+            testSessionController.enterNextAvailableTestPart();
+        }
+        else {
+            /* Don't enter first testPart yet - we shall tell candidate that
+             * there are multiple parts and let them enter manually.
+             */
+        }
 
-        /* FIXME: Make further state transitions */
-        testSessionController.startTest();
+        /* FIXME: Decide how to enter test! */
 
         /* Create new session entity and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();
@@ -304,7 +316,7 @@ public class CandidateSessionStarter {
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.INIT, testSessionState, notificationRecorder);
+                CandidateTestEventType.ENTER_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()

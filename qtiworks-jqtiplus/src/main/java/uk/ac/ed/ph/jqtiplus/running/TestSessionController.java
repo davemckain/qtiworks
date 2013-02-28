@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -264,110 +265,142 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     //-------------------------------------------------------------------
-    // WORK IN PROGRESS - TEST CONTROL - SINGLE TEST PART ONLY
+    // WORK IN PROGRESS - TEST CONTROL
 
-    /**
-     * Temporary start method!
-     *
-     * (Only properly works for tests with 1 part.)
-     *
-     * Runs template processing on each item, selects the single part, then test is ready.
-     */
-    public void startTest() {
+    public int enterTest() {
+    	ensureTestNotEntered();
+
+    	logger.debug("Entering test");
+    	testSessionState.setEntered(true);
         testSessionState.setCurrentTestPartKey(null);
         testSessionState.setCurrentItemKey(null);
-        final TestPlan testPlan = testSessionState.getTestPlan();
-        final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
-        if (testPartNodes.size()!=1) {
-            fireRuntimeWarning(getSubjectTest(), "Support for multiple part tests is coming soon. We'll just run the first part for now.");
-        }
 
-        /* Enter first (assumed only) part */
-        enterNextTestPart();
+        return testSessionState.getTestPlan().getTestPartNodes().size();
+    }
+
+    private void ensureTestNotEntered() {
+    	if (testSessionState.isEntered()) {
+    		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => false");
+    	}
+    }
+
+    private void ensureInTest() {
+    	if (!testSessionState.isEntered()) {
+    		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => true");
+    	}
+    	if (testSessionState.isExited()) {
+    		throw new QtiCandidateStateException("Expected TestSessionState.isExited() => false");
+    	}
     }
 
     /**
-     * Checks whether there are any further TestParts
-     *
-     * FIXME: This needs to support {@link PreCondition}!
+     * Finds the {@link TestPlanNode} corresponding to the next available {@link TestPart},
+     * starting from the one after the current one (if a {@link TestPart} is already selected)
+     * or the first {@link TestPart} (if there is no current {@link TestPart}), applying
+     * {@link PreCondition}s along the way.
      */
-    public boolean hasMoreTestParts() {
+    public TestPlanNode getNextAvailableTestPart() {
+    	ensureInTest();
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
 
+        /* Find next unvisited testPart index */
         final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
-        boolean hasMoreTestParts;
+        int nextTestPartIndex;
         if (currentTestPartNode==null) {
-            /* Haven't started yet */
-            hasMoreTestParts = !testPartNodes.isEmpty();
+            /* Haven't entered any testPart yet */
+            nextTestPartIndex = 0;
         }
         else {
-            final int currentTestPartIndex = currentTestPartNode.getSiblingIndex();
-            hasMoreTestParts = currentTestPartIndex < testPartNodes.size()-1;
+        	nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
         }
-        return hasMoreTestParts;
+
+        /* Now locate the first of these for which any preConditions are satisfied */
+        TestPlanNode nextAvailableTestPartNode = null;
+        int searchIndex=nextTestPartIndex;
+        for (; searchIndex<testPartNodes.size(); searchIndex++) {
+        	final TestPlanNode testPlanNode = testPartNodes.get(searchIndex);
+        	final TestPart testPart = ensureTestPart(testPlanNode);
+        	if (testPart.arePreConditionsMet(this)) {
+        		nextAvailableTestPartNode = testPlanNode;
+        		break;
+        	}
+        }
+        return nextAvailableTestPartNode;
     }
 
     /**
      * Exits the current {@link TestPart} (if selected), then advances to the next
-     * {@link TestPart} in the {@link TestPlan}, updating the {@link TestSessionState}
-     * as appropriate.
-     *
-     * FIXME: This needs to support {@link PreCondition}!
+     * available {@link TestPart} in the {@link TestPlan}, taking into account any {@link PreCondition}s.
+     * If there are no further available {@link TestPart}s, then the test will be exited.
+     * <p>
+     * If the newly-presented {@link TestPart} has {@link NavigationMode#LINEAR} then we will
+     * attempt to select the first item.
      */
-    public TestPlanNode enterNextTestPart() {
-        /* Exit current testPart (if appropriate) */
+    public TestPlanNode enterNextAvailableTestPart() {
+    	ensureInTest();
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
+
+        /* Exit current testPart (if appropriate) and locate next testPart */
         final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
+        int nextTestPartIndex;
         if (currentTestPartNode!=null) {
             final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
-            if (!currentTestPartSessionState.isEnded()) {
-                throw new IllegalStateException("Current TestPart has not been ended");
-            }
             currentTestPartSessionState.setExited(true);
+            nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
         }
+        else {
+        	nextTestPartIndex = 0;
+        }
+
+        /* Work from next testPart onwards, applying preConditions until successful (or we run out of testParts) */
+        TestPlanNode nextAvailableTestPartNode = null;
+        int searchIndex=nextTestPartIndex;
+        for (; searchIndex<testPartNodes.size(); searchIndex++) {
+        	final TestPlanNode testPlanNode = testPartNodes.get(searchIndex);
+        	final TestPart testPart = ensureTestPart(testPlanNode);
+        	if (testPart.arePreConditionsMet(this)) {
+        		nextAvailableTestPartNode = testPlanNode;
+        		break;
+        	}
+        	else {
+        		/* Record failed preCondition */
+        		ensureTestPartSessionState(testPlanNode).setPreConditionFailed(true);
+        	}
+        }
+
+        /* Clear current part/item */
         testSessionState.setCurrentTestPartKey(null);
         testSessionState.setCurrentItemKey(null);
 
-        /* Find next available testPart */
-        final TestPlan testPlan = testSessionState.getTestPlan();
-        final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
-        final TestPlanNode nextTestPartNode;
-        if (currentTestPartNode==null) {
-            /* Nothing selected yet, so pick first part if available */
-            nextTestPartNode = !testPartNodes.isEmpty() ? testPartNodes.get(0) : null;
-        }
-        else {
-            /* Pick next available part */
-            final int currentSiblingIndex = currentTestPartNode.getSiblingIndex();
-            nextTestPartNode = currentSiblingIndex+1 < testPartNodes.size() ? testPartNodes.get(currentSiblingIndex + 1) : null;
-        }
-
-        if (nextTestPartNode==null) {
+        /* Exit test if no more testParts are available */
+        if (nextAvailableTestPartNode==null) {
             logger.debug("No more testParts available, so exiting test");
             testSessionState.setExited(true);
             return null;
         }
 
-        /* Initialise testPart and mark it as presented */
-        logger.debug("Starting testPart {}", nextTestPartNode.getKey());
-        testSessionState.setCurrentTestPartKey(nextTestPartNode.getKey());
-        final TestPartSessionState nextTestPartSessionState = ensureTestPartSessionState(nextTestPartNode);
-        nextTestPartSessionState.setPresented(true);
+        /* Enter next testPart and mark as presented */
+        logger.debug("Entering testPart {} and running template processing on each item", nextAvailableTestPartNode);
+        final TestPartSessionState nextTestPartSessionState = ensureTestPartSessionState(nextAvailableTestPartNode);
+        testSessionState.setCurrentTestPartKey(nextAvailableTestPartNode.getKey());
+        nextTestPartSessionState.setEntered(true);
 
         /* Perform template processing on each item */
-        logger.debug("Performing template processing on each item in selected testPart {}", nextTestPartNode.getKey());
-        final List<TestPlanNode> itemRefNodes = nextTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+        final List<TestPlanNode> itemRefNodes = nextAvailableTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
         for (final TestPlanNode itemRefNode : itemRefNodes) {
             performTemplateProcessing(itemRefNode);
         }
 
         /* If linear navigation, select the first item (if possible) */
-        final TestPart nextTestPart = ensureTestPart(nextTestPartNode);
+        final TestPart nextTestPart = ensureTestPart(nextAvailableTestPartNode);
         if (nextTestPart.getNavigationMode()==NavigationMode.LINEAR) {
+        	logger.debug("Auto-selecting first item in testPart as we are in LINEAR mode");
             selectNextItemOrEndTestPart();
         }
 
-        return nextTestPartNode;
+        return nextAvailableTestPartNode;
     }
 
     /**

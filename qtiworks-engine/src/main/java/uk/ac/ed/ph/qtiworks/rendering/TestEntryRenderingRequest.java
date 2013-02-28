@@ -31,24 +31,35 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.exception;
+package uk.ac.ed.ph.qtiworks.rendering;
+
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+
+import javax.validation.constraints.NotNull;
 
 /**
- * Exception used to denote a logic failure or unexpected internal condition.
- * <p>
- * This should NOT be used for an error with bad client data.
+ * Request for rendering the entry page in an {@link AssessmentTest}
+ * having more than one {@link TestPart}.
  *
  * @author David McKain
  */
-public class QtiLogicException extends JqtiRuntimeException {
+public final class TestEntryRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
 
-    private static final long serialVersionUID = -6501850546437845744L;
+    /** Required {@link TestSessionState} to be rendered */
+    @NotNull
+    private TestSessionState testSessionState;
 
-    public QtiLogicException(final String message) {
-        super(message);
+    //----------------------------------------------------
+
+    @Override
+    public TestSessionState getTestSessionState() {
+        return testSessionState;
     }
 
-    public QtiLogicException(final String message, final Throwable cause) {
-        super(message, cause);
+    public void setTestSessionState(final TestSessionState testSessionState) {
+        this.testSessionState = testSessionState;
     }
+
 }

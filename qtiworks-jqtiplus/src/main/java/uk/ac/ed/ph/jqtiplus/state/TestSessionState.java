@@ -71,6 +71,7 @@ public final class TestSessionState implements Serializable {
     private final Map<TestPlanNodeKey, TestPartSessionState> testPartSessionStates;
     private final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates;
 
+    private boolean entered;
     private boolean exited;
     private TestPlanNodeKey currentTestPartKey;
     private TestPlanNodeKey currentItemKey;
@@ -101,12 +102,13 @@ public final class TestSessionState implements Serializable {
     //----------------------------------------------------------------
 
     public void reset() {
+        this.entered = false;
+        this.exited = false;
+        this.currentTestPartKey = null;
+        this.currentItemKey = null;
         this.outcomeValues.clear();
         this.testPartSessionStates.clear();
         this.itemSessionStates.clear();
-        this.currentTestPartKey = null;
-        this.currentItemKey = null;
-        this.exited = false;
         resetBuiltinVariables();
     }
 
@@ -116,11 +118,20 @@ public final class TestSessionState implements Serializable {
 
     //----------------------------------------------------------------
 
+    public boolean isEntered() {
+		return entered;
+	}
+
+	public void setEntered(final boolean entered) {
+		this.entered = entered;
+	}
+
+
     public boolean isExited() {
         return exited;
     }
 
-    public void setExited(final boolean exited) {
+	public void setExited(final boolean exited) {
         this.exited = exited;
     }
 
@@ -231,6 +242,7 @@ public final class TestSessionState implements Serializable {
 
         final TestSessionState other = (TestSessionState) obj;
         return testPlan.equals(other.testPlan)
+        		&& entered==other.entered
                 && exited==other.exited
                 && currentTestPartKey.equals(other.currentTestPartKey)
                 && currentItemKey.equals(other.currentItemKey)
@@ -244,6 +256,7 @@ public final class TestSessionState implements Serializable {
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
                 testPlan,
+                entered,
                 exited,
                 currentTestPartKey,
                 currentItemKey,
@@ -258,6 +271,7 @@ public final class TestSessionState implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testPlan=" + testPlan
+                + ",entered=" + entered
                 + ",exited=" + exited
                 + ",currentTestPartKey=" + currentTestPartKey
                 + ",currentItemKey=" + currentItemKey

@@ -42,6 +42,8 @@ import javax.validation.constraints.NotNull;
 /**
  * Encapsulates general options for passing to the {@link AssessmentRenderer}.
  *
+ * FIXME: Split item- & test-specific options
+ *
  * @author David McKain
  */
 public final class RenderingOptions implements Serializable {
@@ -77,9 +79,6 @@ public final class RenderingOptions implements Serializable {
     private String sourceUrl;
 
     @NotNull
-    private String playbackUrlBase;
-
-    @NotNull
     private String terminateUrl;
 
     @NotNull
@@ -87,6 +86,9 @@ public final class RenderingOptions implements Serializable {
 
     //----------------------------------------------
     // Test-specific control URLs
+
+    @NotNull
+    private String enterTestUrl;
 
     @NotNull
     private String selectTestItemUrl;
@@ -196,15 +198,6 @@ public final class RenderingOptions implements Serializable {
     }
 
 
-    public String getPlaybackUrlBase() {
-        return playbackUrlBase;
-    }
-
-    public void setPlaybackUrlBase(final String playbackUrlBase) {
-        this.playbackUrlBase = playbackUrlBase;
-    }
-
-
     public String getTerminateUrl() {
         return terminateUrl;
     }
@@ -220,6 +213,15 @@ public final class RenderingOptions implements Serializable {
 
     public void setServeFileUrl(final String serveFileUrl) {
         this.serveFileUrl = serveFileUrl;
+    }
+
+
+    public String getEnterTestUrl() {
+        return enterTestUrl;
+    }
+
+    public void setEnterTestUrl(final String enterTestUrl) {
+        this.enterTestUrl = enterTestUrl;
     }
 
 

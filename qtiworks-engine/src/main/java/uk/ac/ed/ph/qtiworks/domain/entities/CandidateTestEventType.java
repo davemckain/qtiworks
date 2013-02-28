@@ -44,13 +44,18 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
  */
 public enum CandidateTestEventType {
 
+    /* NB: Observe maximum length for mapped column set in CandidateEvent */
+
     /** Test session initialized */
-    INIT,
+    ENTER_TEST,
+
+    /** Enter first {@link TestPart} (in tests having more than one {@link TestPart}) */
+    FIRST_TEST_PART,
 
     /** Presentation of navigation menu for the current {@link TestPart} */
     SELECT_MENU,
 
-    /** Ends the current {@link TestPart} */
+    /** Ends the current {@link TestPart} and moves it into review state */
     END_TEST_PART,
 
     /** Exits the current {@link TestPart} and either goes to the next, or completes the test */
@@ -65,7 +70,7 @@ public enum CandidateTestEventType {
     /** Item Event within the currently-selected item */
     ITEM_EVENT,
 
-    /** Test Part Review */
+    /** Return to Test Part review (while already in review state, i.e. after {@link #REVIEW_ITEM} */
     REVIEW_TEST_PART,
 
     /** Review of a particular item */

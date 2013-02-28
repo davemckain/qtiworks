@@ -36,13 +36,14 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 import uk.ac.ed.ph.jqtiplus.group.test.BranchRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.ItemSessionControlGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.PreConditionGroup;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
 
 /**
- * Abstract super class for test part and section part.
+ * Abstract super class for {@link TestPart} and {@link SectionPart}.
  * <p>
  * NB: This is not explicitly defined in the QTI specification, but is convenient here.
  *
@@ -78,11 +79,10 @@ public abstract class AbstractPart extends UniqueControlObject {
     }
 
     /**
-     * Gets parent test part of this part (returns itself if this part is instance of test part).
-     *
-     * @return parent test part of this part (returns itself if this part is instance of test part)
+     * Returns the {@link TestPart} enclosing this {@link AbstractJump}
+     * (returns itself if this part is instance of test part).
      */
-    public TestPart getParentTestPart() {
+    public TestPart getEnclosingTestPart() {
         return getNearestAncestorOrSelf(TestPart.class);
     }
 
@@ -103,6 +103,21 @@ public abstract class AbstractPart extends UniqueControlObject {
     }
 
     /**
+     * Checks whether all {@link PreCondition}s are met, using the given {@link TestProcessingContext}
+     * to evaluate them.
+     *
+     * @return false if any {@link PreCondition} fails to be met, true otherwise.
+     */
+    public boolean arePreConditionsMet(final TestProcessingContext testProcessingContext) {
+      	for (final PreCondition preCondition : getPreConditions()) {
+    		if (!preCondition.evaluatesTrue(testProcessingContext)) {
+    			return false;
+    		}
+    	}
+      	return true;
+    }
+
+    /**
      * Returns true if it is safe to jump from this object; false otherwise.
      * <p>
      * It is not safe to jump from shuffled not fixed object (or if any parent is shuffled and not fixed), because object could be moved after jump target (it
@@ -111,6 +126,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      * @return true if it is safe to jump from this object; false otherwise
      */
     @ToRefactor
+    @Deprecated
     public boolean isJumpSafeSource() {
         return true;
     }
@@ -127,6 +143,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      * @return true if this object is safe target of jump; false otherwise
      */
     @ToRefactor
+    @Deprecated
     public boolean isJumpSafeTarget() {
         return true;
     }

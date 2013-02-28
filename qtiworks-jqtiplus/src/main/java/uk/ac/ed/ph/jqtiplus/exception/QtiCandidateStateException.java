@@ -34,21 +34,20 @@
 package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * Exception used to denote a logic failure or unexpected internal condition.
- * <p>
- * This should NOT be used for an error with bad client data.
+ * Exception thrown when attempting to perform an illegal state change
+ * on a candidate session.
  *
  * @author David McKain
  */
-public class QtiLogicException extends JqtiRuntimeException {
+public final class QtiCandidateStateException extends JqtiRuntimeException {
 
-    private static final long serialVersionUID = -6501850546437845744L;
+    private static final long serialVersionUID = 2924118614829800754L;
 
-    public QtiLogicException(final String message) {
+	public QtiCandidateStateException(final String message) {
         super(message);
     }
 
-    public QtiLogicException(final String message, final Throwable cause) {
+    public QtiCandidateStateException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

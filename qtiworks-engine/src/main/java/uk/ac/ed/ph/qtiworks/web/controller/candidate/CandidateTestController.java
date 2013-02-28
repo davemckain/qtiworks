@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
@@ -110,9 +111,9 @@ public class CandidateTestController {
         renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
         renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
-        renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
+        renderingOptions.setEnterTestUrl(sessionBaseUrl + "/enter-test");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");
         renderingOptions.setSelectTestItemUrl(sessionBaseUrl + "/select-item");
         renderingOptions.setFinishTestItemUrl(sessionBaseUrl + "/finish-item");
@@ -209,6 +210,18 @@ public class CandidateTestController {
     // Test navigation and lifecycle
 
     /**
+     * Enters the first {@link TestPart} (when in a multi-part {@link AssessmentTest})
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/enter-test", method=RequestMethod.POST)
+    public String enterFirstTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        candidateTestDeliveryService.enterFirstTestPart(xid, sessionToken);
+
+        /* Redirect to rendering of current session state */
+        return redirectToRenderSession(xid, sessionToken);
+    }
+
+    /**
      * Selects the navigaton menu for the current test part
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/test-part-navigation", method=RequestMethod.POST)
@@ -292,16 +305,23 @@ public class CandidateTestController {
 
 
     /**
-     * Exits the current {@link TestPart}
+     * Exits the current {@link TestPart}, which may or may not exit the {@link AssessmentTest} itself.
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/exit-test-part", method=RequestMethod.POST)
     public String exitCurrentTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         final CandidateSession candidateSession = candidateTestDeliveryService.exitCurrentTestPart(xid, sessionToken);
-
-        String redirect = redirectToExitUrl(candidateSession.getExitUrl());
-        if (redirect==null) {
-            /* No/unsafe redirect specified, so get the rendered to generate an "assessment is complete" page */
+        String redirect;
+        if (candidateSession.isTerminated()) {
+            /* We exited the test */
+            redirect = redirectToExitUrl(candidateSession.getExitUrl());
+            if (redirect==null) {
+                /* No/unsafe redirect specified, so get the rendered to generate an "assessment is complete" page */
+                redirect = redirectToRenderSession(xid, sessionToken);
+            }
+        }
+        else {
+            /* Moved onto next part */
             redirect = redirectToRenderSession(xid, sessionToken);
         }
         return redirect;
