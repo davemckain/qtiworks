@@ -12,6 +12,15 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV25 [Development] (28/02/2013)</h3>
+  <p>
+    This snapshot includes a large number of behind-the-scenes changes to make QTIWorks easier to install and manage.
+    It also includes a number of minor fixes, but no real functional changes.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-M3 [Production] (14/02/2013)</h3>
   <p>
     Third production milestone, equivalent to the 1.0-DEV24 development snapshot.
