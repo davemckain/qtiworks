@@ -27,45 +27,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services;
+package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
+import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 
 import java.util.Date;
+import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 /**
- * Houses all scheduled tasks performed within the system
+ * Purges all anonymous data from the system
  *
  * @author David McKain
  */
-@Service
-@EnableScheduling
-@Profile(QtiWorksProfiles.WEBAPP)
-public class ScheduledServices {
+public final class PurgeAnonymousDataAction extends ManagerAction {
 
-    public static final int ANONYMOUS_USER_KEEP_HOURS = 24;
+	private static final Logger logger = LoggerFactory.getLogger(PurgeAnonymousDataAction.class);
 
-    @Resource
-    private DataDeletionService dataDeletionService;
+	@Override
+	public String getActionSummary() {
+		return "Purges anonymous users and transient candidate session data from the system";
+	}
 
-    /**
-     * Purges all anonymous users and transient deliveries that were created more than
-     * {@link #ANONYMOUS_USER_KEEP_HOURS} hours ago. All associated data is removed.
-     */
-    @Scheduled(fixedRate=1000L * 60 * 60)
-    public void purgeAnonymousData() {
-        final Date creationTimeThreshold = new Date(System.currentTimeMillis() - ANONYMOUS_USER_KEEP_HOURS * 60 * 60 * 1000);
-        dataDeletionService.purgeAnonymousData(creationTimeThreshold);
+	@Override
+	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+	    final DataDeletionService dataDeletionService = applicationContext.getBean(DataDeletionService.class);
+	    dataDeletionService.purgeAnonymousData(new Date());
+		logger.info("Purged anonymous data from the system");
     }
 }

@@ -258,4 +258,20 @@ public class DataDeletionService {
         }
         return deleted;
     }
+
+    /**
+     * Convenience method that calls both {@link #deleteAnonymousUsers(Date)} and
+     * {@link #deleteTransientDeliveries(Date)} to purge all anonymous users and transient
+     * deliveries that were created before the given time, removing all associated data is removed.
+     */
+    public void purgeAnonymousData(final Date creationTimeThreshold) {
+        final int usersDeleted = deleteAnonymousUsers(creationTimeThreshold);
+        if (usersDeleted > 0) {
+            logger.info("Purged {} anonymous users from the system", usersDeleted);
+        }
+        final int transientDeliveriesDeleted = deleteTransientDeliveries(creationTimeThreshold);
+        if (transientDeliveriesDeleted > 0) {
+            logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
+        }
+    }
 }

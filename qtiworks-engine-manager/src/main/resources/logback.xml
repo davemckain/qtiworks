@@ -16,6 +16,7 @@ if you prefer. See the documentation.
   </appender>
 
   <logger name="uk.ac.ed.ph.qtiworks.manager" level="info"/>
+  <logger name="uk.ac.ed.ph.qtiworks.services.DataDeletionService" level="info"/>
 
   <!-- Root logger -->
   <root level="warn">
