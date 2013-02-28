@@ -70,7 +70,7 @@ public abstract class ManagerAction {
 	 * Perform any action-specific validation on the user-provided parameters.
 	 * Return null on success, otherwise an error message.
 	 */
-	public String validateParameters(final List<String> parameters) {
+	public String validateParameters(@SuppressWarnings("unused") final List<String> parameters) {
 		return null;
 	}
 

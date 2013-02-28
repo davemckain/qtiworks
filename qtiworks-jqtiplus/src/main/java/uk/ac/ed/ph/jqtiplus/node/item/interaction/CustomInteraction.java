@@ -108,8 +108,7 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
     }
 
     @Override
-    protected final Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData)
-            throws ResponseBindingException {
+    protected final Value parseResponse(final ResponseDeclaration responseDeclaration, final ResponseData responseData) {
         /* This is not used in its current form here */
         throw new QtiLogicException("This method should not be overridden");
     }

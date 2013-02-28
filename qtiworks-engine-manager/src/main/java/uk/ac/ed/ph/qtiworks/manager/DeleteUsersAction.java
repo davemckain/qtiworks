@@ -36,8 +36,6 @@ package uk.ac.ed.ph.qtiworks.manager;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -72,8 +70,7 @@ public final class DeleteUsersAction extends ManagerAction {
 	}
 
 	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters)
-			throws UnsupportedEncodingException, FileNotFoundException {
+	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
 		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
 		int deletedCount = 0;
 		for (final String param : parameters) {

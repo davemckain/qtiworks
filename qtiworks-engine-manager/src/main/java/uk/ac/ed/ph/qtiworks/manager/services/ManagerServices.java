@@ -202,29 +202,25 @@ public class ManagerServices {
 
     public boolean findAndDeleteUser(final String loginNameOrUid) {
 		final User user = findUserByLoginNameOrUid(loginNameOrUid);
-		if (user!=null) {
-			logger.info("Deleting user {}", user);
-			dataDeletionService.deleteUser(user);
-			return true;
+		if (user==null) {
+		    logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
+            return false;
 		}
-		else {
-			logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
-			return false;
-		}
+		logger.info("Deleting user {}", user);
+		dataDeletionService.deleteUser(user);
+		return true;
     }
 
     public boolean findAndResetUser(final String loginNameOrUid) {
 		/* Try to look up by loginName first */
 		final User user = findUserByLoginNameOrUid(loginNameOrUid);
-		if (user!=null) {
-			logger.info("Resetting user {}", user);
-			dataDeletionService.resetUser(user);
-			return true;
+		if (user==null) {
+	        logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
+            return false;
 		}
-		else {
-			logger.warn("Could not find user having loginName or ID {}", loginNameOrUid);
-			return false;
-		}
+		logger.info("Resetting user {}", user);
+		dataDeletionService.resetUser(user);
+		return true;
     }
 
     private User findUserByLoginNameOrUid(final String loginNameOrUid) {
