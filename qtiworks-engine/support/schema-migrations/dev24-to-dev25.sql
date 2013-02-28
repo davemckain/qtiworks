@@ -1,17 +1,17 @@
 ALTER TABLE candidate_events DROP playback_xeid;
 ALTER TABLE item_delivery_settings DROP allow_playback;
 DELETE FROM candidate_events WHERE item_event_type = 'PLAYBACK';
--- Move sequences on to avoid Hibernate auto-generation collisions.
--- (Not sure why this is a problem now and not in DEV24...)
-SELECT setval('assessment_package_sequence', nextval('assessment_package_sequence') + 10000);
-SELECT setval('assessment_sequence', nextval('assessment_sequence') + 10000);
-SELECT setval('candidate_event_notification_sequence', nextval('candidate_event_notification_sequence') + 10000);
-SELECT setval('candidate_event_sequence', nextval('candidate_event_sequence') + 10000);
-SELECT setval('candidate_file_submission_sequence', nextval('candidate_file_submission_sequence') + 10000);
-SELECT setval('candidate_response_sequence', nextval('candidate_response_sequence') + 10000);
-SELECT setval('candidate_session_outcome_sequence', nextval('candidate_session_outcome_sequence') + 10000);
-SELECT setval('candidate_session_sequence', nextval('candidate_session_sequence') + 10000);
-SELECT setval('delivery_sequence', nextval('delivery_sequence') + 10000);
-SELECT setval('delivery_settings_sequence', nextval('delivery_settings_sequence') + 10000);
-SELECT setval('sample_category_sequence', nextval('sample_category_sequence') + 10000);
-SELECT setval('user_sequence', nextval('user_sequence') + 10000);
+-- The following should have been in M3. We need to keep sequence settings
+-- in sync with Java @SequenceGenerator annotations.
+ALTER SEQUENCE assessment_package_sequence START WITH 1 INCREMENT BY 10;
+ALTER SEQUENCE assessment_sequence START WITH 1 INCREMENT BY 10;
+ALTER SEQUENCE candidate_event_notification_sequence START WITH 1 INCREMENT BY 50;
+ALTER SEQUENCE candidate_event_sequence START WITH 1 INCREMENT BY 50;
+ALTER SEQUENCE candidate_file_submission_sequence START WITH 1 INCREMENT BY 50;
+ALTER SEQUENCE candidate_response_sequence START WITH 1 INCREMENT BY 50;
+ALTER SEQUENCE candidate_session_outcome_sequence START WITH 1 INCREMENT BY 50;
+ALTER SEQUENCE candidate_session_sequence START WITH 1 INCREMENT BY 50;
+ALTER SEQUENCE delivery_sequence START WITH 1 INCREMENT BY 5;
+ALTER SEQUENCE delivery_settings_sequence START WITH 1 INCREMENT BY 5;
+ALTER SEQUENCE sample_category_sequence START WITH 1 INCREMENT BY 10;
+ALTER SEQUENCE user_sequence START WITH 1000 INCREMENT BY 10;
