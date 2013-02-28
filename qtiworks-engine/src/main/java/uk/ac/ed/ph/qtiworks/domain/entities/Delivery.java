@@ -78,7 +78,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="deliveries")
-@SequenceGenerator(name="deliverySequence", sequenceName="delivery_sequence", initialValue=1, allocationSize=5)
+@SequenceGenerator(name="deliverySequence", sequenceName="delivery_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
     @NamedQuery(name="Delivery.getForAssessment",
             query="SELECT d"

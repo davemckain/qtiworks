@@ -67,7 +67,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="candidate_sessions")
-@SequenceGenerator(name="candidateSessionSequence", sequenceName="candidate_session_sequence", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="candidateSessionSequence", sequenceName="candidate_session_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
     @NamedQuery(name="CandidateSession.getForCandidate",
             query="SELECT x"

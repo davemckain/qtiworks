@@ -78,7 +78,7 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name="assessments")
-@SequenceGenerator(name="assessmentSequence", sequenceName="assessment_sequence", initialValue=1, allocationSize=10)
+@SequenceGenerator(name="assessmentSequence", sequenceName="assessment_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
     @NamedQuery(name="Assessment.getForOwner",
             query="SELECT a"

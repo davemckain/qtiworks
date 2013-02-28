@@ -66,7 +66,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="candidate_responses")
-@SequenceGenerator(name="candidateResponseSequence", sequenceName="candidate_response_sequence", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="candidateResponseSequence", sequenceName="candidate_response_sequence", initialValue=1, allocationSize=5)
 public class CandidateResponse implements BaseEntity {
 
     private static final long serialVersionUID = -4310598861282271053L;

@@ -56,7 +56,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="candidate_session_outcomes")
-@SequenceGenerator(name="candidateSessionOutcomeSequence", sequenceName="candidate_session_outcome_sequence", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="candidateSessionOutcomeSequence", sequenceName="candidate_session_outcome_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
     @NamedQuery(name="CandidateSessionOutcome.getForSession",
             query="SELECT xo"

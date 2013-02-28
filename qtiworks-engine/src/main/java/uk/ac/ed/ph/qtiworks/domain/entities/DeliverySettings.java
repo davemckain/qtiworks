@@ -74,7 +74,7 @@ import org.hibernate.annotations.Type;
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="delivery_settings")
-@SequenceGenerator(name="deliverySettingsSequence", sequenceName="delivery_settings_sequence", initialValue=1, allocationSize=5)
+@SequenceGenerator(name="deliverySettingsSequence", sequenceName="delivery_settings_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
     @NamedQuery(name="DeliverySettings.getAllPublicSettingsForType",
             query="SELECT ds"

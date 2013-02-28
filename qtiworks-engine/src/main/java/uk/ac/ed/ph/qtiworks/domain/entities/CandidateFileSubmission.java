@@ -59,7 +59,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="candidate_file_submissions")
-@SequenceGenerator(name="candidateFileSubmissionSequence", sequenceName="candidate_file_submission_sequence", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="candidateFileSubmissionSequence", sequenceName="candidate_file_submission_sequence", initialValue=1, allocationSize=1)
 public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -4310598861282271053L;

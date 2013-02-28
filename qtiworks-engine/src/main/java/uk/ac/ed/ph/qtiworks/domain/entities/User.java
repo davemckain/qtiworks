@@ -65,7 +65,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 @Table(name="users")
-@SequenceGenerator(name="userSequence", sequenceName="user_sequence", initialValue=1000, allocationSize=10)
+@SequenceGenerator(name="userSequence", sequenceName="user_sequence", initialValue=1000, allocationSize=1)
 public class User implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -4310598861282271053L;
