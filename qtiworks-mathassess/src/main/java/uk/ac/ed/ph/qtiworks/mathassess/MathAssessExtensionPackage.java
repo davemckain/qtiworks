@@ -37,6 +37,7 @@ import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_DEF
 import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_NAMESPACE_URI;
 import static uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants.MATHASSESS_SCHEMA_LOCATION;
 
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.MaximaLaunchHelper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 import uk.ac.ed.ph.qtiworks.mathassess.pooling.QtiMaximaProcessPoolManager;
 
@@ -51,8 +52,7 @@ import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 
-import uk.ac.ed.ph.jacomax.JacomaxConfigurationException;
-import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
+import uk.ac.ed.ph.jacomax.JacomaxRuntimeException;
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 import uk.ac.ed.ph.snuggletex.utilities.StylesheetCache;
 
@@ -167,8 +167,7 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
         return null;
     }
 
-
-    // ------------------------------------------------------------------------
+    //------------------------------------------------------------------------
 
     @Override
     public void lifecycleEvent(final Object source, final JqtiLifecycleEventType eventType) {
@@ -202,9 +201,12 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
     }
 
     private void startMaximaPool() {
+        final MaximaConfiguration maximaConfiguration = MaximaLaunchHelper.tryMaximaConfiguration();
+        if (maximaConfiguration==null) {
+            logger.warn("Failed to obtain a MaximaConfiguration. MathAssess extensions will not work and this package should NOT be used.");
+            return;
+        }
         try {
-            final MaximaConfiguration maximaConfiguration = JacomaxSimpleConfigurator.configure();
-
             qtiMaximaProcessPoolManager = new QtiMaximaProcessPoolManager();
             qtiMaximaProcessPoolManager.setMaximaConfiguration(maximaConfiguration);
             qtiMaximaProcessPoolManager.setStylesheetCache(snuggleStylesheetCache);
@@ -212,9 +214,9 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
 
             logger.info("MathAssessExtensionPackage successfully initiated using {} to handle communication with Maxima for MathAssess extensions", QtiMaximaProcessPoolManager.class.getSimpleName());
         }
-        catch (final JacomaxConfigurationException e) {
+        catch (final JacomaxRuntimeException e) {
             qtiMaximaProcessPoolManager = null;
-            logger.warn("Failed to obtain a MaximaConfiguration and/or {}. MathAssess extensions will not work and this package should NOT be used",
+            logger.warn("Failed to start the {}. MathAssess extensions will not work and this package should NOT be used",
                     QtiMaximaProcessPoolManager.class.getSimpleName());
         }
     }
@@ -222,7 +224,13 @@ public final class MathAssessExtensionPackage implements JqtiExtensionPackage<Ma
     private void closeMaximaPool() {
         if (qtiMaximaProcessPoolManager != null) {
             logger.info("Closing {}", qtiMaximaProcessPoolManager);
-            qtiMaximaProcessPoolManager.shutdown();
+            try {
+                qtiMaximaProcessPoolManager.shutdown();
+            }
+            catch (final JacomaxRuntimeException e) {
+                /* We'll log this but allow things to continue, as pool closure would normally happen on application exit */
+                logger.warn("Failed to close the {}.", QtiMaximaProcessPoolManager.class.getSimpleName());
+            }
         }
     }
 

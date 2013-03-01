@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.jacomax.JacomaxConfigurationException;
-import uk.ac.ed.ph.jacomax.JacomaxSimpleConfigurator;
 import uk.ac.ed.ph.jacomax.MaximaConfiguration;
 
 import org.junit.After;
@@ -54,7 +52,7 @@ public abstract class QtiMaximaSessionTestBase {
 
     private QtiMaximaProcessManager processManager;
     protected QtiMaximaProcess process;
-    
+
     @Before
     public void setup() {
         /* Use the JacomaxSimplerConfigurer to try to establish a working
@@ -63,22 +61,19 @@ public abstract class QtiMaximaSessionTestBase {
          * even if they don't have Maxima installed and/or don't plan to use
          * the MathAssess extensions.
          */
-        MaximaConfiguration maximaConfiguration = null;
-        try {
-            maximaConfiguration = JacomaxSimpleConfigurator.configure();
-        }
-        catch (JacomaxConfigurationException e) {
-            /* Configuration failed, so use JUnit's Assume class to skip */ 
+        final MaximaConfiguration maximaConfiguration = MaximaLaunchHelper.tryMaximaConfiguration();
+        if (maximaConfiguration==null) {
+            /* Configuration failed, so use JUnit's Assume class to skip */
             logger.warn("Failed to establish a Maxima configuration. Assuming Maxima is not installed and allowing test to succeed");
-            Assume.assumeNoException(e);
+            Assume.assumeNotNull(maximaConfiguration);
             return;
         }
-        
+
         /* Configuration was successful, so set up test */
         processManager = new SimpleQtiMaximaProcessManager(maximaConfiguration);
         process = processManager.obtainProcess();
     }
-    
+
     @After
     public void teardown() {
         if (process!=null && processManager!=null) {

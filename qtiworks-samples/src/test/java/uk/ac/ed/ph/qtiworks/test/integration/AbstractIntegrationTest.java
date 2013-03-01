@@ -33,7 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.test.integration;
 
+import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.MaximaLaunchHelper;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.test.utils.TestUtils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -57,9 +59,12 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for integration tests that run on a {@link QtiSampleAssessment}
@@ -68,65 +73,77 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public abstract class AbstractIntegrationTest {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractIntegrationTest.class);
+
     protected final QtiSampleAssessment qtiSampleAssessment;
     protected final URI sampleResourceUri;
     protected final ResourceLocator sampleResourceLocator;
     protected final QtiXmlReader sampleXmlReader;
     protected final JqtiExtensionManager jqtiExtensionManager;
-    
-    protected AbstractIntegrationTest(QtiSampleAssessment qtiSampleAssessment) {
+
+    protected AbstractIntegrationTest(final QtiSampleAssessment qtiSampleAssessment) {
+        this.jqtiExtensionManager = TestUtils.buildJqtiExtensionManager(qtiSampleAssessment);
         this.qtiSampleAssessment = qtiSampleAssessment;
         this.sampleResourceUri = qtiSampleAssessment.assessmentClassPathUri();
-        this.jqtiExtensionManager = TestUtils.getJqtiExtensionManager();
         this.sampleResourceLocator = new ClassPathResourceLocator();
         this.sampleXmlReader = new QtiXmlReader(jqtiExtensionManager);
     }
-    
+
     @Before
     public void before() {
+        /* If we required MathAssess extensions, check whether Maxima is available and
+         * skip the test if not. (This allows people to build the project successfully
+         * if they don't have Maxima or don't want the Maxima extensions.)
+         */
+        if (qtiSampleAssessment.hasFeature(Feature.REQUIRES_MATHASSES)) {
+            if (!MaximaLaunchHelper.isMaximaWorking()) {
+                /* Configuration failed, so use JUnit's Assume class to skip */
+                logger.warn("No working Maxima detected, so skipping this test as it requires the MathAssess extensions");
+                Assume.assumeTrue(false);
+                return;
+            }
+        }
         jqtiExtensionManager.init();
     }
-    
+
     @After
     public void after() {
-        if (jqtiExtensionManager!=null) {
-            jqtiExtensionManager.destroy();
-        }
+        jqtiExtensionManager.destroy();
     }
-    
+
     /* NB: This assumes all of our samples are UTF-8! */
     protected String readSampleXmlSource() throws IOException {
         return IOUtilities.readUnicodeStream(sampleResourceLocator.findResource(sampleResourceUri));
     }
-    
+
     protected XmlReadResult readSampleXml() throws Exception {
         return sampleXmlReader.read(sampleResourceUri, sampleResourceLocator, true);
     }
-    
+
     protected QtiObjectReader createSampleQtiObjectReader(final boolean schemaValidating) {
         return sampleXmlReader.createQtiObjectReader(sampleResourceLocator, schemaValidating);
     }
-    
+
     protected AssessmentObjectXmlLoader createSampleAssessmentXmlLoader() {
         return new AssessmentObjectXmlLoader(sampleXmlReader, sampleResourceLocator);
     }
-    
+
     protected AssessmentObjectValidationResult<?> validateSampleObject() {
         AssessmentObjectValidationResult<?> result = null;
         switch (qtiSampleAssessment.getType()) {
             case ASSESSMENT_ITEM:
                 result = createSampleAssessmentXmlLoader().loadResolveAndValidateItem(sampleResourceUri);
                 break;
-                
+
             case ASSESSMENT_TEST:
                 result = createSampleAssessmentXmlLoader().loadResolveAndValidateTest(sampleResourceUri);
                 break;
         }
         return result;
     }
-    
-    protected ItemSessionController createItemSessionController(boolean isValid) {
+
+    protected ItemSessionController createItemSessionController(final boolean isValid) {
         final ResolvedAssessmentItem resolvedAssessmentItem = createSampleAssessmentXmlLoader().loadAndResolveAssessmentItem(sampleResourceUri);
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
