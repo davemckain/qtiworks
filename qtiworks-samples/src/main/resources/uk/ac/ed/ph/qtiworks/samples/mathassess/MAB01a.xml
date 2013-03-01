@@ -1,379 +1,377 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess"
-	xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd 
- http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd"
-	xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="true" identifier="MAB01a"
-	timeDependent="false" title="Expand brackets in a(x+b)+cx and simplify - string input">
-	<!--
-		no template processing, textEntryInteraction and string match in
-		response processing
-	-->
-	<responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
-		<correctResponse>
-			<value>6x-10</value>
-		</correctResponse>
-	</responseDeclaration>
-	<responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
-	<responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST"/>
-	<outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="FEEDBACK"/>
-	<outcomeDeclaration baseType="identifier" cardinality="single" identifier="EMPTY"/>
-	<outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0"
-		normalMinimum="0.0">
-		<defaultValue>
-			<value>0.0</value>
-		</defaultValue>
-	</outcomeDeclaration>
-	<outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenSolution">
-		<defaultValue>
-			<value>false</value>
-		</defaultValue>
-	</outcomeDeclaration>
-	<outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenHint">
-		<defaultValue>
-			<value>false</value>
-		</defaultValue>
-	</outcomeDeclaration>
-	<outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKHINT">
-		<defaultValue>
-			<value>askhint</value>
-		</defaultValue>
-	</outcomeDeclaration>
-	<outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKSOLUTION">
-		<defaultValue>
-			<value>asksolution</value>
-		</defaultValue>
-	</outcomeDeclaration>
-	<!-- no template -->
-	<itemBody>
-		<!-- contains MathML -->
-		<p> Expand the brackets in &#160;&#160; <m:math display="block">
-				<m:semantics>
-					<m:mrow>
-						<m:mn>2</m:mn>
-						<m:mo>(</m:mo>
-						<m:mi>x</m:mi>
-						<m:mo>-</m:mo>
-						<m:mn>5</m:mn>
-						<m:mo>)</m:mo>
-						<m:mo>+</m:mo>
-						<m:mn>4</m:mn>
-						<m:mi>x</m:mi>
-					</m:mrow>
-					<m:annotation encoding="LaTeX">\[ 2(x-5)+4x\]</m:annotation>
-				</m:semantics>
-			</m:math> &#160;&#160;and simplify the result. (Please do not type spaces in your
-			answer.) </p>
-		<div>
-			<table>
-				<tbody>
-					<tr>
-						<td>
-							<textEntryInteraction expectedLength="20" responseIdentifier="RESPONSE"
-								label="mathInput"/>
-						</td>
-						<td>
-							<feedbackInline identifier="CORRECT" outcomeIdentifier="FEEDBACK"
-								showHide="show"> Correct </feedbackInline>
-							<feedbackInline identifier="CORRECT-ORD" outcomeIdentifier="FEEDBACK"
-								showHide="show"> Your answer is correct, but it would be more usual
-								to write it in the form &#160;&#160; <m:math display="block">
-									<m:semantics>
-										<m:mrow>
-											<m:mn>6</m:mn>
-											<m:mi>x</m:mi>
-											<m:mo>-</m:mo>
-											<m:mn>10</m:mn>
-										</m:mrow>
-										<m:annotation encoding="LaTeX">\[6x - 10\]</m:annotation>
-									</m:semantics>
-								</m:math>. </feedbackInline>
-							<feedbackInline identifier="NOT-SIMP" outcomeIdentifier="FEEDBACK"
-								showHide="show"> You have expanded the bracket correctly but failed
-								to simplify as the question asks. </feedbackInline>
-							<feedbackInline identifier="NOT-ALL-MULT" outcomeIdentifier="FEEDBACK"
-								showHide="show"> Remember that, when expanding brackets, all terms
-								inside must be multiplied by whatever is outside. However, you got
-								one term in the answer correct. </feedbackInline>
-							<feedbackInline identifier="WRONG-SIGN-CONSTANT"
-								outcomeIdentifier="FEEDBACK" showHide="show"> When expanding the
-								bracket the product of 2 and -5 is -10. However, you got one term in
-								the answer correct. </feedbackInline>
-							<feedbackInline identifier="INCORRECT" outcomeIdentifier="FEEDBACK"
-								showHide="show"> You should ask for tutor help on this question.
-							</feedbackInline>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
-			<div class="">
-				<m:math display="block" id="mathML7">
-					<m:semantics>
-						<m:mtable>
-							<m:mtr>
-								<m:mtd columnalign="right">
-									<m:mn>2</m:mn>
-									<m:mfenced close=")" open="(">
-										<m:mrow>
-											<m:mi>x</m:mi>
-											<m:mo>-</m:mo>
-											<m:mn>5</m:mn>
-										</m:mrow>
-									</m:mfenced>
-									<m:mo>+</m:mo>
-									<m:mn>4</m:mn>
-									<m:mi>x</m:mi>
-								</m:mtd>
-								<m:mtd columnalign="center">
-									<m:mo>=</m:mo>
-								</m:mtd>
-								<m:mtd columnalign="left">
-									<m:mn>2</m:mn>
-									<m:mo>×</m:mo>
-									<m:mi>x</m:mi>
-									<m:mo>-</m:mo>
-									<m:mn>2</m:mn>
-									<m:mo>×</m:mo>
-									<m:mn>5</m:mn>
-									<m:mo>+</m:mo>
-									<m:mn>4</m:mn>
-									<m:mo>×</m:mo>
-									<m:mi>x</m:mi>
-								</m:mtd>
-							</m:mtr>
-							<m:mtr>
-								<m:mtd columnalign="right"/>
-								<m:mtd columnalign="center">
-									<m:mo>=</m:mo>
-								</m:mtd>
-								<m:mtd columnalign="left">
-									<m:mn>6</m:mn>
-									<m:mi>x</m:mi>
-									<m:mo>-</m:mo>
-									<m:mn>10</m:mn>
-								</m:mtd>
-							</m:mtr>
-						</m:mtable>
-						<m:annotation encoding="SnuggleTeX">\begin{eqnarray*}2(x-5)+4x &amp;=&amp; 2
-							\times x - 2 \times 5 + 4 \times x\\&#13;&amp;=&amp; 6x -
-							10\end{eqnarray*}</m:annotation>
-					</m:semantics>
-				</m:math>
-			</div>
-		</feedbackBlock>
-		<feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show">
-			<p>Expand the bracket and collect like terms.</p>
-		</feedbackBlock>
-		<feedbackBlock identifier="SEEN-SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
-			<p> Since you have viewed the solution, your score for this question will be 0. </p>
-		</feedbackBlock>
-		<feedbackBlock identifier="SEEN-HINT" outcomeIdentifier="FEEDBACK" showHide="show">
-			<p> Since you have viewed the hint, your score for this question will be halved. </p>
-		</feedbackBlock>
-		<feedbackBlock identifier="askhint" outcomeIdentifier="ASKHINT" showHide="show">
-			<p>
-				<endAttemptInteraction id="endAttemptInteraction1" responseIdentifier="HINTREQUEST"
-					title="Show Hint"/>
-			</p>
-		</feedbackBlock>
-		<feedbackBlock identifier="asksolution" outcomeIdentifier="ASKSOLUTION" showHide="show">
-			<p>
-				<endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="SOLREQUEST"
-					title="Show Solution"/>
-			</p>
-		</feedbackBlock>
-	</itemBody>
-	<responseProcessing>
-		<!-- basic string match, includes feedback on specific errors -->
-		<setOutcomeValue identifier="FEEDBACK">
-			<multiple>
-				<variable identifier="EMPTY"/>
-			</multiple>
-		</setOutcomeValue>
-		<responseCondition>
-			<responseIf>
-				<variable identifier="HINTREQUEST"/>
-				<setOutcomeValue identifier="FEEDBACK">
-					<multiple>
-						<baseValue baseType="identifier">HINT</baseValue>
-					</multiple>
-				</setOutcomeValue>
-				<setOutcomeValue identifier="seenHint">
-					<baseValue baseType="boolean">true</baseValue>
-				</setOutcomeValue>
-			</responseIf>
-			<responseElseIf>
-				<variable identifier="SOLREQUEST"/>
-				<setOutcomeValue identifier="FEEDBACK">
-					<multiple>
-						<baseValue baseType="identifier">SOLUTION</baseValue>
-					</multiple>
-				</setOutcomeValue>
-				<setOutcomeValue identifier="seenSolution">
-					<baseValue baseType="boolean">true</baseValue>
-				</setOutcomeValue>
-				<setOutcomeValue identifier="completionStatus">
-					<baseValue baseType="identifier">completed</baseValue>
-				</setOutcomeValue>
-				<setOutcomeValue identifier="ASKHINT">
-					<baseValue baseType="identifier">null</baseValue>
-				</setOutcomeValue>
-				<setOutcomeValue identifier="ASKSOLUTION">
-					<baseValue baseType="identifier">null</baseValue>
-				</setOutcomeValue>
-			</responseElseIf>
-			<responseElse>
-				<responseCondition>
-					<responseIf>
-						<isNull>
-							<variable identifier="RESPONSE"/>
-						</isNull>
-						<setOutcomeValue identifier="SCORE">
-							<baseValue baseType="float">0</baseValue>
-						</setOutcomeValue>
-					</responseIf>
-					<responseElse>
-						<responseCondition>
-							<responseIf>
-								<match>
-									<variable identifier="RESPONSE"/>
-									<correct identifier="RESPONSE"/>
-								</match>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<baseValue baseType="identifier">CORRECT</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<baseValue baseType="float">2</baseValue>
-								</setOutcomeValue>
-							</responseIf>
-							<responseElseIf>
-								<match>
-									<variable identifier="RESPONSE"/>
-									<baseValue baseType="string">-10+6x</baseValue>
-								</match>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<baseValue baseType="identifier">CORRECT-ORD</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<baseValue baseType="float">2</baseValue>
-								</setOutcomeValue>
-							</responseElseIf>
-							<responseElseIf>
-								<match>
-									<variable identifier="RESPONSE"/>
-									<baseValue baseType="string">2x-10+4x</baseValue>
-								</match>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<baseValue baseType="identifier">NOT-SIMP</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<baseValue baseType="float">1</baseValue>
-								</setOutcomeValue>
-							</responseElseIf>
-							<responseElseIf>
-								<match>
-									<variable identifier="RESPONSE"/>
-									<baseValue baseType="string">6x-5</baseValue>
-								</match>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<baseValue baseType="identifier">NOT-ALL-MULT</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<baseValue baseType="float">1</baseValue>
-								</setOutcomeValue>
-							</responseElseIf>
-							<responseElseIf>
-								<match>
-									<variable identifier="RESPONSE"/>
-									<baseValue baseType="string">5x-10</baseValue>
-								</match>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<baseValue baseType="identifier">NOT-ALL-MULT</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<baseValue baseType="float">1</baseValue>
-								</setOutcomeValue>
-							</responseElseIf>
-							<responseElseIf>
-								<match>
-									<variable identifier="RESPONSE"/>
-									<baseValue baseType="string">6x+10</baseValue>
-								</match>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<baseValue baseType="identifier"
-											>WRONG-SIGN-CONSTANT</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<baseValue baseType="float">1</baseValue>
-								</setOutcomeValue>
-							</responseElseIf>
-							<responseElse>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<baseValue baseType="identifier">INCORRECT</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<baseValue baseType="float">0</baseValue>
-								</setOutcomeValue>
-							</responseElse>
-						</responseCondition>
-						<setOutcomeValue identifier="completionStatus">
-							<baseValue baseType="identifier">completed</baseValue>
-						</setOutcomeValue>
-						<setOutcomeValue identifier="ASKHINT">
-							<baseValue baseType="identifier">null</baseValue>
-						</setOutcomeValue>
-						<setOutcomeValue identifier="ASKSOLUTION">
-							<baseValue baseType="identifier">null</baseValue>
-						</setOutcomeValue>
-						<responseCondition>
-							<responseIf>
-								<variable identifier="seenSolution"/>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<variable identifier="FEEDBACK"/>
-										<baseValue baseType="identifier">SEEN-SOLUTION</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<baseValue baseType="float">0.0</baseValue>
-								</setOutcomeValue>
-							</responseIf>
-							<responseElseIf>
-								<variable identifier="seenHint"/>
-								<setOutcomeValue identifier="FEEDBACK">
-									<multiple>
-										<variable identifier="FEEDBACK"/>
-										<baseValue baseType="identifier">SEEN-HINT</baseValue>
-									</multiple>
-								</setOutcomeValue>
-								<setOutcomeValue identifier="SCORE">
-									<divide>
-										<variable identifier="SCORE"/>
-										<baseValue baseType="float">2.0</baseValue>
-									</divide>
-								</setOutcomeValue>
-							</responseElseIf>
-						</responseCondition>
-					</responseElse>
-				</responseCondition>
-			</responseElse>
-		</responseCondition>
-	</responseProcessing>
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd"
+    xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="true" identifier="MAB01a"
+    timeDependent="false" title="Expand brackets in a(x+b)+cx and simplify - string input">
+    <!--
+        no template processing, textEntryInteraction and string match in
+        response processing
+    -->
+    <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="string">
+        <correctResponse>
+            <value>6x-10</value>
+        </correctResponse>
+    </responseDeclaration>
+    <responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
+    <responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST"/>
+    <outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="FEEDBACK"/>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="EMPTY"/>
+    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0"
+        normalMinimum="0.0">
+        <defaultValue>
+            <value>0.0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenSolution">
+        <defaultValue>
+            <value>false</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenHint">
+        <defaultValue>
+            <value>false</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKHINT">
+        <defaultValue>
+            <value>askhint</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKSOLUTION">
+        <defaultValue>
+            <value>asksolution</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <!-- no template -->
+    <itemBody>
+        <!-- contains MathML -->
+        <p> Expand the brackets in &#160;&#160; <m:math display="block">
+                <m:semantics>
+                    <m:mrow>
+                        <m:mn>2</m:mn>
+                        <m:mo>(</m:mo>
+                        <m:mi>x</m:mi>
+                        <m:mo>-</m:mo>
+                        <m:mn>5</m:mn>
+                        <m:mo>)</m:mo>
+                        <m:mo>+</m:mo>
+                        <m:mn>4</m:mn>
+                        <m:mi>x</m:mi>
+                    </m:mrow>
+                    <m:annotation encoding="LaTeX">\[ 2(x-5)+4x\]</m:annotation>
+                </m:semantics>
+            </m:math> &#160;&#160;and simplify the result. (Please do not type spaces in your
+            answer.) </p>
+        <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <textEntryInteraction expectedLength="20" responseIdentifier="RESPONSE"
+                                label="mathInput"/>
+                        </td>
+                        <td>
+                            <feedbackInline identifier="CORRECT" outcomeIdentifier="FEEDBACK"
+                                showHide="show"> Correct </feedbackInline>
+                            <feedbackInline identifier="CORRECT-ORD" outcomeIdentifier="FEEDBACK"
+                                showHide="show"> Your answer is correct, but it would be more usual
+                                to write it in the form &#160;&#160; <m:math display="block">
+                                    <m:semantics>
+                                        <m:mrow>
+                                            <m:mn>6</m:mn>
+                                            <m:mi>x</m:mi>
+                                            <m:mo>-</m:mo>
+                                            <m:mn>10</m:mn>
+                                        </m:mrow>
+                                        <m:annotation encoding="LaTeX">\[6x - 10\]</m:annotation>
+                                    </m:semantics>
+                                </m:math>. </feedbackInline>
+                            <feedbackInline identifier="NOT-SIMP" outcomeIdentifier="FEEDBACK"
+                                showHide="show"> You have expanded the bracket correctly but failed
+                                to simplify as the question asks. </feedbackInline>
+                            <feedbackInline identifier="NOT-ALL-MULT" outcomeIdentifier="FEEDBACK"
+                                showHide="show"> Remember that, when expanding brackets, all terms
+                                inside must be multiplied by whatever is outside. However, you got
+                                one term in the answer correct. </feedbackInline>
+                            <feedbackInline identifier="WRONG-SIGN-CONSTANT"
+                                outcomeIdentifier="FEEDBACK" showHide="show"> When expanding the
+                                bracket the product of 2 and -5 is -10. However, you got one term in
+                                the answer correct. </feedbackInline>
+                            <feedbackInline identifier="INCORRECT" outcomeIdentifier="FEEDBACK"
+                                showHide="show"> You should ask for tutor help on this question.
+                            </feedbackInline>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
+            <div class="">
+                <m:math display="block" id="mathML7">
+                    <m:semantics>
+                        <m:mtable>
+                            <m:mtr>
+                                <m:mtd columnalign="right">
+                                    <m:mn>2</m:mn>
+                                    <m:mfenced close=")" open="(">
+                                        <m:mrow>
+                                            <m:mi>x</m:mi>
+                                            <m:mo>-</m:mo>
+                                            <m:mn>5</m:mn>
+                                        </m:mrow>
+                                    </m:mfenced>
+                                    <m:mo>+</m:mo>
+                                    <m:mn>4</m:mn>
+                                    <m:mi>x</m:mi>
+                                </m:mtd>
+                                <m:mtd columnalign="center">
+                                    <m:mo>=</m:mo>
+                                </m:mtd>
+                                <m:mtd columnalign="left">
+                                    <m:mn>2</m:mn>
+                                    <m:mo>×</m:mo>
+                                    <m:mi>x</m:mi>
+                                    <m:mo>-</m:mo>
+                                    <m:mn>2</m:mn>
+                                    <m:mo>×</m:mo>
+                                    <m:mn>5</m:mn>
+                                    <m:mo>+</m:mo>
+                                    <m:mn>4</m:mn>
+                                    <m:mo>×</m:mo>
+                                    <m:mi>x</m:mi>
+                                </m:mtd>
+                            </m:mtr>
+                            <m:mtr>
+                                <m:mtd columnalign="right"/>
+                                <m:mtd columnalign="center">
+                                    <m:mo>=</m:mo>
+                                </m:mtd>
+                                <m:mtd columnalign="left">
+                                    <m:mn>6</m:mn>
+                                    <m:mi>x</m:mi>
+                                    <m:mo>-</m:mo>
+                                    <m:mn>10</m:mn>
+                                </m:mtd>
+                            </m:mtr>
+                        </m:mtable>
+                        <m:annotation encoding="SnuggleTeX">\begin{eqnarray*}2(x-5)+4x &amp;=&amp; 2
+                            \times x - 2 \times 5 + 4 \times x\\&#13;&amp;=&amp; 6x -
+                            10\end{eqnarray*}</m:annotation>
+                    </m:semantics>
+                </m:math>
+            </div>
+        </feedbackBlock>
+        <feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show">
+            <p>Expand the bracket and collect like terms.</p>
+        </feedbackBlock>
+        <feedbackBlock identifier="SEEN-SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
+            <p> Since you have viewed the solution, your score for this question will be 0. </p>
+        </feedbackBlock>
+        <feedbackBlock identifier="SEEN-HINT" outcomeIdentifier="FEEDBACK" showHide="show">
+            <p> Since you have viewed the hint, your score for this question will be halved. </p>
+        </feedbackBlock>
+        <feedbackBlock identifier="askhint" outcomeIdentifier="ASKHINT" showHide="show">
+            <p>
+                <endAttemptInteraction id="endAttemptInteraction1" responseIdentifier="HINTREQUEST"
+                    title="Show Hint"/>
+            </p>
+        </feedbackBlock>
+        <feedbackBlock identifier="asksolution" outcomeIdentifier="ASKSOLUTION" showHide="show">
+            <p>
+                <endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="SOLREQUEST"
+                    title="Show Solution"/>
+            </p>
+        </feedbackBlock>
+    </itemBody>
+    <responseProcessing>
+        <!-- basic string match, includes feedback on specific errors -->
+        <setOutcomeValue identifier="FEEDBACK">
+            <multiple>
+                <variable identifier="EMPTY"/>
+            </multiple>
+        </setOutcomeValue>
+        <responseCondition>
+            <responseIf>
+                <variable identifier="HINTREQUEST"/>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <multiple>
+                        <baseValue baseType="identifier">HINT</baseValue>
+                    </multiple>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="seenHint">
+                    <baseValue baseType="boolean">true</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElseIf>
+                <variable identifier="SOLREQUEST"/>
+                <setOutcomeValue identifier="FEEDBACK">
+                    <multiple>
+                        <baseValue baseType="identifier">SOLUTION</baseValue>
+                    </multiple>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="seenSolution">
+                    <baseValue baseType="boolean">true</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="completionStatus">
+                    <baseValue baseType="identifier">completed</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="ASKHINT">
+                    <baseValue baseType="identifier">null</baseValue>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="ASKSOLUTION">
+                    <baseValue baseType="identifier">null</baseValue>
+                </setOutcomeValue>
+            </responseElseIf>
+            <responseElse>
+                <responseCondition>
+                    <responseIf>
+                        <isNull>
+                            <variable identifier="RESPONSE"/>
+                        </isNull>
+                        <setOutcomeValue identifier="SCORE">
+                            <baseValue baseType="float">0</baseValue>
+                        </setOutcomeValue>
+                    </responseIf>
+                    <responseElse>
+                        <responseCondition>
+                            <responseIf>
+                                <match>
+                                    <variable identifier="RESPONSE"/>
+                                    <correct identifier="RESPONSE"/>
+                                </match>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">CORRECT</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">2</baseValue>
+                                </setOutcomeValue>
+                            </responseIf>
+                            <responseElseIf>
+                                <match>
+                                    <variable identifier="RESPONSE"/>
+                                    <baseValue baseType="string">-10+6x</baseValue>
+                                </match>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">CORRECT-ORD</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">2</baseValue>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <match>
+                                    <variable identifier="RESPONSE"/>
+                                    <baseValue baseType="string">2x-10+4x</baseValue>
+                                </match>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">NOT-SIMP</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">1</baseValue>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <match>
+                                    <variable identifier="RESPONSE"/>
+                                    <baseValue baseType="string">6x-5</baseValue>
+                                </match>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">NOT-ALL-MULT</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">1</baseValue>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <match>
+                                    <variable identifier="RESPONSE"/>
+                                    <baseValue baseType="string">5x-10</baseValue>
+                                </match>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">NOT-ALL-MULT</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">1</baseValue>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElseIf>
+                                <match>
+                                    <variable identifier="RESPONSE"/>
+                                    <baseValue baseType="string">6x+10</baseValue>
+                                </match>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier"
+                                            >WRONG-SIGN-CONSTANT</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">1</baseValue>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                            <responseElse>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <baseValue baseType="identifier">INCORRECT</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">0</baseValue>
+                                </setOutcomeValue>
+                            </responseElse>
+                        </responseCondition>
+                        <setOutcomeValue identifier="completionStatus">
+                            <baseValue baseType="identifier">completed</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="ASKHINT">
+                            <baseValue baseType="identifier">null</baseValue>
+                        </setOutcomeValue>
+                        <setOutcomeValue identifier="ASKSOLUTION">
+                            <baseValue baseType="identifier">null</baseValue>
+                        </setOutcomeValue>
+                        <responseCondition>
+                            <responseIf>
+                                <variable identifier="seenSolution"/>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <variable identifier="FEEDBACK"/>
+                                        <baseValue baseType="identifier">SEEN-SOLUTION</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <baseValue baseType="float">0.0</baseValue>
+                                </setOutcomeValue>
+                            </responseIf>
+                            <responseElseIf>
+                                <variable identifier="seenHint"/>
+                                <setOutcomeValue identifier="FEEDBACK">
+                                    <multiple>
+                                        <variable identifier="FEEDBACK"/>
+                                        <baseValue baseType="identifier">SEEN-HINT</baseValue>
+                                    </multiple>
+                                </setOutcomeValue>
+                                <setOutcomeValue identifier="SCORE">
+                                    <divide>
+                                        <variable identifier="SCORE"/>
+                                        <baseValue baseType="float">2.0</baseValue>
+                                    </divide>
+                                </setOutcomeValue>
+                            </responseElseIf>
+                        </responseCondition>
+                    </responseElse>
+                </responseCondition>
+            </responseElse>
+        </responseCondition>
+    </responseProcessing>
 </assessmentItem>
