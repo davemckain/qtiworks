@@ -86,7 +86,7 @@ public class ManagerServices {
     	InstructorUser result = instructorUserDao.findByLoginName(loginName);
     	if (result==null) {
             result = createUser(loginName, firstName, lastName,
-                    qtiWorksDeploymentSettings.getEmailAdminAddress(), "(Login is disabled)", false, true);
+                    qtiWorksDeploymentSettings.getAdminEmailAddress(), "(Login is disabled)", false, true);
         	logger.info("Created internal system user {}", result);
     	}
         return result;

@@ -74,7 +74,7 @@ All Rights Reserved
             <a href="http://www.ed.ac.uk">The University of Edinburgh</a>.
           </p>
           <p>
-            Contact: <a href="mailto:${qtiWorksDeploymentSettings.emailAdminAddress}"><c:out value="${qtiWorksDeploymentSettings.emailAdminName}"/></a>
+            Contact: <a href="mailto:${qtiWorksDeploymentSettings.adminEmailAddress}"><c:out value="${qtiWorksDeploymentSettings.adminName}"/></a>
           </p>
           <p>
             The University of Edinburgh is a charitable body, registered in Scotland,
