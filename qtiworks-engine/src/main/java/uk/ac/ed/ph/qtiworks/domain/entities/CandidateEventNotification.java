@@ -61,7 +61,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="candidate_event_notifications")
-@SequenceGenerator(name="candidateEventNotificationSequence", sequenceName="candidate_event_notification_sequence", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="candidateEventNotificationSequence", sequenceName="candidate_event_notification_sequence", initialValue=1, allocationSize=10)
 @NamedQueries({
     @NamedQuery(name="CandidateEventNotification.getForEvent",
             query="SELECT n"

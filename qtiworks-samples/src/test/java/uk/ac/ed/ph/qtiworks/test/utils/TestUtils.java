@@ -35,9 +35,11 @@ package uk.ac.ed.ph.qtiworks.test.utils;
 
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
 import uk.ac.ed.ph.qtiworks.samples.QtiSampleSet;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.util.ArrayList;
@@ -50,23 +52,28 @@ import java.util.List;
  * @author David McKain
  */
 public final class TestUtils {
-    
-    public static Collection<Object[]> makeTestParameters(QtiSampleSet... qtiSampleSets) {
-        List<Object[]> result = new ArrayList<Object[]>();
-        for (QtiSampleSet qtiSampleSet : qtiSampleSets) {
-            for (QtiSampleAssessment qtiSampleAssessment : qtiSampleSet) {
+
+    public static Collection<Object[]> makeTestParameters(final QtiSampleSet... qtiSampleSets) {
+        final List<Object[]> result = new ArrayList<Object[]>();
+        for (final QtiSampleSet qtiSampleSet : qtiSampleSets) {
+            for (final QtiSampleAssessment qtiSampleAssessment : qtiSampleSet) {
                 result.add(new Object[] { qtiSampleAssessment });
             }
         }
         return result;
     }
-    
-    public static MathAssessExtensionPackage getMathAssessExtensionPackage() {
+
+    public static MathAssessExtensionPackage buildMathAssessExtensionPackage() {
         return new MathAssessExtensionPackage(new SimpleXsltStylesheetCache());
     }
-    
-    public static JqtiExtensionManager getJqtiExtensionManager() {
-        return new JqtiExtensionManager(getMathAssessExtensionPackage());
+
+    public static JqtiExtensionManager buildJqtiExtensionManager(final QtiSampleAssessment qtiSampleAssessment) {
+        /* Load extensions if required */
+        final List<JqtiExtensionPackage<?>> jqtiExtensionPackages = new ArrayList<JqtiExtensionPackage<?>>();
+        if (qtiSampleAssessment.hasFeature(Feature.REQUIRES_MATHASSES)) {
+            jqtiExtensionPackages.add(buildMathAssessExtensionPackage());
+        }
+        return new JqtiExtensionManager(jqtiExtensionPackages);
     }
 
 }

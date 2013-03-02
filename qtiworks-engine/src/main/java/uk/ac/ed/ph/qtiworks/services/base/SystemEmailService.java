@@ -125,7 +125,7 @@ public final class SystemEmailService {
 
         /* Register "global" pattern for admin email address that can be used within any
          * mail message template */
-        message.addPattern("$ADMIN_EMAIL$", qtiWorksDeploymentSettings.getEmailAdminAddress());
+        message.addPattern("$ADMIN_EMAIL$", qtiWorksDeploymentSettings.getAdminEmailAddress());
 
         /* Apply replacements */
         for (final Pair<String,?> pattern : message.getPatterns()) {
@@ -144,7 +144,7 @@ public final class SystemEmailService {
             toUsersAsStrings[i] = formatEmailAddress(toUsers.get(i));
         }
         if (qtiWorksDeploymentSettings.isEmailDevMode()) {
-            final String adminAddress = qtiWorksDeploymentSettings.getEmailAdminName() + " <" + qtiWorksDeploymentSettings.getEmailAdminAddress() + ">";
+            final String adminAddress = qtiWorksDeploymentSettings.getAdminName() + " <" + qtiWorksDeploymentSettings.getAdminEmailAddress() + ">";
             result.setText("(Developer Mode is on - this would have been sent to "
                     + StringUtilities.join(toUsersAsStrings, " ")
                     + ")\n\n" + template);

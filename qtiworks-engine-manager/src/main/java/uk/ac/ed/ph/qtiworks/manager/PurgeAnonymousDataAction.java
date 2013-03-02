@@ -33,9 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
+import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -43,41 +43,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Resets one or more {@link User} in the system
+ * Purges all anonymous data from the system
  *
  * @author David McKain
  */
-public final class ResetUsersAction extends ManagerAction {
+public final class PurgeAnonymousDataAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ResetUsersAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(PurgeAnonymousDataAction.class);
 
 	@Override
 	public String getActionSummary() {
-		return "Wipes data for the user(s) having the given login name(s) or ID(s)";
-	}
-
-	@Override
-	public String getActionParameterSummary() {
-		return "<loginNameOrUid> ...";
-	}
-
-	@Override
-	public String validateParameters(final List<String> parameters) {
-		if (parameters.isEmpty()) {
-			return "Required parameters: <loginName|uid> ...";
-		}
-		return null;
+		return "Purges anonymous users and transient candidate session data from the system";
 	}
 
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
-		int resetCount = 0;
-		for (final String param : parameters) {
-			if (managerServices.findAndResetUser(param)) {
-				++resetCount;
-			}
-		}
-		logger.info("Reset stored data for {} user(s) in the system", resetCount);
+	    final DataDeletionService dataDeletionService = applicationContext.getBean(DataDeletionService.class);
+	    dataDeletionService.purgeAnonymousData(new Date());
+		logger.info("Purged anonymous data from the system");
     }
 }

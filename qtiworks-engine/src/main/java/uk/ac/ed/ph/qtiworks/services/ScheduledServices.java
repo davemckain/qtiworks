@@ -39,8 +39,6 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -56,8 +54,6 @@ import org.springframework.stereotype.Service;
 @Profile(QtiWorksProfiles.WEBAPP)
 public class ScheduledServices {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScheduledServices.class);
-
     public static final int ANONYMOUS_USER_KEEP_HOURS = 24;
 
     @Resource
@@ -70,13 +66,6 @@ public class ScheduledServices {
     @Scheduled(fixedRate=1000L * 60 * 60)
     public void purgeAnonymousData() {
         final Date creationTimeThreshold = new Date(System.currentTimeMillis() - ANONYMOUS_USER_KEEP_HOURS * 60 * 60 * 1000);
-        final int usersDeleted = dataDeletionService.deleteAnonymousUsers(creationTimeThreshold);
-        if (usersDeleted > 0) {
-            logger.info("Purged {} anonymous users from the system", usersDeleted);
-        }
-        final int transientDeliveriesDeleted = dataDeletionService.deleteTransientDeliveries(creationTimeThreshold);
-        if (transientDeliveriesDeleted > 0) {
-            logger.info("Purged {} transient deliveries from the system", transientDeliveriesDeleted);
-        }
+        dataDeletionService.purgeAnonymousData(creationTimeThreshold);
     }
 }

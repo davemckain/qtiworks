@@ -71,7 +71,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="assessment_packages")
-@SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=10)
+@SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
     @NamedQuery(name="AssessmentPackage.getCurrentForAssessment",
             query="SELECT ap"

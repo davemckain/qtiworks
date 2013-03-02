@@ -70,7 +70,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(name="candidate_events")
-@SequenceGenerator(name="candidateEventSequence", sequenceName="candidate_event_sequence", initialValue=1, allocationSize=50)
+@SequenceGenerator(name="candidateEventSequence", sequenceName="candidate_event_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
     @NamedQuery(name="CandidateEvent.getForSession",
             query="SELECT xe"

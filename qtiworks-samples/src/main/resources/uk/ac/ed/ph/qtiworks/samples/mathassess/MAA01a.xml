@@ -2,12 +2,11 @@
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
     xmlns:lip="http://www.imsglobal.org/xsd/imslip_v1p0"
     xmlns:m="http://www.w3.org/1998/Math/MathML"
-    xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess"
     xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" adaptive="true" identifier="MAA01a"
     timeDependent="false" title="Expand brackets in a(x+b)+cx and simplify - choice"
     toolName="Mathqurate" toolVersion="0.9.7b"
-    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd">
+    xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd">
     <responseDeclaration baseType="identifier" cardinality="single" identifier="RESPONSE">
         <correctResponse>
             <value>ChoiceA</value>
