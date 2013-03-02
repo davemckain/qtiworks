@@ -58,7 +58,7 @@ Test Entry page (shown when there are multiple testParts)
 
         <p>
           This test consists of
-          <xsl:if test="exists(.//qti:preCondition)">(up to)</xsl:if>
+          <xsl:if test="exists(.//qti:preCondition)">up to</xsl:if>
           <xsl:value-of select="count(qti:testPart)"/>
           parts.
         </p>
@@ -73,7 +73,7 @@ Test Entry page (shown when there are multiple testParts)
     <div class="sessionControl">
       <ul class="controls test">
         <li>
-          <form action="{$webappContextPath}{$enterTestUrl}" method="post">
+          <form action="{$webappContextPath}{$advanceTestPartUrl}" method="post">
             <input type="submit" value="Enter Test"/>
           </form>
         </li>

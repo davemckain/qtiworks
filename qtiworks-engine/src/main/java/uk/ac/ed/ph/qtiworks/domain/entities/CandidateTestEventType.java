@@ -46,20 +46,31 @@ public enum CandidateTestEventType {
 
     /* NB: Observe maximum length for mapped column set in CandidateEvent */
 
-    /** Test session initialized */
+    /**
+     * Test has been entered.
+     * <p>
+     * (In test having one {@link TestPart}, we also attempt
+     * to enter this automatically. Otherwise, the first {@link TestPart} has to be
+     * entered explicitly by the candidate via {@link #ADVANCE_TEST_PART}.)
+     */
     ENTER_TEST,
 
-    /** Enter first {@link TestPart} (in tests having more than one {@link TestPart}) */
-    FIRST_TEST_PART,
-
-    /** Presentation of navigation menu for the current {@link TestPart} */
+    /**
+     * Presentation of navigation menu for the current {@link TestPart}, when in nonlinear
+     * mode and while the {@link TestPart} is still interacting.
+     */
     SELECT_MENU,
 
-    /** Ends the current {@link TestPart} and moves it into review state */
+    /**
+     * Ends the current {@link TestPart} and moves it into review state
+     */
     END_TEST_PART,
 
-    /** Exits the current {@link TestPart} and either goes to the next, or completes the test */
-    EXIT_TEST_PART,
+    /**
+     * Exits the current {@link TestPart} (if currently inside one), then advances to the next
+     * available {@link TestPart}, or exits the test if there are no more available.
+     */
+    ADVANCE_TEST_PART,
 
     /** Selection of a particular item for interaction (in {@link NavigationMode#NONLINEAR}) */
     SELECT_ITEM,

@@ -107,7 +107,7 @@ public class CandidateEvent implements BaseEntity {
      * Records the type of a test event within a test, or null if we are not running a test.
      */
     @Basic(optional=true)
-    @Column(name="test_event_type", updatable=false, length=16)
+    @Column(name="test_event_type", updatable=false, length=32)
     @Enumerated(EnumType.STRING)
     private CandidateTestEventType testEventType;
 
@@ -116,7 +116,7 @@ public class CandidateEvent implements BaseEntity {
      * details about exactly what item event this was. Otherwise this will be null.
      */
     @Basic(optional=true)
-    @Column(name="item_event_type", updatable=false, length=16)
+    @Column(name="item_event_type", updatable=false, length=32)
     @Enumerated(EnumType.STRING)
     private CandidateItemEventType itemEventType;
 

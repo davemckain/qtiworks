@@ -311,7 +311,6 @@ public class AssessmentRenderer {
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
-        xsltParameters.put("enterTestUrl", renderingOptions.getEnterTestUrl());
         xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
         xsltParameters.put("selectTestItemUrl", renderingOptions.getSelectTestItemUrl());
         xsltParameters.put("finishTestItemUrl", renderingOptions.getFinishTestItemUrl());
@@ -319,7 +318,7 @@ public class AssessmentRenderer {
         xsltParameters.put("reviewTestPartUrl", renderingOptions.getReviewTestPartUrl());
         xsltParameters.put("reviewTestItemUrl", renderingOptions.getReviewTestItemUrl());
         xsltParameters.put("showTestItemSolutionUrl", renderingOptions.getShowTestItemSolutionUrl());
-        xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());
+        xsltParameters.put("advanceTestPartUrl", renderingOptions.getAdvanceTestPartUrl());
     }
 
     //----------------------------------------------------

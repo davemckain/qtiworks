@@ -83,7 +83,7 @@ Renders the test(Part) feedback
     <div class="sessionControl">
       <ul class="controls test">
         <li>
-          <form action="{$webappContextPath}{$exitTestPartUrl}" method="post"
+          <form action="{$webappContextPath}{$advanceTestPartUrl}" method="post"
             onsubmit="return confirm('Are you sure? This will leave the test and you can\'t go back in.')">
             <input type="submit" value="Exit Test"/>
           </form>

@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * This implementation of {@link ServletOutputStreamer} is suitable for web requests that can be
  * expected to send a different response each time. (E.g. rendering the current state of an item
- * session).
+ * or test session).
  *
  * @author David McKain
  */

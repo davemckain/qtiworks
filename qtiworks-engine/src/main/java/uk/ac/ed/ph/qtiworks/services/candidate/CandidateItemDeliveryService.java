@@ -663,7 +663,7 @@ public class CandidateItemDeliveryService {
      * Resets the {@link CandidateSession} having the given ID (xid), returning the
      * updated {@link CandidateSession}. This takes the session back to the state it
      * was in immediately after the last {@link CandidateItemEventType#REINIT} (if applicable),
-     * or after the original {@link CandidateEvent#ENTER_TEST}.
+     * or after the original {@link CandidateItemEventType#INIT}.
      */
     public CandidateSession resetCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {

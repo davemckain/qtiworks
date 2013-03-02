@@ -88,9 +88,6 @@ public final class RenderingOptions implements Serializable {
     // Test-specific control URLs
 
     @NotNull
-    private String enterTestUrl;
-
-    @NotNull
     private String selectTestItemUrl;
 
     @NotNull
@@ -108,9 +105,8 @@ public final class RenderingOptions implements Serializable {
     @NotNull
     private String showTestItemSolutionUrl;
 
-
     @NotNull
-    private String exitTestPartUrl;
+    private String advanceTestPartUrl;
 
     @NotNull
     private String testPartNavigationUrl;
@@ -216,15 +212,6 @@ public final class RenderingOptions implements Serializable {
     }
 
 
-    public String getEnterTestUrl() {
-        return enterTestUrl;
-    }
-
-    public void setEnterTestUrl(final String enterTestUrl) {
-        this.enterTestUrl = enterTestUrl;
-    }
-
-
     public String getSelectTestItemUrl() {
         return selectTestItemUrl;
     }
@@ -278,12 +265,12 @@ public final class RenderingOptions implements Serializable {
         this.showTestItemSolutionUrl = showTestItemSolutionUrl;
     }
 
-    public String getExitTestPartUrl() {
-        return exitTestPartUrl;
+    public String getAdvanceTestPartUrl() {
+        return advanceTestPartUrl;
     }
 
-    public void setExitTestPartUrl(final String exitTestPartUrl) {
-        this.exitTestPartUrl = exitTestPartUrl;
+    public void setAdvanceTestPartUrl(final String advanceTestPartUrl) {
+        this.advanceTestPartUrl = advanceTestPartUrl;
     }
 
 

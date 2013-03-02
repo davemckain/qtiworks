@@ -304,8 +304,6 @@ public class CandidateSessionStarter {
              */
         }
 
-        /* FIXME: Decide how to enter test! */
-
         /* Create new session entity and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));

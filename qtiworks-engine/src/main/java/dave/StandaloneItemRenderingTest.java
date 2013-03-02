@@ -118,7 +118,6 @@ public class StandaloneItemRenderingTest {
         renderingOptions.setSourceUrl("/source");
         renderingOptions.setServeFileUrl("/serveFile");
         renderingOptions.setTerminateUrl("/terminate");
-        renderingOptions.setEnterTestUrl("/enter-test");
         renderingOptions.setTestPartNavigationUrl("/test-part-navigation");
         renderingOptions.setSelectTestItemUrl("/select-item");
         renderingOptions.setFinishTestItemUrl("/finish-item");
@@ -126,7 +125,7 @@ public class StandaloneItemRenderingTest {
         renderingOptions.setReviewTestPartUrl("/review-test-part");
         renderingOptions.setReviewTestItemUrl("/review-item");
         renderingOptions.setShowTestItemSolutionUrl("/item-solution");
-        renderingOptions.setExitTestPartUrl("/exit-test-part");
+        renderingOptions.setAdvanceTestPartUrl("/advance-test-part");
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         return renderingOptions;
     }

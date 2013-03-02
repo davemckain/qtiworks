@@ -745,44 +745,6 @@ public class CandidateTestDeliveryService {
     }
 
     //----------------------------------------------------
-    // Explicit entry into first TestPart (only used in multiple-part tests)
-
-    public CandidateSession enterFirstTestPart(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return enterFirstTestPart(candidateSession);
-    }
-
-    public CandidateSession enterFirstTestPart(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
-        Assert.notNull(candidateSession, "candidateSession");
-
-        /* Get current session state */
-        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
-
-        /* Make sure caller may do this */
-        ensureSessionNotTerminated(candidateSession);
-
-        /* Update state */
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final Delivery delivery = candidateSession.getDelivery();
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
-                testSessionState, notificationRecorder);
-        final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart();
-
-        /* Update CandidateSession as appropriate */
-        candidateSession.setClosed(nextTestPart==null);
-        candidateSessionDao.update(candidateSession);
-
-        /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.FIRST_TEST_PART, testSessionState, notificationRecorder);
-        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
-
-        return candidateSession;
-    }
-
-    //----------------------------------------------------
     // Navigation
 
     public CandidateSession selectNavigationMenu(final long xid, final String sessionToken)
@@ -818,13 +780,13 @@ public class CandidateTestDeliveryService {
         return candidateSession;
     }
 
-    public CandidateSession selectItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
+    public CandidateSession selectNonlinearItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return selectItem(candidateSession, itemKey);
+        return selectNonlinearItem(candidateSession, itemKey);
     }
 
-    public CandidateSession selectItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
+    public CandidateSession selectNonlinearItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "key");
@@ -1034,13 +996,13 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Advance TestPart
 
-    public CandidateSession exitCurrentTestPart(final long xid, final String sessionToken)
+    public CandidateSession advanceTestPart(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return exitCurrentTestPart(candidateSession);
+        return advanceTestPart(candidateSession);
     }
 
-    public CandidateSession exitCurrentTestPart(final CandidateSession candidateSession)
+    public CandidateSession advanceTestPart(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -1063,7 +1025,7 @@ public class CandidateTestDeliveryService {
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.EXIT_TEST_PART, testSessionState, notificationRecorder);
+                CandidateTestEventType.ADVANCE_TEST_PART, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
