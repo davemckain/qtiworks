@@ -120,16 +120,13 @@ import org.springframework.web.multipart.MultipartFile;
  * CURRENTLY SUPPORTED:
  * - nonlinear & linear navigation mode (menu, select item)
  * - simultaneous & individual submission mode
- * - testPart "atEnd" feedback
- * - test "atEnd" feedback only (when single testPart only)
  * - solutions
  * - itemSessionControl (all but candidateComment)
- * - test / test part "during" feedback
- * - preCondition on testParts
  * - multiple testParts
+ * - preCondition on testParts
+ * - test / test part "during" and "atEnd" feedback
  *
  * STILL TO DO:
- * - test part "atEnd" feedback
  * - preCondition (elsewhere)
  * - branchRule
  *
