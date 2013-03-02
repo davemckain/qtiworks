@@ -188,7 +188,6 @@ public final class TestSessionController extends TestValidationController implem
      * an {@link AssessmentItemRef}, lazily creating one if required.
      *
      * @param itemRefNode
-     * @return
      */
     private ItemSessionController getItemSessionController(final TestPlanNode itemRefNode) {
         Assert.notNull(itemRefNode);
@@ -382,7 +381,7 @@ public final class TestSessionController extends TestValidationController implem
         }
 
         /* Enter next testPart and mark as presented */
-        logger.debug("Entering testPart {} and running template processing on each item", nextAvailableTestPartNode);
+        logger.debug("Entering testPart {} and running template processing on each item", nextAvailableTestPartNode.getIdentifier());
         final TestPartSessionState nextTestPartSessionState = ensureTestPartSessionState(nextAvailableTestPartNode);
         testSessionState.setCurrentTestPartKey(nextAvailableTestPartNode.getKey());
         nextTestPartSessionState.setEntered(true);
@@ -433,7 +432,7 @@ public final class TestSessionController extends TestValidationController implem
 
         /* Make sure we're in nonlinear navigation mode */
         if (currentTestPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
-            throw new IllegalStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
+            throw new QtiCandidateStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
         }
 
         if (itemKey!=null) {
@@ -458,7 +457,7 @@ public final class TestSessionController extends TestValidationController implem
      *
      * @param itemKey item to select, or null to select no item
      *
-     * @throws IllegalStateException if no testPart is selected, if the current testPart
+     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart
      *   does not have {@link NavigationMode#NONLINEAR}, or if the requested item is not in the current part.
      *
      * @see #maySelectItemNonlinear(TestPlanNodeKey)
@@ -469,14 +468,14 @@ public final class TestSessionController extends TestValidationController implem
 
         /* Make sure we're in nonlinear navigation mode */
         if (currentTestPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
-            throw new IllegalStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
+            throw new QtiCandidateStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
         }
 
         if (itemKey!=null) {
             final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
             ensureItemRefNode(itemRefNode);
             if (!itemRefNode.hasAncestor(currentTestPartNode)) {
-                throw new IllegalStateException(itemRefNode + " is not a descendant of " + currentTestPartNode);
+                throw new QtiCandidateStateException(itemRefNode + " is not a descendant of " + currentTestPartNode);
             }
             testSessionState.setCurrentItemKey(itemRefNode.getKey());
 
@@ -498,7 +497,7 @@ public final class TestSessionController extends TestValidationController implem
 
         /* Make sure we're in linear navigation mode */
         if (currentTestPart.getNavigationMode()!=NavigationMode.LINEAR) {
-            throw new IllegalStateException("Finishing an item is only supported in LINEAR navigationMode");
+            throw new QtiCandidateStateException("Finishing an item is only supported in LINEAR navigationMode");
         }
 
         /* Get current item */
@@ -534,7 +533,7 @@ public final class TestSessionController extends TestValidationController implem
 
         /* Make sure we're in linear navigation mode */
         if (currentTestPart.getNavigationMode()!=NavigationMode.LINEAR) {
-            throw new IllegalStateException("Finishing an item is only supported in LINEAR navigationMode");
+            throw new QtiCandidateStateException("Finishing an item is only supported in LINEAR navigationMode");
         }
 
         /* Make sure an item is selected and it can be finished */
@@ -545,10 +544,10 @@ public final class TestSessionController extends TestValidationController implem
         if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
             final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(currentItemRefNode);
             if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
-                throw new IllegalStateException("Item " + currentItemRefNode.getKey() + " has not been responded and allowSkipping=false, so finishing item is forbidden");
+                throw new QtiCandidateStateException("Item " + currentItemRefNode.getKey() + " has not been responded and allowSkipping=false, so finishing item is forbidden");
             }
             if (itemSessionState.isRespondedInvalidly() && effectiveItemSessionControl.isValidateResponses()) {
-                throw new IllegalStateException("Item " + currentItemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so finishing is forbidden");
+                throw new QtiCandidateStateException("Item " + currentItemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so finishing is forbidden");
             }
         }
 
@@ -565,7 +564,7 @@ public final class TestSessionController extends TestValidationController implem
      * Returns the newly selected {@link TestPlanNode}, or null if there are no more items
      * to select.
      *
-     * @throws IllegalStateException if no testPart is selected, if the current testPart
+     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart
      *   does not have {@link NavigationMode#LINEAR}.
      */
     private TestPlanNode selectNextItemOrEndTestPart() {
@@ -574,7 +573,7 @@ public final class TestSessionController extends TestValidationController implem
 
         /* Make sure we're in linear navigation mode */
         if (currentTestPart.getNavigationMode()!=NavigationMode.LINEAR) {
-            throw new IllegalStateException("Selection of next item is only supported in LINEAR navigationMode");
+            throw new QtiCandidateStateException("Selection of next item is only supported in LINEAR navigationMode");
         }
 
         /* Find next item */
@@ -608,7 +607,7 @@ public final class TestSessionController extends TestValidationController implem
     /**
      * Returns whether responses may be submitted for the currently selected item.
      *
-     * @throws IllegalStateException if no item is selected
+     * @throws QtiCandidateStateException if no item is selected
      */
     public boolean maySubmitResponsesToCurrentItem() {
         final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
@@ -648,7 +647,7 @@ public final class TestSessionController extends TestValidationController implem
     /**
      * Can we end the current test part?
      *
-     * @throws IllegalStateException if no test part is selected
+     * @throws QtiCandidateStateException if no test part is selected
      */
     public boolean mayEndTestPart() {
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
@@ -682,7 +681,7 @@ public final class TestSessionController extends TestValidationController implem
      */
     public void endTestPart() {
         if (!mayEndTestPart()) {
-            throw new IllegalStateException("Current test part cannot be ended");
+            throw new QtiCandidateStateException("Current test part cannot be ended");
         }
 
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
@@ -768,7 +767,7 @@ public final class TestSessionController extends TestValidationController implem
     private TestPlanNode ensureCurrentItemRefNode() {
         final TestPlanNode result = getCurrentItemRefNode();
         if (result==null) {
-            throw new IllegalStateException("Expected current item to be set");
+            throw new QtiCandidateStateException("Expected current item to be set");
         }
         return result;
     }
@@ -788,7 +787,7 @@ public final class TestSessionController extends TestValidationController implem
     private TestPlanNode ensureCurrentTestPartNode() {
         final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
         if (currentTestPartKey==null) {
-            throw new IllegalStateException("No current test part");
+            throw new QtiCandidateStateException("No current test part");
         }
         final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentTestPartKey);
         if (testPlanNode==null) {
@@ -808,7 +807,7 @@ public final class TestSessionController extends TestValidationController implem
     private TestPart ensureCurrentTestPart() {
         final TestPart result = getCurrentTestPart();
         if (result==null) {
-            throw new IllegalStateException("No current test part");
+            throw new QtiCandidateStateException("No current test part");
         }
         return result;
     }
@@ -925,7 +924,7 @@ public final class TestSessionController extends TestValidationController implem
         }
         final Value value = getVariableValue(identifier, permittedTypes);
         if (value==null) {
-            throw new IllegalStateException("TestSessionState lookup of variable " + identifier + " returned NULL, indicating state is not in sync");
+            throw new QtiCandidateStateException("TestSessionState lookup of variable " + identifier + " returned NULL, indicating state is not in sync");
         }
         return value;
     }
