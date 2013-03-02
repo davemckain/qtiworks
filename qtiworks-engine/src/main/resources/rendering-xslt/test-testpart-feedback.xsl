@@ -62,10 +62,11 @@ Renders the test(Part) feedback
       </head>
       <body class="qtiworks assessmentTest testFeedback">
         <h1><xsl:value-of select="$testOrTestPart"/> Complete</h1>
-        <!-- Show testPart feedback -->
+
+        <!-- Show 'atEnd' testPart feedback -->
         <xsl:apply-templates select="$currentTestPart/qti:testFeedback[@access='atEnd']"/>
 
-        <!-- Show test feedback if there's only 1 testPart -->
+        <!-- Show 'atEnd' test feedback f there's only 1 testPart -->
         <xsl:if test="not($hasMultipleTestParts)">
           <xsl:apply-templates select="qti:testFeedback[@access='atEnd']"/>
         </xsl:if>

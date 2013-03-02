@@ -56,6 +56,7 @@ import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestEntryRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
@@ -117,18 +118,18 @@ import org.springframework.web.multipart.MultipartFile;
  * NOTE: Remember there is no {@link IdentityContext} for candidates.
  *
  * CURRENTLY SUPPORTED:
- * - single testPart only
  * - nonlinear & linear navigation mode (menu, select item)
  * - simultaneous & individual submission mode
  * - testPart "atEnd" feedback
  * - test "atEnd" feedback only (when single testPart only)
  * - solutions
+ * - itemSessionControl (all but candidateComment)
  * - test / test part "during" feedback
  * - preCondition on testParts
+ * - multiple testParts
  *
  * STILL TO DO:
  * - test part "atEnd" feedback
- * - multiple testParts
  * - preCondition (elsewhere)
  * - branchRule
  *
@@ -322,7 +323,11 @@ public class CandidateTestDeliveryService {
             final TestSessionState testSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
-        if (currentTestPartKey!=null) {
+        if (testSessionState.isEnded()) {
+            /* At end of test, so show overall test feedback */
+            renderTestFeedback(candidateEvent, testSessionState, renderingOptions, resultStream);
+        }
+        else if (currentTestPartKey!=null) {
             final TestPartSessionState currentTestPartSessionState = testSessionState.getTestPartSessionStates().get(currentTestPartKey);
             final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
             if (currentItemKey!=null) {
@@ -384,6 +389,23 @@ public class CandidateTestDeliveryService {
         candidateAuditLogger.logTestPartNavigationRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderTestPartNavigation(renderingRequest, notifications, resultStream);
+    }
+
+    private void renderTestFeedback(final CandidateEvent candidateEvent,
+            final TestSessionState testSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        final TestFeedbackRenderingRequest renderingRequest = new TestFeedbackRenderingRequest();
+        initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setTestSessionState(testSessionState);
+
+        candidateAuditLogger.logTestFeedbackRendering(candidateEvent);
+        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
+        assessmentRenderer.renderTestFeedback(renderingRequest, notifications, resultStream);
     }
 
     private void renderTestPartFeedback(final CandidateEvent candidateEvent,
@@ -877,8 +899,8 @@ public class CandidateTestDeliveryService {
         final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
         candidateDataServices.recordTestAssessmentResult(candidateSession, assessmentResult);
 
-        /* See if this action has ended the final testPart (i.e. ended the test) */
-        if (testSessionController.getNextAvailableTestPart()==null) {
+        /* See if this action has ended the test */
+        if (testSessionState.isEnded()) {
             /* Update CandidateSession */
             candidateSession.setClosed(true);
             candidateSessionDao.update(candidateSession);
@@ -1019,13 +1041,59 @@ public class CandidateTestDeliveryService {
                 testSessionState, notificationRecorder);
         final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart();
 
-        /* Update CandidateSession as appropriate */
-        candidateSession.setTerminated(nextTestPart==null);
-        candidateSessionDao.update(candidateSession);
+        if (nextTestPart==null) {
+            /* We exited the last test part.
+             *
+             * For single part tests, we terminate the test completely as the test feedback was shown with the testPart feedback.
+             * For multi-part tests, we shall keep the test open so that the test feedback can be viewed.
+             */
+            if (testSessionState.getTestPlan().getTestPartNodes().size()==1) {
+                candidateSession.setTerminated(true);
+                candidateSessionDao.update(candidateSession);
+            }
+        }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ADVANCE_TEST_PART, testSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
+
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Exit (multi-part) test
+
+    public CandidateSession exitTest(final long xid, final String sessionToken)
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        return exitTest(candidateSession);
+    }
+
+    public CandidateSession exitTest(final CandidateSession candidateSession)
+            throws CandidateForbiddenException {
+        Assert.notNull(candidateSession, "candidateSession");
+
+        /* Get current session state */
+        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
+
+        /* Make sure caller may do this */
+        ensureSessionNotTerminated(candidateSession);
+
+        /* Update state */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, notificationRecorder);
+        testSessionController.exitTest();
+
+        /* Update CandidateSession as appropriate */
+        candidateSession.setTerminated(true);
+        candidateSessionDao.update(candidateSession);
+
+        /* Record and log event */
+        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+                CandidateTestEventType.EXIT_MULTI_PART_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;

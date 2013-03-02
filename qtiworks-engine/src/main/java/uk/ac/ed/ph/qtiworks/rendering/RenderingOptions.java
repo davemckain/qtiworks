@@ -106,10 +106,13 @@ public final class RenderingOptions implements Serializable {
     private String showTestItemSolutionUrl;
 
     @NotNull
+    private String testPartNavigationUrl;
+
+    @NotNull
     private String advanceTestPartUrl;
 
     @NotNull
-    private String testPartNavigationUrl;
+    private String exitTestUrl;
 
     //----------------------------------------------------
 
@@ -265,6 +268,16 @@ public final class RenderingOptions implements Serializable {
         this.showTestItemSolutionUrl = showTestItemSolutionUrl;
     }
 
+
+    public String getTestPartNavigationUrl() {
+        return testPartNavigationUrl;
+    }
+
+    public void setTestPartNavigationUrl(final String testPartNavigationUrl) {
+        this.testPartNavigationUrl = testPartNavigationUrl;
+    }
+
+
     public String getAdvanceTestPartUrl() {
         return advanceTestPartUrl;
     }
@@ -274,12 +287,12 @@ public final class RenderingOptions implements Serializable {
     }
 
 
-    public String getTestPartNavigationUrl() {
-        return testPartNavigationUrl;
+    public String getExitTestUrl() {
+        return exitTestUrl;
     }
 
-    public void setTestPartNavigationUrl(final String testPartNavigationUrl) {
-        this.testPartNavigationUrl = testPartNavigationUrl;
+    public void setExitTestUrl(final String exitTestUrl) {
+        this.exitTestUrl = exitTestUrl;
     }
 
     //----------------------------------------------------

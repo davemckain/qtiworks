@@ -310,6 +310,7 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
+        candidateSession.setClosed(testSessionState.isEnded());
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */

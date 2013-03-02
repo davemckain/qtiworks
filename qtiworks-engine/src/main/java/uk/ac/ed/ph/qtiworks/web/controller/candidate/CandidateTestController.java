@@ -119,6 +119,7 @@ public class CandidateTestController {
         renderingOptions.setShowTestItemSolutionUrl(sessionBaseUrl + "/item-solution");
         renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/end-test-part");
         renderingOptions.setAdvanceTestPartUrl(sessionBaseUrl + "/advance-test-part");
+        renderingOptions.setExitTestUrl(sessionBaseUrl + "/exit-test");
         return renderingOptions;
     }
 
@@ -290,7 +291,6 @@ public class CandidateTestController {
         return redirectToRenderSession(xid, sessionToken);
     }
 
-
     /**
      * @see CandidateTestDeliveryService#advanceTestPart(CandidateSession)
      */
@@ -309,6 +309,21 @@ public class CandidateTestController {
         }
         else {
             /* Moved onto next part */
+            redirect = redirectToRenderSession(xid, sessionToken);
+        }
+        return redirect;
+    }
+
+    /**
+     * @see CandidateTestDeliveryService#exitTest(CandidateSession)
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/exit-test", method=RequestMethod.POST)
+    public String exitTest(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        final CandidateSession candidateSession = candidateTestDeliveryService.exitTest(xid, sessionToken);
+        String redirect = redirectToExitUrl(candidateSession.getExitUrl());
+        if (redirect==null) {
+            /* No/unsafe redirect specified, so get the rendered to generate an "assessment is complete" page */
             redirect = redirectToRenderSession(xid, sessionToken);
         }
         return redirect;

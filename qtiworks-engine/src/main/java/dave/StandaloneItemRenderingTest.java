@@ -126,6 +126,7 @@ public class StandaloneItemRenderingTest {
         renderingOptions.setReviewTestItemUrl("/review-item");
         renderingOptions.setShowTestItemSolutionUrl("/item-solution");
         renderingOptions.setAdvanceTestPartUrl("/advance-test-part");
+        renderingOptions.setExitTestUrl("/exit-test");
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         return renderingOptions;
     }

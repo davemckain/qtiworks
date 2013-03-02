@@ -51,6 +51,7 @@ rendering.
   <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>
   <xsl:param name="showTestItemSolutionUrl" as="xs:string" required="yes"/>
   <xsl:param name="advanceTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="exitTestUrl" as="xs:string" required="yes"/>
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>

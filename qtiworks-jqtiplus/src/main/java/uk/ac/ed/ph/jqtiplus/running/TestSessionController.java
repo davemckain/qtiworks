@@ -301,7 +301,7 @@ public final class TestSessionController extends TestValidationController implem
 	 * Postcondition: The test will be marked as being exited.
 	 */
 	public void exitTest() {
-		ensureTestNotEnded();
+		ensureTestNotExited();
 		testSessionState.setExited(true);
 	}
 
@@ -314,6 +314,12 @@ public final class TestSessionController extends TestValidationController implem
     private void ensureTestNotEnded() {
     	if (testSessionState.isEnded()) {
     		throw new QtiCandidateStateException("Expected TestSessionState.isEnded() => false");
+    	}
+    }
+
+    private void ensureTestNotExited() {
+    	if (testSessionState.isExited()) {
+    		throw new QtiCandidateStateException("Expected TestSessionState.isExited() => false");
     	}
     }
 

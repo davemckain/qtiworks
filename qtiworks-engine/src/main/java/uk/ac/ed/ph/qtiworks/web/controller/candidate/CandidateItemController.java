@@ -116,6 +116,7 @@ public class CandidateItemController {
         renderingOptions.setReviewTestItemUrl("");
         renderingOptions.setShowTestItemSolutionUrl("");
         renderingOptions.setAdvanceTestPartUrl("");
+        renderingOptions.setExitTestUrl("");
         renderingOptions.setTestPartNavigationUrl("");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
