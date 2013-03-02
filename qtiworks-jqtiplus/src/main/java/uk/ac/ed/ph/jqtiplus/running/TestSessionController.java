@@ -264,8 +264,24 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     //-------------------------------------------------------------------
-    // WORK IN PROGRESS - TEST CONTROL
+    // High level test navigation - test entry, flow through testParts then exit
 
+    /**
+     * Updates the {@link TestSessionState} to indicate that the test has
+     * been entered. Returns the number {@link TestPart}s in the test.
+     * The caller would be expected to call {@link #enterNextAvailableTestPart()}
+     * next.
+     * <p>
+     * Precondition: the test must not have already been entered.
+     * <p>
+     * Postcondition: the test will be marked as having been entered. No {@link TestPart}
+     * will have been entered, no item will have been selected.
+     *
+     * @return number of {@link TestPart}s in the test.
+     *
+     * @see #getNextAvailableTestPart()
+     * @see #enterNextAvailableTestPart()
+     */
     public int enterTest() {
     	ensureTestNotEntered();
 
@@ -277,19 +293,35 @@ public final class TestSessionController extends TestValidationController implem
         return testSessionState.getTestPlan().getTestPartNodes().size();
     }
 
-    private void ensureTestNotEntered() {
+    /**
+	 * Exits the test after it has been ended.
+	 * <p>
+	 * Precondition: The test must have been ended
+	 * <p>
+	 * Postcondition: The test will be marked as being exited.
+	 */
+	public void exitTest() {
+		ensureTestNotEnded();
+		testSessionState.setExited(true);
+	}
+
+	private void ensureTestNotEntered() {
     	if (testSessionState.isEntered()) {
     		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => false");
     	}
     }
 
-    private void ensureInTest() {
+    private void ensureTestNotEnded() {
+    	if (testSessionState.isEnded()) {
+    		throw new QtiCandidateStateException("Expected TestSessionState.isEnded() => false");
+    	}
+    }
+
+    private void ensureInsideTest() {
     	if (!testSessionState.isEntered()) {
     		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => true");
     	}
-    	if (testSessionState.isExited()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isExited() => false");
-    	}
+    	ensureTestNotEnded();
     }
 
     /**
@@ -297,9 +329,11 @@ public final class TestSessionController extends TestValidationController implem
      * starting from the one after the current one (if a {@link TestPart} is already selected)
      * or the first {@link TestPart} (if there is no current {@link TestPart}), applying
      * {@link PreCondition}s along the way.
+     * <p>
+     * Precondition: The test must have been entered.
      */
     public TestPlanNode getNextAvailableTestPart() {
-    	ensureInTest();
+    	ensureInsideTest();
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
 
@@ -335,9 +369,14 @@ public final class TestSessionController extends TestValidationController implem
      * <p>
      * If the newly-presented {@link TestPart} has {@link NavigationMode#LINEAR} then we will
      * attempt to select the first item.
+     * <p>
+     * Precondition: The test must have been entered but not yet ended.
+     * <p>
+     * Postcondition: The next available {@link TestPart} will be entered, if one is available.
+     * Otherwise the test itself will be ended.
      */
     public TestPlanNode enterNextAvailableTestPart() {
-    	ensureInTest();
+    	ensureInsideTest();
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
 
@@ -375,8 +414,8 @@ public final class TestSessionController extends TestValidationController implem
 
         /* Exit test if no more testParts are available */
         if (nextAvailableTestPartNode==null) {
-            logger.debug("No more testParts available, so exiting test");
-            testSessionState.setExited(true);
+            logger.debug("No more testParts available, so ending test");
+            testSessionState.setEnded(true);
             return null;
         }
 
@@ -403,21 +442,92 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     /**
-     * Performs template processing on the given {@link TestPlanNode} corresponding to an
-     * {@link AssessmentItemRef}
-     */
-    private void performTemplateProcessing(final TestPlanNode itemRefNode) {
-        Assert.notNull(itemRefNode);
-        ensureItemRefNode(itemRefNode);
+	 * Performs template processing on the given {@link TestPlanNode} corresponding to an
+	 * {@link AssessmentItemRef}
+	 */
+	private void performTemplateProcessing(final TestPlanNode itemRefNode) {
+	    Assert.notNull(itemRefNode);
+	    ensureItemRefNode(itemRefNode);
 
-        final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
-        final List<TemplateDefault> templateDefaults = assessmentItemRef.getTemplateDefaults();
+	    final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
+	    final List<TemplateDefault> templateDefaults = assessmentItemRef.getTemplateDefaults();
 
-        final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-        itemSessionController.performTemplateProcessing(templateDefaults);
-    }
+	    final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+	    itemSessionController.performTemplateProcessing(templateDefaults);
+	}
 
-    /**
+	/**
+	 * Can we end the current test part?
+	 *
+	 * @throws QtiCandidateStateException if no test part is selected
+	 */
+	public boolean mayEndTestPart() {
+	    final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+	    final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+	    if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
+	        /* (allowSkipping & validateResponses only apply in INDIVIDUAL submission mode) */
+	        final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+	        for (final TestPlanNode itemRefNode : itemRefNodes) {
+	            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+	            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
+	            if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
+	                logger.debug("Item " + itemRefNode.getKey() + " has not been responded and allowSkipping=false, so ending test part will be forbidden");
+	                return false;
+	            }
+	            if (itemSessionState.isRespondedInvalidly() && effectiveItemSessionControl.isValidateResponses()) {
+	                logger.debug("Item " + itemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so ending test part will be forbidden");
+	                return false;
+	            }
+	        }
+	    }
+	    return true;
+	}
+
+	/**
+	 * Marks the current test part as ended, if allowed, performing any processing
+	 * required at this time and updating state as appropriate.
+	 *
+	 * PRECONDITION: {@link #mayEndTestPart()} must return true
+	 * POSTCONDITIONS: all item states in testPart will be closed, current test
+	 *   state marked as ended, current item cleared.
+	 */
+	public void endTestPart() {
+	    if (!mayEndTestPart()) {
+	        throw new QtiCandidateStateException("Current test part cannot be ended");
+	    }
+
+	    final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+	    final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+	    final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
+	    if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
+	        /* If we're in SIMULTANEOUS mode, we run response processing on all items now */
+	        for (final TestPlanNode itemRefNode : itemRefNodes) {
+	            final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+	            itemSessionController.performResponseProcessing();
+	        }
+	        /* Then we'll run outcome processing for the test */
+	        performOutcomeProcessing();
+	    }
+
+	    /* Close all items */
+	    for (final TestPlanNode itemRefNode : itemRefNodes) {
+	        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+	        itemSessionState.setClosed(true);
+	    }
+
+	    /* Deselect item */
+	    testSessionState.setCurrentItemKey(null);
+
+	    /* Update state for this test part */
+	    final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
+	    currentTestPartSessionState.setEnded(true);
+	    logger.debug("Ended testPart {}", currentTestPartNode.getIdentifier());
+	}
+
+    //-------------------------------------------------------------------
+    // Nonlinear navigation within a testPart
+
+	/**
      * Returns whether the candidate may select the item in the current {@link NavigationMode#NONLINEAR}
      * {@link TestPart} having the given {@link TestPlanNodeKey}.
      *
@@ -490,6 +600,9 @@ public final class TestSessionController extends TestValidationController implem
             return null;
         }
     }
+
+    //-------------------------------------------------------------------
+    // Linear navigation within a testPart
 
     public boolean mayFinishItemLinear() {
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
@@ -642,74 +755,6 @@ public final class TestSessionController extends TestValidationController implem
             /* Run outcome processing */
             performOutcomeProcessing();
         }
-    }
-
-    /**
-     * Can we end the current test part?
-     *
-     * @throws QtiCandidateStateException if no test part is selected
-     */
-    public boolean mayEndTestPart() {
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
-        if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
-            /* (allowSkipping & validateResponses only apply in INDIVIDUAL submission mode) */
-            final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
-            for (final TestPlanNode itemRefNode : itemRefNodes) {
-                final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-                final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
-                if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
-                    logger.debug("Item " + itemRefNode.getKey() + " has not been responded and allowSkipping=false, so ending test part will be forbidden");
-                    return false;
-                }
-                if (itemSessionState.isRespondedInvalidly() && effectiveItemSessionControl.isValidateResponses()) {
-                    logger.debug("Item " + itemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so ending test part will be forbidden");
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Marks the current test part as ended, if allowed, performing any processing
-     * required at this time and updating state as appropriate.
-     *
-     * PRECONDITION: {@link #mayEndTestPart()} must return true
-     * POSTCONDITIONS: all item states in testPart will be closed, current test
-     *   state marked as ended, current item cleared.
-     */
-    public void endTestPart() {
-        if (!mayEndTestPart()) {
-            throw new QtiCandidateStateException("Current test part cannot be ended");
-        }
-
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
-        final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
-        if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
-            /* If we're in SIMULTANEOUS mode, we run response processing on all items now */
-            for (final TestPlanNode itemRefNode : itemRefNodes) {
-                final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-                itemSessionController.performResponseProcessing();
-            }
-            /* Then we'll run outcome processing for the test */
-            performOutcomeProcessing();
-        }
-
-        /* Close all items */
-        for (final TestPlanNode itemRefNode : itemRefNodes) {
-            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-            itemSessionState.setClosed(true);
-        }
-
-        /* Deselect item */
-        testSessionState.setCurrentItemKey(null);
-
-        /* Update state for this test part */
-        final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
-        currentTestPartSessionState.setEnded(true);
-        logger.debug("Ended testPart {}", currentTestPartNode.getKey());
     }
 
     /**

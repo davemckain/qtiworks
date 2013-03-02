@@ -69,7 +69,7 @@ import java.util.Set;
  * Encapsulates the current state of a candidate's item session.
  * <p>
  * An instance of this class is mutable, but you must let JQTI+ perform all
- * mutation operations for you.
+ * mutation operations for you via the {@link ItemSessionController}.
  * <p>
  * An instance of this class is NOT safe for use by multiple threads.
  *
