@@ -7,7 +7,7 @@
   <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
   <outcomeDeclaration identifier="testPartFeedback" cardinality="single" baseType="identifier">
     <defaultValue>
-      <value>testPartFeedback</value>
+      <value>always</value>
     </defaultValue>
   </outcomeDeclaration>
   <testPart identifier="P1" navigationMode="linear" submissionMode="individual">
@@ -36,7 +36,7 @@
       <assessmentItemRef identifier="Q2" href="choice-feedback.xml"/>
       <assessmentItemRef identifier="Q3" href="choice-min.xml"/>
     </assessmentSection>
-    <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+    <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
       <p>
         This is feedback shown at the end of the single <code>testPart</code> in this test.
       </p>

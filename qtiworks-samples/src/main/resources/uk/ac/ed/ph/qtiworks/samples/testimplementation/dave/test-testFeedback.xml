@@ -7,7 +7,7 @@
   <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
   <outcomeDeclaration identifier="testPartFeedback" cardinality="single" baseType="identifier">
     <defaultValue>
-      <value>testPartFeedback</value>
+      <value>always</value>
     </defaultValue>
   </outcomeDeclaration>
   <testPart identifier="P1" navigationMode="nonlinear" submissionMode="individual">
@@ -44,12 +44,12 @@
         </assessmentItemRef>
       </assessmentSection>
     </assessmentSection>
-    <testFeedback access="during" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+    <testFeedback access="during" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
       <p>
         This is 'during' feedback for the testPart.
       </p>
     </testFeedback>
-    <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+    <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
       <p>
         This is 'atEnd' feedback for the testPart.
       </p>
@@ -62,12 +62,12 @@
       </sum>
     </setOutcomeValue>
   </outcomeProcessing>
-  <testFeedback access="during" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+  <testFeedback access="during" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
     <p>
       This is 'during' feedback for the test.
     </p>
   </testFeedback>
-  <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+  <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
     <p>
       This is 'atEnd' feedback for the test.
       The score for this test is <printedVariable identifier="totalScore"/>

@@ -7,12 +7,12 @@
   <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
   <outcomeDeclaration identifier="testPartFeedback" cardinality="single" baseType="identifier">
     <defaultValue>
-      <value>testPartFeedback</value>
+      <value>always</value>
     </defaultValue>
   </outcomeDeclaration>
   <outcomeDeclaration identifier="testFeedback" cardinality="single" baseType="identifier">
     <defaultValue>
-      <value>testFeedback</value>
+      <value>always</value>
     </defaultValue>
   </outcomeDeclaration>
   <testPart identifier="P1" navigationMode="nonlinear" submissionMode="individual">
@@ -27,7 +27,7 @@
       <assessmentItemRef identifier="Q1" href="addition-feedback.xml"/>
       <assessmentItemRef identifier="Q2" href="choice-feedback.xml"/>
     </assessmentSection>
-    <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+    <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
       <p>
         This is feedback shown at the end of the first <code>testPart</code> in this test.
       </p>
@@ -47,7 +47,7 @@
       </rubricBlock>
       <assessmentItemRef identifier="Q3" href="addition-feedback.xml"/>
     </assessmentSection>
-    <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="testPartFeedback" identifier="testPartFeedback">
+    <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
       <p>
         This is feedback shown at the end of the second <code>testPart</code> in this test.
       </p>
@@ -63,7 +63,7 @@
       </sum>
     </setOutcomeValue>
   </outcomeProcessing>
-  <testFeedback access="atEnd" showHide="hide" outcomeIdentifier="testFeedback" identifier="testFeedback">
+  <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testFeedback" identifier="always">
     <p>
       This feedback is shown at the end of the test.
     </p>
