@@ -53,11 +53,17 @@ public final class PreCondition extends AbstractJump {
 
     @Override
 	protected void validateThis(final ValidationContext context) {
-        final TestPart testPart = getParent().getEnclosingTestPart();
-        if (testPart!=null) {
-        	if (!(NavigationMode.LINEAR==testPart.getNavigationMode() && SubmissionMode.INDIVIDUAL==testPart.getSubmissionMode())) {
-        		context.fireValidationWarning(this, "preConditions only work on testParts with navigationMode=linear and submissionMode=individual");
-        	}
-        }
+    	final AbstractPart parent = getParent();
+    	if (!(parent instanceof TestPart)) {
+    		/* It's a preCondition on assessmentSection or assessmentItemRef.
+    		 * Make sure we've in INDIVIDUAL/LINEAR mode.
+    		 */
+            final TestPart testPart = parent.getEnclosingTestPart();
+            if (testPart!=null) {
+            	if (!(NavigationMode.LINEAR==testPart.getNavigationMode() && SubmissionMode.INDIVIDUAL==testPart.getSubmissionMode())) {
+            		context.fireValidationWarning(this, "preConditions only work within testParts with navigationMode=linear and submissionMode=individual");
+            	}
+            }
+    	}
     }
 }
