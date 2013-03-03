@@ -58,7 +58,7 @@ Test Entry page (shown when there are multiple testParts)
 
         <p>
           This test consists of
-          <xsl:if test="exists(.//qti:preCondition)">up to</xsl:if>
+          <xsl:if test="exists(.//qti:preCondition)"><xsl:text> up to </xsl:text></xsl:if>
           <xsl:value-of select="count(qti:testPart)"/>
           parts.
         </p>

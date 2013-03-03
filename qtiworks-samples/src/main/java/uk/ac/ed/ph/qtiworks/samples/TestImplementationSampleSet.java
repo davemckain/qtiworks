@@ -80,6 +80,12 @@ public final class TestImplementationSampleSet {
             new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/simple-two-testParts.xml",
                     new String[] { "addition-feedback.xml", "choice-feedback.xml" }
             ),
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/degenerate-testPart.xml",
+                    new String[] { "addition-feedback.xml" }
+            ),
+            new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/degenerate-multiple-testParts.xml",
+                    new String[] { "addition-feedback.xml" }
+            ),
             new QtiSampleAssessment(ASSESSMENT_TEST, TEST_WORK_IN_PROGRESS, "testimplementation/dave/test-testFeedback.xml",
                     new String[] { "addition-feedback.xml" }
             ),
