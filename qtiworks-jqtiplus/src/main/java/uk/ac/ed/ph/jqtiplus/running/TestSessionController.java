@@ -50,6 +50,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.SessionIdentifier;
 import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
@@ -237,6 +238,7 @@ public final class TestSessionController extends TestValidationController implem
 
         /* Reset test variables */
         testSessionState.reset();
+        resetOutcomeVariables();
         for (final Identifier identifier : testProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
             testSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
         }
@@ -275,7 +277,8 @@ public final class TestSessionController extends TestValidationController implem
      * Precondition: the test must not have already been entered.
      * <p>
      * Postcondition: the test will be marked as having been entered. No {@link TestPart}
-     * will have been entered, no item will have been selected.
+     * will have been entered, no item will have been selected. Outcomes variables will
+     * be set to their default values.
      *
      * @return number of {@link TestPart}s in the test.
      *
@@ -289,6 +292,7 @@ public final class TestSessionController extends TestValidationController implem
     	testSessionState.setEntered(true);
         testSessionState.setCurrentTestPartKey(null);
         testSessionState.setCurrentItemKey(null);
+        resetOutcomeVariables();
 
         return testSessionState.getTestPlan().getTestPartNodes().size();
     }
@@ -907,8 +911,21 @@ public final class TestSessionController extends TestValidationController implem
 
     private void resetOutcomeVariables() {
         for (final OutcomeDeclaration outcomeDeclaration : testProcessingMap.getValidOutcomeDeclarationMap().values()) {
-            testSessionState.setOutcomeValue(outcomeDeclaration, NullValue.INSTANCE);
+        	testSessionState.setOutcomeValue(outcomeDeclaration, computeDefaultValue(outcomeDeclaration));
         }
+    }
+
+    public Value computeDefaultValue(final OutcomeDeclaration declaration) {
+        Assert.notNull(declaration);
+        Value result;
+        final DefaultValue defaultValue = declaration.getDefaultValue();
+        if (defaultValue != null) {
+            result = defaultValue.evaluate();
+        }
+        else {
+            result = NullValue.INSTANCE;
+        }
+        return result;
     }
 
     //-------------------------------------------------------------------
