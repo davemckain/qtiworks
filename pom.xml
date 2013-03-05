@@ -65,9 +65,11 @@ All Rights Reserved
       </releases>
     </repository>
   </repositories>
-  <url>https://sourceforge.net/projects/qtiworks</url>
+  <url>https://github.com/davemckain/qtiworks</url>
   <description>
-    This is significant refactoring of JQTI and MathAssessEngine.
+    IMS QTI 2.1 assessment delivery engine and Java development library (JQTI+).
+    Supports the MathAssess extensions.
+    Next generation replacement for QTIEngine/JQTI and MathAssessEngine/JQTI.
   </description>
   <inceptionYear>2011</inceptionYear>
   <organization>
@@ -97,16 +99,14 @@ All Rights Reserved
     </developer>
   </developers>
   <scm>
+    <url>https://github.com/davemckain/qtiworks</url>
     <connection>scm:git:git@github.com:davemckain/qtiworks.git</connection>
     <developerConnection>scm:git:git@github.com:davemckain/qtiworks.git</developerConnection>
-    <url>https://github.com/davemckain/qtiworks</url>
   </scm>
-  <!--
   <issueManagement>
-    <system>sourceforge</system>
-    <url>http://sourceforge.net/tracker/?group_id=221375</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/davemckain/qtiworks/issues</url>
   </issueManagement>
-  -->
   <distributionManagement>
     <!-- (This is not intended for general use!) -->
     <repository>
@@ -117,16 +117,6 @@ All Rights Reserved
       <id>www2.ph.ed.ac.uk</id>
       <url>file:///Disk/apps-team/repositories/maven2</url>
     </snapshotRepository>
-    <site>
-      <!--
-      Reminder! Need to create a shell on sourceforge first before trying to do
-      a site deployment.
-
-      ssh -t davemckain,qtiworks@shell.sourceforge.net create
-      -->
-      <id>sourceforge.net</id>
-      <url>scp://shell.sourceforge.net/home/project-web/qtiworks/htdocs/maven</url>
-    </site>
   </distributionManagement>
   <build>
     <pluginManagement>
