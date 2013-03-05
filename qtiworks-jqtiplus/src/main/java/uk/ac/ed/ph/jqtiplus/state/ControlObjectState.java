@@ -33,6 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -40,23 +44,105 @@ import java.util.Date;
  *
  * @author David McKain
  */
-public interface ControlObjectState {
+public abstract class ControlObjectState implements Serializable {
 
-    Date getEntryTime();
-    void setEntryTime(Date entryTime);
-    boolean isEntered();
+    private static final long serialVersionUID = 4027764553360833372L;
 
-    Date getEndTime();
-    void setEndTime(Date endTime);
-    boolean isEnded();
+    private Date entryTime;
+    private Date endTime;
+    private Date exitTime;
 
-    Date getExitTime();
-    void setExitTime(Date exitTime);
-    boolean isExited();
+    private Date durationIntervalStartTime;
+    private long durationAccumulated;
 
-	public Date getDurationIntervalStartTime();
-	public void setDurationIntervalStartTime(final Date timestamp);
+    public void reset() {
+        this.entryTime = null;
+        this.endTime = null;
+        this.exitTime = null;
+        this.durationIntervalStartTime = null;
+        this.durationAccumulated = 0L;
+    }
 
-	public long getAccumulatedDuration();
-	public void setAccumulatedDuration(final long duration);
+    public final Date getEntryTime() {
+        return ObjectUtilities.safeClone(entryTime);
+    }
+
+    public final void setEntryTime(final Date enteredTime) {
+        this.entryTime = ObjectUtilities.safeClone(enteredTime);
+    }
+
+    public final boolean isEntered() {
+        return entryTime!=null;
+    }
+
+
+    public final Date getEndTime() {
+        return ObjectUtilities.safeClone(endTime);
+    }
+
+    public final void setEndTime(final Date endTime) {
+        this.endTime = ObjectUtilities.safeClone(endTime);
+    }
+
+    public final boolean isEnded() {
+        return endTime!=null;
+    }
+
+
+    public final Date getExitTime() {
+        return ObjectUtilities.safeClone(exitTime);
+    }
+
+    public final void setExitTime(final Date exitTime) {
+        this.exitTime = ObjectUtilities.safeClone(exitTime);
+    }
+
+    public final boolean isExited() {
+        return exitTime!=null;
+    }
+
+
+    public final Date getDurationIntervalStartTime() {
+        return durationIntervalStartTime;
+    }
+
+    public final void setDurationIntervalStartTime(final Date outTime) {
+        this.durationIntervalStartTime = ObjectUtilities.safeClone(outTime);
+    }
+
+
+    public final long getDurationAccumulated() {
+        return durationAccumulated;
+    }
+
+    public final void setDurationAccumulated(final long durationAccumulated) {
+        this.durationAccumulated = durationAccumulated;
+    }
+
+    //----------------------------------------------------------------
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof ControlObjectState)) {
+            return false;
+        }
+
+        final ControlObjectState other = (ControlObjectState) obj;
+        return ObjectUtilities.nullSafeEquals(entryTime, other.entryTime)
+                && ObjectUtilities.nullSafeEquals(endTime, other.endTime)
+                && ObjectUtilities.nullSafeEquals(exitTime, other.exitTime)
+                && durationAccumulated==other.durationAccumulated
+                && ObjectUtilities.nullSafeEquals(durationIntervalStartTime, other.durationIntervalStartTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[] {
+                entryTime,
+                endTime,
+                exitTime,
+                durationAccumulated,
+                durationIntervalStartTime,
+        });
+    }
 }

@@ -956,14 +956,12 @@ public final class TestSessionController extends TestValidationController implem
     // Duration management for Control Objects
 
 	private void startControlObjectTimer(final ControlObjectState controlObjectState, final Date timestamp) {
-	    System.out.println("STARTING AT " + timestamp);
 		controlObjectState.setDurationIntervalStartTime(timestamp);
 	}
 
 	private void endControlObjectTimer(final ControlObjectState controlObjectState, final Date timestamp) {
-	    System.out.println("ENDING AT " + timestamp);
 		final long durationDelta = timestamp.getTime() - controlObjectState.getDurationIntervalStartTime().getTime();
-		controlObjectState.setAccumulatedDuration(controlObjectState.getAccumulatedDuration() + durationDelta);
+		controlObjectState.setDurationAccumulated(controlObjectState.getDurationAccumulated() + durationDelta);
 		controlObjectState.setDurationIntervalStartTime(null);
 	}
 
@@ -1057,7 +1055,7 @@ public final class TestSessionController extends TestValidationController implem
 
                     case RESPONSE:
                         if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
-                            value = testSessionState.getDurationValue();
+                            value = testSessionState.computeDurationValue();
                         }
                         break;
 

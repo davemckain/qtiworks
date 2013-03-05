@@ -112,9 +112,8 @@ public final class TestSessionStateXmlMarshaller {
         XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "entryTime", controlObjectState.getEntryTime());
         XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "endTime", controlObjectState.getEndTime());
         XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "exitTime", controlObjectState.getExitTime());
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "intervalStartTime", controlObjectState.getDurationIntervalStartTime());
-        element.setAttribute("completedIntervalDuration", Long.toString(controlObjectState.getAccumulatedDuration()));
-
+        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "durationIntervalStartTime", controlObjectState.getDurationIntervalStartTime());
+        element.setAttribute("durationAccumulated", Long.toString(controlObjectState.getDurationAccumulated()));
     }
 
     //----------------------------------------------
@@ -190,7 +189,7 @@ public final class TestSessionStateXmlMarshaller {
         target.setEntryTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "entryTime"));
         target.setEndTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "endTime"));
         target.setExitTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "exitTime"));
-        target.setAccumulatedDuration(XmlMarshallerCore.parseOptionalLongAttribute(element, "completedIntervalDuration", 0L));
-        target.setDurationIntervalStartTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "intervalStartTime"));
+        target.setDurationAccumulated(XmlMarshallerCore.parseOptionalLongAttribute(element, "durationAccumulated", 0L));
+        target.setDurationIntervalStartTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "durationInternalStart"));
     }
 }

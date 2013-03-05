@@ -49,7 +49,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,7 +65,7 @@ import java.util.Map;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class TestSessionState implements ControlObjectState, Serializable {
+public final class TestSessionState extends ControlObjectState implements Serializable {
 
     private static final long serialVersionUID = 9006603629987329773L;
 
@@ -74,13 +73,6 @@ public final class TestSessionState implements ControlObjectState, Serializable 
     private final Map<Identifier, Value> outcomeValues;
     private final Map<TestPlanNodeKey, TestPartSessionState> testPartSessionStates;
     private final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates;
-
-    private Date entryTime;
-    private Date endTime;
-    private Date exitTime;
-
-	protected Date intervalStartTime;
-	protected long completedIntervalDuration;
 
     private TestPlanNodeKey currentTestPartKey;
     private TestPlanNodeKey currentItemKey;
@@ -110,12 +102,9 @@ public final class TestSessionState implements ControlObjectState, Serializable 
 
     //----------------------------------------------------------------
 
+    @Override
     public void reset() {
-        this.entryTime = null;
-        this.endTime = null;
-        this.exitTime = null;
-        this.completedIntervalDuration = 0L;
-        this.intervalStartTime = null;
+        super.reset();
         this.currentTestPartKey = null;
         this.currentItemKey = null;
         this.outcomeValues.clear();
@@ -124,76 +113,6 @@ public final class TestSessionState implements ControlObjectState, Serializable 
     }
 
     //----------------------------------------------------------------
-
-    @Override
-    public Date getEntryTime() {
-        return ObjectUtilities.safeClone(entryTime);
-    }
-
-    @Override
-    public void setEntryTime(final Date enteredTime) {
-        this.entryTime = ObjectUtilities.safeClone(enteredTime);
-    }
-
-	@Override
-	public boolean isEntered() {
-		return entryTime!=null;
-	}
-
-
-	@Override
-	public Date getEndTime() {
-	    return ObjectUtilities.safeClone(endTime);
-	}
-
-	@Override
-	public void setEndTime(final Date endTime) {
-	    this.endTime = ObjectUtilities.safeClone(endTime);
-	}
-
-	@Override
-	public boolean isEnded() {
-	    return endTime!=null;
-	}
-
-
-	@Override
-	public Date getExitTime() {
-	    return ObjectUtilities.safeClone(exitTime);
-	}
-
-	@Override
-	public void setExitTime(final Date exitTime) {
-	    this.exitTime = ObjectUtilities.safeClone(exitTime);
-	}
-
-	@Override
-    public boolean isExited() {
-        return exitTime!=null;
-    }
-
-
-	@Override
-	public Date getDurationIntervalStartTime() {
-		return intervalStartTime;
-	}
-
-	@Override
-	public void setDurationIntervalStartTime(final Date outTime) {
-		this.intervalStartTime = ObjectUtilities.safeClone(outTime);
-	}
-
-
-	@Override
-	public long getAccumulatedDuration() {
-		return completedIntervalDuration;
-	}
-
-	@Override
-	public void setAccumulatedDuration(final long inDuration) {
-		this.completedIntervalDuration = inDuration;
-	}
-
 
     public TestPlanNodeKey getCurrentTestPartKey() {
         return currentTestPartKey;
@@ -221,12 +140,16 @@ public final class TestSessionState implements ControlObjectState, Serializable 
     // Duration calculation
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public FloatValue getDurationValue() {
-        return new FloatValue(getDuration());
+    public FloatValue computeDurationValue() {
+        return new FloatValue(computeDuration());
     }
 
-    public double getDuration() {
-        return completedIntervalDuration / 1000.0;
+    public double computeDuration() {
+        if (getDurationIntervalStartTime()!=null) {
+            /* Duration interval is open, so return nonsense value but don't actually fail */
+            return -1;
+        }
+        return getDurationAccumulated() / 1000.0;
     }
 
     //----------------------------------------------------------------
@@ -274,7 +197,7 @@ public final class TestSessionState implements ControlObjectState, Serializable 
         Assert.notNull(identifier);
         Value result;
         if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
-            result = getDurationValue();
+            result = computeDurationValue();
         }
         else {
             result = getOutcomeValue(identifier);
@@ -291,12 +214,8 @@ public final class TestSessionState implements ControlObjectState, Serializable 
         }
 
         final TestSessionState other = (TestSessionState) obj;
-        return testPlan.equals(other.testPlan)
-        		&& ObjectUtilities.nullSafeEquals(entryTime, other.entryTime)
-        		&& ObjectUtilities.nullSafeEquals(endTime, other.endTime)
-        		&& ObjectUtilities.nullSafeEquals(exitTime, other.exitTime)
-        		&& completedIntervalDuration==other.completedIntervalDuration
-        		&& ObjectUtilities.nullSafeEquals(intervalStartTime, other.intervalStartTime)
+        return super.equals(obj)
+                && testPlan.equals(other.testPlan)
                 && ObjectUtilities.nullSafeEquals(currentTestPartKey, other.currentTestPartKey)
                 && ObjectUtilities.nullSafeEquals(currentItemKey, other.currentItemKey)
                 && outcomeValues.equals(other.outcomeValues)
@@ -307,12 +226,8 @@ public final class TestSessionState implements ControlObjectState, Serializable 
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
+                super.hashCode(),
                 testPlan,
-                entryTime,
-                endTime,
-                exitTime,
-                completedIntervalDuration,
-                intervalStartTime,
                 currentTestPartKey,
                 currentItemKey,
                 outcomeValues,
@@ -325,11 +240,11 @@ public final class TestSessionState implements ControlObjectState, Serializable 
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testPlan=" + testPlan
-                + ",entryTime=" + entryTime
-                + ",endTime=" + endTime
-                + ",exitTie=" + exitTime
-                + ",inDuration=" + completedIntervalDuration
-                + ",outTime=" + intervalStartTime
+                + ",entryTime=" + getEntryTime()
+                + ",endTime=" + getEndTime()
+                + ",exitTime=" + getExitTime()
+                + ",durationAccumulated=" + getDurationAccumulated()
+                + ",durationIntervalStartTime=" + getDurationIntervalStartTime()
                 + ",currentTestPartKey=" + currentTestPartKey
                 + ",currentItemKey=" + currentItemKey
                 + ",outcomeValues=" + outcomeValues
