@@ -97,6 +97,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -456,17 +457,14 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
 
-        /* Compute current value for 'duration' */
-        final double duration = computeTestSessionDuration(candidateSession);
-
         /* Will need to query certain parts of state */
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, new NotificationRecorder(NotificationLevel.INFO));
         final TestPart currentTestPart = testSessionController.getCurrentTestPart();
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
-        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateSession,
-                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING, duration);
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateSession,
+                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayFinishItemLinear());
         return renderingRequest;
@@ -564,26 +562,12 @@ public class CandidateTestDeliveryService {
     private TestItemRenderingRequest initTestItemRenderingRequest(final CandidateSession candidateSession,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-        return initTestItemRenderingRequestCustomDuration(candidateSession, itemKey, testSessionState,
-                itemSessionState, renderingOptions, renderingMode, -1.0);
-    }
-
-    private TestItemRenderingRequest initTestItemRenderingRequestCustomDuration(final CandidateSession candidateSession,
-            final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode,
-            final double durationOverride) {
         final Delivery delivery = candidateSession.getDelivery();
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
         /* Get System ID of current item */
         final URI itemSystemId = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey).getItemSystemId();
-
-        /* Extract ItemSessionState XML for this event and override the value for duration if caller
-         * supplies a non-negative duration */
-        if (durationOverride >= 0.0) {
-            testSessionState.setDuration(durationOverride);
-        }
 
         final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
@@ -610,22 +594,6 @@ public class CandidateTestDeliveryService {
         candidateAuditLogger.logTestItemRendering(candidateEvent, renderingRequest);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderTestItem(renderingRequest, notifications, resultStream);
-    }
-
-    /**
-     * Computes the current value for the <code>duration</code> variable for this session.
-     * <p>
-     * Currently, this is just the length of time since the session was first opened.
-     * We DO NOT yet support breaking sessions time-wise.
-     *
-     * @return computed value for <code>duration</code>, which will be non-negative.
-     */
-    private double computeTestSessionDuration(final CandidateSession candidateSession) {
-        final long startTime = candidateSession.getCreationTime().getTime();
-        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
-
-        final double duration = (currentTime - startTime) / 1000.0;
-        return duration;
     }
 
     //----------------------------------------------------
@@ -712,7 +680,8 @@ public class CandidateTestDeliveryService {
         }
 
         /* Attempt to bind responses (and maybe perform RP & OP) */
-        testSessionController.handleResponses(responseDataMap);
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.handleResponses(requestTimestamp, responseDataMap);
 
         /* Note any responses that failed to bind */
         final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();
@@ -734,9 +703,6 @@ public class CandidateTestDeliveryService {
                 }
             }
         }
-
-        /* Update JQTI state */
-        testSessionState.setDuration(computeTestSessionDuration(candidateSession));
 
         /* Classify this event */
         final SubmissionMode submissionMode = testSessionController.getCurrentTestPart().getSubmissionMode();
@@ -789,7 +755,8 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        testSessionController.selectItemNonlinear(null);
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.selectItemNonlinear(requestTimestamp, null);
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -823,7 +790,8 @@ public class CandidateTestDeliveryService {
         }
 
         /* Update state */
-        testSessionController.selectItemNonlinear(itemKey);
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.selectItemNonlinear(requestTimestamp, itemKey);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -856,7 +824,8 @@ public class CandidateTestDeliveryService {
         }
 
         /* Update state */
-        testSessionController.finishItemLinear();
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.finishItemLinear(requestTimestamp);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -889,8 +858,8 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        /* FIXME: This is probably not the right logic in general but works OK in this restricted case */
-        testSessionController.endTestPart();
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.endTestPart(requestTimestamp);
 
         /* Record assessmentResult (not necessarily final) */
         final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
@@ -1036,7 +1005,8 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart();
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
 
         if (nextTestPart==null) {
             /* We exited the last test part.
@@ -1082,7 +1052,8 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        testSessionController.exitTest();
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.exitTest(requestTimestamp);
 
         /* Update CandidateSession as appropriate */
         candidateSession.setTerminated(true);

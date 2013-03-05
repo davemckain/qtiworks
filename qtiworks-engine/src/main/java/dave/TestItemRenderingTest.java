@@ -32,6 +32,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
+import java.util.Date;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -70,20 +71,24 @@ public class TestItemRenderingTest {
             testSessionController.addNotificationListener(notificationLogListener);
 
             System.out.println("\nInitialising and entering test and first part");
+            final Date timestamp1 = new Date();
             testSessionController.initialize();
-            testSessionController.enterTest();
-            System.out.println("First available testPart is " + testSessionController.getNextAvailableTestPart());
-            testSessionController.enterNextAvailableTestPart();
+            testSessionController.enterTest(timestamp1);
+
+            final Date timestamp2 = RunUtilities.addTime(timestamp1, 1000L);
+            System.out.println("First available testPart is " + testSessionController.findNextAvailableTestPart());
+            testSessionController.enterNextAvailableTestPart(timestamp2);
             System.out.println("Test session state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
             /* Select first item */
+            final Date timestamp3 = RunUtilities.addTime(timestamp1, 5000L);
             final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
-            testSessionController.selectItemNonlinear(firstItemRef.getKey());
+            testSessionController.selectItemNonlinear(timestamp3, firstItemRef.getKey());
             final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRef.getKey());
 
             System.out.println("\nRendering state after selection of first item");
 
-            final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
+            final RenderingOptions renderingOptions = RunUtilities.createRenderingOptions();
             final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);

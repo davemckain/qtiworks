@@ -28,6 +28,7 @@ import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,18 +67,19 @@ public final class AssessmentTestExample {
         final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
         testSessionController.addNotificationListener(notificationLogListener);
 
+        Date timestamp = new Date();
         testSessionController.initialize();
-        testSessionController.enterTest();
-        testSessionController.enterNextAvailableTestPart();
+        testSessionController.enterTest(timestamp);
+        testSessionController.enterNextAvailableTestPart(timestamp);
         System.out.println("Test state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
-        testSessionController.selectItemNonlinear(firstItemRefNode.getKey());
+        testSessionController.selectItemNonlinear(timestamp, firstItemRefNode.getKey());
         System.out.println("First item is " + firstItemRefNode);
 
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
-        testSessionController.handleResponses(responseMap);
+        testSessionController.handleResponses(timestamp, responseMap);
 
         System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 

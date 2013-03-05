@@ -63,6 +63,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationForwarder;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
+import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -242,7 +243,6 @@ public final class TestSessionController extends TestValidationController implem
         for (final Identifier identifier : testProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
             testSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
         }
-        testSessionState.resetBuiltinVariables();
 
         /* Initialise state for each testPart */
         for (final TestPlanNode testPartNode : testSessionState.getTestPlan().getTestPartNodes()) {
@@ -282,16 +282,17 @@ public final class TestSessionController extends TestValidationController implem
      *
      * @return number of {@link TestPart}s in the test.
      *
-     * @see #getNextAvailableTestPart()
+     * @see #findNextAvailableTestPart()
      * @see #enterNextAvailableTestPart()
      */
-    public int enterTest() {
-    	ensureTestNotEntered();
+    public int enterTest(final Date timestamp) {
+    	assertTestNotEntered();
 
     	logger.debug("Entering test");
-    	testSessionState.setEntered(true);
+    	testSessionState.setEntryTime(timestamp);
         testSessionState.setCurrentTestPartKey(null);
         testSessionState.setCurrentItemKey(null);
+        startControlObjectTimer(testSessionState, timestamp);
         resetOutcomeVariables();
 
         return testSessionState.getTestPlan().getTestPartNodes().size();
@@ -304,34 +305,34 @@ public final class TestSessionController extends TestValidationController implem
 	 * <p>
 	 * Postcondition: The test will be marked as being exited.
 	 */
-	public void exitTest() {
-		ensureTestNotExited();
-		testSessionState.setExited(true);
+	public void exitTest(final Date timestamp) {
+		assertTestNotExited();
+		testSessionState.setExitTime(timestamp);
 	}
 
-	private void ensureTestNotEntered() {
+	private void assertTestNotEntered() {
     	if (testSessionState.isEntered()) {
     		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => false");
     	}
     }
 
-    private void ensureTestNotEnded() {
+    private void assertTestNotEnded() {
     	if (testSessionState.isEnded()) {
     		throw new QtiCandidateStateException("Expected TestSessionState.isEnded() => false");
     	}
     }
 
-    private void ensureTestNotExited() {
+    private void assertTestNotExited() {
     	if (testSessionState.isExited()) {
     		throw new QtiCandidateStateException("Expected TestSessionState.isExited() => false");
     	}
     }
 
-    private void ensureInsideTest() {
+    private void assertInsideTest() {
     	if (!testSessionState.isEntered()) {
     		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => true");
     	}
-    	ensureTestNotEnded();
+    	assertTestNotEnded();
     }
 
     /**
@@ -342,8 +343,8 @@ public final class TestSessionController extends TestValidationController implem
      * <p>
      * Precondition: The test must have been entered.
      */
-    public TestPlanNode getNextAvailableTestPart() {
-    	ensureInsideTest();
+    public TestPlanNode findNextAvailableTestPart() {
+    	assertInsideTest();
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
 
@@ -380,13 +381,16 @@ public final class TestSessionController extends TestValidationController implem
      * If the newly-presented {@link TestPart} has {@link NavigationMode#LINEAR} then we will
      * attempt to select the first item.
      * <p>
-     * Precondition: The test must have been entered but not yet ended.
+     * Precondition: The test must have been entered but not yet ended. The current testPart
+     * (if appropriate) must have been ended.
      * <p>
      * Postcondition: The next available {@link TestPart} will be entered, if one is available.
      * Otherwise the test itself will be ended.
      */
-    public TestPlanNode enterNextAvailableTestPart() {
-    	ensureInsideTest();
+    public TestPlanNode enterNextAvailableTestPart(final Date timestamp) {
+    	assertInsideTest();
+        endControlObjectTimer(testSessionState, timestamp);
+
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
 
@@ -395,6 +399,7 @@ public final class TestSessionController extends TestValidationController implem
         int nextTestPartIndex;
         if (currentTestPartNode!=null) {
             final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
+            assertTestPartEnded(currentTestPartSessionState);
             currentTestPartSessionState.setExited(true);
             nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
         }
@@ -425,9 +430,11 @@ public final class TestSessionController extends TestValidationController implem
         /* Exit test if no more testParts are available */
         if (nextAvailableTestPartNode==null) {
             logger.debug("No more testParts available, so ending test");
-            testSessionState.setEnded(true);
+            testSessionState.setEndTime(timestamp);
             return null;
         }
+
+        startControlObjectTimer(testSessionState, timestamp);
 
         /* Enter next testPart and mark as presented */
         logger.debug("Entering testPart {} and running template processing on each item", nextAvailableTestPartNode.getIdentifier());
@@ -445,7 +452,7 @@ public final class TestSessionController extends TestValidationController implem
         final TestPart nextTestPart = ensureTestPart(nextAvailableTestPartNode);
         if (nextTestPart.getNavigationMode()==NavigationMode.LINEAR) {
         	logger.debug("Auto-selecting first item in testPart as we are in LINEAR mode");
-            selectNextItemOrEndTestPart();
+            selectNextItemOrEndTestPart(timestamp);
         }
 
         return nextAvailableTestPartNode;
@@ -497,11 +504,11 @@ public final class TestSessionController extends TestValidationController implem
 	 * Marks the current test part as ended, if allowed, performing any processing
 	 * required at this time and updating state as appropriate.
 	 *
-	 * PRECONDITION: {@link #mayEndTestPart()} must return true
-	 * POSTCONDITIONS: all item states in testPart will be closed, current test
+	 * Precondition: {@link #mayEndTestPart()} must return true
+	 * Postcondition: all item states in testPart will be closed, current test
 	 *   state marked as ended, current item cleared.
 	 */
-	public void endTestPart() {
+	public void endTestPart(final Date timestamp) {
 	    if (!mayEndTestPart()) {
 	        throw new QtiCandidateStateException("Current test part cannot be ended");
 	    }
@@ -527,6 +534,9 @@ public final class TestSessionController extends TestValidationController implem
 
 	    /* Deselect item */
 	    testSessionState.setCurrentItemKey(null);
+
+	    /* Update duration */
+        touchControlObjectTimer(testSessionState, timestamp);
 
 	    /* Update state for this test part */
 	    final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
@@ -582,7 +592,7 @@ public final class TestSessionController extends TestValidationController implem
      *
      * @see #maySelectItemNonlinear(TestPlanNodeKey)
      */
-    public TestPlanNode selectItemNonlinear(final TestPlanNodeKey itemKey) {
+    public TestPlanNode selectItemNonlinear(final Date timestamp, final TestPlanNodeKey itemKey) {
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
 
@@ -590,6 +600,9 @@ public final class TestSessionController extends TestValidationController implem
         if (currentTestPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
             throw new QtiCandidateStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
         }
+
+        /* Update duration */
+        touchControlObjectTimer(testSessionState, timestamp);
 
         if (itemKey!=null) {
             final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
@@ -601,7 +614,6 @@ public final class TestSessionController extends TestValidationController implem
 
             /* Mark item as being presented */
             getItemSessionController(itemRefNode).markPresented();
-
             return itemRefNode;
         }
         else {
@@ -650,7 +662,7 @@ public final class TestSessionController extends TestValidationController implem
         return true;
     }
 
-    public TestPlanNode finishItemLinear() {
+    public TestPlanNode finishItemLinear(final Date timestamp) {
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
 
@@ -677,8 +689,11 @@ public final class TestSessionController extends TestValidationController implem
         /* Log what's happened */
         logger.debug("Finished item {}", currentItemRefNode.getKey());
 
+        /* Update duration */
+        touchControlObjectTimer(testSessionState, timestamp);
+
         /* Select next item (if one is available) or end the testPart */
-        return selectNextItemOrEndTestPart();
+        return selectNextItemOrEndTestPart(timestamp);
     }
 
     /**
@@ -690,7 +705,7 @@ public final class TestSessionController extends TestValidationController implem
      * @throws QtiCandidateStateException if no testPart is selected, if the current testPart
      *   does not have {@link NavigationMode#LINEAR}.
      */
-    private TestPlanNode selectNextItemOrEndTestPart() {
+    private TestPlanNode selectNextItemOrEndTestPart(final Date timestamp) {
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
 
@@ -722,7 +737,7 @@ public final class TestSessionController extends TestValidationController implem
         }
         else {
             /* No more items available, so end testPart */
-            endTestPart();
+            endTestPart(timestamp);
         }
         return nextItemRefNode;
     }
@@ -747,13 +762,16 @@ public final class TestSessionController extends TestValidationController implem
      * <p>
      * In {@link SubmissionMode#SIMULTANEOUS} mode, no processing happens.
      */
-    public void handleResponses(final Map<Identifier, ResponseData> responseMap) {
+    public void handleResponses(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(responseMap, "responseMap");
         final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
 
         /* Bind responses */
         final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
         final boolean boundSuccessfully = itemSessionController.bindResponses(responseMap);
+
+        /* Set duration */
+        touchControlObjectTimer(testSessionState, timestamp);
 
         /* Do processing if we're in INDIVIDUAL mode */
         final TestPart testPart = ensureCurrentTestPart();
@@ -883,6 +901,12 @@ public final class TestSessionController extends TestValidationController implem
         return testPartSessionState;
     }
 
+    private void assertTestPartEnded(final TestPartSessionState testPartSessionState) {
+        if (!testPartSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Expected testPartSessionState.isEnded() => true");
+        }
+    }
+
     private void ensureItemRefNode(final TestPlanNode itemRefNode) {
         if (itemRefNode==null || itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
             throw new IllegalArgumentException("Expected " + itemRefNode + " to be an " + TestNodeType.ASSESSMENT_ITEM_REF);
@@ -892,7 +916,7 @@ public final class TestSessionController extends TestValidationController implem
     //-------------------------------------------------------------------
     // Outcome processing
 
-    public void performOutcomeProcessing() {
+    private void performOutcomeProcessing() {
         logger.debug("Outcome processing starting on test {}", getSubject().getSystemId());
         fireLifecycleEvent(JqtiLifecycleEventType.TEST_OUTCOME_PROCESSING_STARTING);
         try {
@@ -926,6 +950,26 @@ public final class TestSessionController extends TestValidationController implem
             result = NullValue.INSTANCE;
         }
         return result;
+    }
+
+    //-------------------------------------------------------------------
+    // Duration management for Control Objects
+
+	private void startControlObjectTimer(final ControlObjectState controlObjectState, final Date timestamp) {
+	    System.out.println("STARTING AT " + timestamp);
+		controlObjectState.setDurationIntervalStartTime(timestamp);
+	}
+
+	private void endControlObjectTimer(final ControlObjectState controlObjectState, final Date timestamp) {
+	    System.out.println("ENDING AT " + timestamp);
+		final long durationDelta = timestamp.getTime() - controlObjectState.getDurationIntervalStartTime().getTime();
+		controlObjectState.setAccumulatedDuration(controlObjectState.getAccumulatedDuration() + durationDelta);
+		controlObjectState.setDurationIntervalStartTime(null);
+	}
+
+    private void touchControlObjectTimer(final ControlObjectState controlObjectState, final Date timestamp) {
+        endControlObjectTimer(controlObjectState, timestamp);
+        startControlObjectTimer(controlObjectState, timestamp);
     }
 
     //-------------------------------------------------------------------

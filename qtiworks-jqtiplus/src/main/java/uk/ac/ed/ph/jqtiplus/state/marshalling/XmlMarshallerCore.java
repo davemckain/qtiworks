@@ -51,8 +51,11 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +82,8 @@ public final class XmlMarshallerCore {
     /** Namespace used for custom QTIWorks XML */
     public static final String QTIWORKS_NAMESPACE = "http://www.ph.ed.ac.uk/qtiworks";
 
+	private static final String dateFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ";
+
     //----------------------------------------------
     // Marshalling to XML
 
@@ -100,6 +105,21 @@ public final class XmlMarshallerCore {
         if (content!=null) {
             final Element element = appendElement(parentElement, elementName);
             element.appendChild(parentElement.getOwnerDocument().createTextNode(content));
+        }
+    }
+
+    static void maybeAddDateOrEmptyAttribute(final Element element, final String attributeName, final Date date) {
+        if (date!=null) {
+            element.setAttribute(attributeName, new SimpleDateFormat(dateFormatString).format(date));
+        }
+        else {
+            element.setAttribute(attributeName,  "");
+        }
+    }
+
+    static void maybeAddDateAttribute(final Element element, final String attributeName, final Date date) {
+        if (date!=null) {
+            element.setAttribute(attributeName, new SimpleDateFormat(dateFormatString).format(date));
         }
     }
 
@@ -257,8 +277,34 @@ public final class XmlMarshallerCore {
         }
     }
 
+    static long parseOptionalLongAttribute(final Element element, final String attrName, final long defaultValue) {
+        if (!element.hasAttribute(attrName)) {
+            return defaultValue;
+        }
+        final String attrValue = element.getAttribute(attrName);
+        try {
+            return Long.parseLong(attrValue);
+        }
+        catch (final NumberFormatException e) {
+            throw new XmlUnmarshallingException("Could not parse long attribute value " + attrValue + " for " + attrName);
+        }
+    }
+
     static String parseOptionalStringAttribute(final Element element, final String attrName) {
         return element.hasAttribute(attrName) ? element.getAttribute(attrName) : null;
+    }
+
+    static Date parseOptionalDateAttribute(final Element element, final String attrName) {
+        final String attrValue = element.getAttribute(attrName);
+        if (attrValue.isEmpty()) {
+            return null;
+        }
+        try {
+			return new SimpleDateFormat(dateFormatString).parse(attrValue);
+		}
+        catch (final ParseException e) {
+            throw new XmlUnmarshallingException("Could not parse Date attribute", e);
+		}
     }
 
     static URI parseOptionalUriAttribute(final Element element, final String attrName) {

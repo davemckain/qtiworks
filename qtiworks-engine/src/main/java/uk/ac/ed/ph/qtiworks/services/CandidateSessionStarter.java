@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
@@ -66,6 +67,7 @@ import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -91,6 +93,9 @@ public class CandidateSessionStarter {
 
     @Resource
     private IdentityContext identityContext;
+
+    @Resource
+    private RequestTimestampContext requestTimestampContext;
 
     @Resource
     private CandidateAuditLogger candidateAuditLogger;
@@ -289,14 +294,15 @@ public class CandidateSessionStarter {
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Initialise test state and enter test */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         testSessionController.initialize();
-        final int testPartCount = testSessionController.enterTest();
+        final int testPartCount = testSessionController.enterTest(timestamp);
         if (testPartCount==1) {
             /* If there is only testPart, then enter this (if possible).
              * (Note that this may cause the test to exit immediately if there is a failed
              * PreCondition on this part.)
              */
-            testSessionController.enterNextAvailableTestPart();
+            testSessionController.enterNextAvailableTestPart(timestamp);
         }
         else {
             /* Don't enter first testPart yet - we shall tell candidate that

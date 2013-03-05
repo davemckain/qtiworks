@@ -9,7 +9,6 @@ import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -67,7 +66,7 @@ public class StandaloneItemRenderingTest {
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = createRenderingOptions();
+            final RenderingOptions renderingOptions = RunUtilities.createRenderingOptions();
             final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
             renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
@@ -104,30 +103,5 @@ public class StandaloneItemRenderingTest {
         finally {
             jqtiExtensionManager.destroy();
         }
-    }
-
-    public static RenderingOptions createRenderingOptions() {
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath("/qtiworks");
-        renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setCloseUrl("/close");
-        renderingOptions.setResetUrl("/reset");
-        renderingOptions.setReinitUrl("/reinit");
-        renderingOptions.setSolutionUrl("/solution");
-        renderingOptions.setResultUrl("/result");
-        renderingOptions.setSourceUrl("/source");
-        renderingOptions.setServeFileUrl("/serveFile");
-        renderingOptions.setTerminateUrl("/terminate");
-        renderingOptions.setTestPartNavigationUrl("/test-part-navigation");
-        renderingOptions.setSelectTestItemUrl("/select-item");
-        renderingOptions.setFinishTestItemUrl("/finish-item");
-        renderingOptions.setEndTestPartUrl("/end-test-part");
-        renderingOptions.setReviewTestPartUrl("/review-test-part");
-        renderingOptions.setReviewTestItemUrl("/review-item");
-        renderingOptions.setShowTestItemSolutionUrl("/item-solution");
-        renderingOptions.setAdvanceTestPartUrl("/advance-test-part");
-        renderingOptions.setExitTestUrl("/exit-test");
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        return renderingOptions;
     }
 }

@@ -28,6 +28,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
+import java.util.Date;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -65,14 +66,15 @@ public class TestNavigationRenderingTest {
             testSessionController.addNotificationListener(notificationLogListener);
 
             System.out.println("\nInitialising");
+            final Date timestamp = new Date();
             testSessionController.initialize();
-            testSessionController.enterTest();
-            testSessionController.enterNextAvailableTestPart();
+            testSessionController.enterTest(timestamp);
+            testSessionController.enterNextAvailableTestPart(timestamp);
             System.out.println("Test session state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = StandaloneItemRenderingTest.createRenderingOptions();
+            final RenderingOptions renderingOptions = RunUtilities.createRenderingOptions();
             final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
