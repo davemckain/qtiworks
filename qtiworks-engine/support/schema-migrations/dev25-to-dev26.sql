@@ -20,5 +20,8 @@ ALTER SEQUENCE delivery_sequence START WITH 1 INCREMENT BY 1;
 ALTER SEQUENCE delivery_settings_sequence START WITH 1 INCREMENT BY 1;
 ALTER SEQUENCE sample_category_sequence START WITH 1 INCREMENT BY 10;
 ALTER SEQUENCE user_sequence START WITH 1000 INCREMENT BY 1;
+-- Some event names were changed in DEV26
+UPDATE candidate_events SET test_event_type='ENTER_TEST' WHERE test_event_type='INIT';
+UPDATE candidate_events SET test_event_type='ADVANCE_TEST_PART' WHERE test_event_type='EXIT_TEST_PART';
 --
 COMMIT WORK;
