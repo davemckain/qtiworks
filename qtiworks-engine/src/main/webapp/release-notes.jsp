@@ -10,7 +10,18 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes (Development)</h2>
+  <h2>QTIWorks Release Notes (Production)</h2>
+
+  <h3>1.0-M4 [Production] (07/03/2013)</h3>
+  <p>
+    This is basically 1.0-DEV25 with some further behind-the-scenes changes added since then. There is no noticeable
+    change in functionality between M3 and M4, though we have dropped some obscure features that were never really used
+    that much (such as the "playback" feature when running single items).
+  </p>
+  <p>
+    See production releases at <a href="https://www2.ph.ed.ac.uk/qtiworks">https://www2.ph.ed.ac.uk/qtiworks</a>, and
+    development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
 
   <h3>1.0-DEV25 [Development] (28/02/2013)</h3>
   <p>
