@@ -46,24 +46,16 @@ import java.util.Arrays;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public class TestPartSessionState implements Serializable {
+public class TestPartSessionState extends ControlObjectState implements Serializable {
 
     private static final long serialVersionUID = -1041244926292225923L;
 
     private boolean preConditionFailed;
-    private boolean entered;
-    private boolean ended;
-    private boolean exited;
 
-    public TestPartSessionState() {
-        reset();
-    }
-
+    @Override
     public void reset() {
+        super.reset();
     	this.preConditionFailed = false;
-        this.entered = false;
-        this.ended = false;
-        this.exited = false;
     }
 
     //----------------------------------------------------------------
@@ -76,33 +68,6 @@ public class TestPartSessionState implements Serializable {
 		this.preConditionFailed = preConditionFailed;
 	}
 
-
-	public boolean isEntered() {
-        return entered;
-    }
-
-	public void setEntered(final boolean entered) {
-        this.entered = entered;
-    }
-
-
-    public boolean isEnded() {
-        return ended;
-    }
-
-    public void setEnded(final boolean ended) {
-        this.ended = ended;
-    }
-
-
-    public boolean isExited() {
-        return exited;
-    }
-
-    public void setExited(final boolean exited) {
-        this.exited = exited;
-    }
-
     //----------------------------------------------------------------
 
     @Override
@@ -111,19 +76,15 @@ public class TestPartSessionState implements Serializable {
             return false;
         }
         final TestPartSessionState other = (TestPartSessionState) obj;
-        return preConditionFailed==other.preConditionFailed
-        		&& entered==other.entered
-                && ended==other.ended
-                && exited==other.exited;
+        return super.equals(other)
+                && preConditionFailed==other.preConditionFailed;
     }
 
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
-        		preConditionFailed,
-                entered,
-                ended,
-                exited
+                super.hashCode(),
+        		preConditionFailed
         });
     }
 
@@ -131,9 +92,11 @@ public class TestPartSessionState implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(preConditionFailed=" + preConditionFailed
-                + ",entered=" + entered
-                + ",ended=" + ended
-                + ",exited=" + exited
+                + ",entryTime=" + getEntryTime()
+                + ",endTime=" + getEndTime()
+                + ",exitTime=" + getExitTime()
+                + ",durationAccumulated=" + getDurationAccumulated()
+                + ",durationIntervalStartTime=" + getDurationIntervalStartTime()
                 + ")";
     }
 }

@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.state.marshalling;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -127,6 +128,14 @@ public final class XmlMarshallerCore {
         if (!values.isEmpty()) {
             element.setAttribute(attributeName, StringUtilities.join(values, " "));
         }
+    }
+
+    static void addControlObjectStateAttributes(final Element element, final ControlObjectState controlObjectState) {
+        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "entryTime", controlObjectState.getEntryTime());
+        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "endTime", controlObjectState.getEndTime());
+        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "exitTime", controlObjectState.getExitTime());
+        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "durationIntervalStartTime", controlObjectState.getDurationIntervalStartTime());
+        element.setAttribute("durationAccumulated", Long.toString(controlObjectState.getDurationAccumulated()));
     }
 
     static void appendValues(final Element parentElement, final String elementName, final Map<Identifier, Value> valueMap) {
@@ -314,6 +323,14 @@ public final class XmlMarshallerCore {
         catch (final URISyntaxException e) {
             throw new XmlUnmarshallingException("Could not parse URI attribute", e);
         }
+    }
+
+    static void parseControlObjectStateAttributes(final ControlObjectState target, final Element element) {
+        target.setEntryTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "entryTime"));
+        target.setEndTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "endTime"));
+        target.setExitTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "exitTime"));
+        target.setDurationAccumulated(XmlMarshallerCore.parseOptionalLongAttribute(element, "durationAccumulated", 0L));
+        target.setDurationIntervalStartTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "durationInternalStart"));
     }
 
     static Value parseValue(final Element element) {

@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
-import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
@@ -77,7 +76,7 @@ public final class TestSessionStateXmlMarshaller {
 
     static void appendTestSessionState(final Node documentOrElement, final TestSessionState testSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testSessionState");
-        appendControlObjectState(element, testSessionState);
+        XmlMarshallerCore.addControlObjectStateAttributes(element, testSessionState);
         maybeAddStringifiableAttribute(element, "currentTestPartKey", testSessionState.getCurrentTestPartKey());
         maybeAddStringifiableAttribute(element, "currentItemKey", testSessionState.getCurrentItemKey());
 
@@ -106,14 +105,6 @@ public final class TestSessionStateXmlMarshaller {
             itemElement.setAttribute("key", key.toString());
             ItemSessionStateXmlMarshaller.appendItemSessionState(itemElement, itemSessionState);
         }
-    }
-
-    private static void appendControlObjectState(final Element element, final ControlObjectState controlObjectState) {
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "entryTime", controlObjectState.getEntryTime());
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "endTime", controlObjectState.getEndTime());
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "exitTime", controlObjectState.getExitTime());
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "durationIntervalStartTime", controlObjectState.getDurationIntervalStartTime());
-        element.setAttribute("durationAccumulated", Long.toString(controlObjectState.getDurationAccumulated()));
     }
 
     //----------------------------------------------
@@ -147,7 +138,7 @@ public final class TestSessionStateXmlMarshaller {
         final TestSessionState result = new TestSessionState(testPlan);
 
         /* Extract state attributes */
-        extractControlObjectStateAttributes(result, element);
+        XmlMarshallerCore.parseControlObjectStateAttributes(result, element);
         result.setCurrentTestPartKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentTestPartKey"));
         result.setCurrentItemKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentItemKey"));
 
@@ -185,11 +176,4 @@ public final class TestSessionStateXmlMarshaller {
         return result;
     }
 
-    private static void extractControlObjectStateAttributes(final ControlObjectState target, final Element element) {
-        target.setEntryTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "entryTime"));
-        target.setEndTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "endTime"));
-        target.setExitTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "exitTime"));
-        target.setDurationAccumulated(XmlMarshallerCore.parseOptionalLongAttribute(element, "durationAccumulated", 0L));
-        target.setDurationIntervalStartTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "durationInternalStart"));
-    }
 }

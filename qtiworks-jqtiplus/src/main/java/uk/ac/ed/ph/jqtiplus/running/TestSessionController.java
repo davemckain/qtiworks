@@ -298,18 +298,6 @@ public final class TestSessionController extends TestValidationController implem
         return testSessionState.getTestPlan().getTestPartNodes().size();
     }
 
-    /**
-	 * Exits the test after it has been ended.
-	 * <p>
-	 * Precondition: The test must have been ended
-	 * <p>
-	 * Postcondition: The test will be marked as being exited.
-	 */
-	public void exitTest(final Date timestamp) {
-		assertTestNotExited();
-		testSessionState.setExitTime(timestamp);
-	}
-
 	private void assertTestNotEntered() {
     	if (testSessionState.isEntered()) {
     		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => false");
@@ -400,7 +388,7 @@ public final class TestSessionController extends TestValidationController implem
         if (currentTestPartNode!=null) {
             final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
             assertTestPartEnded(currentTestPartSessionState);
-            currentTestPartSessionState.setExited(true);
+            currentTestPartSessionState.setExitTime(timestamp);
             nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
         }
         else {
@@ -434,13 +422,13 @@ public final class TestSessionController extends TestValidationController implem
             return null;
         }
 
-        startControlObjectTimer(testSessionState, timestamp);
-
-        /* Enter next testPart and mark as presented */
+        /* Enter next testPart */
         logger.debug("Entering testPart {} and running template processing on each item", nextAvailableTestPartNode.getIdentifier());
         final TestPartSessionState nextTestPartSessionState = ensureTestPartSessionState(nextAvailableTestPartNode);
         testSessionState.setCurrentTestPartKey(nextAvailableTestPartNode.getKey());
-        nextTestPartSessionState.setEntered(true);
+        nextTestPartSessionState.setEntryTime(timestamp);
+        startControlObjectTimer(nextTestPartSessionState, timestamp);
+        startControlObjectTimer(testSessionState, timestamp);
 
         /* Perform template processing on each item */
         final List<TestPlanNode> itemRefNodes = nextAvailableTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
@@ -514,6 +502,7 @@ public final class TestSessionController extends TestValidationController implem
 	    }
 
 	    final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+	    final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
 	    final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
 	    final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
 	    if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
@@ -535,14 +524,25 @@ public final class TestSessionController extends TestValidationController implem
 	    /* Deselect item */
 	    testSessionState.setCurrentItemKey(null);
 
-	    /* Update duration */
+	    /* Update state and timer */
+	    currentTestPartSessionState.setEndTime(timestamp);
+	    endControlObjectTimer(currentTestPartSessionState, timestamp);
         touchControlObjectTimer(testSessionState, timestamp);
 
-	    /* Update state for this test part */
-	    final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
-	    currentTestPartSessionState.setEnded(true);
 	    logger.debug("Ended testPart {}", currentTestPartNode.getIdentifier());
 	}
+
+    /**
+     * Exits the test after it has been ended.
+     * <p>
+     * Precondition: The test must have been ended
+     * <p>
+     * Postcondition: The test will be marked as being exited.
+     */
+    public void exitTest(final Date timestamp) {
+        assertTestNotExited();
+        testSessionState.setExitTime(timestamp);
+    }
 
     //-------------------------------------------------------------------
     // Nonlinear navigation within a testPart

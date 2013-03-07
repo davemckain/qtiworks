@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
@@ -71,6 +73,7 @@ public abstract class ControlObjectState implements Serializable {
         this.entryTime = ObjectUtilities.safeClone(enteredTime);
     }
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public final boolean isEntered() {
         return entryTime!=null;
     }
@@ -84,6 +87,7 @@ public abstract class ControlObjectState implements Serializable {
         this.endTime = ObjectUtilities.safeClone(endTime);
     }
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public final boolean isEnded() {
         return endTime!=null;
     }
@@ -97,6 +101,7 @@ public abstract class ControlObjectState implements Serializable {
         this.exitTime = ObjectUtilities.safeClone(exitTime);
     }
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public final boolean isExited() {
         return exitTime!=null;
     }
