@@ -159,7 +159,7 @@ public enum RoundingMode implements Stringifiable {
 
     private RoundingMode(final String roundingMode) {
         this.roundingMode = roundingMode;
-    };
+    }
 
     public abstract boolean isFiguresValid(int figures);
 

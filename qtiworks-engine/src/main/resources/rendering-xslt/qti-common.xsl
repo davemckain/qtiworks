@@ -50,7 +50,8 @@ rendering.
   <xsl:param name="reviewTestPartUrl" as="xs:string" required="yes"/>
   <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>
   <xsl:param name="showTestItemSolutionUrl" as="xs:string" required="yes"/>
-  <xsl:param name="exitTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="advanceTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="exitTestUrl" as="xs:string" required="yes"/>
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>
@@ -408,13 +409,6 @@ rendering.
   <!-- Copy other attributes as-is -->
   <xsl:template match="@*" mode="qti-to-xhtml">
     <xsl:copy-of select="."/>
-  </xsl:template>
-
-  <!-- Catch-all for QTI elements not handled elsewhere. -->
-  <xsl:template match="qti:*" priority="-10">
-    <xsl:message terminate="yes">
-      QTI element <xsl:value-of select="local-name()"/> was not handled by a template
-    </xsl:message>
   </xsl:template>
 
   <!-- ************************************************************ -->

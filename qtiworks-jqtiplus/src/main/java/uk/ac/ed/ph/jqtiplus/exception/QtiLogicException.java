@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.exception;
 
-
 /**
  * Exception used to denote a logic failure or unexpected internal condition.
  * <p>
@@ -45,11 +44,11 @@ public class QtiLogicException extends JqtiRuntimeException {
 
     private static final long serialVersionUID = -6501850546437845744L;
 
-    public QtiLogicException(String message) {
+    public QtiLogicException(final String message) {
         super(message);
     }
 
-    public QtiLogicException(String message, Throwable cause) {
+    public QtiLogicException(final String message, final Throwable cause) {
         super(message, cause);
     }
 }

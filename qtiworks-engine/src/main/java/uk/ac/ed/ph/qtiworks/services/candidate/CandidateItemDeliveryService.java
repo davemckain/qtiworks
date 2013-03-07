@@ -159,10 +159,9 @@ public class CandidateItemDeliveryService {
      * "authentication".
      *
      * @param xid
-     * @return
+     *
      * @throws DomainEntityNotFoundException
      * @throws CandidateForbiddenException
-     * @throws CandidateCandidatePrivilegeException
      */
     public CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
@@ -664,7 +663,7 @@ public class CandidateItemDeliveryService {
      * Resets the {@link CandidateSession} having the given ID (xid), returning the
      * updated {@link CandidateSession}. This takes the session back to the state it
      * was in immediately after the last {@link CandidateItemEventType#REINIT} (if applicable),
-     * or after the original {@link CandidateEvent#INIT}.
+     * or after the original {@link CandidateItemEventType#INIT}.
      */
     public CandidateSession resetCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {

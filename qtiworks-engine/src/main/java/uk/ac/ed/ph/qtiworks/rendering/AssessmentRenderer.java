@@ -75,6 +75,8 @@ import org.springframework.validation.Validator;
 /**
  * FIXME: Redocument this!
  *
+ * FIXME: Refactor this. It has become very messy since starting to implement the test spec!
+ *
  * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
  * containing a mixture of C & P. The idea would be that we use the PMathML, if available,
  * or convert the CMathML to PMathML once all substitutions have been made. Potential
@@ -92,8 +94,10 @@ public class AssessmentRenderer {
     private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
+    private static final URI testEntryXsltUri = URI.create("classpath:/rendering-xslt/test-entry.xsl");
     private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
     private static final URI testPartFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-feedback.xsl");
+    private static final URI testFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-feedback.xsl");
 
     @Resource
     private QtiWorksProperties qtiWorksProperties;
@@ -307,7 +311,6 @@ public class AssessmentRenderer {
         xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
-        xsltParameters.put("playbackUrlBase", renderingOptions.getPlaybackUrlBase());
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
         xsltParameters.put("selectTestItemUrl", renderingOptions.getSelectTestItemUrl());
@@ -316,10 +319,55 @@ public class AssessmentRenderer {
         xsltParameters.put("reviewTestPartUrl", renderingOptions.getReviewTestPartUrl());
         xsltParameters.put("reviewTestItemUrl", renderingOptions.getReviewTestItemUrl());
         xsltParameters.put("showTestItemSolutionUrl", renderingOptions.getShowTestItemSolutionUrl());
-        xsltParameters.put("exitTestPartUrl", renderingOptions.getExitTestPartUrl());
+        xsltParameters.put("advanceTestPartUrl", renderingOptions.getAdvanceTestPartUrl());
+        xsltParameters.put("exitTestUrl", renderingOptions.getExitTestUrl());
     }
 
     //----------------------------------------------------
+
+    /**
+     * FIXME: Document this!
+     *
+     * The caller is responsible for closing this stream afterwards.
+     *
+     * @param renderingRequest
+     * @param resultStream
+     *
+     * @throws QtiRenderingException if an unexpected Exception happens during rendering
+     */
+    public void renderTestEntryPage(final TestEntryRenderingRequest renderingRequest,
+            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
+        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(resultStream, "resultStream");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testEntryRenderingRequest");
+        jsr303Validator.validate(renderingRequest, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+
+        /* Pass request info to XSLT as parameters */
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+        setBaseRenderingParameters(xsltParameters, renderingRequest);
+        setTestRenderingParameters(xsltParameters, renderingRequest);
+
+        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
+        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
+
+        /* Pass TestSessionState as XML */
+        final TestSessionState testSessionState = renderingRequest.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+
+        doTransform(renderingRequest, testEntryXsltUri, renderingRequest.getAssessmentResourceUri(),
+                resultStream, xsltParameters);
+    }
 
     /**
      * FIXME: Document this!
@@ -384,7 +432,7 @@ public class AssessmentRenderer {
         Assert.notNull(resultStream, "resultStream");
 
         /* Check request is valid */
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testFeedbackRenderingRequest");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testPartFeedbackRenderingRequest");
         jsr303Validator.validate(renderingRequest, errors);
         if (errors.hasErrors()) {
             throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
@@ -409,6 +457,49 @@ public class AssessmentRenderer {
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
 
         doTransform(renderingRequest, testPartFeedbackXsltUri, renderingRequest.getAssessmentResourceUri(),
+                resultStream, xsltParameters);
+    }
+    /**
+     * FIXME: Document this!
+     *
+     * The caller is responsible for closing this stream afterwards.
+     *
+     * @param renderingRequest
+     * @param resultStream
+     *
+     * @throws QtiRenderingException if an unexpected Exception happens during rendering
+     */
+    public void renderTestFeedback(final TestFeedbackRenderingRequest renderingRequest,
+            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
+        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(resultStream, "resultStream");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testFeedbackRenderingRequest");
+        jsr303Validator.validate(renderingRequest, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+
+        /* Pass request info to XSLT as parameters */
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+        setBaseRenderingParameters(xsltParameters, renderingRequest);
+        setTestRenderingParameters(xsltParameters, renderingRequest);
+
+        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
+        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
+
+        /* Pass TestSessionState as XML */
+        final TestSessionState testSessionState = renderingRequest.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+
+        doTransform(renderingRequest, testFeedbackXsltUri, renderingRequest.getAssessmentResourceUri(),
                 resultStream, xsltParameters);
     }
 

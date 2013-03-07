@@ -31,35 +31,23 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletResponse;
+package uk.ac.ed.ph.jqtiplus.exception;
 
 /**
- * This implementation of {@link ServletOutputStreamer} is suitable for web requests that can be
- * expected to send a different response each time. (E.g. rendering the current state of an item
- * or test session).
+ * Exception thrown when attempting to perform an illegal state change
+ * on a candidate session.
  *
  * @author David McKain
  */
-public final class NonCacheableWebOutputStreamer extends ServletOutputStreamer {
+public final class QtiCandidateStateException extends JqtiRuntimeException {
 
-    public NonCacheableWebOutputStreamer(final HttpServletResponse response) {
-        super(response, null);
+    private static final long serialVersionUID = 2924118614829800754L;
+
+	public QtiCandidateStateException(final String message) {
+        super(message);
     }
 
-    @Override
-    public void stream(final String contentType, final long contentLength, final Date lastModifiedTime, final InputStream resultStream)
-            throws IOException {
-        setContentType(contentType);
-        setContentLength(contentLength);
-        setLastModifiedTime(lastModifiedTime);
-        response.setHeader("Cache-Control", "no-cache, must-revalidate");
-        response.setHeader("Expires", formatHttpDate(lastModifiedTime));
-        transferResultStream(resultStream);
+    public QtiCandidateStateException(final String message, final Throwable cause) {
+        super(message, cause);
     }
 }

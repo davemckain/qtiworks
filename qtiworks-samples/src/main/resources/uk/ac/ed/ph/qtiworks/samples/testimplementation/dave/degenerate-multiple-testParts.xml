@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="degenerate-multiple-testParts"
+  title="Multipl testParts with failed preCondition">
+
+  <outcomeDeclaration identifier="testFeedback" cardinality="single" baseType="identifier">
+    <defaultValue>
+      <value>testFeedback</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <testPart identifier="P1" navigationMode="nonlinear" submissionMode="individual">
+    <preCondition>
+      <null/>
+    </preCondition>
+    <assessmentSection identifier="P1S1" title="Failed testPart" visible="true">
+      <assessmentItemRef identifier="P1S1Q1" href="addition-feedback.xml"/>
+    </assessmentSection>
+  </testPart>
+  <testPart identifier="P2" navigationMode="nonlinear" submissionMode="individual">
+    <preCondition>
+      <null/>
+    </preCondition>
+    <assessmentSection identifier="P2S1" title="Failed testPart" visible="true">
+      <assessmentItemRef identifier="P2S1Q1" href="addition-feedback.xml"/>
+    </assessmentSection>
+  </testPart>
+  <testFeedback access="atEnd" outcomeIdentifier="testFeedback" identifier="testFeedback" showHide="show">
+    <p>
+      This test will have exited immediately as the <code>preCondition</code> on its two
+      <code>testPart</code>s will have failed.
+    </p>
+  </testFeedback>
+</assessmentTest>

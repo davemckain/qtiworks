@@ -78,6 +78,8 @@ public final class TestSessionStateXmlMarshaller {
 
     static void appendTestSessionState(final Node documentOrElement, final TestSessionState testSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testSessionState");
+        element.setAttribute("entered", StringUtilities.toTrueFalse(testSessionState.isEntered()));
+        element.setAttribute("ended", StringUtilities.toTrueFalse(testSessionState.isEnded()));
         element.setAttribute("exited", StringUtilities.toTrueFalse(testSessionState.isExited()));
         maybeAddStringifiableAttribute(element, "currentTestPartKey", testSessionState.getCurrentTestPartKey());
         maybeAddStringifiableAttribute(element, "currentItemKey", testSessionState.getCurrentItemKey());
@@ -140,7 +142,9 @@ public final class TestSessionStateXmlMarshaller {
         final TestSessionState result = new TestSessionState(testPlan);
 
         /* Extract state attributes */
-        result.setExited(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "exited", false));
+        result.setEntered(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "entered", true)); /* FIXME: Remove legacy true */
+        result.setEnded(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "ended", true)); /* FIXME: Remove legacy false */
+        result.setExited(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "exited", false)); /* FIXME: Remove legacy false */
         result.setCurrentTestPartKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentTestPartKey"));
         result.setCurrentItemKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentItemKey"));
         final String durationString = XmlMarshallerCore.requireAttribute(element, "duration");

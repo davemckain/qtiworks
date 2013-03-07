@@ -214,7 +214,7 @@ public class DataDeletionService {
      * <p>
      * Returns the number of deliveries deleted
      *
-     * @param latestCreationTime cut-off creation time for deleting old {@link Delivery) entities
+     * @param latestCreationTime cut-off creation time for deleting old {@link Delivery} entities
      */
     public int deleteTransientDeliveries(final User user, final Date latestCreationTime) {
         int deleted = 0;
@@ -231,7 +231,7 @@ public class DataDeletionService {
      * <p>
      * Returns the number of deliveries deleted
      *
-     * @param latestCreationTime cut-off creation time for deleting old {@link Delivery) entities
+     * @param latestCreationTime cut-off creation time for deleting old {@link Delivery} entities
      */
     public int deleteTransientDeliveries(final Date latestCreationTime) {
         int deleted = 0;

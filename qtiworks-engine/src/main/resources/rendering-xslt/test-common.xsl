@@ -151,7 +151,7 @@ Base templates used in test rendering
   <!-- ************************************************************ -->
 
   <!-- test feedback -->
-  <xsl:template match="qti:testFeedback" as="node()*">
+  <xsl:template match="qti:testFeedback">
     <xsl:variable name="feedback-content" as="node()*">
       <xsl:choose>
         <xsl:when test="$overrideFeedback">
@@ -170,7 +170,5 @@ Base templates used in test rendering
       <xsl:copy-of select="$feedback-content"/>
     </xsl:if>
   </xsl:template>
-
-  <!-- ************************************************************ -->
 
 </xsl:stylesheet>

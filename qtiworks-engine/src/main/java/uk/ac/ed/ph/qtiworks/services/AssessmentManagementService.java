@@ -749,7 +749,6 @@ public class AssessmentManagementService {
      * Deletes the {@link Delivery} having the given did and owned by the caller.
      *
      * NOTE: This deletes ALL associated data, including candidate data. Use with care!
-     * @return
      */
     @Transactional(propagation=Propagation.REQUIRED)
     public Assessment deleteDelivery(final long did)

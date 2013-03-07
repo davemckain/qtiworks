@@ -37,7 +37,7 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.Expression;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
-import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -47,6 +47,9 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * Parent for all jump objects (preCondition and branchRule).
+ *
+ * @see PreCondition
+ * @see BranchRule
  *
  * @author Jiri Kajaba
  */
@@ -88,7 +91,7 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
     @ToRefactor
     @Override
     protected void validateThis(final ValidationContext context) {
-        final TestPart parentTestPart = getParent().getParentTestPart();
+        final TestPart parentTestPart = getParent().getEnclosingTestPart();
         if (parentTestPart.getNavigationMode() != null && parentTestPart.getSubmissionMode() != null) {
             if (getParent() != parentTestPart && !parentTestPart.areJumpsEnabled()) {
                 context.fireValidationWarning(this, "Jump will be ignored for modes: " +
@@ -102,14 +105,8 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
      *
      * @return evaluated condition of this jump
      */
-    public boolean evaluate(final ProcessingContext context) {
-        final Value value = getExpression().evaluate(context);
-
-        if (value.isNull()) {
-            return false;
-        }
-        final boolean result = ((BooleanValue) value).booleanValue();
-
-        return result;
+    public boolean evaluatesTrue(final TestProcessingContext testProcessingContext) {
+        final Value value = getExpression().evaluate(testProcessingContext);
+        return BooleanValue.TRUE.equals(value);
     }
 }

@@ -16,6 +16,9 @@ NB: This is used both while being presented, and during review.
   xpath-default-namespace="http://www.w3.org/1999/xhtml"
   exclude-result-prefixes="xs qti qw m">
 
+  <!-- ************************************************************ -->
+
+  <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
   <xsl:import href="item-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
@@ -43,7 +46,7 @@ NB: This is used both while being presented, and during review.
   -->
   <xsl:variable name="assessmentItem" select="/*[1]" as="element(qti:assessmentItem)"/>
 
-  <xsl:variable name="feedbackAllowed" as="xs:boolean"
+  <xsl:variable name="itemFeedbackAllowed" as="xs:boolean"
     select="if ($renderingMode='REVIEW')
       then (/qti:assessentItem/@adaptive='true' or $showFeedback)
       else ($renderingMode!='SOLUTION')"/>
@@ -78,18 +81,6 @@ NB: This is used both while being presented, and during review.
           <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}"/>
         </xsl:if>
 
-        <!-- Timer setup (requires controls to be displayed) -->
-        <!-- HAS NOT BEEN PORTED OVER YET
-        <xsl:if test="$displayControls and $timeRemaining >= 0">
-          <script src="{$webappContextPath}/Jscript/TimeLimit.js"/>
-          <script>
-            $(document).ready(function() {
-              initTimer('<xsl:value-of select="$timeRemaining"/>');
-            });
-          </script>
-        </xsl:if>
-        -->
-
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
         (It would be quite nice if we could allow each interaction to hook into this
@@ -112,8 +103,21 @@ NB: This is used both while being presented, and during review.
       </head>
       <body class="qtiworks assessmentItem assessmentTest">
 
-        <!-- Drill down into current item via testPart structure -->
+        <!-- Drill down into current item via current testPart structure -->
         <xsl:apply-templates select="$currentTestPartNode" mode="testPart-drilldown"/>
+
+        <!--
+        Show 'during' tetFeedback for the current testPart and/or the test itself.
+        The info model says this should be shown directly after outcome processing.
+        This is equivalent in this case to the item's sessionStatus='final'
+        -->
+        <xsl:if test="$sessionStatus='final'">
+          <!-- Show any 'during' testFeedback for the current testPart -->
+          <xsl:apply-templates select="$currentTestPart/qti:testFeedback[@access='during']"/>
+
+          <!-- Show any 'during' testFeedback for the test -->
+          <xsl:apply-templates select="$assessmentTest/qti:testFeedback[@access='during']"/>
+        </xsl:if>
 
         <!-- Test Session control -->
         <xsl:call-template name="qw:test-controls"/>
@@ -226,7 +230,7 @@ NB: This is used both while being presented, and during review.
     <xsl:apply-templates select="qti:itemBody"/>
 
     <!-- Display active modal feedback (only after responseProcessing) -->
-    <xsl:if test="$feedbackAllowed and $sessionStatus='final'">
+    <xsl:if test="$itemFeedbackAllowed and $sessionStatus='final'">
       <xsl:variable name="modalFeedback" as="element()*">
         <xsl:for-each select="qti:modalFeedback">
           <xsl:variable name="feedback" as="node()*">
@@ -275,7 +279,7 @@ NB: This is used both while being presented, and during review.
 
   <!-- Override using $showFeedback -->
   <xsl:template match="qti:feedbackInline | qti:feedbackBlock">
-    <xsl:if test="$feedbackAllowed">
+    <xsl:if test="$itemFeedbackAllowed">
       <xsl:apply-imports/>
     </xsl:if>
   </xsl:template>

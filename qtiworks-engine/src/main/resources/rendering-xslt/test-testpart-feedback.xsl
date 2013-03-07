@@ -16,6 +16,7 @@ Renders the test(Part) feedback
 
   <!-- ************************************************************ -->
 
+  <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
@@ -61,10 +62,11 @@ Renders the test(Part) feedback
       </head>
       <body class="qtiworks assessmentTest testFeedback">
         <h1><xsl:value-of select="$testOrTestPart"/> Complete</h1>
-        <!-- Show testPart feedback -->
+
+        <!-- Show 'atEnd' testPart feedback -->
         <xsl:apply-templates select="$currentTestPart/qti:testFeedback[@access='atEnd']"/>
 
-        <!-- Show test feedback if there's only 1 testPart -->
+        <!-- Show 'atEnd' test feedback f there's only 1 testPart -->
         <xsl:if test="not($hasMultipleTestParts)">
           <xsl:apply-templates select="qti:testFeedback[@access='atEnd']"/>
         </xsl:if>
@@ -82,9 +84,9 @@ Renders the test(Part) feedback
     <div class="sessionControl">
       <ul class="controls test">
         <li>
-          <form action="{$webappContextPath}{$exitTestPartUrl}" method="post"
-            onsubmit="return confirm('Are you sure? This will leave the test and you can\'t go back in.')">
-            <input type="submit" value="Exit Test"/>
+          <form action="{$webappContextPath}{$advanceTestPartUrl}" method="post"
+            onsubmit="return confirm('Are you sure? This will leave this {$testOrTestPart} and you can\'t go back in.')">
+            <input type="submit" value="Exit {$testOrTestPart}"/>
           </form>
         </li>
       </ul>

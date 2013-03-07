@@ -46,7 +46,6 @@ import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
-import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -110,7 +109,6 @@ public class CandidateTestController {
         renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
         renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
-        renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");
@@ -120,7 +118,8 @@ public class CandidateTestController {
         renderingOptions.setReviewTestItemUrl(sessionBaseUrl + "/review-item");
         renderingOptions.setShowTestItemSolutionUrl(sessionBaseUrl + "/item-solution");
         renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/end-test-part");
-        renderingOptions.setExitTestPartUrl(sessionBaseUrl + "/exit-test-part");
+        renderingOptions.setAdvanceTestPartUrl(sessionBaseUrl + "/advance-test-part");
+        renderingOptions.setExitTestUrl(sessionBaseUrl + "/exit-test");
         return renderingOptions;
     }
 
@@ -209,7 +208,7 @@ public class CandidateTestController {
     // Test navigation and lifecycle
 
     /**
-     * Selects the navigaton menu for the current test part
+     * @see CandidateTestDeliveryService#selectNavigationMenu(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/test-part-navigation", method=RequestMethod.POST)
     public String showNavigationMenu(@PathVariable final long xid, @PathVariable final String sessionToken)
@@ -221,23 +220,22 @@ public class CandidateTestController {
     }
 
     /**
-     * Selects the requested item instance (NONLINEAR)
+     * @see CandidateTestDeliveryService#selectNonlinearItem(CandidateSession, TestPlanNodeKey)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/select-item/{key}", method=RequestMethod.POST)
-    public String selectItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
+    public String selectNonlinearItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateTestDeliveryService.selectItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
+        candidateTestDeliveryService.selectNonlinearItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);
     }
 
     /**
-     * Finishes current item (LINEAR navigation) and either goes to the next one, or ends the
-     * testPart if there are none left.
+     * @see CandidateTestDeliveryService#finishLinearItem(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/finish-item", method=RequestMethod.POST)
-    public String selectNextItem(@PathVariable final long xid, @PathVariable final String sessionToken)
+    public String finishLinearItem(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         candidateTestDeliveryService.finishLinearItem(xid, sessionToken);
 
@@ -246,7 +244,7 @@ public class CandidateTestController {
     }
 
     /**
-     * Ends the current test part
+     * @see CandidateTestDeliveryService#endCurrentTestPart(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/end-test-part", method=RequestMethod.POST)
     public String endCurrentTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
@@ -258,7 +256,7 @@ public class CandidateTestController {
     }
 
     /**
-     * Shows test part review state
+     * @see CandidateTestDeliveryService#reviewTestPart(CandidateSession)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/review-test-part", method=RequestMethod.POST)
     public String reviewTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
@@ -270,7 +268,7 @@ public class CandidateTestController {
     }
 
     /**
-     * Shows the review state of the requested item instance
+     * @see CandidateTestDeliveryService#reviewItem(CandidateSession, TestPlanNodeKey)
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/review-item/{key}", method=RequestMethod.POST)
     public String reviewItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
@@ -281,6 +279,9 @@ public class CandidateTestController {
         return redirectToRenderSession(xid, sessionToken);
     }
 
+    /**
+     * @see CandidateTestDeliveryService#requestSolution(CandidateSession, TestPlanNodeKey)
+     */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/item-solution/{key}", method=RequestMethod.POST)
     public String showItemSolution(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
@@ -290,15 +291,36 @@ public class CandidateTestController {
         return redirectToRenderSession(xid, sessionToken);
     }
 
+    /**
+     * @see CandidateTestDeliveryService#advanceTestPart(CandidateSession)
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/advance-test-part", method=RequestMethod.POST)
+    public String advanceTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        final CandidateSession candidateSession = candidateTestDeliveryService.advanceTestPart(xid, sessionToken);
+        String redirect;
+        if (candidateSession.isTerminated()) {
+            /* We exited the test */
+            redirect = redirectToExitUrl(candidateSession.getExitUrl());
+            if (redirect==null) {
+                /* No/unsafe redirect specified, so get the rendered to generate an "assessment is complete" page */
+                redirect = redirectToRenderSession(xid, sessionToken);
+            }
+        }
+        else {
+            /* Moved onto next part */
+            redirect = redirectToRenderSession(xid, sessionToken);
+        }
+        return redirect;
+    }
 
     /**
-     * Exits the current {@link TestPart}
+     * @see CandidateTestDeliveryService#exitTest(CandidateSession)
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/exit-test-part", method=RequestMethod.POST)
-    public String exitCurrentTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/exit-test", method=RequestMethod.POST)
+    public String exitTest(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        final CandidateSession candidateSession = candidateTestDeliveryService.exitCurrentTestPart(xid, sessionToken);
-
+        final CandidateSession candidateSession = candidateTestDeliveryService.exitTest(xid, sessionToken);
         String redirect = redirectToExitUrl(candidateSession.getExitUrl());
         if (redirect==null) {
             /* No/unsafe redirect specified, so get the rendered to generate an "assessment is complete" page */

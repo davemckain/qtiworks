@@ -107,7 +107,6 @@ public class CandidateItemController {
         renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
         renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
-        renderingOptions.setPlaybackUrlBase(sessionBaseUrl+ "/playback");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setSelectTestItemUrl("");
@@ -116,7 +115,8 @@ public class CandidateItemController {
         renderingOptions.setReviewTestPartUrl("");
         renderingOptions.setReviewTestItemUrl("");
         renderingOptions.setShowTestItemSolutionUrl("");
-        renderingOptions.setExitTestPartUrl("");
+        renderingOptions.setAdvanceTestPartUrl("");
+        renderingOptions.setExitTestUrl("");
         renderingOptions.setTestPartNavigationUrl("");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);

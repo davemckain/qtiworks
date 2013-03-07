@@ -31,35 +31,35 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web;
+package uk.ac.ed.ph.qtiworks.rendering;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 
 /**
- * This implementation of {@link ServletOutputStreamer} is suitable for web requests that can be
- * expected to send a different response each time. (E.g. rendering the current state of an item
- * or test session).
+ * Request for rendering the entry page in an {@link AssessmentTest}
+ * having more than one {@link TestPart}.
  *
  * @author David McKain
  */
-public final class NonCacheableWebOutputStreamer extends ServletOutputStreamer {
+public final class TestEntryRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
 
-    public NonCacheableWebOutputStreamer(final HttpServletResponse response) {
-        super(response, null);
-    }
+    /** Required {@link TestSessionState} to be rendered */
+    @NotNull
+    private TestSessionState testSessionState;
+
+    //----------------------------------------------------
 
     @Override
-    public void stream(final String contentType, final long contentLength, final Date lastModifiedTime, final InputStream resultStream)
-            throws IOException {
-        setContentType(contentType);
-        setContentLength(contentLength);
-        setLastModifiedTime(lastModifiedTime);
-        response.setHeader("Cache-Control", "no-cache, must-revalidate");
-        response.setHeader("Expires", formatHttpDate(lastModifiedTime));
-        transferResultStream(resultStream);
+    public TestSessionState getTestSessionState() {
+        return testSessionState;
     }
+
+    public void setTestSessionState(final TestSessionState testSessionState) {
+        this.testSessionState = testSessionState;
+    }
+
 }

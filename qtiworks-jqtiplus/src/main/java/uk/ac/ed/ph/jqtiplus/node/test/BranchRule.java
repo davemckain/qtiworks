@@ -107,7 +107,7 @@ public final class BranchRule extends AbstractJump {
                 result = null;
             }
             else {
-                result = getParent().getParentTestPart();
+                result = getParent().getEnclosingTestPart();
             }
         }
         else if (isExitSection()) {
@@ -168,7 +168,7 @@ public final class BranchRule extends AbstractJump {
         final AssessmentTest assessmentTest = ((TestValidationContext) context).getSubjectTest();
 
         final Identifier target = getTarget();
-        final TestPart parentTestPart = getParent().getParentTestPart();
+        final TestPart parentTestPart = getParent().getEnclosingTestPart();
         if (target != null && parentTestPart.areJumpsEnabled()) {
             if (isSpecial()) {
                 if (isExitTestPart()) {

@@ -16,6 +16,7 @@ Renders the navigation for the current testPart
 
   <!-- ************************************************************ -->
 
+  <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
@@ -77,7 +78,7 @@ Renders the navigation for the current testPart
         <li>
           <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
             onsubmit="return confirm('Are you sure?')">
-            <input type="submit" value="End Test">
+            <input type="submit" value="End {$testOrTestPart}">
               <xsl:if test="not($endTestPartAllowed)">
                 <xsl:attribute name="disabled" select="'disabled'"/>
               </xsl:if>

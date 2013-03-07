@@ -55,6 +55,8 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestEntryRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
@@ -116,19 +118,17 @@ import org.springframework.web.multipart.MultipartFile;
  * NOTE: Remember there is no {@link IdentityContext} for candidates.
  *
  * CURRENTLY SUPPORTED:
- * - single testPart only
  * - nonlinear & linear navigation mode (menu, select item)
  * - simultaneous & individual submission mode
- * - testPart "atEnd" feedback
- * - test "atEnd" feedback only (when single testPart only)
  * - solutions
+ * - itemSessionControl (all but candidateComment)
+ * - multiple testParts
+ * - preCondition on testParts
+ * - test / test part "during" and "atEnd" feedback
  *
  * STILL TO DO:
- * - test part "atEnd" feedback
- * - test / test part "during" feedback
- * - multiple testParts
+ * - preCondition (elsewhere)
  * - branchRule
- * - preCondition
  *
  * @author David McKain
  *
@@ -174,13 +174,11 @@ public class CandidateTestDeliveryService {
     /**
      * Looks up the {@link CandidateSession} having the given ID (xid)
      * and checks the given sessionToken against that stored in the session as a means of
-     * "authentication" and that
+     * "authentication".
      *
      * @param xid
-     * @return
      * @throws DomainEntityNotFoundException
      * @throws CandidateForbiddenException
-     * @throws CandidateCandidatePrivilegeException
      */
     public CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
@@ -322,7 +320,11 @@ public class CandidateTestDeliveryService {
             final TestSessionState testSessionState,
             final RenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
-        if (currentTestPartKey!=null) {
+        if (testSessionState.isEnded()) {
+            /* At end of test, so show overall test feedback */
+            renderTestFeedback(candidateEvent, testSessionState, renderingOptions, resultStream);
+        }
+        else if (currentTestPartKey!=null) {
             final TestPartSessionState currentTestPartSessionState = testSessionState.getTestPartSessionStates().get(currentTestPartKey);
             final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
             if (currentItemKey!=null) {
@@ -342,8 +344,26 @@ public class CandidateTestDeliveryService {
             }
         }
         else {
-            throw new QtiWorksLogicException("'End of test' state rendering has not been implemeneted");
+            /* No current testPart == start of multipart test */
+            renderTestEntry(candidateEvent, testSessionState, renderingOptions, resultStream);
         }
+    }
+
+    private void renderTestEntry(final CandidateEvent candidateEvent,
+            final TestSessionState testSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        final TestEntryRenderingRequest renderingRequest = new TestEntryRenderingRequest();
+        initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setTestSessionState(testSessionState);
+
+        candidateAuditLogger.logTestEntryRendering(candidateEvent);
+        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
+        assessmentRenderer.renderTestEntryPage(renderingRequest, notifications, resultStream);
     }
 
     private void renderTestPartNonlinearNavigationMenu(final CandidateEvent candidateEvent,
@@ -366,6 +386,23 @@ public class CandidateTestDeliveryService {
         candidateAuditLogger.logTestPartNavigationRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderTestPartNavigation(renderingRequest, notifications, resultStream);
+    }
+
+    private void renderTestFeedback(final CandidateEvent candidateEvent,
+            final TestSessionState testSessionState,
+            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        final TestFeedbackRenderingRequest renderingRequest = new TestFeedbackRenderingRequest();
+        initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
+        renderingRequest.setTestSessionState(testSessionState);
+
+        candidateAuditLogger.logTestFeedbackRendering(candidateEvent);
+        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
+        assessmentRenderer.renderTestFeedback(renderingRequest, notifications, resultStream);
     }
 
     private void renderTestPartFeedback(final CandidateEvent candidateEvent,
@@ -762,13 +799,13 @@ public class CandidateTestDeliveryService {
         return candidateSession;
     }
 
-    public CandidateSession selectItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
+    public CandidateSession selectNonlinearItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return selectItem(candidateSession, itemKey);
+        return selectNonlinearItem(candidateSession, itemKey);
     }
 
-    public CandidateSession selectItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
+    public CandidateSession selectNonlinearItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "key");
@@ -859,8 +896,8 @@ public class CandidateTestDeliveryService {
         final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
         candidateDataServices.recordTestAssessmentResult(candidateSession, assessmentResult);
 
-        /* See if this action has ended the final testPart (i.e. ended the test) */
-        if (!testSessionController.hasMoreTestParts()) {
+        /* See if this action has ended the test */
+        if (testSessionState.isEnded()) {
             /* Update CandidateSession */
             candidateSession.setClosed(true);
             candidateSessionDao.update(candidateSession);
@@ -978,13 +1015,13 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Advance TestPart
 
-    public CandidateSession exitCurrentTestPart(final long xid, final String sessionToken)
+    public CandidateSession advanceTestPart(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return exitCurrentTestPart(candidateSession);
+        return advanceTestPart(candidateSession);
     }
 
-    public CandidateSession exitCurrentTestPart(final CandidateSession candidateSession)
+    public CandidateSession advanceTestPart(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -999,15 +1036,61 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        final TestPlanNode nextTestPart = testSessionController.enterNextTestPart();
+        final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart();
+
+        if (nextTestPart==null) {
+            /* We exited the last test part.
+             *
+             * For single part tests, we terminate the test completely as the test feedback was shown with the testPart feedback.
+             * For multi-part tests, we shall keep the test open so that the test feedback can be viewed.
+             */
+            if (testSessionState.getTestPlan().getTestPartNodes().size()==1) {
+                candidateSession.setTerminated(true);
+                candidateSessionDao.update(candidateSession);
+            }
+        }
+
+        /* Record and log event */
+        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+                CandidateTestEventType.ADVANCE_TEST_PART, testSessionState, notificationRecorder);
+        candidateAuditLogger.logCandidateEvent(candidateTestEvent);
+
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+    // Exit (multi-part) test
+
+    public CandidateSession exitTest(final long xid, final String sessionToken)
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        return exitTest(candidateSession);
+    }
+
+    public CandidateSession exitTest(final CandidateSession candidateSession)
+            throws CandidateForbiddenException {
+        Assert.notNull(candidateSession, "candidateSession");
+
+        /* Get current session state */
+        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
+
+        /* Make sure caller may do this */
+        ensureSessionNotTerminated(candidateSession);
+
+        /* Update state */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final Delivery delivery = candidateSession.getDelivery();
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
+                testSessionState, notificationRecorder);
+        testSessionController.exitTest();
 
         /* Update CandidateSession as appropriate */
-        candidateSession.setTerminated(nextTestPart==null);
+        candidateSession.setTerminated(true);
         candidateSessionDao.update(candidateSession);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.EXIT_TEST_PART, testSessionState, notificationRecorder);
+                CandidateTestEventType.EXIT_MULTI_PART_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;

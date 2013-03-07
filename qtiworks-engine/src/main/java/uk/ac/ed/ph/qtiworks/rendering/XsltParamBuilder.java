@@ -44,8 +44,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,7 +82,7 @@ public final class XsltParamBuilder {
         this.documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
     }
 
-    @ToCheck
+    @Deprecated
     public static List<String> identifiersToList(final Collection<Identifier> identifiers) {
         if (identifiers==null || identifiers.isEmpty()) {
             return Collections.emptyList();
@@ -130,6 +128,7 @@ public final class XsltParamBuilder {
         return result;
     }
 
+    @Deprecated
     public NodeList rubricsToNodeList(final List<List<RubricBlock>> values) {
         return new XsltParamDocumentBuilder(jqtiExtensionManager, new SaxFirerCallback() {
 
@@ -155,11 +154,12 @@ public final class XsltParamBuilder {
         }).buildDocument().getDocumentElement().getChildNodes();
     }
 
+    @Deprecated
     public NodeList testFeedbacksToNodeList(final List<TestFeedback> values) {
         return buildNodeList(values);
     }
 
-    @ToRefactor
+    @Deprecated
     public NodeList outcomeDeclarationsToNodeList(final List<OutcomeDeclaration> values) {
         return buildNodeList(values);
     }

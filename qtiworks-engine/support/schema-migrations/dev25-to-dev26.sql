@@ -1,4 +1,7 @@
 BEGIN WORK;
+-- Need a bit more room for event descriptions
+ALTER TABLE candidate_events ALTER test_event_type SET DATA TYPE varchar(32);
+ALTER TABLE candidate_events ALTER item_event_type SET DATA TYPE varchar(32);
 -- Had to rename candidate_sequence.terminated for MySQL compatibility
 ALTER TABLE candidate_sessions ADD column is_terminated boolean;
 UPDATE candidate_sessions SET is_terminated = terminated;

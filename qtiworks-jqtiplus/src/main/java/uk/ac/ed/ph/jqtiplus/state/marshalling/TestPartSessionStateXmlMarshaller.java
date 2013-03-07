@@ -61,7 +61,8 @@ public final class TestPartSessionStateXmlMarshaller {
 
     static void appendTestSessionState(final Node documentOrElement, final TestPartSessionState testPartSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testPartSessionState");
-        element.setAttribute("presented", StringUtilities.toTrueFalse(testPartSessionState.isPresented()));
+        element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(testPartSessionState.isPreConditionFailed()));
+        element.setAttribute("entered", StringUtilities.toTrueFalse(testPartSessionState.isEntered()));
         element.setAttribute("ended", StringUtilities.toTrueFalse(testPartSessionState.isEnded()));
         element.setAttribute("exited", StringUtilities.toTrueFalse(testPartSessionState.isExited()));
     }
@@ -86,7 +87,8 @@ public final class TestPartSessionStateXmlMarshaller {
         final TestPartSessionState result = new TestPartSessionState();
 
         /* Extract state attributes */
-        result.setPresented(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "presented", false));
+        result.setPreConditionFailed(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "preConditionFailed", false));
+        result.setEntered(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "entered", false));
         result.setEnded(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "ended", false));
         result.setExited(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "exited", false));
 

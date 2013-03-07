@@ -44,17 +44,38 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
  */
 public enum CandidateTestEventType {
 
-    /** Test session initialized */
-    INIT,
+    /* NB: Observe maximum length for mapped column set in CandidateEvent */
 
-    /** Presentation of navigation menu for the current {@link TestPart} */
+    /**
+     * Test has been entered.
+     * <p>
+     * (In test having one {@link TestPart}, we also attempt
+     * to enter this automatically. Otherwise, the first {@link TestPart} has to be
+     * entered explicitly by the candidate via {@link #ADVANCE_TEST_PART}.)
+     */
+    ENTER_TEST,
+
+    /**
+     * Presentation of navigation menu for the current {@link TestPart}, when in nonlinear
+     * mode and while the {@link TestPart} is still interacting.
+     */
     SELECT_MENU,
 
-    /** Ends the current {@link TestPart} */
+    /**
+     * Ends the current {@link TestPart} and moves it into review state
+     */
     END_TEST_PART,
 
-    /** Exits the current {@link TestPart} and either goes to the next, or completes the test */
-    EXIT_TEST_PART,
+    /**
+     * Exits the current {@link TestPart} (if currently inside one), then advances to the next
+     * available {@link TestPart}, or exits the test if there are no more available.
+     */
+    ADVANCE_TEST_PART,
+
+    /**
+     * Exits a multi-part test after test final test feedback is shown.
+     */
+    EXIT_MULTI_PART_TEST,
 
     /** Selection of a particular item for interaction (in {@link NavigationMode#NONLINEAR}) */
     SELECT_ITEM,
@@ -65,7 +86,7 @@ public enum CandidateTestEventType {
     /** Item Event within the currently-selected item */
     ITEM_EVENT,
 
-    /** Test Part Review */
+    /** Return to Test Part review (while already in review state, i.e. after {@link #REVIEW_ITEM} */
     REVIEW_TEST_PART,
 
     /** Review of a particular item */

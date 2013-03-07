@@ -42,6 +42,8 @@ import javax.validation.constraints.NotNull;
 /**
  * Encapsulates general options for passing to the {@link AssessmentRenderer}.
  *
+ * FIXME: Split item- & test-specific options
+ *
  * @author David McKain
  */
 public final class RenderingOptions implements Serializable {
@@ -77,9 +79,6 @@ public final class RenderingOptions implements Serializable {
     private String sourceUrl;
 
     @NotNull
-    private String playbackUrlBase;
-
-    @NotNull
     private String terminateUrl;
 
     @NotNull
@@ -106,12 +105,14 @@ public final class RenderingOptions implements Serializable {
     @NotNull
     private String showTestItemSolutionUrl;
 
-
-    @NotNull
-    private String exitTestPartUrl;
-
     @NotNull
     private String testPartNavigationUrl;
+
+    @NotNull
+    private String advanceTestPartUrl;
+
+    @NotNull
+    private String exitTestUrl;
 
     //----------------------------------------------------
 
@@ -196,15 +197,6 @@ public final class RenderingOptions implements Serializable {
     }
 
 
-    public String getPlaybackUrlBase() {
-        return playbackUrlBase;
-    }
-
-    public void setPlaybackUrlBase(final String playbackUrlBase) {
-        this.playbackUrlBase = playbackUrlBase;
-    }
-
-
     public String getTerminateUrl() {
         return terminateUrl;
     }
@@ -276,14 +268,6 @@ public final class RenderingOptions implements Serializable {
         this.showTestItemSolutionUrl = showTestItemSolutionUrl;
     }
 
-    public String getExitTestPartUrl() {
-        return exitTestPartUrl;
-    }
-
-    public void setExitTestPartUrl(final String exitTestPartUrl) {
-        this.exitTestPartUrl = exitTestPartUrl;
-    }
-
 
     public String getTestPartNavigationUrl() {
         return testPartNavigationUrl;
@@ -291,6 +275,24 @@ public final class RenderingOptions implements Serializable {
 
     public void setTestPartNavigationUrl(final String testPartNavigationUrl) {
         this.testPartNavigationUrl = testPartNavigationUrl;
+    }
+
+
+    public String getAdvanceTestPartUrl() {
+        return advanceTestPartUrl;
+    }
+
+    public void setAdvanceTestPartUrl(final String advanceTestPartUrl) {
+        this.advanceTestPartUrl = advanceTestPartUrl;
+    }
+
+
+    public String getExitTestUrl() {
+        return exitTestUrl;
+    }
+
+    public void setExitTestUrl(final String exitTestUrl) {
+        this.exitTestUrl = exitTestUrl;
     }
 
     //----------------------------------------------------

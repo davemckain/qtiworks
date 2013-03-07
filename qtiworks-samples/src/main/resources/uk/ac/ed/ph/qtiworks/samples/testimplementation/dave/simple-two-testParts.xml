@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="simple-two-testParts"
+  title="Simple 2 testParts">
+
+  <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
+  <outcomeDeclaration identifier="testPartFeedback" cardinality="single" baseType="identifier">
+    <defaultValue>
+      <value>always</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="testFeedback" cardinality="single" baseType="identifier">
+    <defaultValue>
+      <value>always</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <testPart identifier="P1" navigationMode="nonlinear" submissionMode="individual">
+    <itemSessionControl allowReview="true" showFeedback="true" showSolution="true"/>
+    <assessmentSection identifier="P1S1" title="Simple Nonlinear/Individual Test Part" visible="true">
+      <rubricBlock view="candidate">
+        <h2>First Test Part</h2>
+        <p>
+          This first testPart has 'nonlinear' navigation and 'individual' submission mode.
+        </p>
+      </rubricBlock>
+      <assessmentItemRef identifier="Q1" href="addition-feedback.xml"/>
+      <assessmentItemRef identifier="Q2" href="choice-feedback.xml"/>
+    </assessmentSection>
+    <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
+      <p>
+        This is feedback shown at the end of the first <code>testPart</code> in this test.
+      </p>
+      <p>
+        Your total score is <printedVariable identifier="totalScore"/>.
+      </p>
+    </testFeedback>
+  </testPart>
+  <testPart identifier="P2" navigationMode="nonlinear" submissionMode="individual">
+    <itemSessionControl allowReview="true" showFeedback="true" showSolution="true"/>
+    <assessmentSection identifier="P2S1" title="Simple Linear/Individual Test Part" visible="true">
+      <rubricBlock view="candidate">
+        <h2>Second Test Part</h2>
+        <p>
+          This second testPart has 'linear' navigation and 'individual' submission mode.
+        </p>
+      </rubricBlock>
+      <assessmentItemRef identifier="Q3" href="addition-feedback.xml"/>
+    </assessmentSection>
+    <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
+      <p>
+        This is feedback shown at the end of the second <code>testPart</code> in this test.
+      </p>
+      <p>
+        Your total score is <printedVariable identifier="totalScore"/>.
+      </p>
+    </testFeedback>
+  </testPart>
+  <outcomeProcessing>
+    <setOutcomeValue identifier="totalScore">
+      <sum>
+        <testVariables variableIdentifier="SCORE"/>
+      </sum>
+    </setOutcomeValue>
+  </outcomeProcessing>
+  <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testFeedback" identifier="always">
+    <p>
+      This feedback is shown at the end of the test.
+    </p>
+    <p>
+      Your total score is <printedVariable identifier="totalScore"/>.
+    </p>
+  </testFeedback>
+</assessmentTest>

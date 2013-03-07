@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -54,9 +55,11 @@ import java.util.Map;
  * Encapsulates the current state of a candidate's test session.
  * <p>
  * An instance of this class is mutable, but you must let JQTI+ perform all
- * mutation operations for you.
+ * mutation operations for you via a {@link TestSessionController}.
  * <p>
  * An instance of this class is NOT safe for use by multiple threads.
+ *
+ * @see TestSessionController
  *
  * @author David McKain
  */
@@ -71,6 +74,8 @@ public final class TestSessionState implements Serializable {
     private final Map<TestPlanNodeKey, TestPartSessionState> testPartSessionStates;
     private final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates;
 
+    private boolean entered;
+    private boolean ended;
     private boolean exited;
     private TestPlanNodeKey currentTestPartKey;
     private TestPlanNodeKey currentItemKey;
@@ -101,12 +106,14 @@ public final class TestSessionState implements Serializable {
     //----------------------------------------------------------------
 
     public void reset() {
+        this.entered = false;
+        this.ended = false;
+        this.exited = false;
+        this.currentTestPartKey = null;
+        this.currentItemKey = null;
         this.outcomeValues.clear();
         this.testPartSessionStates.clear();
         this.itemSessionStates.clear();
-        this.currentTestPartKey = null;
-        this.currentItemKey = null;
-        this.exited = false;
         resetBuiltinVariables();
     }
 
@@ -116,11 +123,29 @@ public final class TestSessionState implements Serializable {
 
     //----------------------------------------------------------------
 
-    public boolean isExited() {
+    public boolean isEntered() {
+		return entered;
+	}
+
+	public void setEntered(final boolean entered) {
+		this.entered = entered;
+	}
+
+
+    public boolean isEnded() {
+		return ended;
+	}
+
+	public void setEnded(final boolean ended) {
+		this.ended = ended;
+	}
+
+
+	public boolean isExited() {
         return exited;
     }
 
-    public void setExited(final boolean exited) {
+	public void setExited(final boolean exited) {
         this.exited = exited;
     }
 
@@ -231,6 +256,8 @@ public final class TestSessionState implements Serializable {
 
         final TestSessionState other = (TestSessionState) obj;
         return testPlan.equals(other.testPlan)
+        		&& entered==other.entered
+        		&& ended==other.ended
                 && exited==other.exited
                 && currentTestPartKey.equals(other.currentTestPartKey)
                 && currentItemKey.equals(other.currentItemKey)
@@ -244,6 +271,8 @@ public final class TestSessionState implements Serializable {
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
                 testPlan,
+                entered,
+                ended,
                 exited,
                 currentTestPartKey,
                 currentItemKey,
@@ -258,6 +287,8 @@ public final class TestSessionState implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testPlan=" + testPlan
+                + ",entered=" + entered
+                + ",ended=" + ended
                 + ",exited=" + exited
                 + ",currentTestPartKey=" + currentTestPartKey
                 + ",currentItemKey=" + currentItemKey

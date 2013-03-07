@@ -50,7 +50,8 @@ public class TestPartSessionState implements Serializable {
 
     private static final long serialVersionUID = -1041244926292225923L;
 
-    private boolean presented;
+    private boolean preConditionFailed;
+    private boolean entered;
     private boolean ended;
     private boolean exited;
 
@@ -59,19 +60,29 @@ public class TestPartSessionState implements Serializable {
     }
 
     public void reset() {
-        this.presented = false;
+    	this.preConditionFailed = false;
+        this.entered = false;
         this.ended = false;
         this.exited = false;
     }
 
     //----------------------------------------------------------------
 
-    public boolean isPresented() {
-        return presented;
+    public boolean isPreConditionFailed() {
+		return preConditionFailed;
+	}
+
+	public void setPreConditionFailed(final boolean preConditionFailed) {
+		this.preConditionFailed = preConditionFailed;
+	}
+
+
+	public boolean isEntered() {
+        return entered;
     }
 
-    public void setPresented(final boolean presented) {
-        this.presented = presented;
+	public void setEntered(final boolean entered) {
+        this.entered = entered;
     }
 
 
@@ -100,7 +111,8 @@ public class TestPartSessionState implements Serializable {
             return false;
         }
         final TestPartSessionState other = (TestPartSessionState) obj;
-        return presented==other.presented
+        return preConditionFailed==other.preConditionFailed
+        		&& entered==other.entered
                 && ended==other.ended
                 && exited==other.exited;
     }
@@ -108,7 +120,8 @@ public class TestPartSessionState implements Serializable {
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
-                presented,
+        		preConditionFailed,
+                entered,
                 ended,
                 exited
         });
@@ -117,7 +130,8 @@ public class TestPartSessionState implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(presented=" + presented
+                + "(preConditionFailed=" + preConditionFailed
+                + ",entered=" + entered
                 + ",ended=" + ended
                 + ",exited=" + exited
                 + ")";

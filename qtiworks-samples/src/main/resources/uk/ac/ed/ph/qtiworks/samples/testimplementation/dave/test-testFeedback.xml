@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assessmentTest xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="test"
+  title="Example of 'during' testFeedback">
+
+  <outcomeDeclaration identifier="totalScore" cardinality="single" baseType="float"/>
+  <outcomeDeclaration identifier="testPartFeedback" cardinality="single" baseType="identifier">
+    <defaultValue>
+      <value>always</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <testPart identifier="P1" navigationMode="nonlinear" submissionMode="individual">
+    <assessmentSection identifier="S1" title="Section 1" visible="true">
+      <rubricBlock view="candidate">
+        <p>
+          This is an example of <code>testFeedback</code> with <code>access="during"</code>.
+        </p>
+      </rubricBlock>
+      <assessmentSection identifier="S1_1" title="Section 1.1" visible="true">
+        <rubricBlock view="candidate">
+          <p>
+            This is a nested section for checking the behaviour of <code>testFeedback</code>.
+          </p>
+        </rubricBlock>
+        <assessmentItemRef identifier="I1_1_1" href="addition-feedback.xml">
+          <itemSessionControl allowReview="true" showFeedback="true"/>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="I1_1_2" href="addition-feedback.xml">
+          <itemSessionControl allowReview="true" showFeedback="true"/>
+        </assessmentItemRef>
+      </assessmentSection>
+      <assessmentSection identifier="S1_2" title="Section 1.2" visible="true">
+        <rubricBlock view="candidate">
+          <p>
+            This is another nested section for checking the behaviour of <code>testFeedback</code>.
+          </p>
+        </rubricBlock>
+        <assessmentItemRef identifier="I1_2_1" href="addition-feedback.xml">
+          <itemSessionControl maxAttempts="0"/>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="I1_2_2" href="addition-feedback.xml">
+          <itemSessionControl maxAttempts="1"/>
+        </assessmentItemRef>
+      </assessmentSection>
+    </assessmentSection>
+    <testFeedback access="during" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
+      <p>
+        This is 'during' feedback for the testPart.
+      </p>
+    </testFeedback>
+    <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
+      <p>
+        This is 'atEnd' feedback for the testPart.
+      </p>
+    </testFeedback>
+  </testPart>
+  <outcomeProcessing>
+    <setOutcomeValue identifier="totalScore">
+      <sum>
+        <testVariables variableIdentifier="SCORE"/>
+      </sum>
+    </setOutcomeValue>
+  </outcomeProcessing>
+  <testFeedback access="during" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
+    <p>
+      This is 'during' feedback for the test.
+    </p>
+  </testFeedback>
+  <testFeedback access="atEnd" showHide="show" outcomeIdentifier="testPartFeedback" identifier="always">
+    <p>
+      This is 'atEnd' feedback for the test.
+      The score for this test is <printedVariable identifier="totalScore"/>
+    </p>
+  </testFeedback>
+</assessmentTest>
