@@ -10,7 +10,24 @@ All Rights Reserved
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/about/')}">About QTIWorks</a> &#xbb;
   </nav>
-  <h2>QTIWorks Release Notes (Production)</h2>
+  <h2>QTIWorks Release Notes (Development)</h2>
+
+  <h3>1.0-DEV26 [Development] (07/03/2013)</h3>
+  <p>
+    This snapshot adds support for delivering tests containing multiple <code>testPart</code>s, and now
+    evaluations any <code>preCondition</code>s declared at <code>testPart</code> level. It also completes
+    the implementation of <code>testFeedback</code> to support both <code>during</code> and <code>atEnd</code>
+    feedback, at both test and test part level.
+  </p>
+  <p>
+    Note: This snapshot fixes a bug in the setting of default values for outcome variables in tests. As a result,
+    the <code>showHide</code> attribute would not have been working correctly when referencing outcome variables
+    defined to have a fixed default value. You may therefore need to check existing assessments to ensure they now
+    behave correctly.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
 
   <h3>1.0-M4 [Production] (07/03/2013)</h3>
   <p>
