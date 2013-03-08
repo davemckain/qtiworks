@@ -7,12 +7,6 @@
     <correctResponse>
       <value>blue</value>
     </correctResponse>
-    <mapping lowerBound="0" upperBound="2" defaultValue="-2">
-      <mapEntry mapKey="ChoiceA" mappedValue="1"/>
-      <mapEntry mapKey="ChoiceB" mappedValue="-1"/>
-      <mapEntry mapKey="ChoiceC" mappedValue="1"/>
-      <mapEntry mapKey="ChoiceD" mappedValue="-1"/>
-    </mapping>
   </responseDeclaration>
 
   <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
@@ -41,30 +35,21 @@
   <responseProcessing>
     <responseCondition>
       <responseIf>
-        <isNull>
+        <match>
           <variable identifier="RESPONSE"/>
-        </isNull>
+          <correct identifier="RESPONSE"/>
+        </match>
         <setOutcomeValue identifier="SCORE">
-          <baseValue baseType="float">0.0</baseValue>
+          <baseValue baseType="float">1.0</baseValue>
         </setOutcomeValue>
-      </responseIf>
-      <responseElse>
-        <setOutcomeValue identifier="SCORE">
-          <mapResponse identifier="RESPONSE"/>
-        </setOutcomeValue>
-      </responseElse>
-    </responseCondition>
-    <responseCondition>
-      <responseIf>
-        <gt>
-          <variable identifier="SCORE"/>
-          <baseValue baseType="float">0.0</baseValue>
-        </gt>
         <setOutcomeValue identifier="FEEDBACK">
           <baseValue baseType="identifier">CORRECT</baseValue>
         </setOutcomeValue>
       </responseIf>
       <responseElse>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">0.0</baseValue>
+        </setOutcomeValue>
         <setOutcomeValue identifier="FEEDBACK">
           <baseValue baseType="identifier">INCORRECT</baseValue>
         </setOutcomeValue>
