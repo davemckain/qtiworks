@@ -103,9 +103,12 @@ import org.slf4j.LoggerFactory;
  * FIXME: This is currently being refactored. Need to finish off replacing presented/closed with
  * equivalents in {@link ControlObjectState}, also need to change the way durations are managed.
  *
+ * FIXME: There's too much in here. Let's split off the ProcessingContext callbacks from the actual
+ * run logic.
+ *
  * Usage: one-shot, not thread safe.
  *
- * Current lifecycle is: (FIXME - this needs update)
+ * Current lifecycle is: (FIXME - this needs updated)
  *
  * {@link #initialize()}
  * {@link #performTemplateProcessing()}
@@ -548,19 +551,18 @@ public final class ItemSessionController extends ItemValidationController implem
     // Response processing
 
     /**
-     * Binds response variables for this assessmentItem. If all responses are successfully bound
-     * to variables of the required types then they are additionally validated.
+     * Binds response variables for this assessmentItem, leaving them in uncommitted state.
+     * If all responses are successfully bound to variables of the required types then they
+     * are additionally validated.
      * <p>
-     * All response variables (except those bound to {@link EndAttemptInteraction}) will be
-     * cleared before this runs.
+     * The set of uncommitted response variables (except those bound to {@link EndAttemptInteraction})
+     * will be cleared before this runs.
      * <p>
-     * NB: This is NOT counted as an attempt.
-     *
      * Pre-condition: Item session must be open
      * <p>
-     * Post-conditions: Response variables will be bound and validated. Session state will
-     * be marked as having been responded, and Session Status will be set to
-     * {@link SessionStatus#PENDING_RESPONSE_PROCESSING}
+     * Post-conditions: Response variables will be bound and validated, but not committed.
+     *
+     * @see #commitResponses(Date)
      *
      * @param timestamp timestamp for this event
      * @param responseMap Map of responses to set, keyed on response variable identifier
@@ -579,10 +581,23 @@ public final class ItemSessionController extends ItemValidationController implem
         /* Stop duration timer */
         endItemSessionTimer(itemSessionState, timestamp);
 
-        /* First set all responses bound to <endAttemptInteractions> to false initially.
+        /* Copy existing committed response values over to uncommitted ones, for possible
+         * over-writing below.
+         */
+        for (final Entry<Identifier, Value> responseEntry : itemSessionState.getResponseValues().entrySet()) {
+            final Identifier identifier = responseEntry.getKey();
+            final Value value = responseEntry.getValue();
+            itemSessionState.setUncommittedResponseValue(identifier, value);
+        }
+
+        /* Set all uncommitted responses bound to <endAttemptInteractions> to false initially.
          * These may be overridden for responses to the presented interactions below.
          */
-        initEndAttemptInteractionResponseValues();
+        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
+            if (interaction instanceof EndAttemptInteraction) {
+                itemSessionState.setUncommittedResponseValue(interaction, BooleanValue.FALSE);
+            }
+        }
 
         /* Save raw responses */
         itemSessionState.setRawResponseDataMap(responseMap);
@@ -620,11 +635,11 @@ public final class ItemSessionController extends ItemValidationController implem
             }
         }
 
-        /* Update session status */
-        itemSessionState.setResponded(true);
+        /* Save results */
         itemSessionState.setUnboundResponseIdentifiers(unboundResponseIdentifiers);
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
-        itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
+
+        /* Touch the duration timer */
         if (!itemSessionState.isClosed()) { /* (NB: This should never fail but we'll keep it for consistency) */
             startItemSessionTimer(itemSessionState, timestamp);
         }
@@ -632,6 +647,49 @@ public final class ItemSessionController extends ItemValidationController implem
         return unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
+    /**
+     * Commits any responses previously saved via {@link #bindResponses(Date, Map)}.
+     * <p>
+     * NB: This is counted as an attempt until {@link #performResponseProcessing(Date)} is invoked.
+     * <p>
+     * Pre-condition: Item session must be open
+     * <p>
+     * Post-conditions: Response variables will be replaced by the uncommitted variables. The uncommitted
+     * variables will be cleared. The item session state will
+     * be marked as having been responded, and Session Status will be set to
+     * {@link SessionStatus#PENDING_RESPONSE_PROCESSING}
+     *
+     * @see #bindResponses(Date, Map)
+     *
+     * @param timestamp timestamp for this event
+     */
+    public void commitResponses(final Date timestamp) {
+        Assert.notNull(timestamp);
+        ensureOpen();
+        logger.debug("Committing currently saved responses to item {}", getSubject().getSystemId());
+
+        /* Stop duration timer */
+        endItemSessionTimer(itemSessionState, timestamp);
+
+        /* Commit responses */
+        for (final Entry<Identifier, Value> uncommittedResponseEntry : itemSessionState.getUncommittedResponseValues().entrySet()) {
+            final Identifier identifier = uncommittedResponseEntry.getKey();
+            final Value value = uncommittedResponseEntry.getValue();
+            itemSessionState.setResponseValue(identifier, value);
+        }
+
+        /* Clear uncommitted responses */
+        itemSessionState.clearUncommittedResponseValues();
+
+        /* Update session status */
+        itemSessionState.setResponded(true);
+        itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
+
+        /* Touch the duration timer */
+        if (!itemSessionState.isClosed()) { /* (NB: This should never fail but we'll keep it for consistency) */
+            startItemSessionTimer(itemSessionState, timestamp);
+        }
+    }
 
     /**
      * Resets all responses
@@ -656,7 +714,7 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     /**
-     * Performs response processing on the currently bound responses, changing {@link #itemSessionState}
+     * Performs response processing on the currently committed responses, changing {@link #itemSessionState}
      * as appropriate.
      * <p>
      * Pre-condition: item session must be open.
@@ -675,9 +733,13 @@ public final class ItemSessionController extends ItemValidationController implem
             /* Stop timer to recalculate current duration */
             endItemSessionTimer(itemSessionState, timestamp);
 
-            /* If no responses have been bound, then set responses for all endAttemptInteractions to false now */
+            /* If no responses have been committed, then set responses for all endAttemptInteractions to false now */
             if (!itemSessionState.isResponded()) {
-                initEndAttemptInteractionResponseValues();
+                for (final Interaction interaction : itemProcessingMap.getInteractions()) {
+                    if (interaction instanceof EndAttemptInteraction) {
+                        itemSessionState.setResponseValue(interaction, BooleanValue.FALSE);
+                    }
+                }
             }
 
             /* We will always count the attempt, unless the response was to an endAttemptInteraction
@@ -1082,36 +1144,17 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     private void resetResponseState() {
-        resetResponseVariables();
-        itemSessionState.setResponded(false);
-        itemSessionState.clearRawResponseDataMap();
-        itemSessionState.clearUnboundResponseIdentifiers();
-        itemSessionState.clearInvalidResponseIdentifiers();
-    }
-
-    private void resetResponseVariables() {
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
             if (!VariableDeclaration.isReservedIdentifier(responseDeclaration.getIdentifier())) {
                 initValue(responseDeclaration);
             }
         }
-        itemSessionState.setNumAttempts(0);
+        itemSessionState.clearUncommittedResponseValues();
         itemSessionState.clearRawResponseDataMap();
         itemSessionState.clearUnboundResponseIdentifiers();
         itemSessionState.clearInvalidResponseIdentifiers();
-    }
-
-    /**
-     * Sets the value of all response variables bound to {@link EndAttemptInteraction}s
-     * to {@link BooleanValue#FALSE}. This happens at the start of response binding, or at
-     * the start of response processing if no responses were made.
-     */
-    private void initEndAttemptInteractionResponseValues() {
-        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
-            if (interaction instanceof EndAttemptInteraction) {
-                itemSessionState.setResponseValue(interaction, BooleanValue.FALSE);
-            }
-        }
+        itemSessionState.setNumAttempts(0);
+        itemSessionState.setResponded(false);
     }
 
     private void resetOutcomeVariables() {

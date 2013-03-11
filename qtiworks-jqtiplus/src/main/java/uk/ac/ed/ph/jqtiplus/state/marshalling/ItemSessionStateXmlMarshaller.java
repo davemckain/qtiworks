@@ -90,6 +90,15 @@ public final class ItemSessionStateXmlMarshaller {
         XmlMarshallerCore.maybeAddIdentifierListAttribute(element, "unboundResponseIdentifiers", itemSessionState.getUnboundResponseIdentifiers());
         XmlMarshallerCore.maybeAddIdentifierListAttribute(element, "invalidResponseIdentifiers", itemSessionState.getInvalidResponseIdentifiers());
 
+        /* Output shuffled choice orders */
+        for (final Entry<Identifier, List<Identifier>> entry : itemSessionState.getShuffledInteractionChoiceOrders().entrySet()) {
+            final Identifier responseIdentifier = entry.getKey();
+            final List<Identifier> choiceIdentifiers = entry.getValue();
+            final Element orderElement = XmlMarshallerCore.appendElement(element, "shuffledInteractionChoiceOrder");
+            orderElement.setAttribute("responseIdentifier", responseIdentifier.toString());
+            orderElement.setAttribute("choiceSequence", StringUtilities.join(choiceIdentifiers, " "));
+        }
+
         /* Output raw responses (as elements) */
         for (final Entry<Identifier, ResponseData> entry : itemSessionState.getRawResponseDataMap().entrySet()) {
             final Identifier identifier = entry.getKey();
@@ -102,16 +111,8 @@ public final class ItemSessionStateXmlMarshaller {
         /* Output candidate comment */
         XmlMarshallerCore.maybeAppendTextElement(element, "candidateComment", itemSessionState.getCandidateComment());
 
-        /* Output shuffled choice orders */
-        for (final Entry<Identifier, List<Identifier>> entry : itemSessionState.getShuffledInteractionChoiceOrders().entrySet()) {
-            final Identifier responseIdentifier = entry.getKey();
-            final List<Identifier> choiceIdentifiers = entry.getValue();
-            final Element orderElement = XmlMarshallerCore.appendElement(element, "shuffledInteractionChoiceOrder");
-            orderElement.setAttribute("responseIdentifier", responseIdentifier.toString());
-            orderElement.setAttribute("choiceSequence", StringUtilities.join(choiceIdentifiers, " "));
-        }
-
         /* Do various values */
+        XmlMarshallerCore.appendValues(element, "uncommittedResponseValue", itemSessionState.getUncommittedResponseValues());
         XmlMarshallerCore.appendValues(element, "templateVariable", itemSessionState.getTemplateValues());
         XmlMarshallerCore.appendValues(element, "responseVariable", itemSessionState.getResponseValues());
         XmlMarshallerCore.appendValues(element, "outcomeVariable", itemSessionState.getOutcomeValues());
@@ -223,6 +224,11 @@ public final class ItemSessionStateXmlMarshaller {
                 final Identifier responseIdentifier = XmlMarshallerCore.parseIdentifierAttribute(childElement, "responseIdentifier");
                 final List<Identifier> choiceIdentifiers = parseOptionalIdentifierAttributeList(childElement, "choiceSequence");
                 result.setShuffledInteractionChoiceOrder(responseIdentifier, choiceIdentifiers);
+            }
+            else if (elementName.equals("uncommittedResponseValue")) {
+                final Identifier identifier = XmlMarshallerCore.parseIdentifierAttribute(childElement, "identifier");
+                final Value value = XmlMarshallerCore.parseValue(childElement);
+                result.setUncommittedResponseValue(identifier, value);
             }
             else if (elementName.equals("templateVariable")) {
                 final Identifier identifier = XmlMarshallerCore.parseIdentifierAttribute(childElement, "identifier");

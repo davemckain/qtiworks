@@ -145,7 +145,7 @@ public abstract class Interaction extends BodyElement {
      * List of Strings, set the appropriate response variables.
      * <p>
      * This default implementation calls up {@link #parseResponse(ResponseDeclaration, ResponseData)}
-     * and sets the value of the appropriate response declaration. You'll need to override this
+     * and sets the value of the appropriate uncommitted response declaration. You'll need to override this
      * for things that might do more, such as string interactions that might bind two variables.
      * <p>
      * (This was called <tt>processResponse</tt> previously, which I found confusing.)
@@ -159,7 +159,7 @@ public abstract class Interaction extends BodyElement {
         Assert.notNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(responseDeclaration, responseData);
-        itemSessionController.getItemSessionState().setResponseValue(this, value);
+        itemSessionController.getItemSessionState().setUncommittedResponseValue(this, value);
     }
 
     /**

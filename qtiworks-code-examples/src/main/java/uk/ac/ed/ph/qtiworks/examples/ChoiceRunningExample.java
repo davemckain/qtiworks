@@ -66,19 +66,24 @@ public final class ChoiceRunningExample {
         System.out.println("Unbound responses: " + itemSessionState.getUnboundResponseIdentifiers());
         System.out.println("Invalid responses:" + itemSessionState.getInvalidResponseIdentifiers());
         System.out.println("State after binding: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+        
+        System.out.println("\nCommitting responses");
+        Date timestamp4 = ObjectUtilities.addToTime(timestamp3, 1000L);
+        itemSessionController.commitResponses(timestamp4);
+        System.out.println("State after committing: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         System.out.println("\nInvoking response processing");
-        Date timestamp4 = ObjectUtilities.addToTime(timestamp3, 1000L);
-        itemSessionController.performResponseProcessing(timestamp4);
+        Date timestamp5 = ObjectUtilities.addToTime(timestamp4, 1000L);
+        itemSessionController.performResponseProcessing(timestamp5);
         System.out.println("State after RP1: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         System.out.println("\nExplicitly closing item session");
-        Date timestamp5 = ObjectUtilities.addToTime(timestamp4, 1000L);
-        itemSessionController.endItem(timestamp5);
+        Date timestamp6 = ObjectUtilities.addToTime(timestamp5, 1000L);
+        itemSessionController.endItem(timestamp6);
         System.out.println("State after end of session: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
-        Date timestamp6 = ObjectUtilities.addToTime(timestamp5, 1000L);
-        itemSessionController.exitItem(timestamp6);
+        Date timestamp7 = ObjectUtilities.addToTime(timestamp6, 1000L);
+        itemSessionController.exitItem(timestamp7);
         System.out.println("State after exit: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
     }
 }

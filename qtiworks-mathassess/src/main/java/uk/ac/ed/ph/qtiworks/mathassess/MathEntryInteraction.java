@@ -151,13 +151,13 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(mathAssessExtensionPackage, responseDeclaration, responseData);
         final ItemSessionState itemState = itemSessionController.getItemSessionState();
-        itemState.setResponseValue(this, value);
+        itemState.setUncommittedResponseValue(this, value);
 
         final Identifier printIdentifier = getPrintIdentifier();
         if (printIdentifier != null) {
             /* handle stringIdentifier binding as well, if requested */
             final Value printResponseValue = value.isNull() ? NullValue.INSTANCE : (StringValue) ((RecordValue) value).get(MathAssessConstants.FIELD_PMATHML_IDENTIFIER);
-            itemState.setResponseValue(printIdentifier, printResponseValue);
+            itemState.setUncommittedResponseValue(printIdentifier, printResponseValue);
         }
     }
 

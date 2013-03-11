@@ -89,22 +89,13 @@ public final class ItemSessionState extends ControlObjectState implements Serial
      */
     private final Map<Identifier, List<Identifier>> shuffledInteractionChoiceOrders;
 
-    private final Map<Identifier, ResponseData> rawResponseDataMap;
-    private final Set<Identifier> unboundResponseIdentifiers;
-    private final Set<Identifier> invalidResponseIdentifiers;
-
-    private final Map<Identifier, Value> overriddenTemplateDefaultValues;
-    private final Map<Identifier, Value> overriddenResponseDefaultValues;
-    private final Map<Identifier, Value> overriddenOutcomeDefaultValues;
-    private final Map<Identifier, Value> overriddenCorrectResponseValues;
-
     /**
      * Map of template values, keyed on Identifier.
      */
     private final Map<Identifier, Value> templateValues;
 
     /**
-     * Map of response values, keyed on Identifier.
+     * Map of (committed) response values, keyed on Identifier.
      * <p>
      * This does not include the implicit <code>duration</code>
      * and <code>numAttempts</code> variables.
@@ -119,6 +110,20 @@ public final class ItemSessionState extends ControlObjectState implements Serial
      */
     private final Map<Identifier, Value> outcomeValues;
 
+    private final Map<Identifier, ResponseData> rawResponseDataMap;
+    private final Set<Identifier> unboundResponseIdentifiers;
+    private final Set<Identifier> invalidResponseIdentifiers;
+
+    /**
+     * Bound but not yet committed response variables.
+     */
+    private final Map<Identifier, Value> uncommittedResponseValues;
+
+    private final Map<Identifier, Value> overriddenTemplateDefaultValues;
+    private final Map<Identifier, Value> overriddenResponseDefaultValues;
+    private final Map<Identifier, Value> overriddenOutcomeDefaultValues;
+    private final Map<Identifier, Value> overriddenCorrectResponseValues;
+
     private int numAttempts;
     private String completionStatus;
 
@@ -129,21 +134,22 @@ public final class ItemSessionState extends ControlObjectState implements Serial
 
     public ItemSessionState() {
         super();
-        this.initialized = false;
         this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
+        this.templateValues = new HashMap<Identifier, Value>();
+        this.responseValues = new HashMap<Identifier, Value>();
+        this.outcomeValues = new HashMap<Identifier, Value>();
         this.rawResponseDataMap = new HashMap<Identifier, ResponseData>();
         this.unboundResponseIdentifiers = new HashSet<Identifier>();
         this.invalidResponseIdentifiers = new HashSet<Identifier>();
+        this.uncommittedResponseValues = new HashMap<Identifier, Value>();
         this.overriddenTemplateDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenResponseDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenOutcomeDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenCorrectResponseValues = new HashMap<Identifier, Value>();
-        this.templateValues = new HashMap<Identifier, Value>();
-        this.responseValues = new HashMap<Identifier, Value>();
-        this.outcomeValues = new HashMap<Identifier, Value>();
         this.sessionStatus = null;
-
-        /* Set built-in variables */
+        this.initialized = false;
+        this.responded = false;
+        this.candidateComment = null;
         resetBuiltinVariables();
     }
 
@@ -152,21 +158,22 @@ public final class ItemSessionState extends ControlObjectState implements Serial
     @Override
     public void reset() {
         super.reset();
-        this.initialized = false;
-        this.responded = false;
-        this.candidateComment = null;
+        this.shuffledInteractionChoiceOrders.clear();
+        this.templateValues.clear();
+        this.responseValues.clear();
+        this.outcomeValues.clear();
         this.rawResponseDataMap.clear();
         this.unboundResponseIdentifiers.clear();
         this.invalidResponseIdentifiers.clear();
-        this.shuffledInteractionChoiceOrders.clear();
+        this.uncommittedResponseValues.clear();
         this.overriddenTemplateDefaultValues.clear();
         this.overriddenResponseDefaultValues.clear();
         this.overriddenOutcomeDefaultValues.clear();
         this.overriddenCorrectResponseValues.clear();
-        this.templateValues.clear();
-        this.responseValues.clear();
-        this.outcomeValues.clear();
         this.sessionStatus = SessionStatus.INITIAL;
+        this.initialized = false;
+        this.responded = false;
+        this.candidateComment = null;
         resetBuiltinVariables();
     }
 
@@ -540,6 +547,48 @@ public final class ItemSessionState extends ControlObjectState implements Serial
     }
 
 
+    public Value getUncommittedResponseValue(final Identifier identifier) {
+        Assert.notNull(identifier);
+        return uncommittedResponseValues.get(identifier);
+    }
+
+    public Value getUncommittedResponseValue(final ResponseDeclaration responseDeclaration) {
+        Assert.notNull(responseDeclaration);
+        return getUncommittedResponseValue(responseDeclaration.getIdentifier());
+    }
+
+    public Value getUncommittedResponseValue(final Interaction interaction) {
+        Assert.notNull(interaction);
+        return getUncommittedResponseValue(interaction.getResponseIdentifier());
+    }
+
+    public void setUncommittedResponseValue(final Identifier identifier, final Value value) {
+        Assert.notNull(identifier);
+        Assert.notNull(value);
+        uncommittedResponseValues.put(identifier, value);
+    }
+
+    public void setUncommittedResponseValue(final ResponseDeclaration responseDeclaration, final Value value) {
+        Assert.notNull(responseDeclaration);
+        Assert.notNull(value);
+        setUncommittedResponseValue(responseDeclaration.getIdentifier(), value);
+    }
+
+    public void setUncommittedResponseValue(final Interaction interaction, final Value value) {
+        Assert.notNull(interaction);
+        Assert.notNull(value);
+        setUncommittedResponseValue(interaction.getResponseIdentifier(), value);
+    }
+
+    public void clearUncommittedResponseValues() {
+        uncommittedResponseValues.clear();
+    }
+
+    public Map<Identifier, Value> getUncommittedResponseValues() {
+        return Collections.unmodifiableMap(uncommittedResponseValues);
+    }
+
+
     public Value getResponseValue(final Identifier identifier) {
         Assert.notNull(identifier);
         return responseValues.get(identifier);
@@ -643,6 +692,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
                 && rawResponseDataMap.equals(other.rawResponseDataMap)
                 && unboundResponseIdentifiers.equals(other.unboundResponseIdentifiers)
                 && invalidResponseIdentifiers.equals(other.invalidResponseIdentifiers)
+                && uncommittedResponseValues.equals(other.uncommittedResponseValues)
                 && templateValues.equals(other.templateValues)
                 && responseValues.equals(other.responseValues)
                 && outcomeValues.equals(other.outcomeValues);
@@ -665,6 +715,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
                 rawResponseDataMap,
                 unboundResponseIdentifiers,
                 invalidResponseIdentifiers,
+                uncommittedResponseValues,
                 templateValues,
                 responseValues,
                 outcomeValues
@@ -692,6 +743,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
                 + ",rawResponseDataMap=" + rawResponseDataMap
                 + ",unboundResponseIdentifiers=" + unboundResponseIdentifiers
                 + ",invalidResponseIdentifiers=" + invalidResponseIdentifiers
+                + ",uncommittedResponseValues=" + uncommittedResponseValues
                 + ",templateValues=" + templateValues
                 + ",responseValues=" + responseValues
                 + ",outcomesValues=" + outcomeValues

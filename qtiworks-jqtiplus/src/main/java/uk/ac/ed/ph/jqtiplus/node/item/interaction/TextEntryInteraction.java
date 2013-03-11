@@ -183,7 +183,7 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
         if (getStringIdentifier() != null) {
             final ResponseDeclaration stringIdentifierResponseDeclaration = getStringIdentifierResponseDeclaration();
             final Value value = parseResponse(stringIdentifierResponseDeclaration, responseData);
-            itemSessionController.getItemSessionState().setResponseValue(stringIdentifierResponseDeclaration, value);
+            itemSessionController.getItemSessionState().setUncommittedResponseValue(stringIdentifierResponseDeclaration, value);
         }
     }
 

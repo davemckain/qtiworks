@@ -104,7 +104,7 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
             throws ResponseBindingException {
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(jqtiExtensionPackage, responseDeclaration, responseData);
-        itemSessionController.getItemSessionState().setResponseValue(this, value);
+        itemSessionController.getItemSessionState().setUncommittedResponseValue(this, value);
     }
 
     @Override
