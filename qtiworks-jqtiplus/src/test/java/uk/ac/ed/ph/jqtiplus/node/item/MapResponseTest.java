@@ -48,6 +48,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -106,8 +107,10 @@ public class MapResponseTest {
     @Test
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, MapResponseTest.class, true);
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
+        final Date timestamp = new Date();
+        itemSessionController.initialize(timestamp);
+        itemSessionController.performTemplateProcessing(timestamp);
+        itemSessionController.enterItem(timestamp);
 
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getSubjectItem();
@@ -117,7 +120,7 @@ public class MapResponseTest {
             response = MultipleValue.createMultipleValue((SingleValue) response);
         }
         itemSessionState.setResponseValue(responseIdentifier, response);
-        itemSessionController.performResponseProcessing();
+        itemSessionController.performResponseProcessing(timestamp);
 
         assertEquals(new FloatValue(expectedOutcome), itemSessionState.getOutcomeValue(Identifier.assumedLegal("OUTCOME")));
     }

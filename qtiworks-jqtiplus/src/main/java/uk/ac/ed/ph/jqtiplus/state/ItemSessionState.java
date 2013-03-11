@@ -33,11 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -69,7 +69,8 @@ import java.util.Set;
  * Encapsulates the current state of a candidate's item session.
  * <p>
  * An instance of this class is mutable, but you must let JQTI+ perform all
- * mutation operations for you via the {@link ItemSessionController}.
+ * mutation operations for you via the {@link ItemSessionController} to
+ * ensure the integrity of state.
  * <p>
  * An instance of this class is NOT safe for use by multiple threads.
  *
@@ -78,7 +79,7 @@ import java.util.Set;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class ItemSessionState implements Serializable {
+public final class ItemSessionState extends ControlObjectState implements Serializable {
 
     private static final long serialVersionUID = -7586529679289092485L;
 
@@ -97,22 +98,37 @@ public final class ItemSessionState implements Serializable {
     private final Map<Identifier, Value> overriddenOutcomeDefaultValues;
     private final Map<Identifier, Value> overriddenCorrectResponseValues;
 
+    /**
+     * Map of template values, keyed on Identifier.
+     */
     private final Map<Identifier, Value> templateValues;
+
+    /**
+     * Map of response values, keyed on Identifier.
+     * <p>
+     * This does not include the implicit <code>duration</code>
+     * and <code>numAttempts</code> variables.
+     */
     private final Map<Identifier, Value> responseValues;
+
+    /**
+     * Map of outcome values, keyed on Identifier.
+     * <p>
+     * This does not include the implicit <code>completionStatus</code>
+     * variable.
+     */
     private final Map<Identifier, Value> outcomeValues;
 
+    private int numAttempts;
+    private String completionStatus;
+
     private SessionStatus sessionStatus;
-
     private boolean initialized;
-
-    /** Has item been presented? */
-    private boolean presented;
-
     private boolean responded;
-    private boolean closed;
     private String candidateComment;
 
     public ItemSessionState() {
+        super();
         this.initialized = false;
         this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
         this.rawResponseDataMap = new HashMap<Identifier, ResponseData>();
@@ -133,11 +149,11 @@ public final class ItemSessionState implements Serializable {
 
     //----------------------------------------------------------------
 
+    @Override
     public void reset() {
+        super.reset();
         this.initialized = false;
-        this.presented = false;
         this.responded = false;
-        this.closed = false;
         this.candidateComment = null;
         this.rawResponseDataMap.clear();
         this.unboundResponseIdentifiers.clear();
@@ -155,9 +171,9 @@ public final class ItemSessionState implements Serializable {
     }
 
     public void resetBuiltinVariables() {
-        setDuration(0);
+        resetDuration();
         setNumAttempts(0);
-        setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
+        setCompletionStatus(QtiConstants.COMPLETION_STATUS_NOT_ATTEMPTED);
     }
 
     //----------------------------------------------------------------
@@ -211,13 +227,9 @@ public final class ItemSessionState implements Serializable {
         this.sessionStatus = sessionStatus;
     }
 
-
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public boolean isPresented() {
-        return presented;
-    }
-
-    public void setPresented(final boolean presented) {
-        this.presented = presented;
+        return isEntered();
     }
 
 
@@ -234,17 +246,15 @@ public final class ItemSessionState implements Serializable {
         return isResponded() && unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public boolean isRespondedInvalidly() {
         return isResponded() && !(unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty());
     }
 
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public boolean isClosed() {
-        return closed;
-    }
-
-    public void setClosed(final boolean closed) {
-        this.closed = closed;
+        return isEnded();
     }
 
 
@@ -259,68 +269,55 @@ public final class ItemSessionState implements Serializable {
     //----------------------------------------------------------------
     // Built-in variable manipulation
 
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public FloatValue getDurationValue() {
-        return (FloatValue) responseValues.get(AssessmentItem.VARIABLE_DURATION_IDENTIFIER);
+    public long computeDurationMillis() {
+        if (getDurationIntervalStartTime()!=null) {
+            return -1;
+        }
+        return getDurationAccumulated();
     }
 
-    public void setDurationValue(final FloatValue value) {
-        Assert.notNull(value);
-        responseValues.put(AssessmentItem.VARIABLE_DURATION_IDENTIFIER, value);
+    public double computeDuration() {
+        return computeDurationMillis() / 1000.0;
     }
-
-    public double getDuration() {
-        return getDurationValue().doubleValue();
-    }
-
-    public void setDuration(final double duration) {
-        setDurationValue(new FloatValue(duration));
-    }
-
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public IntegerValue getNumAttemptsValue() {
-        return (IntegerValue) responseValues.get(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
+    public FloatValue computeDurationValue() {
+        return new FloatValue(computeDuration());
     }
 
-    public void setNumAttemptsValue(final IntegerValue value) {
-        Assert.notNull(value);
-        responseValues.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, value);
-    }
 
     public int getNumAttempts() {
-        return getNumAttemptsValue().intValue();
+        return numAttempts;
     }
 
     public void setNumAttempts(final int numAttempts) {
-        setNumAttemptsValue(new IntegerValue(numAttempts));
+        this.numAttempts = numAttempts;
     }
-
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public IdentifierValue getCompletionStatusValue() {
-        return (IdentifierValue) outcomeValues.get(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER);
+    public IntegerValue getNumAttemptsValue() {
+        return new IntegerValue(numAttempts);
     }
 
-    public void setCompletionStatusValue(final IdentifierValue value) {
-        Assert.notNull(value);
-        final String status = value.toQtiString();
-        if (!AssessmentItem.VALUE_ITEM_IS_UNKNOWN.equals(status)
-                && !AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED.equals(status)
-                && !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(status)
-                && !AssessmentItem.VALUE_ITEM_IS_INCOMPLETE.equals(status)) {
-            throw new IllegalArgumentException("Value " + status + " is not an acceptable completionStatus");
-        }
-        outcomeValues.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, value);
-    }
 
     public String getCompletionStatus() {
-        return getCompletionStatusValue().toQtiString();
+        return this.completionStatus;
     }
 
     public void setCompletionStatus(final String completionStatus) {
         Assert.notNull(completionStatus);
-        setCompletionStatusValue(new IdentifierValue(Identifier.parseString(completionStatus)));
+        if (!QtiConstants.COMPLETION_STATUS_UNKNOWN.equals(completionStatus)
+                && !QtiConstants.COMPLETION_STATUS_NOT_ATTEMPTED.equals(completionStatus)
+                && !QtiConstants.COMPLETION_STATUS_COMPLETED.equals(completionStatus)
+                && !QtiConstants.COMPLETION_STATUS_INCOMPLETE.equals(completionStatus)) {
+            throw new IllegalArgumentException("Value " + completionStatus + " is not an acceptable completionStatus");
+        }
+        this.completionStatus = completionStatus;
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public IdentifierValue getCompletionStatusValue() {
+        return new IdentifierValue(completionStatus);
     }
 
     //----------------------------------------------------------------
@@ -576,6 +573,10 @@ public final class ItemSessionState implements Serializable {
         setResponseValue(interaction.getResponseIdentifier(), value);
     }
 
+    /**
+     * NB: This does not include the <code>numAttempts</code>
+     * and <code>duration</code> response values.
+     */
     public Map<Identifier, Value> getResponseValues() {
         return Collections.unmodifiableMap(responseValues);
     }
@@ -592,14 +593,12 @@ public final class ItemSessionState implements Serializable {
         return getOutcomeValue(outcomeDeclaration.getIdentifier());
     }
 
-    /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
     public void setOutcomeValue(final Identifier identifier, final Value value) {
         Assert.notNull(identifier);
         Assert.notNull(value);
         outcomeValues.put(identifier, value);
     }
 
-    /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
     public void setOutcomeValue(final OutcomeDeclaration outcomeDeclaration, final Value value) {
         Assert.notNull(outcomeDeclaration);
         setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
@@ -615,66 +614,14 @@ public final class ItemSessionState implements Serializable {
         setOutcomeValue(outcomeDeclaration.getIdentifier(), targetValue);
     }
 
+    /**
+     * NB: This does not include the <code>completionStatus</code> value.
+     */
     public Map<Identifier, Value> getOutcomeValues() {
         return Collections.unmodifiableMap(outcomeValues);
     }
 
     //---------------------------------------------------------------
-
-    /**
-     * FIXME: Is this still necessary?
-     *
-     * Gets A template or outcome variable with given identifier or null.
-     * DM: This used to be called getValue() in JQTI, but I've renamed it to be
-     * clearer
-     *
-     * @param identifier
-     *            given identifier
-     * @return value of templateDeclaration or outcomeDeclaration with given
-     *         identifier or null
-     */
-    public Value getTemplateOrOutcomeValue(final Identifier identifier) {
-        Assert.notNull(identifier);
-        Value result = getTemplateValue(identifier);
-        if (result == null) {
-            result = getOutcomeValue(identifier);
-        }
-        return result;
-    }
-
-    public Value getVariableValue(final Identifier identifier) {
-        Assert.notNull(identifier);
-        Value result = getResponseValue(identifier);
-        if (result == null) {
-            result = getTemplateOrOutcomeValue(identifier);
-        }
-        return result;
-    }
-
-    public Value getVariableValue(final VariableDeclaration variableDeclaration) {
-        Assert.notNull(variableDeclaration);
-        return getVariableValue(variableDeclaration.getIdentifier());
-    }
-
-    public void setVariableValue(final VariableDeclaration variableDeclaration, final Value value) {
-        Assert.notNull(variableDeclaration);
-        Assert.notNull(value);
-        final Identifier identifier = variableDeclaration.getIdentifier();
-        if (variableDeclaration instanceof TemplateDeclaration) {
-            templateValues.put(identifier, value);
-        }
-        else if (variableDeclaration instanceof ResponseDeclaration) {
-            responseValues.put(identifier, value);
-        }
-        else if (variableDeclaration instanceof OutcomeDeclaration) {
-            outcomeValues.put(identifier, value);
-        }
-        else {
-            throw new QtiLogicException("Unexpected logic branch");
-        }
-    }
-
-    //----------------------------------------------------------------
 
     @Override
     public boolean equals(final Object obj) {
@@ -682,11 +629,12 @@ public final class ItemSessionState implements Serializable {
             return false;
         }
         final ItemSessionState other = (ItemSessionState) obj;
-        return initialized==other.initialized
+        return super.equals(obj)
+                && numAttempts==other.numAttempts
+                && ObjectUtilities.nullSafeEquals(completionStatus, other.completionStatus)
+                && initialized==other.initialized
                 && sessionStatus==other.sessionStatus
-                && presented==other.presented
                 && responded==other.responded
-                && closed==other.closed
                 && shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
                 && overriddenTemplateDefaultValues.equals(other.overriddenCorrectResponseValues)
                 && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
@@ -703,11 +651,12 @@ public final class ItemSessionState implements Serializable {
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
+                super.hashCode(),
+                numAttempts,
+                completionStatus,
                 initialized,
                 sessionStatus,
-                presented,
                 responded,
-                closed,
                 shuffledInteractionChoiceOrders,
                 overriddenTemplateDefaultValues,
                 overriddenResponseDefaultValues,
@@ -727,9 +676,14 @@ public final class ItemSessionState implements Serializable {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(initialized=" + initialized
                 + ",sessionStatus=" + sessionStatus
-                + ",presented=" + presented
+                + ",entryTime=" + getEntryTime()
+                + ",endTime=" + getEndTime()
+                + ",exitTime=" + getExitTime()
+                + ",durationAccumulated=" + getDurationAccumulated()
+                + ",durationIntervalStartTime=" + getDurationIntervalStartTime()
+                + ",numAttempts=" + getNumAttempts()
+                + ",completionStatus=" + getCompletionStatus()
                 + ",responded=" + responded
-                + ",closed=" + closed
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues

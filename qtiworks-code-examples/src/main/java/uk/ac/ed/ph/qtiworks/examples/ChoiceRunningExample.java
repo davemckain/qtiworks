@@ -8,6 +8,7 @@ package uk.ac.ed.ph.qtiworks.examples;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
@@ -22,6 +23,7 @@ import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,25 +42,43 @@ public final class ChoiceRunningExample {
         System.out.println("Run map is: " + ObjectDumper.dumpObject(itemProcessingMap, DumpMode.DEEP));
 
         final ItemSessionState itemSessionState = new ItemSessionState();
-        System.out.println("Item state before init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+        System.out.println("State before init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager, itemSessionControllerSettings, itemProcessingMap, itemSessionState);
 
         System.out.println("\nInitialising");
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
-        System.out.println("Item state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+        Date timestamp1 = new Date();
+        itemSessionController.initialize(timestamp1);
+        itemSessionController.performTemplateProcessing(timestamp1);
+        System.out.println("State after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+        
+        System.out.println("\nEntering item");
+        Date timestamp2 = ObjectUtilities.addToTime(timestamp1, 1000L);
+        itemSessionController.enterItem(timestamp2);
+        System.out.println("State after entry: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         System.out.println("\nBinding & validating responses");
+        Date timestamp3 = ObjectUtilities.addToTime(timestamp2, 1000L);
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
-        itemSessionController.bindResponses(responseMap);
+        itemSessionController.bindResponses(timestamp3, responseMap);
         System.out.println("Unbound responses: " + itemSessionState.getUnboundResponseIdentifiers());
         System.out.println("Invalid responses:" + itemSessionState.getInvalidResponseIdentifiers());
+        System.out.println("State after binding: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
         System.out.println("\nInvoking response processing");
-        itemSessionController.performResponseProcessing();
-        System.out.println("Item state after RP1: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+        Date timestamp4 = ObjectUtilities.addToTime(timestamp3, 1000L);
+        itemSessionController.performResponseProcessing(timestamp4);
+        System.out.println("State after RP1: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+
+        System.out.println("\nExplicitly closing item session");
+        Date timestamp5 = ObjectUtilities.addToTime(timestamp4, 1000L);
+        itemSessionController.endItem(timestamp5);
+        System.out.println("State after end of session: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+
+        Date timestamp6 = ObjectUtilities.addToTime(timestamp5, 1000L);
+        itemSessionController.exitItem(timestamp6);
+        System.out.println("State after exit: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
     }
 }

@@ -86,6 +86,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -297,8 +298,11 @@ public class CandidateItemDeliveryService {
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
 
         /* Update current value for 'duration' */
-        final double duration = computeItemSessionDuration(candidateSession);
-        itemSessionState.setDuration(duration);
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
+                itemSessionState, notificationRecorder);
+        itemSessionController.touchDuration(timestamp);
 
         /* Initialise rendering request */
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateEvent,
@@ -386,22 +390,6 @@ public class CandidateItemDeliveryService {
         renderingRequest.setRenderingOptions(renderingOptions);
     }
 
-    /**
-     * Computes the current value for the <code>duration</code> variable for this session.
-     * <p>
-     * Currently, this is just the length of time since the session was first opened.
-     * We DO NOT yet support breaking sessions time-wise.
-     *
-     * @return computed value for <code>duration</code>, which will be non-negative.
-     */
-    private double computeItemSessionDuration(final CandidateSession candidateSession) {
-        final long startTime = candidateSession.getCreationTime().getTime();
-        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
-
-        final double duration = (currentTime - startTime) / 1000.0;
-        return duration;
-    }
-
     //----------------------------------------------------
     // Attempt
 
@@ -485,8 +473,8 @@ public class CandidateItemDeliveryService {
         }
 
         /* Attempt to bind responses */
-        itemSessionController.bindResponses(responseDataMap);
-        itemSessionController.markPendingResponseProcessing();
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        itemSessionController.bindResponses(timestamp, responseDataMap);
 
         /* Note any responses that failed to bind */
         final Set<Identifier> badResponseIdentifiers = itemSessionState.getUnboundResponseIdentifiers();
@@ -510,11 +498,8 @@ public class CandidateItemDeliveryService {
 
         /* Invoke response processing (only if responses are valid) */
         if (allResponsesValid) {
-            itemSessionController.performResponseProcessing();
+            itemSessionController.performResponseProcessing(timestamp);
         }
-
-        /* Update JQTI state */
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
 
         /* Record resulting attempt and event */
         final CandidateItemEventType eventType = allResponsesBound ?
@@ -570,11 +555,11 @@ public class CandidateItemDeliveryService {
         }
 
         /* Update state */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.markClosed();
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
+        itemSessionController.endItem(timestamp);
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
@@ -625,23 +610,15 @@ public class CandidateItemDeliveryService {
         itemSessionState = new ItemSessionState();
 
         /* Update session state */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-
-        /* Mark item as being presented */
-        itemSessionController.markPresented();
-
-        /* Maybe mark as pending submission */
-        if (!itemSessionState.isClosed()) {
-            itemSessionController.markPendingSubmission();
-        }
+        itemSessionController.initialize(timestamp);
+        itemSessionController.performTemplateProcessing(timestamp);
+        itemSessionController.enterItem(timestamp);
 
         /* Record and log event */
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.REINIT, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
@@ -690,19 +667,12 @@ public class CandidateItemDeliveryService {
         }
 
         /* Update state */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.resetItemSession();
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-
-        /* Mark item as being presented */
-        itemSessionController.markPresented();
-
-        /* Maybe mark as pending submission */
-        if (!itemSessionState.isClosed()) {
-            itemSessionController.markPendingSubmission();
-        }
+        itemSessionController.resetItemSession(timestamp);
+        itemSessionController.enterItem(timestamp);
 
         /* Record and event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
@@ -750,14 +720,14 @@ public class CandidateItemDeliveryService {
         }
 
         /* Close session if required */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
         boolean isClosingSession = false;
         if (!itemSessionState.isClosed()) {
             isClosingSession = true;
-            itemSessionController.markClosed();
-            itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
+            itemSessionController.endItem(timestamp);
         }
 
         /* Record and log event */
@@ -802,16 +772,17 @@ public class CandidateItemDeliveryService {
 
 
         /* Record and log event */
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.TERMINATE, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Are we terminating a session that hasn't been closed? If so, record the final result. */
         if (!itemSessionState.isClosed()) {
+            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
             final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
             final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                     itemSessionState, notificationRecorder);
+            itemSessionController.endItem(timestamp);
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         }
 

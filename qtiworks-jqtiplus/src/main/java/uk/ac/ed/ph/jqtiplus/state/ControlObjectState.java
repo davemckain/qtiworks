@@ -44,6 +44,10 @@ import java.util.Date;
 /**
  * FIXME: Document this type
  *
+ * FIXME: Rename 'end' as 'finish'?? We're using the word 'close' for items and 'end' of test objects at the moment.
+ * Might be nice to merge this together somehow to be easier to understand.
+ * FIXME: Using 'presented' instead of 'entry' for items. Maybe try to unify this as well?
+ *
  * @author David McKain
  */
 public abstract class ControlObjectState implements Serializable {
@@ -61,8 +65,12 @@ public abstract class ControlObjectState implements Serializable {
         this.entryTime = null;
         this.endTime = null;
         this.exitTime = null;
-        this.durationIntervalStartTime = null;
+        resetDuration();
+    }
+
+    public void resetDuration() {
         this.durationAccumulated = 0L;
+        this.durationIntervalStartTime = null;
     }
 
     public final Date getEntryTime() {

@@ -36,18 +36,12 @@ package dave;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 
-import java.util.Date;
-
 /**
  * FIXME: Document this type
  *
  * @author David McKain
  */
 public final class RunUtilities {
-
-    public static Date addTime(final Date date, final long milliseconds) {
-        return new Date(date.getTime() + milliseconds);
-    }
 
     public static RenderingOptions createRenderingOptions() {
         final RenderingOptions renderingOptions = new RenderingOptions();

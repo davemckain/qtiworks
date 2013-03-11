@@ -87,6 +87,19 @@ public interface ProcessingContext extends ValidationContext {
 
     /**
      * Returns the current value of the variable having the
+     * given {@link VariableDeclaration}.
+     * <p>
+     * The returned value will not be null (but may be a {@link NullValue}).
+     *
+     * @param variableDeclaration required variable declaration
+     *
+     * @throws IllegalStateException if the current item/test state does not appear to be in sync
+     * @throws IllegalArgumentException if variableDeclaration is null
+     */
+    Value evaluateVariableValue(VariableDeclaration variableDeclaration);
+
+    /**
+     * Returns the current value of the variable having the
      * given {@link Identifier} and having the given permitted variable types.
      * <p>
      * The returned value will not be null (but may be a {@link NullValue}).
@@ -99,4 +112,18 @@ public interface ProcessingContext extends ValidationContext {
      * @throws IllegalArgumentException if identifier is null
      */
     Value evaluateVariableValue(Identifier identifier, VariableType... permittedTypes);
+
+    /**
+     * Sets the value of the variable corresponding to the given {@link VariableDeclaration}.
+     * <p>
+     * Built-in variables may not be set, except for the <code>completionStatus</code> variable on
+     * an item.
+     *
+     * @param variableDeclaration required variable declaration
+     *
+     * @throws IllegalStateException if the current item/test state does not appear to be in sync
+     * @throws IllegalArgumentException if variableDeclaration is null or if it corresponds to
+     *   a built-in variable which cannot be directly mutated.
+     */
+    void setVariableValue(VariableDeclaration variableDeclaration, Value value);
 }

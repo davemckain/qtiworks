@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.group.test.TemplateDefaultGroup;
@@ -41,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.net.URI;
 import java.util.Collections;
@@ -67,11 +68,6 @@ public final class AssessmentItemRef extends SectionPart {
     /** Name of category attribute in xml schema. */
     public static final String ATTR_CATEGORIES_NAME = "category";
 
-    /**
-     * Constructs item reference.
-     *
-     * @param parent parent of constructed item reference
-     */
     public AssessmentItemRef(final AssessmentSection parent) {
         super(parent, QTI_CLASS_NAME);
 
@@ -181,11 +177,12 @@ public final class AssessmentItemRef extends SectionPart {
     }
 
     @Override
-    @ToCheck
+    @Deprecated
+    @ToRemove
     public boolean isBuiltInVariable(final Identifier identifier) {
         if (identifier != null) {
-            if (identifier.equals(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER)
-                    || identifier.equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
+            if (identifier.equals(QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER)
+                    || identifier.equals(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
                 return true;
             }
         }

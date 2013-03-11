@@ -33,12 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
@@ -196,7 +196,7 @@ public final class TestSessionState extends ControlObjectState implements Serial
     public Value getVariableValue(final Identifier identifier) {
         Assert.notNull(identifier);
         Value result;
-        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
+        if (QtiConstants.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
             result = computeDurationValue();
         }
         else {

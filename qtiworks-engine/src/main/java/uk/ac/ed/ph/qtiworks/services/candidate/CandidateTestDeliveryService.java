@@ -681,7 +681,7 @@ public class CandidateTestDeliveryService {
 
         /* Attempt to bind responses (and maybe perform RP & OP) */
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.handleResponses(requestTimestamp, responseDataMap);
+        testSessionController.handleResponsesToCurrentItem(requestTimestamp, responseDataMap);
 
         /* Note any responses that failed to bind */
         final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();

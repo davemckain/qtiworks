@@ -42,6 +42,8 @@ import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 
+import java.util.Date;
+
 import org.junit.Test;
 
 public class TemplateTest {
@@ -51,7 +53,8 @@ public class TemplateTest {
     @Test
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TemplateTest.class, true);
-        itemSessionController.initialize();
+        final Date timestamp = new Date();
+        itemSessionController.initialize(timestamp);
 
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         final AssessmentItem item = itemSessionController.getSubjectItem();
@@ -62,16 +65,16 @@ public class TemplateTest {
         assertNull(itemSessionState.getOverriddenCorrectResponseValue(responseIdentifier));
 
         final Identifier template1Identifier = Identifier.parseString("template1");
-        assertEquals(NullValue.INSTANCE, itemSessionState.getTemplateValue(template1Identifier));
+        assertEquals("initial", itemSessionState.getTemplateValue(template1Identifier).toQtiString());
         assertEquals("initial", item.getTemplateDeclaration(template1Identifier).getDefaultValue().evaluate().toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue(template1Identifier).toQtiString());
 
         final Identifier template2Identifier = Identifier.parseString("template2");
-        assertEquals(NullValue.INSTANCE, itemSessionState.getTemplateValue(template2Identifier));
+        assertEquals("initial", itemSessionState.getTemplateValue(template2Identifier).toQtiString());
         assertEquals("initial", item.getTemplateDeclaration(template2Identifier).getDefaultValue().evaluate().toQtiString());
         assertEquals("initial", itemSessionController.computeDefaultValue(template2Identifier).toQtiString());
 
-        itemSessionController.performTemplateProcessing();
+        itemSessionController.performTemplateProcessing(timestamp);
 
         assertEquals("incorrect", itemSessionState.getResponseValue(responseIdentifier).toQtiString());
         assertEquals("incorrect", itemSessionController.computeDefaultValue(responseIdentifier).toQtiString());

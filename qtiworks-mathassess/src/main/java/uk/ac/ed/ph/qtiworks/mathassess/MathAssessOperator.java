@@ -41,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.value.SyntaxType;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.expression.operator.CustomOperator;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
@@ -48,6 +49,7 @@ import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
 import uk.ac.ed.ph.jqtiplus.running.ProcessingContext;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -88,7 +90,8 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
     }
 
     @Override
-    public final Value evaluateSelf(final MathAssessExtensionPackage mathAssessExtensionPackage, final ProcessingContext context, final Value[] childValues, final int depth) {
+    public final Value evaluateSelf(final MathAssessExtensionPackage mathAssessExtensionPackage, final ProcessingContext context, final Value[] childValues,
+            final int depth) {
         switch (getSyntax()) {
             case MAXIMA:
                 return maximaEvaluate(mathAssessExtensionPackage, (ItemProcessingContext) context, childValues);
@@ -136,7 +139,7 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
     }
 
     /**
-     * Gets a list of all the variables assigned to by the cas implementation.
+     * Gets a list of all the variables assigned to by the CAS implementation.
      *
      * @return writable variables
      */
@@ -144,7 +147,10 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
         final List<VariableDeclaration> declarations = new ArrayList<VariableDeclaration>();
 
         for (final VariableDeclaration decl : getAllWriteableVariableDeclarations()) {
-            if (decl.getIdentifier().toString().matches(IDENTIFIER_REGEX_VALUE)) {
+            final Identifier identifier = decl.getIdentifier();
+            if (identifier.toString().matches(IDENTIFIER_REGEX_VALUE)
+                    && !identifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)
+                    && !identifier.equals(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
                 declarations.add(decl);
             }
         }
@@ -177,16 +183,17 @@ public abstract class MathAssessOperator extends CustomOperator<MathAssessExtens
 
     protected void passVariableToMaxima(final QtiMaximaProcess qtiMaximaProcess, final ItemProcessingContext context,
             final VariableDeclaration declaration) {
-        final Value value = context.getItemSessionState().getVariableValue(declaration);
+        final Value value = context.evaluateVariableValue(declaration);
 
         /* NB: Depending on when this is run, some values (e.g. response values) will not have been initialised, so value could be null */
-        if (value!=null) {
+        if (value != null) {
             final ValueWrapper valueWrapper = GlueValueBinder.jqtiToCas(value);
-            if (valueWrapper!=null) {
+            if (valueWrapper != null) {
                 qtiMaximaProcess.passQtiVariableToMaxima(declaration.getIdentifier().toString(), valueWrapper);
             }
             else {
-                context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier() + " is not of a type supported by the MathAssess extensions so has not been passed to Maxima");
+                context.fireRuntimeInfo(this, "Variable " + declaration.getIdentifier()
+                        + " is not of a type supported by the MathAssess extensions so has not been passed to Maxima");
             }
         }
     }

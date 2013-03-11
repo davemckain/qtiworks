@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
@@ -75,12 +74,5 @@ public interface AssessmentObject extends RootNode, IdentifiableNode<String> {
      * or null.
      */
     OutcomeDeclaration getOutcomeDeclaration(Identifier identifier);
-
-    /**
-     * Convenience method to return the (first) appropriate {@link VariableDeclaration} with the
-     * given identifier within the {@link AssessmentItem} or {@link AssessmentTest}, or null.
-     */
-    @Deprecated
-    VariableDeclaration getVariableDeclaration(Identifier identifier);
 
 }

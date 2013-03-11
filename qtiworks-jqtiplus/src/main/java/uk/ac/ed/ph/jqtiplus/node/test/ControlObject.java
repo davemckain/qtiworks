@@ -33,11 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.util.List;
 
@@ -50,6 +52,7 @@ import java.util.List;
  * @author Jiri Kajaba
  * @author David McKain
  */
+@ToCheck
 public abstract class ControlObject<E> extends AbstractNode implements IdentifiableNode<E> {
 
     private static final long serialVersionUID = 3477216040498945052L;
@@ -218,9 +221,10 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @param identifier given identifier
      * @return true if given identifier is identifier of one of built-in variables; false otherwise
      */
-    @ToCheck
+    @Deprecated
+    @ToRemove
     public boolean isBuiltInVariable(final Identifier identifier) {
-        if (identifier != null && identifier.equals(AssessmentTest.VARIABLE_DURATION_IDENTIFIER)) {
+        if (identifier != null && identifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)) {
             return true;
         }
         return false;

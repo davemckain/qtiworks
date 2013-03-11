@@ -36,6 +36,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
@@ -54,7 +55,6 @@ import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
@@ -233,7 +233,9 @@ public final class TestSessionController extends TestValidationController implem
      * <code>duration</code> variable to 0, and calls {@link #initialize()} on each item in the
      * test plan.
      */
-    public void initialize() {
+    public void initialize(final Date timestamp) {
+        Assert.notNull(timestamp);
+
         /* Clear ItemSessionController map as we'll have to create new ones for new item states */
         itemSessionControllerMap.clear();
 
@@ -259,7 +261,7 @@ public final class TestSessionController extends TestValidationController implem
                 testSessionState.getItemSessionStates().put(key, itemSessionState);
 
                 final ItemSessionController itemSessionController = createItemSessionController(testPlanNode, itemSessionState);
-                itemSessionController.initialize();
+                itemSessionController.initialize(timestamp);
                 itemSessionControllerMap.put(key, itemSessionController);
             }
         }
@@ -286,9 +288,10 @@ public final class TestSessionController extends TestValidationController implem
      * @see #enterNextAvailableTestPart()
      */
     public int enterTest(final Date timestamp) {
+        Assert.notNull(timestamp);
     	assertTestNotEntered();
+    	logger.debug("Entering test {}", getSubject().getSystemId());
 
-    	logger.debug("Entering test");
     	testSessionState.setEntryTime(timestamp);
         testSessionState.setCurrentTestPartKey(null);
         testSessionState.setCurrentItemKey(null);
@@ -376,6 +379,7 @@ public final class TestSessionController extends TestValidationController implem
      * Otherwise the test itself will be ended.
      */
     public TestPlanNode enterNextAvailableTestPart(final Date timestamp) {
+        Assert.notNull(timestamp);
     	assertInsideTest();
         endControlObjectTimer(testSessionState, timestamp);
 
@@ -433,7 +437,7 @@ public final class TestSessionController extends TestValidationController implem
         /* Perform template processing on each item */
         final List<TestPlanNode> itemRefNodes = nextAvailableTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
         for (final TestPlanNode itemRefNode : itemRefNodes) {
-            performTemplateProcessing(itemRefNode);
+            performTemplateProcessing(timestamp, itemRefNode);
         }
 
         /* If linear navigation, select the first item (if possible) */
@@ -450,7 +454,8 @@ public final class TestSessionController extends TestValidationController implem
 	 * Performs template processing on the given {@link TestPlanNode} corresponding to an
 	 * {@link AssessmentItemRef}
 	 */
-	private void performTemplateProcessing(final TestPlanNode itemRefNode) {
+	private void performTemplateProcessing(final Date timestamp, final TestPlanNode itemRefNode) {
+        Assert.notNull(timestamp);
 	    Assert.notNull(itemRefNode);
 	    ensureItemRefNode(itemRefNode);
 
@@ -458,7 +463,7 @@ public final class TestSessionController extends TestValidationController implem
 	    final List<TemplateDefault> templateDefaults = assessmentItemRef.getTemplateDefaults();
 
 	    final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-	    itemSessionController.performTemplateProcessing(templateDefaults);
+	    itemSessionController.performTemplateProcessing(timestamp, templateDefaults);
 	}
 
 	/**
@@ -497,6 +502,7 @@ public final class TestSessionController extends TestValidationController implem
 	 *   state marked as ended, current item cleared.
 	 */
 	public void endTestPart(final Date timestamp) {
+        Assert.notNull(timestamp);
 	    if (!mayEndTestPart()) {
 	        throw new QtiCandidateStateException("Current test part cannot be ended");
 	    }
@@ -509,7 +515,7 @@ public final class TestSessionController extends TestValidationController implem
 	        /* If we're in SIMULTANEOUS mode, we run response processing on all items now */
 	        for (final TestPlanNode itemRefNode : itemRefNodes) {
 	            final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-	            itemSessionController.performResponseProcessing();
+	            itemSessionController.performResponseProcessing(timestamp);
 	        }
 	        /* Then we'll run outcome processing for the test */
 	        performOutcomeProcessing();
@@ -518,7 +524,7 @@ public final class TestSessionController extends TestValidationController implem
 	    /* Close all items */
 	    for (final TestPlanNode itemRefNode : itemRefNodes) {
 	        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-	        itemSessionState.setClosed(true);
+	        itemSessionState.setEndTime(timestamp);
 	    }
 
 	    /* Deselect item */
@@ -540,6 +546,7 @@ public final class TestSessionController extends TestValidationController implem
      * Postcondition: The test will be marked as being exited.
      */
     public void exitTest(final Date timestamp) {
+        Assert.notNull(timestamp);
         assertTestNotExited();
         testSessionState.setExitTime(timestamp);
     }
@@ -593,6 +600,7 @@ public final class TestSessionController extends TestValidationController implem
      * @see #maySelectItemNonlinear(TestPlanNodeKey)
      */
     public TestPlanNode selectItemNonlinear(final Date timestamp, final TestPlanNodeKey itemKey) {
+        Assert.notNull(timestamp);
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
 
@@ -613,7 +621,7 @@ public final class TestSessionController extends TestValidationController implem
             testSessionState.setCurrentItemKey(itemRefNode.getKey());
 
             /* Mark item as being presented */
-            getItemSessionController(itemRefNode).markPresented();
+            getItemSessionController(itemRefNode).enterItem(timestamp);
             return itemRefNode;
         }
         else {
@@ -663,6 +671,7 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     public TestPlanNode finishItemLinear(final Date timestamp) {
+        Assert.notNull(timestamp);
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
 
@@ -706,6 +715,7 @@ public final class TestSessionController extends TestValidationController implem
      *   does not have {@link NavigationMode#LINEAR}.
      */
     private TestPlanNode selectNextItemOrEndTestPart(final Date timestamp) {
+        Assert.notNull(timestamp);
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
 
@@ -733,7 +743,7 @@ public final class TestSessionController extends TestValidationController implem
         if (nextItemRefNode!=null) {
             /* Mark item as being presented */
             logger.debug("Selected and presenting item {}", nextItemRefNode.getKey());
-            getItemSessionController(nextItemRefNode).markPresented();
+            getItemSessionController(nextItemRefNode).enterItem(timestamp);
         }
         else {
             /* No more items available, so end testPart */
@@ -762,13 +772,14 @@ public final class TestSessionController extends TestValidationController implem
      * <p>
      * In {@link SubmissionMode#SIMULTANEOUS} mode, no processing happens.
      */
-    public void handleResponses(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
+    public void handleResponsesToCurrentItem(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
+        Assert.notNull(timestamp);
         Assert.notNull(responseMap, "responseMap");
         final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
 
         /* Bind responses */
         final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
-        final boolean boundSuccessfully = itemSessionController.bindResponses(responseMap);
+        final boolean boundSuccessfully = itemSessionController.bindResponses(timestamp, responseMap);
 
         /* Set duration */
         touchControlObjectTimer(testSessionState, timestamp);
@@ -778,7 +789,7 @@ public final class TestSessionController extends TestValidationController implem
         if (testPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
             /* Run response processing if everything was bound successfully */
             if (boundSuccessfully) {
-                itemSessionController.performResponseProcessing();
+                itemSessionController.performResponseProcessing(timestamp);
             }
             /* Run outcome processing */
             performOutcomeProcessing();
@@ -987,7 +998,7 @@ public final class TestSessionController extends TestValidationController implem
         VariableDeclaration result = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
-            if (identifier.equals(AssessmentTest.VARIABLE_DURATION_IDENTIFIER)) {
+            if (identifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)) {
                 result = testProcessingMap.getDurationResponseDeclaration();
             }
             else {
@@ -1004,7 +1015,7 @@ public final class TestSessionController extends TestValidationController implem
 
                     case RESPONSE:
                         /* Only response variable is duration */
-                        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
+                        if (QtiConstants.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
                             result = testProcessingMap.getDurationResponseDeclaration();
                         }
                         break;
@@ -1054,7 +1065,7 @@ public final class TestSessionController extends TestValidationController implem
                         break;
 
                     case RESPONSE:
-                        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
+                        if (QtiConstants.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
                             value = testSessionState.computeDurationValue();
                         }
                         break;
@@ -1073,6 +1084,21 @@ public final class TestSessionController extends TestValidationController implem
         }
         return value;
     }
+
+    @Override
+    public void setVariableValue(final VariableDeclaration variableDeclaration, final Value value) {
+        Assert.notNull(variableDeclaration);
+        Assert.notNull(value);
+        final Identifier identifier = variableDeclaration.getIdentifier();
+        if (VariableDeclaration.isReservedIdentifier(identifier)) {
+            /* Other reserved variable may not be set */
+            throw new IllegalArgumentException("The reserved variable with " + identifier + " may not be explicitly set");
+        }
+        else {
+            testSessionState.setOutcomeValue(identifier, value);
+        }
+    }
+
 
     //-------------------------------------------------------------------
 

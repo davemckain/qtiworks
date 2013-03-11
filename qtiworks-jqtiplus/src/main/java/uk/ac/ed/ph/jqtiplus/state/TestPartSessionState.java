@@ -41,7 +41,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * Encapsulates the state of a {@link TestPart}.
+ * Encapsulates the candidate state within a {@link TestPart}.
  *
  * @author David McKain
  */

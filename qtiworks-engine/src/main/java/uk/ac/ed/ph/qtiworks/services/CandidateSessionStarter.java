@@ -244,18 +244,12 @@ public class CandidateSessionStarter {
         final ItemSessionState itemSessionState = new ItemSessionState();
 
         /* Initialise state */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
-
-        /* Mark item as being presented */
-        itemSessionController.markPresented();
-
-        /* Maybe mark as pending submission */
-        if (!itemSessionState.isClosed()) {
-            itemSessionController.markPendingSubmission();
-        }
+        itemSessionController.initialize(timestamp);
+        itemSessionController.performTemplateProcessing(timestamp);
+        itemSessionController.enterItem(timestamp);
 
         /* Create new session entity and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();

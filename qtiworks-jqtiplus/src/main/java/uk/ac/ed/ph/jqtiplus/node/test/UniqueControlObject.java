@@ -38,12 +38,14 @@ import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
 
 /**
  * Extension of {@link ControlObject} that mixes in that {@link UniqueNode} interface.
  *
  * @author David McKain
  */
+@ToCheck
 public abstract class UniqueControlObject extends ControlObject<Identifier> implements UniqueNode<Identifier> {
 
     private static final long serialVersionUID = -4531023498836564003L;

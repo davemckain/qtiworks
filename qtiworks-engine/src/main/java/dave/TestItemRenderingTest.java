@@ -14,6 +14,7 @@ import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -75,13 +76,13 @@ public class TestItemRenderingTest {
             testSessionController.initialize();
             testSessionController.enterTest(timestamp1);
 
-            final Date timestamp2 = RunUtilities.addTime(timestamp1, 1000L);
+            final Date timestamp2 = ObjectUtilities.addToTime(timestamp1, 1000L);
             System.out.println("First available testPart is " + testSessionController.findNextAvailableTestPart());
             testSessionController.enterNextAvailableTestPart(timestamp2);
             System.out.println("Test session state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
             /* Select first item */
-            final Date timestamp3 = RunUtilities.addTime(timestamp1, 5000L);
+            final Date timestamp3 = ObjectUtilities.addToTime(timestamp1, 5000L);
             final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
             testSessionController.selectItemNonlinear(timestamp3, firstItemRef.getKey());
             final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRef.getKey());

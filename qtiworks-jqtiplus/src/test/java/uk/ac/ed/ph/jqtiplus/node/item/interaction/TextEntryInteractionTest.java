@@ -50,6 +50,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -128,13 +129,15 @@ public class TextEntryInteractionTest {
     public void test() throws Exception {
         final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TextEntryInteractionTest.class, true);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
+        final Date timestamp = new Date();
+        itemSessionController.initialize(timestamp);
+        itemSessionController.performTemplateProcessing(timestamp);
+        itemSessionController.enterItem(timestamp);
 
         final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
         responses.put(Identifier.parseString(RESPONSE_NAME), new StringResponseData(stringResponse));
 
-        itemSessionController.bindResponses(responses);
+        itemSessionController.bindResponses(timestamp, responses);
 
         final Set<Identifier> unboundResponses = itemSessionState.getUnboundResponseIdentifiers();
         final Set<Identifier> invalidResponses = itemSessionState.getInvalidResponseIdentifiers();

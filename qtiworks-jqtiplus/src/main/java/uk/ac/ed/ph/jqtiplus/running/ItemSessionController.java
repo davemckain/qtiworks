@@ -36,6 +36,8 @@ package uk.ac.ed.ph.jqtiplus.running;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
@@ -69,11 +71,13 @@ import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
+import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ItemValidationController;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -96,13 +100,16 @@ import org.slf4j.LoggerFactory;
 /**
  * FIXME: Document this!
  *
+ * FIXME: This is currently being refactored. Need to finish off replacing presented/closed with
+ * equivalents in {@link ControlObjectState}, also need to change the way durations are managed.
+ *
  * Usage: one-shot, not thread safe.
  *
- * Current lifecycle is:
+ * Current lifecycle is: (FIXME - this needs update)
  *
  * {@link #initialize()}
  * {@link #performTemplateProcessing()}
- * {@link #markPresented()}
+ * {@link #enterItem(Date)}
  * {@link #markPendingSubmission()}
  * {@link #markPendingResponseProcessing()}
  * {@link #bindResponses(Map)}
@@ -187,38 +194,70 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     //-------------------------------------------------------------------
-    // Initialization & template processing
+    // Initialization
 
     /**
      * Resets the current {@link ItemSessionState} then sets all explicitly-defined
-     * (valid) variables to NULL and the built-in variables to their initial values.
+     * (valid) variables to their default values, and the built-in variables to their
+     * initial values. Interactions supporting shuffling will have their random orders
+     * selected.
+     * <p>
+     * Preconditions: None. This can be called at any time; any existing state will
+     *   be wiped.
+     * <p>
+     * Postconditions: All explicitly-defined variables are reset to their default values.
+     *   Built-in variables are set to initial values. Interaction shuffle orders will
+     *   have been chosen. {@link ItemSessionState#isInitialized()} will return true.
+     *
+     * @param timestamp for this operation.
      */
-    public void initialize() {
+    public void initialize(final Date timestamp) {
+        Assert.notNull(timestamp);
+        logger.debug("Initializing item {}", getSubject().getSystemId());
+
+        /* Reset all state */
         itemSessionState.reset();
-        for (final Identifier identifier : itemProcessingMap.getValidTemplateDeclarationMap().keySet()) {
-            itemSessionState.setTemplateValue(identifier, NullValue.INSTANCE);
-        }
-        for (final Identifier identifier : itemProcessingMap.getValidResponseDeclarationMap().keySet()) {
-            itemSessionState.setResponseValue(identifier, NullValue.INSTANCE);
-        }
-        for (final Identifier identifier : itemProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
-            itemSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
-        }
-        itemSessionState.resetBuiltinVariables();
+        resetTemplateVariables();
+        resetResponseState();
+        resetOutcomeVariables();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         itemSessionState.setInitialized(true);
+
+        /* Initialize all interactions */
+        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
+            interaction.initialize(this);
+        }
+
+        /* Update closed status. (This normally won't do anything, but a pathological
+         * question might have completionStatus having a default value of completed!
+         */
+        updateClosedStatus(timestamp);
     }
 
     private void ensureInitialized() {
         if (!itemSessionState.isInitialized()) {
-            throw new IllegalStateException("ItemSession has not been initialiazed");
+            throw new QtiCandidateStateException("ItemSessionState has not been initialized");
+        }
+    }
+
+    private void ensureEntered() {
+        ensureInitialized();
+        if (!itemSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Item has not been entered");
         }
     }
 
     private void ensureOpen() {
+        ensureEntered();
+        if (itemSessionState.isEnded()) {
+            throw new QtiCandidateStateException("ItemSession is ended");
+        }
+    }
+
+    private void ensureEnded() {
         ensureInitialized();
-        if (itemSessionState.isClosed()) {
-            throw new IllegalStateException("ItemSession is closed");
+        if (!itemSessionState.isEnded()) {
+            throw new QtiCandidateStateException("ItemSession has not been ended");
         }
     }
 
@@ -231,12 +270,12 @@ public final class ItemSessionController extends ItemValidationController implem
      *
      * (New in JQTI+)
      */
-    private void updateClosedStatus() {
+    private void updateClosedStatus(final Date timestamp) {
         boolean shouldClose;
         if (item.getAdaptive()) {
             /* For adaptive items, attempts are limited by the value of the completion status variable */
             final String completionStatus = itemSessionState.getCompletionStatus();
-            shouldClose = AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(completionStatus);
+            shouldClose = QtiConstants.COMPLETION_STATUS_COMPLETED.equals(completionStatus);
         }
         else {
             /* Non-adaptive items use maxAttempts, with 0 treated as unlimited */
@@ -244,27 +283,47 @@ public final class ItemSessionController extends ItemValidationController implem
             final int numAttempts = itemSessionState.getNumAttempts();
             shouldClose = (maxAttempts>0 && numAttempts>=maxAttempts);
         }
-        itemSessionState.setClosed(shouldClose);
+        itemSessionState.setEndTime(shouldClose ? timestamp : null);
     }
 
     //-------------------------------------------------------------------
-    // Response processing
+    // Template processing
 
     /**
-     * Performs template processing, with no <code>templateDefaults</code>.
+     * Performs Template Processing, with no <code>templateDefaults</code>, then
+     * resets Response and Outcome variables to their default values.
+     * <p>
+     * Pre-condition: {@link ItemSessionState} must have been initialized. Candidate
+     *   must not have entered the item.
+     * <p>
+     * Post-condition: Template variables will be initialized. Response and Outcome
+     *   variables will be reset to their default values.
+     *
+     * @see #performTemplateProcessing(Date, List)
      */
-    public void performTemplateProcessing() {
-        performTemplateProcessing(null);
+    public void performTemplateProcessing(final Date timestamp) {
+        performTemplateProcessing(timestamp, null);
     }
 
     /**
-     * Performs template processing using the given <code>templateDefaults</code>.
+     * Performs Template Processing using the given <code>templateDefaults</code>,
+     * then resets Response and Outcome variables to their default values.
+     * <p>
+     * Pre-condition: {@link ItemSessionState} must have been initialized. Candidate
+     *   must not have entered the item.
+     * <p>
+     * Post-condition: Template variables will be initialized. Response and Outcome
+     *   variables will be reset to their default values.
+     *
+     * @see #performTemplateProcessing(Date)
      *
      * @param templateDefaults List of {@link TemplateDefault}s, which may be null or empty.
      */
-    public void performTemplateProcessing(final List<TemplateDefault> templateDefaults) {
-        ensureInitialized();
+    public void performTemplateProcessing(final Date timestamp, final List<TemplateDefault> templateDefaults) {
+        Assert.notNull(timestamp);
+        ensureNotEntered();
         logger.debug("Template processing starting on item {}", getSubject().getSystemId());
+
         fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
         try {
             /* Initialise template defaults with any externally provided defaults */
@@ -298,13 +357,20 @@ public final class ItemSessionController extends ItemValidationController implem
                 interaction.initialize(this);
             }
 
-            /* Reset session */
-            resetItemSession();
+            /* Reset OVs and RVs session */
+            resetOutcomeAndResponseVariables();
+            updateClosedStatus(timestamp);
         }
         finally {
             fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
             logger.debug("Template processing finished on item {}", getSubject().getSystemId());
         }
+    }
+
+    private void resetOutcomeAndResponseVariables() {
+        resetOutcomeVariables();
+        resetResponseState();
+        itemSessionState.setSessionStatus(SessionStatus.INITIAL);
     }
 
     private boolean doTemplateProcessingRun(final int attemptNumber) {
@@ -348,46 +414,134 @@ public final class ItemSessionController extends ItemValidationController implem
         return true;
     }
 
-    /**
-     * Resets the item session back to the state it was immediately after template processing.
-     */
-    public void resetItemSession() {
+    private void ensureNotEntered() {
         ensureInitialized();
-
-        /* Initialise all outcome and response variables to their default values */
-        resetOutcomeVariables();
-        resetResponseState();
-
-        /* Set special built-in response and outcome variables */
-        itemSessionState.setNumAttempts(0);
-        itemSessionState.setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_UNKNOWN);
-
-        /* Reset SessionStatus */
-        itemSessionState.setSessionStatus(SessionStatus.INITIAL);
-        updateClosedStatus();
+        if (itemSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Expected itemSessionState.isEntered() => false");
+        }
     }
 
     //-------------------------------------------------------------------
-    // Interacting
+    // Entry, Reset and Exit
 
-    public void markPresented() {
+    /**
+     * "Enters" the item, marking it as having been presented.
+     * <p>
+     * Pre-condition: Item Session must have been initialized and not already entered.
+     * <p>
+     * Post-condition: Item Session will have its entry time set and the duration timer
+     * will start. The {@link SessionStatus} will be changed to {@link SessionStatus#PENDING_SUBMISSION}
+     *
+     * @param timestamp
+     */
+    public void enterItem(final Date timestamp) {
+        Assert.notNull(timestamp);
+        ensureNotEntered();
+        logger.debug("Entering item {}", getSubject().getSystemId());
+
+        /* Record entry */
+        itemSessionState.setEntryTime(timestamp);
+
+        /* Check closed status */
+        updateClosedStatus(timestamp); /* (This can't change anything here but I'll keep for completeness) */
+
+        if (!itemSessionState.isClosed()) {
+            /* Update SessionStatus */
+            itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
+
+            /* Start the duration timer */
+            startItemSessionTimer(itemSessionState, timestamp);
+        }
+    }
+
+    /**
+     * Touches (updates) the <code>duration</code> variable in the item session if the session is
+     * currently open. Call this
+     * method before rendering and other operations that use rather than change the session state.
+     * <p>
+     * Pre-condition: Item Session must have been initialised
+     * <p>
+     * Post-condition: Duration variable will be updated (if the item session is currently open)
+     * @param timestamp
+     */
+    public void touchDuration(final Date timestamp) {
+        Assert.notNull(timestamp);
         ensureInitialized();
-        itemSessionState.setPresented(true);
+        logger.debug("Touching duration for item {}", getSubject().getSystemId());
+
+        if (!itemSessionState.isEnded()) {
+            endItemSessionTimer(itemSessionState, timestamp);
+            startItemSessionTimer(itemSessionState, timestamp);
+        }
     }
 
-    public void markPendingSubmission() {
-        ensureOpen();
-        itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
+    /**
+     * Resets the item session back to the state it was immediately after template processing.
+     * <p>
+     * Pre-condition: Item Session must have been entered.
+     * <p>
+     * Post-condition: Item Session will be reset back to the state it was on entry. I.e.
+     *   Template Variables will have the values they had after init and template processing;
+     *   Outcome and Response variables will be reset. The duration timer is restarted but not
+     *   reset.
+     */
+    public void resetItemSession(final Date timestamp) {
+        Assert.notNull(timestamp);
+        ensureEntered();
+        logger.debug("Resetting item session {}", getSubject().getSystemId());
+
+        /* Stop duration timer */
+        endItemSessionTimer(itemSessionState, timestamp);
+
+        /* Reset OVs and RVs */
+        resetOutcomeAndResponseVariables();
+
+        /* Check closed status */
+        updateClosedStatus(timestamp);
+
+        if (!itemSessionState.isClosed()) {
+            /* Update SessionStatus */
+            itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
+
+            /* ASK: We are not reseting the duration here. Is this the most useful behaviour? */
+            startItemSessionTimer(itemSessionState, timestamp);
+        }
     }
 
-    public void markPendingResponseProcessing() {
-        ensureOpen();
-        itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
+    /**
+     * Ends (closes) the item session.
+     * <p>
+     * Pre-condition: Item must have been entered.
+     * <p>
+     * Post-conditions: Item session state will be marked as ended (closed). Duration
+     *   timer will be stopped.
+     *
+     * @param timestamp
+     */
+    public void endItem(final Date timestamp) {
+        Assert.notNull(timestamp);
+        ensureEntered();
+        logger.debug("Ending item {}", getSubject().getSystemId());
+
+        itemSessionState.setEndTime(timestamp);
+        endItemSessionTimer(itemSessionState, timestamp);
     }
 
-    public void markClosed() {
-        ensureInitialized();
-        itemSessionState.setClosed(true);
+    /**
+     * Exits the item session. (This isn't strictly needed when running single items.)
+     * <p>
+     * Pre-condition: Item session must have been ended (closed)
+     * <p>
+     * Post-condiiton: Exit time will be recorded.
+     *
+     * @param timestamp
+     */
+    public void exitItem(final Date timestamp) {
+        Assert.notNull(timestamp);
+        ensureEnded();
+        logger.debug("Exiting item {}", getSubject().getSystemId());
+
+        itemSessionState.setExitTime(timestamp);
     }
 
     //-------------------------------------------------------------------
@@ -402,6 +556,13 @@ public final class ItemSessionController extends ItemValidationController implem
      * <p>
      * NB: This is NOT counted as an attempt.
      *
+     * Pre-condition: Item session must be open
+     * <p>
+     * Post-conditions: Response variables will be bound and validated. Session state will
+     * be marked as having been responded, and Session Status will be set to
+     * {@link SessionStatus#PENDING_RESPONSE_PROCESSING}
+     *
+     * @param timestamp timestamp for this event
      * @param responseMap Map of responses to set, keyed on response variable identifier
      * @return true if all responses were successfully bound and validated, false otherwise.
      *   Further details can be found within {@link ItemSessionState}
@@ -409,10 +570,14 @@ public final class ItemSessionController extends ItemValidationController implem
      * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
      *   any key fails to map to an interaction
      */
-    public boolean bindResponses(final Map<Identifier, ResponseData> responseMap) {
+    public boolean bindResponses(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
+        Assert.notNull(timestamp);
         Assert.notNull(responseMap, "responseMap");
         ensureOpen();
         logger.debug("Binding responses {} on item {}", responseMap, getSubject().getSystemId());
+
+        /* Stop duration timer */
+        endItemSessionTimer(itemSessionState, timestamp);
 
         /* First set all responses bound to <endAttemptInteractions> to false initially.
          * These may be overridden for responses to the presented interactions below.
@@ -459,6 +624,10 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setResponded(true);
         itemSessionState.setUnboundResponseIdentifiers(unboundResponseIdentifiers);
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
+        itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
+        if (!itemSessionState.isClosed()) { /* (NB: This should never fail but we'll keep it for consistency) */
+            startItemSessionTimer(itemSessionState, timestamp);
+        }
 
         return unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
@@ -466,29 +635,52 @@ public final class ItemSessionController extends ItemValidationController implem
 
     /**
      * Resets all responses
+     * <p>
+     * Pre-condition: Item session must be open.
+     * <p>
+     * Post-condition: Responses are reset to their default values. SessionStatus is
+     * reset to {@link SessionStatus#INITIAL}.
      */
-    public void resetResponses() {
+    public void resetResponses(final Date timestamp) {
+        Assert.notNull(timestamp);
         ensureOpen();
+        logger.debug("Resetting responses on item {}", getSubject().getSystemId());
+
+        endItemSessionTimer(itemSessionState, timestamp);
         resetResponseState();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
-        updateClosedStatus();
+        updateClosedStatus(timestamp);
+        if (!itemSessionState.isClosed()) {
+            startItemSessionTimer(itemSessionState, timestamp);
+        }
     }
 
     /**
-     * Runs response processing on the currently bound responses, changing {@link #itemSessionState}
+     * Performs response processing on the currently bound responses, changing {@link #itemSessionState}
      * as appropriate.
+     * <p>
+     * Pre-condition: item session must be open.
+     * <p>
+     * Post-conditions: Outcome Variables will be updated. SessionStatus will be changed to
+     * {@link SessionStatus#FINAL}. The <code>numAttempts</code> variables will be incremented (unless
+     * directed otherwise).
      */
-    public void performResponseProcessing() {
+    public void performResponseProcessing(final Date timestamp) {
+        Assert.notNull(timestamp);
         ensureOpen();
         logger.debug("Response processing starting on item {}", getSubject().getSystemId());
+
         fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
+            /* Stop timer to recalculate current duration */
+            endItemSessionTimer(itemSessionState, timestamp);
+
             /* If no responses have been bound, then set responses for all endAttemptInteractions to false now */
             if (!itemSessionState.isResponded()) {
                 initEndAttemptInteractionResponseValues();
             }
 
-            /* We with always count the attempt, unless the response was to an endAttemptInteraction
+            /* We will always count the attempt, unless the response was to an endAttemptInteraction
              * with countAttempt set to false.
              */
             boolean countAttempt = true;
@@ -497,7 +689,7 @@ public final class ItemSessionController extends ItemValidationController implem
                     final EndAttemptInteraction endAttemptInteraction = (EndAttemptInteraction) interaction;
                     final Value responseValue = itemSessionState.getResponseValue(interaction);
                     if (responseValue==null) {
-                        throw new IllegalStateException("Expected to find a response value for identifier " + interaction.getResponseDeclaration());
+                        throw new QtiCandidateStateException("Expected to find a response value for identifier " + interaction.getResponseDeclaration());
                     }
                     if (!responseValue.hasSignature(Signature.SINGLE_BOOLEAN)) {
                         fireRuntimeWarning(getSubjectItem().getResponseProcessing(),
@@ -542,12 +734,30 @@ public final class ItemSessionController extends ItemValidationController implem
 
             /* Update final state */
             itemSessionState.setSessionStatus(SessionStatus.FINAL);
-            updateClosedStatus();
+            updateClosedStatus(timestamp);
+
+            /* Start timer again to keep calculating duration */
+            if (!itemSessionState.isClosed()) {
+                startItemSessionTimer(itemSessionState, timestamp);
+            }
         }
         finally {
             fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
             logger.debug("Response processing finished on item {}", getSubject().getSystemId());
         }
+    }
+
+    //-------------------------------------------------------------------
+    // Duration management
+
+    private void startItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
+        itemSessionState.setDurationIntervalStartTime(timestamp);
+    }
+
+    private void endItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
+        final long durationDelta = timestamp.getTime() - itemSessionState.getDurationIntervalStartTime().getTime();
+        itemSessionState.setDurationAccumulated(itemSessionState.getDurationAccumulated() + durationDelta);
+        itemSessionState.setDurationIntervalStartTime(null);
     }
 
     //-------------------------------------------------------------------
@@ -596,7 +806,7 @@ public final class ItemSessionController extends ItemValidationController implem
             }
         }
         else {
-            throw new IllegalStateException("Interaction '" + interaction.getQtiClassName()
+            throw new QtiCandidateStateException("Interaction '" + interaction.getQtiClassName()
                     + "' attempted shuffling but does not implement Shuffleable interface");
         }
     }
@@ -656,49 +866,122 @@ public final class ItemSessionController extends ItemValidationController implem
     //-------------------------------------------------------------------
 
     @Override
+    public Value evaluateVariableValue(final VariableDeclaration variableDeclaration) {
+        Assert.notNull(variableDeclaration);
+        return evaluateVariableValue(variableDeclaration.getIdentifier());
+    }
+
+    @Override
     public Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
         if (!itemProcessingMap.isValidVariableIdentifier(identifier)) {
             throw new QtiInvalidLookupException(identifier);
         }
-        final Value value = getVariableValue(identifier, permittedTypes);
-        if (value==null) {
-            throw new IllegalStateException("ItemSessionState lookup of variable " + identifier + " returned NULL, indicating state is not in sync");
-        }
-        return value;
-    }
-
-    private Value getVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
-        Value value = null;
+        Value result = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
-            value = itemSessionState.getVariableValue(identifier);
+            result = evaluateVariableValue(identifier);
         }
         else {
             /* Only allows specified types of variables */
             CHECK_LOOP: for (final VariableType type : permittedTypes) {
                 switch (type) {
                     case TEMPLATE:
-                        value = itemSessionState.getTemplateValue(identifier);
+                        result = evaluateTemplateValue(identifier);
                         break;
 
                     case RESPONSE:
-                        value = itemSessionState.getResponseValue(identifier);
+                        result = evaluateResponseValue(identifier);
                         break;
 
                     case OUTCOME:
-                        value = itemSessionState.getOutcomeValue(identifier);
+                        result = evaluateOutcomeValue(identifier);
                         break;
 
                     default:
                         throw new QtiLogicException("Unexpected switch case: " + type);
                 }
-                if (value!=null) {
+                if (result!=null) {
                     break CHECK_LOOP;
                 }
             }
         }
-        return value;
+        if (result==null) {
+            throw new QtiCandidateStateException("ItemSessionState lookup of variable " + identifier + " returned NULL, indicating state is not in sync");
+        }
+        return result;
+    }
+
+    private Value evaluateTemplateValue(final Identifier identifier) {
+        return itemSessionState.getTemplateValue(identifier);
+    }
+
+    private Value evaluateResponseValue(final Identifier identifier) {
+        if (identifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)) {
+            return itemSessionState.computeDurationValue();
+        }
+        else if (identifier.equals(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
+            return itemSessionState.getNumAttemptsValue();
+        }
+        return itemSessionState.getResponseValue(identifier);
+    }
+
+    private Value evaluateOutcomeValue(final Identifier identifier) {
+        if (identifier.equals(QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
+            return itemSessionState.getCompletionStatusValue();
+        }
+        return itemSessionState.getOutcomeValue(identifier);
+    }
+
+    public Value evaluateVariableValue(final Identifier identifier) {
+        Assert.notNull(identifier);
+        Value result = evaluateTemplateValue(identifier);
+        if (result==null) {
+            result = evaluateOutcomeValue(identifier);
+            if (result==null) {
+                result = evaluateResponseValue(identifier);
+            }
+        }
+        return result;
+    }
+
+    //-------------------------------------------------------------------
+
+    @Override
+    public void setVariableValue(final VariableDeclaration variableDeclaration, final Value value) {
+        Assert.notNull(variableDeclaration);
+        Assert.notNull(value);
+        final Identifier identifier = variableDeclaration.getIdentifier();
+        if (VariableDeclaration.isReservedIdentifier(identifier)) {
+            if (QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER.equals(identifier)) {
+                /* It is legal to set completionStatus */
+                if (value.hasBaseType(BaseType.IDENTIFIER)) {
+                    itemSessionState.setCompletionStatus(value.toQtiString());
+                }
+                else {
+                    throw new IllegalArgumentException("Variable " + QtiConstants.VARIABLE_COMPLETION_STATUS
+                            + " must be set to an identifier value");
+                }
+            }
+            else {
+                /* Other reserved variable may not be set */
+                throw new IllegalArgumentException("The reserved variable with " + identifier + " may not be explicitly set");
+            }
+        }
+        else {
+            if (variableDeclaration instanceof TemplateDeclaration) {
+                itemSessionState.setTemplateValue(identifier, value);
+            }
+            else if (variableDeclaration instanceof ResponseDeclaration) {
+                itemSessionState.setResponseValue(identifier, value);
+            }
+            else if (variableDeclaration instanceof OutcomeDeclaration) {
+                itemSessionState.setOutcomeValue(identifier, value);
+            }
+            else {
+                throw new QtiLogicException("Unexpected logic branch");
+            }
+        }
     }
 
     //-------------------------------------------------------------------
@@ -808,11 +1091,11 @@ public final class ItemSessionController extends ItemValidationController implem
 
     private void resetResponseVariables() {
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
-            if (!responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER) &&
-                    !responseDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
+            if (!VariableDeclaration.isReservedIdentifier(responseDeclaration.getIdentifier())) {
                 initValue(responseDeclaration);
             }
         }
+        itemSessionState.setNumAttempts(0);
         itemSessionState.clearRawResponseDataMap();
         itemSessionState.clearUnboundResponseIdentifiers();
         itemSessionState.clearInvalidResponseIdentifiers();
@@ -833,15 +1116,16 @@ public final class ItemSessionController extends ItemValidationController implem
 
     private void resetOutcomeVariables() {
         for (final OutcomeDeclaration outcomeDeclaration : itemProcessingMap.getValidOutcomeDeclarationMap().values()) {
-            if (!outcomeDeclaration.getIdentifier().equals(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
+            if (!VariableDeclaration.isReservedIdentifier(outcomeDeclaration.getIdentifier())) {
                 initValue(outcomeDeclaration);
             }
         }
+        itemSessionState.setCompletionStatus(QtiConstants.COMPLETION_STATUS_UNKNOWN);
     }
 
     private void initValue(final VariableDeclaration declaration) {
         Assert.notNull(declaration);
-        itemSessionState.setVariableValue(declaration, computeInitialValue(declaration));
+        setVariableValue(declaration, computeInitialValue(declaration));
     }
 
     private Value computeInitialValue(final VariableDeclaration declaration) {
@@ -868,7 +1152,7 @@ public final class ItemSessionController extends ItemValidationController implem
         if (correctResponseValue==null) {
             return false;
         }
-        final Value currentResponseValue = itemSessionState.getVariableValue(responseDeclaration);
+        final Value currentResponseValue = evaluateVariableValue(responseDeclaration);
         return currentResponseValue.equals(correctResponseValue);
     }
 
@@ -984,6 +1268,11 @@ public final class ItemSessionController extends ItemValidationController implem
     private void recordItemVariables(final ItemResult result) {
         final List<ItemVariable> itemVariables = result.getItemVariables();
         itemVariables.clear();
+
+        /* Record completionStatus */
+        itemVariables.add(new OutcomeVariable(result, item.getCompletionStatusOutcomeDeclaration(), itemSessionState.getCompletionStatusValue()));
+
+        /* Then do other OVs */
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getOutcomeValues().entrySet()) {
             final OutcomeDeclaration declaration = itemProcessingMap.getValidOutcomeDeclarationMap().get(mapEntry.getKey());
             if (declaration!=null) {
@@ -992,6 +1281,12 @@ public final class ItemSessionController extends ItemValidationController implem
                 itemVariables.add(variable);
             }
         }
+
+        /* Record duration & numAttempts */
+        itemVariables.add(new ResponseVariable(result, item.getDurationResponseDeclaration(), itemSessionState.computeDurationValue(), null));
+        itemVariables.add(new ResponseVariable(result, item.getNumAttemptsResponseDeclaration(), itemSessionState.getNumAttemptsValue(), null));
+
+        /* Then do rest of RVs */
         final Map<Identifier, Interaction> interactionMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getResponseValues().entrySet()) {
             final ResponseDeclaration declaration = itemProcessingMap.getValidResponseDeclarationMap().get(mapEntry.getKey());
@@ -1006,6 +1301,8 @@ public final class ItemSessionController extends ItemValidationController implem
                 itemVariables.add(variable);
             }
         }
+
+        /* Then do TVs */
         for (final Entry<Identifier, Value> mapEntry : itemSessionState.getTemplateValues().entrySet()) {
             final TemplateDeclaration declaration = itemProcessingMap.getValidTemplateDeclarationMap().get(mapEntry.getKey());
             if (declaration!=null) {

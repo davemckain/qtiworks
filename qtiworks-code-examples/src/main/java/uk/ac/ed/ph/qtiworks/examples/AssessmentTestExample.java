@@ -79,7 +79,7 @@ public final class AssessmentTestExample {
 
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
-        testSessionController.handleResponses(timestamp, responseMap);
+        testSessionController.handleResponsesToCurrentItem(timestamp, responseMap);
 
         System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 

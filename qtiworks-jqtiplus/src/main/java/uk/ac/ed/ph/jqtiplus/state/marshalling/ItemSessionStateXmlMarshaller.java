@@ -74,14 +74,17 @@ public final class ItemSessionStateXmlMarshaller {
 
     static void appendItemSessionState(final Node documentOrElement, final ItemSessionState itemSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "itemSessionState");
+        XmlMarshallerCore.addControlObjectStateAttributes(element, itemSessionState);
         element.setAttribute("initialized", StringUtilities.toTrueFalse(itemSessionState.isInitialized()));
-        element.setAttribute("presented", StringUtilities.toTrueFalse(itemSessionState.isPresented()));
         element.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
-        element.setAttribute("closed", StringUtilities.toTrueFalse(itemSessionState.isClosed()));
         final SessionStatus sessionStatus = itemSessionState.getSessionStatus();
         if (sessionStatus!=null) {
             element.setAttribute("sessionStatus", sessionStatus.toQtiString());
         }
+
+        /* Append implicit variables */
+        XmlMarshallerCore.maybeAddStringAttribute(element, "completionStatus", itemSessionState.getCompletionStatus());
+        element.setAttribute("numAttempts", Integer.toString(itemSessionState.getNumAttempts()));
 
         /* Show any unbound and/or invalid responses (as attribute) */
         XmlMarshallerCore.maybeAddIdentifierListAttribute(element, "unboundResponseIdentifiers", itemSessionState.getUnboundResponseIdentifiers());
@@ -158,12 +161,23 @@ public final class ItemSessionStateXmlMarshaller {
         XmlMarshallerCore.expectThisElement(element, "itemSessionState");
         final ItemSessionState result = new ItemSessionState();
 
+        XmlMarshallerCore.parseControlObjectStateAttributes(result, element);
         result.setInitialized(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "initialized", false));
-        result.setPresented(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "presented", false));
         result.setResponded(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "responded", false));
-        result.setClosed(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "closed", false));
         result.setUnboundResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "unboundResponseIdentifiers"));
         result.setInvalidResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "invalidResponseIdentifiers"));
+        result.setNumAttempts(XmlMarshallerCore.parseOptionalIntegerAttribute(element, "numAttempts", 0));
+
+        final String completionStatus = XmlMarshallerCore.parseOptionalStringAttribute(element, "completionStatus");
+        if (completionStatus!=null) {
+            try {
+                result.setCompletionStatus(completionStatus);
+            }
+            catch (final IllegalArgumentException e) {
+                throw new XmlUnmarshallingException("Unexpected value for completionStauts: " + completionStatus);
+            }
+        }
+
         if (element.hasAttribute("sessionStatus")) {
             final String sessionStatusAttr = element.getAttribute("sessionStatus");
             try {

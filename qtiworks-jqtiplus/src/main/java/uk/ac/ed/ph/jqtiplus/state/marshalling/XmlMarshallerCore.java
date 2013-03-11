@@ -109,12 +109,15 @@ public final class XmlMarshallerCore {
         }
     }
 
-    static void maybeAddDateOrEmptyAttribute(final Element element, final String attributeName, final Date date) {
-        if (date!=null) {
-            element.setAttribute(attributeName, new SimpleDateFormat(dateFormatString).format(date));
+    static void maybeAddStringAttribute(final Element element, final String attributeName, final String value) {
+        if (value!=null) {
+            element.setAttribute(attributeName, value);
         }
-        else {
-            element.setAttribute(attributeName,  "");
+    }
+
+    static void maybeAddIdentifierListAttribute(final Element element, final String attributeName, final Collection<Identifier> values) {
+        if (!values.isEmpty()) {
+            element.setAttribute(attributeName, StringUtilities.join(values, " "));
         }
     }
 
@@ -124,9 +127,12 @@ public final class XmlMarshallerCore {
         }
     }
 
-    static void maybeAddIdentifierListAttribute(final Element element, final String attributeName, final Collection<Identifier> values) {
-        if (!values.isEmpty()) {
-            element.setAttribute(attributeName, StringUtilities.join(values, " "));
+    static void maybeAddDateOrEmptyAttribute(final Element element, final String attributeName, final Date date) {
+        if (date!=null) {
+            element.setAttribute(attributeName, new SimpleDateFormat(dateFormatString).format(date));
+        }
+        else {
+            element.setAttribute(attributeName,  "");
         }
     }
 

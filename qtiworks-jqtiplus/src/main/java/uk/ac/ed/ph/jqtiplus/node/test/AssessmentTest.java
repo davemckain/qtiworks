@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.OutcomeDeclarationGroup;
 import uk.ac.ed.ph.jqtiplus.group.outcome.processing.OutcomeProcessingGroup;
@@ -44,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
@@ -59,6 +59,7 @@ import java.util.List;
  *
  * @author Jiri Kajaba
  * @author Jonathon Hare
+ * @author David McKain
  */
 public final class AssessmentTest extends ControlObject<String> implements AssessmentObject {
 
@@ -76,14 +77,10 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     /** Name of toolVersion attribute in xml schema. */
     public static final String ATTR_TOOL_VERSION_NAME = "toolVersion";
 
-    /** Name of duration built-in variable. */
-    public static final String VARIABLE_DURATION_NAME = "duration";
-
-    /** Identifier of duration built-in variable. */
-    public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal(VARIABLE_DURATION_NAME);
-
+    /** (Implicit) declaration of <code>duration</code> variable */
     private final ResponseDeclaration durationResponseDeclaration;
 
+    /** System ID of this RootNode (optional) */
     private URI systemId;
 
     public AssessmentTest() {
@@ -102,7 +99,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
 
         /* create a special declaration for the internal duration variable */
         durationResponseDeclaration = new ResponseDeclaration(this);
-        durationResponseDeclaration.setIdentifier(VARIABLE_DURATION_IDENTIFIER);
+        durationResponseDeclaration.setIdentifier(QtiConstants.VARIABLE_DURATION_IDENTIFIER);
         durationResponseDeclaration.setCardinality(Cardinality.SINGLE);
         durationResponseDeclaration.setBaseType(BaseType.FLOAT);
     }
@@ -172,11 +169,6 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
 
 
     @Override
-    public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
-        return getOutcomeDeclaration(identifier);
-    }
-
-    @Override
     public List<OutcomeDeclaration> getOutcomeDeclarations() {
         return getNodeGroups().getOutcomeDeclarationGroup().getOutcomeDeclarations();
     }
@@ -226,7 +218,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
 
     /**
      * Returns {@link ResponseDeclaration} for the implicitly-defined
-     * {@link #VARIABLE_DURATION_IDENTIFIER} variable
+     * {@link QtiConstants#VARIABLE_DURATION_IDENTIFIER} variable
      */
     public ResponseDeclaration getDurationResponseDeclaration() {
         return durationResponseDeclaration;

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -83,9 +84,9 @@ public final class ItemProcessingInitializer {
         final AssessmentItem item = resolvedAssessmentItem.getItemLookup().extractAssumingSuccessful();
 
         /* We will always use the built-in variables in their expected way, even if their identifiers end up non-unique */
-        validResponseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_DURATION_IDENTIFIER, item.getDurationResponseDeclaration());
-        validResponseDeclarationMapBuilder.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, item.getNumAttemptsResponseDeclaration());
-        validOutcomeDeclarationMapBuilder.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, item.getCompletionStatusOutcomeDeclaration());
+        validResponseDeclarationMapBuilder.put(QtiConstants.VARIABLE_DURATION_IDENTIFIER, item.getDurationResponseDeclaration());
+        validResponseDeclarationMapBuilder.put(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, item.getNumAttemptsResponseDeclaration());
+        validOutcomeDeclarationMapBuilder.put(QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER, item.getCompletionStatusOutcomeDeclaration());
 
         /* Then go through rest of variables, rejecting ones whose identifiers are non-unique */
         for (final TemplateDeclaration declaration : item.getTemplateDeclarations()) {
