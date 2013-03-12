@@ -211,7 +211,7 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/{sessionToken}/reset", method=RequestMethod.POST)
     public String resetSession(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateItemDeliveryService.resetCandidateSession(xid, sessionToken);
+        candidateItemDeliveryService.resetCandidateSessionSoft(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);
@@ -223,7 +223,7 @@ public class CandidateItemController {
     @RequestMapping(value="/session/{xid}/{sessionToken}/reinit", method=RequestMethod.POST)
     public String reinitSession(@PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
-        candidateItemDeliveryService.reinitCandidateSession(xid, sessionToken);
+        candidateItemDeliveryService.resetCandidateSessionHard(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);

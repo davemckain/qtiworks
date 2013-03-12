@@ -582,18 +582,18 @@ public class CandidateItemDeliveryService {
      * updated {@link CandidateSession}. At QTI level, this reruns template processing, so
      * randomised values will change as a result of this process.
      */
-    public CandidateSession reinitCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession resetCandidateSessionHard(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return reinitCandidateSession(candidateSession);
+        return resetCandidateSessionHard(candidateSession);
     }
 
-    public CandidateSession reinitCandidateSession(final CandidateSession candidateSession)
+    public CandidateSession resetCandidateSessionHard(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current session state */
-        ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
+        final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
 
         /* Make sure caller may reinit the session */
         ensureSessionNotTerminated(candidateSession);
@@ -606,17 +606,12 @@ public class CandidateItemDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
         }
 
-        /* Might as well just create fresh JQTI+ state */
-        itemSessionState = new ItemSessionState();
-
-        /* Update session state */
+        /* Update state */
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.initialize(timestamp);
-        itemSessionController.performTemplateProcessing(timestamp);
-        itemSessionController.enterItem(timestamp);
+        itemSessionController.resetItemSessionHard(timestamp, true);
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
@@ -642,13 +637,13 @@ public class CandidateItemDeliveryService {
      * was in immediately after the last {@link CandidateItemEventType#REINIT} (if applicable),
      * or after the original {@link CandidateItemEventType#INIT}.
      */
-    public CandidateSession resetCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession resetCandidateSessionSoft(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return resetCandidateSession(candidateSession);
+        return resetCandidateSessionSoft(candidateSession);
     }
 
-    public CandidateSession resetCandidateSession(final CandidateSession candidateSession)
+    public CandidateSession resetCandidateSessionSoft(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -671,8 +666,7 @@ public class CandidateItemDeliveryService {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.resetItemSession(timestamp);
-        itemSessionController.enterItem(timestamp);
+        itemSessionController.resetItemSessionSoft(timestamp, true);
 
         /* Record and event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);

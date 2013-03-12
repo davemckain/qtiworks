@@ -220,9 +220,9 @@ public final class ItemSessionController extends ItemValidationController implem
 
         /* Reset all state */
         itemSessionState.reset();
-        resetTemplateVariables();
-        resetResponseState();
-        resetOutcomeVariables();
+        initTemplateVariables();
+        initResponseState();
+        initOutcomeVariables();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         itemSessionState.setInitialized(true);
 
@@ -237,23 +237,30 @@ public final class ItemSessionController extends ItemValidationController implem
         updateClosedStatus(timestamp);
     }
 
+    private void ensureNotExited() {
+        if (itemSessionState.isExited()) {
+            throw new QtiCandidateStateException("Item session has been exited so is no longer available");
+        }
+    }
+
     private void ensureInitialized() {
+        ensureNotExited();
         if (!itemSessionState.isInitialized()) {
-            throw new QtiCandidateStateException("ItemSessionState has not been initialized");
+            throw new QtiCandidateStateException("Item session has not been initialized");
         }
     }
 
     private void ensureEntered() {
         ensureInitialized();
         if (!itemSessionState.isEntered()) {
-            throw new QtiCandidateStateException("Item has not been entered");
+            throw new QtiCandidateStateException("Item session has not been entered");
         }
     }
 
     private void ensureOpen() {
         ensureEntered();
         if (itemSessionState.isEnded()) {
-            throw new QtiCandidateStateException("ItemSession is ended");
+            throw new QtiCandidateStateException("Item session has ended");
         }
     }
 
@@ -266,7 +273,7 @@ public final class ItemSessionController extends ItemValidationController implem
 
     /**
      * Checks whether a further attempt is allowed on this item, updating
-     * {@link ItemSessionState#isClosed()} as appropriate.
+     * {@link ItemSessionState#isEnded()} as appropriate.
      * <p>
      * This must be called after every attempt and every processing run
      * to update the state.
@@ -371,8 +378,8 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     private void resetOutcomeAndResponseVariables() {
-        resetOutcomeVariables();
-        resetResponseState();
+        initOutcomeVariables();
+        initResponseState();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
     }
 
@@ -380,7 +387,7 @@ public final class ItemSessionController extends ItemValidationController implem
         logger.debug("Template Processing attempt #{} starting", attemptNumber);
 
         /* Reset template variables */
-        resetTemplateVariables();
+        initTemplateVariables();
 
         final int maxTemplateProcessingTries = itemSessionControllerSettings.getTemplateProcessingLimit();
         if (attemptNumber > maxTemplateProcessingTries) {
@@ -448,7 +455,7 @@ public final class ItemSessionController extends ItemValidationController implem
         /* Check closed status */
         updateClosedStatus(timestamp); /* (This can't change anything here but I'll keep for completeness) */
 
-        if (!itemSessionState.isClosed()) {
+        if (!itemSessionState.isEnded()) {
             /* Update SessionStatus */
             itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
 
@@ -479,22 +486,68 @@ public final class ItemSessionController extends ItemValidationController implem
     }
 
     /**
-     * Resets the item session back to the state it was immediately after template processing.
+     * Performs a "hard" reset on an entered item session. This will reset all variables,
+     * choose new interaction shuffle orders and run template processing again. The accumulated
+     * duration can be reset or maintained as required.
+     * <p>
+     * Pre-condition: Item Session must have been entered.
+     * <p>
+     * Post-condition: Item Session will be reinitialized, then template processing will be
+     * run again. The item's entry time will be maintained. The duration timer is reset,
+     * if requested, and then restarted.
+     */
+    public void resetItemSessionHard(final Date timestamp, final boolean resetDuration) {
+        Assert.notNull(timestamp);
+        ensureEntered();
+        logger.debug("Performing hard reset on item session {}", getSubject().getSystemId());
+
+        /* Stop duration timer */
+        endItemSessionTimer(itemSessionState, timestamp);
+
+        /* Note the existing times and duration */
+        final Date entryTime = itemSessionState.getEntryTime();
+        final long duration = itemSessionState.getDurationAccumulated();
+
+        /* Perform init and TP again */
+        initialize(timestamp);
+        performTemplateProcessing(timestamp);
+
+        /* Save times back */
+        itemSessionState.setEntryTime(entryTime);
+        if (!resetDuration) {
+            itemSessionState.setDurationAccumulated(duration);
+        }
+
+        if (!itemSessionState.isEnded()) {
+            /* Start the duration timer again */
+            startItemSessionTimer(itemSessionState, timestamp);
+        }
+    }
+
+    /**
+     * Resets the item session back to the state it was immediately <code>after</code> template
+     * processing. Template variables and shuffled interactions will have their existing state
+     * maintained. The accumulated duration can be reset or maintained as required.
      * <p>
      * Pre-condition: Item Session must have been entered.
      * <p>
      * Post-condition: Item Session will be reset back to the state it was on entry. I.e.
-     *   Template Variables will have the values they had after init and template processing;
-     *   Outcome and Response variables will be reset. The duration timer is restarted but not
-     *   reset.
+     * Template Variables will have the values they had after init and template processing;
+     * Outcome and Response variables will be reset. The duration timer is reset, if requested,
+     * and then restarted. The existing entry time will be maintained.
      */
-    public void resetItemSession(final Date timestamp) {
+    public void resetItemSessionSoft(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
         ensureEntered();
-        logger.debug("Resetting item session {}", getSubject().getSystemId());
+        logger.debug("Performing soft reset on item session {}", getSubject().getSystemId());
 
         /* Stop duration timer */
         endItemSessionTimer(itemSessionState, timestamp);
+
+        /* Maybe reset duration counter */
+        if (resetDuration) {
+            itemSessionState.setDurationAccumulated(0L);
+        }
 
         /* Reset OVs and RVs */
         resetOutcomeAndResponseVariables();
@@ -502,11 +555,11 @@ public final class ItemSessionController extends ItemValidationController implem
         /* Check closed status */
         updateClosedStatus(timestamp);
 
-        if (!itemSessionState.isClosed()) {
+        if (!itemSessionState.isEnded()) {
             /* Update SessionStatus */
             itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
 
-            /* ASK: We are not reseting the duration here. Is this the most useful behaviour? */
+            /* Start the duration timer again */
             startItemSessionTimer(itemSessionState, timestamp);
         }
     }
@@ -640,7 +693,7 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
 
         /* Touch the duration timer */
-        if (!itemSessionState.isClosed()) { /* (NB: This should never fail but we'll keep it for consistency) */
+        if (!itemSessionState.isEnded()) { /* (NB: This should never fail but we'll keep it for consistency) */
             startItemSessionTimer(itemSessionState, timestamp);
         }
 
@@ -686,7 +739,7 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
 
         /* Touch the duration timer */
-        if (!itemSessionState.isClosed()) { /* (NB: This should never fail but we'll keep it for consistency) */
+        if (!itemSessionState.isEnded()) { /* (NB: This should never fail but we'll keep it for consistency) */
             startItemSessionTimer(itemSessionState, timestamp);
         }
     }
@@ -705,10 +758,10 @@ public final class ItemSessionController extends ItemValidationController implem
         logger.debug("Resetting responses on item {}", getSubject().getSystemId());
 
         endItemSessionTimer(itemSessionState, timestamp);
-        resetResponseState();
+        initResponseState();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         updateClosedStatus(timestamp);
-        if (!itemSessionState.isClosed()) {
+        if (!itemSessionState.isEnded()) {
             startItemSessionTimer(itemSessionState, timestamp);
         }
     }
@@ -773,7 +826,7 @@ public final class ItemSessionController extends ItemValidationController implem
 
             /* For non-adaptive items, reset outcome variables to default values */
             if (!item.getAdaptive()) {
-                resetOutcomeVariables();
+                initOutcomeVariables();
             }
 
             /* Work out which RP logic to perform */
@@ -799,7 +852,7 @@ public final class ItemSessionController extends ItemValidationController implem
             updateClosedStatus(timestamp);
 
             /* Start timer again to keep calculating duration */
-            if (!itemSessionState.isClosed()) {
+            if (!itemSessionState.isEnded()) {
                 startItemSessionTimer(itemSessionState, timestamp);
             }
         }
@@ -1137,13 +1190,13 @@ public final class ItemSessionController extends ItemValidationController implem
 
     //-------------------------------------------------------------------
 
-    private void resetTemplateVariables() {
+    private void initTemplateVariables() {
         for (final TemplateDeclaration templateDeclaration : itemProcessingMap.getValidTemplateDeclarationMap().values()) {
             initValue(templateDeclaration);
         }
     }
 
-    private void resetResponseState() {
+    private void initResponseState() {
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
             if (!VariableDeclaration.isReservedIdentifier(responseDeclaration.getIdentifier())) {
                 initValue(responseDeclaration);
@@ -1157,7 +1210,7 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setResponded(false);
     }
 
-    private void resetOutcomeVariables() {
+    private void initOutcomeVariables() {
         for (final OutcomeDeclaration outcomeDeclaration : itemProcessingMap.getValidOutcomeDeclarationMap().values()) {
             if (!VariableDeclaration.isReservedIdentifier(outcomeDeclaration.getIdentifier())) {
                 initValue(outcomeDeclaration);
