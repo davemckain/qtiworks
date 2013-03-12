@@ -52,8 +52,8 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
@@ -145,19 +145,18 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
     }
 
     @Override
-    protected void bindResponse(final MathAssessExtensionPackage mathAssessExtensionPackage, final ItemSessionController itemSessionController, final ResponseData responseData)
+    protected void bindResponse(final MathAssessExtensionPackage mathAssessExtensionPackage, final InteractionBindingContext interactionBindingContext, final ResponseData responseData)
             throws ResponseBindingException {
         /* Bind response value as normal */
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(mathAssessExtensionPackage, responseDeclaration, responseData);
-        final ItemSessionState itemState = itemSessionController.getItemSessionState();
-        itemState.setUncommittedResponseValue(this, value);
+        interactionBindingContext.bindResponseVariable(responseDeclaration.getIdentifier(), value);
 
         final Identifier printIdentifier = getPrintIdentifier();
         if (printIdentifier != null) {
             /* handle stringIdentifier binding as well, if requested */
             final Value printResponseValue = value.isNull() ? NullValue.INSTANCE : (StringValue) ((RecordValue) value).get(MathAssessConstants.FIELD_PMATHML_IDENTIFIER);
-            itemState.setUncommittedResponseValue(printIdentifier, printResponseValue);
+            interactionBindingContext.bindResponseVariable(printIdentifier, printResponseValue);
         }
     }
 

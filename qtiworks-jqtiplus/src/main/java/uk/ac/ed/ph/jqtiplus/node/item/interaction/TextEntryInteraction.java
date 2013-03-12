@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -176,14 +177,14 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
     }
 
     @Override
-    public final void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData) throws ResponseBindingException {
-        super.bindResponse(itemSessionController, responseData);
+    public final void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData) throws ResponseBindingException {
+        super.bindResponse(interactionBindingContext, responseData);
 
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
             final ResponseDeclaration stringIdentifierResponseDeclaration = getStringIdentifierResponseDeclaration();
             final Value value = parseResponse(stringIdentifierResponseDeclaration, responseData);
-            itemSessionController.getItemSessionState().setUncommittedResponseValue(stringIdentifierResponseDeclaration, value);
+            interactionBindingContext.bindResponseVariable(stringIdentifierResponseDeclaration.getIdentifier(), value);
         }
     }
 

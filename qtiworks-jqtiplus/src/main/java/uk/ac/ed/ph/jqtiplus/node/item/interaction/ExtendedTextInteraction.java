@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -286,13 +287,13 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
 
 
     @Override
-    public void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData) throws ResponseBindingException {
-        super.bindResponse(itemSessionController, responseData);
+    public void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData) throws ResponseBindingException {
+        super.bindResponse(interactionBindingContext, responseData);
 
         /* Also handle stringIdentifier binding if required */
         if (getStringIdentifier() != null) {
             final Value value = parseResponse(getStringIdentifierResponseDeclaration(), responseData);
-            itemSessionController.getItemSessionState().setUncommittedResponseValue(getStringIdentifierResponseDeclaration(), value);
+            interactionBindingContext.bindResponseVariable(getStringIdentifierResponseDeclaration().getIdentifier(), value);
         }
     }
 

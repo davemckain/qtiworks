@@ -73,7 +73,7 @@ public class TestItemRenderingTest {
 
             System.out.println("\nInitialising and entering test and first part");
             final Date timestamp1 = new Date();
-            testSessionController.initialize();
+            testSessionController.initialize(timestamp1);
             testSessionController.enterTest(timestamp1);
 
             final Date timestamp2 = ObjectUtilities.addToTime(timestamp1, 1000L);

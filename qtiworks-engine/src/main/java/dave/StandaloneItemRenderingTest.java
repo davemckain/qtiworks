@@ -27,6 +27,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
+import java.util.Date;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -60,9 +61,11 @@ public class StandaloneItemRenderingTest {
             itemSessionController.addNotificationListener(notificationLogListener);
 
             System.out.println("\nInitialising");
-            itemSessionController.initialize();
-            itemSessionController.performTemplateProcessing();
-            System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+            final Date timestamp = new Date();
+            itemSessionController.initialize(timestamp);
+            itemSessionController.performTemplateProcessing(timestamp);
+            itemSessionController.enterItem(timestamp);
+            System.out.println("Item session state after entry: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
 

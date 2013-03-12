@@ -67,7 +67,7 @@ public class TestNavigationRenderingTest {
 
             System.out.println("\nInitialising");
             final Date timestamp = new Date();
-            testSessionController.initialize();
+            testSessionController.initialize(timestamp);
             testSessionController.enterTest(timestamp);
             testSessionController.enterNextAvailableTestPart(timestamp);
             System.out.println("Test session state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));

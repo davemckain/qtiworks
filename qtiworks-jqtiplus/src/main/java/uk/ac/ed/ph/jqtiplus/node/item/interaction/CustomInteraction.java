@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -88,23 +89,23 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
     protected abstract void validateThis(final E jqtiExtensionPackage, final ValidationContext context, final ResponseDeclaration responseDeclaration);
 
     @Override
-    public final void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
+    public final void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData)
             throws ResponseBindingException {
         Assert.notNull(responseData, "responseData");
-        final E jqtiExtensionPackage = getOwningExtensionPackage(itemSessionController);
+        final E jqtiExtensionPackage = getOwningExtensionPackage(interactionBindingContext);
         if (jqtiExtensionPackage!=null) {
-            bindResponse(jqtiExtensionPackage, itemSessionController, responseData);
+            bindResponse(jqtiExtensionPackage, interactionBindingContext, responseData);
         }
         else {
             logger.debug("JqtiExtensionPackage owning this customInteraction is not registered, so not binding response");
         }
     }
 
-    protected void bindResponse(final E jqtiExtensionPackage, final ItemSessionController itemSessionController, final ResponseData responseData)
+    protected void bindResponse(final E jqtiExtensionPackage, final InteractionBindingContext interactionBindingContext, final ResponseData responseData)
             throws ResponseBindingException {
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(jqtiExtensionPackage, responseDeclaration, responseData);
-        itemSessionController.getItemSessionState().setUncommittedResponseValue(this, value);
+        interactionBindingContext.bindResponseVariable(responseDeclaration.getIdentifier(), value);
     }
 
     @Override
@@ -132,8 +133,8 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
 
     //------------------------------------------------------------------------
 
-    protected final E getOwningExtensionPackage(final ItemSessionController itemSessionController) {
-        return itemSessionController.getJqtiExtensionManager().getJqtiExtensionPackageImplementingInteraction(this);
+    protected final E getOwningExtensionPackage(final InteractionBindingContext interactionBindingContext) {
+        return interactionBindingContext.getJqtiExtensionManager().getJqtiExtensionPackageImplementingInteraction(this);
     }
 
     protected final E getOwningExtensionPackage(final ValidationContext context) {

@@ -43,6 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -61,7 +62,6 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * Interactions allow the candidate to interact with the item.
@@ -154,12 +154,12 @@ public abstract class Interaction extends BodyElement {
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
-    public void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
+    public void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData)
             throws ResponseBindingException {
         Assert.notNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(responseDeclaration, responseData);
-        itemSessionController.getItemSessionState().setUncommittedResponseValue(this, value);
+        interactionBindingContext.bindResponseVariable(responseDeclaration.getIdentifier(), value);
     }
 
     /**
@@ -175,7 +175,7 @@ public abstract class Interaction extends BodyElement {
      *
      * @param responseData Response to process, which will never be null
      * @param responseDeclaration underlying response declaration
-     * @see #bindResponse(ItemSessionController, ResponseData)
+     * @see #bindResponse(InteractionBindingContext, ResponseData)
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
@@ -230,7 +230,7 @@ public abstract class Interaction extends BodyElement {
 
     /**
      * Validate the response associated with this interaction.
-     * This is called after {@link #bindResponse(ItemSessionController, ResponseData)}
+     * This is called after {@link #bindResponse(InteractionBindingContext, ResponseData)}
      *
      * @return true if the response is valid, false otherwise
      */

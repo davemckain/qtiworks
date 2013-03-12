@@ -68,7 +68,7 @@ public final class AssessmentTestExample {
         testSessionController.addNotificationListener(notificationLogListener);
 
         Date timestamp = new Date();
-        testSessionController.initialize();
+        testSessionController.initialize(timestamp);
         testSessionController.enterTest(timestamp);
         testSessionController.enterNextAvailableTestPart(timestamp);
         System.out.println("Test state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
