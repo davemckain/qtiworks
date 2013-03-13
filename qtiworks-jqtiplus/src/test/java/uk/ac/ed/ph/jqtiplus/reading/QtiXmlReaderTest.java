@@ -184,7 +184,7 @@ public class QtiXmlReaderTest {
     }
 
     private URI makeSystemId(final String testFileName) {
-        return URI.create("classpath:/uk/ac/ed/ph/jqtiplus/reading/" + testFileName);
+        return URI.create("classpath:/reading/" + testFileName);
     }
 
 }
