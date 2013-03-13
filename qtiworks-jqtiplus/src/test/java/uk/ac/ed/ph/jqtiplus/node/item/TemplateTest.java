@@ -48,11 +48,11 @@ import org.junit.Test;
 
 public class TemplateTest {
 
-    private static String fileName = "Template.xml";
+    private static String testFileName = "item/Template.xml";
 
     @Test
     public void test() throws Exception {
-        final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TemplateTest.class, true);
+        final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(testFileName, true);
         final Date timestamp = new Date();
         itemSessionController.initialize(timestamp);
 

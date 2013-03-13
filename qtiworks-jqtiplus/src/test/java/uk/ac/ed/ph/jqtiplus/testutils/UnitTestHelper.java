@@ -44,11 +44,12 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * FIXME: Refactor this more appropriately!
@@ -57,13 +58,8 @@ import java.net.URISyntaxException;
  */
 public final class UnitTestHelper {
 
-    public static URI createTestResourceUri(final Class<?> baseClass, final String fileName) {
-        try {
-            return baseClass.getResource(fileName).toURI();
-        }
-        catch (final URISyntaxException e) {
-            throw new RuntimeException("Unexpected Exception", e);
-        }
+    public static URI createTestResourceUri(final String testFilePath) {
+        return URI.create("classpath:/" + testFilePath);
     }
 
     public static JqtiExtensionManager createJqtiExtensionManager() {
@@ -74,30 +70,40 @@ public final class UnitTestHelper {
         return new QtiXmlReader(createJqtiExtensionManager());
     }
 
+    public static ResourceLocator createTestFileResourceLocator() {
+        return new ClassPathResourceLocator();
+    }
+
     public static QtiObjectReader createUnitTestQtiObjectReader(final boolean schemaValidating) {
-        final ResourceLocator testFileResourceLocator = new FileResourceLocator();
-        return createUnitTestQtiXmlReader().createQtiObjectReader(testFileResourceLocator, schemaValidating);
+        return createUnitTestQtiXmlReader().createQtiObjectReader(createTestFileResourceLocator(), schemaValidating);
     }
 
     public static AssessmentObjectXmlLoader createUnitTestAssessmentObjectXmlLoader() {
         final QtiXmlReader qtiXmlReader = createUnitTestQtiXmlReader();
-        return new AssessmentObjectXmlLoader(qtiXmlReader, new FileResourceLocator());
+        return new AssessmentObjectXmlLoader(qtiXmlReader, createTestFileResourceLocator());
     }
 
-    public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final Class<?> baseClass, final String fileName) {
+    public static XmlReadResult readTestFile(final String testFilePath, final boolean schemaValiadating)
+            throws XmlResourceNotFoundException {
+        final QtiXmlReader reader = createUnitTestQtiXmlReader();
+        final URI testFileUri = createTestResourceUri(testFilePath);
+        return reader.read(testFileUri, createTestFileResourceLocator(), schemaValiadating);
+    }
+
+    public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final String testFilePath) {
         final AssessmentObjectXmlLoader assessmentObjectXmlLoader = createUnitTestAssessmentObjectXmlLoader();
-        final URI fileUri = createTestResourceUri(baseClass, fileName);
-        return assessmentObjectXmlLoader.loadAndResolveAssessmentItem(fileUri);
+        final URI testFileUri = createTestResourceUri(testFilePath);
+        return assessmentObjectXmlLoader.loadAndResolveAssessmentItem(testFileUri);
     }
 
-    public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final Class<?> baseClass, final String fileName) {
+    public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final String testFilePath) {
         final AssessmentObjectXmlLoader assessmentObjectXmlLoader = createUnitTestAssessmentObjectXmlLoader();
-        final URI fileUri = createTestResourceUri(baseClass, fileName);
-        return assessmentObjectXmlLoader.loadAndResolveAssessmentTest(fileUri);
+        final URI testFileUri = createTestResourceUri(testFilePath);
+        return assessmentObjectXmlLoader.loadAndResolveAssessmentTest(testFileUri);
     }
 
-    public static ItemSessionController loadUnitTestAssessmentItemForControl(final String fileName, final Class<?> baseClass, final boolean isValid) {
-        final ResolvedAssessmentItem resolvedAssessmentItem = resolveUnitTestAssessmentItem(baseClass, fileName);
+    public static ItemSessionController loadUnitTestAssessmentItemForControl(final String testFilePath, final boolean isValid) {
+        final ResolvedAssessmentItem resolvedAssessmentItem = resolveUnitTestAssessmentItem(testFilePath);
 
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
