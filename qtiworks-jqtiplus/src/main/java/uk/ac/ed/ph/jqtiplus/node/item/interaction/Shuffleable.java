@@ -40,14 +40,28 @@ import java.util.List;
 /**
  * Interface for {@link Interaction}s that support the <tt>shuffle</tt> attribute.
  *
+ * @param <C> type of {@link Choice} supported for shuffling
+ *
  * @author David McKain
  */
 public interface Shuffleable<C extends Choice> {
 
+    /**
+     * Returns whether shuffling is enabled.
+     */
     boolean getShuffle();
 
+    /**
+     * Sets whether shuffling is enabled.
+     */
     void setShuffle(boolean shuffle);
 
+    /**
+     * Computes and returns groups of shuffleable choices so that they
+     * can be shuffled.
+     * <p>
+     * This will only be called if {@link #getShuffle()} returns true.
+     */
     List<List<C>> computeShuffleableChoices();
 
 }

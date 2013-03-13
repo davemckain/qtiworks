@@ -69,6 +69,8 @@ import java.util.List;
  * The candidate's responses are stored in the response variables. Each
  * interaction is associated with (at least) one response variable.
  *
+ * @see Shuffleable
+ *
  * @author Jonathon Hare
  * @author David McKain
  */
