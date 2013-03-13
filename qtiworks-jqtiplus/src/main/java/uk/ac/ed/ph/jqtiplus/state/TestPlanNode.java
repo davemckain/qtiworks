@@ -191,6 +191,38 @@ public final class TestPlanNode implements Serializable {
         return parentNode.hasAncestor(node);
     }
 
+    public List<TestPlanNode> searchAncestorsOrSelf() {
+        return searchAncestorsOrSelf(null);
+    }
+
+    public List<TestPlanNode> searchAncestorsOrSelf(final TestNodeType testNodeType) {
+        final ArrayList<TestPlanNode> resultBuilder = new ArrayList<TestPlanNode>();
+        buildAncestorsOrSelf(resultBuilder, this, testNodeType);
+        return Collections.unmodifiableList(resultBuilder);
+    }
+
+    public List<TestPlanNode> searchAncestors() {
+        return searchAncestors(null);
+    }
+
+    public List<TestPlanNode> searchAncestors(final TestNodeType testNodeType) {
+        final ArrayList<TestPlanNode> resultBuilder = new ArrayList<TestPlanNode>();
+        if (parentNode!=null) {
+            buildAncestorsOrSelf(resultBuilder, parentNode, testNodeType);
+        }
+        return Collections.unmodifiableList(resultBuilder);
+    }
+
+    private void buildAncestorsOrSelf(final List<TestPlanNode> resultBuilder, final TestPlanNode testPlanNode, final TestNodeType testNodeType) {
+        if (testNodeType==null || testPlanNode.getTestNodeType()==testNodeType) {
+            resultBuilder.add(testPlanNode);
+        }
+        final TestPlanNode parent = testPlanNode.getParent();
+        if (parent!=null) {
+            buildAncestorsOrSelf(resultBuilder, parent, testNodeType);
+        }
+    }
+
     public boolean hasDescendant(final TestPlanNode node) {
         return node.hasAncestor(this);
     }

@@ -15,7 +15,6 @@ import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -40,7 +39,6 @@ import java.util.Map;
 public final class AssessmentTestExample {
 
     public static void main(final String[] args) throws Exception {
-//        final URI inputUri = URI.create("classpath:/testimplementation/non_unique_identifier.xml");
         final URI inputUri = URI.create("classpath:/testimplementation/selection.xml");
 
         System.out.println("Reading and validating");
@@ -71,7 +69,7 @@ public final class AssessmentTestExample {
         testSessionController.initialize(timestamp);
         testSessionController.enterTest(timestamp);
         testSessionController.enterNextAvailableTestPart(timestamp);
-        System.out.println("Test state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+        System.out.println("Test state after entry into fist test part: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
         testSessionController.selectItemNonlinear(timestamp, firstItemRefNode.getKey());
@@ -82,8 +80,5 @@ public final class AssessmentTestExample {
         testSessionController.handleResponsesToCurrentItem(timestamp, responseMap);
 
         System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
-
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRefNode.getKey());
-        System.out.println("First item state: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
     }
 }

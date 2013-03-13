@@ -55,6 +55,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
+import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionSessionState;
 import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -82,6 +83,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * FIXME: Document this type
+ *
+ * TO FINISH: Update linear mode to touch durations and enter sections
  *
  * Usage: one-shot, not thread safe.
  *
@@ -168,8 +171,8 @@ public final class TestSessionController extends TestProcessingController {
      * Precondition: the test must not have already been entered.
      * <p>
      * Postcondition: the test will be marked as having been entered. No {@link TestPart}
-     * will have been entered, no item will have been selected. Outcomes variables will
-     * be set to their default values.
+     * will been entered, no item will have been selected. Outcomes variables will
+     * be set to their default values. The duration timer will start on the test.
      *
      * @return number of {@link TestPart}s in the test.
      *
@@ -190,30 +193,6 @@ public final class TestSessionController extends TestProcessingController {
         return testSessionState.getTestPlan().getTestPartNodes().size();
     }
 
-	private void assertTestNotEntered() {
-    	if (testSessionState.isEntered()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => false");
-    	}
-    }
-
-    private void assertTestNotEnded() {
-    	if (testSessionState.isEnded()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isEnded() => false");
-    	}
-    }
-
-    private void assertTestNotExited() {
-    	if (testSessionState.isExited()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isExited() => false");
-    	}
-    }
-
-    private void assertInsideTest() {
-    	if (!testSessionState.isEntered()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => true");
-    	}
-    	assertTestNotEnded();
-    }
 
     /**
      * Finds the {@link TestPlanNode} corresponding to the next available {@link TestPart},
@@ -222,6 +201,8 @@ public final class TestSessionController extends TestProcessingController {
      * {@link PreCondition}s along the way.
      * <p>
      * Precondition: The test must have been entered.
+     *
+     * @throws QtiCandidateStateException if the test has not been entered or if the test has ended
      */
     public TestPlanNode findNextAvailableTestPart() {
     	assertInsideTest();
@@ -385,10 +366,13 @@ public final class TestSessionController extends TestProcessingController {
 	/**
 	 * Marks the current test part as ended, if allowed, performing any processing
 	 * required at this time and updating state as appropriate.
-	 *
+	 * <p>
 	 * Precondition: {@link #mayEndTestPart()} must return true
-	 * Postcondition: all item states in testPart will be closed, current test
-	 *   state marked as ended, current item cleared.
+	 * <p>
+	 * Postcondition: Response Processing and Outcome Processing will be run if the testPart
+	 * has {@link SubmissionMode#SIMULTANEOUS}. All item and assessment section states in testPart
+	 * will be ended if they haven't done so already, current test state will be marked as ended,
+	 * current item will be cleared.
 	 */
 	public void endTestPart(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -410,19 +394,30 @@ public final class TestSessionController extends TestProcessingController {
 	        performOutcomeProcessing();
 	    }
 
-	    /* Close all items */
+	    /* Close all items (if not done so already) */
 	    for (final TestPlanNode itemRefNode : itemRefNodes) {
-	        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-	        itemSessionState.setEndTime(timestamp);
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+            if (!itemSessionState.isEnded()) {
+                getItemSessionController(itemRefNode).endItem(timestamp);
+            }
 	    }
+
+	    /* Close all assessmentSections */
+	    for (final TestPlanNode testPlanNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_SECTION)) {
+            final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
+            endControlObjectTimer(assessmentSectionSessionState, timestamp);
+            assessmentSectionSessionState.setEndTime(timestamp);
+	    }
+
+	    /* Close testPart */
+        currentTestPartSessionState.setEndTime(timestamp);
+        endControlObjectTimer(currentTestPartSessionState, timestamp);
+
+        /* Update test duration */
+        touchControlObjectTimer(testSessionState, timestamp);
 
 	    /* Deselect item */
 	    testSessionState.setCurrentItemKey(null);
-
-	    /* Update state and timer */
-	    currentTestPartSessionState.setEndTime(timestamp);
-	    endControlObjectTimer(currentTestPartSessionState, timestamp);
-        touchControlObjectTimer(testSessionState, timestamp);
 
 	    logger.debug("Ended testPart {}", currentTestPartNode.getIdentifier());
 	}
@@ -436,7 +431,9 @@ public final class TestSessionController extends TestProcessingController {
      */
     public void exitTest(final Date timestamp) {
         Assert.notNull(timestamp);
+        assertTestEnded();
         assertTestNotExited();
+
         testSessionState.setExitTime(timestamp);
     }
 
@@ -458,7 +455,7 @@ public final class TestSessionController extends TestProcessingController {
 
         /* Make sure we're in nonlinear navigation mode */
         if (currentTestPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
-            throw new QtiCandidateStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
+            throw new QtiCandidateStateException("Explicit item selection is not allowed in NONLINEAR navigationMode");
         }
 
         if (itemKey!=null) {
@@ -492,26 +489,50 @@ public final class TestSessionController extends TestProcessingController {
         Assert.notNull(timestamp);
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+        final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
 
         /* Make sure we're in nonlinear navigation mode */
         if (currentTestPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
             throw new QtiCandidateStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
         }
 
-        /* Update duration */
+        /* If an item is currently selected, then suspend the session and update timer on parent sections */
+        final TestPlanNode currentItemRefNode = getCurrentItemRefNode();
+        if (currentItemRefNode!=null) {
+            getItemSessionController(currentItemRefNode).suspendItemSession(timestamp);
+            for (final TestPlanNode sectionNode : currentItemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
+                endControlObjectTimer(ensureAssessmentSectionSessionState(sectionNode), timestamp);
+            }
+        }
+
+        /* Touch duration on test & testPart */
         touchControlObjectTimer(testSessionState, timestamp);
+        touchControlObjectTimer(currentTestPartSessionState, timestamp);
 
         if (itemKey!=null) {
-            final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-            ensureItemRefNode(itemRefNode);
-            if (!itemRefNode.hasAncestor(currentTestPartNode)) {
-                throw new QtiCandidateStateException(itemRefNode + " is not a descendant of " + currentTestPartNode);
+            final TestPlanNode newItemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+            ensureItemRefNode(newItemRefNode);
+            if (!newItemRefNode.hasAncestor(currentTestPartNode)) {
+                throw new QtiCandidateStateException(newItemRefNode + " is not a descendant of " + currentTestPartNode);
             }
-            testSessionState.setCurrentItemKey(itemRefNode.getKey());
+            testSessionState.setCurrentItemKey(newItemRefNode.getKey());
 
-            /* Mark item as being presented */
-            getItemSessionController(itemRefNode).enterItem(timestamp);
-            return itemRefNode;
+            /* Select or unsuspend item */
+            final ItemSessionController newItemSessionController = getItemSessionController(newItemRefNode);
+            final ItemSessionState newItemSessionState = newItemSessionController.getItemSessionState();
+            if (!newItemSessionState.isEntered()) {
+                newItemSessionController.enterItem(timestamp);
+            }
+            else {
+                newItemSessionController.unsuspendItemSession(timestamp);
+            }
+
+            /* start timer on parent sections */
+            for (final TestPlanNode sectionNode : newItemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
+                startControlObjectTimer(ensureAssessmentSectionSessionState(sectionNode), timestamp);
+            }
+
+            return newItemRefNode;
         }
         else {
             /* Allow deselection */
@@ -670,7 +691,13 @@ public final class TestSessionController extends TestProcessingController {
         final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
         final boolean boundSuccessfully = itemSessionController.bindResponses(timestamp, responseMap);
 
-        /* Set duration */
+        /* Touch durations on item, ancestor sections, test part and test */
+        itemSessionController.touchDuration(timestamp);
+        for (final TestPlanNode sectionNode : currentItemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
+            touchControlObjectTimer(ensureAssessmentSectionSessionState(sectionNode), timestamp);
+        }
+        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+        touchControlObjectTimer(ensureTestPartSessionState(currentTestPartNode), timestamp);
         touchControlObjectTimer(testSessionState, timestamp);
 
         /* Do processing if we're in INDIVIDUAL mode */
@@ -807,6 +834,14 @@ public final class TestSessionController extends TestProcessingController {
         }
     }
 
+    private AssessmentSectionSessionState ensureAssessmentSectionSessionState(final TestPlanNode testPlanNode) {
+        final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
+        if (assessmentSectionSessionState==null) {
+            throw new QtiLogicException("No AssessmentSectionSessionState corresponding to " + testPlanNode);
+        }
+        return assessmentSectionSessionState;
+    }
+
     private void ensureItemRefNode(final TestPlanNode itemRefNode) {
         if (itemRefNode==null || itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
             throw new IllegalArgumentException("Expected " + itemRefNode + " to be an " + TestNodeType.ASSESSMENT_ITEM_REF);
@@ -918,5 +953,43 @@ public final class TestSessionController extends TestProcessingController {
             result.getItemVariables().add(variable);
         }
         return result;
+    }
+
+    //-------------------------------------------------------------------
+    // Precondition helpers
+
+    private void assertTestEntered() {
+        if (!testSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Test has not been entered");
+        }
+    }
+
+    private void assertTestNotEntered() {
+        if (testSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Test has already been entered");
+        }
+    }
+
+    private void assertTestNotEnded() {
+        if (testSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Test has alread ended");
+        }
+    }
+
+    private void assertTestEnded() {
+        if (!testSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Test has not been ended");
+        }
+    }
+
+    private void assertTestNotExited() {
+        if (testSessionState.isExited()) {
+            throw new QtiCandidateStateException("Test has already been exited");
+        }
+    }
+
+    private void assertInsideTest() {
+        assertTestEntered();
+        assertTestNotEnded();
     }
 }
