@@ -281,7 +281,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void performTemplateProcessing(final Date timestamp, final List<TemplateDefault> templateDefaults) {
         Assert.notNull(timestamp);
-        ensureNotEntered();
+        assertNotEntered();
         logger.debug("Template processing starting on item {}", item.getSystemId());
 
         fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
@@ -385,7 +385,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void enterItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        ensureNotEntered();
+        assertNotEntered();
         logger.debug("Entering item {}", item.getSystemId());
 
         /* Record entry */
@@ -415,7 +415,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void touchDuration(final Date timestamp) {
         Assert.notNull(timestamp);
-        ensureInitialized();
+        assertInitialized();
         logger.debug("Touching duration for item {}", item.getSystemId());
 
         if (!itemSessionState.isEnded()) {
@@ -437,7 +437,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void resetItemSessionHard(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
-        ensureEntered();
+        assertEntered();
         logger.debug("Performing hard reset on item session {}", item.getSystemId());
 
         /* Stop duration timer */
@@ -477,7 +477,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void resetItemSessionSoft(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
-        ensureEntered();
+        assertEntered();
         logger.debug("Performing soft reset on item session {}", item.getSystemId());
 
         /* Stop duration timer */
@@ -515,7 +515,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void endItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        ensureEntered();
+        assertEntered();
         logger.debug("Ending item {}", item.getSystemId());
 
         itemSessionState.setEndTime(timestamp);
@@ -533,7 +533,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void exitItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        ensureEnded();
+        assertEnded();
         logger.debug("Exiting item {}", item.getSystemId());
 
         itemSessionState.setExitTime(timestamp);
@@ -567,7 +567,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public boolean bindResponses(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(timestamp);
         Assert.notNull(responseMap, "responseMap");
-        ensureOpen();
+        assertOpen();
         logger.debug("Binding responses {} on item {}", responseMap, item.getSystemId());
 
         /* Stop duration timer */
@@ -657,7 +657,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void commitResponses(final Date timestamp) {
         Assert.notNull(timestamp);
-        ensureOpen();
+        assertOpen();
         logger.debug("Committing currently saved responses to item {}", item.getSystemId());
 
         /* Stop duration timer */
@@ -696,7 +696,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void performResponseProcessing(final Date timestamp) {
         Assert.notNull(timestamp);
-        ensureOpen();
+        assertOpen();
         logger.debug("Response processing starting on item {}", item.getSystemId());
 
         fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
@@ -790,7 +790,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void resetResponses(final Date timestamp) {
         Assert.notNull(timestamp);
-        ensureOpen();
+        assertOpen();
         logger.debug("Resetting responses on item {}", item.getSystemId());
 
         endItemSessionTimer(itemSessionState, timestamp);
@@ -940,44 +940,44 @@ public final class ItemSessionController extends ItemProcessingController implem
 
     //-------------------------------------------------------------------
 
-    private void ensureNotExited() {
+    private void assertNotExited() {
         if (itemSessionState.isExited()) {
             throw new QtiCandidateStateException("Item session has been exited so is no longer available");
         }
     }
 
-    private void ensureInitialized() {
-        ensureNotExited();
+    private void assertInitialized() {
+        assertNotExited();
         if (!itemSessionState.isInitialized()) {
             throw new QtiCandidateStateException("Item session has not been initialized");
         }
     }
 
-    private void ensureNotEntered() {
-        ensureInitialized();
+    private void assertNotEntered() {
+        assertInitialized();
         if (itemSessionState.isEntered()) {
-            throw new QtiCandidateStateException("Expected itemSessionState.isEntered() => false");
+            throw new QtiCandidateStateException("Item session has already been entered");
         }
     }
 
-    private void ensureEntered() {
-        ensureInitialized();
+    private void assertEntered() {
+        assertInitialized();
         if (!itemSessionState.isEntered()) {
             throw new QtiCandidateStateException("Item session has not been entered");
         }
     }
 
-    private void ensureOpen() {
-        ensureEntered();
+    private void assertOpen() {
+        assertEntered();
         if (itemSessionState.isEnded()) {
             throw new QtiCandidateStateException("Item session has ended");
         }
     }
 
-    private void ensureEnded() {
-        ensureInitialized();
+    private void assertEnded() {
+        assertInitialized();
         if (!itemSessionState.isEnded()) {
-            throw new QtiCandidateStateException("ItemSession has not been ended");
+            throw new QtiCandidateStateException("Item session has not been ended");
         }
     }
 
