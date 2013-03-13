@@ -660,7 +660,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         if (unboundResponseIdentifiers.isEmpty()) {
             logger.debug("Validating responses");
             for (final Interaction interaction : itemProcessingMap.getInteractions()) {
-                final Value responseValue = itemSessionState.getResponseValue(interaction);
+                final Value responseValue = itemSessionState.getUncommittedResponseValue(interaction);
                 if (!interaction.validateResponse(this, responseValue)) {
                     invalidResponseIdentifiers.add(interaction.getResponseIdentifier());
                 }
@@ -746,8 +746,8 @@ public final class ItemSessionController extends ItemProcessingController implem
     }
 
     /**
-     * Performs response processing on the currently committed responses, changing {@link #itemSessionState}
-     * as appropriate.
+     * Performs response processing on the <em>currently committed</em> responses,
+     * changing {@link #itemSessionState} as appropriate.
      * <p>
      * Pre-condition: item session must be open.
      * <p>
