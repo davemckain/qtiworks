@@ -38,8 +38,6 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
-import uk.ac.ed.ph.jqtiplus.exception.QtiInvalidLookupException;
-import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -63,7 +61,6 @@ import uk.ac.ed.ph.jqtiplus.node.result.SessionIdentifier;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
@@ -158,7 +155,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void initialize(final Date timestamp) {
         Assert.notNull(timestamp);
-        logger.debug("Initializing item {}", getSubject().getSystemId());
+        logger.debug("Initializing item {}", item.getSystemId());
 
         /* Reset all state */
         itemSessionState.reset();
@@ -316,7 +313,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void performTemplateProcessing(final Date timestamp, final List<TemplateDefault> templateDefaults) {
         Assert.notNull(timestamp);
         ensureNotEntered();
-        logger.debug("Template processing starting on item {}", getSubject().getSystemId());
+        logger.debug("Template processing starting on item {}", item.getSystemId());
 
         fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
         try {
@@ -352,7 +349,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         }
         finally {
             fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_TEMPLATE_PROCESSING_FINISHED);
-            logger.debug("Template processing finished on item {}", getSubject().getSystemId());
+            logger.debug("Template processing finished on item {}", item.getSystemId());
         }
     }
 
@@ -426,7 +423,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void enterItem(final Date timestamp) {
         Assert.notNull(timestamp);
         ensureNotEntered();
-        logger.debug("Entering item {}", getSubject().getSystemId());
+        logger.debug("Entering item {}", item.getSystemId());
 
         /* Record entry */
         itemSessionState.setEntryTime(timestamp);
@@ -456,7 +453,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void touchDuration(final Date timestamp) {
         Assert.notNull(timestamp);
         ensureInitialized();
-        logger.debug("Touching duration for item {}", getSubject().getSystemId());
+        logger.debug("Touching duration for item {}", item.getSystemId());
 
         if (!itemSessionState.isEnded()) {
             endItemSessionTimer(itemSessionState, timestamp);
@@ -478,7 +475,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void resetItemSessionHard(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
         ensureEntered();
-        logger.debug("Performing hard reset on item session {}", getSubject().getSystemId());
+        logger.debug("Performing hard reset on item session {}", item.getSystemId());
 
         /* Stop duration timer */
         endItemSessionTimer(itemSessionState, timestamp);
@@ -518,7 +515,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void resetItemSessionSoft(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
         ensureEntered();
-        logger.debug("Performing soft reset on item session {}", getSubject().getSystemId());
+        logger.debug("Performing soft reset on item session {}", item.getSystemId());
 
         /* Stop duration timer */
         endItemSessionTimer(itemSessionState, timestamp);
@@ -556,7 +553,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void endItem(final Date timestamp) {
         Assert.notNull(timestamp);
         ensureEntered();
-        logger.debug("Ending item {}", getSubject().getSystemId());
+        logger.debug("Ending item {}", item.getSystemId());
 
         itemSessionState.setEndTime(timestamp);
         endItemSessionTimer(itemSessionState, timestamp);
@@ -574,7 +571,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void exitItem(final Date timestamp) {
         Assert.notNull(timestamp);
         ensureEnded();
-        logger.debug("Exiting item {}", getSubject().getSystemId());
+        logger.debug("Exiting item {}", item.getSystemId());
 
         itemSessionState.setExitTime(timestamp);
     }
@@ -608,7 +605,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         Assert.notNull(timestamp);
         Assert.notNull(responseMap, "responseMap");
         ensureOpen();
-        logger.debug("Binding responses {} on item {}", responseMap, getSubject().getSystemId());
+        logger.debug("Binding responses {} on item {}", responseMap, item.getSystemId());
 
         /* Stop duration timer */
         endItemSessionTimer(itemSessionState, timestamp);
@@ -698,7 +695,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void commitResponses(final Date timestamp) {
         Assert.notNull(timestamp);
         ensureOpen();
-        logger.debug("Committing currently saved responses to item {}", getSubject().getSystemId());
+        logger.debug("Committing currently saved responses to item {}", item.getSystemId());
 
         /* Stop duration timer */
         endItemSessionTimer(itemSessionState, timestamp);
@@ -734,7 +731,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void resetResponses(final Date timestamp) {
         Assert.notNull(timestamp);
         ensureOpen();
-        logger.debug("Resetting responses on item {}", getSubject().getSystemId());
+        logger.debug("Resetting responses on item {}", item.getSystemId());
 
         endItemSessionTimer(itemSessionState, timestamp);
         initResponseState();
@@ -758,7 +755,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     public void performResponseProcessing(final Date timestamp) {
         Assert.notNull(timestamp);
         ensureOpen();
-        logger.debug("Response processing starting on item {}", getSubject().getSystemId());
+        logger.debug("Response processing starting on item {}", item.getSystemId());
 
         fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
         try {
@@ -837,7 +834,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         }
         finally {
             fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
-            logger.debug("Response processing finished on item {}", getSubject().getSystemId());
+            logger.debug("Response processing finished on item {}", item.getSystemId());
         }
     }
 
@@ -853,135 +850,6 @@ public final class ItemSessionController extends ItemProcessingController implem
         itemSessionState.setDurationAccumulated(itemSessionState.getDurationAccumulated() + durationDelta);
         itemSessionState.setDurationIntervalStartTime(null);
     }
-
-    //-------------------------------------------------------------------
-    // Shuffle callbacks (from interactions)
-
-
-
-    //-------------------------------------------------------------------
-
-    @Override
-    public VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.notNull(identifier);
-        final VariableDeclaration result = getVariableDeclaration(identifier, permittedTypes);
-        if (result==null) {
-            throw new QtiInvalidLookupException(identifier);
-        }
-        return result;
-    }
-
-    private VariableDeclaration getVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.notNull(identifier);
-        VariableDeclaration result = null;
-        if (permittedTypes.length==0) {
-            /* No types specified, so allow any variable */
-            result = itemProcessingMap.getValidTemplateDeclarationMap().get(identifier);
-            if (result==null) {
-                result = itemProcessingMap.getValidResponseDeclarationMap().get(identifier);
-            }
-            if (result==null) {
-                result = itemProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
-            }
-        }
-        else {
-            /* Only allows specified types of variables */
-            CHECK_LOOP: for (final VariableType type : permittedTypes) {
-                switch (type) {
-                    case TEMPLATE:
-                        result = itemProcessingMap.getValidTemplateDeclarationMap().get(identifier);
-                        break;
-
-                    case RESPONSE:
-                        result = itemProcessingMap.getValidResponseDeclarationMap().get(identifier);
-                        break;
-
-                    case OUTCOME:
-                        result = itemProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
-                        break;
-
-                    default:
-                        throw new QtiLogicException("Unexpected switch case: " + type);
-                }
-                if (result!=null) {
-                    break CHECK_LOOP;
-                }
-            }
-        }
-        return result;
-    }
-
-    //-------------------------------------------------------------------
-
-    @Override
-    public Value evaluateVariableValue(final VariableDeclaration variableDeclaration) {
-        Assert.notNull(variableDeclaration);
-        return evaluateVariableValue(variableDeclaration.getIdentifier());
-    }
-
-    @Override
-    public Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.notNull(identifier);
-        if (!itemProcessingMap.isValidVariableIdentifier(identifier)) {
-            throw new QtiInvalidLookupException(identifier);
-        }
-        Value result = null;
-        if (permittedTypes.length==0) {
-            /* No types specified, so allow any variable */
-            result = evaluateVariableValue(identifier);
-        }
-        else {
-            /* Only allows specified types of variables */
-            CHECK_LOOP: for (final VariableType type : permittedTypes) {
-                switch (type) {
-                    case TEMPLATE:
-                        result = evaluateTemplateValue(identifier);
-                        break;
-
-                    case RESPONSE:
-                        result = evaluateResponseValue(identifier);
-                        break;
-
-                    case OUTCOME:
-                        result = evaluateOutcomeValue(identifier);
-                        break;
-
-                    default:
-                        throw new QtiLogicException("Unexpected switch case: " + type);
-                }
-                if (result!=null) {
-                    break CHECK_LOOP;
-                }
-            }
-        }
-        if (result==null) {
-            throw new QtiCandidateStateException("ItemSessionState lookup of variable " + identifier + " returned NULL, indicating state is not in sync");
-        }
-        return result;
-    }
-
-    private Value evaluateTemplateValue(final Identifier identifier) {
-        return itemSessionState.getTemplateValue(identifier);
-    }
-
-    private Value evaluateResponseValue(final Identifier identifier) {
-        if (identifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)) {
-            return itemSessionState.computeDurationValue();
-        }
-        else if (identifier.equals(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
-            return itemSessionState.getNumAttemptsValue();
-        }
-        return itemSessionState.getResponseValue(identifier);
-    }
-
-    private Value evaluateOutcomeValue(final Identifier identifier) {
-        if (identifier.equals(QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
-            return itemSessionState.getCompletionStatusValue();
-        }
-        return itemSessionState.getOutcomeValue(identifier);
-    }
-
-    //-------------------------------------------------------------------
 
     private void initTemplateVariables() {
         for (final TemplateDeclaration templateDeclaration : itemProcessingMap.getValidTemplateDeclarationMap().values()) {
@@ -1025,9 +893,6 @@ public final class ItemSessionController extends ItemProcessingController implem
     private Value computeInitialValue(final Identifier identifier) {
         return computeDefaultValue(identifier);
     }
-    //-------------------------------------------------------------------
-
-
 
     //-------------------------------------------------------------------
     // Computes standalone assessmentResult for this item. This wasn't available in the original JQTI

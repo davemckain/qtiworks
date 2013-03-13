@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
@@ -48,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -60,7 +58,11 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.Random;
 
 /**
- * FIXME: Document this!
+ * Implementation of {@link ItemProcessingContext}, filling in the low level
+ * logic for running items. You probably want to use {@link ItemSessionController}
+ * for higher level stuff.
+ *
+ * @see ItemSessionController
  *
  * @author David McKain
  */
@@ -80,16 +82,6 @@ public class ItemProcessingController extends ItemValidationController implement
         this.itemSessionState = itemSessionState;
         this.randomSeed = null;
         this.randomGenerator = null;
-    }
-
-    @Override
-    public ResolvedAssessmentItem getResolvedAssessmentItem() {
-        return resolvedAssessmentItem;
-    }
-
-    @Override
-    public AssessmentItem getSubjectItem() {
-        return item;
     }
 
     @Override
@@ -125,14 +117,14 @@ public class ItemProcessingController extends ItemValidationController implement
     // Interaction binding
 
     @Override
-    public void bindResponseVariable(final Identifier responseIdentifier, final Value value) {
+    public final void bindResponseVariable(final Identifier responseIdentifier, final Value value) {
         itemSessionState.setUncommittedResponseValue(responseIdentifier, value);
     }
 
     //-------------------------------------------------------------------
 
     @Override
-    public VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
+    public final VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
         final VariableDeclaration result = getVariableDeclaration(identifier, permittedTypes);
         if (result==null) {
@@ -184,13 +176,13 @@ public class ItemProcessingController extends ItemValidationController implement
     //-------------------------------------------------------------------
 
     @Override
-    public Value evaluateVariableValue(final VariableDeclaration variableDeclaration) {
+    public final Value evaluateVariableValue(final VariableDeclaration variableDeclaration) {
         Assert.notNull(variableDeclaration);
         return evaluateVariableValue(variableDeclaration.getIdentifier());
     }
 
     @Override
-    public Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
+    public final Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
         Assert.notNull(identifier);
         if (!itemProcessingMap.isValidVariableIdentifier(identifier)) {
             throw new QtiInvalidLookupException(identifier);
@@ -251,7 +243,7 @@ public class ItemProcessingController extends ItemValidationController implement
         return itemSessionState.getOutcomeValue(identifier);
     }
 
-    public Value evaluateVariableValue(final Identifier identifier) {
+    public final Value evaluateVariableValue(final Identifier identifier) {
         Assert.notNull(identifier);
         Value result = evaluateTemplateValue(identifier);
         if (result==null) {
@@ -266,7 +258,7 @@ public class ItemProcessingController extends ItemValidationController implement
     //-------------------------------------------------------------------
 
     @Override
-    public void setVariableValue(final VariableDeclaration variableDeclaration, final Value value) {
+    public final void setVariableValue(final VariableDeclaration variableDeclaration, final Value value) {
         Assert.notNull(variableDeclaration);
         Assert.notNull(value);
         final Identifier identifier = variableDeclaration.getIdentifier();
@@ -314,7 +306,7 @@ public class ItemProcessingController extends ItemValidationController implement
      * @throws QtiInvalidLookupException
      */
     @Override
-    public Value computeDefaultValue(final Identifier identifier) {
+    public final Value computeDefaultValue(final Identifier identifier) {
         Assert.notNull(identifier);
         return computeDefaultValue(ensureVariableDeclaration(identifier));
     }
@@ -326,7 +318,7 @@ public class ItemProcessingController extends ItemValidationController implement
      * @param declaration declaration of the required variable, which must not be null.
      * @return computed default value, which will not be null.
      */
-    public Value computeDefaultValue(final VariableDeclaration declaration) {
+    public final Value computeDefaultValue(final VariableDeclaration declaration) {
         Assert.notNull(declaration);
         Value result = itemSessionState.getOverriddenDefaultValue(declaration);
         if (result==null) {
@@ -352,7 +344,7 @@ public class ItemProcessingController extends ItemValidationController implement
      * @throws QtiInvalidLookupException
      */
     @Override
-    public Value computeCorrectResponse(final Identifier identifier) {
+    public final Value computeCorrectResponse(final Identifier identifier) {
         Assert.notNull(identifier);
         return computeCorrectResponse((ResponseDeclaration) ensureVariableDeclaration(identifier, VariableType.RESPONSE));
     }
@@ -365,7 +357,7 @@ public class ItemProcessingController extends ItemValidationController implement
      * @param declaration {@link ResponseDeclaration} to test, which must not be null
      * @return computed correct response value or null
      */
-    public Value computeCorrectResponse(final ResponseDeclaration declaration) {
+    public final Value computeCorrectResponse(final ResponseDeclaration declaration) {
         Assert.notNull(declaration);
         Value result = itemSessionState.getOverriddenCorrectResponseValue(declaration);
         if (result==null) {
@@ -385,13 +377,11 @@ public class ItemProcessingController extends ItemValidationController implement
      * @param declaration {@link ResponseDeclaration} to test, which must not be null
      * @return whether a correct response has been set
      */
-    public boolean hasCorrectResponse(final ResponseDeclaration declaration) {
+    public final boolean hasCorrectResponse(final ResponseDeclaration declaration) {
         Assert.notNull(declaration);
         return declaration.getCorrectResponse()!=null
                 || itemSessionState.getOverriddenCorrectResponseValue(declaration)!=null;
     }
-
-    //-------------------------------------------------------------------
 
     /**
      * Returns whether the current response value for the given {@link ResponseDeclaration}
@@ -421,7 +411,7 @@ public class ItemProcessingController extends ItemValidationController implement
      * @see #isIncorrect
      */
     @Override
-    public boolean isCorrect() {
+    public final boolean isCorrect() {
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
             if (!hasCorrectResponse(responseDeclaration)) {
                 return false;
@@ -443,7 +433,7 @@ public class ItemProcessingController extends ItemValidationController implement
      * @see #isIncorrect
      */
     @Override
-    public boolean isIncorrect() {
+    public final boolean isIncorrect() {
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
             if (!hasCorrectResponse(responseDeclaration)) {
                 return true;
@@ -461,7 +451,7 @@ public class ItemProcessingController extends ItemValidationController implement
      *
      * @see #isCorrectResponse(ResponseDeclaration)
      */
-    public int countCorrect() {
+    public final int countCorrect() {
         int count = 0;
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
             if (isCorrectResponse(responseDeclaration)) {
@@ -471,14 +461,13 @@ public class ItemProcessingController extends ItemValidationController implement
         return count;
     }
 
-
     /**
      * Counts the number of correct responses, as judged by
      * {@link #isCorrectResponse(ResponseDeclaration)}.
      *
      * @see #isCorrectResponse(ResponseDeclaration)
      */
-    public int countIncorrect() {
+    public final int countIncorrect() {
         int count = 0;
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
             if (!isCorrectResponse(responseDeclaration)) {
@@ -487,11 +476,6 @@ public class ItemProcessingController extends ItemValidationController implement
         }
         return count;
     }
-
-    //-------------------------------------------------------------------
-    // Computes standalone assessmentResult for this item. This wasn't available in the original JQTI
-
-
 
     //-------------------------------------------------------------------
 

@@ -50,10 +50,10 @@ import java.util.List;
 
 /**
  * This helper class analyses a {@link ResolvedAssessmentItem} and generates an
- * {@link ItemProcessingMap} that can be reused by {@link ItemSessionController}s.
+ * {@link ItemProcessingMap} that can be reused by {@link ItemProcessingController}s.
  *
  * @see ItemProcessingMap
- * @see ItemSessionController
+ * @see ItemProcessingController
  *
  * @author David McKain
  */

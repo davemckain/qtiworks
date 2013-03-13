@@ -34,18 +34,33 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * FIXME: Document this type
+ * Callback interface that {@link Interaction}s use to bind
+ * response data to (uncommitted) response variables.
  *
  * @author David McKain
  */
 public interface InteractionBindingContext {
 
+    /**
+     * Binds the given {@link Value} to the (uncommitted) Response Variable
+     * having the given {@link Identifier}.
+     *
+     * @param responseIdentifier Response Identifier, which will not be null.
+     * @param value Value to bind, which will not be null (but may be a {@link NullValue}).
+     */
+    void bindResponseVariable(Identifier responseIdentifier, Value value);
+
+    /**
+     * Access to the {@link JqtiExtensionManager}, which is useful for {@link CustomInteraction}s.
+     */
     JqtiExtensionManager getJqtiExtensionManager();
 
-    void bindResponseVariable(Identifier responseIdentifier, Value value);
 
 }
