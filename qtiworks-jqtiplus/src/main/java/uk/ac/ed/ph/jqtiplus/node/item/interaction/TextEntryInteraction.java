@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
@@ -227,7 +226,7 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         if (getPatternMask() != null) {
             if (!responseValue.toQtiString().matches(getPatternMask())) {
                 return false;

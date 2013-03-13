@@ -53,7 +53,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
@@ -195,7 +194,7 @@ public final class MathEntryInteraction extends CustomInteraction<MathAssessExte
     }
 
     @Override
-    protected boolean validateResponse(final MathAssessExtensionPackage jqtiExtensionPackage, final ItemSessionController itemController, final Value responseValue) {
+    protected boolean validateResponse(final MathAssessExtensionPackage jqtiExtensionPackage, final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         /* Currently, a successful binding is considered the same as a response
          * being valid */
         return true;

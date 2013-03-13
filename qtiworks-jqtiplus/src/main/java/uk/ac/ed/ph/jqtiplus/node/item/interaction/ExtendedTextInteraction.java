@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData.ResponseDataType;
@@ -353,7 +352,7 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         /* Gather up the values */
         final List<SingleValue> responseEntries = new ArrayList<SingleValue>();
         if (responseValue.isNull()) {

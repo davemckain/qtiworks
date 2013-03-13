@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
@@ -180,7 +180,7 @@ public final class AssociateInteraction extends BlockInteraction implements Simp
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         /* Extract response values */
         final List<PairValue> responseAssociations = new ArrayList<PairValue>();
         if (responseValue.isNull()) {

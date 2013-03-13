@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.content.basic.Block;
 import uk.ac.ed.ph.jqtiplus.node.content.basic.Flow;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -118,10 +117,10 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
             throws ResponseBindingException;
 
     @Override
-    public final boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
-        final E jqtiExtensionPackage = getOwningExtensionPackage(itemSessionController);
+    public final boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
+        final E jqtiExtensionPackage = getOwningExtensionPackage(interactionBindingContext);
         if (jqtiExtensionPackage!=null) {
-            return validateResponse(jqtiExtensionPackage, itemSessionController, responseValue);
+            return validateResponse(jqtiExtensionPackage, interactionBindingContext, responseValue);
         }
         else {
             logger.debug("JqtiExtensionPackage owning this customInteraction is not registered, so returning false");
@@ -129,7 +128,7 @@ public abstract class CustomInteraction<E extends JqtiExtensionPackage<E>> exten
         }
     }
 
-    protected abstract boolean validateResponse(E jqtiExtensionPackage, ItemSessionController itemController, Value responseValue);
+    protected abstract boolean validateResponse(E jqtiExtensionPackage, InteractionBindingContext interactionBindingContext, Value responseValue);
 
     //------------------------------------------------------------------------
 

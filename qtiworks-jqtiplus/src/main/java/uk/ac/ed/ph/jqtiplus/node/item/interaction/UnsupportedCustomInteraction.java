@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager.FallbackExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -74,7 +73,7 @@ public final class UnsupportedCustomInteraction extends CustomInteraction<JqtiEx
     }
 
     @Override
-    protected boolean validateResponse(final FallbackExtensionPackage jqtiExtensionPackage, final ItemSessionController itemController, final Value responseValue) {
+    protected boolean validateResponse(final FallbackExtensionPackage jqtiExtensionPackage, final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         return false;
     }
 

@@ -39,7 +39,7 @@ import uk.ac.ed.ph.jqtiplus.group.content.ObjectGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.xhtml.object.Object;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -174,7 +174,7 @@ public final class MediaInteraction extends BlockInteraction {
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         /* We assume anything is valid here */
         return true;
     }

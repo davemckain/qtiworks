@@ -45,7 +45,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -236,5 +235,5 @@ public abstract class Interaction extends BodyElement {
      *
      * @return true if the response is valid, false otherwise
      */
-    public abstract boolean validateResponse(ItemSessionController itemSessionController, Value responseValue);
+    public abstract boolean validateResponse(InteractionBindingContext interactionBindingContext, Value responseValue);
 }
