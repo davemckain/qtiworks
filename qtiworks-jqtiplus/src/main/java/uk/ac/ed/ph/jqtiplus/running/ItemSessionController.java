@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.EndAttemptInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
@@ -63,7 +64,6 @@ import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
-import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -86,26 +86,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Document this!
+ * High level controller for running an {@link AssessmentItem}.
+ * <p>
+ * Rendering and delivery engines will probably want to use this to perform the core
+ * QTI processing.
  *
- * FIXME: This is currently being refactored. Need to finish off replacing presented/closed with
- * equivalents in {@link ControlObjectState}, also need to change the way durations are managed.
+ * <h2>Basic workflow</h2>
  *
- * FIXME: There's too much in here. Let's split off the ProcessingContext callbacks from the actual
- * run logic.
- *
- * Usage: one-shot, not thread safe.
- *
- * Current lifecycle is: (FIXME - this needs updated)
- *
- * {@link #initialize()}
- * {@link #performTemplateProcessing()}
+ * {@link #initialize(Date)}
+ * {@link #performTemplateProcessing(Date)} or {@link #performTemplateProcessing(Date, List)}
  * {@link #enterItem(Date)}
- * {@link #markPendingSubmission()}
- * {@link #markPendingResponseProcessing()}
- * {@link #bindResponses(Map)}
- * {@link #performResponseProcessing()}
- * {@link #markClosed()}
+ * {@link #touchDuration(Date)} (call before rendering to update duration)
+ * {@link #bindResponses(Date, Map)}
+ * {@link #commitResponses(Date)}
+ * {@link #performResponseProcessing(Date)}
+ * {@link #endItem(Date)} (maybe)
+ * {@link #exitItem(Date)}
+ * {@link #computeAssessmentResult()}
+ *
+ * Also available:
+ *
+ * {@link #resetItemSessionHard(Date, boolean)}
+ * {@link #resetItemSessionSoft(Date, boolean)}
+ * {@link #resetResponses(Date)}
  *
  * @author David McKain
  */
@@ -215,40 +218,6 @@ public final class ItemSessionController extends ItemProcessingController implem
         }
         else {
             itemSessionState.setShuffledInteractionChoiceOrder(responseIdentfier, null);
-        }
-    }
-
-    private void ensureNotExited() {
-        if (itemSessionState.isExited()) {
-            throw new QtiCandidateStateException("Item session has been exited so is no longer available");
-        }
-    }
-
-    private void ensureInitialized() {
-        ensureNotExited();
-        if (!itemSessionState.isInitialized()) {
-            throw new QtiCandidateStateException("Item session has not been initialized");
-        }
-    }
-
-    private void ensureEntered() {
-        ensureInitialized();
-        if (!itemSessionState.isEntered()) {
-            throw new QtiCandidateStateException("Item session has not been entered");
-        }
-    }
-
-    private void ensureOpen() {
-        ensureEntered();
-        if (itemSessionState.isEnded()) {
-            throw new QtiCandidateStateException("Item session has ended");
-        }
-    }
-
-    private void ensureEnded() {
-        ensureInitialized();
-        if (!itemSessionState.isEnded()) {
-            throw new QtiCandidateStateException("ItemSession has not been ended");
         }
     }
 
@@ -400,15 +369,9 @@ public final class ItemSessionController extends ItemProcessingController implem
         return true;
     }
 
-    private void ensureNotEntered() {
-        ensureInitialized();
-        if (itemSessionState.isEntered()) {
-            throw new QtiCandidateStateException("Expected itemSessionState.isEntered() => false");
-        }
-    }
 
     //-------------------------------------------------------------------
-    // Entry, Reset and Exit
+    // Entry, Update, Reset and Exit
 
     /**
      * "Enters" the item, marking it as having been presented.
@@ -577,7 +540,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     }
 
     //-------------------------------------------------------------------
-    // Response processing
+    // Response handling
 
     /**
      * Binds response variables for this assessmentItem, leaving them in uncommitted state.
@@ -720,27 +683,6 @@ public final class ItemSessionController extends ItemProcessingController implem
         }
     }
 
-    /**
-     * Resets all responses
-     * <p>
-     * Pre-condition: Item session must be open.
-     * <p>
-     * Post-condition: Responses are reset to their default values. SessionStatus is
-     * reset to {@link SessionStatus#INITIAL}.
-     */
-    public void resetResponses(final Date timestamp) {
-        Assert.notNull(timestamp);
-        ensureOpen();
-        logger.debug("Resetting responses on item {}", item.getSystemId());
-
-        endItemSessionTimer(itemSessionState, timestamp);
-        initResponseState();
-        itemSessionState.setSessionStatus(SessionStatus.INITIAL);
-        updateClosedStatus(timestamp);
-        if (!itemSessionState.isEnded()) {
-            startItemSessionTimer(itemSessionState, timestamp);
-        }
-    }
 
     /**
      * Performs response processing on the <em>currently committed</em> responses,
@@ -838,64 +780,30 @@ public final class ItemSessionController extends ItemProcessingController implem
         }
     }
 
-    //-------------------------------------------------------------------
-    // Duration management
+    /**
+     * Resets all responses
+     * <p>
+     * Pre-condition: Item session must be open.
+     * <p>
+     * Post-condition: Responses are reset to their default values. SessionStatus is
+     * reset to {@link SessionStatus#INITIAL}.
+     */
+    public void resetResponses(final Date timestamp) {
+        Assert.notNull(timestamp);
+        ensureOpen();
+        logger.debug("Resetting responses on item {}", item.getSystemId());
 
-    private void startItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
-        itemSessionState.setDurationIntervalStartTime(timestamp);
-    }
-
-    private void endItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
-        final long durationDelta = timestamp.getTime() - itemSessionState.getDurationIntervalStartTime().getTime();
-        itemSessionState.setDurationAccumulated(itemSessionState.getDurationAccumulated() + durationDelta);
-        itemSessionState.setDurationIntervalStartTime(null);
-    }
-
-    private void initTemplateVariables() {
-        for (final TemplateDeclaration templateDeclaration : itemProcessingMap.getValidTemplateDeclarationMap().values()) {
-            initValue(templateDeclaration);
+        endItemSessionTimer(itemSessionState, timestamp);
+        initResponseState();
+        itemSessionState.setSessionStatus(SessionStatus.INITIAL);
+        updateClosedStatus(timestamp);
+        if (!itemSessionState.isEnded()) {
+            startItemSessionTimer(itemSessionState, timestamp);
         }
-    }
-
-    private void initResponseState() {
-        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
-            if (!VariableDeclaration.isReservedIdentifier(responseDeclaration.getIdentifier())) {
-                initValue(responseDeclaration);
-            }
-        }
-        itemSessionState.clearUncommittedResponseValues();
-        itemSessionState.clearRawResponseDataMap();
-        itemSessionState.clearUnboundResponseIdentifiers();
-        itemSessionState.clearInvalidResponseIdentifiers();
-        itemSessionState.setNumAttempts(0);
-        itemSessionState.setResponded(false);
-    }
-
-    private void initOutcomeVariables() {
-        for (final OutcomeDeclaration outcomeDeclaration : itemProcessingMap.getValidOutcomeDeclarationMap().values()) {
-            if (!VariableDeclaration.isReservedIdentifier(outcomeDeclaration.getIdentifier())) {
-                initValue(outcomeDeclaration);
-            }
-        }
-        itemSessionState.setCompletionStatus(QtiConstants.COMPLETION_STATUS_UNKNOWN);
-    }
-
-    private void initValue(final VariableDeclaration declaration) {
-        Assert.notNull(declaration);
-        setVariableValue(declaration, computeInitialValue(declaration));
-    }
-
-    private Value computeInitialValue(final VariableDeclaration declaration) {
-        Assert.notNull(declaration);
-        return computeInitialValue(declaration.getIdentifier());
-    }
-
-    private Value computeInitialValue(final Identifier identifier) {
-        return computeDefaultValue(identifier);
     }
 
     //-------------------------------------------------------------------
-    // Computes standalone assessmentResult for this item. This wasn't available in the original JQTI
+    // AssessmentResult generation
 
     public AssessmentResult computeAssessmentResult() {
         return computeAssessmentResult(new Date(), null, null);
@@ -971,6 +879,105 @@ public final class ItemSessionController extends ItemProcessingController implem
                 final TemplateVariable variable = new TemplateVariable(result, declaration, value);
                 itemVariables.add(variable);
             }
+        }
+    }
+
+    //-------------------------------------------------------------------
+    // Internal management
+
+    private void startItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
+        itemSessionState.setDurationIntervalStartTime(timestamp);
+    }
+
+    private void endItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
+        final long durationDelta = timestamp.getTime() - itemSessionState.getDurationIntervalStartTime().getTime();
+        itemSessionState.setDurationAccumulated(itemSessionState.getDurationAccumulated() + durationDelta);
+        itemSessionState.setDurationIntervalStartTime(null);
+    }
+
+    private void initTemplateVariables() {
+        for (final TemplateDeclaration templateDeclaration : itemProcessingMap.getValidTemplateDeclarationMap().values()) {
+            initValue(templateDeclaration);
+        }
+    }
+
+    private void initResponseState() {
+        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
+            if (!VariableDeclaration.isReservedIdentifier(responseDeclaration.getIdentifier())) {
+                initValue(responseDeclaration);
+            }
+        }
+        itemSessionState.clearUncommittedResponseValues();
+        itemSessionState.clearRawResponseDataMap();
+        itemSessionState.clearUnboundResponseIdentifiers();
+        itemSessionState.clearInvalidResponseIdentifiers();
+        itemSessionState.setNumAttempts(0);
+        itemSessionState.setResponded(false);
+    }
+
+    private void initOutcomeVariables() {
+        for (final OutcomeDeclaration outcomeDeclaration : itemProcessingMap.getValidOutcomeDeclarationMap().values()) {
+            if (!VariableDeclaration.isReservedIdentifier(outcomeDeclaration.getIdentifier())) {
+                initValue(outcomeDeclaration);
+            }
+        }
+        itemSessionState.setCompletionStatus(QtiConstants.COMPLETION_STATUS_UNKNOWN);
+    }
+
+    private void initValue(final VariableDeclaration declaration) {
+        Assert.notNull(declaration);
+        setVariableValue(declaration, computeInitialValue(declaration));
+    }
+
+    private Value computeInitialValue(final VariableDeclaration declaration) {
+        Assert.notNull(declaration);
+        return computeInitialValue(declaration.getIdentifier());
+    }
+
+    private Value computeInitialValue(final Identifier identifier) {
+        return computeDefaultValue(identifier);
+    }
+
+    //-------------------------------------------------------------------
+
+    private void ensureNotExited() {
+        if (itemSessionState.isExited()) {
+            throw new QtiCandidateStateException("Item session has been exited so is no longer available");
+        }
+    }
+
+    private void ensureInitialized() {
+        ensureNotExited();
+        if (!itemSessionState.isInitialized()) {
+            throw new QtiCandidateStateException("Item session has not been initialized");
+        }
+    }
+
+    private void ensureNotEntered() {
+        ensureInitialized();
+        if (itemSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Expected itemSessionState.isEntered() => false");
+        }
+    }
+
+    private void ensureEntered() {
+        ensureInitialized();
+        if (!itemSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Item session has not been entered");
+        }
+    }
+
+    private void ensureOpen() {
+        ensureEntered();
+        if (itemSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Item session has ended");
+        }
+    }
+
+    private void ensureEnded() {
+        ensureInitialized();
+        if (!itemSessionState.isEnded()) {
+            throw new QtiCandidateStateException("ItemSession has not been ended");
         }
     }
 
