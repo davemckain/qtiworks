@@ -35,64 +35,48 @@ package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 
 import java.io.Serializable;
 import java.util.Arrays;
 
 /**
- * Encapsulates the candidate state within a {@link TestPart}.
+ * Encapsulates the candidate state within an {@link AssessmentSection}.
  *
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class TestPartSessionState extends ControlObjectState implements Serializable {
+public final class AssessmentSectionSessionState extends ControlObjectState implements Serializable {
 
-    private static final long serialVersionUID = -1041244926292225923L;
-
-    private boolean preConditionFailed;
+    private static final long serialVersionUID = 8768327946713692956L;
 
     @Override
     public void reset() {
         super.reset();
-    	this.preConditionFailed = false;
     }
-
-    //----------------------------------------------------------------
-
-    public boolean isPreConditionFailed() {
-		return preConditionFailed;
-	}
-
-	public void setPreConditionFailed(final boolean preConditionFailed) {
-		this.preConditionFailed = preConditionFailed;
-	}
 
     //----------------------------------------------------------------
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof TestPartSessionState)) {
+        if (!(obj instanceof AssessmentSectionSessionState)) {
             return false;
         }
-        final TestPartSessionState other = (TestPartSessionState) obj;
-        return super.equals(other)
-                && preConditionFailed==other.preConditionFailed;
+        final AssessmentSectionSessionState other = (AssessmentSectionSessionState) obj;
+        return super.equals(other);
     }
 
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
                 super.hashCode(),
-        		preConditionFailed
         });
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(preConditionFailed=" + preConditionFailed
-                + ",entryTime=" + getEntryTime()
+                + "(entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()
                 + ",exitTime=" + getExitTime()
                 + ",durationAccumulated=" + getDurationAccumulated()

@@ -70,9 +70,10 @@ public final class TestSessionState extends ControlObjectState implements Serial
     private static final long serialVersionUID = 9006603629987329773L;
 
     private final TestPlan testPlan;
-    private final Map<Identifier, Value> outcomeValues;
     private final Map<TestPlanNodeKey, TestPartSessionState> testPartSessionStates;
+    private final Map<TestPlanNodeKey, AssessmentSectionSessionState> assessmentSectionSessionStates;
     private final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates;
+    private final Map<Identifier, Value> outcomeValues;
 
     private TestPlanNodeKey currentTestPartKey;
     private TestPlanNodeKey currentItemKey;
@@ -80,9 +81,10 @@ public final class TestSessionState extends ControlObjectState implements Serial
     public TestSessionState(final TestPlan testPlan) {
         Assert.notNull(testPlan, "testPlan");
         this.testPlan = testPlan;
-        this.outcomeValues = new HashMap<Identifier, Value>();
         this.testPartSessionStates = new HashMap<TestPlanNodeKey, TestPartSessionState>();
+        this.assessmentSectionSessionStates = new HashMap<TestPlanNodeKey, AssessmentSectionSessionState>();
         this.itemSessionStates = new HashMap<TestPlanNodeKey, ItemSessionState>();
+        this.outcomeValues = new HashMap<Identifier, Value>();
         reset();
     }
 
@@ -96,6 +98,10 @@ public final class TestSessionState extends ControlObjectState implements Serial
         return testPartSessionStates;
     }
 
+    public Map<TestPlanNodeKey, AssessmentSectionSessionState> getAssessmentSectionSessionStates() {
+        return assessmentSectionSessionStates;
+    }
+
     public Map<TestPlanNodeKey, ItemSessionState> getItemSessionStates() {
         return itemSessionStates;
     }
@@ -105,11 +111,13 @@ public final class TestSessionState extends ControlObjectState implements Serial
     @Override
     public void reset() {
         super.reset();
+        this.testPartSessionStates.clear();
+        this.assessmentSectionSessionStates.clear();
+        this.itemSessionStates.clear();
+        this.outcomeValues.clear();
         this.currentTestPartKey = null;
         this.currentItemKey = null;
-        this.outcomeValues.clear();
-        this.testPartSessionStates.clear();
-        this.itemSessionStates.clear();
+
     }
 
     //----------------------------------------------------------------
@@ -216,11 +224,12 @@ public final class TestSessionState extends ControlObjectState implements Serial
         final TestSessionState other = (TestSessionState) obj;
         return super.equals(obj)
                 && testPlan.equals(other.testPlan)
+                && testPartSessionStates.equals(other.testPartSessionStates)
+                && assessmentSectionSessionStates.equals(other.assessmentSectionSessionStates)
+                && itemSessionStates.equals(other.itemSessionStates)
                 && ObjectUtilities.nullSafeEquals(currentTestPartKey, other.currentTestPartKey)
                 && ObjectUtilities.nullSafeEquals(currentItemKey, other.currentItemKey)
-                && outcomeValues.equals(other.outcomeValues)
-                && testPartSessionStates.equals(other.testPartSessionStates)
-                && itemSessionStates.equals(other.itemSessionStates);
+                && outcomeValues.equals(other.outcomeValues);
     }
 
     @Override
@@ -228,11 +237,12 @@ public final class TestSessionState extends ControlObjectState implements Serial
         return Arrays.hashCode(new Object[] {
                 super.hashCode(),
                 testPlan,
+                testPartSessionStates,
+                assessmentSectionSessionStates,
+                itemSessionStates,
                 currentTestPartKey,
                 currentItemKey,
-                outcomeValues,
-                testPartSessionStates,
-                itemSessionStates
+                outcomeValues
         });
     }
 
@@ -249,6 +259,7 @@ public final class TestSessionState extends ControlObjectState implements Serial
                 + ",currentItemKey=" + currentItemKey
                 + ",outcomeValues=" + outcomeValues
                 + ",testPartSessionStates=" + testPartSessionStates
+                + ",assessmentSectionSessionStates=" + assessmentSectionSessionStates
                 + ",itemSessionStates=" + itemSessionStates
                 + ")";
     }

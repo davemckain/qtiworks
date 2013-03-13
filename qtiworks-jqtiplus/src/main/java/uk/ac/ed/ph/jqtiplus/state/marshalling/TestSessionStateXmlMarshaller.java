@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
+import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionSessionState;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
@@ -93,7 +94,17 @@ public final class TestSessionStateXmlMarshaller {
             final TestPartSessionState testPartSessionState = entry.getValue();
             final Element testPartElement = XmlMarshallerCore.appendElement(element, "testPart");
             testPartElement.setAttribute("key", key.toString());
-            TestPartSessionStateXmlMarshaller.appendTestSessionState(testPartElement, testPartSessionState);
+            TestPartSessionStateXmlMarshaller.appendTestPartSessionState(testPartElement, testPartSessionState);
+        }
+
+        /* Do states for each AssessmentSection */
+        final Map<TestPlanNodeKey, AssessmentSectionSessionState> assessmentSectionSessionStates = testSessionState.getAssessmentSectionSessionStates();
+        for (final Entry<TestPlanNodeKey, AssessmentSectionSessionState> entry : assessmentSectionSessionStates.entrySet()) {
+            final TestPlanNodeKey key = entry.getKey();
+            final AssessmentSectionSessionState assessmentSectionSessionState = entry.getValue();
+            final Element testPartElement = XmlMarshallerCore.appendElement(element, "assessmentSection");
+            testPartElement.setAttribute("key", key.toString());
+            AssessmentSectionSessionStateXmlMarshaller.appendAssessmentSectionSessionState(testPartElement, assessmentSectionSessionState);
         }
 
         /* Do states for each item */
@@ -159,6 +170,15 @@ public final class TestSessionStateXmlMarshaller {
                 final TestPlanNodeKey key = TestPlanXmlMarshaller.requireTestPlanNodeKeyAttribute(childElement, "key");
                 final TestPartSessionState testPartSessionState = TestPartSessionStateXmlMarshaller.unmarshal(testPartElements.get(0));
                 result.getTestPartSessionStates().put(key, testPartSessionState);
+            }
+            else if ("assessmentSection".equals(childElementName)) {
+                final List<Element> assessmentSectionElements = XmlMarshallerCore.expectElementChildren(childElement);
+                if (assessmentSectionElements.size()!=1) {
+                    throw new XmlUnmarshallingException("Expected exactly one child of <assessmentSection>");
+                }
+                final TestPlanNodeKey key = TestPlanXmlMarshaller.requireTestPlanNodeKeyAttribute(childElement, "key");
+                final AssessmentSectionSessionState assessmentSectionSessionState = AssessmentSectionSessionStateXmlMarshaller.unmarshal(assessmentSectionElements.get(0));
+                result.getAssessmentSectionSessionStates().put(key, assessmentSectionSessionState);
             }
             else if ("item".equals(childElementName)) {
                 final List<Element> itemElements = XmlMarshallerCore.expectElementChildren(childElement);

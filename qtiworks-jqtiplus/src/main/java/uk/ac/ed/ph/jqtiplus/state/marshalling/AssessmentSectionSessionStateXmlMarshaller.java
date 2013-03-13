@@ -33,8 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
-import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
+import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionSessionState;
 
 import java.io.StringReader;
 
@@ -46,28 +45,27 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 /**
- * Marshals an {@link TestPartSessionState} to/from XML
+ * Marshals an {@link AssessmentSectionSessionState} to/from XML
  *
  * @author David McKain
  */
-public final class TestPartSessionStateXmlMarshaller {
+public final class AssessmentSectionSessionStateXmlMarshaller {
 
-    public static Document marshal(final TestPartSessionState testPartSessionState) {
+    public static Document marshal(final AssessmentSectionSessionState assessmentSectionSessionState) {
         final DocumentBuilder documentBuilder = XmlMarshallerCore.createNsAwareDocumentBuilder();
         final Document document = documentBuilder.newDocument();
-        appendTestPartSessionState(document, testPartSessionState);
+        appendAssessmentSectionSessionState(document, assessmentSectionSessionState);
         return document;
     }
 
-    static void appendTestPartSessionState(final Node documentOrElement, final TestPartSessionState testPartSessionState) {
-        final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testPartSessionState");
+    static void appendAssessmentSectionSessionState(final Node documentOrElement, final AssessmentSectionSessionState testPartSessionState) {
+        final Element element = XmlMarshallerCore.appendElement(documentOrElement, "assessmentSectionSessionState");
         XmlMarshallerCore.addControlObjectStateAttributes(element, testPartSessionState);
-        element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(testPartSessionState.isPreConditionFailed()));
     }
 
     //----------------------------------------------
 
-    public static TestPartSessionState unmarshal(final String xmlString) {
+    public static AssessmentSectionSessionState unmarshal(final String xmlString) {
         final DocumentBuilder documentBuilder = XmlMarshallerCore.createNsAwareDocumentBuilder();
         Document document;
         try {
@@ -79,14 +77,13 @@ public final class TestPartSessionStateXmlMarshaller {
         return unmarshal(document.getDocumentElement());
     }
 
-    public static TestPartSessionState unmarshal(final Element element) {
-        XmlMarshallerCore.expectThisElement(element, "testPartSessionState");
+    public static AssessmentSectionSessionState unmarshal(final Element element) {
+        XmlMarshallerCore.expectThisElement(element, "assessmentSectionSessionState");
 
-        final TestPartSessionState result = new TestPartSessionState();
+        final AssessmentSectionSessionState result = new AssessmentSectionSessionState();
 
         /* Extract state attributes */
         XmlMarshallerCore.parseControlObjectStateAttributes(result, element);
-        result.setPreConditionFailed(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "preConditionFailed", false));
 
         return result;
     }
