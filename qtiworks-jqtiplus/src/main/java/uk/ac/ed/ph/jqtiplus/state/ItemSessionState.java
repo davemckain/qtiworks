@@ -130,6 +130,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
     private SessionStatus sessionStatus;
     private boolean initialized;
     private boolean responded;
+    private boolean suspended;
     private String candidateComment;
 
     public ItemSessionState() {
@@ -149,6 +150,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
         this.sessionStatus = null;
         this.initialized = false;
         this.responded = false;
+        this.suspended = false;
         this.candidateComment = null;
         resetBuiltinVariables();
     }
@@ -173,6 +175,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
         this.sessionStatus = SessionStatus.INITIAL;
         this.initialized = false;
         this.responded = false;
+        this.suspended = false;
         this.candidateComment = null;
         resetBuiltinVariables();
     }
@@ -259,9 +262,12 @@ public final class ItemSessionState extends ControlObjectState implements Serial
     }
 
 
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public boolean isClosed() {
-        return isEnded();
+    public boolean isSuspended() {
+        return suspended;
+    }
+
+    public void setSuspended(final boolean suspended) {
+        this.suspended = suspended;
     }
 
 
@@ -271,6 +277,12 @@ public final class ItemSessionState extends ControlObjectState implements Serial
 
     public void setCandidateComment(final String candidateComment) {
         this.candidateComment = candidateComment;
+    }
+
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public boolean isClosed() {
+        return isEnded();
     }
 
     //----------------------------------------------------------------
@@ -684,6 +696,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
                 && initialized==other.initialized
                 && sessionStatus==other.sessionStatus
                 && responded==other.responded
+                && suspended==other.suspended
                 && shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
                 && overriddenTemplateDefaultValues.equals(other.overriddenCorrectResponseValues)
                 && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
@@ -707,6 +720,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
                 initialized,
                 sessionStatus,
                 responded,
+                suspended,
                 shuffledInteractionChoiceOrders,
                 overriddenTemplateDefaultValues,
                 overriddenResponseDefaultValues,
@@ -735,6 +749,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
                 + ",numAttempts=" + getNumAttempts()
                 + ",completionStatus=" + getCompletionStatus()
                 + ",responded=" + responded
+                + ",suspended=" + suspended
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues

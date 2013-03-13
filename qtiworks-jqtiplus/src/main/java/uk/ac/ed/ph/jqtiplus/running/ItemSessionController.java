@@ -106,6 +106,8 @@ import org.slf4j.LoggerFactory;
  *
  * Also available:
  *
+ * {@link #suspendItemSession(Date)}
+ * {@link #unsuspendItemSession(Date)}
  * {@link #resetItemSessionHard(Date, boolean)}
  * {@link #resetItemSessionSoft(Date, boolean)}
  * {@link #resetResponses(Date)}
@@ -285,7 +287,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void performTemplateProcessing(final Date timestamp, final List<TemplateDefault> templateDefaults) {
         Assert.notNull(timestamp);
-        assertNotEntered();
+        assertItemNotEntered();
         logger.debug("Template processing starting on item {}", item.getSystemId());
 
         fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_TEMPLATE_PROCESSING_STARTING);
@@ -389,7 +391,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void enterItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertNotEntered();
+        assertItemNotEntered();
         logger.debug("Entering item {}", item.getSystemId());
 
         /* Record entry */
@@ -412,14 +414,15 @@ public final class ItemSessionController extends ItemProcessingController implem
      * currently open. Call this
      * method before rendering and other operations that use rather than change the session state.
      * <p>
-     * Pre-condition: Item Session must have been initialised
+     * Pre-condition: Item Session must be open and not suspended
      * <p>
      * Post-condition: Duration variable will be updated (if the item session is currently open)
      * @param timestamp
      */
     public void touchDuration(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertInitialized();
+        assertItemOpen();
+        assertItemNotSuspended();
         logger.debug("Touching duration for item {}", item.getSystemId());
 
         if (!itemSessionState.isEnded()) {
@@ -441,7 +444,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void resetItemSessionHard(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
-        assertEntered();
+        assertItemEntered();
         logger.debug("Performing hard reset on item session {}", item.getSystemId());
 
         /* Stop duration timer */
@@ -481,7 +484,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void resetItemSessionSoft(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
-        assertEntered();
+        assertItemEntered();
         logger.debug("Performing soft reset on item session {}", item.getSystemId());
 
         /* Stop duration timer */
@@ -508,9 +511,49 @@ public final class ItemSessionController extends ItemProcessingController implem
     }
 
     /**
+     * Marks the item session as suspended.
+     * <p>
+     * Pre-condition: Item must be open and not suspended.
+     * <p>
+     * Post-conditions: Item session state will be marked as suspended. Duration
+     * timer will be stopped.
+     *
+     * @param timestamp
+     */
+    public void suspendItemSession(final Date timestamp) {
+        Assert.notNull(timestamp);
+        assertItemOpen();
+        assertItemNotSuspended();
+        logger.debug("Suspending item session on {}", item.getSystemId());
+
+        itemSessionState.setSuspended(true);
+        endItemSessionTimer(itemSessionState, timestamp);
+    }
+
+    /**
+     * Un-suspends an item previously marked as suspended.
+     * <p>
+     * Pre-condition: Item must be open and have been marked as suspended.
+     * <p>
+     * Post-conditions: Item session state will be marked as not suspended. Duration
+     *   timer will be restarted.
+     *
+     * @param timestamp
+     */
+    public void unsuspendItemSession(final Date timestamp) {
+        Assert.notNull(timestamp);
+        assertItemOpen();
+        assertItemSuspended();
+        logger.debug("Unsuspending item session on {}", item.getSystemId());
+
+        itemSessionState.setSuspended(false);
+        startItemSessionTimer(itemSessionState, timestamp);
+    }
+
+    /**
      * Ends (closes) the item session.
      * <p>
-     * Pre-condition: Item must have been entered.
+     * Pre-condition: Item must have been entered and not already closed.
      * <p>
      * Post-conditions: Item session state will be marked as ended (closed). Duration
      *   timer will be stopped.
@@ -519,7 +562,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void endItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertEntered();
+        assertItemOpen();
         logger.debug("Ending item {}", item.getSystemId());
 
         itemSessionState.setEndTime(timestamp);
@@ -529,7 +572,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Exits the item session. (This isn't strictly needed when running single items.)
      * <p>
-     * Pre-condition: Item session must have been ended (closed)
+     * Pre-condition: Item session must have been ended (closed) and not already exited
      * <p>
      * Post-condiiton: Exit time will be recorded.
      *
@@ -537,7 +580,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void exitItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertEnded();
+        assertItemEnded();
+        assertNotExited();
         logger.debug("Exiting item {}", item.getSystemId());
 
         itemSessionState.setExitTime(timestamp);
@@ -554,7 +598,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * The set of uncommitted response variables (except those bound to {@link EndAttemptInteraction})
      * will be cleared before this runs.
      * <p>
-     * Pre-condition: Item session must be open
+     * Pre-condition: Item session must be open and not suspended
      * <p>
      * Post-conditions: Response variables will be bound and validated, but not committed.
      *
@@ -571,7 +615,8 @@ public final class ItemSessionController extends ItemProcessingController implem
     public boolean bindResponses(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(timestamp);
         Assert.notNull(responseMap, "responseMap");
-        assertOpen();
+        assertItemOpen();
+        assertItemNotSuspended();
         logger.debug("Binding responses {} on item {}", responseMap, item.getSystemId());
 
         /* Stop duration timer */
@@ -648,7 +693,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * <p>
      * NB: This is counted as an attempt until {@link #performResponseProcessing(Date)} is invoked.
      * <p>
-     * Pre-condition: Item session must be open
+     * Pre-condition: Item session must be open and not suspended
      * <p>
      * Post-conditions: Response variables will be replaced by the uncommitted variables. The uncommitted
      * variables will be cleared. The item session state will
@@ -661,7 +706,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void commitResponses(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertOpen();
+        assertItemOpen();
+        assertItemNotSuspended();
         logger.debug("Committing currently saved responses to item {}", item.getSystemId());
 
         /* Stop duration timer */
@@ -692,7 +738,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Performs response processing on the <em>currently committed</em> responses,
      * changing {@link #itemSessionState} as appropriate.
      * <p>
-     * Pre-condition: item session must be open.
+     * Pre-condition: item session must be open and not suspended
      * <p>
      * Post-conditions: Outcome Variables will be updated. SessionStatus will be changed to
      * {@link SessionStatus#FINAL}. The <code>numAttempts</code> variables will be incremented (unless
@@ -700,7 +746,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void performResponseProcessing(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertOpen();
+        assertItemOpen();
+        assertItemNotSuspended();
         logger.debug("Response processing starting on item {}", item.getSystemId());
 
         fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_STARTING);
@@ -787,14 +834,15 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Resets all responses
      * <p>
-     * Pre-condition: Item session must be open.
+     * Pre-condition: Item session must be open and not suspended
      * <p>
      * Post-condition: Responses are reset to their default values. SessionStatus is
      * reset to {@link SessionStatus#INITIAL}.
      */
     public void resetResponses(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertOpen();
+        assertItemOpen();
+        assertItemNotSuspended();
         logger.debug("Resetting responses on item {}", item.getSystemId());
 
         endItemSessionTimer(itemSessionState, timestamp);
@@ -944,44 +992,57 @@ public final class ItemSessionController extends ItemProcessingController implem
 
     //-------------------------------------------------------------------
 
-    private void assertNotExited() {
-        if (itemSessionState.isExited()) {
-            throw new QtiCandidateStateException("Item session has been exited so is no longer available");
-        }
-    }
-
-    private void assertInitialized() {
-        assertNotExited();
+    private void assertItemInitialized() {
         if (!itemSessionState.isInitialized()) {
             throw new QtiCandidateStateException("Item session has not been initialized");
         }
     }
 
-    private void assertNotEntered() {
-        assertInitialized();
+    private void assertItemNotEntered() {
+        assertItemInitialized();
         if (itemSessionState.isEntered()) {
             throw new QtiCandidateStateException("Item session has already been entered");
         }
     }
 
-    private void assertEntered() {
-        assertInitialized();
+    private void assertItemEntered() {
         if (!itemSessionState.isEntered()) {
             throw new QtiCandidateStateException("Item session has not been entered");
         }
     }
 
-    private void assertOpen() {
-        assertEntered();
+    private void assertItemNotEnded() {
         if (itemSessionState.isEnded()) {
-            throw new QtiCandidateStateException("Item session has ended");
+            throw new QtiCandidateStateException("Item session has already been ended");
         }
     }
 
-    private void assertEnded() {
-        assertInitialized();
+    private void assertItemEnded() {
         if (!itemSessionState.isEnded()) {
             throw new QtiCandidateStateException("Item session has not been ended");
+        }
+    }
+
+    private void assertItemOpen() {
+        assertItemEntered();
+        assertItemNotEnded();
+    }
+
+    private void assertItemNotSuspended() {
+        if (itemSessionState.isSuspended()) {
+            throw new QtiCandidateStateException("Item session has been suspended");
+        }
+    }
+
+    private void assertItemSuspended() {
+        if (!itemSessionState.isSuspended()) {
+            throw new QtiCandidateStateException("Item session has not been suspended");
+        }
+    }
+
+    private void assertNotExited() {
+        if (itemSessionState.isExited()) {
+            throw new QtiCandidateStateException("Item session has already been exited");
         }
     }
 
