@@ -43,8 +43,6 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.EndAttemptInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
@@ -52,7 +50,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.item.template.processing.SetCorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessingRule;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
@@ -67,19 +64,14 @@ import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.node.result.TemplateVariable;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.validation.ItemValidationController;
-import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -91,7 +83,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -121,71 +112,22 @@ import org.slf4j.LoggerFactory;
  *
  * @author David McKain
  */
-public final class ItemSessionController extends ItemValidationController implements ItemProcessingContext {
+public final class ItemSessionController extends ItemProcessingController implements ItemProcessingContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemSessionController.class);
 
     private final ItemSessionControllerSettings itemSessionControllerSettings;
-    private final ItemProcessingMap itemProcessingMap;
-    private final ItemSessionState itemSessionState;
-
-    private Long randomSeed;
-    private Random randomGenerator;
 
     public ItemSessionController(final JqtiExtensionManager jqtiExtensionManager,
             final ItemSessionControllerSettings itemSessionControllerSettings,
             final ItemProcessingMap itemProcessingMap, final ItemSessionState itemSessionState) {
-        super(jqtiExtensionManager, itemProcessingMap!=null ? itemProcessingMap.getResolvedAssessmentItem() : null);
+        super(jqtiExtensionManager, itemProcessingMap, itemSessionState);
         Assert.notNull(itemSessionControllerSettings, "itemSessionControllerSettings");
-        Assert.notNull(itemSessionState, "itemSessionState");
-        this.itemSessionControllerSettings = new ItemSessionControllerSettings(itemSessionControllerSettings);
-        this.itemProcessingMap = itemProcessingMap;
-        this.itemSessionState = itemSessionState;
-        this.randomSeed = null;
-        this.randomGenerator = null;
+        this.itemSessionControllerSettings = new ItemSessionControllerSettings(itemSessionControllerSettings); /* (Private copy) */
     }
 
     public ItemSessionControllerSettings getItemSessionControllerSettings() {
         return itemSessionControllerSettings;
-    }
-
-    @Override
-    public ResolvedAssessmentItem getResolvedAssessmentItem() {
-        return resolvedAssessmentItem;
-    }
-
-    @Override
-    public AssessmentItem getSubjectItem() {
-        return item;
-    }
-
-    @Override
-    public ItemSessionState getItemSessionState() {
-        return itemSessionState;
-    }
-
-    @Override
-    public boolean isSubjectValid() {
-        return itemProcessingMap.isValid();
-    }
-
-    //-------------------------------------------------------------------
-
-    public Long getRandomSeed() {
-        return randomSeed;
-    }
-
-    public void setRandomSeed(final Long randomSeed) {
-        this.randomSeed = randomSeed;
-        this.randomGenerator = null;
-    }
-
-    @Override
-    public Random getRandomGenerator() {
-        if (randomGenerator==null) {
-            randomGenerator = randomSeed!=null ? new Random(randomSeed) : new Random();
-        }
-        return randomGenerator;
     }
 
     //-------------------------------------------------------------------
@@ -226,15 +168,57 @@ public final class ItemSessionController extends ItemValidationController implem
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         itemSessionState.setInitialized(true);
 
-        /* Initialize all interactions */
-        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
-            interaction.initialize(this);
-        }
+        /* Shuffle interactions */
+        shuffleInteractions();
 
         /* Update closed status. (This normally won't do anything, but a pathological
          * question might have completionStatus having a default value of completed!
          */
         updateClosedStatus(timestamp);
+    }
+
+    private void shuffleInteractions() {
+        for (final Interaction interaction : itemProcessingMap.getInteractions()) {
+            if (interaction instanceof Shuffleable<?>) {
+                shuffleInteraction((Shuffleable<?>) interaction, interaction.getResponseIdentifier());
+            }
+        }
+    }
+
+    private <C extends Choice> void shuffleInteraction(final Shuffleable<C> interaction, final Identifier responseIdentfier) {
+        if (interaction.getShuffle()) {
+            final List<List<C>> choiceLists = interaction.computeShuffleableChoices();
+            final List<Identifier> choiceIdentifiers = new ArrayList<Identifier>();
+            for (final List<C> choiceList : choiceLists) {
+                final List<Identifier> shuffleableChoiceIdentifiers = new ArrayList<Identifier>();
+
+                /* Build up sortable identifiers */
+                for (int i = 0; i < choiceList.size(); i++) {
+                    final C choice = choiceList.get(i);
+                    if (!choice.getFixed()) {
+                        shuffleableChoiceIdentifiers.add(choice.getIdentifier());
+                    }
+                }
+
+                /* Perform shuffle */
+                Collections.shuffle(shuffleableChoiceIdentifiers);
+
+                /* Then merge fixed identifiers back in */
+                for (int i = 0, sortedIndex = 0; i < choiceList.size(); i++) {
+                    final C choice = choiceList.get(i);
+                    if (choice.getFixed()) {
+                        choiceIdentifiers.add(choice.getIdentifier());
+                    }
+                    else {
+                        choiceIdentifiers.add(shuffleableChoiceIdentifiers.get(sortedIndex++));
+                    }
+                }
+            }
+            itemSessionState.setShuffledInteractionChoiceOrder(responseIdentfier, choiceIdentifiers);
+        }
+        else {
+            itemSessionState.setShuffledInteractionChoiceOrder(responseIdentfier, null);
+        }
     }
 
     private void ensureNotExited() {
@@ -360,11 +344,6 @@ public final class ItemSessionController extends ItemValidationController implem
             }
             if (templateProcessingAttemptNumber>1) {
                 fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
-            }
-
-            /* Initialize all interactions */
-            for (final Interaction interaction : itemProcessingMap.getInteractions()) {
-                interaction.initialize(this);
             }
 
             /* Reset OVs and RVs session */
@@ -878,53 +857,7 @@ public final class ItemSessionController extends ItemValidationController implem
     //-------------------------------------------------------------------
     // Shuffle callbacks (from interactions)
 
-    public <C extends Choice> void shuffleInteractionChoiceOrder(final Interaction interaction, final List<C> choiceList) {
-        final List<List<C>> choiceLists = new ArrayList<List<C>>();
-        choiceLists.add(choiceList);
-        shuffleInteractionChoiceOrders(interaction, choiceLists);
-    }
 
-    public <C extends Choice> void shuffleInteractionChoiceOrders(final Interaction interaction, final List<List<C>> choiceLists) {
-        ensureInitialized();
-        if (interaction instanceof Shuffleable) {
-            if (((Shuffleable) interaction).getShuffle()) {
-                final List<Identifier> choiceIdentifiers = new ArrayList<Identifier>();
-                for (final List<C> choiceList : choiceLists) {
-                    final List<Identifier> shuffleableChoiceIdentifiers = new ArrayList<Identifier>();
-
-                    /* Build up sortable identifiers */
-                    for (int i = 0; i < choiceList.size(); i++) {
-                        final C choice = choiceList.get(i);
-                        if (!choice.getFixed()) {
-                            shuffleableChoiceIdentifiers.add(choice.getIdentifier());
-                        }
-                    }
-
-                    /* Perform shuffle */
-                    Collections.shuffle(shuffleableChoiceIdentifiers);
-
-                    /* Then merge fixed identifiers back in */
-                    for (int i = 0, sortedIndex = 0; i < choiceList.size(); i++) {
-                        final C choice = choiceList.get(i);
-                        if (choice.getFixed()) {
-                            choiceIdentifiers.add(choice.getIdentifier());
-                        }
-                        else {
-                            choiceIdentifiers.add(shuffleableChoiceIdentifiers.get(sortedIndex++));
-                        }
-                    }
-                }
-                itemSessionState.setShuffledInteractionChoiceOrder(interaction, choiceIdentifiers);
-            }
-            else {
-                itemSessionState.setShuffledInteractionChoiceOrder(interaction, null);
-            }
-        }
-        else {
-            throw new QtiCandidateStateException("Interaction '" + interaction.getQtiClassName()
-                    + "' attempted shuffling but does not implement Shuffleable interface");
-        }
-    }
 
     //-------------------------------------------------------------------
 
@@ -1048,146 +981,6 @@ public final class ItemSessionController extends ItemValidationController implem
         return itemSessionState.getOutcomeValue(identifier);
     }
 
-    public Value evaluateVariableValue(final Identifier identifier) {
-        Assert.notNull(identifier);
-        Value result = evaluateTemplateValue(identifier);
-        if (result==null) {
-            result = evaluateOutcomeValue(identifier);
-            if (result==null) {
-                result = evaluateResponseValue(identifier);
-            }
-        }
-        return result;
-    }
-
-    //-------------------------------------------------------------------
-
-    @Override
-    public void setVariableValue(final VariableDeclaration variableDeclaration, final Value value) {
-        Assert.notNull(variableDeclaration);
-        Assert.notNull(value);
-        final Identifier identifier = variableDeclaration.getIdentifier();
-        if (VariableDeclaration.isReservedIdentifier(identifier)) {
-            if (QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER.equals(identifier)) {
-                /* It is legal to set completionStatus */
-                if (value.hasBaseType(BaseType.IDENTIFIER)) {
-                    itemSessionState.setCompletionStatus(value.toQtiString());
-                }
-                else {
-                    throw new IllegalArgumentException("Variable " + QtiConstants.VARIABLE_COMPLETION_STATUS
-                            + " must be set to an identifier value");
-                }
-            }
-            else {
-                /* Other reserved variable may not be set */
-                throw new IllegalArgumentException("The reserved variable with " + identifier + " may not be explicitly set");
-            }
-        }
-        else {
-            if (variableDeclaration instanceof TemplateDeclaration) {
-                itemSessionState.setTemplateValue(identifier, value);
-            }
-            else if (variableDeclaration instanceof ResponseDeclaration) {
-                itemSessionState.setResponseValue(identifier, value);
-            }
-            else if (variableDeclaration instanceof OutcomeDeclaration) {
-                itemSessionState.setOutcomeValue(identifier, value);
-            }
-            else {
-                throw new QtiLogicException("Unexpected logic branch");
-            }
-        }
-    }
-
-    //-------------------------------------------------------------------
-
-    /**
-     * Computes the current default value of the variable having the
-     * given {@link Identifier}. The result will be not null (though may be a {@link NullValue}).
-     *
-     * @param identifier identifier of the required variable, which must not be null
-     * @return computed default value, which will not be null.
-     *
-     * @throws QtiInvalidLookupException
-     */
-    @Override
-    public Value computeDefaultValue(final Identifier identifier) {
-        Assert.notNull(identifier);
-        return computeDefaultValue(ensureVariableDeclaration(identifier));
-    }
-
-    /**
-     * Computes the current default value of the given {@link VariableDeclaration}.
-     * The result will be not null (though may be a {@link NullValue}).
-     *
-     * @param declaration declaration of the required variable, which must not be null.
-     * @return computed default value, which will not be null.
-     */
-    public Value computeDefaultValue(final VariableDeclaration declaration) {
-        Assert.notNull(declaration);
-        Value result = itemSessionState.getOverriddenDefaultValue(declaration);
-        if (result==null) {
-            final DefaultValue defaultValue = declaration.getDefaultValue();
-            if (defaultValue != null) {
-                result = defaultValue.evaluate();
-            }
-            else {
-                result = NullValue.INSTANCE;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Computes the current correct response for the {@link ResponseDeclaration} having the
-     * given {@link Identifier}. The result will be null if there is no {@link CorrectResponse}
-     * for this {@link ResponseDeclaration} or no overridden response has been set, otherwise a non-null {@link Value}.
-     *
-     * @param identifier identifier of the required variable, which must not be null
-     * @return computed correct response value or null
-     *
-     * @throws QtiInvalidLookupException
-     */
-    @Override
-    public Value computeCorrectResponse(final Identifier identifier) {
-        Assert.notNull(identifier);
-        return computeCorrectResponse((ResponseDeclaration) ensureVariableDeclaration(identifier, VariableType.RESPONSE));
-    }
-
-    /**
-     * Computes the current correct response for the given {@link ResponseDeclaration}.
-     * The result will be null if there is no {@link CorrectResponse}
-     * for this {@link ResponseDeclaration}, otherwise a non-null {@link Value}.
-     *
-     * @param declaration {@link ResponseDeclaration} to test, which must not be null
-     * @return computed correct response value or null
-     */
-    public Value computeCorrectResponse(final ResponseDeclaration declaration) {
-        Assert.notNull(declaration);
-        Value result = itemSessionState.getOverriddenCorrectResponseValue(declaration);
-        if (result==null) {
-            final CorrectResponse correctResponse = declaration.getCorrectResponse();
-            if (correctResponse != null) {
-                result = correctResponse.evaluate();
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns whether a correct response has been set for the given {@link ResponseDeclaration},
-     * either having been set via {@link SetCorrectResponse} or via an explicit
-     * {@link CorrectResponse}.
-     *
-     * @param declaration {@link ResponseDeclaration} to test, which must not be null
-     * @return whether a correct response has been set
-     */
-    public boolean hasCorrectResponse(final ResponseDeclaration declaration) {
-        Assert.notNull(declaration);
-        return declaration.getCorrectResponse()!=null
-                || itemSessionState.getOverriddenCorrectResponseValue(declaration)!=null;
-    }
-
     //-------------------------------------------------------------------
 
     private void initTemplateVariables() {
@@ -1234,100 +1027,7 @@ public final class ItemSessionController extends ItemValidationController implem
     }
     //-------------------------------------------------------------------
 
-    /**
-     * Returns whether the current response value for the given {@link ResponseDeclaration}
-     * matches the currently correct response set for it. Returns false if there is no
-     * correct response set.
-     * <p>
-     * NOTE: This only tests for "the" "correct" response, not "a" correct response.
-     *
-     * @return true if the associated correctResponse matches the value; false otherwise.
-     */
-    private boolean isCorrectResponse(final ResponseDeclaration responseDeclaration) {
-        final Value correctResponseValue = computeCorrectResponse(responseDeclaration);
-        if (correctResponseValue==null) {
-            return false;
-        }
-        final Value currentResponseValue = evaluateVariableValue(responseDeclaration);
-        return currentResponseValue.equals(correctResponseValue);
-    }
 
-    /**
-     * Returns whether ALL response variables have their current value equal to their current
-     * correct response value.
-     * <p>
-     * NOTE: Remember that this only makes sense if the item uses {@link CorrectResponse}
-     * or {@link SetCorrectResponse}.
-     *
-     * @see #isIncorrect
-     */
-    @Override
-    public boolean isCorrect() {
-        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
-            if (!hasCorrectResponse(responseDeclaration)) {
-                return false;
-            }
-            if (!isCorrectResponse(responseDeclaration)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns whether SOME response variables does not have their current value equal to their current
-     * correct response value (or has no correct response set).
-     * <p>
-     * NOTE: Remember that this only makes sense if the item uses {@link CorrectResponse}
-     * or {@link SetCorrectResponse}.
-     *
-     * @see #isIncorrect
-     */
-    @Override
-    public boolean isIncorrect() {
-        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
-            if (!hasCorrectResponse(responseDeclaration)) {
-                return true;
-            }
-            if (!isCorrectResponse(responseDeclaration)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Counts the number of correct responses, as judged by
-     * {@link #isCorrectResponse(ResponseDeclaration)}.
-     *
-     * @see #isCorrectResponse(ResponseDeclaration)
-     */
-    public int countCorrect() {
-        int count = 0;
-        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
-            if (isCorrectResponse(responseDeclaration)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-
-    /**
-     * Counts the number of correct responses, as judged by
-     * {@link #isCorrectResponse(ResponseDeclaration)}.
-     *
-     * @see #isCorrectResponse(ResponseDeclaration)
-     */
-    public int countIncorrect() {
-        int count = 0;
-        for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
-            if (!isCorrectResponse(responseDeclaration)) {
-                count++;
-            }
-        }
-        return count;
-    }
 
     //-------------------------------------------------------------------
     // Computes standalone assessmentResult for this item. This wasn't available in the original JQTI

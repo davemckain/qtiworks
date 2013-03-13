@@ -83,7 +83,8 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public final class GapMatchInteraction extends BlockInteraction implements GapChoiceContainer, Shuffleable {
+public final class GapMatchInteraction extends BlockInteraction implements GapChoiceContainer,
+        Shuffleable<GapChoice> {
 
     private static final long serialVersionUID = 5859875788265167537L;
 
@@ -171,9 +172,8 @@ public final class GapMatchInteraction extends BlockInteraction implements GapCh
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getGapChoices());
+    public List<List<GapChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getGapChoices());
     }
 
     @Override

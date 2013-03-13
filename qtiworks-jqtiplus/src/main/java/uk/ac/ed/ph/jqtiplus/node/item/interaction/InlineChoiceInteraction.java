@@ -68,7 +68,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public final class InlineChoiceInteraction extends InlineInteraction implements Shuffleable {
+public final class InlineChoiceInteraction extends InlineInteraction implements Shuffleable<InlineChoice> {
 
     private static final long serialVersionUID = 1331855266262194665L;
 
@@ -150,9 +150,8 @@ public final class InlineChoiceInteraction extends InlineInteraction implements 
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getInlineChoices());
+    public List<List<InlineChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getInlineChoices());
     }
 
     @Override

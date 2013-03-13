@@ -496,6 +496,9 @@ public class CandidateItemDeliveryService {
             }
         }
 
+        /* (We commit responses immediately here) */
+        itemSessionController.commitResponses(timestamp);
+
         /* Invoke response processing (only if responses are valid) */
         if (allResponsesValid) {
             itemSessionController.performResponseProcessing(timestamp);

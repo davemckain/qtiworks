@@ -35,7 +35,6 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
 
 /**
  * The ordering class specifies the rule used to arrange the child elements of A section following
@@ -44,7 +43,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
  *
  * @author Jiri Kajaba
  */
-public final class Ordering extends AbstractNode implements Shuffleable {
+public final class Ordering extends AbstractNode {
 
     private static final long serialVersionUID = 8836454929046981760L;
 
@@ -65,12 +64,10 @@ public final class Ordering extends AbstractNode implements Shuffleable {
         return (AssessmentSection) super.getParent();
     }
 
-    @Override
     public boolean getShuffle() {
         return getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).getComputedNonNullValue();
     }
 
-    @Override
     public void setShuffle(final boolean shuffle) {
         getAttributes().getBooleanAttribute(ATTR_SHUFFLE_NAME).setValue(Boolean.valueOf(shuffle));
     }

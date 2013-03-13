@@ -41,9 +41,6 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
-import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.SetCorrectResponse;
@@ -60,45 +57,29 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * FIXME: Document this!
  *
  * @author David McKain
  */
-public final class ItemProcessingController extends ItemValidationController implements ItemProcessingContext, InteractionBindingContext {
+public class ItemProcessingController extends ItemValidationController implements ItemProcessingContext, InteractionBindingContext {
 
-    private static final Logger logger = LoggerFactory.getLogger(ItemProcessingController.class);
-
-    private final ItemSessionControllerSettings itemSessionControllerSettings;
-    private final ItemProcessingMap itemProcessingMap;
-    private final ItemSessionState itemSessionState;
+    protected final ItemProcessingMap itemProcessingMap;
+    protected final ItemSessionState itemSessionState;
 
     private Long randomSeed;
     private Random randomGenerator;
 
     public ItemProcessingController(final JqtiExtensionManager jqtiExtensionManager,
-            final ItemSessionControllerSettings itemSessionControllerSettings,
             final ItemProcessingMap itemProcessingMap, final ItemSessionState itemSessionState) {
         super(jqtiExtensionManager, itemProcessingMap!=null ? itemProcessingMap.getResolvedAssessmentItem() : null);
-        Assert.notNull(itemSessionControllerSettings, "itemSessionControllerSettings");
         Assert.notNull(itemSessionState, "itemSessionState");
-        this.itemSessionControllerSettings = new ItemSessionControllerSettings(itemSessionControllerSettings);
         this.itemProcessingMap = itemProcessingMap;
         this.itemSessionState = itemSessionState;
         this.randomSeed = null;
         this.randomGenerator = null;
-    }
-
-    public ItemSessionControllerSettings getItemSessionControllerSettings() {
-        return itemSessionControllerSettings;
     }
 
     @Override
@@ -146,56 +127,6 @@ public final class ItemProcessingController extends ItemValidationController imp
     @Override
     public void bindResponseVariable(final Identifier responseIdentifier, final Value value) {
         itemSessionState.setUncommittedResponseValue(responseIdentifier, value);
-    }
-
-    //-------------------------------------------------------------------
-    // Shuffle callbacks (from interactions)
-
-    public <C extends Choice> void shuffleInteractionChoiceOrder(final Interaction interaction, final List<C> choiceList) {
-        final List<List<C>> choiceLists = new ArrayList<List<C>>();
-        choiceLists.add(choiceList);
-        shuffleInteractionChoiceOrders(interaction, choiceLists);
-    }
-
-    public <C extends Choice> void shuffleInteractionChoiceOrders(final Interaction interaction, final List<List<C>> choiceLists) {
-        if (interaction instanceof Shuffleable) {
-            if (((Shuffleable) interaction).getShuffle()) {
-                final List<Identifier> choiceIdentifiers = new ArrayList<Identifier>();
-                for (final List<C> choiceList : choiceLists) {
-                    final List<Identifier> shuffleableChoiceIdentifiers = new ArrayList<Identifier>();
-
-                    /* Build up sortable identifiers */
-                    for (int i = 0; i < choiceList.size(); i++) {
-                        final C choice = choiceList.get(i);
-                        if (!choice.getFixed()) {
-                            shuffleableChoiceIdentifiers.add(choice.getIdentifier());
-                        }
-                    }
-
-                    /* Perform shuffle */
-                    Collections.shuffle(shuffleableChoiceIdentifiers);
-
-                    /* Then merge fixed identifiers back in */
-                    for (int i = 0, sortedIndex = 0; i < choiceList.size(); i++) {
-                        final C choice = choiceList.get(i);
-                        if (choice.getFixed()) {
-                            choiceIdentifiers.add(choice.getIdentifier());
-                        }
-                        else {
-                            choiceIdentifiers.add(shuffleableChoiceIdentifiers.get(sortedIndex++));
-                        }
-                    }
-                }
-                itemSessionState.setShuffledInteractionChoiceOrder(interaction, choiceIdentifiers);
-            }
-            else {
-                itemSessionState.setShuffledInteractionChoiceOrder(interaction, null);
-            }
-        }
-        else {
-            throw new QtiCandidateStateException("Interaction '" + interaction.getQtiClassName()
-                    + "' attempted shuffling but does not implement Shuffleable interface");
-        }
     }
 
     //-------------------------------------------------------------------

@@ -40,6 +40,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
@@ -70,6 +71,7 @@ import java.util.List;
  * interaction is associated with (at least) one response variable.
  *
  * @author Jonathon Hare
+ * @author David McKain
  */
 public abstract class Interaction extends BodyElement {
 
@@ -95,7 +97,6 @@ public abstract class Interaction extends BodyElement {
     public void setResponseIdentifier(final Identifier responseIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_RESPONSE_IDENTIFIER_NAME).setValue(responseIdentifier);
     }
-
 
     /**
      * NB: Don't use this for validation as it only returns the first {@link ResponseDeclaration}
@@ -132,12 +133,13 @@ public abstract class Interaction extends BodyElement {
     protected abstract void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration);
 
     /**
-     * Initializes the interaction. (E.g. shuffling choices)
-     * <p>
-     * Subclasses should override this method as required.
+     * Helper for implementations of {@link Shuffleable} to wrap up simple (single)
+     * lists of choice in the form expected by {@link Shuffleable#computeShuffleableChoices()}
      */
-    public void initialize(@SuppressWarnings("unused") final ItemSessionController itemSessionController) {
-        /* Let subclasses override as required */
+    public static <C extends Choice> List<List<C>> wrapSingleChoiceList(final List<C> choices) {
+        final List<List<C>> result = new ArrayList<List<C>>();
+        result.add(choices);
+        return result;
     }
 
     /**

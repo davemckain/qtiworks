@@ -77,7 +77,8 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public final class ChoiceInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
+public final class ChoiceInteraction extends BlockInteraction implements SimpleChoiceContainer,
+        Shuffleable<SimpleChoice> {
 
     private static final long serialVersionUID = 7280640816320200269L;
 
@@ -181,9 +182,8 @@ public final class ChoiceInteraction extends BlockInteraction implements SimpleC
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
+    public List<List<SimpleChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getSimpleChoices());
     }
 
     @Override

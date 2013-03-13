@@ -73,7 +73,8 @@ import java.util.Map;
  *
  * @author Jonathon Hare
  */
-public final class AssociateInteraction extends BlockInteraction implements SimpleAssociableChoiceContainer, Shuffleable {
+public final class AssociateInteraction extends BlockInteraction implements SimpleAssociableChoiceContainer,
+        Shuffleable<SimpleAssociableChoice> {
 
     private static final long serialVersionUID = -6064451970355204988L;
 
@@ -174,9 +175,8 @@ public final class AssociateInteraction extends BlockInteraction implements Simp
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getSimpleAssociableChoices());
+    public List<List<SimpleAssociableChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getSimpleAssociableChoices());
     }
 
     @Override

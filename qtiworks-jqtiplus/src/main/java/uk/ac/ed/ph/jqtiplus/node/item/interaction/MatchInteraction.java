@@ -83,7 +83,8 @@ import java.util.Map;
  *
  * @author Jonathon Hare
  */
-public final class MatchInteraction extends BlockInteraction implements SimpleMatchSetContainer, Shuffleable {
+public final class MatchInteraction extends BlockInteraction implements SimpleMatchSetContainer,
+        Shuffleable<SimpleAssociableChoice> {
 
     private static final long serialVersionUID = 8556474552543752269L;
 
@@ -176,15 +177,13 @@ public final class MatchInteraction extends BlockInteraction implements SimpleMa
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-
+    public List<List<SimpleAssociableChoice>> computeShuffleableChoices() {
         final List<SimpleMatchSet> simpleMatchSets = getSimpleMatchSets();
         final List<List<SimpleAssociableChoice>> choiceLists = new ArrayList<List<SimpleAssociableChoice>>(simpleMatchSets.size());
         for (final SimpleMatchSet simpleMatchSet : simpleMatchSets) {
             choiceLists.add(simpleMatchSet.getSimpleAssociableChoices());
         }
-        itemSessionController.shuffleInteractionChoiceOrders(this, choiceLists);
+        return choiceLists;
     }
 
     @Override

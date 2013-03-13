@@ -92,7 +92,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public final class OrderInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
+public final class OrderInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable<SimpleChoice> {
 
     private static final long serialVersionUID = 4283024380579062066L;
 
@@ -207,9 +207,8 @@ public final class OrderInteraction extends BlockInteraction implements SimpleCh
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
+    public List<List<SimpleChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getSimpleChoices());
     }
 
     @Override
