@@ -114,7 +114,7 @@ public class ItemProcessingController extends ItemValidationController implement
     }
 
     //-------------------------------------------------------------------
-    // Interaction binding
+    // Interaction binding callbacks
 
     @Override
     public final void bindResponseVariable(final Identifier responseIdentifier, final Value value) {
@@ -190,7 +190,13 @@ public class ItemProcessingController extends ItemValidationController implement
         Value result = null;
         if (permittedTypes.length==0) {
             /* No types specified, so allow any variable */
-            result = evaluateVariableValue(identifier);
+            result = evaluateTemplateValue(identifier);
+            if (result==null) {
+                result = evaluateOutcomeValue(identifier);
+                if (result==null) {
+                    result = evaluateResponseValue(identifier);
+                }
+            }
         }
         else {
             /* Only allows specified types of variables */
@@ -241,18 +247,6 @@ public class ItemProcessingController extends ItemValidationController implement
             return itemSessionState.getCompletionStatusValue();
         }
         return itemSessionState.getOutcomeValue(identifier);
-    }
-
-    public final Value evaluateVariableValue(final Identifier identifier) {
-        Assert.notNull(identifier);
-        Value result = evaluateTemplateValue(identifier);
-        if (result==null) {
-            result = evaluateOutcomeValue(identifier);
-            if (result==null) {
-                result = evaluateResponseValue(identifier);
-            }
-        }
-        return result;
     }
 
     //-------------------------------------------------------------------

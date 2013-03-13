@@ -97,7 +97,7 @@ public interface TestProcessingContext extends ProcessingContext, TestValidation
     Value dereferenceVariable(QtiNode caller, ComplexReferenceIdentifier referenceIdentifier,
             DereferencedTestVariableHandler dereferencedTestVariableHandler);
 
-    ItemProcessingContext getItemSessionContext(final TestPlanNode itemRefNode);
+    ItemProcessingContext getItemProcessingContext(final TestPlanNode itemRefNode);
 
     /**
      * Builds a List of all {@link TestPlanNode}s corresponding to {@link AssessmentItemRef}s

@@ -289,7 +289,7 @@ public class CandidateSessionStarter {
 
         /* Initialise test state and enter test */
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.initialize();
+        testSessionController.initialize(timestamp);
         final int testPartCount = testSessionController.enterTest(timestamp);
         if (testPartCount==1) {
             /* If there is only testPart, then enter this (if possible).

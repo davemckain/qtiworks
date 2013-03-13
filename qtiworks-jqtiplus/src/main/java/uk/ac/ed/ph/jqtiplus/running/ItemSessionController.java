@@ -110,6 +110,10 @@ import org.slf4j.LoggerFactory;
  * {@link #resetItemSessionSoft(Date, boolean)}
  * {@link #resetResponses(Date)}
  *
+ * <h2>Usage</h2>
+ *
+ * An instance of this class may only be used by one thread at a time.
+ *
  * @author David McKain
  */
 public final class ItemSessionController extends ItemProcessingController implements ItemProcessingContext {
