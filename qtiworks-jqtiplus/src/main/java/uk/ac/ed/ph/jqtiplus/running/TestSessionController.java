@@ -245,7 +245,8 @@ public final class TestSessionController extends TestProcessingController {
      * Precondition: The test must have been entered but not yet ended. The current testPart
      * (if appropriate) must have been ended.
      * <p>
-     * Postcondition: The next available {@link TestPart} will be entered, if one is available.
+     * Postcondition: The current testPart will be exited, as will all assessmentSections and
+     * item instances therein. The next available {@link TestPart} will be entered, if one is available.
      * Otherwise the test itself will be ended.
      */
     public TestPlanNode enterNextAvailableTestPart(final Date timestamp) {
@@ -258,11 +259,26 @@ public final class TestSessionController extends TestProcessingController {
 
         /* Exit current testPart (if appropriate) and locate next testPart */
         final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
-        int nextTestPartIndex;
+        final int nextTestPartIndex;
         if (currentTestPartNode!=null) {
+    	    /* Exit all items */
+    	    for (final TestPlanNode itemRefNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF)) {
+                getItemSessionController(itemRefNode).exitItem(timestamp);
+    	    }
+
+    	    /* Exit all assessmentSections */
+    	    for (final TestPlanNode testPlanNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_SECTION)) {
+                final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
+                endControlObjectTimer(assessmentSectionSessionState, timestamp);
+                assessmentSectionSessionState.setExitTime(timestamp);
+    	    }
+
+    	    /* Exit the testPart itself */
             final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
             assertTestPartEnded(currentTestPartSessionState);
             currentTestPartSessionState.setExitTime(timestamp);
+
+            /* Choose next testPart index */
             nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
         }
         else {
@@ -394,7 +410,7 @@ public final class TestSessionController extends TestProcessingController {
 	        performOutcomeProcessing();
 	    }
 
-	    /* Close all items (if not done so already) */
+	    /* End all items (if not done so already due to RP ending the item) */
 	    for (final TestPlanNode itemRefNode : itemRefNodes) {
             final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
             if (!itemSessionState.isEnded()) {
@@ -402,14 +418,14 @@ public final class TestSessionController extends TestProcessingController {
             }
 	    }
 
-	    /* Close all assessmentSections */
+	    /* End all assessmentSections */
 	    for (final TestPlanNode testPlanNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_SECTION)) {
             final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
             endControlObjectTimer(assessmentSectionSessionState, timestamp);
             assessmentSectionSessionState.setEndTime(timestamp);
 	    }
 
-	    /* Close testPart */
+	    /* End testPart */
         currentTestPartSessionState.setEndTime(timestamp);
         endControlObjectTimer(currentTestPartSessionState, timestamp);
 
