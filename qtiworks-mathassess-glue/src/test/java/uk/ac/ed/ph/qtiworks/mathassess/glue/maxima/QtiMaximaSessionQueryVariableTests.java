@@ -33,13 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 import java.util.Collection;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -55,28 +53,28 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(Parameterized.class)
 public class QtiMaximaSessionQueryVariableTests extends QtiMaximaSessionTestBase {
-     
+
     private static final Logger logger = LoggerFactory.getLogger(QtiMaximaSessionQueryVariableTests.class);
-    
+
     @Parameters
     public static Collection<Object[]> data() throws Exception {
         return MaximaDataBindingSamples.CIRCULAR_EXAMPLES;
     }
-    
+
     @SuppressWarnings("unused")
     private final String maximaRepresentation;
-    
+
     private final ValueWrapper valueWrapper;
-    
-    public QtiMaximaSessionQueryVariableTests(String maximaRepresentation, ValueWrapper valueWrapper) {
+
+    public QtiMaximaSessionQueryVariableTests(final String maximaRepresentation, final ValueWrapper valueWrapper) {
         this.maximaRepresentation = maximaRepresentation;
         this.valueWrapper = valueWrapper;
     }
-    
+
     @Test
     public void runTest() throws Exception {
         process.passQtiVariableToMaxima("x", valueWrapper);
-        ValueWrapper result = process.queryMaximaVariable("x", valueWrapper.getClass());
+        final ValueWrapper result = process.queryMaximaVariable("x", valueWrapper.getClass());
         if (!result.equals(valueWrapper)) {
             logger.warn("Input: " + valueWrapper);
             logger.warn("Got:   " + result);

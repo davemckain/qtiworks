@@ -34,13 +34,11 @@
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
 
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.MaximaDataBinder;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 import java.util.Collection;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -53,24 +51,24 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class MaximaDataBinderFromMaximaAndBackTests {
-    
+
     @Parameters
     public static Collection<Object[]> data() throws Exception {
         return MaximaDataBindingSamples.CIRCULAR_EXAMPLES;
     }
-    
+
     private final String maximaRepresentation;
     private final ValueWrapper valueWrapper;
-    
-    public MaximaDataBinderFromMaximaAndBackTests(String maximaRepresentation, ValueWrapper valueWrapper) {
+
+    public MaximaDataBinderFromMaximaAndBackTests(final String maximaRepresentation, final ValueWrapper valueWrapper) {
         this.maximaRepresentation = maximaRepresentation;
         this.valueWrapper = valueWrapper;
     }
-    
+
     @Test
     public void runTest() {
-        MaximaDataBinder binder = new MaximaDataBinder();
-        ValueWrapper valueWrapperResult = binder.parseMaximaLinearOutput(maximaRepresentation, valueWrapper.getClass());
+        final MaximaDataBinder binder = new MaximaDataBinder();
+        final ValueWrapper valueWrapperResult = binder.parseMaximaLinearOutput(maximaRepresentation, valueWrapper.getClass());
         Assert.assertEquals(valueWrapper, valueWrapperResult);
     }
 }

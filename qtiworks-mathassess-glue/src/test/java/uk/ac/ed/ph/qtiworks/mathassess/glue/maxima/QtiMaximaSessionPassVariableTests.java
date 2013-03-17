@@ -33,13 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 import java.util.Collection;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -55,31 +53,31 @@ import org.slf4j.LoggerFactory;
  */
 @RunWith(Parameterized.class)
 public class QtiMaximaSessionPassVariableTests extends QtiMaximaSessionTestBase {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(QtiMaximaSessionPassVariableTests.class);
-    
+
     @Parameters
     public static Collection<Object[]> data() throws Exception {
         return MaximaDataBindingSamples.CIRCULAR_EXAMPLES;
     }
-    
+
     @SuppressWarnings("unused")
     private final String maximaRepresentation;
-    
+
     private final ValueWrapper valueWrapper;
-    
-    public QtiMaximaSessionPassVariableTests(String maximaRepresentation, ValueWrapper valueWrapper) {
+
+    public QtiMaximaSessionPassVariableTests(final String maximaRepresentation, final ValueWrapper valueWrapper) {
         this.maximaRepresentation = maximaRepresentation;
         this.valueWrapper = valueWrapper;
     }
-    
+
     @Test
     public void runTest() throws Exception {
         /* Set variable */
         process.passQtiVariableToMaxima("x", valueWrapper);
-        
+
         /* Then we'll extract and check */
-        ValueWrapper variableChecked = process.executeStringOutput("x", false, valueWrapper.getClass());
+        final ValueWrapper variableChecked = process.executeStringOutput("x", false, valueWrapper.getClass());
         if (!valueWrapper.equals(variableChecked)) {
             logger.warn("Input: " + valueWrapper);
             logger.warn("Got:   " + variableChecked);
