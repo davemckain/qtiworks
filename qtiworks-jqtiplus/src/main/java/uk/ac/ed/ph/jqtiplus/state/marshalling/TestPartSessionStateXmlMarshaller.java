@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 
 import java.io.StringReader;
@@ -61,8 +60,7 @@ public final class TestPartSessionStateXmlMarshaller {
 
     static void appendTestPartSessionState(final Node documentOrElement, final TestPartSessionState testPartSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testPartSessionState");
-        XmlMarshallerCore.addControlObjectStateAttributes(element, testPartSessionState);
-        element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(testPartSessionState.isPreConditionFailed()));
+        XmlMarshallerCore.addAbstractPartSessionStateAttributes(element, testPartSessionState);
     }
 
     //----------------------------------------------
@@ -85,8 +83,7 @@ public final class TestPartSessionStateXmlMarshaller {
         final TestPartSessionState result = new TestPartSessionState();
 
         /* Extract state attributes */
-        XmlMarshallerCore.parseControlObjectStateAttributes(result, element);
-        result.setPreConditionFailed(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "preConditionFailed", false));
+        XmlMarshallerCore.parseAbstractPartSessionStateAttributes(result, element);
 
         return result;
     }

@@ -60,7 +60,7 @@ public final class AssessmentSectionSessionStateXmlMarshaller {
 
     static void appendAssessmentSectionSessionState(final Node documentOrElement, final AssessmentSectionSessionState testPartSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "assessmentSectionSessionState");
-        XmlMarshallerCore.addControlObjectStateAttributes(element, testPartSessionState);
+        XmlMarshallerCore.addAbstractPartSessionStateAttributes(element, testPartSessionState);
     }
 
     //----------------------------------------------
@@ -83,7 +83,7 @@ public final class AssessmentSectionSessionStateXmlMarshaller {
         final AssessmentSectionSessionState result = new AssessmentSectionSessionState();
 
         /* Extract state attributes */
-        XmlMarshallerCore.parseControlObjectStateAttributes(result, element);
+        XmlMarshallerCore.parseAbstractPartSessionStateAttributes(result, element);
 
         return result;
     }

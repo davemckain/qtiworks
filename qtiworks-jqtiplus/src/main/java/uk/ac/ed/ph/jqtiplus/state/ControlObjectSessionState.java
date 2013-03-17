@@ -50,16 +50,16 @@ import java.util.Date;
  *
  * @author David McKain
  */
-public abstract class ControlObjectState implements Serializable {
+public abstract class ControlObjectSessionState implements Serializable {
 
     private static final long serialVersionUID = 4027764553360833372L;
 
-    private Date entryTime;
-    private Date endTime;
-    private Date exitTime;
+    protected Date entryTime;
+    protected Date endTime;
+    protected Date exitTime;
 
-    private Date durationIntervalStartTime;
-    private long durationAccumulated;
+    protected Date durationIntervalStartTime;
+    protected long durationAccumulated;
 
     public void reset() {
         this.entryTime = null;
@@ -136,11 +136,11 @@ public abstract class ControlObjectState implements Serializable {
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof ControlObjectState)) {
+        if (!(obj instanceof ControlObjectSessionState)) {
             return false;
         }
 
-        final ControlObjectState other = (ControlObjectState) obj;
+        final ControlObjectSessionState other = (ControlObjectSessionState) obj;
         return ObjectUtilities.nullSafeEquals(entryTime, other.entryTime)
                 && ObjectUtilities.nullSafeEquals(endTime, other.endTime)
                 && ObjectUtilities.nullSafeEquals(exitTime, other.exitTime)

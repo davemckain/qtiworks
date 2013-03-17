@@ -74,7 +74,7 @@ public final class ItemSessionStateXmlMarshaller {
 
     static void appendItemSessionState(final Node documentOrElement, final ItemSessionState itemSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "itemSessionState");
-        XmlMarshallerCore.addControlObjectStateAttributes(element, itemSessionState);
+        XmlMarshallerCore.addAbstractPartSessionStateAttributes(element, itemSessionState);
         element.setAttribute("initialized", StringUtilities.toTrueFalse(itemSessionState.isInitialized()));
         element.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
         element.setAttribute("suspended", StringUtilities.toTrueFalse(itemSessionState.isSuspended()));
@@ -163,7 +163,7 @@ public final class ItemSessionStateXmlMarshaller {
         XmlMarshallerCore.expectThisElement(element, "itemSessionState");
         final ItemSessionState result = new ItemSessionState();
 
-        XmlMarshallerCore.parseControlObjectStateAttributes(result, element);
+        XmlMarshallerCore.parseAbstractPartSessionStateAttributes(result, element);
         result.setInitialized(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "initialized", false));
         result.setResponded(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "responded", false));
         result.setSuspended(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "suspended", false));

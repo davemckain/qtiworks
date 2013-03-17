@@ -38,7 +38,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * Encapsulates the candidate state within an {@link AssessmentSection}.
@@ -46,14 +45,9 @@ import java.util.Arrays;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class AssessmentSectionSessionState extends ControlObjectState implements Serializable {
+public final class AssessmentSectionSessionState extends AbstractPartSessionState implements Serializable {
 
     private static final long serialVersionUID = 8768327946713692956L;
-
-    @Override
-    public void reset() {
-        super.reset();
-    }
 
     //----------------------------------------------------------------
 
@@ -64,13 +58,6 @@ public final class AssessmentSectionSessionState extends ControlObjectState impl
         }
         final AssessmentSectionSessionState other = (AssessmentSectionSessionState) obj;
         return super.equals(other);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(new Object[] {
-                super.hashCode(),
-        });
     }
 
     @Override

@@ -65,7 +65,7 @@ import java.util.Map;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class TestSessionState extends ControlObjectState implements Serializable {
+public final class TestSessionState extends ControlObjectSessionState implements Serializable {
 
     private static final long serialVersionUID = 9006603629987329773L;
 

@@ -77,7 +77,7 @@ public final class TestSessionStateXmlMarshaller {
 
     static void appendTestSessionState(final Node documentOrElement, final TestSessionState testSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testSessionState");
-        XmlMarshallerCore.addControlObjectStateAttributes(element, testSessionState);
+        XmlMarshallerCore.addControlObjectSessionStateAttributes(element, testSessionState);
         maybeAddStringifiableAttribute(element, "currentTestPartKey", testSessionState.getCurrentTestPartKey());
         maybeAddStringifiableAttribute(element, "currentItemKey", testSessionState.getCurrentItemKey());
 
@@ -149,7 +149,7 @@ public final class TestSessionStateXmlMarshaller {
         final TestSessionState result = new TestSessionState(testPlan);
 
         /* Extract state attributes */
-        XmlMarshallerCore.parseControlObjectStateAttributes(result, element);
+        XmlMarshallerCore.parseControlObjectSessionStateAttributes(result, element);
         result.setCurrentTestPartKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentTestPartKey"));
         result.setCurrentItemKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentItemKey"));
 

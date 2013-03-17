@@ -35,29 +35,57 @@ package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
- * Encapsulates the candidate state within a {@link TestPart}.
+ * Base for recording the session state of an {@link AbstractPart}
  *
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class TestPartSessionState extends AbstractPartSessionState implements Serializable {
+public abstract class AbstractPartSessionState extends ControlObjectSessionState implements Serializable {
 
-    private static final long serialVersionUID = -1041244926292225923L;
+    private static final long serialVersionUID = -134308115257966761L;
+
+	protected boolean preConditionFailed;
+
+    @Override
+    public void reset() {
+        super.reset();
+    	this.preConditionFailed = false;
+    }
+
+    //----------------------------------------------------------------
+
+    public boolean isPreConditionFailed() {
+		return preConditionFailed;
+	}
+
+	public void setPreConditionFailed(final boolean preConditionFailed) {
+		this.preConditionFailed = preConditionFailed;
+	}
 
     //----------------------------------------------------------------
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof TestPartSessionState)) {
+        if (!(obj instanceof AbstractPartSessionState)) {
             return false;
         }
-        final TestPartSessionState other = (TestPartSessionState) obj;
-        return super.equals(other);
+        final AbstractPartSessionState other = (AbstractPartSessionState) obj;
+        return super.equals(other)
+                && preConditionFailed==other.preConditionFailed;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[] {
+                super.hashCode(),
+        		preConditionFailed
+        });
     }
 
     @Override

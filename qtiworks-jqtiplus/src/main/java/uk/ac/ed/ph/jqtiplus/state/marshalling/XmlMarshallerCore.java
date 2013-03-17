@@ -36,7 +36,8 @@ package uk.ac.ed.ph.jqtiplus.state.marshalling;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
-import uk.ac.ed.ph.jqtiplus.state.ControlObjectState;
+import uk.ac.ed.ph.jqtiplus.state.AbstractPartSessionState;
+import uk.ac.ed.ph.jqtiplus.state.ControlObjectSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -136,11 +137,16 @@ public final class XmlMarshallerCore {
         }
     }
 
-    static void addControlObjectStateAttributes(final Element element, final ControlObjectState controlObjectState) {
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "entryTime", controlObjectState.getEntryTime());
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "endTime", controlObjectState.getEndTime());
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "exitTime", controlObjectState.getExitTime());
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "durationIntervalStartTime", controlObjectState.getDurationIntervalStartTime());
+    static void addAbstractPartSessionStateAttributes(final Element element, final AbstractPartSessionState abstractPartSessionState) {
+    	addControlObjectSessionStateAttributes(element, abstractPartSessionState);
+        element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(abstractPartSessionState.isPreConditionFailed()));
+    }
+
+    static void addControlObjectSessionStateAttributes(final Element element, final ControlObjectSessionState controlObjectState) {
+        maybeAddDateOrEmptyAttribute(element, "entryTime", controlObjectState.getEntryTime());
+        maybeAddDateOrEmptyAttribute(element, "endTime", controlObjectState.getEndTime());
+        maybeAddDateOrEmptyAttribute(element, "exitTime", controlObjectState.getExitTime());
+        maybeAddDateOrEmptyAttribute(element, "durationIntervalStartTime", controlObjectState.getDurationIntervalStartTime());
         element.setAttribute("durationAccumulated", Long.toString(controlObjectState.getDurationAccumulated()));
     }
 
@@ -331,12 +337,17 @@ public final class XmlMarshallerCore {
         }
     }
 
-    static void parseControlObjectStateAttributes(final ControlObjectState target, final Element element) {
-        target.setEntryTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "entryTime"));
-        target.setEndTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "endTime"));
-        target.setExitTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "exitTime"));
-        target.setDurationAccumulated(XmlMarshallerCore.parseOptionalLongAttribute(element, "durationAccumulated", 0L));
-        target.setDurationIntervalStartTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "durationInternalStart"));
+    static void parseAbstractPartSessionStateAttributes(final AbstractPartSessionState target, final Element element) {
+    	parseControlObjectSessionStateAttributes(target, element);
+    	target.setPreConditionFailed(parseOptionalBooleanAttribute(element, "preConditionFailed", false));
+    }
+
+    static void parseControlObjectSessionStateAttributes(final ControlObjectSessionState target, final Element element) {
+        target.setEntryTime(parseOptionalDateAttribute(element, "entryTime"));
+        target.setEndTime(parseOptionalDateAttribute(element, "endTime"));
+        target.setExitTime(parseOptionalDateAttribute(element, "exitTime"));
+        target.setDurationAccumulated(parseOptionalLongAttribute(element, "durationAccumulated", 0L));
+        target.setDurationIntervalStartTime(parseOptionalDateAttribute(element, "durationInternalStart"));
     }
 
     static Value parseValue(final Element element) {

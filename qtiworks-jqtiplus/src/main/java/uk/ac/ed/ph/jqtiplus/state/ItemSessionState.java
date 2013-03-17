@@ -79,7 +79,7 @@ import java.util.Set;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class ItemSessionState extends ControlObjectState implements Serializable {
+public final class ItemSessionState extends AbstractPartSessionState implements Serializable {
 
     private static final long serialVersionUID = -7586529679289092485L;
 
@@ -741,6 +741,7 @@ public final class ItemSessionState extends ControlObjectState implements Serial
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(initialized=" + initialized
                 + ",sessionStatus=" + sessionStatus
+                + ",preConditionFailed=" + isPreConditionFailed()
                 + ",entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()
                 + ",exitTime=" + getExitTime()
