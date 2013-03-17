@@ -52,6 +52,9 @@ import java.util.List;
 /**
  * Extension of {@link ProcessingContext} passed when running an {@link AssessmentTest}
  *
+ * @see TestProcessingController
+ * @see ItemProcessingContext
+ *
  * @author David McKain
  */
 public interface TestProcessingContext extends ProcessingContext, TestValidationContext {

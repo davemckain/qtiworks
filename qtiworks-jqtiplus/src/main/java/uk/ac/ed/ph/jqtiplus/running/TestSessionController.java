@@ -49,6 +49,7 @@ import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
@@ -82,7 +83,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Document this type
+ * High level controller for running an {@link AssessmentTest}.
+ * <p>
+ * Rendering and delivery engines will probably want to use this to perform the core
+ * QTI processing.
+ *
+ * FIXME: Finish this documentation!
  *
  * TO FINISH: Update linear mode to touch durations and enter sections
  *

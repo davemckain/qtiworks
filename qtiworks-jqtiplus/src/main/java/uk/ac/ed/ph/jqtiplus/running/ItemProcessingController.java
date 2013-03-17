@@ -61,8 +61,11 @@ import java.util.Random;
  * Implementation of {@link ItemProcessingContext}, filling in the low level
  * logic for running items. You probably want to use {@link ItemSessionController}
  * for higher level stuff.
+ * <p>
+ * Usage: an instance of this class may only be used by a single Thread.
  *
  * @see ItemSessionController
+ * @see TestProcessingController
  *
  * @author David McKain
  */

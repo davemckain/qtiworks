@@ -70,9 +70,11 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * FIXME: Document this type
- *
- * Usage: one-shot, not thread safe.
+ * Implementation of {@link TestProcessingContext}, filling in the low level
+ * logic for running tests. You probably want to use {@link TestSessionController}
+ * for higher level stuff.
+ * <p>
+ * Usage: an instance of this class may only be used by a single Thread.
  *
  * @author David McKain
  */
