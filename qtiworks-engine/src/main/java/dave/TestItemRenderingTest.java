@@ -77,7 +77,7 @@ public class TestItemRenderingTest {
             testSessionController.enterTest(timestamp1);
 
             final Date timestamp2 = ObjectUtilities.addToTime(timestamp1, 1000L);
-            System.out.println("First available testPart is " + testSessionController.findNextAvailableTestPart());
+            System.out.println("First available testPart is " + testSessionController.findNextEnterableTestPart());
             testSessionController.enterNextAvailableTestPart(timestamp2);
             System.out.println("Test session state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 

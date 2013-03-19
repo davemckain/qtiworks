@@ -147,8 +147,7 @@ public final class TestPart extends AbstractPart {
      *
      * @return true if jumps (preCondition and branchRule) are enabled; false otherwise
      */
-    @Deprecated
     public boolean areJumpsEnabled() {
-        return getNavigationMode() == NavigationMode.LINEAR && getSubmissionMode() == SubmissionMode.INDIVIDUAL;
+        return getNavigationMode()==NavigationMode.LINEAR && getSubmissionMode()==SubmissionMode.INDIVIDUAL;
     }
 }

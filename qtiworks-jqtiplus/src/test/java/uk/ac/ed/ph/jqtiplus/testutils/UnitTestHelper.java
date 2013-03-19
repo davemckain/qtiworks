@@ -34,22 +34,38 @@
 package uk.ac.ed.ph.jqtiplus.testutils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
+import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
+import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
+import java.util.List;
+
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FIXME: Refactor this more appropriately!
@@ -57,6 +73,8 @@ import java.net.URI;
  * @author David McKain
  */
 public final class UnitTestHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(UnitTestHelper.class);
 
     public static URI createTestResourceUri(final String testFilePath) {
         return URI.create("classpath:/" + testFilePath);
@@ -104,6 +122,7 @@ public final class UnitTestHelper {
 
     public static ItemSessionController loadUnitTestAssessmentItemForControl(final String testFilePath, final boolean isValid) {
         final ResolvedAssessmentItem resolvedAssessmentItem = resolveUnitTestAssessmentItem(testFilePath);
+        assertSuccessfulResolution(resolvedAssessmentItem);
 
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
@@ -112,4 +131,29 @@ public final class UnitTestHelper {
                 itemProcessingMap, itemSessionState);
     }
 
+    public static TestSessionController loadUnitTestAssessmentTestForControl(final String testFilePath, final boolean isValid) {
+        final ResolvedAssessmentTest resolvedAssessmentTest = resolveUnitTestAssessmentTest(testFilePath);
+        assertSuccessfulResolution(resolvedAssessmentTest);
+
+        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
+        final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, isValid).initialize();
+        final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
+        final TestPlan testPlan = testPlanner.generateTestPlan();
+        final TestSessionState testSessionState = new TestSessionState(testPlan);
+        return new TestSessionController(createJqtiExtensionManager(), testSessionControllerSettings,
+                testProcessingMap, testSessionState);
+    }
+
+    private static void assertSuccessfulResolution(final ResolvedAssessmentObject<?> resolvedAssessmentObject) {
+        if (!resolvedAssessmentObject.getRootNodeLookup().wasSuccessful()) {
+            logger.error(ObjectDumper.dumpObject(resolvedAssessmentObject.getRootNodeLookup().getBadResourceException()));
+            Assert.fail("Failed to load and resolve unit test resource " + resolvedAssessmentObject.getRootNodeLookup().getSystemId());
+        }
+    }
+
+    public static TestPlanNode assertSingleTestPlanNode(final TestPlan testPlan, final String identifier) {
+        final List<TestPlanNode> nodes = testPlan.getNodes(Identifier.assumedLegal(identifier));
+        Assert.assertEquals(1, nodes.size());
+        return nodes.get(0);
+    }
 }

@@ -466,7 +466,7 @@ public class CandidateTestDeliveryService {
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateSession,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
-        renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayFinishItemLinear());
+        renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndItemLinear());
         return renderingRequest;
     }
 
@@ -819,13 +819,13 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-        if (!testSessionController.mayFinishItemLinear()) {
+        if (!testSessionController.mayEndItemLinear()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
         }
 
         /* Update state */
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.finishItemLinear(requestTimestamp);
+        testSessionController.endItemLinear(requestTimestamp);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,

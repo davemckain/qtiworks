@@ -553,7 +553,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Ends (closes) the item session.
      * <p>
-     * Pre-condition: Item must have been entered and not already closed.
+     * Pre-condition: Item must not have already been ended. It is OK if the item hasn't been entereed.
      * <p>
      * Post-conditions: Item session state will be marked as ended (closed). Duration
      *   timer will be stopped.
@@ -562,11 +562,13 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void endItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertItemOpen();
+        assertItemNotEnded();
         logger.debug("Ending item {}", item.getSystemId());
 
         itemSessionState.setEndTime(timestamp);
-        endItemSessionTimer(itemSessionState, timestamp);
+        if (itemSessionState.getDurationIntervalStartTime()!=null) {
+            endItemSessionTimer(itemSessionState, timestamp);
+        }
     }
 
     /**

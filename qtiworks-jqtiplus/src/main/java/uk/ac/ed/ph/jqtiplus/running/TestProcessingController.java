@@ -76,6 +76,9 @@ import java.util.Random;
  * <p>
  * Usage: an instance of this class may only be used by a single Thread.
  *
+ * @see TestSessionController
+ * @see ItemProcessingController
+ *
  * @author David McKain
  */
 public class TestProcessingController extends TestValidationController implements TestProcessingContext {

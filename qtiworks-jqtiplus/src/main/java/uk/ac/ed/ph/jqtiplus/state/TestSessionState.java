@@ -49,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -81,10 +81,10 @@ public final class TestSessionState extends ControlObjectSessionState implements
     public TestSessionState(final TestPlan testPlan) {
         Assert.notNull(testPlan, "testPlan");
         this.testPlan = testPlan;
-        this.testPartSessionStates = new HashMap<TestPlanNodeKey, TestPartSessionState>();
-        this.assessmentSectionSessionStates = new HashMap<TestPlanNodeKey, AssessmentSectionSessionState>();
-        this.itemSessionStates = new HashMap<TestPlanNodeKey, ItemSessionState>();
-        this.outcomeValues = new HashMap<Identifier, Value>();
+        this.testPartSessionStates = new LinkedHashMap<TestPlanNodeKey, TestPartSessionState>();
+        this.assessmentSectionSessionStates = new LinkedHashMap<TestPlanNodeKey, AssessmentSectionSessionState>();
+        this.itemSessionStates = new LinkedHashMap<TestPlanNodeKey, ItemSessionState>();
+        this.outcomeValues = new LinkedHashMap<Identifier, Value>();
         reset();
     }
 

@@ -181,6 +181,41 @@ public final class TestPlanNode implements Serializable {
         return Collections.unmodifiableList(children);
     }
 
+    public TestPlanNode getChildAt(final int index) {
+    	if (index<0 || index>=children.size()) {
+    		throw new IndexOutOfBoundsException();
+    	}
+    	return children.get(index);
+    }
+
+    public int getChildCount() {
+    	return children.size();
+    }
+
+    public void addChild(final TestPlanNode childNode) {
+        childNode.siblingIndex = children.size();
+        childNode.parentNode = this;
+        children.add(childNode);
+    }
+
+    public boolean hasPreviousSibling() {
+        return parentNode!=null && siblingIndex>0;
+    }
+
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
+    public TestPlanNode getPreviousSibling() {
+        return hasPreviousSibling() ? parentNode.getChildAt(siblingIndex-1) : null;
+    }
+
+    public boolean hasFollowingSibling() {
+        return parentNode!=null && siblingIndex+1 < parentNode.getChildCount();
+    }
+
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
+    public TestPlanNode getFollowingSibling() {
+        return hasFollowingSibling() ? parentNode.getChildAt(siblingIndex+1) : null;
+    }
+
     public boolean hasAncestor(final TestPlanNode node) {
         if (parentNode==null) {
             return false;
@@ -256,12 +291,6 @@ public final class TestPlanNode implements Serializable {
         for (final TestPlanNode childNode : testPlanNode.getChildren()) {
             buildDescendantsOrSelf(resultBuilder, childNode, testNodeType);
         }
-    }
-
-    public void addChild(final TestPlanNode childNode) {
-        childNode.siblingIndex = children.size();
-        childNode.parentNode = this;
-        children.add(childNode);
     }
 
     @Override
