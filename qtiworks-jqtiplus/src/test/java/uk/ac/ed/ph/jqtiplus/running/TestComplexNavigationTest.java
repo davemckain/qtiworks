@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
@@ -44,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.state.marshalling.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 
 import java.util.ArrayList;
@@ -53,9 +55,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 /**
  * Tests navigation through a linear {@link TestPart}
@@ -143,6 +147,22 @@ public final class TestComplexNavigationTest {
         item5EndDelta = 32000L;
         item5EndTimestamp = ObjectUtilities.addToTime(item4EndTimestamp, item5EndDelta);
     }
+
+    @After
+    public void after() {
+        /* This is strictly outside what we're testing here, but let's just check that the
+         * state -> XML -> state process is idempotent in this instance
+         */
+        final Document testSessionStateXmlDocument = TestSessionStateXmlMarshaller.marshal(testSessionState);
+        final TestSessionState refried = TestSessionStateXmlMarshaller.unmarshal(testSessionStateXmlDocument.getDocumentElement());
+        if (!refried.equals(testSessionState)) {
+            System.err.println("State before marshalling: " + ObjectDumper.dumpObject(testSessionState));
+            System.err.println("State after marshalling: " + ObjectDumper.dumpObject(refried));
+            Assert.assertEquals(testSessionState, refried);
+        }
+    }
+
+    //-------------------------------------------------------
 
     @Test
     public void testBefore() {

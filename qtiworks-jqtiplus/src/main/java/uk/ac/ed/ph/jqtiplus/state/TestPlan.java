@@ -235,6 +235,23 @@ public final class TestPlan implements Serializable {
                 + ")";
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof TestPlan)) {
+            return false;
+        }
+        final TestPlan other = (TestPlan) obj;
+        return testPlanRootNode.equals(other.testPlanRootNode)
+                && testPlanNodeMap.equals(other.testPlanNodeMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return testPlanRootNode.hashCode();
+    }
+
+    //-------------------------------------------------------------------
+
     public String debugStructure() {
         final StringBuilder result = new StringBuilder();
         buildStructure(result, testPlanRootNode.getChildren(), 0);

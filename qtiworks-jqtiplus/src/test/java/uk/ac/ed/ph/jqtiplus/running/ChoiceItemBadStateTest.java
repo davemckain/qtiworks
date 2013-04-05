@@ -50,15 +50,13 @@ import org.junit.Test;
  *
  * @author David McKain
  */
-public class ChoiceItemBadStateTest {
-
-    public static final String TEST_FILE_PATH = "running/choice.xml";
+public final class ChoiceItemBadStateTest {
 
     private ItemSessionController itemSessionController;
 
     @Before
     public void before() {
-        itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(TEST_FILE_PATH, true);
+        itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(ChoiceItemRunningTest.TEST_FILE_PATH, true);
     }
 
     @Test(expected=QtiCandidateStateException.class)

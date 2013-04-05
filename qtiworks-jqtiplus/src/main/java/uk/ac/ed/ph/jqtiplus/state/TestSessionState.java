@@ -223,13 +223,14 @@ public final class TestSessionState extends ControlObjectSessionState implements
 
         final TestSessionState other = (TestSessionState) obj;
         return super.equals(obj)
-                && testPlan.equals(other.testPlan)
+                && ObjectUtilities.nullSafeEquals(currentTestPartKey, other.currentTestPartKey)
+                && ObjectUtilities.nullSafeEquals(currentItemKey, other.currentItemKey)
                 && testPartSessionStates.equals(other.testPartSessionStates)
                 && assessmentSectionSessionStates.equals(other.assessmentSectionSessionStates)
                 && itemSessionStates.equals(other.itemSessionStates)
-                && ObjectUtilities.nullSafeEquals(currentTestPartKey, other.currentTestPartKey)
-                && ObjectUtilities.nullSafeEquals(currentItemKey, other.currentItemKey)
-                && outcomeValues.equals(other.outcomeValues);
+                && outcomeValues.equals(other.outcomeValues)
+                && testPlan.equals(other.testPlan)
+                ;
     }
 
     @Override

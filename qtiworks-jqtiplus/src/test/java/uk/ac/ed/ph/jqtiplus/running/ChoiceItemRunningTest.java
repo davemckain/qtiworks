@@ -37,17 +37,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionStatus;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.marshalling.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.Date;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 
 /**
  * Tests the {@link ItemSessionController} running the standard
@@ -57,7 +61,7 @@ import org.junit.Test;
  */
 public final class ChoiceItemRunningTest {
 
-    private static final String TEST_FILE_PATH = "running/choice.xml";
+    public static final String TEST_FILE_PATH = "running/choice.xml";
 
     public static final Identifier SCORE = Identifier.assumedLegal("SCORE");
     public static final Identifier RESPONSE = Identifier.assumedLegal("RESPONSE");
@@ -65,10 +69,7 @@ public final class ChoiceItemRunningTest {
     private ItemSessionController itemSessionController;
     private ItemSessionState itemSessionState;
 
-
     private Date itemEntryTimestamp;
-    private long templateProcessingDelta;
-    private Date templateProcessingTimestamp;
 
     @Before
     public void before() {
@@ -76,9 +77,20 @@ public final class ChoiceItemRunningTest {
         itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(TEST_FILE_PATH, true);
         itemSessionController.initialize(itemEntryTimestamp);
         itemSessionState = itemSessionController.getItemSessionState();
+    }
 
-        templateProcessingDelta = 1000L;
-        templateProcessingTimestamp = ObjectUtilities.addToTime(itemEntryTimestamp, templateProcessingDelta);
+    @After
+    public void after() {
+        /* This is strictly outside what we're testing here, but let's just check that the
+         * state -> XML -> state process is idempotent in this instance
+         */
+        final Document itemSessionStateXmlDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
+        final ItemSessionState refried = ItemSessionStateXmlMarshaller.unmarshal(itemSessionStateXmlDocument.getDocumentElement());
+        if (!refried.equals(itemSessionState)) {
+            System.err.println("State before marshalling: " + ObjectDumper.dumpObject(itemSessionState));
+            System.err.println("State after marshalling: " + ObjectDumper.dumpObject(refried));
+            Assert.assertEquals(itemSessionState, refried);
+        }
     }
 
     @Test
@@ -94,20 +106,29 @@ public final class ChoiceItemRunningTest {
     }
 
     @Test
-    public void testTemplateProcessing() {
+    public void testTemplateProcessingGood() {
         /* (This doesn't actually do anything here) */
-        itemSessionController.performTemplateProcessing(templateProcessingTimestamp);
+        itemSessionController.performTemplateProcessing(itemEntryTimestamp);
         testBefore();
+    }
+
+    @Test(expected=QtiCandidateStateException.class)
+    public void testTemplateProcessingAfterEntry() {
+        itemSessionController.enterItem(itemEntryTimestamp);
+        itemSessionController.performTemplateProcessing(itemEntryTimestamp);
     }
 
     @Test
     public void testEntryIntoItem() {
+        /* (No TP done here as it's not actually required) */
         itemSessionController.enterItem(itemEntryTimestamp);
 
         assertItemOpen();
         assertEquals(0L, itemSessionState.getDurationAccumulated());
         assertEquals(itemEntryTimestamp, itemSessionState.getDurationIntervalStartTime());
     }
+
+    //-------------------------------------------------------
 
     protected void assertItemOpen() {
         RunAssertions.assertOpen(itemSessionState, itemEntryTimestamp);

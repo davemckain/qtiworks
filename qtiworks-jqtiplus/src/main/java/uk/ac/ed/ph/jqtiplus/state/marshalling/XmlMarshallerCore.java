@@ -346,8 +346,8 @@ public final class XmlMarshallerCore {
         target.setEntryTime(parseOptionalDateAttribute(element, "entryTime"));
         target.setEndTime(parseOptionalDateAttribute(element, "endTime"));
         target.setExitTime(parseOptionalDateAttribute(element, "exitTime"));
+        target.setDurationIntervalStartTime(parseOptionalDateAttribute(element, "durationIntervalStartTime"));
         target.setDurationAccumulated(parseOptionalLongAttribute(element, "durationAccumulated", 0L));
-        target.setDurationIntervalStartTime(parseOptionalDateAttribute(element, "durationInternalStart"));
     }
 
     static Value parseValue(final Element element) {

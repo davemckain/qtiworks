@@ -692,23 +692,25 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
         final ItemSessionState other = (ItemSessionState) obj;
         return super.equals(obj)
                 && numAttempts==other.numAttempts
-                && ObjectUtilities.nullSafeEquals(completionStatus, other.completionStatus)
                 && initialized==other.initialized
-                && sessionStatus==other.sessionStatus
                 && responded==other.responded
                 && suspended==other.suspended
+                && ObjectUtilities.nullSafeEquals(completionStatus, other.completionStatus)
+                && ObjectUtilities.nullSafeEquals(sessionStatus, other.sessionStatus)
+                && ObjectUtilities.nullSafeEquals(candidateComment, other.candidateComment)
                 && shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
-                && overriddenTemplateDefaultValues.equals(other.overriddenCorrectResponseValues)
-                && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
-                && overriddenOutcomeDefaultValues.equals(other.overriddenOutcomeDefaultValues)
-                && overriddenCorrectResponseValues.equals(other.overriddenCorrectResponseValues)
                 && rawResponseDataMap.equals(other.rawResponseDataMap)
                 && unboundResponseIdentifiers.equals(other.unboundResponseIdentifiers)
                 && invalidResponseIdentifiers.equals(other.invalidResponseIdentifiers)
                 && uncommittedResponseValues.equals(other.uncommittedResponseValues)
                 && templateValues.equals(other.templateValues)
                 && responseValues.equals(other.responseValues)
-                && outcomeValues.equals(other.outcomeValues);
+                && outcomeValues.equals(other.outcomeValues)
+                && overriddenTemplateDefaultValues.equals(other.overriddenTemplateDefaultValues)
+                && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
+                && overriddenOutcomeDefaultValues.equals(other.overriddenOutcomeDefaultValues)
+                && overriddenCorrectResponseValues.equals(other.overriddenCorrectResponseValues)
+                ;
     }
 
     @Override
@@ -721,18 +723,19 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
                 sessionStatus,
                 responded,
                 suspended,
+                candidateComment,
                 shuffledInteractionChoiceOrders,
-                overriddenTemplateDefaultValues,
-                overriddenResponseDefaultValues,
-                overriddenOutcomeDefaultValues,
-                overriddenCorrectResponseValues,
                 rawResponseDataMap,
                 unboundResponseIdentifiers,
                 invalidResponseIdentifiers,
                 uncommittedResponseValues,
                 templateValues,
                 responseValues,
-                outcomeValues
+                outcomeValues,
+                overriddenTemplateDefaultValues,
+                overriddenResponseDefaultValues,
+                overriddenOutcomeDefaultValues,
+                overriddenCorrectResponseValues
         });
     }
 
@@ -751,6 +754,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
                 + ",completionStatus=" + getCompletionStatus()
                 + ",responded=" + responded
                 + ",suspended=" + suspended
+                + ",candidateComment=" + candidateComment
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues

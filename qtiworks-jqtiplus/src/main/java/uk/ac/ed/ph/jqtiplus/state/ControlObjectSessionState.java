@@ -141,10 +141,10 @@ public abstract class ControlObjectSessionState implements Serializable {
         }
 
         final ControlObjectSessionState other = (ControlObjectSessionState) obj;
-        return ObjectUtilities.nullSafeEquals(entryTime, other.entryTime)
+        return durationAccumulated==other.durationAccumulated
+                && ObjectUtilities.nullSafeEquals(entryTime, other.entryTime)
                 && ObjectUtilities.nullSafeEquals(endTime, other.endTime)
                 && ObjectUtilities.nullSafeEquals(exitTime, other.exitTime)
-                && durationAccumulated==other.durationAccumulated
                 && ObjectUtilities.nullSafeEquals(durationIntervalStartTime, other.durationIntervalStartTime);
     }
 

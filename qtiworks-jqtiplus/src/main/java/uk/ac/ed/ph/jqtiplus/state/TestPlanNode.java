@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
@@ -117,6 +118,7 @@ public final class TestPlanNode implements Serializable {
     public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key,
             final EffectiveItemSessionControl effectiveItemSessionControl,
             final String sectionPartTitle, final URI itemSystemId) {
+        Assert.notNull(testNodeType, "TestNodeType");
         this.parentNode = null;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
@@ -293,8 +295,49 @@ public final class TestPlanNode implements Serializable {
         }
     }
 
+    //-------------------------------------------------------------------
+
     @Override
     public String toString() {
         return ObjectUtilities.beanToString(this);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof TestPlanNode)) {
+            return false;
+        }
+        final TestPlanNode other = (TestPlanNode) obj;
+
+        /* We have to be a bit careful here with the tree structure, so we'll check parent & child separately */
+        if (!(ObjectUtilities.nullSafeEquals(key, other.key)
+                && siblingIndex==other.siblingIndex
+                && testNodeType.equals(other.testNodeType)
+                && ObjectUtilities.nullSafeEquals(effectiveItemSessionControl, other.effectiveItemSessionControl)
+                && ObjectUtilities.nullSafeEquals(sectionPartTitle, other.sectionPartTitle)
+                && ObjectUtilities.nullSafeEquals(itemSystemId, other.itemSystemId))) {
+            return false;
+        }
+        /* Check parent now */
+        if ((parentNode!=null && other.parentNode==null)
+                || (parentNode==null && other.parentNode!=null)
+                || (parentNode!=null && other.parentNode!=null && !ObjectUtilities.nullSafeEquals(parentNode.key, other.parentNode.key))) {
+            return false;
+        }
+        /* Check keys on children */
+        if (children.size()!=other.children.size()) {
+            return false;
+        }
+        for (int i=0; i<children.size(); i++) {
+            if (!(ObjectUtilities.nullSafeEquals(children.get(i), other.children.get(i)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return key!=null ? key.hashCode() : super.hashCode();
     }
 }
