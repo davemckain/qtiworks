@@ -553,10 +553,11 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Ends (closes) the item session.
      * <p>
-     * Pre-condition: Item must not have already been ended. It is OK if the item hasn't been entereed.
+     * Pre-condition: Item must have been initialized and not have already been ended.
+     * It is OK if the item hasn't been entered.
      * <p>
      * Post-conditions: Item session state will be marked as ended (closed). Duration
-     *   timer will be stopped.
+     * timer will be stopped.
      *
      * @param timestamp
      */
@@ -576,7 +577,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * <p>
      * Pre-condition: Item session must have been ended (closed) and not already exited
      * <p>
-     * Post-condiiton: Exit time will be recorded.
+     * Post-condition: Exit time will be recorded.
      *
      * @param timestamp
      */
@@ -1014,6 +1015,7 @@ public final class ItemSessionController extends ItemProcessingController implem
     }
 
     private void assertItemNotEnded() {
+        assertItemInitialized();
         if (itemSessionState.isEnded()) {
             throw new QtiCandidateStateException("Item session has already been ended");
         }
