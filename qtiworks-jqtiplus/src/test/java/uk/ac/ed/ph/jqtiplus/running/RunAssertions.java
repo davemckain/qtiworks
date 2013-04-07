@@ -40,7 +40,9 @@ import static org.junit.Assert.assertTrue;
 import uk.ac.ed.ph.jqtiplus.state.AbstractPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.ControlObjectSessionState;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
+import uk.ac.ed.ph.jqtiplus.value.StringValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Date;
@@ -48,7 +50,7 @@ import java.util.Date;
 import org.junit.Assert;
 
 /**
- * FIXME: Document this type
+ * Various common assertions for tests in this package.
  *
  * @author David McKain
  */
@@ -93,9 +95,33 @@ public final class RunAssertions {
         Assert.assertFalse(value.isNull());
     }
 
-    public static void assertValueEquals(final double expected, final Value value) {
-        Assert.assertTrue(value.hasSignature(Signature.SINGLE_FLOAT));
-        Assert.assertEquals(((FloatValue) value).doubleValue(), expected, 0.0);
+    public static void assertValueEqualsDouble(final Double expected, final Value value) {
+        if (expected!=null) {
+            Assert.assertTrue(value.hasSignature(Signature.SINGLE_FLOAT));
+            Assert.assertEquals(new FloatValue(expected.doubleValue()), value);
+        }
+        else {
+            Assert.assertTrue(value.isNull());
+        }
     }
 
+    public static void assertValueEqualsString(final String expected, final Value value) {
+        if (expected!=null) {
+            Assert.assertTrue(value.hasSignature(Signature.SINGLE_STRING));
+            Assert.assertEquals(new StringValue(expected), value);
+        }
+        else {
+            Assert.assertTrue(value.isNull());
+        }
+    }
+
+    public static void assertValueEqualsIdentifier(final String expected, final Value value) {
+        if (expected!=null) {
+            Assert.assertTrue(value.hasSignature(Signature.SINGLE_IDENTIFIER));
+            Assert.assertEquals(new IdentifierValue(expected), value);
+        }
+        else {
+            Assert.assertTrue(value.isNull());
+        }
+    }
 }

@@ -400,12 +400,10 @@ public final class ItemSessionController extends ItemProcessingController implem
         /* Check closed status */
         updateClosedStatus(timestamp); /* (This can't change anything here but I'll keep for completeness) */
 
+        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
         if (!itemSessionState.isEnded()) {
             /* Update SessionStatus */
             itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
-
-            /* Start the duration timer */
-            startItemSessionTimer(itemSessionState, timestamp);
         }
     }
 
@@ -464,10 +462,7 @@ public final class ItemSessionController extends ItemProcessingController implem
             itemSessionState.setDurationAccumulated(duration);
         }
 
-        if (!itemSessionState.isEnded()) {
-            /* Start the duration timer again */
-            startItemSessionTimer(itemSessionState, timestamp);
-        }
+        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
     }
 
     /**
@@ -501,12 +496,10 @@ public final class ItemSessionController extends ItemProcessingController implem
         /* Check closed status */
         updateClosedStatus(timestamp);
 
+        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
         if (!itemSessionState.isEnded()) {
             /* Update SessionStatus */
             itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
-
-            /* Start the duration timer again */
-            startItemSessionTimer(itemSessionState, timestamp);
         }
     }
 
@@ -599,21 +592,33 @@ public final class ItemSessionController extends ItemProcessingController implem
      * are additionally validated.
      * <p>
      * The set of uncommitted response variables (except those bound to {@link EndAttemptInteraction})
-     * will be cleared before this runs.
+     * will be reset from the current committed values at the start of this process. The uncommitted values of {@link EndAttemptInteraction}s
+     * are set to {@link BooleanValue#FALSE}.
      * <p>
      * Pre-condition: Item session must be open and not suspended
      * <p>
-     * Post-conditions: Response variables will be bound and validated, but not committed.
+     * Post-conditions:
+     * <ul>
+     *   <li>Raw response variables will be saved and become available via {@link ItemSessionState#getRawResponseDataMap()}.</li>
+     *   <li>The map of uncommitted response variables, available via {@link ItemSessionState#getUncommittedResponseValue(Identifier)}
+     *     will contain any of the new values submitted which can be successfully bound to the corresponding response variable's
+     *     baseType and cardinality. Any values which fail to bind, or are not present, will have the existing committed response
+     *     value back over or, in the case of {@link EndAttemptInteraction}s, will be set to false.</li>
+     *   <li>Any unbound and invalid responses will become available via {@link ItemSessionState#getUnboundResponseIdentifiers()}
+     *     and {@link ItemSessionState#getInvalidResponseIdentifiers()}. Validation is only performed if all provided values are
+     *     successfully bound.</li>
+     *   <li>The existing committed response variable made available via {@link ItemSessionState#getResponseValues()} will be kept as-is.</li>
      *
      * @see #commitResponses(Date)
      *
      * @param timestamp timestamp for this event
      * @param responseMap Map of responses to set, keyed on response variable identifier
+     *
      * @return true if all responses were successfully bound and validated, false otherwise.
      *   Further details can be found within {@link ItemSessionState}
      *
-     * @throws IllegalArgumentException if responseMap is null, contains a null value, or if
-     *   any key fails to map to an interaction
+     * @throws IllegalArgumentException if timestamp is null, or if responseMap is null, contains a null value,
+     *   or if any key fails to map to an interaction
      */
     public boolean bindResponses(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(timestamp);
@@ -624,6 +629,9 @@ public final class ItemSessionController extends ItemProcessingController implem
 
         /* Stop duration timer */
         endItemSessionTimer(itemSessionState, timestamp);
+
+        /* Save raw responses */
+        itemSessionState.setRawResponseDataMap(responseMap);
 
         /* Copy existing committed response values over to uncommitted ones, for possible
          * over-writing below.
@@ -642,9 +650,6 @@ public final class ItemSessionController extends ItemProcessingController implem
                 itemSessionState.setUncommittedResponseValue(interaction, BooleanValue.FALSE);
             }
         }
-
-        /* Save raw responses */
-        itemSessionState.setRawResponseDataMap(responseMap);
 
         /* Now bind responses */
         final Map<Identifier, Interaction> interactionByResponseIdentifierMap = itemProcessingMap.getInteractionByResponseIdentifierMap();
@@ -683,24 +688,25 @@ public final class ItemSessionController extends ItemProcessingController implem
         itemSessionState.setUnboundResponseIdentifiers(unboundResponseIdentifiers);
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
 
-        /* Touch the duration timer */
-        if (!itemSessionState.isEnded()) { /* (NB: This should never fail but we'll keep it for consistency) */
-            startItemSessionTimer(itemSessionState, timestamp);
-        }
+        /* Restart duration timer (if item has stayed open) */
+        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
 
         return unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
     /**
-     * Commits any responses previously saved via {@link #bindResponses(Date, Map)}.
+     * Commits any responses previously bound successfully via {@link #bindResponses(Date, Map)}.
      * <p>
-     * NB: This is counted as an attempt until {@link #performResponseProcessing(Date)} is invoked.
+     * NB: This is not counted as an attempt until {@link #performResponseProcessing(Date)} is invoked.
      * <p>
-     * Pre-condition: Item session must be open and not suspended
+     * Pre-condition: Item session must be open and not suspended. Uncommitted response values must previously
+     * have been saved via {@link #bindResponses(Date, Map)}.
      * <p>
-     * Post-conditions: Response variables will be replaced by the uncommitted variables. The uncommitted
-     * variables will be cleared. The item session state will
-     * be marked as having been responded, and Session Status will be set to
+     * Post-conditions: Committed response variables will be replaced by the uncommitted variables. The
+     * committed responses can be accessed via {@link ItemSessionState#getResponseValues()} and friends.
+     * The uncommitted response variables available via {@link ItemSessionState#getUncommittedResponseValues()}
+     * will be cleared. The data about raw, unbound and invalid responses will be maintained.
+     * The item session state will be marked as having been responded, and Session Status will be set to
      * {@link SessionStatus#PENDING_RESPONSE_PROCESSING}
      *
      * @see #bindResponses(Date, Map)
@@ -713,11 +719,17 @@ public final class ItemSessionController extends ItemProcessingController implem
         assertItemNotSuspended();
         logger.debug("Committing currently saved responses to item {}", item.getSystemId());
 
+        /* Make sure there are some uncommitted responses */
+        final Map<Identifier, Value> uncommittedResponseValues = itemSessionState.getUncommittedResponseValues();
+        if (uncommittedResponseValues.isEmpty()) {
+            throw new QtiCandidateStateException("No responses are waiting to be committed");
+        }
+
         /* Stop duration timer */
         endItemSessionTimer(itemSessionState, timestamp);
 
-        /* Commit responses */
-        for (final Entry<Identifier, Value> uncommittedResponseEntry : itemSessionState.getUncommittedResponseValues().entrySet()) {
+        /* Copy uncommitted responses over */
+        for (final Entry<Identifier, Value> uncommittedResponseEntry : uncommittedResponseValues.entrySet()) {
             final Identifier identifier = uncommittedResponseEntry.getKey();
             final Value value = uncommittedResponseEntry.getValue();
             itemSessionState.setResponseValue(identifier, value);
@@ -730,10 +742,8 @@ public final class ItemSessionController extends ItemProcessingController implem
         itemSessionState.setResponded(true);
         itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
 
-        /* Touch the duration timer */
-        if (!itemSessionState.isEnded()) { /* (NB: This should never fail but we'll keep it for consistency) */
-            startItemSessionTimer(itemSessionState, timestamp);
-        }
+        /* Restart the duration timer (if appropriate) */
+        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
     }
 
 
@@ -745,7 +755,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * <p>
      * Post-conditions: Outcome Variables will be updated. SessionStatus will be changed to
      * {@link SessionStatus#FINAL}. The <code>numAttempts</code> variables will be incremented (unless
-     * directed otherwise).
+     * directed otherwise by an {@link EndAttemptInteraction}).
      */
     public void performResponseProcessing(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -824,9 +834,7 @@ public final class ItemSessionController extends ItemProcessingController implem
             updateClosedStatus(timestamp);
 
             /* Start timer again to keep calculating duration */
-            if (!itemSessionState.isEnded()) {
-                startItemSessionTimer(itemSessionState, timestamp);
-            }
+            startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
         }
         finally {
             fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
@@ -852,9 +860,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         initResponseState();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         updateClosedStatus(timestamp);
-        if (!itemSessionState.isEnded()) {
-            startItemSessionTimer(itemSessionState, timestamp);
-        }
+        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
     }
 
     //-------------------------------------------------------------------
@@ -940,6 +946,12 @@ public final class ItemSessionController extends ItemProcessingController implem
     //-------------------------------------------------------------------
     // Internal management
 
+    private void startItemSessionTimerIfNotEnded(final ItemSessionState itemSessionState, final Date timestamp) {
+        if (!itemSessionState.isEnded()) {
+            startItemSessionTimer(itemSessionState, timestamp);
+        }
+    }
+
     private void startItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
         itemSessionState.setDurationIntervalStartTime(timestamp);
     }
@@ -958,7 +970,8 @@ public final class ItemSessionController extends ItemProcessingController implem
 
     private void initResponseState() {
         for (final ResponseDeclaration responseDeclaration : itemProcessingMap.getValidResponseDeclarationMap().values()) {
-            if (!VariableDeclaration.isReservedIdentifier(responseDeclaration.getIdentifier())) {
+            final Identifier responseIdentifier = responseDeclaration.getIdentifier();
+            if (!VariableDeclaration.isReservedIdentifier(responseIdentifier)) {
                 initValue(responseDeclaration);
             }
         }

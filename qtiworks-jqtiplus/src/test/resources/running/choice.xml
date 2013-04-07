@@ -1,5 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Thie example adapted from the PET Handbook, copyright University of Cambridge ESOL Examinations -->
+<!--
+
+This is a slightly modified version of the standard choice.xml,
+adding in some template processing to assist with unit testing.
+
+-->
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
@@ -14,6 +18,12 @@
       <value>0.0</value>
     </defaultValue>
   </outcomeDeclaration>
+  <templateDeclaration identifier="TEMPLATE" cardinality="single" baseType="string"/>
+  <templateProcessing>
+    <setTemplateValue identifier="TEMPLATE">
+      <baseValue baseType="string">templateValue</baseValue>
+    </setTemplateValue>
+  </templateProcessing>
   <itemBody>
     <p>Look at the text in the picture.</p>
     <p>
