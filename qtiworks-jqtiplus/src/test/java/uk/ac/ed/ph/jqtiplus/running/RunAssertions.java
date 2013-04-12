@@ -39,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 
 import uk.ac.ed.ph.jqtiplus.state.AbstractPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.ControlObjectSessionState;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.Signature;
@@ -61,7 +62,7 @@ public final class RunAssertions {
         assertFalse(state.isPreConditionFailed());
     }
 
-    public static void assertNotEntered(final ControlObjectSessionState state) {
+    public static void assertNotYetEntered(final ControlObjectSessionState state) {
         assertFalse(state.isEntered());
         assertFalse(state.isEnded());
         assertFalse(state.isExited());
@@ -74,18 +75,54 @@ public final class RunAssertions {
         assertFalse(state.isExited());
     }
 
-    public static void assertEnded(final ControlObjectSessionState state, final Date endTimestamp) {
+    public static void assertSuspended(final ItemSessionState state, final Date suspendTimestamp) {
+        assertTrue(state.isEntered());
+        assertFalse(state.isEnded());
+        assertFalse(state.isExited());
+        assertTrue(state.isSuspended());
+        assertEquals(suspendTimestamp, state.getSuspendTime());
+    }
+
+    public static void assertNowEnded(final ControlObjectSessionState state, final Date endTimestamp) {
         assertTrue(state.isEntered());
         assertTrue(state.isEnded());
         assertEquals(endTimestamp, state.getEndTime());
         assertFalse(state.isExited());
     }
 
-    public static void assertExited(final ControlObjectSessionState state, final Date exitTimestamp) {
+    public static void assertEndedButNotEntered(final ControlObjectSessionState state, final Date endTimestamp) {
+        assertFalse(state.isEntered());
+        assertTrue(state.isEnded());
+        assertEquals(endTimestamp, state.getEndTime());
+        assertFalse(state.isExited());
+    }
+
+    public static void assertNowExited(final ControlObjectSessionState state, final Date exitTimestamp) {
         assertTrue(state.isEntered());
         assertTrue(state.isEnded());
         assertTrue(state.isExited());
         assertEquals(exitTimestamp, state.getExitTime());
+    }
+
+    public static void assertExitedButNotEntered(final ControlObjectSessionState state, final Date exitTimestamp) {
+        assertFalse(state.isEntered());
+        assertTrue(state.isEnded());
+        assertTrue(state.isExited());
+        assertEquals(exitTimestamp, state.getExitTime());
+    }
+
+    public static void assertFailedPreconditionAndNotExited(final AbstractPartSessionState state) {
+        assertFalse(state.isEntered());
+        assertFalse(state.isEnded());
+        assertFalse(state.isExited());
+        assertTrue(state.isPreConditionFailed());
+    }
+
+    public static void assertFailedPreconditionAndExited(final AbstractPartSessionState state, final Date exitTimestamp) {
+        assertFalse(state.isEntered());
+        assertFalse(state.isEnded());
+        assertTrue(state.isExited());
+        assertTrue(state.isPreConditionFailed());
     }
 
     //----------------------------------------

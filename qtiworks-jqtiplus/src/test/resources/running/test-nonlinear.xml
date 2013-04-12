@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Non-linear test sample -->
+<assessmentTest
+  xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="test"
+  title="Test Non-linear Navigation">
+
+  <testPart identifier="p1" navigationMode="nonlinear" submissionMode="individual">
+    <assessmentSection identifier="s11" title="Section" visible="true">
+      <assessmentSection identifier="s111" title="Section" visible="true">
+        <assessmentItemRef identifier="i1111" href="choice.xml"/>
+      </assessmentSection>
+      <assessmentItemRef identifier="i112" href="choice.xml"/>
+    </assessmentSection>
+  </testPart>
+  <testPart identifier="p2" navigationMode="nonlinear" submissionMode="individual">
+    <assessmentSection identifier="s21" title="Section" visible="true">
+      <assessmentItemRef identifier="i211" href="choice.xml"/>
+    </assessmentSection>
+  </testPart>
+
+</assessmentTest>

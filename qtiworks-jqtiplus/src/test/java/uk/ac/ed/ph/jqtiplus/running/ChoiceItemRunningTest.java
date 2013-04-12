@@ -713,15 +713,15 @@ public final class ChoiceItemRunningTest {
     }
 
     protected void assertItemNotEntered() {
-        RunAssertions.assertNotEntered(itemSessionState);
+        RunAssertions.assertNotYetEntered(itemSessionState);
     }
 
     protected void assertItemEnded(final Date timestamp) {
-        RunAssertions.assertEnded(itemSessionState, timestamp);
+        RunAssertions.assertNowEnded(itemSessionState, timestamp);
     }
 
     protected void assertItemExited(final Date timestamp) {
-        RunAssertions.assertExited(itemSessionState, timestamp);
+        RunAssertions.assertNowExited(itemSessionState, timestamp);
     }
 
     protected void assertItemOpen() {

@@ -153,6 +153,7 @@ public final class UnitTestHelper {
 
     public static TestPlanNode assertSingleTestPlanNode(final TestPlan testPlan, final String identifier) {
         final List<TestPlanNode> nodes = testPlan.getNodes(Identifier.assumedLegal(identifier));
+        Assert.assertNotNull(nodes);
         Assert.assertEquals(1, nodes.size());
         return nodes.get(0);
     }

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
@@ -67,7 +68,7 @@ import org.w3c.dom.Document;
  *
  * @author David McKain
  */
-public final class TestComplexNavigationTest {
+public final class TestComplexLinearNavigationTest {
 
     private static final String TEST_FILE_PATH = "running/test-complex-linear.xml";
 
@@ -166,7 +167,7 @@ public final class TestComplexNavigationTest {
 
     @Test
     public void testBefore() {
-        RunAssertions.assertNotEntered(testSessionState);
+        RunAssertions.assertNotYetEntered(testSessionState);
         Assert.assertEquals(0.0, testSessionState.computeDuration(), 0);
         Assert.assertNull(testSessionState.getDurationIntervalStartTime());
         Assert.assertNull(testSessionState.getCurrentTestPartKey());
@@ -174,7 +175,7 @@ public final class TestComplexNavigationTest {
         Assert.assertNotNull(testPartSessionState);
 
         /* We won't have entered the testPart yet */
-        RunAssertions.assertNotEntered(testPartSessionState);
+        RunAssertions.assertNotYetEntered(testPartSessionState);
 
         /* We won't have entered any sections yet */
         assertAssessmentSectionsNotEntered(allSections());
@@ -198,7 +199,7 @@ public final class TestComplexNavigationTest {
         Assert.assertNotNull(testSessionController.findNextEnterableTestPart());
 
         /* We won't have entered the testPart yet */
-        RunAssertions.assertNotEntered(testPartSessionState);
+        RunAssertions.assertNotYetEntered(testPartSessionState);
 
         /* We won't have entered any sections yet */
         assertAssessmentSectionsNotEntered(allSections());
@@ -207,8 +208,19 @@ public final class TestComplexNavigationTest {
         assertItemsNotEntered(allItems());
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void testEntryIntoTestNullTimestamp() {
+        testSessionController.enterTest(null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testEntryIntoTestPartNullTimestamp() {
+        testSessionController.enterTest(testEntryTimestamp);
+        testSessionController.enterNextAvailableTestPart(null);
+    }
+
     @Test
-    public void testEntryIntoTestPartAndFirstItem() {
+    public void testEntryIntoTestPartAndItem1() {
         testSessionController.enterTest(testEntryTimestamp);
 
         /* Enter test part (which should also select first item) */
@@ -241,8 +253,15 @@ public final class TestComplexNavigationTest {
         assertItemsNotEntered(allItemsAfter("i1111"));
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void testEndItem1NullTimestamp() {
+        testSessionController.enterTest(testEntryTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
+        testSessionController.endItemLinear(null);
+    }
+
     @Test
-    public void testEntryIntoSecondItem() {
+    public void testEntryIntoItem2() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
         final TestPlanNode itemNode = testSessionController.endItemLinear(item1EndTimestamp);
@@ -262,8 +281,8 @@ public final class TestComplexNavigationTest {
 
         /* Check state of sections we should and should not have entered */
         assertAssessmentSectionOpen("s11", testPartEntryTimestamp);
-        assertAssessmentSectionEnded("s111", item1EndTimestamp);
-        assertAssessmentSectionFailedPrecondition("s112");
+        assertAssessmentSectionNowEnded("s111", item1EndTimestamp);
+        assertAssessmentSectionFailedPreconditionAndNotExited("s112");
         assertAssessmentSectionOpen("s113", item1EndTimestamp);
         assertAssessmentSectionNotEntered("s12");
         assertAssessmentSectionNotEntered("s121");
@@ -274,14 +293,14 @@ public final class TestComplexNavigationTest {
         Assert.assertEquals(item1EndTimestamp, itemSessionState.getDurationIntervalStartTime());
 
         /* Check state of previous & future items */
-        assertItemEnded("i1111", item1EndTimestamp);
-        assertItemFailedPrecondition("i1112");
-        assertItemFailedPrecondition("i1131");
+        assertItemNowEnded("i1111", item1EndTimestamp);
+        assertItemFailedPreconditionAndNotExited("i1112");
+        assertItemFailedPreconditionAndNotExited("i1131");
         assertItemsNotEntered(allItemsAfter("i1132"));
     }
 
     @Test
-    public void testEntryIntoThirdItem() {
+    public void testEntryIntoItem3() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
         testSessionController.endItemLinear(item1EndTimestamp);
@@ -302,8 +321,8 @@ public final class TestComplexNavigationTest {
 
         /* Check state of sections we should and should not have entered */
         assertAssessmentSectionOpen("s11", testPartEntryTimestamp);
-        assertAssessmentSectionEnded("s111", item1EndTimestamp);
-        assertAssessmentSectionFailedPrecondition("s112");
+        assertAssessmentSectionNowEnded("s111", item1EndTimestamp);
+        assertAssessmentSectionFailedPreconditionAndNotExited("s112");
         assertAssessmentSectionOpen("s113", item1EndTimestamp);
         assertAssessmentSectionNotEntered("s12");
         assertAssessmentSectionNotEntered("s121");
@@ -314,15 +333,15 @@ public final class TestComplexNavigationTest {
         Assert.assertEquals(item2EndTimestamp, itemSessionState.getDurationIntervalStartTime());
 
         /* Check state of previous & future items */
-        assertItemEnded("i1111", item1EndTimestamp);
-        assertItemEnded("i1132", item2EndTimestamp);
-        assertItemFailedPrecondition("i1112");
-        assertItemFailedPrecondition("i1131");
+        assertItemNowEnded("i1111", item1EndTimestamp);
+        assertItemNowEnded("i1132", item2EndTimestamp);
+        assertItemFailedPreconditionAndNotExited("i1112");
+        assertItemFailedPreconditionAndNotExited("i1131");
         assertItemsNotEntered(allItemsAfter("i1133"));
     }
 
     @Test
-    public void testEntryIntoFourthItem() {
+    public void testEntryIntoItem4() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
         testSessionController.endItemLinear(item1EndTimestamp);
@@ -343,10 +362,10 @@ public final class TestComplexNavigationTest {
         Assert.assertEquals(item3EndTimestamp, testPartSessionState.getDurationIntervalStartTime());
 
         /* Check state of sections we should and should not have entered */
-        assertAssessmentSectionEnded("s11", item3EndTimestamp);
-        assertAssessmentSectionEnded("s111", item1EndTimestamp);
-        assertAssessmentSectionFailedPrecondition("s112");
-        assertAssessmentSectionEnded("s113", item3EndTimestamp);
+        assertAssessmentSectionNowEnded("s11", item3EndTimestamp);
+        assertAssessmentSectionNowEnded("s111", item1EndTimestamp);
+        assertAssessmentSectionFailedPreconditionAndNotExited("s112");
+        assertAssessmentSectionNowEnded("s113", item3EndTimestamp);
         assertAssessmentSectionOpen("s12", item3EndTimestamp);
         assertAssessmentSectionOpen("s121", item3EndTimestamp);
 
@@ -356,16 +375,16 @@ public final class TestComplexNavigationTest {
         Assert.assertEquals(item3EndTimestamp, itemSessionState.getDurationIntervalStartTime());
 
         /* Check state of previous & future items */
-        assertItemEnded("i1111", item1EndTimestamp);
-        assertItemEnded("i1132", item2EndTimestamp);
-        assertItemEnded("i1133", item3EndTimestamp);
-        assertItemFailedPrecondition("i1112");
-        assertItemFailedPrecondition("i1131");
+        assertItemNowEnded("i1111", item1EndTimestamp);
+        assertItemNowEnded("i1132", item2EndTimestamp);
+        assertItemNowEnded("i1133", item3EndTimestamp);
+        assertItemFailedPreconditionAndNotExited("i1112");
+        assertItemFailedPreconditionAndNotExited("i1131");
         assertItemsNotEntered(allItemsAfter("i1211"));
     }
 
     @Test
-    public void testEntryIntoFifthItem() {
+    public void testEntryIntoItem5() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
         testSessionController.endItemLinear(item1EndTimestamp);
@@ -387,13 +406,13 @@ public final class TestComplexNavigationTest {
         Assert.assertEquals(item4EndTimestamp, testPartSessionState.getDurationIntervalStartTime());
 
         /* Check state of sections we should and should not have entered */
-        assertAssessmentSectionEnded("s11", item3EndTimestamp);
-        assertAssessmentSectionEnded("s111", item1EndTimestamp);
-        assertAssessmentSectionFailedPrecondition("s112");
-        assertAssessmentSectionEnded("s113", item3EndTimestamp);
-        assertAssessmentSectionEnded("s121", item4EndTimestamp);
+        assertAssessmentSectionNowEnded("s11", item3EndTimestamp);
+        assertAssessmentSectionNowEnded("s111", item1EndTimestamp);
+        assertAssessmentSectionFailedPreconditionAndNotExited("s112");
+        assertAssessmentSectionNowEnded("s113", item3EndTimestamp);
+        assertAssessmentSectionNowEnded("s121", item4EndTimestamp);
         assertAssessmentSectionOpen("s12", item3EndTimestamp);
-        assertAssessmentSectionEnded("s121", item4EndTimestamp);
+        assertAssessmentSectionNowEnded("s121", item4EndTimestamp);
 
         /* Check state of item we entered */
         final ItemSessionState itemSessionState = assertItemOpen("i123", item4EndTimestamp);
@@ -401,18 +420,18 @@ public final class TestComplexNavigationTest {
         Assert.assertEquals(item4EndTimestamp, itemSessionState.getDurationIntervalStartTime());
 
         /* Check state of previous & future items */
-        assertItemEnded("i1111", item1EndTimestamp);
-        assertItemEnded("i1132", item2EndTimestamp);
-        assertItemEnded("i1133", item3EndTimestamp);
-        assertItemEnded("i1211", item4EndTimestamp);
-        assertItemFailedPrecondition("i1112");
-        assertItemFailedPrecondition("i1131");
-        assertItemFailedPrecondition("i122");
+        assertItemNowEnded("i1111", item1EndTimestamp);
+        assertItemNowEnded("i1132", item2EndTimestamp);
+        assertItemNowEnded("i1133", item3EndTimestamp);
+        assertItemNowEnded("i1211", item4EndTimestamp);
+        assertItemFailedPreconditionAndNotExited("i1112");
+        assertItemFailedPreconditionAndNotExited("i1131");
+        assertItemFailedPreconditionAndNotExited("i122");
         assertItemsNotEntered(allItemsAfter("i123"));
     }
 
     @Test
-    public void testEndTestPartAfterFifthtem() {
+    public void testEndTestPartNaturallyAfterItem5() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
         testSessionController.endItemLinear(item1EndTimestamp);
@@ -437,24 +456,212 @@ public final class TestComplexNavigationTest {
         Assert.assertNull(testPartSessionState.getDurationIntervalStartTime());
 
         /* Check state of sections either entered or failed at */
-        assertAssessmentSectionEnded("s11", item3EndTimestamp);
-        assertAssessmentSectionEnded("s111", item1EndTimestamp);
-        assertAssessmentSectionFailedPrecondition("s112");
-        assertAssessmentSectionEnded("s113", item3EndTimestamp);
-        assertAssessmentSectionEnded("s121", item4EndTimestamp);
-        assertAssessmentSectionEnded("s12", item5EndTimestamp);
-        assertAssessmentSectionEnded("s121", item4EndTimestamp);
+        assertAssessmentSectionNowEnded("s11", item3EndTimestamp);
+        assertAssessmentSectionNowEnded("s111", item1EndTimestamp);
+        assertAssessmentSectionFailedPreconditionAndNotExited("s112");
+        assertAssessmentSectionNowEnded("s113", item3EndTimestamp);
+        assertAssessmentSectionNowEnded("s121", item4EndTimestamp);
+        assertAssessmentSectionNowEnded("s12", item5EndTimestamp);
+        assertAssessmentSectionNowEnded("s121", item4EndTimestamp);
 
         /* Check state of items */
-        assertItemEnded("i1111", item1EndTimestamp);
-        assertItemFailedPrecondition("i1112");
-        assertItemFailedPrecondition("i1131");
-        assertItemEnded("i1132", item2EndTimestamp);
-        assertItemEnded("i1133", item3EndTimestamp);
-        assertItemEnded("i1211", item4EndTimestamp);
-        assertItemFailedPrecondition("i122");
-        assertItemEnded("i123", item5EndTimestamp);
-        assertItemFailedPrecondition("i124");
+        assertItemNowEnded("i1111", item1EndTimestamp);
+        assertItemFailedPreconditionAndNotExited("i1112");
+        assertItemFailedPreconditionAndNotExited("i1131");
+        assertItemNowEnded("i1132", item2EndTimestamp);
+        assertItemNowEnded("i1133", item3EndTimestamp);
+        assertItemNowEnded("i1211", item4EndTimestamp);
+        assertItemFailedPreconditionAndNotExited("i122");
+        assertItemNowEnded("i123", item5EndTimestamp);
+        assertItemFailedPreconditionAndNotExited("i124");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testEndTestPartExplicitlyNullTimestamp() {
+        testSessionController.enterTest(testEntryTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
+        testSessionController.endCurrentTestPart(null);
+    }
+
+    @Test
+    public void testEndTestPartExplicitlyAfterEntry() {
+        final long testPartEndDelta = 64000L;
+        final Date testPartEndTimestamp = ObjectUtilities.addToTime(testPartEntryTimestamp, testPartEndDelta);
+        testSessionController.enterTest(testEntryTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
+        testSessionController.endCurrentTestPart(testPartEndTimestamp);
+
+        /* Check state on test */
+        assertTestOpen();
+        Assert.assertEquals(testPartEntryDelta + testPartEndDelta, testSessionState.getDurationAccumulated());
+        Assert.assertEquals(testPartEndTimestamp, testSessionState.getDurationIntervalStartTime());
+        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertNull(testSessionState.getCurrentItemKey());
+        Assert.assertNull(testSessionController.findNextEnterableTestPart());
+
+        /* Check state on testPart */
+        assertTestPartEnded(testPartEndTimestamp);
+        Assert.assertEquals(testPartEndDelta, testPartSessionState.getDurationAccumulated());
+        Assert.assertNull(testPartSessionState.getDurationIntervalStartTime());
+
+        /* Check state of sections either entered or failed at */
+        assertAssessmentSectionNowEnded("s11", testPartEndTimestamp);
+        assertAssessmentSectionNowEnded("s111", testPartEndTimestamp);
+        assertAssessmentSectionEndedButNotEntered("s112", testPartEndTimestamp);
+        assertAssessmentSectionEndedButNotEntered("s113", testPartEndTimestamp);
+        assertAssessmentSectionEndedButNotEntered("s121", testPartEndTimestamp);
+        assertAssessmentSectionEndedButNotEntered("s12", testPartEndTimestamp);
+        assertAssessmentSectionEndedButNotEntered("s121", testPartEndTimestamp);
+
+        /* Check state of items */
+        assertItemNowEnded("i1111", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i1112", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i1131", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i1132", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i1133", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i1211", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i122", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i123", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i124", testPartEndTimestamp);
+    }
+
+    @Test
+    public void testExitTestPartExplicitlyAfterEntry() {
+        final long testPartEndDelta = 64000L;
+        final Date testPartEndTimestamp = ObjectUtilities.addToTime(testPartEntryTimestamp, testPartEndDelta);
+        final long testPartExitDelta = 128000L;
+        final Date testPartExitTimestamp = ObjectUtilities.addToTime(testPartEndTimestamp, testPartExitDelta);
+        testSessionController.enterTest(testEntryTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
+        testSessionController.endCurrentTestPart(testPartEndTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartExitTimestamp);
+
+        /* Check state on test */
+        assertTestNowEnded(testPartExitTimestamp);
+        Assert.assertEquals(testPartEntryDelta + testPartEndDelta + testPartExitDelta, testSessionState.getDurationAccumulated());
+        Assert.assertNull(testPartSessionState.getDurationIntervalStartTime());
+        Assert.assertNull(testSessionState.getCurrentTestPartKey());
+        Assert.assertNull(testSessionState.getCurrentItemKey());
+
+        /* Check state on testPart */
+        assertTestPartNowExited(testPartExitTimestamp);
+        Assert.assertEquals(testPartEndDelta, testPartSessionState.getDurationAccumulated());
+        Assert.assertNull(testPartSessionState.getDurationIntervalStartTime());
+
+        /* Check state of sections either entered or failed at */
+        assertAssessmentSectionNowExited("s11", testPartExitTimestamp);
+        assertAssessmentSectionNowExited("s111", testPartExitTimestamp);
+        assertAssessmentSectionExitedButNotEntered("s112", testPartExitTimestamp);
+        assertAssessmentSectionExitedButNotEntered("s113", testPartExitTimestamp);
+        assertAssessmentSectionExitedButNotEntered("s121", testPartExitTimestamp);
+        assertAssessmentSectionExitedButNotEntered("s12", testPartExitTimestamp);
+        assertAssessmentSectionExitedButNotEntered("s121", testPartExitTimestamp);
+
+        /* Check state of items */
+        assertItemNowExited("i1111", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i1112", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i1131", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i1132", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i1133", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i1211", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i122", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i123", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i124", testPartExitTimestamp);
+    }
+
+    @Test
+    public void testEndTestPartExplicitlyAfterItem1() {
+        final long testPartEndDelta = 64000L;
+        final Date testPartEndTimestamp = ObjectUtilities.addToTime(item1EndTimestamp, testPartEndDelta);
+        testSessionController.enterTest(testEntryTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
+        testSessionController.endItemLinear(item1EndTimestamp);
+        testSessionController.endCurrentTestPart(testPartEndTimestamp);
+
+        /* Check state on test */
+        assertTestOpen();
+        Assert.assertEquals(testPartEntryDelta + item1EndDelta + testPartEndDelta, testSessionState.getDurationAccumulated());
+        Assert.assertEquals(testPartEndTimestamp, testSessionState.getDurationIntervalStartTime());
+        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertNull(testSessionState.getCurrentItemKey());
+        Assert.assertNull(testSessionController.findNextEnterableTestPart());
+
+        /* Check state on testPart */
+        assertTestPartEnded(testPartEndTimestamp);
+        Assert.assertEquals(item1EndDelta + testPartEndDelta, testPartSessionState.getDurationAccumulated());
+        Assert.assertNull(testPartSessionState.getDurationIntervalStartTime());
+
+        /* Check state of sections either entered or failed at */
+        assertAssessmentSectionNowEnded("s11", testPartEndTimestamp);
+        assertAssessmentSectionNowEnded("s111", item1EndTimestamp);
+        assertAssessmentSectionFailedPreconditionAndNotExited("s112");
+        assertAssessmentSectionNowEnded("s113", testPartEndTimestamp);
+        assertAssessmentSectionEndedButNotEntered("s121", testPartEndTimestamp);
+        assertAssessmentSectionEndedButNotEntered("s12", testPartEndTimestamp);
+        assertAssessmentSectionEndedButNotEntered("s121", testPartEndTimestamp);
+
+        /* Check state of items */
+        assertItemNowEnded("i1111", item1EndTimestamp);
+        assertItemFailedPreconditionAndNotExited("i1112");
+        assertItemFailedPreconditionAndNotExited("i1131");
+        assertItemNowEnded("i1132", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i1133", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i1211", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i122", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i123", testPartEndTimestamp);
+        assertItemEndedButNotEntered("i124", testPartEndTimestamp);
+    }
+
+    @Test
+    public void testExitTestPartExplicitlyAfterItem1() {
+        final long testPartEndDelta = 64000L;
+        final Date testPartEndTimestamp = ObjectUtilities.addToTime(item1EndTimestamp, testPartEndDelta);
+        final long testPartExitDelta = 128000L;
+        final Date testPartExitTimestamp = ObjectUtilities.addToTime(testPartEndTimestamp, testPartExitDelta);
+        testSessionController.enterTest(testEntryTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
+        testSessionController.endItemLinear(item1EndTimestamp);
+        testSessionController.endCurrentTestPart(testPartEndTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartExitTimestamp);
+
+        /* Check state on test */
+        assertTestNowEnded(testPartExitTimestamp);
+        Assert.assertEquals(testPartEntryDelta + item1EndDelta + testPartEndDelta + testPartExitDelta, testSessionState.getDurationAccumulated());
+        Assert.assertNull(testPartSessionState.getDurationIntervalStartTime());
+        Assert.assertNull(testSessionState.getCurrentTestPartKey());
+        Assert.assertNull(testSessionState.getCurrentItemKey());
+
+        /* Check state on testPart */
+        assertTestPartNowExited(testPartExitTimestamp);
+        Assert.assertEquals(item1EndDelta + testPartEndDelta, testPartSessionState.getDurationAccumulated());
+        Assert.assertNull(testPartSessionState.getDurationIntervalStartTime());
+
+        /* Check final state of sections */
+        assertAssessmentSectionNowExited("s11", testPartExitTimestamp);
+        assertAssessmentSectionNowExited("s111", testPartExitTimestamp);
+        assertAssessmentSectionFailedPreconditionAndExited("s112", testPartExitTimestamp);
+        assertAssessmentSectionNowExited("s113", testPartExitTimestamp);
+        assertAssessmentSectionExitedButNotEntered("s121", testPartExitTimestamp);
+        assertAssessmentSectionExitedButNotEntered("s12", testPartExitTimestamp);
+        assertAssessmentSectionExitedButNotEntered("s121", testPartExitTimestamp);
+
+        /* Check state of items */
+        assertItemNowExited("i1111", testPartExitTimestamp);
+        assertItemFailedPreconditionAndExited("i1112", testPartExitTimestamp);
+        assertItemFailedPreconditionAndExited("i1131", testPartExitTimestamp);
+        assertItemNowExited("i1132", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i1133", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i1211", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i122", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i123", testPartExitTimestamp);
+        assertItemExitedButNotEntered("i124", testPartExitTimestamp);
+    }
+
+    @Test(expected=QtiCandidateStateException.class)
+    public void testExitTestPartBeforeEnded() {
+        testSessionController.enterTest(testEntryTimestamp);
+        testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
+        testSessionController.exitTest(testPartEntryTimestamp);
     }
 
     //-------------------------------------------------------
@@ -549,13 +756,19 @@ public final class TestComplexNavigationTest {
 
     protected AssessmentSectionSessionState assertAssessmentSectionNotEntered(final String identifier) {
         final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
-        RunAssertions.assertNotEntered(result);
+        RunAssertions.assertNotYetEntered(result);
         return result;
     }
 
-    protected AssessmentSectionSessionState assertAssessmentSectionFailedPrecondition(final String identifier) {
-        final AssessmentSectionSessionState result = assertAssessmentSectionNotEntered(identifier);
-        Assert.assertTrue(result.isPreConditionFailed());
+    protected AssessmentSectionSessionState assertAssessmentSectionFailedPreconditionAndNotExited(final String identifier) {
+        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
+        RunAssertions.assertFailedPreconditionAndNotExited(result);
+        return result;
+    }
+
+    protected AssessmentSectionSessionState assertAssessmentSectionFailedPreconditionAndExited(final String identifier, final Date exitTimestamp) {
+        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
+        RunAssertions.assertFailedPreconditionAndExited(result, exitTimestamp);
         return result;
     }
 
@@ -565,12 +778,29 @@ public final class TestComplexNavigationTest {
         return result;
     }
 
-    protected AssessmentSectionSessionState assertAssessmentSectionEnded(final String identifier, final Date timestamp) {
+    protected AssessmentSectionSessionState assertAssessmentSectionNowEnded(final String identifier, final Date timestamp) {
         final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
-        RunAssertions.assertEnded(result, timestamp);
+        RunAssertions.assertNowEnded(result, timestamp);
         return result;
     }
 
+    protected AssessmentSectionSessionState assertAssessmentSectionEndedButNotEntered(final String identifier, final Date endTimestamp) {
+        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
+        RunAssertions.assertEndedButNotEntered(result, endTimestamp);
+        return result;
+    }
+
+    protected AssessmentSectionSessionState assertAssessmentSectionNowExited(final String identifier, final Date exitTimestamp) {
+        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
+        RunAssertions.assertNowExited(result, exitTimestamp);
+        return result;
+    }
+
+    protected AssessmentSectionSessionState assertAssessmentSectionExitedButNotEntered(final String identifier, final Date exitTimestamp) {
+        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
+        RunAssertions.assertExitedButNotEntered(result, exitTimestamp);
+        return result;
+    }
 
     protected ItemSessionState assertItemSessionState(final String identifier) {
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(getTestNodeKey(identifier));
@@ -592,7 +822,7 @@ public final class TestComplexNavigationTest {
 
     protected ItemSessionState assertItemNotEntered(final String identifier) {
         final ItemSessionState itemSessionState = assertItemSessionState(identifier);
-        RunAssertions.assertNotEntered(itemSessionState);
+        RunAssertions.assertNotYetEntered(itemSessionState);
         return itemSessionState;
     }
 
@@ -602,15 +832,39 @@ public final class TestComplexNavigationTest {
         return itemSessionState;
     }
 
-    protected ItemSessionState assertItemEnded(final String identifier, final Date timestamp) {
+    protected ItemSessionState assertItemNowEnded(final String identifier, final Date timestamp) {
         final ItemSessionState itemSessionState = assertItemSessionState(identifier);
-        RunAssertions.assertEnded(itemSessionState, timestamp);
+        RunAssertions.assertNowEnded(itemSessionState, timestamp);
         return itemSessionState;
     }
 
-    protected ItemSessionState assertItemFailedPrecondition(final String identifier) {
-        final ItemSessionState result = assertItemNotEntered(identifier);
-        Assert.assertTrue(result.isPreConditionFailed());
+    protected ItemSessionState assertItemNowExited(final String identifier, final Date timestamp) {
+        final ItemSessionState itemSessionState = assertItemSessionState(identifier);
+        RunAssertions.assertNowExited(itemSessionState, timestamp);
+        return itemSessionState;
+    }
+
+    protected ItemSessionState assertItemEndedButNotEntered(final String identifier, final Date timestamp) {
+        final ItemSessionState itemSessionState = assertItemSessionState(identifier);
+        RunAssertions.assertEndedButNotEntered(itemSessionState, timestamp);
+        return itemSessionState;
+    }
+
+    protected ItemSessionState assertItemExitedButNotEntered(final String identifier, final Date timestamp) {
+        final ItemSessionState itemSessionState = assertItemSessionState(identifier);
+        RunAssertions.assertExitedButNotEntered(itemSessionState, timestamp);
+        return itemSessionState;
+    }
+
+    protected ItemSessionState assertItemFailedPreconditionAndNotExited(final String identifier) {
+        final ItemSessionState result = assertItemSessionState(identifier);
+        RunAssertions.assertFailedPreconditionAndNotExited(result);
+        return result;
+    }
+
+    protected ItemSessionState assertItemFailedPreconditionAndExited(final String identifier, final Date exitTimestamp) {
+        final ItemSessionState result = assertItemSessionState(identifier);
+        RunAssertions.assertFailedPreconditionAndExited(result, exitTimestamp);
         return result;
     }
 
@@ -623,7 +877,19 @@ public final class TestComplexNavigationTest {
     }
 
     protected void assertTestPartEnded(final Date timestamp) {
-        RunAssertions.assertEnded(testPartSessionState, timestamp);
+        RunAssertions.assertNowEnded(testPartSessionState, timestamp);
+    }
+
+    protected void assertTestPartNowExited(final Date timestamp) {
+        RunAssertions.assertNowExited(testPartSessionState, timestamp);
+    }
+
+    protected void assertTestNowEnded(final Date timestamp) {
+        RunAssertions.assertNowEnded(testSessionState, timestamp);
+    }
+
+    protected void assertTestNowExited(final Date timestamp) {
+        RunAssertions.assertNowExited(testSessionState, timestamp);
     }
 
     protected TestPlanNode getTestNode(final String identifier) {
