@@ -77,7 +77,7 @@ public final class ItemSessionStateXmlMarshaller {
         XmlMarshallerCore.addAbstractPartSessionStateAttributes(element, itemSessionState);
         element.setAttribute("initialized", StringUtilities.toTrueFalse(itemSessionState.isInitialized()));
         element.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
-        element.setAttribute("suspended", StringUtilities.toTrueFalse(itemSessionState.isSuspended()));
+        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "suspendTime", itemSessionState.getSuspendTime());
         final SessionStatus sessionStatus = itemSessionState.getSessionStatus();
         if (sessionStatus!=null) {
             element.setAttribute("sessionStatus", sessionStatus.toQtiString());
@@ -166,7 +166,7 @@ public final class ItemSessionStateXmlMarshaller {
         XmlMarshallerCore.parseAbstractPartSessionStateAttributes(result, element);
         result.setInitialized(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "initialized", false));
         result.setResponded(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "responded", false));
-        result.setSuspended(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "suspended", false));
+        result.setSuspendTime(XmlMarshallerCore.parseOptionalDateAttribute(element, "suspendTime"));
         result.setUnboundResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "unboundResponseIdentifiers"));
         result.setInvalidResponseIdentifiers(parseOptionalIdentifierAttributeList(element, "invalidResponseIdentifiers"));
         result.setNumAttempts(XmlMarshallerCore.parseOptionalIntegerAttribute(element, "numAttempts", 0));

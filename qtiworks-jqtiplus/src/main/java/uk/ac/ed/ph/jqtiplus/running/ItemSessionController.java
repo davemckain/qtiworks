@@ -519,7 +519,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         assertItemNotSuspended();
         logger.debug("Suspending item session on {}", item.getSystemId());
 
-        itemSessionState.setSuspended(true);
+        itemSessionState.setSuspendTime(timestamp);
         endItemSessionTimer(itemSessionState, timestamp);
     }
 
@@ -539,7 +539,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         assertItemSuspended();
         logger.debug("Unsuspending item session on {}", item.getSystemId());
 
-        itemSessionState.setSuspended(false);
+        itemSessionState.setSuspendTime(null);
         startItemSessionTimer(itemSessionState, timestamp);
     }
 
@@ -568,7 +568,8 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Exits the item session. (This isn't strictly needed when running single items.)
      * <p>
-     * Pre-condition: Item session must have been ended (closed) and not already exited
+     * Pre-condition: Item session must have been ended (closed) or not entered due to a
+     * failed preCondition, and not already exited
      * <p>
      * Post-condition: Exit time will be recorded.
      *
@@ -576,8 +577,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void exitItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertItemEnded();
-        assertNotExited();
+        assertItemEndedOrPreconditionFailed();
+        assertItemNotExited();
         logger.debug("Exiting item {}", item.getSystemId());
 
         itemSessionState.setExitTime(timestamp);
@@ -1034,9 +1035,9 @@ public final class ItemSessionController extends ItemProcessingController implem
         }
     }
 
-    private void assertItemEnded() {
-        if (!itemSessionState.isEnded()) {
-            throw new QtiCandidateStateException("Item session has not been ended");
+    private void assertItemEndedOrPreconditionFailed() {
+        if (!itemSessionState.isEnded() && !itemSessionState.isPreConditionFailed()) {
+            throw new QtiCandidateStateException("Item session has not been ended or did not have a failed preCondition");
         }
     }
 
@@ -1057,7 +1058,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         }
     }
 
-    private void assertNotExited() {
+    private void assertItemNotExited() {
         if (itemSessionState.isExited()) {
             throw new QtiCandidateStateException("Item session has already been exited");
         }

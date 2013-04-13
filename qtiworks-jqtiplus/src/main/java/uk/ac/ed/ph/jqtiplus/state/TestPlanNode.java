@@ -222,7 +222,7 @@ public final class TestPlanNode implements Serializable {
         if (parentNode==null) {
             return false;
         }
-        if (parentNode.key.equals(node.key)) {
+        if (ObjectUtilities.nullSafeEquals(parentNode.key, node.key)) {
             return true;
         }
         return parentNode.hasAncestor(node);

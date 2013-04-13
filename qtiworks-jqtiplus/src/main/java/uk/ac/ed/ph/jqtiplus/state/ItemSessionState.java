@@ -59,6 +59,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -130,7 +131,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
     private SessionStatus sessionStatus;
     private boolean initialized;
     private boolean responded;
-    private boolean suspended;
+    private Date suspendTime;
     private String candidateComment;
 
     public ItemSessionState() {
@@ -150,7 +151,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
         this.sessionStatus = null;
         this.initialized = false;
         this.responded = false;
-        this.suspended = false;
+        this.suspendTime = null;
         this.candidateComment = null;
         resetBuiltinVariables();
     }
@@ -175,7 +176,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
         this.sessionStatus = SessionStatus.INITIAL;
         this.initialized = false;
         this.responded = false;
-        this.suspended = false;
+        this.suspendTime = null;
         this.candidateComment = null;
         resetBuiltinVariables();
     }
@@ -262,12 +263,17 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
     }
 
 
-    public boolean isSuspended() {
-        return suspended;
+    public Date getSuspendTime() {
+        return ObjectUtilities.safeClone(suspendTime);
     }
 
-    public void setSuspended(final boolean suspended) {
-        this.suspended = suspended;
+    public void setSuspendTime(final Date suspendTime) {
+        this.suspendTime = ObjectUtilities.safeClone(suspendTime);
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public boolean isSuspended() {
+        return suspendTime!=null;
     }
 
 
@@ -694,7 +700,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
                 && numAttempts==other.numAttempts
                 && initialized==other.initialized
                 && responded==other.responded
-                && suspended==other.suspended
+                && ObjectUtilities.nullSafeEquals(suspendTime, other.suspendTime)
                 && ObjectUtilities.nullSafeEquals(completionStatus, other.completionStatus)
                 && ObjectUtilities.nullSafeEquals(sessionStatus, other.sessionStatus)
                 && ObjectUtilities.nullSafeEquals(candidateComment, other.candidateComment)
@@ -722,7 +728,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
                 initialized,
                 sessionStatus,
                 responded,
-                suspended,
+                suspendTime,
                 candidateComment,
                 shuffledInteractionChoiceOrders,
                 rawResponseDataMap,
@@ -753,7 +759,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
                 + ",numAttempts=" + getNumAttempts()
                 + ",completionStatus=" + getCompletionStatus()
                 + ",responded=" + responded
-                + ",suspended=" + suspended
+                + ",suspendTime=" + suspendTime
                 + ",candidateComment=" + candidateComment
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues

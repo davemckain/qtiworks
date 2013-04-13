@@ -34,32 +34,21 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionSessionState;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
-import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-import uk.ac.ed.ph.jqtiplus.state.marshalling.TestSessionStateXmlMarshaller;
-import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
 
 /**
  * Tests navigation within a test containing 2 {@link TestPart}s
@@ -67,11 +56,11 @@ import org.w3c.dom.Document;
  *
  * @author David McKain
  */
-public final class TestNonlinearNavigationTest {
+public final class TestNonlinearNavigationTest extends TestTestBase {
 
     private static final String TEST_FILE_PATH = "running/test-nonlinear.xml";
 
-    private static final String[] TEST_NODES = new String[] {
+    private static final List<String> TEST_NODES = Arrays.asList(new String[] {
         "p1",
             "s11",
                 "s111",
@@ -80,36 +69,28 @@ public final class TestNonlinearNavigationTest {
         "p2",
             "s21",
                 "i211"
-    };
+    });
 
-    private Date testEntryTimestamp;
-    private TestSessionController testSessionController;
-    private TestSessionState testSessionState;
-    private TestPlan testPlan;
     private TestPartSessionState testPart1SessionState;
     private TestPartSessionState testPart2SessionState;
-
-    private Map<String, TestPlanNode> testPlanNodesByIdentifierStringMap;
 
     private long testPart1EntryDelta;
     private Date testPart1EntryTimestamp;
     private long item1EntryDelta;
     private Date item1EntryTimestamp;
 
+    @Override
+    protected List<String> testNodes() {
+        return TEST_NODES;
+    }
+
+    @Override
+    protected String getTestFilePath() {
+        return TEST_FILE_PATH;
+    }
+
     @Before
-    public void before() {
-        testEntryTimestamp = new Date();
-        testSessionController = UnitTestHelper.loadUnitTestAssessmentTestForControl(TEST_FILE_PATH, true);
-        testSessionController.initialize(testEntryTimestamp);
-        testSessionState = testSessionController.getTestSessionState();
-        testPlan = testSessionState.getTestPlan();
-
-        testPlanNodesByIdentifierStringMap = new HashMap<String, TestPlanNode>();
-        for (final String testNodeIdentifierString : TEST_NODES) {
-            final TestPlanNode testPlanNode = UnitTestHelper.assertSingleTestPlanNode(testPlan, testNodeIdentifierString);
-            testPlanNodesByIdentifierStringMap.put(testNodeIdentifierString, testPlanNode);
-        }
-
+    public void xbefore() {
         testPart1SessionState = testSessionState.getTestPartSessionStates().get(getTestNodeKey("p1"));
         testPart2SessionState = testSessionState.getTestPartSessionStates().get(getTestNodeKey("p2"));
 
@@ -119,20 +100,6 @@ public final class TestNonlinearNavigationTest {
 
         item1EntryDelta = 2000L;
         item1EntryTimestamp = ObjectUtilities.addToTime(testPart1EntryTimestamp, item1EntryDelta);
-    }
-
-    @After
-    public void after() {
-        /* This is strictly outside what we're testing here, but let's just check that the
-         * state -> XML -> state process is idempotent in this instance
-         */
-        final Document testSessionStateXmlDocument = TestSessionStateXmlMarshaller.marshal(testSessionState);
-        final TestSessionState refried = TestSessionStateXmlMarshaller.unmarshal(testSessionStateXmlDocument.getDocumentElement());
-        if (!refried.equals(testSessionState)) {
-            System.err.println("State before marshalling: " + ObjectDumper.dumpObject(testSessionState));
-            System.err.println("State after marshalling: " + ObjectDumper.dumpObject(refried));
-            Assert.assertEquals(testSessionState, refried);
-        }
     }
 
     //-------------------------------------------------------
@@ -534,184 +501,6 @@ public final class TestNonlinearNavigationTest {
 
     //-------------------------------------------------------
 
-    protected List<String> allSections() {
-        final List<String> result = new ArrayList<String>();
-        for (final String identifier : TEST_NODES) {
-            if (identifier.charAt(0)=='s') {
-                result.add(identifier);
-            }
-        }
-        return result;
-    }
-
-    protected List<String> allSectionsExcept(final String... exclusions) {
-        final List<String> exclusionsList = Arrays.asList(exclusions);
-        final List<String> result = new ArrayList<String>();
-        for (final String identifier : TEST_NODES) {
-            if (identifier.charAt(0)=='s' && !exclusionsList.contains(identifier)) {
-                result.add(identifier);
-            }
-        }
-        return result;
-    }
-
-    protected List<String> allSectionsAfter(final String startIdentifier) {
-        final List<String> result = new ArrayList<String>();
-        boolean found = false;
-        for (final String identifier : TEST_NODES) {
-            if (identifier.charAt(0)=='s') {
-                if (found) {
-                    result.add(identifier);
-                }
-                else if (startIdentifier.equals(identifier)) {
-                    found = true;
-                }
-
-            }
-        }
-        return result;
-    }
-
-    protected List<String> allItems() {
-        final List<String> result = new ArrayList<String>();
-        for (final String identifier : TEST_NODES) {
-            if (identifier.charAt(0)=='i') {
-                result.add(identifier);
-            }
-        }
-        return result;
-    }
-
-    protected List<String> allItemsExcept(final String... exclusions) {
-        final List<String> exclusionsList = Arrays.asList(exclusions);
-        final List<String> result = new ArrayList<String>();
-        for (final String identifier : TEST_NODES) {
-            if (identifier.charAt(0)=='i' && !exclusionsList.contains(identifier)) {
-                result.add(identifier);
-            }
-        }
-        return result;
-    }
-
-    protected List<String> allItemsAfter(final String startIdentifier) {
-        final List<String> result = new ArrayList<String>();
-        boolean found = false;
-        for (final String identifier : TEST_NODES) {
-            if (identifier.charAt(0)=='i') {
-                if (found) {
-                    result.add(identifier);
-                }
-                else if (startIdentifier.equals(identifier)) {
-                    found = true;
-                }
-
-            }
-        }
-        return result;
-    }
-
-    protected AssessmentSectionSessionState assertAssessmentSectionState(final String identifier) {
-        final AssessmentSectionSessionState result = testSessionState.getAssessmentSectionSessionStates().get(getTestNodeKey(identifier));
-        Assert.assertNotNull(result);
-        return result;
-    }
-
-    protected void assertAssessmentSectionsNotEntered(final String... identifiers) {
-        for (final String identifier : identifiers) {
-            assertAssessmentSectionNotEntered(identifier);
-        }
-    }
-
-    protected void assertAssessmentSectionsNotEntered(final Iterable<String> identifiers) {
-        for (final String identifier : identifiers) {
-            assertAssessmentSectionNotEntered(identifier);
-        }
-    }
-
-    protected AssessmentSectionSessionState assertAssessmentSectionNotEntered(final String identifier) {
-        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
-        RunAssertions.assertNotYetEntered(result);
-        return result;
-    }
-
-    protected AssessmentSectionSessionState assertAssessmentSectionFailedPrecondition(final String identifier) {
-        final AssessmentSectionSessionState result = assertAssessmentSectionNotEntered(identifier);
-        Assert.assertTrue(result.isPreConditionFailed());
-        return result;
-    }
-
-    protected AssessmentSectionSessionState assertAssessmentSectionOpen(final String identifier, final Date entryTimestamp) {
-        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
-        RunAssertions.assertOpen(result, entryTimestamp);
-        return result;
-    }
-
-    protected AssessmentSectionSessionState assertAssessmentSectionNowEnded(final String identifier, final Date endTimestamp) {
-        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
-        RunAssertions.assertNowEnded(result, endTimestamp);
-        return result;
-    }
-
-    protected AssessmentSectionSessionState assertAssessmentSectionEndedButNotEntered(final String identifier, final Date endTimestamp) {
-        final AssessmentSectionSessionState result = assertAssessmentSectionState(identifier);
-        RunAssertions.assertEndedButNotEntered(result, endTimestamp);
-        return result;
-    }
-
-    protected ItemSessionState assertItemSessionState(final String identifier) {
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(getTestNodeKey(identifier));
-        Assert.assertNotNull(itemSessionState);
-        return itemSessionState;
-    }
-
-    protected void assertItemsNotEntered(final Iterable<String> identifiers) {
-        for (final String identifier : identifiers) {
-            assertItemNotEntered(identifier);
-        }
-    }
-
-    protected void assertItemsNotEntered(final String... identifiers) {
-        for (final String identifier : identifiers) {
-            assertItemNotEntered(identifier);
-        }
-    }
-
-    protected ItemSessionState assertItemNotEntered(final String identifier) {
-        final ItemSessionState itemSessionState = assertItemSessionState(identifier);
-        RunAssertions.assertNotYetEntered(itemSessionState);
-        return itemSessionState;
-    }
-
-    protected ItemSessionState assertItemOpen(final String identifier, final Date entryTimestamp) {
-        final ItemSessionState itemSessionState = assertItemSessionState(identifier);
-        RunAssertions.assertOpen(itemSessionState, entryTimestamp);
-        return itemSessionState;
-    }
-
-    protected ItemSessionState assertItemSuspended(final String identifier, final Date suspendTimestamp) {
-        final ItemSessionState itemSessionState = assertItemSessionState(identifier);
-        RunAssertions.assertSuspended(itemSessionState, suspendTimestamp);
-        return itemSessionState;
-    }
-
-    protected ItemSessionState assertItemNowEnded(final String identifier, final Date timestamp) {
-        final ItemSessionState itemSessionState = assertItemSessionState(identifier);
-        RunAssertions.assertNowEnded(itemSessionState, timestamp);
-        return itemSessionState;
-    }
-
-    protected ItemSessionState assertItemEndedButNotEntered(final String identifier, final Date timestamp) {
-        final ItemSessionState itemSessionState = assertItemSessionState(identifier);
-        RunAssertions.assertEndedButNotEntered(itemSessionState, timestamp);
-        return itemSessionState;
-    }
-
-    protected ItemSessionState assertItemFailedPrecondition(final String identifier) {
-        final ItemSessionState result = assertItemNotEntered(identifier);
-        Assert.assertTrue(result.isPreConditionFailed());
-        return result;
-    }
-
     protected void assertItemsSelectable(final String... identifiers) {
         for (final String identifier : identifiers) {
             assertItemSelectable(identifier);
@@ -744,10 +533,6 @@ public final class TestNonlinearNavigationTest {
         Assert.assertFalse(testSessionController.maySelectItemNonlinear(getTestNodeKey(identifier)));
     }
 
-    protected void assertTestOpen() {
-        RunAssertions.assertOpen(testSessionState, testEntryTimestamp);
-    }
-
     protected void assertTestPart1Open() {
         RunAssertions.assertOpen(testPart1SessionState, testPart1EntryTimestamp);
     }
@@ -766,13 +551,5 @@ public final class TestNonlinearNavigationTest {
 
     protected void assertTestPart2Open(final Date timestamp) {
         RunAssertions.assertOpen(testPart2SessionState, timestamp);
-    }
-
-    protected TestPlanNode getTestNode(final String identifier) {
-        return testPlanNodesByIdentifierStringMap.get(identifier);
-    }
-
-    protected TestPlanNodeKey getTestNodeKey(final String identifier) {
-        return getTestNode(identifier).getKey();
     }
 }

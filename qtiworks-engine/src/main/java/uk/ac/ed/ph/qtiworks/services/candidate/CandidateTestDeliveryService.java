@@ -382,7 +382,7 @@ public class CandidateTestDeliveryService {
         final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setTestSessionState(testSessionState);
-        renderingRequest.setEndTestPartAllowed(testSessionController.mayEndTestPart());
+        renderingRequest.setEndTestPartAllowed(testSessionController.mayEndCurrentTestPart());
 
         candidateAuditLogger.logTestPartNavigationRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
@@ -859,7 +859,7 @@ public class CandidateTestDeliveryService {
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.endTestPart(requestTimestamp);
+        testSessionController.endCurrentTestPart(requestTimestamp);
 
         /* Record assessmentResult (not necessarily final) */
         final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
