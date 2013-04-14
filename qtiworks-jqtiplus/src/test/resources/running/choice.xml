@@ -1,7 +1,7 @@
 <!--
 
 This is a slightly modified version of the standard choice.xml,
-adding in some template processing to assist with unit testing.
+adding in some additional TP & RP to assist with unit testing.
 
 -->
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
@@ -13,19 +13,28 @@ adding in some template processing to assist with unit testing.
       <value>ChoiceA</value>
     </correctResponse>
   </responseDeclaration>
-    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+  <outcomeDeclaration identifier="RP_DONE" cardinality="single" baseType="boolean">
+    <defaultValue>
+      <value>false</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
     <defaultValue>
       <value>0.0</value>
     </defaultValue>
   </outcomeDeclaration>
-  <templateDeclaration identifier="TEMPLATE" cardinality="single" baseType="string"/>
+  <templateDeclaration identifier="TP_DONE" cardinality="single" baseType="boolean">
+    <defaultValue>
+      <value>false</value>
+    </defaultValue>
+  </templateDeclaration>
   <templateProcessing>
-    <setTemplateValue identifier="TEMPLATE">
-      <baseValue baseType="string">templateValue</baseValue>
+    <setTemplateValue identifier="TP_DONE">
+      <baseValue baseType="boolean">true</baseValue>
     </setTemplateValue>
   </templateProcessing>
   <itemBody>
-    <p>Look at the text in the picture.</p>
+    <p>Look at the text in the picture that does not exist.</p>
     <p>
       <img src="images/sign.png" alt="NEVER LEAVE LUGGAGE UNATTENDED"/>
     </p>
@@ -36,6 +45,25 @@ adding in some template processing to assist with unit testing.
       <simpleChoice identifier="ChoiceC">Remember your luggage when you leave.</simpleChoice>
     </choiceInteraction>
   </itemBody>
-  <responseProcessing
-    template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+  <responseProcessing>
+    <setOutcomeValue identifier="RP_DONE">
+      <baseValue baseType="boolean">true</baseValue>
+    </setOutcomeValue>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="RESPONSE"/>
+          <correct identifier="RESPONSE"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">1.0</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">0.0</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+  </responseProcessing>
 </assessmentItem>

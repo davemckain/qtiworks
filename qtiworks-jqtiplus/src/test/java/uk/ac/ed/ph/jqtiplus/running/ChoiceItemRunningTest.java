@@ -49,6 +49,7 @@ import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
+import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.File;
@@ -73,8 +74,9 @@ public final class ChoiceItemRunningTest {
 
     public static final String TEST_FILE_PATH = "running/choice.xml";
 
-    public static final Identifier TEMPLATE = Identifier.assumedLegal("TEMPLATE");
+    public static final Identifier TP_DONE = Identifier.assumedLegal("TP_DONE");
     public static final Identifier RESPONSE = Identifier.assumedLegal("RESPONSE");
+    public static final Identifier RP_DONE = Identifier.assumedLegal("RP_DONE");
     public static final Identifier SCORE = Identifier.assumedLegal("SCORE");
 
     private ItemSessionController itemSessionController;
@@ -133,10 +135,11 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.INITIAL, itemSessionState.getSessionStatus());
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue(null);
+        assertTemplateProcessingNotDone();
         assertChoiceResponseValue(null);
         assertChoiceResponseBound();
         assertChoiceResponseValid();
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -152,11 +155,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.INITIAL, itemSessionState.getSessionStatus());
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue"); /* (Set during TP) */
+        assertTemplateProcessingDone(); /* (Set during TP) */
         assertNoUncommittedResponseValue();
         assertChoiceResponseValue(null);
         assertChoiceResponseBound();
         assertChoiceResponseValid();
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -184,11 +188,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus());
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValue(null);
         assertChoiceResponseValid();
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -220,11 +225,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus());
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValue(null);
         assertChoiceResponseValid();
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -273,6 +279,7 @@ public final class ChoiceItemRunningTest {
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
     }
 
     @Test
@@ -296,11 +303,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(resetTimestamp, itemSessionState.getDurationIntervalStartTime());
         assertEquals(SessionStatus.INITIAL, itemSessionState.getSessionStatus());
         Assert.assertTrue(itemSessionState.isInitialized());
-        assertScore(0.0);
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
+        assertScore(0.0);
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -349,11 +357,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus());
         assertTrue(itemSessionState.isInitialized());
         assertTrue(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -386,11 +395,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus());
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -420,11 +430,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus()); /* (This isn't changed) */
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -458,11 +469,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus()); /* (This isn't changed) */
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -498,11 +510,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus()); /* (This does not change yet) */
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertUncommittedResponseValue("ChoiceA");
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -545,11 +558,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus()); /* (This does not change yet) */
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertUncommittedResponseValue("INVALID");
         assertChoiceResponseUnbound();
         assertChoiceResponseInvalid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -565,11 +579,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_SUBMISSION, itemSessionState.getSessionStatus()); /* (This does not change yet) */
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertUncommittedResponseValue("INVALID");
         assertChoiceResponseBound();
         assertChoiceResponseInvalid();
         assertChoiceResponseValue(null);
+        assertResponseProcessingNotDone();
         assertScore(0.0);
     }
 
@@ -602,11 +617,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.PENDING_RESPONSE_PROCESSING, itemSessionState.getSessionStatus()); /* Changes now*/
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue("ChoiceA");
+        assertResponseProcessingNotDone();
         assertScore(0.0); /* No RP yet */
     }
 
@@ -650,11 +666,12 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.FINAL, itemSessionState.getSessionStatus()); /* Changes now*/
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue("ChoiceA");
+        assertResponseProcessingDone();
         assertScore(1.0); /* No RP yet */
     }
 
@@ -696,12 +713,13 @@ public final class ChoiceItemRunningTest {
         assertEquals(SessionStatus.FINAL, itemSessionState.getSessionStatus()); /* Changes now*/
         assertTrue(itemSessionState.isInitialized());
         assertFalse(itemSessionState.isSuspended());
-        assertTemplateValue("templateValue");
+        assertTemplateProcessingDone();
         assertNoUncommittedResponseValue();
         assertChoiceResponseBound();
         assertChoiceResponseValid();
         assertChoiceResponseValue(null);
-        assertScore(0.0); /* No RP yet */
+        assertResponseProcessingDone();
+        assertScore(0.0);
     }
 
     //-------------------------------------------------------
@@ -728,8 +746,12 @@ public final class ChoiceItemRunningTest {
         RunAssertions.assertOpen(itemSessionState, entryTimestamp);
     }
 
-    protected void assertTemplateValue(final String value) {
-        RunAssertions.assertValueEqualsString(value, itemSessionState.getTemplateValue(TEMPLATE));
+    protected void assertTemplateProcessingNotDone() {
+        Assert.assertEquals(BooleanValue.FALSE, itemSessionState.getTemplateValue(TP_DONE));
+    }
+
+    protected void assertTemplateProcessingDone() {
+        Assert.assertEquals(BooleanValue.TRUE, itemSessionState.getTemplateValue(TP_DONE));
     }
 
     protected void assertNoUncommittedResponseValue() {
@@ -744,6 +766,14 @@ public final class ChoiceItemRunningTest {
 
     protected void assertChoiceResponseValue(final String choiceIdentifier) {
         RunAssertions.assertValueEqualsIdentifier(choiceIdentifier, itemSessionState.getResponseValue(RESPONSE));
+    }
+
+    protected void assertResponseProcessingNotDone() {
+        assertEquals(BooleanValue.FALSE, itemSessionState.getOutcomeValue(RP_DONE));
+    }
+
+    protected void assertResponseProcessingDone() {
+        assertEquals(BooleanValue.TRUE, itemSessionState.getOutcomeValue(RP_DONE));
     }
 
     protected void assertScore(final Double expected) {
