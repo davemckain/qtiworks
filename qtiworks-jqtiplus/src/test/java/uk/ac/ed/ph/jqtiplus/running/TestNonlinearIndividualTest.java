@@ -75,8 +75,7 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
                 "i2",
     });
 
-    private long item1EntryDelta;
-    private Date item1EntryTimestamp;
+    private Date operationTimestamp;
 
     private ItemSessionState item1SessionState;
     private ItemSessionState item2SessionState;
@@ -93,8 +92,7 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
 
     @Before
     public void before() {
-        item1EntryDelta = 2000L;
-        item1EntryTimestamp = ObjectUtilities.addToTime(testPartEntryTimestamp, item1EntryDelta);
+        operationTimestamp = ObjectUtilities.addToTime(testPartEntryTimestamp, 2000L);
 
         item1SessionState = testSessionState.getItemSessionStates().get(getTestNodeKey("i1"));
         item2SessionState = testSessionState.getItemSessionStates().get(getTestNodeKey("i2"));
@@ -136,15 +134,12 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
 
     @Test
     public void testSelectAndRespondItem1Correctly() {
-        final long responseDelta = 4000L;
-        final Date responseTimestamp = ObjectUtilities.addToTime(item1EntryTimestamp, responseDelta);
-
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.selectItemNonlinear(item1EntryTimestamp, getTestNodeKey("i1"));
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i1"));
 
         /* Answer item 1 correctly */
-        handleChoiceResponse(responseTimestamp, "ChoiceA");
+        handleChoiceResponse("ChoiceA");
 
         /* RP should have happened on item 1 but not 2. OP should have happened */
         assertItemResponseProcessingRun(item1SessionState);
@@ -157,15 +152,12 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
 
     @Test
     public void testSelectAndRespondItem1Invalid() {
-        final long responseDelta = 4000L;
-        final Date responseTimestamp = ObjectUtilities.addToTime(item1EntryTimestamp, responseDelta);
-
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.selectItemNonlinear(item1EntryTimestamp, getTestNodeKey("i1"));
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i1"));
 
         /* Answer item 1 invalidly */
-        handleChoiceResponse(responseTimestamp, "Invalid");
+        handleChoiceResponse("Invalid");
 
         /* RP would not have happened in this case */
         assertItemResponseProcessingNotRun(item1SessionState);
@@ -178,15 +170,12 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
 
     @Test
     public void testSelectAndRespondItem1Wrongly() {
-        final long responseDelta = 4000L;
-        final Date responseTimestamp = ObjectUtilities.addToTime(item1EntryTimestamp, responseDelta);
-
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.selectItemNonlinear(item1EntryTimestamp, getTestNodeKey("i1"));
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i1"));
 
         /* Answer item 1 wrongly */
-        handleChoiceResponse(responseTimestamp, "ChoiceB");
+        handleChoiceResponse("ChoiceB");
 
         /* RP should have happened on item 1 but not 2. OP should have happened */
         assertItemResponseProcessingRun(item1SessionState);
@@ -199,36 +188,26 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
 
     @Test(expected=QtiCandidateStateException.class)
     public void testSelectAndRespondItem1ThenAgain() {
-        final long responseDelta = 4000L;
-        final Date responseTimestamp = ObjectUtilities.addToTime(item1EntryTimestamp, responseDelta);
-
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.selectItemNonlinear(item1EntryTimestamp, getTestNodeKey("i1"));
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i1"));
 
         /* Answer item 1 correctly */
-        handleChoiceResponse(responseTimestamp, "ChoiceA");
+        handleChoiceResponse("ChoiceA");
 
         /* Item session should have ended */
         Assert.assertFalse(testSessionController.maySubmitResponsesToCurrentItem());
-        handleChoiceResponse(responseTimestamp, "ChoiceA");
+        handleChoiceResponse("ChoiceA");
     }
 
     @Test
     public void testSelectAndRespondItem1ThenItem2Correctly() {
-        final long response1Delta = 4000L;
-        final Date response1Timestamp = ObjectUtilities.addToTime(item1EntryTimestamp, response1Delta);
-        final long item2EntryDelta = 8000L;
-        final Date item2EntryTimestamp = ObjectUtilities.addToTime(response1Timestamp, item2EntryDelta);
-        final long response2Delta = 16000L;
-        final Date response2Timestamp = ObjectUtilities.addToTime(item2EntryTimestamp, response2Delta);
-
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.selectItemNonlinear(item1EntryTimestamp, getTestNodeKey("i1"));
-        handleChoiceResponse(response1Timestamp, "ChoiceA");
-        testSessionController.selectItemNonlinear(item2EntryTimestamp, getTestNodeKey("i2"));
-        handleChoiceResponse(response2Timestamp, "ChoiceA");
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i1"));
+        handleChoiceResponse("ChoiceA");
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i2"));
+        handleChoiceResponse("ChoiceA");
 
         /* RP should have happened on both items; OP should have run */
         assertItemResponseProcessingRun(item1SessionState);
@@ -241,19 +220,12 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
 
     @Test
     public void testSelectAndRespondItem1ThenItem2Mixed() {
-        final long response1Delta = 4000L;
-        final Date response1Timestamp = ObjectUtilities.addToTime(item1EntryTimestamp, response1Delta);
-        final long item2EntryDelta = 8000L;
-        final Date item2EntryTimestamp = ObjectUtilities.addToTime(response1Timestamp, item2EntryDelta);
-        final long response2Delta = 16000L;
-        final Date response2Timestamp = ObjectUtilities.addToTime(item2EntryTimestamp, response2Delta);
-
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.selectItemNonlinear(item1EntryTimestamp, getTestNodeKey("i1"));
-        handleChoiceResponse(response1Timestamp, "ChoiceA");
-        testSessionController.selectItemNonlinear(item2EntryTimestamp, getTestNodeKey("i2"));
-        handleChoiceResponse(response2Timestamp, "ChoiceB");
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i1"));
+        handleChoiceResponse("ChoiceA");
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i2"));
+        handleChoiceResponse("ChoiceB");
 
         /* RP should have happened on both items; OP should have run */
         assertItemResponseProcessingRun(item1SessionState);
@@ -266,17 +238,10 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
 
     @Test
     public void testSelectItem1ThenEnd() {
-        final long response1Delta = 4000L;
-        final Date response1Timestamp = ObjectUtilities.addToTime(item1EntryTimestamp, response1Delta);
-        final long item2EntryDelta = 8000L;
-        final Date item2EntryTimestamp = ObjectUtilities.addToTime(response1Timestamp, item2EntryDelta);
-        final long endTestPartDelta = 16000L;
-        final Date endTestPartTimestamp = ObjectUtilities.addToTime(item2EntryTimestamp, endTestPartDelta);
-
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.selectItemNonlinear(item1EntryTimestamp, getTestNodeKey("i1"));
-        testSessionController.endCurrentTestPart(endTestPartTimestamp);
+        testSessionController.selectItemNonlinear(operationTimestamp, getTestNodeKey("i1"));
+        testSessionController.endCurrentTestPart(operationTimestamp);
 
         /* RP should not have happened on either item, OP should not have run */
         assertItemResponseProcessingNotRun();
@@ -338,10 +303,10 @@ public final class TestNonlinearIndividualTest extends SinglePartTestBase {
         RunAssertions.assertValueEqualsDouble(expected, testSessionState.getOutcomeValue(TEST_SCORE));
     }
 
-    protected void handleChoiceResponse(final Date timestamp, final String choiceIdentifier) {
+    protected void handleChoiceResponse(final String choiceIdentifier) {
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(ITEM_RESPONSE, new StringResponseData(choiceIdentifier));
-        testSessionController.handleResponsesToCurrentItem(timestamp, responseMap);
+        testSessionController.handleResponsesToCurrentItem(operationTimestamp, responseMap);
     }
 
 }
