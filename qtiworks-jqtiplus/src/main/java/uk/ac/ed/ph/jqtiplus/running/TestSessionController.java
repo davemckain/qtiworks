@@ -51,6 +51,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
@@ -129,9 +130,20 @@ public final class TestSessionController extends TestProcessingController {
     // Initialization
 
     /**
-     * Sets all explicitly-defined (valid) variables to NULL, and the
-     * <code>duration</code> variable to 0, and calls {@link #initialize()} on each item in the
-     * test plan.
+     * Sets all explicitly-defined (valid) variables to their default value, and the
+     * <code>duration</code> variable to 0, and calls {@link #initialize()} on each
+     * item in the test plan.
+     * <p>
+     * Pre-conditions: None, this can be called at any time.
+     * <p>
+     * Post-conditions: (Valid) outcome variables will be set to their default values,
+     * states for each testPart and assessmentSection will be reset,
+     * {@link ItemSessionController#initialize(Date)} will be called for each item,
+     * <code>duration</code> will be set to 0. Duration tim will not yet start.
+     *
+     * @param initialisation timestamp, which must not be null
+     *
+     * @throws IllegalArgumentException if timestamp is null
      */
     public void initialize(final Date timestamp) {
         Assert.notNull(timestamp, "timestamp");
@@ -142,9 +154,6 @@ public final class TestSessionController extends TestProcessingController {
         /* Reset test variables */
         testSessionState.reset();
         resetOutcomeVariables();
-        for (final Identifier identifier : testProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
-            testSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
-        }
 
         /* Initialise each testPart, assessmentSection and item instance */
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
@@ -186,10 +195,13 @@ public final class TestSessionController extends TestProcessingController {
      * Precondition: the test must not have already been entered.
      * <p>
      * Postcondition: the test will be marked as having been entered. No {@link TestPart}
-     * will been entered, no item will have been selected. Outcomes variables will
-     * be set to their default values. The duration timer will start on the test.
+     * will been entered, no item will have been selected. The duration timer will start on the test.
+     *
+     * @param timestamp test entry timestamp, which must not be null
      *
      * @return number of {@link TestPart}s in the test.
+     *
+     * @throws IllegalArgumentException if timestamp is null
      *
      * @see #findNextEnterableTestPart()
      * @see #enterNextAvailableTestPart()
@@ -203,7 +215,6 @@ public final class TestSessionController extends TestProcessingController {
         testSessionState.setCurrentTestPartKey(null);
         testSessionState.setCurrentItemKey(null);
         startControlObjectTimer(testSessionState, timestamp);
-        resetOutcomeVariables();
 
         return testSessionState.getTestPlan().getTestPartNodes().size();
     }
@@ -262,6 +273,8 @@ public final class TestSessionController extends TestProcessingController {
      * Postcondition: The current testPart will be exited, as will all assessmentSections and
      * item instances therein. The next available {@link TestPart} will be entered, if one is available.
      * Otherwise the test itself will be ended.
+     *
+     * @throws IllegalArgumentException if timestamp is null
      */
     public TestPlanNode enterNextAvailableTestPart(final Date timestamp) {
         Assert.notNull(timestamp, "timestamp");
@@ -354,6 +367,8 @@ public final class TestSessionController extends TestProcessingController {
     /**
 	 * Performs template processing on the given {@link TestPlanNode} corresponding to an
 	 * {@link AssessmentItemRef}
+	 *
+     * @throws IllegalArgumentException if timestamp is null
 	 */
 	private void performTemplateProcessing(final Date timestamp, final TestPlanNode itemRefNode) {
         Assert.notNull(timestamp, "timestamp");
@@ -399,10 +414,13 @@ public final class TestSessionController extends TestProcessingController {
 	 * <p>
 	 * Precondition: {@link #mayEndCurrentTestPart()} must return true
 	 * <p>
-	 * Postcondition: Response Processing and Outcome Processing will be run if the testPart
-	 * has {@link SubmissionMode#SIMULTANEOUS}. All item and assessment section states in testPart
+	 * Postcondition: If the {@link TestPart} has {@link SubmissionMode#SIMULTANEOUS} then
+	 * any uncommitted responses will be committed, then Response Processing and Outcome Processing will be run.
+	 * All item and assessment section states in testPart
 	 * will be ended if they haven't done so already, current test state will be marked as ended,
 	 * current item will be cleared.
+	 *
+     * @throws IllegalArgumentException if timestamp is null
 	 */
 	public void endCurrentTestPart(final Date timestamp) {
         Assert.notNull(timestamp, "timestamp");
@@ -415,10 +433,19 @@ public final class TestSessionController extends TestProcessingController {
 	    final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
 	    final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
 	    if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
-	        /* If we're in SIMULTANEOUS mode, we run response processing on all items now */
+	        /* We're in SIMULTANEOUS mode. Commit responses on each item then run RP */
 	        for (final TestPlanNode itemRefNode : itemRefNodes) {
 	            final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-	            itemSessionController.performResponseProcessing(timestamp);
+	            final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+	            if (itemSessionState.isEntered()) {
+	                if (itemSessionState.isSuspended()) {
+	                    itemSessionController.unsuspendItemSession(timestamp);
+	                }
+	                if (itemSessionState.hasUncommittedResponseValues()) {
+	                    itemSessionController.commitResponses(timestamp);
+	                }
+	                itemSessionController.performResponseProcessing(timestamp);
+	            }
 	        }
 	        /* Then we'll run outcome processing for the test */
 	        performOutcomeProcessing();
@@ -462,6 +489,8 @@ public final class TestSessionController extends TestProcessingController {
      * Precondition: The test must have been ended
      * <p>
      * Postcondition: The test will be marked as being exited.
+     *
+     * @throws IllegalArgumentException if timestamp is null
      */
     public void exitTest(final Date timestamp) {
         Assert.notNull(timestamp, "timestamp");
@@ -518,10 +547,13 @@ public final class TestSessionController extends TestProcessingController {
         final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
         ensureNonlinearTestPart(currentTestPartNode);
 
-        /* If an item is currently selected, then suspend the session and update timer on parent sections */
+        /* If an item is currently selected then suspend the session (if still open) and update timer on parent sections */
         final TestPlanNode currentItemRefNode = getCurrentItemRefNode();
         if (currentItemRefNode!=null) {
-            getItemSessionController(currentItemRefNode).suspendItemSession(timestamp);
+            final ItemSessionState currentItemSessionState = ensureItemRefNode(currentItemRefNode);
+            if (!currentItemSessionState.isEnded()) {
+                getItemSessionController(currentItemRefNode).suspendItemSession(timestamp);
+            }
             for (final TestPlanNode sectionNode : currentItemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
                 endControlObjectTimer(ensureAssessmentSectionSessionState(sectionNode), timestamp);
             }
@@ -580,6 +612,16 @@ public final class TestSessionController extends TestProcessingController {
     //-------------------------------------------------------------------
     // Linear navigation within a testPart
 
+    /**
+     * Returns whether the currently-selected item within a {@link TestPart} with
+     * {@link NavigationMode#LINEAR} may be ended. (Ending may be prevented by
+     * {@link ItemSessionControl} conditions.)
+     *
+     * @return true if the item may be ended, false otherwise.
+     *
+     * @throws QtiCandidateStateException if we are not currently in a {@link TestPart}, or if the current
+     *   {@link TestPart} does not have {@link NavigationMode#NONLINEAR}.
+     */
     public boolean mayEndItemLinear() {
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureLinearTestPart(currentTestPartNode);
@@ -607,6 +649,21 @@ public final class TestSessionController extends TestProcessingController {
         return true;
     }
 
+    /**
+     * Ends the currently-selected item within a {@link TestPart} with
+     * {@link NavigationMode#LINEAR}, if possible. The test will then advance
+     * to the next available item, or end the {@link TestPart}.
+     *
+     * @param timestamp timestamp for this operation
+     *
+     * @return the {@link TestPlanNode} corresponding to the next selected item,
+     *   or null if there are no more available items and the {@link TestPart} has
+     *   ended.
+     *
+     * @throws QtiCandidateStateException if we are not currently in a {@link TestPart}, or if the current
+     *   {@link TestPart} does not have {@link NavigationMode#NONLINEAR}.
+     * @throws IllegalArgumentException if timestamp is null
+     */
     public TestPlanNode endItemLinear(final Date timestamp) {
         Assert.notNull(timestamp, "timestamp");
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
@@ -793,41 +850,80 @@ public final class TestSessionController extends TestProcessingController {
         final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
 
-        return !itemSessionState.isClosed();
+        return !itemSessionState.isEnded();
     }
 
     /**
-     * Handle responses for the currently selected item.
+     * Submits response variables for the currently selected item.
      *
-     * TODO: Should we separate bind & commit, as is now supported in {@link ItemSessionController}?
+     * No further processing is run until {@link #commitResponsesToCurrentItem(Date)} is called.
+     *
+     * @see ItemSessionController#bindResponses(Date, Map)
+     * @see #commitResponsesToCurrentItem(Date)
+     *
+     * @param timestamp timestamp for this event
+     * @param responseMap Map of responses to set, keyed on response variable identifier
+     *
+     * @return true if all responses were successfully bound and validated, false otherwise.
+     *   Further details can be found within the {@link ItemSessionState} for the currently-selected
+     *   item.
+     *
+     * @throws IllegalArgumentException if timestamp is null, or if responseMap is null, contains a null value,
+     *   or if any key fails to map to an interaction
+     * @throws QtiCandidateStateException if no item is selected or if no responses may be submitted
+     */
+    public boolean submitResponsesToCurrentItem(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
+        Assert.notNull(timestamp, "timestamp");
+        Assert.notNull(responseMap, "responseMap");
+        final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
+
+        /* Touch durations on item, ancestor sections, test part and test */
+        touchDurations(currentItemRefNode, timestamp);
+
+        /* Bind responses */
+        final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
+        final boolean result = itemSessionController.bindResponses(timestamp, responseMap);
+
+        /* Commit responses and run RP now if INDIVIUAL mode */
+        final TestPart testPart = ensureCurrentTestPart();
+        if (testPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
+            itemSessionController.commitResponses(timestamp);
+        }
+
+        return result;
+    }
+
+    /**
+     * Handle responses for the currently selected item. First, the responses will be bound to
+     * the current item as in {@link ItemSessionController#bindResponses(Date, Map)}.
      * <p>
-     * In {@link SubmissionMode#INDIVIDUAL} mode, response processing is then
-     * run, following by outcome processing.
-     * <p>
-     * In {@link SubmissionMode#SIMULTANEOUS} mode, no processing happens.
+     * In {@link SubmissionMode#INDIVIDUAL} mode, the responses are then committed as in
+     * {@link ItemSessionController#commitResponses(Date)}, then response processing is run,
+     * followed by outcome processing.
+     *
+     * @param timestamp timestamp for this operation
+     * @param responseMap Map of response data
+     *
+     * @throws QtiCandidateStateException if no item is selected
      */
     public void handleResponsesToCurrentItem(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(timestamp, "timestamp");
         Assert.notNull(responseMap, "responseMap");
         final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
 
-        /* Bind and commit responses */
+        /* Touch durations on item, ancestor sections, test part and test */
+        touchDurations(currentItemRefNode, timestamp);
+
+        /* Bind responses */
         final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
         final boolean boundSuccessfully = itemSessionController.bindResponses(timestamp, responseMap);
-        itemSessionController.commitResponses(timestamp);
 
-        /* Touch durations on item, ancestor sections, test part and test */
-        itemSessionController.touchDuration(timestamp);
-        for (final TestPlanNode sectionNode : currentItemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
-            touchControlObjectTimer(ensureAssessmentSectionSessionState(sectionNode), timestamp);
-        }
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        touchControlObjectTimer(ensureTestPartSessionState(currentTestPartNode), timestamp);
-        touchControlObjectTimer(testSessionState, timestamp);
-
-        /* Do processing if we're in INDIVIDUAL mode */
+        /* If we're in INDIVIDUAL mode, then commit responses then do RP & OP */
         final TestPart testPart = ensureCurrentTestPart();
         if (testPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
+            /* Commit responses */
+            itemSessionController.commitResponses(timestamp);
+
             /* Run response processing if everything was bound successfully */
             if (boundSuccessfully) {
                 itemSessionController.performResponseProcessing(timestamp);
@@ -836,6 +932,24 @@ public final class TestSessionController extends TestProcessingController {
             performOutcomeProcessing();
         }
     }
+
+    /**
+     * Touches the duration for the given item, and the sections and testParts containing it.
+     *
+     * @param itemRefNode
+     * @param timestamp
+     */
+    private void touchDurations(final TestPlanNode itemRefNode, final Date timestamp) {
+        final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+        itemSessionController.touchDuration(timestamp);
+        for (final TestPlanNode sectionNode : itemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
+            touchControlObjectTimer(ensureAssessmentSectionSessionState(sectionNode), timestamp);
+        }
+        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
+        touchControlObjectTimer(ensureTestPartSessionState(currentTestPartNode), timestamp);
+        touchControlObjectTimer(testSessionState, timestamp);
+    }
+
 
     /**
      * Tests whether the candidate may review the item having the given {@link TestPlanNodeKey}.

@@ -606,6 +606,10 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
         return Collections.unmodifiableMap(uncommittedResponseValues);
     }
 
+    public boolean hasUncommittedResponseValues() {
+        return !uncommittedResponseValues.isEmpty();
+    }
+
 
     public Value getResponseValue(final Identifier identifier) {
         Assert.notNull(identifier);

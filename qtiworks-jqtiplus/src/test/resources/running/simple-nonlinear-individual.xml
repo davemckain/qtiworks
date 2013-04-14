@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assessmentTest
+  xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="test"
+  title="Simple Nonlinear Individual">
+
+  <outcomeDeclaration identifier="OP_DONE" baseType="boolean" cardinality="single">
+    <defaultValue>
+      <value baseType="boolean">false</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="TEST_SCORE" baseType="float" cardinality="single">
+    <defaultValue>
+      <value baseType="float">0.0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <testPart identifier="p" navigationMode="nonlinear" submissionMode="individual">
+    <assessmentSection identifier="s" title="Section" visible="true">
+      <assessmentItemRef identifier="i1" href="choice.xml"/>
+      <assessmentItemRef identifier="i2" href="choice.xml"/>
+    </assessmentSection>
+  </testPart>
+  <outcomeProcessing>
+    <setOutcomeValue identifier="OP_DONE">
+      <baseValue baseType="boolean">true</baseValue>
+    </setOutcomeValue>
+    <setOutcomeValue identifier="TEST_SCORE">
+      <sum>
+        <testVariables variableIdentifier="SCORE"/>
+      </sum>
+    </setOutcomeValue>
+  </outcomeProcessing>
+
+</assessmentTest>

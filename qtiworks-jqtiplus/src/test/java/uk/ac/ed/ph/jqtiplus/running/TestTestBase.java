@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionSessionState;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
@@ -56,7 +57,9 @@ import org.junit.Before;
 import org.w3c.dom.Document;
 
 /**
- * Base class for tests of tests.
+ * Base class for tests of running {@link AssessmentTest}s.
+ * 
+ * NB: Subclasses should start their time deltas at 1000L and multiply by 2 each time.
  *
  * @author David McKain
  */
@@ -83,7 +86,7 @@ public abstract class TestTestBase {
     protected abstract String getTestFilePath();
 
     @Before
-    public void setupTestSessionController() {
+    public void initTestSessionController() {
         testEntryTimestamp = new Date();
         testSessionController = UnitTestHelper.loadUnitTestAssessmentTestForControl(getTestFilePath(), true);
         testSessionController.initialize(testEntryTimestamp);
@@ -345,5 +348,37 @@ public abstract class TestTestBase {
         final ItemSessionState result = assertItemSessionState(identifier);
         RunAssertions.assertFailedPreconditionAndExited(result, exitTimestamp);
         return result;
+    }
+
+    protected void assertItemsSelectable(final String... identifiers) {
+        for (final String identifier : identifiers) {
+            assertItemSelectable(identifier);
+        }
+    }
+
+    protected void assertItemsSelectable(final Iterable<String> identifiers) {
+        for (final String identifier : identifiers) {
+            assertItemSelectable(identifier);
+        }
+    }
+
+    protected void assertItemSelectable(final String identifier) {
+        Assert.assertTrue(testSessionController.maySelectItemNonlinear(getTestNodeKey(identifier)));
+    }
+
+    protected void assertItemsNotSelectable(final String... identifiers) {
+        for (final String identifier : identifiers) {
+            assertItemNotSelectable(identifier);
+        }
+    }
+
+    protected void assertItemsNotSelectable(final Iterable<String> identifiers) {
+        for (final String identifier : identifiers) {
+            assertItemNotSelectable(identifier);
+        }
+    }
+
+    protected void assertItemNotSelectable(final String identifier) {
+        Assert.assertFalse(testSessionController.maySelectItemNonlinear(getTestNodeKey(identifier)));
     }
 }

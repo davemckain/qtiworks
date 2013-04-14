@@ -620,6 +620,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      *
      * @throws IllegalArgumentException if timestamp is null, or if responseMap is null, contains a null value,
      *   or if any key fails to map to an interaction
+     * @throws QtiCandidateStateException if item session is not open or is currently suspended
      */
     public boolean bindResponses(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
         Assert.notNull(timestamp);

@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 
 import java.util.Arrays;
@@ -56,12 +55,12 @@ import org.junit.Test;
  *
  * @author David McKain
  */
-public final class TestComplexLinearNavigationTest extends TestTestBase {
+public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
 
     private static final String TEST_FILE_PATH = "running/test-complex-linear.xml";
 
     private static final List<String> TEST_NODES = Arrays.asList(new String[] {
-        "p1",
+        "p",
             "s11",
                 "s111",
                     "i1111", /* = 1st entered item */
@@ -80,10 +79,6 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
                 "i124"       /* Failed P/C */
     });
 
-    private TestPartSessionState testPartSessionState;
-
-    private long testPartEntryDelta;
-    private Date testPartEntryTimestamp;
     private long item1EndDelta;
     private Date item1EndTimestamp;
     private long item2EndDelta;
@@ -107,12 +102,6 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
 
     @Before
     public void before() {
-        testPartSessionState = testSessionState.getTestPartSessionStates().get(getTestNodeKey("p1"));
-
-        /* Create times & deltas. We use powers to 2 in deltas to help diagnosis and avoid addition collisions */
-        testPartEntryDelta = 1000L;
-        testPartEntryTimestamp = ObjectUtilities.addToTime(testEntryTimestamp, testPartEntryDelta);
-
         item1EndDelta = 2000L;
         item1EndTimestamp = ObjectUtilities.addToTime(testPartEntryTimestamp, item1EndDelta);
 
@@ -132,72 +121,18 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
     //-------------------------------------------------------
 
     @Test
-    public void testBefore() {
-        RunAssertions.assertNotYetEntered(testSessionState);
-        Assert.assertEquals(0.0, testSessionState.computeDuration(), 0);
-        Assert.assertNull(testSessionState.getDurationIntervalStartTime());
-        Assert.assertNull(testSessionState.getCurrentTestPartKey());
-        Assert.assertNull(testSessionState.getCurrentItemKey());
-        Assert.assertNotNull(testPartSessionState);
-
-        /* We won't have entered the testPart yet */
-        RunAssertions.assertNotYetEntered(testPartSessionState);
-
-        /* We won't have entered any sections yet */
-        assertAssessmentSectionsNotEntered(allSections());
-
-        /* We won't have entered any items yet */
-        assertItemsNotEntered(allItems());
-    }
-
-    @Test
-    public void testEntryIntoTest() {
-        testSessionController.enterTest(testEntryTimestamp);
-
-        /* Test should be open. Times at zero. No part or item selected */
-        assertTestOpen();
-        Assert.assertEquals(0L, testSessionState.getDurationAccumulated());
-        Assert.assertEquals(testEntryTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertNull(testSessionState.getCurrentTestPartKey());
-        Assert.assertNull(testSessionState.getCurrentItemKey());
-
-        /* It should be possible to enter a testPart */
-        Assert.assertNotNull(testSessionController.findNextEnterableTestPart());
-
-        /* We won't have entered the testPart yet */
-        RunAssertions.assertNotYetEntered(testPartSessionState);
-
-        /* We won't have entered any sections yet */
-        assertAssessmentSectionsNotEntered(allSections());
-
-        /* We won't have entered any items yet */
-        assertItemsNotEntered(allItems());
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testEntryIntoTestNullTimestamp() {
-        testSessionController.enterTest(null);
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testEntryIntoTestPartNullTimestamp() {
-        testSessionController.enterTest(testEntryTimestamp);
-        testSessionController.enterNextAvailableTestPart(null);
-    }
-
-    @Test
     public void testEntryIntoTestPartAndItem1() {
         testSessionController.enterTest(testEntryTimestamp);
 
         /* Enter test part (which should also select first item) */
         final TestPlanNode testPartNode = testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        Assert.assertEquals(getTestNode("p1"), testPartNode);
+        Assert.assertEquals(getTestPartNode(), testPartNode);
 
         /* Check state on test */
         assertTestOpen();
         Assert.assertEquals(testPartEntryDelta, testSessionState.getDurationAccumulated());
         Assert.assertEquals(testPartEntryTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertEquals(getTestPartNodeKey(), testSessionState.getCurrentTestPartKey());
         Assert.assertEquals(getTestNodeKey("i1111"), testSessionState.getCurrentItemKey());
 
         /* Check state on testPart */
@@ -237,7 +172,7 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
         assertTestOpen();
         Assert.assertEquals(testPartEntryDelta + item1EndDelta, testSessionState.getDurationAccumulated());
         Assert.assertEquals(item1EndTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertEquals(getTestPartNodeKey(), testSessionState.getCurrentTestPartKey());
         Assert.assertEquals(getTestNodeKey("i1132"), testSessionState.getCurrentItemKey());
 
         /* Check state on testPart */
@@ -277,7 +212,7 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
         assertTestOpen();
         Assert.assertEquals(testPartEntryDelta + item1EndDelta + item2EndDelta, testSessionState.getDurationAccumulated());
         Assert.assertEquals(item2EndTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertEquals(getTestPartNodeKey(), testSessionState.getCurrentTestPartKey());
         Assert.assertEquals(getTestNodeKey("i1133"), testSessionState.getCurrentItemKey());
 
         /* Check state on testPart */
@@ -319,7 +254,7 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
         assertTestOpen();
         Assert.assertEquals(testPartEntryDelta + item1EndDelta + item2EndDelta + item3EndDelta, testSessionState.getDurationAccumulated());
         Assert.assertEquals(item3EndTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertEquals(getTestPartNodeKey(), testSessionState.getCurrentTestPartKey());
         Assert.assertEquals(getTestNodeKey("i1211"), testSessionState.getCurrentItemKey());
 
         /* Check state on testPart */
@@ -363,7 +298,7 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
         assertTestOpen();
         Assert.assertEquals(testPartEntryDelta + item1EndDelta + item2EndDelta + item3EndDelta + item4EndDelta, testSessionState.getDurationAccumulated());
         Assert.assertEquals(item4EndTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertEquals(getTestPartNodeKey(), testSessionState.getCurrentTestPartKey());
         Assert.assertEquals(getTestNodeKey("i123"), testSessionState.getCurrentItemKey());
 
         /* Check state on testPart */
@@ -413,7 +348,7 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
         assertTestOpen();
         Assert.assertEquals(testPartEntryDelta + item1EndDelta + item2EndDelta + item3EndDelta + item4EndDelta + item5EndDelta, testSessionState.getDurationAccumulated());
         Assert.assertEquals(item5EndTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertEquals(getTestPartNodeKey(), testSessionState.getCurrentTestPartKey());
         Assert.assertNull(testSessionState.getCurrentItemKey());
 
         /* Check state on testPart */
@@ -461,7 +396,7 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
         assertTestOpen();
         Assert.assertEquals(testPartEntryDelta + testPartEndDelta, testSessionState.getDurationAccumulated());
         Assert.assertEquals(testPartEndTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertEquals(getTestPartNodeKey(), testSessionState.getCurrentTestPartKey());
         Assert.assertNull(testSessionState.getCurrentItemKey());
         Assert.assertNull(testSessionController.findNextEnterableTestPart());
 
@@ -548,7 +483,7 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
         assertTestOpen();
         Assert.assertEquals(testPartEntryDelta + item1EndDelta + testPartEndDelta, testSessionState.getDurationAccumulated());
         Assert.assertEquals(testPartEndTimestamp, testSessionState.getDurationIntervalStartTime());
-        Assert.assertEquals(getTestNodeKey("p1"), testSessionState.getCurrentTestPartKey());
+        Assert.assertEquals(getTestPartNodeKey(), testSessionState.getCurrentTestPartKey());
         Assert.assertNull(testSessionState.getCurrentItemKey());
         Assert.assertNull(testSessionController.findNextEnterableTestPart());
 
@@ -628,19 +563,5 @@ public final class TestComplexLinearNavigationTest extends TestTestBase {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
         testSessionController.exitTest(testPartEntryTimestamp);
-    }
-
-    //-------------------------------------------------------
-
-    protected void assertTestPartOpen() {
-        RunAssertions.assertOpen(testPartSessionState, testPartEntryTimestamp);
-    }
-
-    protected void assertTestPartEnded(final Date timestamp) {
-        RunAssertions.assertNowEnded(testPartSessionState, timestamp);
-    }
-
-    protected void assertTestPartNowExited(final Date timestamp) {
-        RunAssertions.assertNowExited(testPartSessionState, timestamp);
     }
 }

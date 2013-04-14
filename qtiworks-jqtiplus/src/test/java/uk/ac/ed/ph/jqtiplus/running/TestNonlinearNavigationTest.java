@@ -90,7 +90,7 @@ public final class TestNonlinearNavigationTest extends TestTestBase {
     }
 
     @Before
-    public void xbefore() {
+    public void before() {
         testPart1SessionState = testSessionState.getTestPartSessionStates().get(getTestNodeKey("p1"));
         testPart2SessionState = testSessionState.getTestPartSessionStates().get(getTestNodeKey("p2"));
 
@@ -500,38 +500,6 @@ public final class TestNonlinearNavigationTest extends TestTestBase {
     }
 
     //-------------------------------------------------------
-
-    protected void assertItemsSelectable(final String... identifiers) {
-        for (final String identifier : identifiers) {
-            assertItemSelectable(identifier);
-        }
-    }
-
-    protected void assertItemsSelectable(final Iterable<String> identifiers) {
-        for (final String identifier : identifiers) {
-            assertItemSelectable(identifier);
-        }
-    }
-
-    protected void assertItemSelectable(final String identifier) {
-        Assert.assertTrue(testSessionController.maySelectItemNonlinear(getTestNodeKey(identifier)));
-    }
-
-    protected void assertItemsNotSelectable(final String... identifiers) {
-        for (final String identifier : identifiers) {
-            assertItemNotSelectable(identifier);
-        }
-    }
-
-    protected void assertItemsNotSelectable(final Iterable<String> identifiers) {
-        for (final String identifier : identifiers) {
-            assertItemNotSelectable(identifier);
-        }
-    }
-
-    protected void assertItemNotSelectable(final String identifier) {
-        Assert.assertFalse(testSessionController.maySelectItemNonlinear(getTestNodeKey(identifier)));
-    }
 
     protected void assertTestPart1Open() {
         RunAssertions.assertOpen(testPart1SessionState, testPart1EntryTimestamp);
