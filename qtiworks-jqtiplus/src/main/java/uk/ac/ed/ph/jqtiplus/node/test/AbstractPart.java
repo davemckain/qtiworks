@@ -33,11 +33,15 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
+import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.test.BranchRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.ItemSessionControlGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.PreConditionGroup;
+import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
+import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
@@ -48,18 +52,32 @@ import java.util.List;
  * NB: This is not explicitly defined in the QTI specification, but is convenient here.
  *
  * @author Jiri Kajaba
+ * @author David McKain (refactored)
  */
-public abstract class AbstractPart extends UniqueControlObject {
+public abstract class AbstractPart extends ControlObject<Identifier> implements UniqueNode<Identifier> {
 
     private static final long serialVersionUID = 2243928073967479375L;
 
     public AbstractPart(final ControlObject<?> parent,  final String qtiClassName) {
         super(parent, qtiClassName);
 
+        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
+
         getNodeGroups().add(0, new PreConditionGroup(this));
         getNodeGroups().add(1, new BranchRuleGroup(this));
         getNodeGroups().add(2, new ItemSessionControlGroup(this));
     }
+
+    @Override
+    public Identifier getIdentifier() {
+        return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
+    }
+
+    @Override
+    public void setIdentifier(final Identifier identifier) {
+        getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
+    }
+
 
     public List<PreCondition> getPreConditions() {
         return getNodeGroups().getPreConditionGroup().getPreConditions();
@@ -146,5 +164,10 @@ public abstract class AbstractPart extends UniqueControlObject {
     @Deprecated
     public boolean isJumpSafeTarget() {
         return true;
+    }
+
+    @Override
+    protected void validateThis(final ValidationContext context) {
+        validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
     }
 }
