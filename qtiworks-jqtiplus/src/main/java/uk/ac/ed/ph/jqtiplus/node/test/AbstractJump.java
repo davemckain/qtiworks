@@ -105,6 +105,7 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
      *
      * @return evaluated condition of this jump
      */
+    @ToRefactor
     public boolean evaluatesTrue(final TestProcessingContext testProcessingContext) {
         final Value value = getExpression().evaluate(testProcessingContext);
         return BooleanValue.TRUE.equals(value);

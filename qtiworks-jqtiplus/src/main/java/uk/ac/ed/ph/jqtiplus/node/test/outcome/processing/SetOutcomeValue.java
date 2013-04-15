@@ -55,7 +55,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
  *
  * @author Jiri Kajaba
  */
-public class SetOutcomeValue extends ProcessOutcomeValue {
+public final class SetOutcomeValue extends ProcessOutcomeValue {
 
     private static final long serialVersionUID = -7790249550437462840L;
 
