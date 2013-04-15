@@ -37,7 +37,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
@@ -222,7 +221,6 @@ public final class BranchRule extends AbstractJump {
      * @param target given target
      * @return true if given target is special (EXIT_TEST, EXIT_TESTPART, EXIT_SECTION); false otherwise
      */
-    @ToCheck
     public static boolean isSpecial(final Identifier target) {
         return target != null && (target.equals(EXIT_TEST) || target.equals(EXIT_TEST_PART) || target.equals(EXIT_SECTION));
     }

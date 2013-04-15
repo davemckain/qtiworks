@@ -84,47 +84,6 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      */
     public abstract List<? extends AbstractPart> getChildren();
 
-    //    /**
-    //     * Returns true if at least one child item reference was already presented to user; false otherwise.
-    //     * <p>
-    //     * Once object is presented it remains presented for ever.
-    //     *
-    //     * @return true if at least one child item reference was already presented to user; false otherwise
-    //     */
-    //    public boolean isPresented() {
-    //        for (AbstractPart child : getChildren()) {
-    //            if (child.isPresented()) {
-    //                return true;
-    //            }
-    //        }
-    //        return false;
-    //    }
-    //
-    //    /**
-    //     * Returns true if this object is finished; false otherwise.
-    //     * <p>
-    //     * Finished state has different meaning for different object types (see overriding methods).
-    //     * <p>
-    //     * Once object is finished it remains finished for ever.
-    //     *
-    //     * @return true if this object is finished; false otherwise
-    //     * @see #setFinished
-    //     */
-    //    public boolean isFinished()
-    //    {
-    //        return finished;
-    //    }
-    //
-    //    /**
-    //     * Sets this object to finished state.
-    //     *
-    //     * @see #isFinished
-    //     */
-    //    public void setFinished()
-    //    {
-    //        finished = true;
-    //    }
-
     /**
      * Returns global index (position) of this object in test.
      * <p>
@@ -133,6 +92,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      * @return global index (position) of this object in test
      */
     @ToCheck
+    @Deprecated
     public int getGlobalIndex() {
         int index = 0;
 
@@ -152,6 +112,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     }
 
     @ToCheck
+    @Deprecated
     private int getGlobalChildrenCount() {
         int count = 0;
 

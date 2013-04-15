@@ -89,11 +89,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Rendering and delivery engines will probably want to use this to perform the core
  * QTI processing.
- *
- * FIXME: Finish this documentation!
- *
- * TO FINISH: Update linear mode to touch durations and enter sections
- *
+ * <p>
  * Usage: one-shot, not thread safe.
  *
  * @author David McKain

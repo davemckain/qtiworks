@@ -195,7 +195,6 @@ public class TestProcessingController extends TestValidationController implement
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(key);
         final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
                 itemSessionControllerSettings, itemProcessingMap, itemSessionState);
-        itemSessionController.setRandomSeed(randomSeed);
         itemSessionController.addNotificationListener(listenerNotificationForwarder);
 
         /* Pass random seed */
