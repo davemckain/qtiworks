@@ -63,7 +63,9 @@ public final class AssessmentSectionSessionState extends AbstractPartSessionStat
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(entryTime=" + getEntryTime()
+                + "(preConditionFailed=" + preConditionFailed
+                + ",branchRuleTargetKey=" + branchRuleTargetKey
+                + ",entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()
                 + ",exitTime=" + getExitTime()
                 + ",durationAccumulated=" + getDurationAccumulated()

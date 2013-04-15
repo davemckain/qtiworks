@@ -178,11 +178,4 @@ public final class TestPlanXmlMarshaller {
                     + "' in attribute " + localName);
         }
     }
-
-    static TestPlanNodeKey parseOptionalTestPlanNodeKeyAttribute(final Element element, final String localName) {
-        if (!element.hasAttribute(localName)) {
-            return null;
-        }
-        return requireTestPlanNodeKeyAttribute(element, localName);
-    }
 }

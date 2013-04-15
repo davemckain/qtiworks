@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.state.AbstractPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.ControlObjectSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -140,6 +141,10 @@ public final class XmlMarshallerCore {
     static void addAbstractPartSessionStateAttributes(final Element element, final AbstractPartSessionState abstractPartSessionState) {
     	addControlObjectSessionStateAttributes(element, abstractPartSessionState);
         element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(abstractPartSessionState.isPreConditionFailed()));
+        final TestPlanNodeKey branchRuleTargetKey = abstractPartSessionState.getBranchRuleTargetKey();
+        if (branchRuleTargetKey!=null) {
+            element.setAttribute("branchRuleTargetKey", branchRuleTargetKey.toString());
+        }
     }
 
     static void addControlObjectSessionStateAttributes(final Element element, final ControlObjectSessionState controlObjectState) {
@@ -337,9 +342,17 @@ public final class XmlMarshallerCore {
         }
     }
 
+    static TestPlanNodeKey parseOptionalTestPlanNodeKeyAttribute(final Element element, final String localName) {
+        if (!element.hasAttribute(localName)) {
+            return null;
+        }
+        return TestPlanXmlMarshaller.requireTestPlanNodeKeyAttribute(element, localName);
+    }
+
     static void parseAbstractPartSessionStateAttributes(final AbstractPartSessionState target, final Element element) {
     	parseControlObjectSessionStateAttributes(target, element);
     	target.setPreConditionFailed(parseOptionalBooleanAttribute(element, "preConditionFailed", false));
+    	target.setBranchRuleTargetKey(parseOptionalTestPlanNodeKeyAttribute(element, "branchRuleTargetKey"));
     }
 
     static void parseControlObjectSessionStateAttributes(final ControlObjectSessionState target, final Element element) {
