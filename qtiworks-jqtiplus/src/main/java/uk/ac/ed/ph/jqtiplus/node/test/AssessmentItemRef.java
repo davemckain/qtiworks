@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringMultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.UriAttribute;
 import uk.ac.ed.ph.jqtiplus.group.test.TemplateDefaultGroup;
@@ -42,7 +41,6 @@ import uk.ac.ed.ph.jqtiplus.group.test.WeightGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.net.URI;
 import java.util.Collections;
@@ -174,18 +172,5 @@ public final class AssessmentItemRef extends SectionPart {
             }
         }
         return result;
-    }
-
-    @Override
-    @Deprecated
-    @ToRemove
-    public boolean isBuiltInVariable(final Identifier identifier) {
-        if (identifier != null) {
-            if (identifier.equals(QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER)
-                    || identifier.equals(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
-                return true;
-            }
-        }
-        return super.isBuiltInVariable(identifier);
     }
 }

@@ -33,13 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
-import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.group.test.TimeLimitGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToCheck;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.util.List;
 
@@ -50,9 +47,8 @@ import java.util.List;
  *   {@link AssessmentTest} identifiers are arbitrary strings; whereas others are proper identifiers.
  *
  * @author Jiri Kajaba
- * @author David McKain
+ * @author David McKain (Refactored)
  */
-@ToCheck
 public abstract class ControlObject<E> extends AbstractNode implements IdentifiableNode<E> {
 
     private static final long serialVersionUID = 3477216040498945052L;
@@ -114,23 +110,6 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     }
 
     /**
-     * Returns true if given parameter is direct or indirect parent of this object; false otherwise.
-     *
-     * @param parent given parameter
-     * @return true if given parameter is direct or indirect parent of this object; false otherwise
-     */
-    @ToCheck
-    public final boolean isChildOf(final ControlObject<?> parent) {
-        if (getParent() == null) {
-            return false;
-        }
-        if (getParent() == parent) {
-            return true;
-        }
-        return getParent().isChildOf(parent);
-    }
-
-    /**
      * Searches descendants of this Object for the first {@link AbstractPart} having the
      * given {@link Identifier}, or null if not found.
      *
@@ -146,38 +125,6 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
             }
         }
         return null;
-    }
-
-    /**
-     * Lookups for item reference with given identifier.
-     *
-     * @param identifier identifier of requested item reference
-     * @return item reference with given identifier or null if identifier is not found or doesn't correspond
-     *         to an {@link AssessmentItemRef}
-     */
-    @ToCheck
-    @Deprecated
-    public final AssessmentItemRef lookupItemRef(final Identifier identifier) {
-        final AbstractPart descendent = lookupFirstDescendant(identifier);
-        if (descendent instanceof AssessmentItemRef) {
-            return (AssessmentItemRef) descendent;
-        }
-        return null;
-    }
-
-    /**
-     * Returns true if given identifier is identifier of one of built-in variables; false otherwise.
-     *
-     * @param identifier given identifier
-     * @return true if given identifier is identifier of one of built-in variables; false otherwise
-     */
-    @Deprecated
-    @ToRemove
-    public boolean isBuiltInVariable(final Identifier identifier) {
-        if (identifier != null && identifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)) {
-            return true;
-        }
-        return false;
     }
 
     @Override
