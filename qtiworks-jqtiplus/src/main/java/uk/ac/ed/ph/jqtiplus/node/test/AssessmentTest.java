@@ -188,6 +188,15 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         return getNodeGroups().getTestPartGroup().getTestParts();
     }
 
+    public TestPart getTestPart(final Identifier testPartIdentifier) {
+        for (final TestPart testPart : getTestParts()) {
+            if (testPartIdentifier.equals(testPart.getIdentifier())) {
+                return testPart;
+            }
+        }
+        return null;
+    }
+
 
     public OutcomeProcessing getOutcomeProcessing() {
         return getNodeGroups().getOutcomeProcessingGroup().getOutcomeProcessing();

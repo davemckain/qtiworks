@@ -51,6 +51,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
@@ -219,7 +220,7 @@ public final class TestSessionController extends TestProcessingController {
      * Finds the {@link TestPlanNode} corresponding to the next enterable {@link TestPart},
      * starting from the one after the current one (if a {@link TestPart} is already selected)
      * or the first {@link TestPart} (if there is no current {@link TestPart}), applying
-     * {@link PreCondition}s along the way.
+     * {@link PreCondition}s along the way. Returns null if there are no enterable {@link TestPart}s.
      * <p>
      * Precondition: The test must have been entered.
      *
@@ -238,7 +239,31 @@ public final class TestSessionController extends TestProcessingController {
             nextTestPartIndex = 0;
         }
         else {
-        	nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
+            /* We're currently inside a TestPart. Check any BranchRules declared on it */
+            final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+            final Identifier branchTargetIdentifier = evaluateBranchRules(currentTestPart);
+            if (branchTargetIdentifier!=null) {
+                if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                    return null;
+                }
+                else if (BranchRule.EXIT_TEST_PART.equals(branchTargetIdentifier)) {
+                    final TestPlanNode branchTargetNode = findBranchRuleTestPartTarget(currentTestPartNode, currentTestPart, branchTargetIdentifier);
+                    if (branchTargetNode!=null) {
+                        nextTestPartIndex = branchTargetNode.getSiblingIndex();
+                    }
+                    else {
+                        nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                    }
+                }
+                else {
+                    fireRuntimeWarning(currentTestPart, "Ignoring invalid branchRule target");
+                    nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                }
+            }
+            else {
+                /* No branches, so start from next testPart */
+                nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
+            }
         }
 
         /* Now locate the first of these for which any preConditions are satisfied */
@@ -253,6 +278,36 @@ public final class TestSessionController extends TestProcessingController {
         	}
         }
         return nextEnterableTestPartNode;
+    }
+
+    private TestPlanNode findBranchRuleTestPartTarget(final TestPlanNode currentTestPartNode, final TestPart currentTestPart, final Identifier branchTargetIdentifier) {
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final TestPlanNode testPartTarget = testPlan.getTestPartNode(branchTargetIdentifier);
+        if (testPartTarget!=null) {
+            if (testPartTarget.getSiblingIndex() > currentTestPartNode.getSiblingIndex()) {
+                return testPartTarget;
+            }
+            fireRuntimeWarning(currentTestPart, "Cannot branch to earlier testPart target " + branchTargetIdentifier + " from " + currentTestPart.getIdentifier());
+        }
+        else {
+            fireRuntimeWarning(currentTestPart, "Could not find branchRule testPart target " + branchTargetIdentifier);
+        }
+        return null;
+    }
+
+    /**
+     * Evaluates each {@link BranchRule} declared on the given {@link AbstractPart} in order,
+     * until a {@link BranchRule} evaluates to true. If this happens, we return the target of
+     * the {@link BranchRule}. If all rules evaluate to false (or there are no rules) then we
+     * return null.
+     */
+    private Identifier evaluateBranchRules(final AbstractPart abstractPart) {
+        for (final BranchRule branchRule : abstractPart.getBranchRules()) {
+            if (branchRule.evaluatesTrue(this)) {
+                return branchRule.getTarget();
+            }
+        }
+        return null;
     }
 
     /**
@@ -282,7 +337,7 @@ public final class TestSessionController extends TestProcessingController {
 
         /* Exit current testPart (if appropriate) and locate next testPart */
         final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
-        final int nextTestPartIndex;
+        int nextTestPartIndex = 0;
         if (currentTestPartNode!=null) {
             /* Check pre-condition on testPart */
             final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
@@ -302,11 +357,34 @@ public final class TestSessionController extends TestProcessingController {
     	    /* Exit the testPart itself */
             currentTestPartSessionState.setExitTime(timestamp);
 
+            /* Check any BranchRules declared on this testPart */
+            final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+            final Identifier branchTargetIdentifier = evaluateBranchRules(currentTestPart);
+            if (branchTargetIdentifier!=null) {
+                if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                    logger.debug("branchRule has requested end of test");
+                    currentTestPartSessionState.setBranchRuleTargetKey(new TestPlanNodeKey(BranchRule.EXIT_TEST, 0, 0));
+                    testSessionState.setEndTime(timestamp);
+                    return null;
+                }
+                else if (BranchRule.EXIT_TEST_PART.equals(branchTargetIdentifier)) {
+                    final TestPlanNode branchTargetNode = findBranchRuleTestPartTarget(currentTestPartNode, currentTestPart, branchTargetIdentifier);
+                    if (branchTargetNode!=null) {
+                        nextTestPartIndex = branchTargetNode.getSiblingIndex();
+                        currentTestPartSessionState.setBranchRuleTargetKey(branchTargetNode.getKey());
+                    }
+                    else {
+                        nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                    }
+                }
+                else {
+                    fireRuntimeWarning(currentTestPart, "Ignoring invalid branchRule target");
+                    nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                }
+            }
+
             /* Choose next testPart index */
             nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
-        }
-        else {
-        	nextTestPartIndex = 0;
         }
 
         /* Work from next testPart onwards, applying preConditions until successful (or we run out of testParts) */
