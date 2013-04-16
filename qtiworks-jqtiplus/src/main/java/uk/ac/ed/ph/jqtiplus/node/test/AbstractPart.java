@@ -154,6 +154,14 @@ public abstract class AbstractPart extends ControlObject<Identifier> implements 
 
     @Override
     protected void validateThis(final ValidationContext context) {
-        validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
+        final Identifier identifier = getIdentifier();
+        if (identifier!=null) {
+            final IdentifierAttribute identifierAttribute = getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME);
+            validateUniqueIdentifier(context, identifierAttribute, identifier);
+            if (BranchRule.isSpecial(identifier)) {
+                context.fireAttributeValidationError(identifierAttribute, "The identifier " + identifier
+                        + " is reserved in tests as a special target for branchRule");
+            }
+        }
     }
 }

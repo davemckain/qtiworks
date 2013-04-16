@@ -39,7 +39,6 @@ import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroup;
 import uk.ac.ed.ph.jqtiplus.group.NodeGroupList;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
-import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -306,11 +305,8 @@ public abstract class AbstractNode implements QtiNode {
     /** Helper method to validate a unique identifier (definition) attribute */
     protected void validateUniqueIdentifier(final ValidationContext context, final IdentifierAttribute identifierAttribute, final Identifier identifier) {
         if (identifier != null) {
-            if (context.isSubjectTest() && BranchRule.isSpecial(identifier)) {
-                context.fireAttributeValidationError(identifierAttribute, "Cannot uses this special target as identifier: " + identifierAttribute.getComputedValue());
-            }
             if (!validateUniqueIdentifier(getRootNode(), identifier)) {
-                context.fireAttributeValidationError(identifierAttribute, "Duplicate identifier: " + identifierAttribute.getComputedValue());
+                context.fireAttributeValidationError(identifierAttribute, "Duplicate identifier " + identifier);
             }
         }
     }
