@@ -42,7 +42,6 @@ import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
 
@@ -101,7 +100,7 @@ public abstract class AbstractPart extends ControlObject<Identifier> implements 
      * (returns itself if this part is instance of test part).
      */
     public TestPart getEnclosingTestPart() {
-        return getNearestAncestorOrSelf(TestPart.class);
+        return searchNearestAncestorOrSelf(TestPart.class);
     }
 
     /**
@@ -113,7 +112,7 @@ public abstract class AbstractPart extends ControlObject<Identifier> implements 
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public final AbstractPart lookupFirstDescendantOrSelf(final Identifier identifier) {
+    public final AbstractPart searchFirstDescendantOrSelf(final Identifier identifier) {
         if (identifier.equals(getIdentifier())) {
             return this;
         }
@@ -151,37 +150,6 @@ public abstract class AbstractPart extends ControlObject<Identifier> implements 
             }
             return parentSection.isInScopeOfOrderingOrSelection();
         }
-    }
-
-    /**
-     * Returns true if it is safe to jump from this object; false otherwise.
-     * <p>
-     * It is not safe to jump from shuffled not fixed object (or if any parent is shuffled and not fixed), because object could be moved after jump target (it
-     * is not allowed).
-     *
-     * @return true if it is safe to jump from this object; false otherwise
-     */
-    @ToRefactor
-    @Deprecated
-    public boolean isJumpSafeSource() {
-        return true;
-    }
-
-    /**
-     * Returns true if this object is safe target of jump; false otherwise.
-     * <p>
-     * It is not save to jump on not required object in selection group (same for all its parents), because object could disappear (not be selected) and jump
-     * target is no longer valid.
-     * <p>
-     * It is not safe to jump on shuffled not fixed object (or if any parent is shuffled and not fixed), because object could be moved before jump source (it is
-     * not allowed).
-     *
-     * @return true if this object is safe target of jump; false otherwise
-     */
-    @ToRefactor
-    @Deprecated
-    public boolean isJumpSafeTarget() {
-        return true;
     }
 
     @Override

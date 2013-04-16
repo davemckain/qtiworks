@@ -91,7 +91,7 @@ public abstract class AbstractNode implements QtiNode {
     }
 
     @Override
-    public <E extends QtiNode> E getNearestAncestor(final Class<E> ancestorClass) {
+    public <E extends QtiNode> E searchNearestAncestor(final Class<E> ancestorClass) {
         QtiNode ancestor = getParent();
         while (ancestor!=null) {
             if (ancestorClass.isInstance(ancestor)) {
@@ -103,11 +103,11 @@ public abstract class AbstractNode implements QtiNode {
     }
 
     @Override
-    public <E extends QtiNode> E getNearestAncestorOrSelf(final Class<E> ancestorClass) {
+    public <E extends QtiNode> E searchNearestAncestorOrSelf(final Class<E> ancestorClass) {
         if (ancestorClass.isInstance(this)) {
             return ancestorClass.cast(this);
         }
-        return getNearestAncestor(ancestorClass);
+        return searchNearestAncestor(ancestorClass);
     }
 
     @Override
@@ -287,7 +287,6 @@ public abstract class AbstractNode implements QtiNode {
      * will *not* have been validated at the time this method is called, so
      * validation logic should be suitably defensive.
      */
-    @SuppressWarnings("unused")
     protected void validateThis(final ValidationContext context) {
         /* Subclasses should fill in as required */
     }

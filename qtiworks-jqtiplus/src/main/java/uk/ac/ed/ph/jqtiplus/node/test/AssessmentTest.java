@@ -202,7 +202,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }
 
-    public List<TestFeedback> findTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
+    public List<TestFeedback> searchTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
         Assert.notNull(testFeedbackAccess, "testFeedbackAccess");
         final List<TestFeedback> result = new ArrayList<TestFeedback>();
         for (final TestFeedback testFeedback : getTestFeedbacks()) {

@@ -119,7 +119,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
     public final AbstractPart lookupFirstDescendant(final Identifier identifier) {
         AbstractPart result;
         for (final AbstractPart child : getChildAbstractParts()) {
-            result = child.lookupFirstDescendantOrSelf(identifier);
+            result = child.searchFirstDescendantOrSelf(identifier);
             if (result != null) {
                 return result;
             }
