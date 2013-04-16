@@ -131,7 +131,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     }
 
     @Override
-    public List<TestPart> getChildren() {
+    public List<TestPart> getChildAbstractParts() {
         return getNodeGroups().getTestPartGroup().getTestParts();
     }
 

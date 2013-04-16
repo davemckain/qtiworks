@@ -79,10 +79,8 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
 
     /**
      * Gets abstractPart children.
-     *
-     * @return abstractPart children
      */
-    public abstract List<? extends AbstractPart> getChildren();
+    public abstract List<? extends AbstractPart> getChildAbstractParts();
 
     /**
      * Returns global index (position) of this object in test.
@@ -91,36 +89,27 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      *
      * @return global index (position) of this object in test
      */
-    @ToCheck
-    @Deprecated
-    public int getGlobalIndex() {
-        int index = 0;
-
-        if (getParent() != null) {
-            index += getParent().getGlobalIndex() + 1;
-
-            for (final ControlObject<?> child : getParent().getChildren()) {
+    public int computeAbstractPartGlobalIndex() {
+        int result = 0;
+        final ControlObject<?> parentControlObject = getParent();
+        if (parentControlObject != null) {
+            result += parentControlObject.computeAbstractPartGlobalIndex() + 1;
+            for (final ControlObject<?> child : parentControlObject.getChildAbstractParts()) {
                 if (child == this) {
                     break;
                 }
-
-                index += child.getGlobalChildrenCount() + 1;
+                result += child.computeAbstractPartDescendantCount() + 1;
             }
         }
-
-        return index;
+        return result;
     }
 
-    @ToCheck
-    @Deprecated
-    private int getGlobalChildrenCount() {
+    private int computeAbstractPartDescendantCount() {
         int count = 0;
-
-        for (final ControlObject<?> child : getChildren()) {
+        for (final ControlObject<?> child : getChildAbstractParts()) {
             count++;
-            count += child.getGlobalChildrenCount();
+            count += child.computeAbstractPartDescendantCount();
         }
-
         return count;
     }
 
@@ -150,7 +139,7 @@ public abstract class ControlObject<E> extends AbstractNode implements Identifia
      */
     public final AbstractPart lookupFirstDescendant(final Identifier identifier) {
         AbstractPart result;
-        for (final AbstractPart child : getChildren()) {
+        for (final AbstractPart child : getChildAbstractParts()) {
             result = child.lookupFirstDescendantOrSelf(identifier);
             if (result != null) {
                 return result;

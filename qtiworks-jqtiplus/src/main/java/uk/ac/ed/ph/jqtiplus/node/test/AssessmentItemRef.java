@@ -80,7 +80,7 @@ public final class AssessmentItemRef extends SectionPart {
     }
 
     @Override
-    public List<AbstractPart> getChildren() {
+    public List<AbstractPart> getChildAbstractParts() {
         return Collections.emptyList();
     }
 

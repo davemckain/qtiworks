@@ -136,6 +136,24 @@ public abstract class AbstractPart extends ControlObject<Identifier> implements 
     }
 
     /**
+     * Returns whether or not this {@link AbstractPart} is in "scope" of an {@link Ordering}
+     * or {@link Selection} defined on an ancestor {@link AssessmentSection}.
+     */
+    public boolean isInScopeOfOrderingOrSelection() {
+        final ControlObject<?> parentNode = getParent();
+        if (parentNode==null || !(parentNode instanceof AssessmentSection)) {
+            return false;
+        }
+        else {
+            final AssessmentSection parentSection = (AssessmentSection) parentNode;
+            if (parentSection.getSelection()!=null || parentSection.getOrdering()!=null) {
+                return true;
+            }
+            return parentSection.isInScopeOfOrderingOrSelection();
+        }
+    }
+
+    /**
      * Returns true if it is safe to jump from this object; false otherwise.
      * <p>
      * It is not safe to jump from shuffled not fixed object (or if any parent is shuffled and not fixed), because object could be moved after jump target (it

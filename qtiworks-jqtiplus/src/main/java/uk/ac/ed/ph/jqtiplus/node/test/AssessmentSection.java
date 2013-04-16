@@ -82,7 +82,7 @@ public final class AssessmentSection extends SectionPart {
     }
 
     @Override
-    public List<SectionPart> getChildren() {
+    public List<SectionPart> getChildAbstractParts() {
         return getSectionParts();
     }
 

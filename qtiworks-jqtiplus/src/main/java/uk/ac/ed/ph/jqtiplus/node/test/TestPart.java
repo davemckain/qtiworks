@@ -79,7 +79,7 @@ public final class TestPart extends AbstractPart {
     }
 
     @Override
-    public List<AssessmentSection> getChildren() {
+    public List<AssessmentSection> getChildAbstractParts() {
         return getAssessmentSections();
     }
 

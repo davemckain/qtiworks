@@ -88,18 +88,6 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
-    @ToRefactor
-    @Override
-    protected void validateThis(final ValidationContext context) {
-        final TestPart parentTestPart = getParent().getEnclosingTestPart();
-        if (parentTestPart.getNavigationMode() != null && parentTestPart.getSubmissionMode() != null) {
-            if (getParent() != parentTestPart && !parentTestPart.areJumpsEnabled()) {
-                context.fireValidationWarning(this, "Jump will be ignored for modes: " +
-                        parentTestPart.getNavigationMode() + " " + parentTestPart.getSubmissionMode());
-            }
-        }
-    }
-
     /**
      * Evaluates condition of this jump.
      *
