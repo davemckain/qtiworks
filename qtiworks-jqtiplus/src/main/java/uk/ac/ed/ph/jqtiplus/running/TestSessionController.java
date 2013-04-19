@@ -244,9 +244,14 @@ public final class TestSessionController extends TestProcessingController {
             final Identifier branchTargetIdentifier = evaluateBranchRules(currentTestPart);
             if (branchTargetIdentifier!=null) {
                 if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                    /* This will end the test */
                     return null;
                 }
                 else if (BranchRule.EXIT_TEST_PART.equals(branchTargetIdentifier)) {
+                    fireRuntimeWarning(currentTestPart, "Ignoring EXIT_TEST_PART branchRule on a testPart");
+                    nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                }
+                else {
                     final TestPlanNode branchTargetNode = findBranchRuleTestPartTarget(currentTestPartNode, currentTestPart, branchTargetIdentifier);
                     if (branchTargetNode!=null) {
                         nextTestPartIndex = branchTargetNode.getSiblingIndex();
@@ -254,10 +259,6 @@ public final class TestSessionController extends TestProcessingController {
                     else {
                         nextTestPartIndex = currentTestPartNode.getSiblingIndex();
                     }
-                }
-                else {
-                    fireRuntimeWarning(currentTestPart, "Ignoring invalid branchRule target");
-                    nextTestPartIndex = currentTestPartNode.getSiblingIndex();
                 }
             }
             else {
@@ -368,6 +369,10 @@ public final class TestSessionController extends TestProcessingController {
                     return null;
                 }
                 else if (BranchRule.EXIT_TEST_PART.equals(branchTargetIdentifier)) {
+                    fireRuntimeWarning(currentTestPart, "Ignoring invalid EXIT_TEST_PART branchRule on a testPart");
+                    nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                }
+                else {
                     final TestPlanNode branchTargetNode = findBranchRuleTestPartTarget(currentTestPartNode, currentTestPart, branchTargetIdentifier);
                     if (branchTargetNode!=null) {
                         nextTestPartIndex = branchTargetNode.getSiblingIndex();
@@ -376,10 +381,6 @@ public final class TestSessionController extends TestProcessingController {
                     else {
                         nextTestPartIndex = currentTestPartNode.getSiblingIndex();
                     }
-                }
-                else {
-                    fireRuntimeWarning(currentTestPart, "Ignoring invalid branchRule target");
-                    nextTestPartIndex = currentTestPartNode.getSiblingIndex();
                 }
             }
 
@@ -792,12 +793,56 @@ public final class TestSessionController extends TestProcessingController {
         final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
         final TestPart currentTestPart = ensureLinearTestPart(currentTestPartNode);
 
+        /* First, we work out where to start looking from, taking into account any branchRules */
+        TestPlanNode startSearchNode = null;
         final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
-        final TestPlanNode startSearchNode;
         if (currentItemKey!=null) {
+            final TestPlanNode currentItemNode = getCurrentItemRefNode();
+            boolean branchSucceeded = false;
+
+            /* Evaluate any branchRules on current item */
+            final Identifier branchTargetIdentifier = evaluateBranchRules(currentTestPart);
+            if (branchTargetIdentifier!=null) {
+                final ItemSessionState currentItemState = ensureItemRefNode(currentItemNode);
+                if (BranchRule.EXIT_TEST_PART.equals(branchTargetIdentifier)) {
+                    /* Branch to end of testPart */
+                    logger.debug("branchRule requested end of testPart");
+                    currentItemState.setBranchRuleTargetKey(new TestPlanNodeKey(BranchRule.EXIT_TEST_PART, 0, 0));
+                    testSessionState.setCurrentItemKey(null);
+                    endCurrentTestPart(timestamp);
+                    branchSucceeded = true;
+                    return null;
+                }
+                else if (BranchRule.EXIT_SECTION.equals(branchTargetIdentifier)) {
+                    /* Branch to end of section */
+                    logger.debug("branchRule requested end of section");
+                    currentItemState.setBranchRuleTargetKey(new TestPlanNodeKey(BranchRule.EXIT_SECTION, 0, 0));
+                    final TestPlanNode parentSectionNode = currentItemNode.getParent();
+                    startSearchNode = walkToNextSiblingOrAncestorNode(parentSectionNode, timestamp);
+                    branchSucceeded = true;
+                }
+                else if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                    fireValidationError(ensureItemRef(currentItemNode), "Ignoring illegal EXIT_TEST branchRule");
+                }
+                else {
+                    /* BRANCH TO REQUESTED ITEM/SECTION */
+                    logger.debug("branchRule requested target {}", branchTargetIdentifier);
+                    startSearchNode = walkToBranchTarget(currentItemNode, branchTargetIdentifier, timestamp);
+                    if (startSearchNode!=null) {
+                        currentItemState.setBranchRuleTargetKey(startSearchNode.getKey());
+                    }
+                    else {
+                        fireRuntimeWarning(testProcessingMap.resolveAbstractPart(currentItemNode),
+                                "branchRule failed to move forward to target " + branchTargetIdentifier
+                                + " so is being ignored. Check the validity of this test!");
+                    }
+                }
+            }
+
         	/* Walk to next sibling/ancestor so that we can search for next enterable item */
-        	final TestPlanNode currentItemNode = getCurrentItemRefNode();
-        	startSearchNode = walkToNextSiblingOrAncestorNode(currentItemNode, timestamp);
+            if (!branchSucceeded) {
+                startSearchNode = walkToNextSiblingOrAncestorNode(currentItemNode, timestamp);
+            }
         }
         else {
         	/* Haven't entered any items yet, so search from first child (if available) */
@@ -823,6 +868,93 @@ public final class TestSessionController extends TestProcessingController {
             logger.debug("Linear navigation has reached end of testPart");
         }
         return nextItemRefNode;
+    }
+
+    private TestPlanNode walkToNextSiblingOrAncestorNode(final TestPlanNode startNode, final Date timestamp) {
+        final TestPlanNode currentNode = startNode;
+        if (currentNode.hasFollowingSibling()) {
+            /* Walk to next sibling */
+            return currentNode.getFollowingSibling();
+        }
+        else {
+            /* No more siblings, so go up to parent then onto its next sibling */
+            final TestPlanNode parentNode = currentNode.getParent();
+            switch (parentNode.getTestNodeType()) {
+                case TEST_PART:
+                    /* We've reached the end of the TestPart, so stop searching altogether */
+                    return null;
+
+                case ASSESSMENT_SECTION:
+                    /* Reached end of section. So exit then move on */
+                    final AssessmentSectionSessionState assessmentSectionSessionState = ensureAssessmentSectionSessionState(parentNode);
+                    assessmentSectionSessionState.setEndTime(timestamp);
+                    endControlObjectTimer(assessmentSectionSessionState, timestamp);
+                    return walkToNextSiblingOrAncestorNode(parentNode, timestamp);
+
+                default:
+                    throw new QtiLogicException("Did not expect to meet a Node of type " + currentNode.getTestNodeType());
+            }
+        }
+    }
+
+    private TestPlanNode walkToBranchTarget(final TestPlanNode startNode, final Identifier branchTargetIdentifier, final Date timestamp) {
+        /* This one's more complicated. Probably best done via paths:
+         *
+         * Suppose we're at P/A/B/C/D
+         *    branch to     P/A/X/Y
+         *
+         * then we need to end sections C, B, then enter X and Y (if Y is a section)
+         *
+         * QUERY: Do we check preConditions on the way to the branch target? (I'm not going to)
+         */
+        /* First we'll find the first target Node that with global index greater than the current Node.
+         * This is a bit more lax than we probably should be, but hey!
+         */
+        final AbstractPart startPart = testProcessingMap.resolveAbstractPart(startNode);
+        final int currentGlobalIndex = startNode.getKey().getGlobalIndex();
+        final List<TestPlanNode> branchTargetNodes = testSessionState.getTestPlan().getNodes(branchTargetIdentifier);
+        TestPlanNode branchTargetNode = null;
+        for (final TestPlanNode branchTargetCandidateNode : branchTargetNodes) {
+            if (branchTargetCandidateNode.getKey().getGlobalIndex() > currentGlobalIndex) {
+                /* Found suitable target */
+                branchTargetNode = branchTargetCandidateNode;
+                break;
+            }
+        }
+        if (branchTargetNode==null) {
+            fireRuntimeError(startPart, "No branchRule target found with identifier " + branchTargetIdentifier
+                    + " after node with key " + startNode.getKey() + ". Ignoring branchRule. Check test validity.");
+            return null;
+        }
+        /* Make sure branch target is in this testPart */
+        if (!startNode.searchEnclosingTestPartNode().equals(branchTargetNode.searchEnclosingTestPartNode())) {
+            fireRuntimeError(startPart, "branchRule target found with identifier " + branchTargetIdentifier
+                    + " is in a different testPart to the current node with key " + startNode.getKey()
+                    + ". Ignoring branchRule. Check test validity");
+            return null;
+        }
+        /* OK. We now ascend from the current Node until we're an ancestor of the branch target, ending sections as required */
+        TestPlanNode goingUpNode = startNode;
+        while (!(branchTargetNode.hasAncestor(goingUpNode))) {
+            final AssessmentSectionSessionState assessmentSectionSessionState = ensureAssessmentSectionSessionState(goingUpNode);
+            assessmentSectionSessionState.setEndTime(timestamp);
+            endControlObjectTimer(assessmentSectionSessionState, timestamp);
+            goingUpNode = goingUpNode.getParent();
+        }
+        /* Now we traverse down to the startNode, entering sections as required.
+         * (The easiest way to code this is to enter from the targetNode upwards.)
+         */
+        TestPlanNode goingDownNode = branchTargetNode;
+        while (goingDownNode.hasAncestor(goingUpNode)) {
+            if (goingDownNode.getTestNodeType()==TestNodeType.ASSESSMENT_SECTION) {
+                final AssessmentSectionSessionState assessmentSectionSessionState = ensureAssessmentSectionSessionState(goingDownNode);
+                assessmentSectionSessionState.setEntryTime(timestamp);
+                startControlObjectTimer(assessmentSectionSessionState, timestamp);
+            }
+            goingDownNode = goingDownNode.getParent();
+        }
+        /* That's us done now */
+        return branchTargetNode;
     }
 
     private TestPlanNode walkToNextEnterableItemDepthFirst(final TestPart currentTestPart, final TestPlanNode startNode, final Date timestamp) {
@@ -872,33 +1004,6 @@ public final class TestSessionController extends TestProcessingController {
             currentNode = walkToNextSiblingOrAncestorNode(currentNode, timestamp);
         }
         return null;
-    }
-
-    private TestPlanNode walkToNextSiblingOrAncestorNode(final TestPlanNode startNode, final Date timestamp) {
-        final TestPlanNode currentNode = startNode;
-        while (true) {
-            if (currentNode.hasFollowingSibling()) {
-                return currentNode.getFollowingSibling();
-            }
-            else {
-                final TestPlanNode parentNode = currentNode.getParent();
-                switch (parentNode.getTestNodeType()) {
-                    case TEST_PART:
-                        /* We've reached the end of the TestPart, so stop searching altogether */
-                        return null;
-
-                    case ASSESSMENT_SECTION:
-                        /* Reached end of section. So exit then move on */
-                        final AssessmentSectionSessionState assessmentSectionSessionState = ensureAssessmentSectionSessionState(parentNode);
-                        assessmentSectionSessionState.setEndTime(timestamp);
-                        endControlObjectTimer(assessmentSectionSessionState, timestamp);
-                        return walkToNextSiblingOrAncestorNode(parentNode, timestamp);
-
-                    default:
-                        throw new QtiLogicException("Did not expect to meet a Node of type " + currentNode.getTestNodeType());
-                }
-            }
-        }
     }
 
     private TestPart ensureLinearTestPart(final TestPlanNode currentTestPartNode) {
