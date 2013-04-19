@@ -57,7 +57,7 @@ import org.junit.Test;
  */
 public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
 
-    private static final String TEST_FILE_PATH = "running/test-complex-linear.xml";
+    private static final String TEST_FILE_PATH = "running/test-linear-preCondition.xml";
 
     private static final List<String> TEST_NODES = Arrays.asList(new String[] {
         "p",

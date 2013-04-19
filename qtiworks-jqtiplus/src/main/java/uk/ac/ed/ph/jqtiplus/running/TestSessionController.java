@@ -91,6 +91,31 @@ import org.slf4j.LoggerFactory;
  * Rendering and delivery engines will probably want to use this to perform the core
  * QTI processing.
  * <p>
+ * Typical lifecycle:
+ * <ul>
+ *   <li>{@link #initialize(Date)}</li>
+ *   <li>{@link #enterTest(Date)}</li>
+ *   <li>{@link #enterNextAvailableTestPart(Date)}</li>
+ *   <li>(Then navigate through the testPart as below)</li>
+ *   <li>{@link #endCurrentTestPart(Date)}</li>
+ *   <li>(Repeat enter/end until there are no more testParts)</li>
+ *   <li>{@link #exitTest(Date)}}</li>
+ * </ul>
+ * Navigation within a {@link TestPart} depends on its {@link NavigationMode:
+ * <ul>
+ *   <li>Linear mode:
+ *     <ul>
+ *       <li>{@link #enterNextAvailableTestPart(Date)} will select the first available item</li>
+ *       <li>Use {@link #endItemLinear(Date)} to navigate through items</li>
+ *     </ul>
+ *   </li>
+ *   <li>Nonlinear mode:
+ *     <ul>
+ *       <li>Use {@link #selectItemNonlinear(Date, TestPlanNodeKey)} to select items</li>
+ *   </li>
+ * </ul>
+ * Responses can be submitted while an item is selected via {@link #handleResponsesToCurrentItem(Date, Map)}
+ *
  * Usage: one-shot, not thread safe.
  *
  * @author David McKain
@@ -913,19 +938,17 @@ public final class TestSessionController extends TestProcessingController {
         }
     }
 
+    /**
+     * Walks from the given starting Node to the section or item node matching the given branchRule
+     * target identifier.
+     * <p>
+     * If there are multiple branch targets, then we walk to the first one after the current node within
+     * the {@link TestPlan} for the current testPart.
+     *
+     * @return target Node, or null if suitable target was not found.
+     */
     private TestPlanNode walkToBranchTarget(final TestPlanNode startNode, final Identifier branchTargetIdentifier, final Date timestamp) {
-        /* This one's more complicated. Probably best done via paths:
-         *
-         * Suppose we're at P/A/B/C/D
-         *    branch to     P/A/X/Y
-         *
-         * then we need to end sections C, B, then enter X and Y (if Y is a section)
-         *
-         * QUERY: Do we check preConditions on the way to the branch target? (I'm not going to)
-         */
-        /* First we'll find the first target Node that with global index greater than the current Node.
-         * This is a bit more lax than we probably should be, but hey!
-         */
+        /* Find and check the target */
         final AbstractPart startPart = testProcessingMap.resolveAbstractPart(startNode);
         final int currentGlobalIndex = startNode.getKey().getGlobalIndex();
         final List<TestPlanNode> branchTargetNodes = testSessionState.getTestPlan().getNodes(branchTargetIdentifier);
@@ -954,7 +977,16 @@ public final class TestSessionController extends TestProcessingController {
                     + ". Ignoring branchRule. Check test validity");
             return null;
         }
-        /* OK. We now ascend from the current Node until we're an ancestor of the branch target, ending sections as required */
+
+        /* The walk to the branchTarget is quite complicated. Probably best explained by
+         * an example:
+         *
+         * Suppose we're at P/A/B/C/D
+         *    branch to     P/A/X/Y
+         *
+         * then we need to move up to the common ancestor (A), ending sections C and B on the way.
+         * We then descend into X and Y, opening them as required.
+         */
         TestPlanNode goingUpNode = startNode;
         while (!(branchTargetNode.hasAncestor(goingUpNode))) {
             if (goingUpNode.getTestNodeType()==TestNodeType.ASSESSMENT_SECTION) {
@@ -1053,46 +1085,6 @@ public final class TestSessionController extends TestProcessingController {
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
 
         return !itemSessionState.isEnded();
-    }
-
-    /**
-     * Submits response variables for the currently selected item.
-     *
-     * No further processing is run until {@link #commitResponsesToCurrentItem(Date)} is called.
-     *
-     * @see ItemSessionController#bindResponses(Date, Map)
-     * @see #commitResponsesToCurrentItem(Date)
-     *
-     * @param timestamp timestamp for this event
-     * @param responseMap Map of responses to set, keyed on response variable identifier
-     *
-     * @return true if all responses were successfully bound and validated, false otherwise.
-     *   Further details can be found within the {@link ItemSessionState} for the currently-selected
-     *   item.
-     *
-     * @throws IllegalArgumentException if timestamp is null, or if responseMap is null, contains a null value,
-     *   or if any key fails to map to an interaction
-     * @throws QtiCandidateStateException if no item is selected or if no responses may be submitted
-     */
-    public boolean submitResponsesToCurrentItem(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
-        Assert.notNull(timestamp, "timestamp");
-        Assert.notNull(responseMap, "responseMap");
-        final TestPlanNode currentItemRefNode = expectCurrentItemRefNode();
-
-        /* Touch durations on item, ancestor sections, test part and test */
-        touchDurations(currentItemRefNode, timestamp);
-
-        /* Bind responses */
-        final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
-        final boolean result = itemSessionController.bindResponses(timestamp, responseMap);
-
-        /* Commit responses and run RP now if INDIVIUAL mode */
-        final TestPart testPart = expectCurrentTestPart();
-        if (testPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
-            itemSessionController.commitResponses(timestamp);
-        }
-
-        return result;
     }
 
     /**

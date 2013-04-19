@@ -38,8 +38,8 @@ import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
- * In the context of A specific assessmentTest an item, or group of items, may be subject to A time constraint.
- * This specification supports both minimum and maximum time constraints. The controlled time for A single item
+ * In the context of a specific assessmentTest an item, or group of items, may be subject to a time constraint.
+ * This specification supports both minimum and maximum time constraints. The controlled time for a single item
  * is simply the duration of the item session as defined by the built-in response variable duration.
  * For assessmentSections, testParts and whole assessmentTests the time limits relate to the durations of all the
  * item sessions plus any other time spent navigating that part of the test. In other words, the time includes time
@@ -113,15 +113,14 @@ public final class TimeLimit extends AbstractNode {
         return Long.valueOf((long) (getMaximum().doubleValue() * 1000));
     }
 
-
     @Override
     protected void validateThis(final ValidationContext context) {
         if (getMinimum() != null && getMinimum().doubleValue() < 0) {
-            context.fireValidationError(this, "Minimum time cannot be negative.");
+            context.fireValidationError(this, "Minimum time cannot be negative");
         }
 
         if (getMaximum() != null && getMaximum().doubleValue() < 0) {
-            context.fireValidationError(this, "Maximum time cannot be negative.");
+            context.fireValidationError(this, "Maximum time cannot be negative");
         }
     }
 }

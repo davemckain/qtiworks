@@ -55,7 +55,7 @@ import org.junit.Test;
  */
 public final class TestBranchRuleNavigationTest extends TestTestBase {
 
-    private static final String TEST_FILE_PATH = "running/test-branch-rule.xml";
+    private static final String TEST_FILE_PATH = "running/test-linear-branchRule.xml";
 
     private static final List<String> TEST_NODES = Arrays.asList(new String[] {
         "p1",

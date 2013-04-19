@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
  * Represents the <code>preCondition</code> QTI class
  *
  * @author Jiri Kajaba
+ * @author David McKain (refactored)
  */
 public final class PreCondition extends AbstractJump {
 
@@ -67,7 +68,7 @@ public final class PreCondition extends AbstractJump {
             final TestPart testPart = parent.getEnclosingTestPart();
             if (testPart!=null) {
             	if (!testPart.areJumpsEnabled()) {
-            		context.fireValidationWarning(this, "preConditions on assessmentSections or assessmentItemRefs only apply within testParts with navigationMode=linear and submissionMode=individual");
+                    context.fireValidationError(this, "preConditions on assessmentSections or assessmentItemRefs only apply within testParts with linear navigationMode and individual submissionMode");
             	}
             }
     	}

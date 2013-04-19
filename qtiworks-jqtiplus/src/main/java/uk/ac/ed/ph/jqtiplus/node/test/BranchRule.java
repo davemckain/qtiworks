@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
  * Represents the <code>branchRule</code> QTI class
  *
  * @author Jiri Kajaba
+ * @author David McKain (refactored)
  */
 public final class BranchRule extends AbstractJump {
 
@@ -108,7 +109,7 @@ public final class BranchRule extends AbstractJump {
                 return;
             }
             if (!testPart.areJumpsEnabled()) {
-                context.fireValidationError(this, "branchRules on assessmentSections or assessmentItemRefs only apply within testParts with navigationMode=linear and submissionMode=individual");
+                context.fireValidationError(this, "branchRules on assessmentSections or assessmentItemRefs only apply within testParts with linear navigationMode and individual submissionMode");
             }
             if (EXIT_TEST.equals(targetIdentifier)) {
                 context.fireValidationError(this, "EXIT_TEST is not allowed as the target of a branchRule on an assessmentSection or assessmentItemRef");
