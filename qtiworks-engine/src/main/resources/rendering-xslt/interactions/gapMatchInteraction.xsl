@@ -42,7 +42,7 @@
               <td>
                 <xsl:variable name="responseValue" select="concat(@identifier, ' ', $gapIdentifier)" as="xs:string"/>
                 <input type="checkbox" name="qtiworks_response_{$gmi/@responseIdentifier}" value="{$responseValue}">
-                  <xsl:if test="$isSessionClosed">
+                  <xsl:if test="$isSessionEnded">
                     <xsl:attribute name="disabled">disabled</xsl:attribute>
                   </xsl:if>
                   <xsl:if test="qw:value-contains(qw:get-response-value(/, $gmi/@responseIdentifier), $responseValue)">

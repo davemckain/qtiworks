@@ -1163,7 +1163,7 @@ public final class TestSessionController extends TestProcessingController {
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
         final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
 
-        return itemSessionState.isClosed()
+        return itemSessionState.isEnded()
                 && (effectiveItemSessionControl.isAllowReview()
                 || effectiveItemSessionControl.isShowFeedback());
     }
@@ -1178,7 +1178,7 @@ public final class TestSessionController extends TestProcessingController {
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
         final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
 
-        return itemSessionState.isClosed()
+        return itemSessionState.isEnded()
                 && (effectiveItemSessionControl.isAllowReview() || effectiveItemSessionControl.isShowFeedback())
                 && effectiveItemSessionControl.isShowSolution();
     }

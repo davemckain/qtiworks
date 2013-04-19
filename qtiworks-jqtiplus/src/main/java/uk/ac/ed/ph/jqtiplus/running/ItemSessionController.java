@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
+import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -446,7 +447,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         logger.debug("Performing hard reset on item session {}", item.getSystemId());
 
         /* Stop duration timer */
-        endItemSessionTimer(itemSessionState, timestamp);
+        endItemSessionTimerIfRunning(itemSessionState, timestamp);
 
         /* Note the existing times and duration */
         final Date entryTime = itemSessionState.getEntryTime();
@@ -482,8 +483,8 @@ public final class ItemSessionController extends ItemProcessingController implem
         assertItemEntered();
         logger.debug("Performing soft reset on item session {}", item.getSystemId());
 
-        /* Stop duration timer */
-        endItemSessionTimer(itemSessionState, timestamp);
+        /* Stop duration timer if not ended */
+        endItemSessionTimerIfRunning(itemSessionState, timestamp);
 
         /* Maybe reset duration counter */
         if (resetDuration) {
@@ -560,9 +561,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         logger.debug("Ending item {}", item.getSystemId());
 
         itemSessionState.setEndTime(timestamp);
-        if (itemSessionState.getDurationIntervalStartTime()!=null) {
-            endItemSessionTimer(itemSessionState, timestamp);
-        }
+        endItemSessionTimerIfRunning(itemSessionState, timestamp);
     }
 
     /**
@@ -948,20 +947,30 @@ public final class ItemSessionController extends ItemProcessingController implem
     //-------------------------------------------------------------------
     // Internal management
 
+    private void startItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
+        itemSessionState.setDurationIntervalStartTime(timestamp);
+    }
+
     private void startItemSessionTimerIfNotEnded(final ItemSessionState itemSessionState, final Date timestamp) {
         if (!itemSessionState.isEnded()) {
             startItemSessionTimer(itemSessionState, timestamp);
         }
     }
 
-    private void startItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
-        itemSessionState.setDurationIntervalStartTime(timestamp);
-    }
-
     private void endItemSessionTimer(final ItemSessionState itemSessionState, final Date timestamp) {
-        final long durationDelta = timestamp.getTime() - itemSessionState.getDurationIntervalStartTime().getTime();
+        final Date durationIntervalStartTime = itemSessionState.getDurationIntervalStartTime();
+        if (durationIntervalStartTime==null) {
+            throw new QtiLogicException("Expected durationIntervalStartTime to be not null");
+        }
+        final long durationDelta = timestamp.getTime() - durationIntervalStartTime.getTime();
         itemSessionState.setDurationAccumulated(itemSessionState.getDurationAccumulated() + durationDelta);
         itemSessionState.setDurationIntervalStartTime(null);
+    }
+
+    private void endItemSessionTimerIfRunning(final ItemSessionState itemSessionState, final Date timestamp) {
+        if (itemSessionState.getDurationIntervalStartTime()!=null) {
+            endItemSessionTimer(itemSessionState, timestamp);
+        }
     }
 
     private void initTemplateVariables() {

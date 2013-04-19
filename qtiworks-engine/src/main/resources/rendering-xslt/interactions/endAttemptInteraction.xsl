@@ -10,7 +10,7 @@
     <input name="qtiworks_presented_{@responseIdentifier}" type="hidden" value="1"/>
     <span class="{local-name()}">
       <input type="submit" name="qtiworks_response_{@responseIdentifier}" value="{@title}">
-        <xsl:if test="$isSessionClosed">
+        <xsl:if test="$isSessionEnded">
           <xsl:attribute name="disabled">disabled</xsl:attribute>
         </xsl:if>
       </input>

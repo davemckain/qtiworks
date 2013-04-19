@@ -266,7 +266,7 @@ NB: This is used both while being presented, and during review.
 
         <xsl:apply-templates/>
 
-        <xsl:if test="$isSessionInteracting">
+        <xsl:if test="$isSessionOpen">
           <xsl:variable name="submitText" as="xs:string"
             select="if ($currentTestPart/@submissionMode='individual') then 'SUBMIT ANSWER' else 'SAVE ANSWER'"/>
           <div class="controls">
@@ -285,7 +285,7 @@ NB: This is used both while being presented, and during review.
   </xsl:template>
 
   <!-- Disable any buttons in the question (from endAttemptInteraction) if not in interacting state -->
-  <xsl:template match="qti:endAttemptInteraction[not($isSessionInteracting)]">
+  <xsl:template match="qti:endAttemptInteraction[not($isSessionOpen)]">
     <input type="submit" name="{@responseIdentifier}" value="{@title}" disabled="disabled"/>
   </xsl:template>
 

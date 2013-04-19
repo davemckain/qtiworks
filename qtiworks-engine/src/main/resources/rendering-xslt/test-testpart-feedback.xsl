@@ -145,11 +145,11 @@ Renders the test(Part) feedback
               <xsl:when test="$itemSessionState/@responded='true'">
                 Review
               </xsl:when>
-              <xsl:when test="$itemSessionState/@presented='true'">
+              <xsl:when test="$itemSessionState/@entryTime!=''">
                 Review (Not Answered)
               </xsl:when>
               <xsl:otherwise>
-                Review (Not Attempted)
+                Review (Not Seen)
               </xsl:otherwise>
             </xsl:choose>
           </div>

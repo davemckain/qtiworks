@@ -257,7 +257,7 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
-        candidateSession.setClosed(itemSessionState.isClosed());
+        candidateSession.setClosed(itemSessionState.isEnded());
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */
@@ -265,7 +265,7 @@ public class CandidateSessionStarter {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Handle the pathological case where the session closes immediately by saving the final result */
-        if (itemSessionState.isClosed()) {
+        if (itemSessionState.isEnded()) {
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         }
 
