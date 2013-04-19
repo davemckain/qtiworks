@@ -56,7 +56,7 @@ public final class BranchRule extends AbstractJump {
     public static final Identifier EXIT_TEST = Identifier.assumedLegal("EXIT_TEST");
 
     /** Special target for exiting testPart. */
-    public static final Identifier EXIT_TEST_PART = Identifier.assumedLegal("EXIT_TESTPART");
+    public static final Identifier EXIT_TESTPART = Identifier.assumedLegal("EXIT_TESTPART");
 
     /** Special target for exiting assessmentSection. */
     public static final Identifier EXIT_SECTION = Identifier.assumedLegal("EXIT_SECTION");
@@ -82,85 +82,6 @@ public final class BranchRule extends AbstractJump {
 
     public void setTarget(final Identifier target) {
         getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).setValue(target);
-    }
-
-    /**
-     * Gets target ControlOject of this branchRule or null it target doesn't exist.
-     * <ol>
-     * <li>if target is EXIT_TEST, returns assessmentTest</li>
-     * <li>if target is EXIT_TESTPART, returns testPart which should be exited</li>
-     * <li>if target is EXIT_SECTION, returns assessmentSection which should be exited</li>
-     * <li>otherwise returns target ControlObject</li>
-     * </ol>
-     *
-     * @return target ControlObject of this branchRule or null it target doesn't exist
-     */
-    @Deprecated
-    public ControlObject<?> getTargetControlObject() {
-        ControlObject<?> result;
-        if (isExitTest()) {
-            result = getRootNode(AssessmentTest.class);
-        }
-        else if (isExitTestPart()) {
-            if (getParent() instanceof TestPart) {
-                result = null;
-            }
-            else {
-                result = getParent().getEnclosingTestPart();
-            }
-        }
-        else if (isExitSection()) {
-            if (getParent() instanceof SectionPart) {
-                result = ((SectionPart) getParent()).getParentSection();
-            }
-            else {
-                result = null;
-            }
-        }
-        else {
-            result = getRootNode(AssessmentTest.class).lookupFirstDescendant(getTarget());
-        }
-        return result;
-    }
-
-    /**
-     * Returns true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise.
-     *
-     * @return true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise
-     */
-    @Deprecated
-    public boolean isSpecial() {
-        return isExitTest() || isExitTestPart() || isExitSection();
-    }
-
-    /**
-     * Returns true is target is EXIT_TEST; false otherwise.
-     *
-     * @return true is target is EXIT_TEST; false otherwise
-     */
-    @Deprecated
-    public boolean isExitTest() {
-        return getTarget().equals(EXIT_TEST);
-    }
-
-    /**
-     * Returns true is target is EXIT_TEST_PART; false otherwise.
-     *
-     * @return true is target is EXIT_TEST_PART; false otherwise
-     */
-    @Deprecated
-    public boolean isExitTestPart() {
-        return getTarget().equals(EXIT_TEST_PART);
-    }
-
-    /**
-     * Returns true is target is EXIT_SECTION; false otherwise.
-     *
-     * @return true is target is EXIT_SECTION; false otherwise
-     */
-    @Deprecated
-    public boolean isExitSection() {
-        return getTarget().equals(EXIT_SECTION);
     }
 
     @Override
@@ -192,7 +113,7 @@ public final class BranchRule extends AbstractJump {
             if (EXIT_TEST.equals(targetIdentifier)) {
                 context.fireValidationError(this, "EXIT_TEST is not allowed as the target of a branchRule on an assessmentSection or assessmentItemRef");
             }
-            else if (!(EXIT_TEST_PART.equals(targetIdentifier) || EXIT_SECTION.equals(targetIdentifier))) {
+            else if (!(EXIT_TESTPART.equals(targetIdentifier) || EXIT_SECTION.equals(targetIdentifier))) {
                 /* Target must be an assessmentItemRef or assessmentSection within the current testPart,
                  * and coming after the current Node. We also check to make sure it is not within a selection or
                  * ordering.
@@ -223,6 +144,6 @@ public final class BranchRule extends AbstractJump {
      * @return true if given target is special (EXIT_TEST, EXIT_TESTPART, EXIT_SECTION); false otherwise
      */
     public static boolean isSpecial(final Identifier target) {
-        return target.equals(EXIT_TEST) || target.equals(EXIT_TEST_PART) || target.equals(EXIT_SECTION);
+        return target.equals(EXIT_TEST) || target.equals(EXIT_TESTPART) || target.equals(EXIT_SECTION);
     }
 }

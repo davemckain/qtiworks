@@ -141,9 +141,9 @@ public final class XmlMarshallerCore {
     static void addAbstractPartSessionStateAttributes(final Element element, final AbstractPartSessionState abstractPartSessionState) {
     	addControlObjectSessionStateAttributes(element, abstractPartSessionState);
         element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(abstractPartSessionState.isPreConditionFailed()));
-        final TestPlanNodeKey branchRuleTargetKey = abstractPartSessionState.getBranchRuleTargetKey();
-        if (branchRuleTargetKey!=null) {
-            element.setAttribute("branchRuleTargetKey", branchRuleTargetKey.toString());
+        final String branchRuleTarget = abstractPartSessionState.getBranchRuleTarget();
+        if (branchRuleTarget!=null) {
+            element.setAttribute("branchRuleTarget", branchRuleTarget.toString());
         }
     }
 
@@ -352,7 +352,7 @@ public final class XmlMarshallerCore {
     static void parseAbstractPartSessionStateAttributes(final AbstractPartSessionState target, final Element element) {
     	parseControlObjectSessionStateAttributes(target, element);
     	target.setPreConditionFailed(parseOptionalBooleanAttribute(element, "preConditionFailed", false));
-    	target.setBranchRuleTargetKey(parseOptionalTestPlanNodeKeyAttribute(element, "branchRuleTargetKey"));
+    	target.setBranchRuleTarget(parseOptionalStringAttribute(element, "branchRuleTarget"));
     }
 
     static void parseControlObjectSessionStateAttributes(final ControlObjectSessionState target, final Element element) {

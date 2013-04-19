@@ -12,6 +12,9 @@ Tests the use of branchRule
     <assessmentSection identifier="s11" title="Section" visible="true">
       <assessmentSection identifier="s111" title="Section" visible="true">
         <assessmentItemRef identifier="i1111" href="choice.xml">
+          <branchRule target="i1121">
+            <baseValue baseType="boolean">false</baseValue>
+          </branchRule>
           <branchRule target="i1113">
             <baseValue baseType="boolean">true</baseValue>
           </branchRule>
@@ -26,15 +29,20 @@ Tests the use of branchRule
       </assessmentSection>
       <assessmentSection identifier="s112" title="Section" visible="true">
         <assessmentItemRef identifier="i1121" href="choice.xml">
-          <branchRule target="END_SECTION">
+          <preCondition>
+            <baseValue baseType="boolean">false</baseValue>
+          </preCondition>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="i1122" href="choice.xml">
+          <branchRule target="EXIT_SECTION">
             <baseValue baseType="boolean">true</baseValue>
           </branchRule>
         </assessmentItemRef>
-        <assessmentItemRef identifier="i1122" href="choice.xml"/>
+        <assessmentItemRef identifier="i1123" href="choice.xml"/>
       </assessmentSection>
       <assessmentSection identifier="s113" title="Section" visible="true">
         <assessmentItemRef identifier="i1131" href="choice.xml">
-          <branchRule target="END_TEST_PART">
+          <branchRule target="EXIT_TESTPART">
             <baseValue baseType="boolean">true</baseValue>
           </branchRule>
         </assessmentItemRef>
@@ -43,7 +51,7 @@ Tests the use of branchRule
     </assessmentSection>
   </testPart>
   <testPart identifier="p2" navigationMode="linear" submissionMode="individual">
-    <branchRule target="END_TEST">
+    <branchRule target="EXIT_TEST">
       <baseValue baseType="boolean">true</baseValue>
     </branchRule>
     <assessmentSection identifier="s21" title="Section" visible="true">

@@ -61,15 +61,17 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
 
     /**
      * If not null, then a {@link BranchRule} on the corresponding {@link AbstractPart} evaluated to
-     * true and branched to the node having the given {@link TestPlanNodeKey}.
+     * true and branched as determined by the value of this property. The value of this will be either
+     * {@link BranchRule#EXIT_SECTION}, {@link BranchRule#EXIT_TESTPART}, {@link BranchRule#EXIT_TEST}
+     * or the key of the {@link TestPlanNode} corresponding to an explicit branch target.
      */
-	protected TestPlanNodeKey branchRuleTargetKey;
+	protected String branchRuleTarget;
 
     @Override
     public void reset() {
         super.reset();
     	this.preConditionFailed = false;
-    	this.branchRuleTargetKey = null;
+    	this.branchRuleTarget = null;
     }
 
     //----------------------------------------------------------------
@@ -83,12 +85,12 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
 	}
 
 
-	public TestPlanNodeKey getBranchRuleTargetKey() {
-        return branchRuleTargetKey;
+	public String getBranchRuleTarget() {
+        return branchRuleTarget;
     }
 
-    public void setBranchRuleTargetKey(final TestPlanNodeKey branchRuleTargetKey) {
-        this.branchRuleTargetKey = branchRuleTargetKey;
+    public void setBranchRuleTarget(final String branchRuleTarget) {
+        this.branchRuleTarget = branchRuleTarget;
     }
 
     //----------------------------------------------------------------
@@ -101,7 +103,7 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
         final AbstractPartSessionState other = (AbstractPartSessionState) obj;
         return super.equals(other)
                 && preConditionFailed==other.preConditionFailed
-                && ObjectUtilities.nullSafeEquals(branchRuleTargetKey, other.branchRuleTargetKey);
+                && ObjectUtilities.nullSafeEquals(branchRuleTarget, other.branchRuleTarget);
     }
 
     @Override
@@ -109,7 +111,7 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
         return Arrays.hashCode(new Object[] {
                 super.hashCode(),
         		preConditionFailed,
-        		branchRuleTargetKey
+        		branchRuleTarget
         });
     }
 
@@ -117,7 +119,7 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(preConditionFailed=" + preConditionFailed
-                + ",branchRuleTargetKey=" + branchRuleTargetKey
+                + ",branchRuleTarget=" + branchRuleTarget
                 + ",entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()
                 + ",exitTime=" + getExitTime()

@@ -64,7 +64,7 @@ public final class TestPartSessionState extends AbstractPartSessionState impleme
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(preConditionFailed=" + preConditionFailed
-                + ",branchRuleTargetKey=" + branchRuleTargetKey
+                + ",branchRuleTarget=" + branchRuleTarget
                 + ",entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()
                 + ",exitTime=" + getExitTime()

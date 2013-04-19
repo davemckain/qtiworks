@@ -755,7 +755,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
                 + "(initialized=" + initialized
                 + ",sessionStatus=" + sessionStatus
                 + ",preConditionFailed=" + isPreConditionFailed()
-                + ",branchRuleTargetKey=" + branchRuleTargetKey
+                + ",branchRuleTarget=" + branchRuleTarget
                 + ",entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()
                 + ",exitTime=" + getExitTime()
