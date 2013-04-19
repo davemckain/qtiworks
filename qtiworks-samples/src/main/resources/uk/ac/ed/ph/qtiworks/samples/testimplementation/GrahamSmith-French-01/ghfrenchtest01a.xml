@@ -185,7 +185,7 @@ identification, section B1.3 -->
         <assessmentSection identifier="sectionB1-2" title="Section B1.2: -ER verbs: Conjugation (Remedial)" visible="true">
           <!-- Exit test if score below 6-->
           <!-- Feedback = "FAIL_ERCONJUGATIONAFTERREMEDY" -->
-          <branchRule target="EXIT_TEST">
+          <branchRule target="EXIT_TESTPART">
             <lt>
               <variable identifier="sectionB1-2-SCORE"/>
               <baseValue baseType="float">6</baseValue>
@@ -249,7 +249,7 @@ B2.3, identification -->
         <assessmentSection identifier="sectionB2-2" title="Section B2.2: -RE verbs: Conjugation (Remedial)" visible="true">
           <!-- Exit test if score below 6-->
           <!-- Feedback = "FAIL_RECONJUGATIONAFTERREMEDY" -->
-          <branchRule target="EXIT_TEST">
+          <branchRule target="EXIT_TESTPART">
             <lt>
               <variable identifier="sectionB2-2-SCORE"/>
               <baseValue baseType="float">6</baseValue>
@@ -313,7 +313,7 @@ B3.3, identification -->
         <assessmentSection identifier="sectionB3-2" title="Section B3.2: -IR verbs: Conjugation (Remedial)" visible="true">
           <!-- Exit test if score below 6-->
           <!-- Feedback = "FAIL_IRCONJUGATIONAFTERREMEDY" -->
-          <branchRule target="EXIT_TEST">
+          <branchRule target="EXIT_TESTPART">
             <lt>
               <variable identifier="sectionB3-2-SCORE"/>
               <baseValue baseType="float">6</baseValue>
@@ -355,7 +355,7 @@ verbs**************************-->
           <!-- Exit test if below 2-->
           <!-- Feedback = "FAIL_AUXILLIARYIDENTFICATION" -->
           <!-- Go on to avoir, B4.2a if 2 -->
-          <branchRule target="EXIT_TEST">
+          <branchRule target="EXIT_TESTPART">
             <lt>
               <variable identifier="sectionB4-1-SCORE"/>
               <baseValue baseType="float">2</baseValue>
@@ -455,7 +455,7 @@ B4.4b, identfication -->
         <assessmentSection identifier="sectionB4-3b" title="Section B4.3b: Auxiliary verbs: Conjugation (être) (Remedial)" visible="true">
           <!-- Exit test if score below 6-->
           <!-- Feedback = "FAIL_ETRECONJUGATIONAFTERREMEDY" -->
-          <branchRule target="EXIT_TEST">
+          <branchRule target="EXIT_TESTPART">
             <lt>
               <variable identifier="sectionB4-3b-SCORE"/>
               <baseValue baseType="float">6</baseValue>
@@ -664,7 +664,7 @@ to total -->
     </setOutcomeValue>
     <!--****************************SET UP FEEDBACK IDENTIFIERS
 **********************-->
-    <!-- Test conditions which led to EXIT_TEST -->
+    <!-- Test conditions which led to EXIT_TESTPART -->
     <!-- The navigation mode is linear, so tests will proceed in order
 with no skipping -->
     <!-- Some of these conditions will be met as we pass through the
@@ -691,7 +691,7 @@ item is being processed -->
       </outcomeIf>
       <outcomeElseIf>
         <!-- Remedial conjugation of _ER verb  -->
-        <!-- If the score is below 6  EXIT_TEST has been called -->
+        <!-- If the score is below 6  EXIT_TESTPART has been called -->
         <!-- Check that remedial test has been called -->
         <and>
           <lt>
@@ -726,7 +726,7 @@ item is being processed -->
       </outcomeElseIf>
       <outcomeElseIf>
         <!-- Remedial conjugation of _IR verb  -->
-        <!-- If the score is below 6 EXIT_TEST has been called -->
+        <!-- If the score is below 6 EXIT_TESTPART has been called -->
         <!-- Check that remedial test has been called -->
         <and>
           <lt>
@@ -744,7 +744,7 @@ item is being processed -->
       </outcomeElseIf>
       <outcomeElseIf>
         <!-- Recognition of Auxilliary verbs  -->
-        <!-- If the score is below 2 EXIT_TEST has been called -->
+        <!-- If the score is below 2 EXIT_TESTPART has been called -->
         <lt>
           <variable identifier="sectionB4-1-SCORE"/>
           <baseValue baseType="float">2</baseValue>
