@@ -110,6 +110,6 @@ public final class MapResponse extends AbstractFunctionalExpression {
         final ResponseDeclaration responseDeclaration = (ResponseDeclaration) context.ensureVariableDeclaration(referenceIdentifier, VariableType.RESPONSE);
         final Value responseValue = context.evaluateVariableValue(referenceIdentifier, VariableType.RESPONSE);
 
-        return responseDeclaration.getMapping().getTargetValue(responseValue);
+        return responseDeclaration.getMapping().computeTargetValue(responseValue);
     }
 }

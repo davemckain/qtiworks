@@ -38,14 +38,16 @@ import uk.ac.ed.ph.jqtiplus.group.item.response.declaration.MapEntryGroup;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.expression.general.MapResponse;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
 import uk.ac.ed.ph.jqtiplus.value.SingleValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A special class used to create A mapping from A source set of any baseType
@@ -134,8 +136,7 @@ public final class Mapping extends AbstractNode {
 
         final ResponseDeclaration declaration = getParent();
         if (declaration != null) {
-            if (declaration.getBaseType() != null &&
-                    (declaration.getBaseType().isFile() || declaration.getBaseType().isDuration())) {
+            if (declaration.hasBaseType(BaseType.FILE, BaseType.DURATION)) {
                 context.fireValidationError(this, "File or duration base types are not supported with a mapping");
             }
 
@@ -147,7 +148,7 @@ public final class Mapping extends AbstractNode {
                     break;
                 }
             }
-            if (hasCaseInsensitiveEntry && !declaration.getBaseType().isString()) {
+            if (hasCaseInsensitiveEntry && !declaration.hasBaseType(BaseType.STRING)) {
                 context.fireValidationError(this, "Only String base types may be used with case insensitive mapEntries");
             }
         }
@@ -159,56 +160,36 @@ public final class Mapping extends AbstractNode {
      * @param sourceValue given source value
      * @return target value for given source value
      */
-    public FloatValue getTargetValue(final Value sourceValue) {
+    public FloatValue computeTargetValue(final Value sourceValue) {
         if (!sourceValue.isNull()) {
-            /*
-             * If the response variable has single cardinality then the value
-             * returned is simply the mapped target value from the map. If the
-             * response variable has multiple or ordered cardinality then the
-             * value returned is the sum of the mapped target values. This
-             * expression cannot be applied to variables of record cardinality.
-             *
-             * For example, if a mapping associates the identifiers {A,B,C,D}
-             * with the values {0,1,0.5,0} respectively then mapResponse will
-             * map the single value 'C' to the numeric value 0.5 and the set of
-             * values {C,B} to the value 1.5.
-             *
-             * If a container contains multiple instances of the same value then
-             * that value is counted once only. To continue the example above
-             * {B,B,C} would still map to 1.5 and not 2.5.
-             */
-            if (getParent().getCardinality() == Cardinality.SINGLE) {
-                for (final MapEntry entry : getMapEntries()) {
-                    if (entryCompare(entry, (SingleValue) sourceValue)) {
-                        return new FloatValue(applyConstraints(entry.getMappedValue()));
-                    }
-                }
+            final ResponseDeclaration responseDeclaration = getParent();
+            if (responseDeclaration.hasCardinality(Cardinality.SINGLE)) {
+                /* Single cardinality => take mapped value, using default if nothing specified */
+                return new FloatValue(applyConstraints(mapSingleValue((SingleValue) sourceValue)));
             }
-            else {
+            else if (responseDeclaration.getCardinality().isList()) {
+                /* Multiple cardinality => sum mapped values of unique items in container */
                 double sum = 0.0;
                 final ListValue sourceListValue = (ListValue) sourceValue;
-                final List<SingleValue> values = new ArrayList<SingleValue>(sourceListValue.getAll());
-
-                for (final MapEntry entry : getMapEntries()) {
-                    boolean allow = true;
-
-                    for (int i = 0; i < sourceListValue.size(); i++) {
-                        if (entryCompare(entry, sourceListValue.get(i))) {
-                            if (allow) {
-                                sum += entry.getMappedValue();
-                                allow = false;
-                            }
-                            values.remove(sourceListValue.get(i));
-                        }
-                    }
+                final Set<SingleValue> uniqueValues = new HashSet<SingleValue>(sourceListValue.getAll());
+                for (final SingleValue value : uniqueValues) {
+                    sum += mapSingleValue(value);
                 }
-
-                sum += getDefaultValue() * values.size();
                 return new FloatValue(applyConstraints(sum));
             }
         }
-
         return new FloatValue(applyConstraints(getDefaultValue()));
+    }
+
+    private double mapSingleValue(final SingleValue value) {
+        double result = getDefaultValue();
+        for (final MapEntry entry : getMapEntries()) {
+            if (entryCompare(entry, value)) {
+                result = entry.getMappedValue();
+                break;
+            }
+        }
+        return result;
     }
 
     private boolean entryCompare(final MapEntry mapEntry, final SingleValue value) {
