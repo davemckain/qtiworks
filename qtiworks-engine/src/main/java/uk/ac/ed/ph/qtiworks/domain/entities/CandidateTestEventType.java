@@ -73,9 +73,10 @@ public enum CandidateTestEventType {
     ADVANCE_TEST_PART,
 
     /**
-     * Exits a multi-part test after test final test feedback is shown.
+     * Exits the test, either after the combined {@link TestPart} and test feedback page
+     * (for single-part tests), or the standalone test feedback page for multi-part tests.
      */
-    EXIT_MULTI_PART_TEST,
+    EXIT_TEST,
 
     /** Selection of a particular item for interaction (in {@link NavigationMode#NONLINEAR}) */
     SELECT_ITEM,

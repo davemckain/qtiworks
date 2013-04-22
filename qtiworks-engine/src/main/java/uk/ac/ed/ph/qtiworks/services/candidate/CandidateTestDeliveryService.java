@@ -1018,21 +1018,31 @@ public class CandidateTestDeliveryService {
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
 
-        if (nextTestPart==null) {
-            /* We exited the last test part.
-             *
-             * For single part tests, we terminate the test completely as the test feedback was shown with the testPart feedback.
+
+        CandidateTestEventType eventType;
+        if (nextTestPart!=null) {
+            /* Moved into next test part */
+            eventType = CandidateTestEventType.ADVANCE_TEST_PART;
+        }
+        else {
+            /* No more test parts */
+            /* For single part tests, we terminate the test completely now as the test feedback was shown with the testPart feedback.
              * For multi-part tests, we shall keep the test open so that the test feedback can be viewed.
              */
             if (testSessionState.getTestPlan().getTestPartNodes().size()==1) {
+                eventType = CandidateTestEventType.EXIT_TEST;
+                testSessionController.exitTest(timestamp);
                 candidateSession.setTerminated(true);
                 candidateSessionDao.update(candidateSession);
+            }
+            else {
+                eventType = CandidateTestEventType.ADVANCE_TEST_PART;
             }
         }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.ADVANCE_TEST_PART, testSessionState, notificationRecorder);
+                eventType, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
@@ -1071,7 +1081,7 @@ public class CandidateTestDeliveryService {
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.EXIT_MULTI_PART_TEST, testSessionState, notificationRecorder);
+                CandidateTestEventType.EXIT_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
