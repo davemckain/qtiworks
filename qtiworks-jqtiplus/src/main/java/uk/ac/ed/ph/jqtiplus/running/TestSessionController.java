@@ -648,15 +648,15 @@ public final class TestSessionController extends TestProcessingController {
      * the item having the given {@link TestPlanNodeKey}.
      * <p>
      * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#NONLINEAR}
-     * navigation mode.
+     * navigation mode. The {@link TestPart} must be open.
      * <p>
      * Postcondition: None.
      *
      * @param itemKey key for the requested item, which must not be null.
      *
      * @throws IllegalArgumentException if the given itemKey is null, or if it does not correspond to an item in the test.
-     * @throws QtiCandidateStateException if we are not currently in a {@link TestPart}, or if the current
-     *   {@link TestPart} does not have {@link NavigationMode#NONLINEAR}.
+     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart is not
+     *   open or does not have {@link NavigationMode#NONLINEAR}
      *
      * @see #selectItemNonlinear(TestPlanNodeKey)
      */
@@ -674,11 +674,12 @@ public final class TestSessionController extends TestProcessingController {
      * deselects the current item is the given key is null.
      * <p>
      * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#NONLINEAR}
-     * navigation mode.
+     * navigation mode. The {@link TestPart} must be open.
      * <p>
      * Postcondition: The current item session (if applicable) will be suspended. The requested
-     * item (if application) will be entered, if not already entered, or unsuspended. Duration timers
-     * on parent {@link AssessmentSection}s will be updated.
+     * item (if applicable) will be entered (if not already entered) or unsuspended (if not yet ended).
+     * Duration timers on parent {@link AssessmentSection}s will be updated if they have not been
+     * ended.
      *
      * @param timestamp timestamp for this operation, which must not be null
      * @param itemKey key for the requested item, or null to indicate that we want to deselect the
@@ -688,8 +689,8 @@ public final class TestSessionController extends TestProcessingController {
      *
      * @throws IllegalArgumentException if the timestamp is null, or if itemKey is not null and does
      *   not correspond to an item within the test
-     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart
-     *   does not have {@link NavigationMode#NONLINEAR}, or if the request itemKey is not within the
+     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart is not
+     *   open or does not have {@link NavigationMode#NONLINEAR}, or if the requested itemKey is not within the
      *   current testPart.
      *
      * @see #maySelectItemNonlinear(TestPlanNodeKey)
@@ -699,6 +700,7 @@ public final class TestSessionController extends TestProcessingController {
         final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
         final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
         assertNonlinearTestPart(currentTestPartNode);
+        assertTestPartOpen(currentTestPartSessionState);
 
         /* If an item is currently selected then suspend the session (if still open) and update timer on parent sections */
         final TestPlanNode currentItemRefNode = getCurrentItemRefNode();
@@ -724,12 +726,12 @@ public final class TestSessionController extends TestProcessingController {
             }
             testSessionState.setCurrentItemKey(newItemRefNode.getKey());
 
-            /* Select or unsuspend item, depending on whether it has already been entered */
+            /* Enter/unsuspend item as appropriate */
             final ItemSessionController newItemSessionController = getItemSessionController(newItemRefNode);
             if (!newItemSessionState.isEntered()) {
                 newItemSessionController.enterItem(timestamp);
             }
-            else {
+            else if (!newItemSessionState.isEnded()) {
                 newItemSessionController.unsuspendItemSession(timestamp);
             }
 
@@ -739,7 +741,9 @@ public final class TestSessionController extends TestProcessingController {
             	if (!assessmentSectionSessionState.isEntered()) {
             		assessmentSectionSessionState.setEntryTime(timestamp);
             	}
-                startControlObjectTimer(expectAssessmentSectionSessionState(sectionNode), timestamp);
+            	if (!assessmentSectionSessionState.isEnded()) {
+            	    startControlObjectTimer(expectAssessmentSectionSessionState(sectionNode), timestamp);
+            	}
             }
 
             return newItemRefNode;
@@ -1186,7 +1190,8 @@ public final class TestSessionController extends TestProcessingController {
      * Sets the candidate comment for the current item, replacing any comment that has already been
      * set.
      * <p>
-     * Precondition: an item must be selected, and its session must be open.
+     * Precondition: an item must be selected, and its session must be open. The effective
+     * {@link ItemSessionControl} for the item must allow comments
      * <p>
      * Postcondition: Candidate comment will be changed.
      *
@@ -1194,12 +1199,16 @@ public final class TestSessionController extends TestProcessingController {
      * @param comment comment to record, which may be null. An empty or blank comment will be
      *   treated in the same way as a null comment.
      */
-    public void setCandidateComment(final Date timestamp, final String candidateComment) {
+    public void setCandidateCommentForCurrentItem(final Date timestamp, final String candidateComment) {
         Assert.notNull(timestamp);
         final TestPlanNodeKey currentItemKey = assertItemSelected();
+        final TestPlanNode currentItemRefNode = expectItemRefNode(currentItemKey);
+        final EffectiveItemSessionControl effectiveItemSessionControl = currentItemRefNode.getEffectiveItemSessionControl();
+        if (!effectiveItemSessionControl.isAllowComment()) {
+            throw new QtiCandidateStateException("The item has allowComment=false, so setting a candidate comment is not permitted");
+        }
         logger.debug("Setting candidate comment to {}", candidateComment);
 
-        final TestPlanNode currentItemRefNode = expectItemRefNode(currentItemKey);
         final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
         itemSessionController.setCandidateComment(timestamp, candidateComment);
     }
@@ -1420,6 +1429,15 @@ public final class TestSessionController extends TestProcessingController {
             throw new QtiCandidateStateException("Expected to be inside a testPart");
         }
         return currentTestPartKey;
+    }
+
+    private void assertTestPartOpen(final TestPartSessionState testPartSessionState) {
+        if (!testPartSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Current testPart has not been entered");
+        }
+        if (testPartSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Current testPart has been ended");
+        }
     }
 
     private void assertTestPartEnded(final TestPartSessionState testPartSessionState) {
