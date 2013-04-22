@@ -105,41 +105,44 @@ public final class AssessmentObjectValidator {
             /* Validate each unique item first */
             for (final Entry<URI, ResolvedAssessmentItem> entry : resolvedAssessmentTest.getResolvedAssessmentItemBySystemIdMap().entrySet()) {
                 final URI itemSystemId = entry.getKey();
-                final ResolvedAssessmentItem itemHolder = entry.getValue();
-                final StringBuilder messageBuilder = new StringBuilder("Referenced item at System ID ")
+                final ResolvedAssessmentItem resolvedAssessmentItem = entry.getValue();
+
+                /* Create sensible message for referring to this item in case we need to record any errors below */
+                final StringBuilder itemReferenceBuilder = new StringBuilder("Referenced item at System ID ")
                     .append(itemSystemId)
                     .append(" referenced by ");
                 final List<AssessmentItemRef> itemRefs = resolvedAssessmentTest.getItemRefsBySystemIdMap().get(itemSystemId);
                 if (itemRefs.size()>1) {
-                    messageBuilder.append("identifiers ");
+                    itemReferenceBuilder.append("identifiers ");
                     for (int i=0,size=itemRefs.size(); i<size; i++) {
-                        messageBuilder.append(itemRefs.get(i).getIdentifier());
-                        messageBuilder.append((i<size-2) ? ", " : " and ");
+                        itemReferenceBuilder.append(itemRefs.get(i).getIdentifier());
+                        itemReferenceBuilder.append((i<size-2) ? ", " : " and ");
                     }
                 }
                 else {
-                    messageBuilder.append("identifier ")
+                    itemReferenceBuilder.append("identifier ")
                         .append(itemRefs.get(0).getIdentifier());
                 }
+                final String itemReferenceDescription = itemReferenceBuilder.toString();
 
-                if (itemHolder.getItemLookup().wasSuccessful()) {
-                    final ItemValidationResult itemValidationResult = validateItem(itemHolder);
-                    result.addItemValidationResult(itemValidationResult);
+                final ItemValidationResult itemValidationResult = validateItem(resolvedAssessmentItem);
+                result.addItemValidationResult(itemValidationResult);
+                if (resolvedAssessmentItem.getItemLookup().wasSuccessful()) {
                     if (itemValidationResult.hasErrors()) {
                         result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
-                                messageBuilder.toString()
+                                itemReferenceDescription
                                 + " has errors. Please see the attached validation result for this item for further information"));
                     }
                     if (itemValidationResult.hasWarnings()) {
                         result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.WARNING,
-                                messageBuilder.toString()
+                                itemReferenceDescription
                                 + " has warnings. Please see the attached validation result for this item for further information"));
                     }
                 }
                 else {
                     result.add(new Notification(test, null, NotificationType.MODEL_VALIDATION, NotificationLevel.ERROR,
-                            messageBuilder.toString()
-                            + " was not successfully instantiated. Further details are attached elsewhere."));
+                            itemReferenceDescription
+                            + " was not successfully instantiated. Please see the attached validation result of this item for further information."));
                 }
             }
 

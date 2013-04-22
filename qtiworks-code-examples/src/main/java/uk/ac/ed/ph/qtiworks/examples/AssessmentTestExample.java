@@ -39,7 +39,6 @@ import java.util.Map;
 public final class AssessmentTestExample {
 
     public static void main(final String[] args) throws Exception {
-//        final URI inputUri = URI.create("classpath:/testimplementation/non_unique_identifier.xml");
         final URI inputUri = URI.create("classpath:/testimplementation/selection.xml");
 
         System.out.println("Reading and validating");
@@ -49,6 +48,8 @@ public final class AssessmentTestExample {
 
         final TestValidationResult testValidationResult = assessmentObjectXmlLoader.loadResolveAndValidateTest(inputUri);
         System.out.println("Validation result: " + ObjectDumper.dumpObject(testValidationResult, DumpMode.DEEP));
+        
+        System.exit(0);
 
         final TestProcessingMap testProcessingMap = new TestProcessingInitializer(testValidationResult).initialize();
         System.out.println("Test processing map: " + ObjectDumper.dumpObject(testProcessingMap, DumpMode.DEEP));

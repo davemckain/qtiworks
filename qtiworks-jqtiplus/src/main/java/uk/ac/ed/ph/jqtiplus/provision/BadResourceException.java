@@ -39,8 +39,8 @@ import uk.ac.ed.ph.jqtiplus.node.RootNode;
 /**
  * (Base) Exception thrown by implementations of {@link RootNodeProvider} to indicate that
  * a resource "existed" at the requested System ID but could not be instantiated into the
- * required {@link RootNode}. (Example reasons: not XML, XML parsing error, wrong type of
- * QTI Object, ...)
+ * required {@link RootNode}. (Example reasons: not XML, XML parsing error, schema validation
+ * error, wrong type of QTI Object, ...)
  *
  * @author David McKain
  */
