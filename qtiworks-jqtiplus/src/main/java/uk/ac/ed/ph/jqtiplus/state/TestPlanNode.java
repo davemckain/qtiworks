@@ -295,6 +295,11 @@ public final class TestPlanNode implements Serializable {
         }
     }
 
+    public TestPlanNode searchEnclosingTestPartNode() {
+        final List<TestPlanNode> enclosingTestPartNodes = searchAncestorsOrSelf(TestNodeType.TEST_PART);
+        return enclosingTestPartNodes.size()==1 ? enclosingTestPartNodes.get(0) : null;
+    }
+
     //-------------------------------------------------------------------
 
     @Override

@@ -150,8 +150,8 @@ public final class TestSessionStateXmlMarshaller {
 
         /* Extract state attributes */
         XmlMarshallerCore.parseControlObjectSessionStateAttributes(result, element);
-        result.setCurrentTestPartKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentTestPartKey"));
-        result.setCurrentItemKey(TestPlanXmlMarshaller.parseOptionalTestPlanNodeKeyAttribute(element, "currentItemKey"));
+        result.setCurrentTestPartKey(XmlMarshallerCore.parseOptionalTestPlanNodeKeyAttribute(element, "currentTestPartKey"));
+        result.setCurrentItemKey(XmlMarshallerCore.parseOptionalTestPlanNodeKeyAttribute(element, "currentItemKey"));
 
         /* Handle rest of children */
         for (int i=1; i<childElements.size(); i++) {

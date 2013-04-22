@@ -285,12 +285,6 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
         this.candidateComment = candidateComment;
     }
 
-
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public boolean isClosed() {
-        return isEnded();
-    }
-
     //----------------------------------------------------------------
     // Built-in variable manipulation
 
@@ -755,6 +749,7 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
                 + "(initialized=" + initialized
                 + ",sessionStatus=" + sessionStatus
                 + ",preConditionFailed=" + isPreConditionFailed()
+                + ",branchRuleTarget=" + branchRuleTarget
                 + ",entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()
                 + ",exitTime=" + getExitTime()

@@ -131,7 +131,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
     }
 
     @Override
-    public List<TestPart> getChildren() {
+    public List<TestPart> getChildAbstractParts() {
         return getNodeGroups().getTestPartGroup().getTestParts();
     }
 
@@ -188,6 +188,15 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         return getNodeGroups().getTestPartGroup().getTestParts();
     }
 
+    public TestPart getTestPart(final Identifier testPartIdentifier) {
+        for (final TestPart testPart : getTestParts()) {
+            if (testPartIdentifier.equals(testPart.getIdentifier())) {
+                return testPart;
+            }
+        }
+        return null;
+    }
+
 
     public OutcomeProcessing getOutcomeProcessing() {
         return getNodeGroups().getOutcomeProcessingGroup().getOutcomeProcessing();
@@ -202,7 +211,7 @@ public final class AssessmentTest extends ControlObject<String> implements Asses
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }
 
-    public List<TestFeedback> findTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
+    public List<TestFeedback> searchTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
         Assert.notNull(testFeedbackAccess, "testFeedbackAccess");
         final List<TestFeedback> result = new ArrayList<TestFeedback>();
         for (final TestFeedback testFeedback : getTestFeedbacks()) {

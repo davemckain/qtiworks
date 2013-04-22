@@ -39,9 +39,9 @@ import uk.ac.ed.ph.jqtiplus.group.test.AssessmentSectionGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.TestFeedbackGroup;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -79,7 +79,7 @@ public final class TestPart extends AbstractPart {
     }
 
     @Override
-    public List<AssessmentSection> getChildren() {
+    public List<AssessmentSection> getChildAbstractParts() {
         return getAssessmentSections();
     }
 
@@ -109,7 +109,7 @@ public final class TestPart extends AbstractPart {
         return getNodeGroups().getTestFeedbackGroup().getTestFeedbacks();
     }
 
-    public List<TestFeedback> findTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
+    public List<TestFeedback> searchTestFeedbacks(final TestFeedbackAccess testFeedbackAccess) {
         Assert.notNull(testFeedbackAccess, "testFeedbackAccess");
         final List<TestFeedback> result = new ArrayList<TestFeedback>();
         for (final TestFeedback testFeedback : getTestFeedbacks()) {
@@ -117,18 +117,16 @@ public final class TestPart extends AbstractPart {
                 result.add(testFeedback);
             }
         }
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     /**
-     * Gets all viewable testFeedbacks with given access.
-     * Tests if feedbacks can be displayed.
+     * Gets all visible testFeedbacks with given access.
      *
      * @param testFeedbackAccess given access
      * @return all testFeedbacks with given access
      */
-    @ToRefactor
-    public List<TestFeedback> findVisibleTestFeedbacks(final TestSessionState testSessionState, final TestFeedbackAccess testFeedbackAccess) {
+    public List<TestFeedback> searchVisibleTestFeedbacks(final TestSessionState testSessionState, final TestFeedbackAccess testFeedbackAccess) {
         Assert.notNull(testSessionState, "testSessionState");
         Assert.notNull(testFeedbackAccess, "testFeedbackAccess");
         final List<TestFeedback> result = new ArrayList<TestFeedback>();
@@ -137,7 +135,7 @@ public final class TestPart extends AbstractPart {
                 result.add(testFeedback);
             }
         }
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     /**

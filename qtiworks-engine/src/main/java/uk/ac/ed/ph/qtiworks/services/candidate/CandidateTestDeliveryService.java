@@ -124,12 +124,8 @@ import org.springframework.web.multipart.MultipartFile;
  * - solutions
  * - itemSessionControl (all but candidateComment)
  * - multiple testParts
- * - preCondition on testParts
+ * - preConditon and branchRule
  * - test / test part "during" and "atEnd" feedback
- *
- * STILL TO DO:
- * - preCondition (elsewhere)
- * - branchRule
  *
  * @author David McKain
  *
@@ -429,8 +425,8 @@ public class CandidateTestDeliveryService {
         final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
 
-        if (itemSessionState.isClosed()) {
-            /* Item session closed */
+        if (itemSessionState.isEnded()) {
+            /* Item session ended */
             renderItemEventWhenClosed(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
         }
         else {

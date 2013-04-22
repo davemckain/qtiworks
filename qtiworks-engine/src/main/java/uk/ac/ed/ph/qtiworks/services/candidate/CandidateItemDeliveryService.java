@@ -280,7 +280,7 @@ public class CandidateItemDeliveryService {
             /* Session is terminated */
             renderTerminated(candidateEvent, renderingOptions, resultStream);
         }
-        else if (itemSessionState.isClosed()) {
+        else if (itemSessionState.isEnded()) {
             /* Item is closed */
             renderWhenClosed(candidateEvent, itemSessionState, renderingOptions, RenderingMode.CLOSED, resultStream);
         }
@@ -416,7 +416,7 @@ public class CandidateItemDeliveryService {
 
         /* Make sure an attempt is allowed */
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        if (itemSessionState.isClosed()) {
+        if (itemSessionState.isEnded()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
         }
 
@@ -519,7 +519,7 @@ public class CandidateItemDeliveryService {
         }
 
         /* Check whether processing wants to close the session and persist state */
-        if (itemSessionState.isClosed()) {
+        if (itemSessionState.isEnded()) {
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
             candidateSession.setClosed(true);
         }
@@ -550,7 +550,7 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (itemSessionState.isClosed()) {
+        if (itemSessionState.isEnded()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.CLOSE_SESSION_WHEN_CLOSED);
         }
         else if (!itemDeliverySettings.isAllowClose()) {
@@ -602,10 +602,10 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowReinitWhenClosed()) {
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowReinitWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
         }
 
@@ -622,8 +622,8 @@ public class CandidateItemDeliveryService {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session depending on state after processing. Record final result if session closed immediately */
-        candidateSession.setClosed(itemSessionState.isClosed());
-        if (itemSessionState.isClosed()) {
+        candidateSession.setClosed(itemSessionState.isEnded());
+        if (itemSessionState.isEnded()) {
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         }
         candidateSessionDao.update(candidateSession);
@@ -657,10 +657,10 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenInteracting()) {
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenClosed()) {
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
         }
 
@@ -676,8 +676,8 @@ public class CandidateItemDeliveryService {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session depending on state after processing. Record final result if session closed immediately */
-        candidateSession.setClosed(itemSessionState.isClosed());
-        if (itemSessionState.isClosed()) {
+        candidateSession.setClosed(itemSessionState.isEnded());
+        if (itemSessionState.isEnded()) {
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         }
         candidateSessionDao.update(candidateSession);
@@ -709,10 +709,10 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenClosed()) {
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
         }
 
@@ -722,7 +722,7 @@ public class CandidateItemDeliveryService {
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
         boolean isClosingSession = false;
-        if (!itemSessionState.isClosed()) {
+        if (!itemSessionState.isEnded()) {
             isClosingSession = true;
             itemSessionController.endItem(timestamp);
         }
@@ -767,14 +767,13 @@ public class CandidateItemDeliveryService {
         /* Get current session state */
         final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
 
-
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.TERMINATE, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Are we terminating a session that hasn't been closed? If so, record the final result. */
-        if (!itemSessionState.isClosed()) {
+        /* Are we terminating a session that hasn't been ended? If so, record the final result. */
+        if (!itemSessionState.isEnded()) {
             final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
             final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
             final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,

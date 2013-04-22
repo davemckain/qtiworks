@@ -35,7 +35,10 @@ package uk.ac.ed.ph.jqtiplus.state;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
+import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
+import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -50,12 +53,25 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
 
     private static final long serialVersionUID = -134308115257966761L;
 
+    /**
+     * Indicates whether a {@link PreCondition} on the corresponding {@link AbstractPart}
+     * has failed.
+     */
 	protected boolean preConditionFailed;
+
+    /**
+     * If not null, then a {@link BranchRule} on the corresponding {@link AbstractPart} evaluated to
+     * true and branched as determined by the value of this property. The value of this will be either
+     * {@link BranchRule#EXIT_SECTION}, {@link BranchRule#EXIT_TESTPART}, {@link BranchRule#EXIT_TEST}
+     * or the key of the {@link TestPlanNode} corresponding to an explicit branch target.
+     */
+	protected String branchRuleTarget;
 
     @Override
     public void reset() {
         super.reset();
     	this.preConditionFailed = false;
+    	this.branchRuleTarget = null;
     }
 
     //----------------------------------------------------------------
@@ -68,6 +84,15 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
 		this.preConditionFailed = preConditionFailed;
 	}
 
+
+	public String getBranchRuleTarget() {
+        return branchRuleTarget;
+    }
+
+    public void setBranchRuleTarget(final String branchRuleTarget) {
+        this.branchRuleTarget = branchRuleTarget;
+    }
+
     //----------------------------------------------------------------
 
     @Override
@@ -77,14 +102,16 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
         }
         final AbstractPartSessionState other = (AbstractPartSessionState) obj;
         return super.equals(other)
-                && preConditionFailed==other.preConditionFailed;
+                && preConditionFailed==other.preConditionFailed
+                && ObjectUtilities.nullSafeEquals(branchRuleTarget, other.branchRuleTarget);
     }
 
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
                 super.hashCode(),
-        		preConditionFailed
+        		preConditionFailed,
+        		branchRuleTarget
         });
     }
 
@@ -92,6 +119,7 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(preConditionFailed=" + preConditionFailed
+                + ",branchRuleTarget=" + branchRuleTarget
                 + ",entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()
                 + ",exitTime=" + getExitTime()

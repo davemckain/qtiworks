@@ -36,17 +36,16 @@ package uk.ac.ed.ph.jqtiplus.state;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
 /**
- * FIXME: Document this type
- *
- * FIXME: Rename 'end' as 'finish'?? We're using the word 'close' for items and 'end' of test objects at the moment.
- * Might be nice to merge this together somehow to be easier to understand.
- * FIXME: Using 'presented' instead of 'entry' for items. Maybe try to unify this as well?
+ * Base state for {@link ControlObject}s.
+ * <p>
+ * This supports accumulating a 'duration' value in start/stop/start/stop intervals.
  *
  * @author David McKain
  */
@@ -54,12 +53,25 @@ public abstract class ControlObjectSessionState implements Serializable {
 
     private static final long serialVersionUID = 4027764553360833372L;
 
+    /** Timestamp of entry into this object */
     protected Date entryTime;
+
+    /** Timestamp for end (close) of this object */
     protected Date endTime;
+
+    /** Timetamp for exit of this object */
     protected Date exitTime;
 
-    protected Date durationIntervalStartTime;
+    /** Amount of duration accumulated so far */
     protected long durationAccumulated;
+
+    /**
+     * If not null, indicates that duration counting started this time time and is currently 'open'
+     * <p>
+     * (It is expected that a later 'touch in' state mutation operation will clear this and
+     * update {@link #durationAccumulated} at the same time.)
+     */
+    protected Date durationIntervalStartTime;
 
     public void reset() {
         this.entryTime = null;

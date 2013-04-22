@@ -35,7 +35,7 @@ package uk.ac.ed.ph.jqtiplus.running;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
@@ -51,13 +51,13 @@ import org.junit.Test;
 
 /**
  * Tests navigation through a linear {@link TestPart}
- * containing {@link PreCondition} and {@link BranchRule}s
+ * containing {@link PreCondition} and nested {@link AssessmentSection}s.
  *
  * @author David McKain
  */
 public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
 
-    private static final String TEST_FILE_PATH = "running/test-complex-linear.xml";
+    private static final String TEST_FILE_PATH = "running/test-linear-preCondition.xml";
 
     private static final List<String> TEST_NODES = Arrays.asList(new String[] {
         "p",

@@ -35,14 +35,13 @@ package uk.ac.ed.ph.jqtiplus.node.test;
 
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationContext;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * Represents the <code>branchRule</code> QTI class
  *
  * @author Jiri Kajaba
+ * @author David McKain (refactored)
  */
 public final class BranchRule extends AbstractJump {
 
@@ -58,7 +57,7 @@ public final class BranchRule extends AbstractJump {
     public static final Identifier EXIT_TEST = Identifier.assumedLegal("EXIT_TEST");
 
     /** Special target for exiting testPart. */
-    public static final Identifier EXIT_TEST_PART = Identifier.assumedLegal("EXIT_TESTPART");
+    public static final Identifier EXIT_TESTPART = Identifier.assumedLegal("EXIT_TESTPART");
 
     /** Special target for exiting assessmentSection. */
     public static final Identifier EXIT_SECTION = Identifier.assumedLegal("EXIT_SECTION");
@@ -86,130 +85,54 @@ public final class BranchRule extends AbstractJump {
         getAttributes().getIdentifierAttribute(ATTR_TARGET_NAME).setValue(target);
     }
 
-    /**
-     * Gets target ControlOject of this branchRule or null it target doesn't exist.
-     * <ol>
-     * <li>if target is EXIT_TEST, returns assessmentTest</li>
-     * <li>if target is EXIT_TESTPART, returns testPart which should be exited</li>
-     * <li>if target is EXIT_SECTION, returns assessmentSection which should be exited</li>
-     * <li>otherwise returns target ControlObject</li>
-     * </ol>
-     *
-     * @return target ControlObject of this branchRule or null it target doesn't exist
-     */
-    public ControlObject<?> getTargetControlObject() {
-        ControlObject<?> result;
-        if (isExitTest()) {
-            result = getRootNode(AssessmentTest.class);
+    @Override
+    protected void validateThis(final ValidationContext context) {
+        final Identifier targetIdentifier = getTarget();
+        final AbstractPart owner = getParent();
+        if (owner==null) {
+            return;
         }
-        else if (isExitTestPart()) {
-            if (getParent() instanceof TestPart) {
-                result = null;
-            }
-            else {
-                result = getParent().getEnclosingTestPart();
-            }
-        }
-        else if (isExitSection()) {
-            if (getParent() instanceof SectionPart) {
-                result = ((SectionPart) getParent()).getParentSection();
-            }
-            else {
-                result = null;
+        if (owner instanceof TestPart) {
+            /* We allow branchRule with EXIT_TEST here */
+            if (!EXIT_TEST.equals(targetIdentifier)) {
+                context.fireValidationError(this, "Only EXIT_TEST is allowed as the target of a branchRule on a testPart");
             }
         }
         else {
-            result = getRootNode(AssessmentTest.class).lookupFirstDescendant(getTarget());
-        }
-        return result;
-    }
-
-
-    /**
-     * Returns true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise.
-     *
-     * @return true is target is EXIT_TEST or EXIT_TEST_PART or EXIT_SECTION; false otherwise
-     */
-    public boolean isSpecial() {
-        return isExitTest() || isExitTestPart() || isExitSection();
-    }
-
-    /**
-     * Returns true is target is EXIT_TEST; false otherwise.
-     *
-     * @return true is target is EXIT_TEST; false otherwise
-     */
-    public boolean isExitTest() {
-        return getTarget().equals(EXIT_TEST);
-    }
-
-    /**
-     * Returns true is target is EXIT_TEST_PART; false otherwise.
-     *
-     * @return true is target is EXIT_TEST_PART; false otherwise
-     */
-    public boolean isExitTestPart() {
-        return getTarget().equals(EXIT_TEST_PART);
-    }
-
-    /**
-     * Returns true is target is EXIT_SECTION; false otherwise.
-     *
-     * @return true is target is EXIT_SECTION; false otherwise
-     */
-    public boolean isExitSection() {
-        return getTarget().equals(EXIT_SECTION);
-    }
-
-    @ToRefactor
-    @Override
-    protected void validateThis(final ValidationContext context) {
-        super.validateThis(context);
-        final AssessmentTest assessmentTest = ((TestValidationContext) context).getSubjectTest();
-
-        final Identifier target = getTarget();
-        final TestPart parentTestPart = getParent().getEnclosingTestPart();
-        if (target != null && parentTestPart.areJumpsEnabled()) {
-            if (isSpecial()) {
-                if (isExitTestPart()) {
-                    if (getParent() instanceof TestPart) {
-                        context.fireValidationError(this, "Invalid special target: " + target);
-                    }
-                }
-                else if (isExitSection()) {
-                    if (getParent() instanceof TestPart || getParent().getParent() instanceof TestPart) {
-                        context.fireValidationError(this, "Invalid special target: " + target);
-                    }
-                }
+            /* We're at an assessmentSection or assessmentItemRef. We allow
+             * an EXIT_SECTION, EXIT_TEST_PART, or branch to any assessmentSection
+             * or assessmentItemRef provided it is "after" this Node and is not the
+             * subject or selection or ordering.
+             */
+            final TestPart testPart = owner.getEnclosingTestPart();
+            if (testPart==null) {
+                return;
             }
-            else {
-                final AbstractPart targetPart = assessmentTest.lookupFirstDescendant(target);
-
-                if (targetPart == null) {
-                    context.fireValidationError(this, "Cannot find target: " + target);
+            if (!testPart.areJumpsEnabled()) {
+                context.fireValidationError(this, "branchRules on assessmentSections or assessmentItemRefs only apply within testParts with linear navigationMode and individual submissionMode");
+            }
+            if (EXIT_TEST.equals(targetIdentifier)) {
+                context.fireValidationError(this, "EXIT_TEST is not allowed as the target of a branchRule on an assessmentSection or assessmentItemRef");
+            }
+            else if (!(EXIT_TESTPART.equals(targetIdentifier) || EXIT_SECTION.equals(targetIdentifier))) {
+                /* Target must be an assessmentItemRef or assessmentSection within the current testPart,
+                 * and coming after the current Node. We also check to make sure it is not within a selection or
+                 * ordering.
+                 */
+                final AbstractPart targetAbstractPart = testPart.lookupFirstDescendant(targetIdentifier);
+                if (targetAbstractPart!=null) {
+                    final int thisPartGlobalIndex = owner.computeAbstractPartGlobalIndex();
+                    final int targetPartGlobalIndex = targetAbstractPart.computeAbstractPartGlobalIndex();
+                    if (targetPartGlobalIndex <= thisPartGlobalIndex) {
+                        context.fireValidationError(this, "branchRule target " + targetIdentifier + " must come after " + owner.getIdentifier());
+                    }
+                    /* Make sure target is not within a selection or ordering */
+                    if (targetAbstractPart.isInScopeOfOrderingOrSelection()) {
+                        context.fireValidationWarning(this, "branchRule target " + targetIdentifier + " is subject to selection or ordering. A successful branch therefore cannot be guaranteed");
+                    }
                 }
                 else {
-                    final int parentIdex = getParent().getGlobalIndex();
-                    final int targetIndex = targetPart.getGlobalIndex();
-
-                    if (getParent() instanceof TestPart && (targetPart instanceof AssessmentSection || targetPart instanceof AssessmentItemRef)) {
-                        context.fireValidationError(this, "Cannot jump from testPart to " + targetPart.getQtiClassName() + ": " + target);
-                    }
-                    else if (targetIndex <= parentIdex) {
-                        context.fireValidationError(this, "Cannot jump back to: " + target);
-                    }
-                    else if (targetPart.isChildOf(getParent())) {
-                        context.fireValidationError(this, "Cannot jump to own child: " + target);
-                    }
-                    else {
-                        if (!getParent().isJumpSafeSource()) {
-                            context.fireValidationWarning(this, "It is not safe to jump from this node. Check selection and ordering settings.");
-                        }
-
-                        if (!targetPart.isJumpSafeTarget()) {
-                            context.fireValidationWarning(this, "Target is not safe for jump: " + target + " Check selection and ordering settings.");
-                        }
-                    }
+                    context.fireValidationError(this, "branchRule target " + targetIdentifier + " was not found within the testPart with identifier " + testPart.getIdentifier());
                 }
             }
         }
@@ -222,6 +145,6 @@ public final class BranchRule extends AbstractJump {
      * @return true if given target is special (EXIT_TEST, EXIT_TESTPART, EXIT_SECTION); false otherwise
      */
     public static boolean isSpecial(final Identifier target) {
-        return target != null && (target.equals(EXIT_TEST) || target.equals(EXIT_TEST_PART) || target.equals(EXIT_SECTION));
+        return target.equals(EXIT_TEST) || target.equals(EXIT_TESTPART) || target.equals(EXIT_SECTION);
     }
 }

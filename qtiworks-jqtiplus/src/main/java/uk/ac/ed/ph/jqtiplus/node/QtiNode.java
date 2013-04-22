@@ -62,17 +62,17 @@ public interface QtiNode extends Serializable, Iterable<QtiNode> {
      * (not counting this Node itself). Returns the ancestor if found,
      * otherwise null.
      *
-     * @see #getNearestAncestorOrSelf(Class)
+     * @see #searchNearestAncestorOrSelf(Class)
      */
-    <E extends QtiNode> E getNearestAncestor(final Class<E> ancestorClass);
+    <E extends QtiNode> E searchNearestAncestor(final Class<E> ancestorClass);
 
     /**
      * Returns this Node if it is of the given ancestorClass. Otherwise it
      * finds the nearest ancestor of this Node having the given class
      *
-     * @see #getNearestAncestor(Class)
+     * @see #searchNearestAncestor(Class)
      */
-    <E extends QtiNode> E getNearestAncestorOrSelf(final Class<E> ancestorClass);
+    <E extends QtiNode> E searchNearestAncestorOrSelf(final Class<E> ancestorClass);
 
     /**
      * Gets root of this node, returning the node itself if it is already
