@@ -129,15 +129,6 @@ public final class XmlMarshallerCore {
         }
     }
 
-    static void maybeAddDateOrEmptyAttribute(final Element element, final String attributeName, final Date date) {
-        if (date!=null) {
-            element.setAttribute(attributeName, new SimpleDateFormat(dateFormatString).format(date));
-        }
-        else {
-            element.setAttribute(attributeName,  "");
-        }
-    }
-
     static void addAbstractPartSessionStateAttributes(final Element element, final AbstractPartSessionState abstractPartSessionState) {
     	addControlObjectSessionStateAttributes(element, abstractPartSessionState);
         element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(abstractPartSessionState.isPreConditionFailed()));
@@ -148,10 +139,10 @@ public final class XmlMarshallerCore {
     }
 
     static void addControlObjectSessionStateAttributes(final Element element, final ControlObjectSessionState controlObjectState) {
-        maybeAddDateOrEmptyAttribute(element, "entryTime", controlObjectState.getEntryTime());
-        maybeAddDateOrEmptyAttribute(element, "endTime", controlObjectState.getEndTime());
-        maybeAddDateOrEmptyAttribute(element, "exitTime", controlObjectState.getExitTime());
-        maybeAddDateOrEmptyAttribute(element, "durationIntervalStartTime", controlObjectState.getDurationIntervalStartTime());
+        maybeAddDateAttribute(element, "entryTime", controlObjectState.getEntryTime());
+        maybeAddDateAttribute(element, "endTime", controlObjectState.getEndTime());
+        maybeAddDateAttribute(element, "exitTime", controlObjectState.getExitTime());
+        maybeAddDateAttribute(element, "durationIntervalStartTime", controlObjectState.getDurationIntervalStartTime());
         element.setAttribute("durationAccumulated", Long.toString(controlObjectState.getDurationAccumulated()));
     }
 

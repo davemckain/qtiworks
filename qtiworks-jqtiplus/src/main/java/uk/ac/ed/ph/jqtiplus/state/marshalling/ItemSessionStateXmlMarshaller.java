@@ -77,7 +77,7 @@ public final class ItemSessionStateXmlMarshaller {
         XmlMarshallerCore.addAbstractPartSessionStateAttributes(element, itemSessionState);
         element.setAttribute("initialized", StringUtilities.toTrueFalse(itemSessionState.isInitialized()));
         element.setAttribute("responded", StringUtilities.toTrueFalse(itemSessionState.isResponded()));
-        XmlMarshallerCore.maybeAddDateOrEmptyAttribute(element, "suspendTime", itemSessionState.getSuspendTime());
+        XmlMarshallerCore.maybeAddDateAttribute(element, "suspendTime", itemSessionState.getSuspendTime());
         final SessionStatus sessionStatus = itemSessionState.getSessionStatus();
         if (sessionStatus!=null) {
             element.setAttribute("sessionStatus", sessionStatus.toQtiString());
