@@ -18,7 +18,6 @@ Renders a standalone assessmentItem
 
   <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="item-common.xsl"/>
-  <xsl:import href="item-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
@@ -165,9 +164,17 @@ Renders a standalone assessmentItem
 
         <xsl:apply-templates/>
 
+        <xsl:if test="$candidateCommentAllowed">
+          <fieldset class="candidateComment">
+            <legend>Please use the following text box if you need to provide any additional information, comments or feedback during this test:</legend>
+            <input name="qtiworks_comment_presented" type="hidden" value="true"/>
+            <textarea name="qtiworks_comment"><xsl:value-of select="$itemSessionState/qw:candidateComment"/></textarea>
+          </fieldset>
+        </xsl:if>
+
         <xsl:if test="$isSessionOpen">
           <div class="controls">
-            <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
+            <input id="submit_button" name="submit" type="submit" value="SUBMIT RESPONSE"/>
           </div>
         </xsl:if>
       </form>
@@ -297,6 +304,9 @@ Renders a standalone assessmentItem
 
         <dt>View <code>&lt;itemResult&gt;</code> XML?</dt>
         <dd><xsl:value-of select="$resultAllowed"/></dd>
+
+        <dt>Submit candidate comment?</dt>
+        <dd><xsl:value-of select="$candidateCommentAllowed"/></dd>
       </dl>
     </div>
   </xsl:template>

@@ -108,6 +108,11 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
     @Column(name="allow_result")
     private boolean allowResult;
 
+    /** Allow candidate to submit comments */
+    @Basic(optional=false)
+    @Column(name="allow_candidate_comment")
+    private boolean allowCandidateComment;
+
     //------------------------------------------------------------
 
     public ItemDeliverySettings() {
@@ -131,24 +136,6 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
 
     public void setAllowClose(final boolean allowClose) {
         this.allowClose = allowClose;
-    }
-
-
-    public boolean isAllowSource() {
-        return allowSource;
-    }
-
-    public void setAllowSource(final boolean allowSource) {
-        this.allowSource = allowSource;
-    }
-
-
-    public boolean isAllowResult() {
-        return allowResult;
-    }
-
-    public void setAllowResult(final boolean allowResult) {
-        this.allowResult = allowResult;
     }
 
 
@@ -203,6 +190,32 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
 
     public void setAllowSolutionWhenClosed(final boolean allowSolutionWhenClosed) {
         this.allowSolutionWhenClosed = allowSolutionWhenClosed;
+    }
+
+    public boolean isAllowSource() {
+        return allowSource;
+    }
+
+    public void setAllowSource(final boolean allowSource) {
+        this.allowSource = allowSource;
+    }
+
+
+    public boolean isAllowResult() {
+        return allowResult;
+    }
+
+    public void setAllowResult(final boolean allowResult) {
+        this.allowResult = allowResult;
+    }
+
+
+    public boolean isAllowCandidateComment() {
+        return allowCandidateComment;
+    }
+
+    public void setAllowCandidateComment(final boolean allowCandidateComment) {
+        this.allowCandidateComment = allowCandidateComment;
     }
 
     //------------------------------------------------------------

@@ -313,6 +313,7 @@ public class CandidateItemDeliveryService {
         renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenInteracting());
         renderingRequest.setResultAllowed(false);
         renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
+        renderingRequest.setCandidateCommentAllowed(itemDeliverySettings.isAllowCandidateComment());
 
         /* Pass to rendering layer */
         doRendering(candidateEvent, renderingRequest, resultStream);
@@ -341,6 +342,7 @@ public class CandidateItemDeliveryService {
         renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenClosed());
         renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
         renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
+        renderingRequest.setCandidateCommentAllowed(false);
 
         return renderingRequest;
     }
@@ -391,21 +393,29 @@ public class CandidateItemDeliveryService {
     }
 
     //----------------------------------------------------
-    // Attempt
+    // Response handling
 
-    public void handleAttempt(final long xid, final String sessionToken,
+    public void handleResponses(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap,
+            final String candidateComment)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
+        handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
 
-    public void handleAttempt(final CandidateSession candidateSession,
+    /**
+     * @param candidateComment optional candidate comment, or null if no comment has been sent
+     *
+     * @throws CandidateForbiddenException
+     */
+    public void handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap,
+            final String candidateComment)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) candidateSession.getDelivery().getDeliverySettings();
 
         /* Set up listener to record any notifications from JQTI candidateAuditLogger.logic */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -418,6 +428,11 @@ public class CandidateItemDeliveryService {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         if (itemSessionState.isEnded()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
+        }
+
+        /* Make sure candidate may comment (if set) */
+        if (candidateComment!=null && !itemDeliverySettings.isAllowCandidateComment()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SUBMIT_COMMENT);
         }
 
         /* Build response map in required format for JQTI+.
@@ -494,6 +509,11 @@ public class CandidateItemDeliveryService {
                     candidateResponseMap.get(invalidResponseIdentifier).setResponseLegality(ResponseLegality.INVALID);
                 }
             }
+        }
+
+        /* Submit comment (if provided) */
+        if (candidateComment!=null) {
+            itemSessionController.setCandidateComment(timestamp, candidateComment);
         }
 
         /* (We commit responses immediately here) */

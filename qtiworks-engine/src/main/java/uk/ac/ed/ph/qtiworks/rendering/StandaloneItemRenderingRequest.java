@@ -68,6 +68,7 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
     private boolean solutionAllowed;
     private boolean sourceAllowed;
     private boolean resultAllowed;
+    private boolean candidateCommentAllowed;
 
     //----------------------------------------------------
 
@@ -158,5 +159,14 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
 
     public void setResultAllowed(final boolean resultAllowed) {
         this.resultAllowed = resultAllowed;
+    }
+
+
+    public boolean isCandidateCommentAllowed() {
+        return candidateCommentAllowed;
+    }
+
+    public void setCandidateCommentAllowed(final boolean candidateCommentAllowed) {
+        this.candidateCommentAllowed = candidateCommentAllowed;
     }
 }

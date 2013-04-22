@@ -105,6 +105,7 @@ public class TestItemRenderingTest {
             renderingRequest.setReinitAllowed(false);
             renderingRequest.setResultAllowed(false);
             renderingRequest.setSourceAllowed(false);
+            renderingRequest.setCandidateCommentAllowed(false);
             renderingRequest.setItemKey(firstItemRef.getKey());
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();

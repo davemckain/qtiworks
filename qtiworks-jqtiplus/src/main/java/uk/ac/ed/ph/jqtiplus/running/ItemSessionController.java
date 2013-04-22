@@ -42,6 +42,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.ResponseBindingException;
 import uk.ac.ed.ph.jqtiplus.exception.TemplateProcessingInterrupt;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.EndAttemptInteraction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
@@ -161,7 +162,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      *   Built-in variables are set to initial values. Interaction shuffle orders will
      *   have been chosen. {@link ItemSessionState#isInitialized()} will return true.
      *
-     * @param timestamp for this operation.
+     * @param timestamp timestamp for this event, which must not be null
      */
     public void initialize(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -266,6 +267,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Post-condition: Template variables will be initialized. Response and Outcome
      *   variables will be reset to their default values.
      *
+     * @param timestamp timestamp for this event, which must not be null
+     *
      * @see #performTemplateProcessing(Date, List)
      */
     public void performTemplateProcessing(final Date timestamp) {
@@ -282,9 +285,10 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Post-condition: Template variables will be initialized. Response and Outcome
      *   variables will be reset to their default values.
      *
-     * @see #performTemplateProcessing(Date)
-     *
+     * @param timestamp timestamp for this event, which must not be null
      * @param templateDefaults List of {@link TemplateDefault}s, which may be null or empty.
+     *
+     * @see #performTemplateProcessing(Date)
      */
     public void performTemplateProcessing(final Date timestamp, final List<TemplateDefault> templateDefaults) {
         Assert.notNull(timestamp);
@@ -388,7 +392,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Post-condition: Item Session will have its entry time set and the duration timer
      * will start. The {@link SessionStatus} will be changed to {@link SessionStatus#PENDING_SUBMISSION}
      *
-     * @param timestamp
+     * @param timestamp timestamp for this event, which must not be null
      */
     public void enterItem(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -416,7 +420,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Pre-condition: Item Session must be open and not suspended
      * <p>
      * Post-condition: Duration variable will be updated (if the item session is currently open)
-     * @param timestamp
+     *
+     * @param timestamp timestamp for this event, which must not be null
      */
     public void touchDuration(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -424,10 +429,8 @@ public final class ItemSessionController extends ItemProcessingController implem
         assertItemNotSuspended();
         logger.debug("Touching duration for item {}", item.getSystemId());
 
-        if (!itemSessionState.isEnded()) {
-            endItemSessionTimer(itemSessionState, timestamp);
-            startItemSessionTimer(itemSessionState, timestamp);
-        }
+        endItemSessionTimer(itemSessionState, timestamp);
+        startItemSessionTimer(itemSessionState, timestamp);
     }
 
     /**
@@ -440,6 +443,10 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Post-condition: Item Session will be reinitialized, then template processing will be
      * run again. The item's entry time will be maintained. The duration timer is reset,
      * if requested, and then restarted.
+     *
+     * @param timestamp timestamp for this event, which must not be null
+     * @param resetDuration if true then the duration variable will be reset to 0.0, otherwise
+     *   it will keep its existing value.
      */
     public void resetItemSessionHard(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
@@ -477,6 +484,10 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Template Variables will have the values they had after init and template processing;
      * Outcome and Response variables will be reset. The duration timer is reset, if requested,
      * and then restarted. The existing entry time will be maintained.
+     *
+     * @param timestamp timestamp for this event, which must not be null
+     * @param resetDuration if true then the duration variable will be reset to 0.0, otherwise
+     *   it will keep its existing value.
      */
     public void resetItemSessionSoft(final Date timestamp, final boolean resetDuration) {
         Assert.notNull(timestamp);
@@ -532,7 +543,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Post-conditions: Item session state will be marked as not suspended. Duration
      *   timer will be restarted.
      *
-     * @param timestamp
+     * @param timestamp timestamp for this event, which must not be null
      */
     public void unsuspendItemSession(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -553,7 +564,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Post-conditions: Item session state will be marked as ended (closed). Duration
      * timer will be stopped.
      *
-     * @param timestamp
+     * @param timestamp timestamp for this event, which must not be null
      */
     public void endItem(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -611,7 +622,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      *
      * @see #commitResponses(Date)
      *
-     * @param timestamp timestamp for this event
+     * @param timestamp timestamp for this event, which must not be null
      * @param responseMap Map of responses to set, keyed on response variable identifier
      *
      * @return true if all responses were successfully bound and validated, false otherwise.
@@ -712,7 +723,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      *
      * @see #bindResponses(Date, Map)
      *
-     * @param timestamp timestamp for this event
+     * @param timestamp timestamp for this event, which must not be null
      */
     public void commitResponses(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -757,6 +768,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Post-conditions: Outcome Variables will be updated. SessionStatus will be changed to
      * {@link SessionStatus#FINAL}. The <code>numAttempts</code> variables will be incremented (unless
      * directed otherwise by an {@link EndAttemptInteraction}).
+     *
+     * @param timestamp timestamp for this event, which must not be null
      */
     public void performResponseProcessing(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -850,6 +863,8 @@ public final class ItemSessionController extends ItemProcessingController implem
      * <p>
      * Post-condition: Responses are reset to their default values. SessionStatus is
      * reset to {@link SessionStatus#INITIAL}.
+     *
+     * @param timestamp timestamp for this event, which must not be null
      */
     public void resetResponses(final Date timestamp) {
         Assert.notNull(timestamp);
@@ -862,6 +877,28 @@ public final class ItemSessionController extends ItemProcessingController implem
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         updateClosedStatus(timestamp);
         startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
+    }
+
+    /**
+     * Sets the candidate comment for this item, replacing any comment that has already been set.
+     * <p>
+     * Pre-condition: Item session must be open and not suspended
+     * <p>
+     * Post-condition: Candidate comment will be changed.
+     *
+     * @param timestamp timestamp for this event, which must not be null
+     * @param comment comment to record, which may be null. An empty or blank comment will be
+     *   treated in the same way as a null comment.
+     */
+    public void setCandidateComment(final Date timestamp, final String candidateComment) {
+        Assert.notNull(timestamp);
+        assertItemOpen();
+        assertItemNotSuspended();
+        logger.debug("Setting candidate comment to {}", candidateComment);
+
+        itemSessionState.setCandidateComment(StringUtilities.nullIfBlank(candidateComment));
+        endItemSessionTimer(itemSessionState, timestamp);
+        startItemSessionTimer(itemSessionState, timestamp);
     }
 
     //-------------------------------------------------------------------

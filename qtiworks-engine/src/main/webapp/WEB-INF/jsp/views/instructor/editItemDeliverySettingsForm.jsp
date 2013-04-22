@@ -182,6 +182,25 @@ itemDeliverySettingsTemplate - form backing template
         </div>
       </div>
       <div class="clear"></div>
+      <div class="stdFormRow">
+        <div class="grid_4">
+          <label for="allowCandidateComment">Submit a comment?</label>
+        </div>
+        <div class="grid_3">
+          <div class="booleanButtons">
+            <form:radiobutton path="allowCandidateComment" value="true" /> Yes
+            <form:radiobutton path="allowCandidateComment" value="false" /> No
+          </div>
+        </div>
+        <div class="grid_5">
+          <aside>
+            If 'Yes', the candidate will be allowed to submit an optional
+            comment, as described in the "allowComment" attribute of the
+            QTI itemSessionControl class.
+          </aside>
+        </div>
+      </div>
+      <div class="clear"></div>
     </fieldset>
     <fieldset>
       <legend>Once session is closed, the candidate is allowed to...</legend>

@@ -33,6 +33,7 @@ rendering.
   <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="candidateCommentAllowed" as="xs:boolean" required="yes"/>
 
   <xsl:function name="qw:describe-candidate-event" as="xs:string">
     <xsl:param name="candidate-event-type" as="xs:string"/>

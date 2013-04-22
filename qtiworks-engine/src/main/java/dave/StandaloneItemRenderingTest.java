@@ -84,6 +84,7 @@ public class StandaloneItemRenderingTest {
             renderingRequest.setReinitAllowed(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
+            renderingRequest.setCandidateCommentAllowed(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

@@ -289,6 +289,7 @@ public class AssessmentRenderer {
         xsltParameters.put("solutionAllowed", Boolean.valueOf(renderingRequest.isSolutionAllowed()));
         xsltParameters.put("sourceAllowed", Boolean.valueOf(renderingRequest.isSourceAllowed()));
         xsltParameters.put("resultAllowed", Boolean.valueOf(renderingRequest.isResultAllowed()));
+        xsltParameters.put("candidateCommentAllowed", Boolean.valueOf(renderingRequest.isCandidateCommentAllowed()));
 
         /* Pass ItemSessionState (as DOM Document) */
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
