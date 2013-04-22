@@ -251,11 +251,6 @@ NB: This is used both while being presented, and during review.
         </div>
       </xsl:if>
     </xsl:if>
-
-    <!-- Item Session control -->
-    <!-- (We are not using any of the controls present for standalone items)
-    <xsl:call-template name="qw:item-controls"/>
-    -->
   </xsl:template>
 
   <xsl:template match="qti:itemBody">
@@ -265,6 +260,23 @@ NB: This is used both while being presented, and during review.
         onreset="QtiWorksRendering.reset()" autocomplete="off">
 
         <xsl:apply-templates/>
+
+        <xsl:choose>
+          <xsl:when test="$isSessionOpen and $candidateCommentAllowed">
+            <fieldset class="candidateComment">
+              <legend>Please use the following text box if you need to provide any additional information, comments or feedback during this test:</legend>
+              <input name="qtiworks_comment_presented" type="hidden" value="true"/>
+              <textarea name="qtiworks_comment"><xsl:value-of select="$itemSessionState/qw:candidateComment"/></textarea>
+            </fieldset>
+          </xsl:when>
+          <xsl:when test="$isSessionEnded and exists($itemSessionState/qw:candidateComment)">
+            <fieldset class="candidateComment">
+              <legend>You submitted the folllowing comment with this item:</legend>
+              <input name="qtiworks_comment_presented" type="hidden" value="true"/>
+              <textarea name="qtiworks_comments" disabled="disabled"><xsl:value-of select="$itemSessionState/qw:candidateComment"/></textarea>
+            </fieldset>
+          </xsl:when>
+        </xsl:choose>
 
         <xsl:if test="$isSessionOpen">
           <xsl:variable name="submitText" as="xs:string"

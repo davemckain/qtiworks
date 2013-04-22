@@ -80,6 +80,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
@@ -459,10 +460,13 @@ public class CandidateTestDeliveryService {
         final TestPart currentTestPart = testSessionController.getCurrentTestPart();
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
+        final EffectiveItemSessionControl effectiveItemSessionControl = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey).getEffectiveItemSessionControl();
+
         final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateSession,
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndItemLinear());
+        renderingRequest.setCandidateCommentAllowed(effectiveItemSessionControl.isAllowComment());
         return renderingRequest;
     }
 
@@ -496,6 +500,7 @@ public class CandidateTestDeliveryService {
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR);
         renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
         renderingRequest.setTestItemSolutionAllowed(false); /* Ditto */
+        renderingRequest.setCandidateCommentAllowed(false); /* No comments allowed now */
         return renderingRequest;
     }
 
@@ -593,19 +598,21 @@ public class CandidateTestDeliveryService {
     }
 
     //----------------------------------------------------
-    // Attempt
+    // Response handling
 
     public void handleResponses(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap,
+            final String candidateComment)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        handleResponses(candidateSession, stringResponseMap, fileResponseMap);
+        handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
 
     public void handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap,
+            final String candidateComment)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -675,9 +682,16 @@ public class CandidateTestDeliveryService {
             candidateResponseMap.put(responseIdentifier, candidateItemResponse);
         }
 
+        /* Submit comment (if provided).
+         * NB: Need to do this first in case later response handling ends the item session.
+         */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        if (candidateComment!=null) {
+            testSessionController.setCandidateCommentForCurrentItem(timestamp, candidateComment);
+        }
+
         /* Attempt to bind responses (and maybe perform RP & OP) */
-        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.handleResponsesToCurrentItem(requestTimestamp, responseDataMap);
+        testSessionController.handleResponsesToCurrentItem(timestamp, responseDataMap);
 
         /* Note any responses that failed to bind */
         final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();

@@ -487,8 +487,15 @@ public class CandidateItemDeliveryService {
             candidateResponseMap.put(responseIdentifier, candidateResponse);
         }
 
-        /* Attempt to bind responses */
+        /* Submit comment (if provided)
+         * NB: Do this first in case next actions end the item session.
+         */
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        if (candidateComment!=null) {
+            itemSessionController.setCandidateComment(timestamp, candidateComment);
+        }
+
+        /* Attempt to bind responses */
         itemSessionController.bindResponses(timestamp, responseDataMap);
 
         /* Note any responses that failed to bind */
@@ -509,11 +516,6 @@ public class CandidateItemDeliveryService {
                     candidateResponseMap.get(invalidResponseIdentifier).setResponseLegality(ResponseLegality.INVALID);
                 }
             }
-        }
-
-        /* Submit comment (if provided) */
-        if (candidateComment!=null) {
-            itemSessionController.setCandidateComment(timestamp, candidateComment);
         }
 
         /* (We commit responses immediately here) */

@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -124,13 +125,13 @@ public class CandidateTestController {
     }
 
     //----------------------------------------------------
-    // Attempt handling
+    // Response handling
 
     /**
      * Handles submission of candidate responses
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/attempt", method=RequestMethod.POST)
-    public String handleAttempt(final HttpServletRequest request, @PathVariable final long xid,
+    public String handleResponses(final HttpServletRequest request, @PathVariable final long xid,
             @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         /* First need to extract responses */
@@ -142,8 +143,11 @@ public class CandidateTestController {
             fileResponseMap = extractFileResponseData((MultipartHttpServletRequest) request);
         }
 
+        /* Extract comment (if appropriate) */
+        final String candidateComment = extractCandidateComment(request);
+
         /* Call up service layer */
-        candidateTestDeliveryService.handleResponses(xid, sessionToken, stringResponseMap, fileResponseMap);
+        candidateTestDeliveryService.handleResponses(xid, sessionToken, stringResponseMap, fileResponseMap, candidateComment);
 
         /* Redirect to rendering of current session state */
         return redirectToRenderSession(xid, sessionToken);
@@ -202,6 +206,18 @@ public class CandidateTestController {
             }
         }
         return responseMap;
+    }
+
+    /**
+     * FIXME: copy & pasted from {@link ItemSessionController}
+     * @throws BadResponseWebPayloadException
+     */
+    private String extractCandidateComment(final HttpServletRequest request) {
+        if (request.getParameter("qtiworks_comment_presented")==null) {
+            /* No comment box given to candidate */
+            return null;
+        }
+        return StringUtilities.emptyIfNull(request.getParameter("qtiworks_comment"));
     }
 
     //----------------------------------------------------
