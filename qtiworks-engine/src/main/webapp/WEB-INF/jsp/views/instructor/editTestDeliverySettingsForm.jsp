@@ -55,21 +55,6 @@ testDeliverySettingsTemplate - form backing template
     <fieldset>
       <legend>Display Controls</legend>
       <div class="stdFormRow">
-        <div class="grid_2">
-          <label for="prompt">Prompt:</label>
-        </div>
-        <div class="grid_5">
-          <form:textarea path="prompt" rows="5" type="input" cssClass="expandy" />
-        </div>
-        <div class="grid_5">
-          <aside>
-            This is an optional prompt that will be displayed to candidates just
-            before the test body is shown.
-          </aside>
-        </div>
-      </div>
-      <div class="clear"></div>
-      <div class="stdFormRow">
         <div class="grid_4">
           <label for="authorMode">Author Mode?</label>
         </div>

@@ -56,7 +56,6 @@ public abstract class DeliverySettingsTemplate {
     private String title;
 
     private boolean authorMode;
-    private String prompt;
 
     //------------------------------------------------------------
 
@@ -66,11 +65,11 @@ public abstract class DeliverySettingsTemplate {
 
     //------------------------------------------------------------
 
-
     public AssessmentObjectType getAssessmentType() {
         return assessmentType;
     }
 
+    //------------------------------------------------------------
 
     public final String getTitle() {
         return title;
@@ -78,15 +77,6 @@ public abstract class DeliverySettingsTemplate {
 
     public final void setTitle(final String title) {
         this.title = title;
-    }
-
-
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public void setPrompt(final String prompt) {
-        this.prompt = prompt;
     }
 
 

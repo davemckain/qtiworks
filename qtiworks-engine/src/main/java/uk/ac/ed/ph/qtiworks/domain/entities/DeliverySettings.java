@@ -144,12 +144,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     //------------------------------------------------------------
     // Settings common to both items and tests
 
-    /** Optional prompt to show to candidates */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="prompt")
-    private String prompt;
 
     /** Author mode includes additional debugging information in the rendering */
     @Basic(optional=false)
@@ -239,15 +233,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     }
 
     //------------------------------------------------------------
-
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public void setPrompt(final String prompt) {
-        this.prompt = prompt;
-    }
-
 
     public boolean isAuthorMode() {
         return authorMode;

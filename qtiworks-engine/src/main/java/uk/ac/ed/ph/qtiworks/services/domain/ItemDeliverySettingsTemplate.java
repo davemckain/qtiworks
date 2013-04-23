@@ -44,6 +44,7 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
  */
 public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate {
 
+    private String prompt;
     private int maxAttempts;
     private boolean allowClose;
     private boolean allowResetWhenInteracting;
@@ -63,6 +64,14 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
     }
 
     //------------------------------------------------------------
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(final String prompt) {
+        this.prompt = prompt;
+    }
 
 
 

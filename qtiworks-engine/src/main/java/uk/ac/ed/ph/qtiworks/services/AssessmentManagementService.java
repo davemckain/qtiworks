@@ -644,13 +644,11 @@ public class AssessmentManagementService {
 
     private void mergeTestDeliverySettings(final TestDeliverySettingsTemplate template, final TestDeliverySettings target) {
         target.setAuthorMode(template.isAuthorMode());
-        target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
         target.setTitle(template.getTitle().trim());
     }
 
     public void mergeTestDeliverySettings(final TestDeliverySettings template, final TestDeliverySettingsTemplate target) {
         target.setAuthorMode(template.isAuthorMode());
-        target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
         target.setTitle(template.getTitle());
     }
 

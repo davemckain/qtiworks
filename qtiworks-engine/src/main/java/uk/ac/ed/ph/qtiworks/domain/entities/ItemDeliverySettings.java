@@ -41,8 +41,11 @@ import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Specifies settings controlling the delivery of an {@link AssessmentItem} to a group of candidates.
@@ -56,6 +59,13 @@ import javax.validation.constraints.Min;
 public class ItemDeliverySettings extends DeliverySettings implements BaseEntity {
 
     private static final long serialVersionUID = 6573748787230595395L;
+
+    /** Optional prompt to show to candidates */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="prompt")
+    private String prompt;
 
     /** Maximum number of attempts, as defined by {@link ItemSessionControl} */
     @Min(value=0)
@@ -120,6 +130,15 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
     }
 
     //------------------------------------------------------------
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(final String prompt) {
+        this.prompt = prompt;
+    }
+
 
     public Integer getMaxAttempts() {
         return maxAttempts;

@@ -347,7 +347,6 @@ public class SampleResourceImporter {
                 case TEST_WORK_IN_PROGRESS: {
                     final TestDeliverySettings testDeliverySettings = createBaseTestDeliverySettings();
                     testDeliverySettings.setTitle("Tests (work in progress)");
-                    testDeliverySettings.setPrompt("This is an assessment test, which is currently work in progress!");
                     deliverySettings = testDeliverySettings;
                     break;
                 }

@@ -466,7 +466,8 @@ public class CandidateTestDeliveryService {
                 itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndItemLinear());
-        renderingRequest.setCandidateCommentAllowed(effectiveItemSessionControl.isAllowComment());
+        renderingRequest.setAllowComment(effectiveItemSessionControl.isAllowComment());
+        renderingRequest.setShowFeedback(false);
         return renderingRequest;
     }
 
@@ -500,7 +501,8 @@ public class CandidateTestDeliveryService {
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR);
         renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
         renderingRequest.setTestItemSolutionAllowed(false); /* Ditto */
-        renderingRequest.setCandidateCommentAllowed(false); /* No comments allowed now */
+        renderingRequest.setAllowComment(false); /* No comments allowed now */
+        renderingRequest.setShowFeedback(false);
         return renderingRequest;
     }
 
@@ -577,7 +579,6 @@ public class CandidateTestDeliveryService {
         renderingRequest.setRenderingMode(renderingMode);
         renderingRequest.setTestSessionState(testSessionState);
         renderingRequest.setItemSessionState(itemSessionState);
-        renderingRequest.setPrompt(testDeliverySettings.getPrompt());
         return renderingRequest;
     }
 
