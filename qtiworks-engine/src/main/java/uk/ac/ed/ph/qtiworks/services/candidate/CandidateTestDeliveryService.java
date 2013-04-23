@@ -178,7 +178,7 @@ public class CandidateTestDeliveryService {
      * @throws DomainEntityNotFoundException
      * @throws CandidateForbiddenException
      */
-    public CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession lookupCandidateTestSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
@@ -208,7 +208,7 @@ public class CandidateTestDeliveryService {
     public void renderCurrentCandidateSessionState(final long xid, final String sessionToken,
             final RenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         renderCurrentCandidateSessionState(candidateSession, renderingOptions, outputStreamer);
     }
 
@@ -606,7 +606,7 @@ public class CandidateTestDeliveryService {
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
 
@@ -745,7 +745,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession selectNavigationMenu(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return selectNavigationMenu(candidateSession);
     }
 
@@ -779,7 +779,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession selectNonlinearItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return selectNonlinearItem(candidateSession, itemKey);
     }
 
@@ -814,7 +814,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession finishLinearItem(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return finishLinearItem(candidateSession);
     }
 
@@ -848,7 +848,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession endCurrentTestPart(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return endCurrentTestPart(candidateSession);
     }
 
@@ -896,7 +896,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession reviewTestPart(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return reviewTestPart(candidateSession);
     }
 
@@ -925,7 +925,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession reviewItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return reviewItem(candidateSession, itemKey);
     }
 
@@ -959,7 +959,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession requestSolution(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return requestSolution(candidateSession, itemKey);
     }
 
@@ -997,7 +997,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession advanceTestPart(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return advanceTestPart(candidateSession);
     }
 
@@ -1054,7 +1054,7 @@ public class CandidateTestDeliveryService {
 
     public CandidateSession exitTest(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return exitTest(candidateSession);
     }
 

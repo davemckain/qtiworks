@@ -44,12 +44,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
-import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
@@ -84,8 +82,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Service for rendering the candidate state of assessments. This connects the
- * lower-level {@link AssessmentRenderer} with the domain layer.
+ * Service for rendering the candidate state of assessments, connecting the domain
+ * layer with the low-level {@link AssessmentRenderer}
  *
  * @see AssessmentRenderer
  *
@@ -120,49 +118,24 @@ public class CandidateRenderingService {
     private AssessmentRenderer assessmentRenderer;
 
     @Resource
+    private CandidateItemDeliveryService candidateItemDeliveryService;
+
+    @Resource
     private CandidateSessionDao candidateSessionDao;
-
-    //----------------------------------------------------
-    // Session access
-
-    /**
-     * Looks up the {@link CandidateSession} having the given ID (xid)
-     * and checks the given sessionToken against that stored in the session as a means of
-     * "authentication".
-     *
-     * @param xid
-     *
-     * @throws DomainEntityNotFoundException
-     * @throws CandidateForbiddenException
-     */
-    public CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
-        Assert.notNull(sessionToken, "sessionToken");
-        final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
-        if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
-        }
-        return candidateSession;
-    }
-
-
-    //----------------------------------------------------
-    // Rendering
 
     /**
      * Renders the current state of the {@link CandidateSession} having
      * the given ID (xid).
      */
-    public void renderCurrentCandidateSessionState(final long xid, final String sessionToken,
+    public void renderCurrentCandidateItemSessionState(final long xid, final String sessionToken,
             final ItemRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
         Assert.notNull(sessionToken, "sessionToken");
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        renderCurrentCandidateSessionState(candidateSession, renderingOptions, outputStreamer);
+        final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
+        renderCurrentCandidateItemSessionState(candidateSession, renderingOptions, outputStreamer);
     }
 
-
-    public void renderCurrentCandidateSessionState(final CandidateSession candidateSession,
+    public void renderCurrentCandidateItemSessionState(final CandidateSession candidateSession,
             final ItemRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws IOException {
         Assert.notNull(candidateSession, "candidateSession");
@@ -225,25 +198,6 @@ public class CandidateRenderingService {
         }
     }
 
-    private void renderEventOLD(final ItemSessionState itemSessionState, final CandidateEvent candidateEvent,
-            final CandidateSession candidateSession, final ItemRenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
-        switch (itemEventType) {
-            /* Handle "modal" events first. These cause a particular rendering state to be
-             * displayed, which candidate will then leave.
-             */
-            case SOLUTION:
-                renderSolutionMode(itemSessionState, candidateEvent, renderingOptions, resultStream);
-                break;
-
-            /* Otherwise just render current item session state */
-            default:
-                renderState(itemSessionState, candidateEvent, candidateSession, renderingOptions, resultStream);
-                break;
-        }
-    }
-
     private void renderEvent(final ItemSessionState itemSessionState, final CandidateEvent candidateEvent,
             final CandidateSession candidateSession, final ItemRenderingOptions renderingOptions,
             final OutputStream resultStream) {
@@ -302,126 +256,6 @@ public class CandidateRenderingService {
         candidateAuditLogger.logStandaloneItemRendering(candidateEvent, renderingRequest);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderStandaloneItem(renderingRequest, notifications, resultStream);
-    }
-
-
-    private void renderState(final ItemSessionState itemSessionState,
-            final CandidateEvent candidateEvent, final CandidateSession candidateSession,
-            final ItemRenderingOptions renderingOptions, final OutputStream resultStream) {
-        if (candidateSession.isTerminated()) {
-            /* Session has been terminated */
-            renderTerminated(candidateEvent, renderingOptions, resultStream);
-        }
-        else if (itemSessionState.isEnded()) {
-            /* Item session is ended */
-            renderWhenEnded(candidateEvent, itemSessionState, renderingOptions, resultStream);
-        }
-        else {
-            /* Interacting */
-            renderWhenInteracting(candidateEvent, itemSessionState, renderingOptions, resultStream);
-        }
-    }
-
-    private void renderWhenInteracting(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final ItemRenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-
-        /* Initialise rendering request */
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateEvent,
-                itemSessionState, renderingOptions, null);
-        renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
-        renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
-        renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
-        renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenInteracting());
-        renderingRequest.setResultAllowed(false);
-        renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
-        renderingRequest.setCandidateCommentAllowed(itemDeliverySettings.isAllowCandidateComment());
-
-        /* Pass to rendering layer */
-        doRendering(candidateEvent, renderingRequest, resultStream);
-    }
-
-    private void renderSolutionMode(final ItemSessionState itemSessionState,
-            final CandidateEvent candidateEvent, final ItemRenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenEnded(candidateEvent,
-                itemSessionState, renderingOptions, RenderingMode.SOLUTION);
-        doRendering(candidateEvent, renderingRequest, resultStream);
-    }
-
-    private void renderWhenEnded(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final ItemRenderingOptions renderingOptions,
-            final OutputStream resultStream) {
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenEnded(candidateEvent,
-                itemSessionState, renderingOptions, RenderingMode.CLOSED);
-        doRendering(candidateEvent, renderingRequest, resultStream);
-    }
-
-    private StandaloneItemRenderingRequest initItemRenderingRequestWhenEnded(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final ItemRenderingOptions renderingOptions,
-            final RenderingMode renderingMode) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-
-        final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateEvent,
-                itemSessionState, renderingOptions, renderingMode);
-        renderingRequest.setCloseAllowed(false);
-        renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
-        renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenClosed());
-        renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenClosed());
-        renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
-        renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
-        renderingRequest.setCandidateCommentAllowed(false);
-
-        return renderingRequest;
-    }
-
-    private void renderTerminated(final CandidateEvent candidateEvent,
-            final ItemRenderingOptions renderingOptions, final OutputStream resultStream) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final Delivery delivery = candidateSession.getDelivery();
-        final DeliverySettings deliverySettings = delivery.getDeliverySettings();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-
-        final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
-        initBaseRenderingRequest(renderingRequest, assessmentPackage, deliverySettings);
-
-        assessmentRenderer.renderTeminated(renderingRequest, resultStream);
-    }
-
-    private void doRendering(final CandidateEvent candidateEvent, final StandaloneItemRenderingRequest renderingRequest, final OutputStream resultStream) {
-        candidateAuditLogger.logStandaloneItemRendering(candidateEvent, renderingRequest);
-        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
-        assessmentRenderer.renderStandaloneItem(renderingRequest, notifications, resultStream);
-    }
-
-    private StandaloneItemRenderingRequest initItemRenderingRequest(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final ItemRenderingOptions renderingOptions,
-            final RenderingMode renderingMode) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-
-        final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
-        initBaseRenderingRequest(renderingRequest, assessmentPackage, itemDeliverySettings);
-        renderingRequest.setAssessmentItemUri(renderingRequest.getAssessmentResourceUri()); /* (These are the same for standalone items) */
-        renderingRequest.setRenderingMode(renderingMode);
-        renderingRequest.setItemSessionState(itemSessionState);
-        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
-        renderingRequest.setRenderingOptions(renderingOptions);
-        return renderingRequest;
-    }
-
-    private void initBaseRenderingRequest(final AbstractRenderingRequest<?> renderingRequest,
-            final AssessmentPackage assessmentPackage, final DeliverySettings deliverySettings) {
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
     }
 
     //----------------------------------------------------
@@ -520,6 +354,16 @@ public class CandidateRenderingService {
 
     //----------------------------------------------------
     // Access controls
+
+    private CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        Assert.notNull(sessionToken, "sessionToken");
+        final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
+        if (!sessionToken.equals(candidateSession.getSessionToken())) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+        }
+        return candidateSession;
+    }
 
     private void ensureSessionNotTerminated(final CandidateSession candidateSession) throws CandidateForbiddenException {
         if (candidateSession.isTerminated()) {

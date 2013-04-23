@@ -125,7 +125,7 @@ public class CandidateItemDeliveryService {
      * @throws DomainEntityNotFoundException
      * @throws CandidateForbiddenException
      */
-    public CandidateSession lookupCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession lookupCandidateItemSession(final long xid, final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
@@ -153,7 +153,7 @@ public class CandidateItemDeliveryService {
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
 
@@ -310,7 +310,7 @@ public class CandidateItemDeliveryService {
      */
     public CandidateSession closeCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return closeCandidateSession(candidateSession);
     }
 
@@ -362,7 +362,7 @@ public class CandidateItemDeliveryService {
      */
     public CandidateSession resetCandidateSessionHard(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return resetCandidateSessionHard(candidateSession);
     }
 
@@ -417,7 +417,7 @@ public class CandidateItemDeliveryService {
      */
     public CandidateSession resetCandidateSessionSoft(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return resetCandidateSessionSoft(candidateSession);
     }
 
@@ -469,7 +469,7 @@ public class CandidateItemDeliveryService {
      */
     public CandidateSession requestSolution(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return requestSolution(candidateSession);
     }
 
@@ -527,7 +527,7 @@ public class CandidateItemDeliveryService {
      */
     public CandidateSession terminateCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
-        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return terminateCandidateSession(candidateSession);
     }
 
