@@ -312,16 +312,18 @@ public final class XmlMarshallerCore {
     }
 
     static Date parseOptionalDateAttribute(final Element element, final String attrName) {
-        final String attrValue = element.getAttribute(attrName);
-        if (attrValue.isEmpty()) {
-            return null;
+        if (element.hasAttribute(attrName)) {
+            final String attrValue = element.getAttribute(attrName);
+            if (!attrValue.isEmpty()) {
+                try {
+                    return new SimpleDateFormat(dateFormatString).parse(attrValue);
+                }
+                catch (final ParseException e) {
+                    throw new XmlUnmarshallingException("Could not parse Date attribute", e);
+                }
+            }
         }
-        try {
-			return new SimpleDateFormat(dateFormatString).parse(attrValue);
-		}
-        catch (final ParseException e) {
-            throw new XmlUnmarshallingException("Could not parse Date attribute", e);
-		}
+        return null;
     }
 
     static URI parseOptionalUriAttribute(final Element element, final String attrName) {
