@@ -34,11 +34,11 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
- * FIXME: Document this type
+ * Request for rendering a session that has now been exited.
  *
  * @author David McKain
  */
-public final class TerminatedRenderingRequest extends AbstractRenderingRequest {
+public final class TerminatedRenderingRequest extends AbstractRenderingRequest<AbstractRenderingOptions> {
 
     /* Nothing to add */
 

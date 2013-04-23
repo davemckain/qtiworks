@@ -45,7 +45,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public abstract class AbstractItemRenderingRequest extends AbstractRenderingRequest {
+public abstract class AbstractItemRenderingRequest<P extends AbstractRenderingOptions> extends AbstractRenderingRequest<P> {
 
     /** URI of the {@link AssessmentItem} being rendered */
     @NotNull

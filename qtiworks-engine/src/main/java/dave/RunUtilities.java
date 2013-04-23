@@ -33,7 +33,7 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 
@@ -70,8 +70,8 @@ public final class RunUtilities {
         return renderingOptions;
     }
 
-    public static StandaloneItemRenderingOptions createItemRenderingOptions() {
-        final StandaloneItemRenderingOptions result = new StandaloneItemRenderingOptions();
+    public static ItemRenderingOptions createItemRenderingOptions() {
+        final ItemRenderingOptions result = new ItemRenderingOptions();
         result.setAttemptUrl("/attempt");
         result.setCloseUrl("/close");
         result.setResetUrl("/reset");

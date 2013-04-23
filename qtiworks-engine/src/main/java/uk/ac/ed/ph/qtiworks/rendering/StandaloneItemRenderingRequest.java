@@ -42,11 +42,11 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class StandaloneItemRenderingRequest extends AbstractItemRenderingRequest {
+public final class StandaloneItemRenderingRequest extends AbstractItemRenderingRequest<ItemRenderingOptions> {
 
     @NotNull
     @Valid
-    private StandaloneItemRenderingOptions itemRenderingOptions;
+    private ItemRenderingOptions itemRenderingOptions;
 
     private String prompt;
     private boolean closeAllowed;
@@ -59,11 +59,11 @@ public final class StandaloneItemRenderingRequest extends AbstractItemRenderingR
 
     //----------------------------------------------------
 
-    public StandaloneItemRenderingOptions getItemRenderingOptions() {
+    public ItemRenderingOptions getItemRenderingOptions() {
         return itemRenderingOptions;
     }
 
-    public void setItemRenderingOptions(final StandaloneItemRenderingOptions itemRenderingOptions) {
+    public void setItemRenderingOptions(final ItemRenderingOptions itemRenderingOptions) {
         this.itemRenderingOptions = itemRenderingOptions;
     }
 

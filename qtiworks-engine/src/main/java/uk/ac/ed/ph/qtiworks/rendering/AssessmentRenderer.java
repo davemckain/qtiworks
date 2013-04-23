@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
@@ -48,7 +47,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -180,27 +178,18 @@ public class AssessmentRenderer {
      * The caller is responsible for closing this stream afterwards.
      */
     public void renderTeminated(final TerminatedRenderingRequest renderingRequest, final OutputStream resultStream) {
-        Assert.notNull(renderingRequest, "renderingRequest");
         Assert.notNull(resultStream, "resultStream");
 
-        /* Check request is valid */
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "terminatedRenderingRequest");
-        jsr303Validator.validate(renderingRequest, errors);
-        if (errors.hasErrors()) {
-            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
-                    + " Object: " + errors);
-        }
-
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        setBaseRenderingParameters(xsltParameters, renderingRequest);
+        setBaseRenderingParameters(xsltParameters);
 
         doTransform(renderingRequest, terminatedXsltUri, renderingRequest.getAssessmentResourceUri(),
                 resultStream, xsltParameters);
     }
 
     /**
-     * Renders the given {@link StandaloneItemRenderingRequest}, sending the results as UTF-8 encoded XML
-     * to the given {@link OutputStream}.
+     * Renders the given {@link StandaloneItemRenderingRequest}, sending the results as
+     * UTF-8 encoded XML to the given {@link OutputStream}.
      * <p>
      * The caller is responsible for closing this stream afterwards.
      *
@@ -319,7 +308,7 @@ public class AssessmentRenderer {
         /* Set config parameters */
         xsltParameters.put("prompt", renderingRequest.getPrompt());
 
-        final StandaloneItemRenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
+        final ItemRenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
         xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
         xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
         xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
@@ -343,8 +332,13 @@ public class AssessmentRenderer {
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters,
             final AbstractRenderingRequest renderingRequest) {
         /* Set config & control parameters */
-        xsltParameters.put("qtiWorksVersion", qtiWorksProperties.getQtiWorksVersion());
+        setBaseRenderingParameters(xsltParameters);
         xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+    }
+
+    private void setBaseRenderingParameters(final Map<String, Object> xsltParameters) {
+        /* Set config & control parameters */
+        xsltParameters.put("qtiWorksVersion", qtiWorksProperties.getQtiWorksVersion());
         xsltParameters.put("webappContextPath", webappContextPath);
     }
 
@@ -512,7 +506,7 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
-    private void doTransform(final StandaloneItemRenderingRequest renderingRequest, final URI stylesheetUri,
+    private void doTransform(final AbstractRenderingRequest renderingRequest, final URI stylesheetUri,
             final URI inputUri,
             final OutputStream resultStream, final Map<String, Object> xsltParameters) {
         final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);
@@ -533,7 +527,7 @@ public class AssessmentRenderer {
         transformer.setParameter("systemId", inputUri);
 
         /* Configure requested serialization */
-        final SerializationMethod serializationMethod = renderingRequest.getItemRenderingOptions().getSerializationMethod();
+        final SerializationMethod serializationMethod = renderingRequest.getRenderingOptions().getSerializationMethod();
         transformer.setParameter("serializationMethod", serializationMethod.toString());
         transformer.setParameter("outputMethod", serializationMethod.getMethod());
         transformer.setParameter("contentType", serializationMethod.getContentType());
@@ -573,13 +567,4 @@ public class AssessmentRenderer {
             throw new QtiRenderingException("Unexpected Exception doing XSLT transform", e);
         }
     }
-
-    @ToRemove
-    private void doTransform(final AbstractRenderingRequest renderingRequest, final URI stylesheetUri,
-            final URI inputUri,
-            final OutputStream resultStream, final Map<String, Object> xsltParameters) {
-        throw new QtiWorksLogicException("FILL IN");
-    }
-
-
 }

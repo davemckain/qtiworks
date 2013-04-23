@@ -38,11 +38,11 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import javax.validation.constraints.NotNull;
 
 /**
- * FIXME: Document this type!
+ * Rendering options used when rendering items in standalone mode.
  *
  * @author David McKain
  */
-public final class StandaloneItemRenderingOptions extends AbstractRenderingOptions {
+public final class ItemRenderingOptions extends AbstractRenderingOptions {
 
     private static final long serialVersionUID = -9121795157165098560L;
 

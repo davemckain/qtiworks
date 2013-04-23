@@ -8,8 +8,7 @@ package dave;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
-import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -35,11 +34,11 @@ import org.apache.commons.io.output.WriterOutputStream;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * Developer class for debugging standalone item rendering
+ * Developer class for debugging terminated session rendering
  *
  * @author David McKain
  */
-public class StandaloneItemRenderingTest {
+public class TerminatedRenderingTest {
 
     public static void main(final String[] args) {
         final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
@@ -67,24 +66,14 @@ public class StandaloneItemRenderingTest {
             itemSessionController.enterItem(timestamp);
             System.out.println("Item session state after entry: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
-            System.out.println("\nRendering");
+            System.out.println("\nRendering in terminated state");
 
             final ItemRenderingOptions renderingOptions = RunUtilities.createItemRenderingOptions();
-            final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
-            renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
+            final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
+            renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
-            renderingRequest.setAssessmentItemUri(itemUri);
-            renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setItemRenderingOptions(renderingOptions);
-            renderingRequest.setPrompt("This is an item!");
             renderingRequest.setAuthorMode(true);
-            renderingRequest.setSolutionAllowed(true);
-            renderingRequest.setResetAllowed(true);
-            renderingRequest.setReinitAllowed(true);
-            renderingRequest.setResultAllowed(true);
-            renderingRequest.setSourceAllowed(true);
-            renderingRequest.setCandidateCommentAllowed(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
@@ -101,7 +90,7 @@ public class StandaloneItemRenderingTest {
             renderer.init();
 
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-            renderer.renderStandaloneItem(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            renderer.renderTeminated(renderingRequest, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
             final String rendered = stringBuilderWriter.toString();
             System.out.println("Rendered page: " + rendered);
         }

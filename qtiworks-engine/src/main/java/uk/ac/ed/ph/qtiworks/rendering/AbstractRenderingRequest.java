@@ -38,6 +38,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -46,7 +47,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public abstract class AbstractRenderingRequest {
+public abstract class AbstractRenderingRequest<P extends AbstractRenderingOptions> {
 
     @NotNull
     private ResourceLocator assessmentResourceLocator;
@@ -55,6 +56,10 @@ public abstract class AbstractRenderingRequest {
     private URI assessmentResourceUri;
 
     private boolean authorMode;
+
+    @NotNull
+    @Valid
+    private P renderingOptions;
 
     //----------------------------------------------------
 
@@ -82,6 +87,15 @@ public abstract class AbstractRenderingRequest {
 
     public void setAuthorMode(final boolean authorMode) {
         this.authorMode = authorMode;
+    }
+
+
+    public P getRenderingOptions() {
+        return renderingOptions;
+    }
+
+    public void setRenderingOptions(final P renderingOptions) {
+        this.renderingOptions = renderingOptions;
     }
 
     //----------------------------------------------------

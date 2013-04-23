@@ -37,7 +37,7 @@ import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
-import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
@@ -98,7 +98,7 @@ public class CandidateItemController {
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
-        final StandaloneItemRenderingOptions renderingOptions = new StandaloneItemRenderingOptions();
+        final ItemRenderingOptions renderingOptions = new ItemRenderingOptions();
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
         renderingOptions.setCloseUrl(sessionBaseUrl + "/close");
