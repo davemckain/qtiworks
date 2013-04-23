@@ -50,18 +50,29 @@ import javax.validation.constraints.NotNull;
 public abstract class AbstractRenderingRequest<P extends AbstractRenderingOptions> {
 
     @NotNull
+    @Valid
+    private P renderingOptions;
+
+    @NotNull
     private ResourceLocator assessmentResourceLocator;
 
     @NotNull
     private URI assessmentResourceUri;
 
     private boolean authorMode;
-
-    @NotNull
-    @Valid
-    private P renderingOptions;
+    private boolean sourceAllowed;
+    private boolean resultAllowed;
 
     //----------------------------------------------------
+
+    public P getRenderingOptions() {
+        return renderingOptions;
+    }
+
+    public void setRenderingOptions(final P renderingOptions) {
+        this.renderingOptions = renderingOptions;
+    }
+
 
     public ResourceLocator getAssessmentResourceLocator() {
         return assessmentResourceLocator;
@@ -90,15 +101,27 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
     }
 
 
-    public P getRenderingOptions() {
-        return renderingOptions;
+    public boolean isSourceAllowed() {
+        return sourceAllowed;
     }
 
-    public void setRenderingOptions(final P renderingOptions) {
-        this.renderingOptions = renderingOptions;
+    public void setSourceAllowed(final boolean sourceAllowed) {
+        this.sourceAllowed = sourceAllowed;
+    }
+
+
+    public boolean isResultAllowed() {
+        return resultAllowed;
+    }
+
+    public void setResultAllowed(final boolean resultAllowed) {
+        this.resultAllowed = resultAllowed;
     }
 
     //----------------------------------------------------
+
+
+
 
     @Override
     public String toString() {

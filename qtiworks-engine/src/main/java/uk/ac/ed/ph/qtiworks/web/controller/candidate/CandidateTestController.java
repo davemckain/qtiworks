@@ -36,11 +36,12 @@ package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
@@ -79,6 +80,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public class CandidateTestController {
 
     @Resource
+    private CandidateRenderingService candidateRenderingService;
+
+    @Resource
     private CandidateTestDeliveryService candidateTestDeliveryService;
 
     //----------------------------------------------------
@@ -92,24 +96,10 @@ public class CandidateTestController {
             final WebRequest webRequest, final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
-        final RenderingOptions renderingOptions = createTestRenderingOptions(webRequest, xid, sessionToken);
-
-        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        candidateTestDeliveryService.renderCurrentCandidateSessionState(xid, sessionToken, renderingOptions, outputStreamer);
-    }
-
-    private RenderingOptions createTestRenderingOptions(final WebRequest webRequest, final long xid, final String sessionToken) {
         final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + sessionToken;
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath(webRequest.getContextPath());
+        final TestRenderingOptions renderingOptions = new TestRenderingOptions();
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
-        renderingOptions.setCloseUrl(sessionBaseUrl + "/close");
-        renderingOptions.setSolutionUrl(sessionBaseUrl + "/solution");
-        renderingOptions.setResetUrl(sessionBaseUrl + "/reset");
-        renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
-        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
-        renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");
@@ -121,7 +111,10 @@ public class CandidateTestController {
         renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/end-test-part");
         renderingOptions.setAdvanceTestPartUrl(sessionBaseUrl + "/advance-test-part");
         renderingOptions.setExitTestUrl(sessionBaseUrl + "/exit-test");
-        return renderingOptions;
+
+        /* Now call up the rendering service */
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateRenderingService.renderCurrentCandidateTestSessionState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
     //----------------------------------------------------

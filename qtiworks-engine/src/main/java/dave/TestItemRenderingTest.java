@@ -99,6 +99,8 @@ public class TestItemRenderingTest {
             renderingRequest.setRenderingMode(null);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAuthorMode(true);
+            renderingRequest.setResultAllowed(true);
+            renderingRequest.setSourceAllowed(true);
             renderingRequest.setAllowComment(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();

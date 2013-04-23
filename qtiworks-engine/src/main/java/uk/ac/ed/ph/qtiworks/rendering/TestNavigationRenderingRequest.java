@@ -34,7 +34,9 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
- * FIXME: Document this type!
+ * Request for rendering a particular test navigation screen.
+ * <p>
+ * The {@link TestNavigationRenderingMode} is used to determine what should be generated.
  *
  * @author David McKain
  */

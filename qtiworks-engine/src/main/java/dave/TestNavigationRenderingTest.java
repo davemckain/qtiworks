@@ -82,6 +82,8 @@ public class TestNavigationRenderingTest {
             renderingRequest.setTestSessionState(testSessionState);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setTestNavigationRenderingMode(TestNavigationRenderingMode.TEST_PART_MENU);
+            renderingRequest.setResultAllowed(true);
+            renderingRequest.setSourceAllowed(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

@@ -33,6 +33,7 @@
  */
 package dave;
 
+import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
@@ -46,9 +47,7 @@ public final class RunUtilities {
 
     public static TestRenderingOptions createTestRenderingOptions() {
         final TestRenderingOptions result = new TestRenderingOptions();
-        result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        result.setServeFileUrl("/serveFile");
-        result.setAttemptUrl("/attempt");
+        setBaseOptions(result);
         result.setTestPartNavigationUrl("/test-part-navigation");
         result.setSelectTestItemUrl("/select-item");
         result.setFinishTestItemUrl("/finish-item");
@@ -63,17 +62,21 @@ public final class RunUtilities {
 
     public static ItemRenderingOptions createItemRenderingOptions() {
         final ItemRenderingOptions result = new ItemRenderingOptions();
-        result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        result.setServeFileUrl("/serveFile");
-        result.setAttemptUrl("/attempt");
+        setBaseOptions(result);
         result.setCloseUrl("/close");
         result.setResetUrl("/reset");
         result.setReinitUrl("/reinit");
         result.setSolutionUrl("/solution");
-        result.setResultUrl("/result");
-        result.setSourceUrl("/source");
         result.setTerminateUrl("/terminate");
         return result;
+    }
+
+    private static void setBaseOptions(final AbstractRenderingOptions result) {
+        result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        result.setServeFileUrl("/serveFile");
+        result.setAttemptUrl("/attempt");
+        result.setResultUrl("/result");
+        result.setSourceUrl("/source");
     }
 
 }

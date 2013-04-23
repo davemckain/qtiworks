@@ -244,7 +244,7 @@ public class AssessmentRenderer {
     }
 
     /**
-     * Renders the given {@link TestItemREnderingRequest}, sending the results as UTF-8 encoded XML
+     * Renders the given {@link TestItemRenderingRequest}, sending the results as UTF-8 encoded XML
      * to the given {@link OutputStream}.
      * <p>
      * The caller is responsible for closing this stream afterwards.
@@ -277,11 +277,17 @@ public class AssessmentRenderer {
         xsltParameters.put("allowComment", Boolean.valueOf(renderingRequest.isAllowComment()));
         xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.isShowFeedback()));
 
-        doTransform(renderingRequest, testItemXsltUri, resultStream,
-                xsltParameters);
+        /* NB: We do the transform on the item */
+        final URI testItemUri = renderingRequest.getAssessmentItemUri();
+
+        doTransform(renderingRequest, testItemXsltUri, testItemUri, resultStream, xsltParameters);
     }
 
     /**
+     *Renders the given {@link TestNavigationRenderingRequest}, sending the results as UTF-8 encoded XML
+     * to the given {@link OutputStream}.
+     * <p>
+     * The caller is responsible for closing this stream afterwards.
      * FIXME: Document this!
      *
      * The caller is responsible for closing this stream afterwards.
@@ -344,6 +350,10 @@ public class AssessmentRenderer {
             final TestRenderingRequest renderingRequest) {
         xsltParameters.put("testSystemId", renderingRequest.getAssessmentResourceUri().toString());
 
+        /* Pass TestSessionState (as DOM Document) */
+        final TestSessionState testSessionState = renderingRequest.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+
         final TestRenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
         xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
         xsltParameters.put("selectTestItemUrl", renderingOptions.getSelectTestItemUrl());
@@ -361,10 +371,6 @@ public class AssessmentRenderer {
         xsltParameters.put("reviewTestPartAllowed", Boolean.valueOf(renderingRequest.isReviewTestPartAllowed()));
         xsltParameters.put("testItemSolutionAllowed", Boolean.valueOf(renderingRequest.isTestItemSolutionAllowed()));
         xsltParameters.put("endTestPartAllowed", Boolean.valueOf(renderingRequest.isEndTestPartAllowed()));
-
-        /* Pass ItemSessionState (as DOM Document) */
-        final TestSessionState testSessionState = renderingRequest.getTestSessionState();
-        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
     }
 
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
@@ -411,6 +417,11 @@ public class AssessmentRenderer {
     private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI stylesheetUri,
             final OutputStream resultStream,
             final Map<String, Object> xsltParameters) {
+        doTransform(renderingRequest, stylesheetUri, renderingRequest.getAssessmentResourceUri(), resultStream, xsltParameters);
+    }
+
+    private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI stylesheetUri,
+            final URI inputUri, final OutputStream resultStream, final Map<String, Object> xsltParameters) {
         final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);
         Transformer transformer;
         try {
@@ -426,7 +437,6 @@ public class AssessmentRenderer {
         }
 
         /* Set system ID of the input document */
-        final URI inputUri = renderingRequest.getAssessmentResourceUri();
         transformer.setParameter("systemId", inputUri);
 
         /* Configure requested serialization */

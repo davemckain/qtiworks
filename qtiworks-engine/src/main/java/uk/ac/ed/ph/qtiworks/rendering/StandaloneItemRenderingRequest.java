@@ -59,8 +59,6 @@ public final class StandaloneItemRenderingRequest extends AbstractRenderingReque
     private boolean resetAllowed;
     private boolean reinitAllowed;
     private boolean solutionAllowed;
-    private boolean sourceAllowed;
-    private boolean resultAllowed;
     private boolean candidateCommentAllowed;
 
     //----------------------------------------------------
@@ -125,24 +123,6 @@ public final class StandaloneItemRenderingRequest extends AbstractRenderingReque
 
     public void setSolutionAllowed(final boolean solutionAllowed) {
         this.solutionAllowed = solutionAllowed;
-    }
-
-
-    public boolean isSourceAllowed() {
-        return sourceAllowed;
-    }
-
-    public void setSourceAllowed(final boolean sourceAllowed) {
-        this.sourceAllowed = sourceAllowed;
-    }
-
-
-    public boolean isResultAllowed() {
-        return resultAllowed;
-    }
-
-    public void setResultAllowed(final boolean resultAllowed) {
-        this.resultAllowed = resultAllowed;
     }
 
 

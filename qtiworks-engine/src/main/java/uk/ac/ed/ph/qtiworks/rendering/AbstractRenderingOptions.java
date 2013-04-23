@@ -40,7 +40,7 @@ import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
 /**
- * Encapsulates general options for passing to the {@link AssessmentRenderer}.
+ * General options for passing to the {@link AssessmentRenderer}.
  *
  * @author David McKain
  */
@@ -57,6 +57,12 @@ public abstract class AbstractRenderingOptions implements Serializable {
 
     @NotNull
     private String serveFileUrl;
+
+    @NotNull
+    private String resultUrl;
+
+    @NotNull
+    private String sourceUrl;
 
     //----------------------------------------------------
 
@@ -84,6 +90,24 @@ public abstract class AbstractRenderingOptions implements Serializable {
 
     public void setServeFileUrl(final String serveFileUrl) {
         this.serveFileUrl = serveFileUrl;
+    }
+
+
+    public String getResultUrl() {
+        return resultUrl;
+    }
+
+    public void setResultUrl(final String resultUrl) {
+        this.resultUrl = resultUrl;
+    }
+
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(final String sourceUrl) {
+        this.sourceUrl = sourceUrl;
     }
 
     //----------------------------------------------------
