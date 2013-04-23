@@ -399,7 +399,7 @@ rendering.
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
       <xsl:when test="@endTime!=''">
-        <div class="itemStatus closed">Finished</div>
+        <div class="itemStatus ended">Finished</div>
       </xsl:when>
       <xsl:when test="not(empty(@unboundResponseIdentifiers) and empty(@invalidResponseIdentifiers))">
         <div class="itemStatus invalid">Needs Attention</div>
