@@ -33,6 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.manager.config;
 
+import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -47,6 +50,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class ManagerConfiguration {
 
-	/* Nothing to add here */
+    /**
+     * (This isn't strictly needed, but {@link AssessmentRenderer} has a dependency on this.)
+     */
+    @Bean
+    public String webappContextPath() {
+        return "/";
+    }
 
 }

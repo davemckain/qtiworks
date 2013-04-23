@@ -141,9 +141,9 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Column(name="public")
     private boolean isPublic;
 
+
     //------------------------------------------------------------
     // Settings common to both items and tests
-
 
     /** Author mode includes additional debugging information in the rendering */
     @Basic(optional=false)
@@ -161,6 +161,16 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="template_processing_limit")
     private int templateProcessingLimit;
+
+    /** Allow candidate to view assessment source(s) */
+    @Basic(optional=false)
+    @Column(name="allow_source")
+    private boolean allowSource;
+
+    /** Allow candidate to access result XML */
+    @Basic(optional=false)
+    @Column(name="allow_result")
+    private boolean allowResult;
 
     //------------------------------------------------------------
 
@@ -250,6 +260,24 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     public void setTemplateProcessingLimit(final int templateProcessingLimit) {
         this.templateProcessingLimit = templateProcessingLimit;
+    }
+
+
+    public boolean isAllowSource() {
+        return allowSource;
+    }
+
+    public void setAllowSource(final boolean allowSource) {
+        this.allowSource = allowSource;
+    }
+
+
+    public boolean isAllowResult() {
+        return allowResult;
+    }
+
+    public void setAllowResult(final boolean allowResult) {
+        this.allowResult = allowResult;
     }
 
     //------------------------------------------------------------

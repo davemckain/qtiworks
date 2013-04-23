@@ -72,6 +72,7 @@ public final class RunUtilities {
 
     public static ItemRenderingOptions createItemRenderingOptions() {
         final ItemRenderingOptions result = new ItemRenderingOptions();
+        result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         result.setAttemptUrl("/attempt");
         result.setCloseUrl("/close");
         result.setResetUrl("/reset");
@@ -81,7 +82,6 @@ public final class RunUtilities {
         result.setSourceUrl("/source");
         result.setServeFileUrl("/serveFile");
         result.setTerminateUrl("/terminate");
-        result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         return result;
     }
 

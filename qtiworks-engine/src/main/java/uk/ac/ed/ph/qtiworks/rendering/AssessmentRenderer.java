@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.state.marshalling.ItemSessionStateXmlMarshaller;
@@ -177,7 +178,7 @@ public class AssessmentRenderer {
      * <p>
      * The caller is responsible for closing this stream afterwards.
      */
-    public void renderTeminated(final TerminatedRenderingRequest renderingRequest, final OutputStream resultStream) {
+    public void renderTeminated(final AbstractRenderingRequest<?> renderingRequest, final OutputStream resultStream) {
         Assert.notNull(resultStream, "resultStream");
 
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
@@ -281,11 +282,11 @@ public class AssessmentRenderer {
     }
 
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
-            final AbstractItemRenderingRequest renderingRequest) {
+            final AbstractItemRenderingRequest<?> renderingRequest) {
         /* Pass ItemSessionState (as DOM Document) */
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
         xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
-        xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
+        xsltParameters.put("renderingMode", ObjectUtilities.safeToString(renderingRequest.getRenderingMode()));
 
 //        final StandaloneItemRenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
 //        /* Set config & control parameters */
@@ -308,7 +309,7 @@ public class AssessmentRenderer {
         /* Set config parameters */
         xsltParameters.put("prompt", renderingRequest.getPrompt());
 
-        final ItemRenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
+        final ItemRenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
         xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
         xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
         xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
@@ -506,7 +507,7 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
-    private void doTransform(final AbstractRenderingRequest renderingRequest, final URI stylesheetUri,
+    private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI stylesheetUri,
             final URI inputUri,
             final OutputStream resultStream, final Map<String, Object> xsltParameters) {
         final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);

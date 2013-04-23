@@ -23,8 +23,8 @@ rendering.
   <!-- State of item being rendered -->
   <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
 
-  <!-- Rendering mode -->
-  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
+  <!-- Optional modal rendering mode -->
+  <xsl:param name="renderingMode" as="xs:string*" required="no"/>
 
   <!-- Extract information from the <itemSessionState> -->
   <xsl:variable name="shuffledChoiceOrders" select="$itemSessionState/qw:shuffledInteractionChoiceOrder"
@@ -35,8 +35,8 @@ rendering.
   <xsl:variable name="overriddenCorrectResponses" select="$itemSessionState/qw:overriddenCorrectResponse" as="element(qw:overriddenCorrectResponse)*"/>
   <xsl:variable name="sessionStatus" select="$itemSessionState/@sessionStatus" as="xs:string"/>
   <xsl:variable name="isItemSessionEnded" as="xs:boolean" select="$itemSessionState/@endTime!=''"/>
-  <xsl:variable name="isItemSessionExited" as="xs:boolean" select="$itemSessionState/@exitTime!=''"/>
   <xsl:variable name="isItemSessionOpen" as="xs:boolean" select="$itemSessionState/@entryTime!='' and not($isItemSessionEnded)"/>
+  <xsl:variable name="isItemSessionExited" as="xs:boolean" select="$itemSessionState/@exitTime!=''"/>
 
   <!-- Raw response inputs -->
   <xsl:variable name="responseInputs" select="$itemSessionState/qw:responseInput" as="element(qw:responseInput)*"/>

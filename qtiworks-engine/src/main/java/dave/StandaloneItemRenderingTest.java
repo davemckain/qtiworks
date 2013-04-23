@@ -8,7 +8,6 @@ package dave;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -71,12 +70,12 @@ public class StandaloneItemRenderingTest {
 
             final ItemRenderingOptions renderingOptions = RunUtilities.createItemRenderingOptions();
             final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
-            renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
+            renderingRequest.setRenderingMode(null);
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setAssessmentItemUri(itemUri);
+            renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setItemRenderingOptions(renderingOptions);
             renderingRequest.setPrompt("This is an item!");
             renderingRequest.setAuthorMode(true);
             renderingRequest.setSolutionAllowed(true);

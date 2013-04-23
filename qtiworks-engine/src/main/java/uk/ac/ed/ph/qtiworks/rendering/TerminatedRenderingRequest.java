@@ -38,6 +38,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
  *
  * @author David McKain
  */
+@Deprecated
 public final class TerminatedRenderingRequest extends AbstractRenderingRequest<AbstractRenderingOptions> {
 
     /* Nothing to add */

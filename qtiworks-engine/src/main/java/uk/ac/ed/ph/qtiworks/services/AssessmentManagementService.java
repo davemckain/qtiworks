@@ -645,11 +645,15 @@ public class AssessmentManagementService {
     private void mergeTestDeliverySettings(final TestDeliverySettingsTemplate template, final TestDeliverySettings target) {
         target.setAuthorMode(template.isAuthorMode());
         target.setTitle(template.getTitle().trim());
+        target.setAllowResult(template.isAllowResult());
+        target.setAllowSource(template.isAllowSource());
     }
 
     public void mergeTestDeliverySettings(final TestDeliverySettings template, final TestDeliverySettingsTemplate target) {
         target.setAuthorMode(template.isAuthorMode());
         target.setTitle(template.getTitle());
+        target.setAllowResult(template.isAllowResult());
+        target.setAllowSource(template.isAllowSource());
     }
 
     //-------------------------------------------------
@@ -902,8 +906,8 @@ public class AssessmentManagementService {
         template.setAllowResult(true);
         template.setAllowSolutionWhenClosed(true);
         template.setAllowSolutionWhenInteracting(true);
-        template.setAllowSource(true);
-        template.setAuthorMode(true);
+        template.setAllowSource(false);
+        template.setAuthorMode(false);
         template.setMaxAttempts(0);
         template.setTitle("Item Delivery Settings");
         template.setPrompt(null);
@@ -913,7 +917,9 @@ public class AssessmentManagementService {
     public TestDeliverySettingsTemplate createTestDeliverySettingsTemplate() {
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
         template.setAuthorMode(true);
-        template.setTitle("Item Delivery Settings");
+        template.setTitle("Test Delivery Settings");
+        template.setAllowSource(false);
+        template.setAllowResult(false);
         return template;
     }
 

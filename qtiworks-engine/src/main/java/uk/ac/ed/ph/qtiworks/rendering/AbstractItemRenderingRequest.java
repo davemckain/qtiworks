@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.net.URI;
 
@@ -52,7 +53,7 @@ public abstract class AbstractItemRenderingRequest<P extends AbstractRenderingOp
     private URI assessmentItemUri;
 
     /** Selected {@link RenderingMode} */
-    @NotNull
+    @ToRefactor
     private RenderingMode renderingMode;
 
     /** Required {@link ItemSessionState} to be rendered */

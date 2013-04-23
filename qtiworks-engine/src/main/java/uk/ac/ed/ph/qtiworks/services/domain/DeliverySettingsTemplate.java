@@ -56,6 +56,8 @@ public abstract class DeliverySettingsTemplate {
     private String title;
 
     private boolean authorMode;
+    private boolean allowSource;
+    private boolean allowResult;
 
     //------------------------------------------------------------
 
@@ -86,6 +88,24 @@ public abstract class DeliverySettingsTemplate {
 
     public final void setAuthorMode(final boolean authorMode) {
         this.authorMode = authorMode;
+    }
+
+
+    public boolean isAllowSource() {
+        return allowSource;
+    }
+
+    public void setAllowSource(final boolean allowSource) {
+        this.allowSource = allowSource;
+    }
+
+
+    public boolean isAllowResult() {
+        return allowResult;
+    }
+
+    public void setAllowResult(final boolean allowResult) {
+        this.allowResult = allowResult;
     }
 
     //------------------------------------------------------------

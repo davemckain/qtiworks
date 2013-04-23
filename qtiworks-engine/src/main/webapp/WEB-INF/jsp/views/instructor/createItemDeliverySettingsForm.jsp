@@ -273,7 +273,7 @@ itemDeliverySettingsTemplate - form backing template
       <div class="clear"></div>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowResult">Generate an &lt;assessmentResult&gt; XML</label>
+          <label for="allowResult">View the &lt;assessmentResult&gt; XML</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">

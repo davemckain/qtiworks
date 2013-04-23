@@ -36,12 +36,13 @@ package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
 import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
@@ -65,7 +66,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -81,6 +81,9 @@ public class CandidateItemController {
     public static final long CACHEABLE_MAX_AGE = 60 * 60;
 
     @Resource
+    private CandidateRenderingService candidateRenderingService;
+
+    @Resource
     private CandidateItemDeliveryService candidateItemDeliveryService;
 
     //----------------------------------------------------
@@ -94,7 +97,7 @@ public class CandidateItemController {
      */
     @RequestMapping(value="/session/{xid}/{sessionToken}", method=RequestMethod.GET)
     public void renderCurrentItemSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
-            final WebRequest webRequest, final HttpServletResponse response)
+            final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
@@ -111,7 +114,7 @@ public class CandidateItemController {
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        candidateItemDeliveryService.renderCurrentCandidateSessionState(xid, sessionToken, renderingOptions, outputStreamer);
+        candidateRenderingService.renderCurrentCandidateSessionState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
     //----------------------------------------------------
@@ -281,7 +284,7 @@ public class CandidateItemController {
     public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         response.setContentType("application/xml");
-        candidateItemDeliveryService.streamItemResult(xid, sessionToken, response.getOutputStream());
+        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
     }
 
     /**
@@ -301,7 +304,7 @@ public class CandidateItemController {
         }
         else {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            candidateItemDeliveryService.streamAssessmentSource(xid, sessionToken, outputStreamer);
+            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
         }
     }
 
@@ -325,7 +328,7 @@ public class CandidateItemController {
         }
         else {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            candidateItemDeliveryService.streamAssessmentFile(candidateSession, href, outputStreamer);
+            candidateRenderingService.streamAssessmentFile(candidateSession, href, outputStreamer);
         }
     }
 
