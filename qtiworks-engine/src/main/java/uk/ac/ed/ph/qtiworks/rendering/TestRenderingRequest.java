@@ -49,6 +49,7 @@ public abstract class TestRenderingRequest extends AbstractRenderingRequest<Test
     @NotNull
     private TestSessionState testSessionState;
 
+    private boolean endTestPartAllowed;
     private boolean testPartNavigationAllowed;
     private boolean finishItemAllowed;
     private boolean reviewTestPartAllowed;
@@ -62,6 +63,15 @@ public abstract class TestRenderingRequest extends AbstractRenderingRequest<Test
 
     public void setTestSessionState(final TestSessionState testSessionState) {
         this.testSessionState = testSessionState;
+    }
+
+
+    public boolean isEndTestPartAllowed() {
+        return endTestPartAllowed;
+    }
+
+    public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
+        this.endTestPartAllowed = endTestPartAllowed;
     }
 
 

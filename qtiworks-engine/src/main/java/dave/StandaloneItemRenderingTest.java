@@ -73,7 +73,6 @@ public class StandaloneItemRenderingTest {
             renderingRequest.setRenderingMode(null);
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
-            renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setPrompt("This is an item!");

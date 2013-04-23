@@ -212,7 +212,6 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
-        renderingRequest.setAssessmentItemUri(renderingRequest.getAssessmentResourceUri()); /* (These are the same for standalone items) */
         renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
         renderingRequest.setRenderingOptions(renderingOptions);

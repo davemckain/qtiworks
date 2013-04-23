@@ -27,49 +27,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-
-import javax.validation.constraints.NotNull;
-
 /**
- * Request for rendering the navigation menu for the currently selected {@link TestPart}
- * in an {@link AssessmentTest}.
+ * Enumerate the various modes of navigation through a test.
  *
  * @author David McKain
  */
-public final class TestPartNavigationRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequestIF {
+public enum TestNavigationRenderingMode {
 
-    /** Required {@link TestSessionState} to be rendered */
-    @NotNull
-    private TestSessionState testSessionState;
+    TEST_ENTRY,
+    TEST_PART_MENU,
+    TEST_PART_FEEDBACK,
+    TEST_FEEDBACK,
+    ;
 
-    private boolean endTestPartAllowed;
-
-    //----------------------------------------------------
-
-    @Override
-    public TestSessionState getTestSessionState() {
-        return testSessionState;
-    }
-
-    public void setTestSessionState(final TestSessionState testSessionState) {
-        this.testSessionState = testSessionState;
-    }
-
-
-    public boolean isEndTestPartAllowed() {
-        return endTestPartAllowed;
-    }
-
-    public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
-        this.endTestPartAllowed = endTestPartAllowed;
-    }
 }

@@ -7,8 +7,9 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestNavigationRenderingMode;
+import uk.ac.ed.ph.qtiworks.rendering.TestNavigationRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -74,12 +75,13 @@ public class TestNavigationRenderingTest {
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = RunUtilities.createTestRenderingOptions();
-            final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
+            final TestRenderingOptions renderingOptions = RunUtilities.createTestRenderingOptions();
+            final TestNavigationRenderingRequest renderingRequest = new TestNavigationRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setTestSessionState(testSessionState);
-//            renderingRequest.setItemRenderingOptions(renderingOptions);
+            renderingRequest.setRenderingOptions(renderingOptions);
+            renderingRequest.setTestNavigationRenderingMode(TestNavigationRenderingMode.TEST_PART_MENU);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
@@ -96,7 +98,7 @@ public class TestNavigationRenderingTest {
             renderer.init();
 
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-            renderer.renderTestPartNavigation(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            renderer.renderTestNavigation(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
             final String rendered = stringBuilderWriter.toString();
 
             System.out.println("Rendered page: " + rendered);

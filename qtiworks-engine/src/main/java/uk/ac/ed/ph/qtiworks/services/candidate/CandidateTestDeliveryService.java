@@ -55,11 +55,11 @@ import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
-import uk.ac.ed.ph.qtiworks.rendering.TestEntryRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestFeedbackRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestNavigationRenderingMode;
+import uk.ac.ed.ph.qtiworks.rendering.TestNavigationRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestPartFeedbackRenderingRequest;
-import uk.ac.ed.ph.qtiworks.rendering.TestPartNavigationRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
@@ -355,13 +355,14 @@ public class CandidateTestDeliveryService {
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
-        final TestEntryRenderingRequest renderingRequest = new TestEntryRenderingRequest();
+        final TestNavigationRenderingRequest renderingRequest = new TestNavigationRenderingRequest();
+        renderingRequest.setTestNavigationRenderingMode(TestNavigationRenderingMode.TEST_ENTRY);
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setTestSessionState(testSessionState);
 
         candidateAuditLogger.logTestEntryRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
-        assessmentRenderer.renderTestEntryPage(renderingRequest, notifications, resultStream);
+        assessmentRenderer.renderTestNavigation(renderingRequest, notifications, resultStream);
     }
 
     private void renderTestPartNonlinearNavigationMenu(final CandidateEvent candidateEvent,
@@ -376,7 +377,7 @@ public class CandidateTestDeliveryService {
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, new NotificationRecorder(NotificationLevel.INFO));
 
-        final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
+        final TestNavigationRenderingRequest renderingRequest = new TestNavigationRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setTestSessionState(testSessionState);
         renderingRequest.setEndTestPartAllowed(testSessionController.mayEndCurrentTestPart());

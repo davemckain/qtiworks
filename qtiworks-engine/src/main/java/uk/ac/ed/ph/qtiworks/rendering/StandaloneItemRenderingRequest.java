@@ -33,11 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
-
-import java.net.URI;
 
 import javax.validation.constraints.NotNull;
 
@@ -48,10 +45,6 @@ import javax.validation.constraints.NotNull;
  * @author David McKain
  */
 public final class StandaloneItemRenderingRequest extends AbstractRenderingRequest<ItemRenderingOptions> {
-
-    /** URI of the {@link AssessmentItem} being rendered */
-    @NotNull
-    private URI assessmentItemUri;
 
     /** Selected {@link RenderingMode} */
     @ToRefactor
@@ -71,15 +64,6 @@ public final class StandaloneItemRenderingRequest extends AbstractRenderingReque
     private boolean candidateCommentAllowed;
 
     //----------------------------------------------------
-
-    public URI getAssessmentItemUri() {
-        return assessmentItemUri;
-    }
-
-    public void setAssessmentItemUri(final URI assessmentItemUri) {
-        this.assessmentItemUri = assessmentItemUri;
-    }
-
 
     public RenderingMode getRenderingMode() {
         return renderingMode;

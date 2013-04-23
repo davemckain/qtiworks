@@ -33,33 +33,21 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-
-import javax.validation.constraints.NotNull;
-
 /**
- * Request for rendering the entry page in an {@link AssessmentTest}
- * having more than one {@link TestPart}.
+ * FIXME: Document this type!
  *
  * @author David McKain
  */
-public final class TestEntryRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequestIF {
+public final class TestNavigationRenderingRequest extends TestRenderingRequest {
 
-    /** Required {@link TestSessionState} to be rendered */
-    @NotNull
-    private TestSessionState testSessionState;
+    private TestNavigationRenderingMode testNavigationRenderingMode;
 
-    //----------------------------------------------------
-
-    @Override
-    public TestSessionState getTestSessionState() {
-        return testSessionState;
+    public TestNavigationRenderingMode getTestNavigationRenderingMode() {
+        return testNavigationRenderingMode;
     }
 
-    public void setTestSessionState(final TestSessionState testSessionState) {
-        this.testSessionState = testSessionState;
+    public void setTestNavigationRenderingMode(final TestNavigationRenderingMode testNavigationRenderingMode) {
+        this.testNavigationRenderingMode = testNavigationRenderingMode;
     }
 
 }
