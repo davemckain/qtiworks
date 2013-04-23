@@ -48,8 +48,6 @@ public final class TestRenderingOptions extends AbstractRenderingOptions {
 
     private static final long serialVersionUID = -1121298920996208870L;
 
-    @NotNull
-    private String attemptUrl;
 
     @NotNull
     private String selectTestItemUrl;
@@ -79,15 +77,6 @@ public final class TestRenderingOptions extends AbstractRenderingOptions {
     private String exitTestUrl;
 
     //----------------------------------------------------
-
-    public String getAttemptUrl() {
-        return attemptUrl;
-    }
-
-    public void setAttemptUrl(final String attemptUrl) {
-        this.attemptUrl = attemptUrl;
-    }
-
 
     public String getSelectTestItemUrl() {
         return selectTestItemUrl;

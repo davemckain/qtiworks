@@ -92,6 +92,7 @@ public class TestNavigationRenderingTest {
             renderer.setJsr303Validator(validator);
             renderer.setJqtiExtensionManager(jqtiExtensionManager);
             renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
+            renderer.setWebappContextPath("/qtiworks");
             renderer.init();
 
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();

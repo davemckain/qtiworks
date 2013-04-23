@@ -45,19 +45,20 @@ import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 public final class RunUtilities {
 
     public static TestRenderingOptions createTestRenderingOptions() {
-        final TestRenderingOptions renderingOptions = new TestRenderingOptions();
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setServeFileUrl("/serveFile");
-        renderingOptions.setTestPartNavigationUrl("/test-part-navigation");
-        renderingOptions.setSelectTestItemUrl("/select-item");
-        renderingOptions.setFinishTestItemUrl("/finish-item");
-        renderingOptions.setEndTestPartUrl("/end-test-part");
-        renderingOptions.setReviewTestPartUrl("/review-test-part");
-        renderingOptions.setReviewTestItemUrl("/review-item");
-        renderingOptions.setShowTestItemSolutionUrl("/item-solution");
-        renderingOptions.setAdvanceTestPartUrl("/advance-test-part");
-        renderingOptions.setExitTestUrl("/exit-test");
-        return renderingOptions;
+        final TestRenderingOptions result = new TestRenderingOptions();
+        result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        result.setServeFileUrl("/serveFile");
+        result.setAttemptUrl("/attempt");
+        result.setTestPartNavigationUrl("/test-part-navigation");
+        result.setSelectTestItemUrl("/select-item");
+        result.setFinishTestItemUrl("/finish-item");
+        result.setEndTestPartUrl("/end-test-part");
+        result.setReviewTestPartUrl("/review-test-part");
+        result.setReviewTestItemUrl("/review-item");
+        result.setShowTestItemSolutionUrl("/item-solution");
+        result.setAdvanceTestPartUrl("/advance-test-part");
+        result.setExitTestUrl("/exit-test");
+        return result;
     }
 
     public static ItemRenderingOptions createItemRenderingOptions() {

@@ -37,6 +37,9 @@ NB: This is used both while being presented, and during review.
   <xsl:param name="reviewTestPartAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="testItemSolutionAllowed" as="xs:boolean" required="yes"/>
 
+  <!-- Action URLs -->
+  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
+
   <!-- Effective value of itemSessionControl/@showFeedback for this item -->
   <xsl:param name="showFeedback" as="xs:boolean"/>
 

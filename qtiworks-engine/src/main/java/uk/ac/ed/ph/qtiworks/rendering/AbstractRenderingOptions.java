@@ -53,6 +53,9 @@ public abstract class AbstractRenderingOptions implements Serializable {
     private SerializationMethod serializationMethod;
 
     @NotNull
+    private String attemptUrl;
+
+    @NotNull
     private String serveFileUrl;
 
     //----------------------------------------------------
@@ -63,6 +66,15 @@ public abstract class AbstractRenderingOptions implements Serializable {
 
     public void setSerializationMethod(final SerializationMethod serializationMethod) {
         this.serializationMethod = serializationMethod;
+    }
+
+
+    public String getAttemptUrl() {
+        return attemptUrl;
+    }
+
+    public void setAttemptUrl(final String attemptUrl) {
+        this.attemptUrl = attemptUrl;
     }
 
 

@@ -47,9 +47,6 @@ public final class ItemRenderingOptions extends AbstractRenderingOptions {
     private static final long serialVersionUID = -9121795157165098560L;
 
     @NotNull
-    private String attemptUrl;
-
-    @NotNull
     private String closeUrl;
 
     @NotNull
@@ -71,15 +68,6 @@ public final class ItemRenderingOptions extends AbstractRenderingOptions {
     private String terminateUrl;
 
     //----------------------------------------------------
-
-    public String getAttemptUrl() {
-        return attemptUrl;
-    }
-
-    public void setAttemptUrl(final String attemptUrl) {
-        this.attemptUrl = attemptUrl;
-    }
-
 
     public String getCloseUrl() {
         return closeUrl;
