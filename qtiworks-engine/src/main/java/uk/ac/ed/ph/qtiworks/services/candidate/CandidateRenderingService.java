@@ -51,11 +51,11 @@ import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestNavigationRenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.TestNavigationRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
@@ -65,7 +65,6 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
@@ -138,13 +137,16 @@ public class CandidateRenderingService {
     private CandidateItemDeliveryService candidateItemDeliveryService;
 
     @Resource
+    private CandidateTestDeliveryService candidateTestDeliveryService;
+
+    @Resource
     private CandidateSessionDao candidateSessionDao;
 
     //----------------------------------------------------
     // Item rendering
 
     /**
-     * Renders the current state of the {@link CandidateSession} having
+     * Renders the current state of the item {@link CandidateSession} having
      * the given ID (xid).
      */
     public void renderCurrentCandidateItemSessionState(final long xid, final String sessionToken,
@@ -182,7 +184,7 @@ public class CandidateRenderingService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderEvent(itemSessionState, latestEvent, candidateSession, renderingOptions, resultOutputStream);
+                renderItemEvent(latestEvent, itemSessionState, renderingOptions, resultOutputStream);
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -218,10 +220,10 @@ public class CandidateRenderingService {
         }
     }
 
-    private void renderEvent(final ItemSessionState itemSessionState, final CandidateEvent candidateEvent,
-            final CandidateSession candidateSession, final ItemRenderingOptions renderingOptions,
-            final OutputStream resultStream) {
+    private void renderItemEvent(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState,
+            final ItemRenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
@@ -277,55 +279,39 @@ public class CandidateRenderingService {
         assessmentRenderer.renderStandaloneItem(renderingRequest, notifications, resultStream);
     }
 
-    /**
-     * Looks up the {@link CandidateSession} having the given ID (xid)
-     * and checks the given sessionToken against that stored in the session as a means of
-     * "authentication".
-     *
-     * @param xid
-     * @throws DomainEntityNotFoundException
-     * @throws CandidateForbiddenException
-     */
-    public CandidateSession lookupCandidateTestSession(final long xid, final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
-        Assert.notNull(sessionToken, "sessionToken");
-        final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
-        if (!sessionToken.equals(candidateSession.getSessionToken())) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
-        }
-        if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION_AS_TEST);
-        }
-        return candidateSession;
-    }
-
-    private void ensureSessionNotTerminated(final CandidateSession candidateSession) throws CandidateForbiddenException {
-        if (candidateSession.isTerminated()) {
-            /* No access when session has been is closed */
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_TERMINATED_SESSION);
-        }
-    }
-
     //----------------------------------------------------
     // Test rendering
 
     /**
-     * Renders the current state of the {@link CandidateSession} having
+     * Renders the current state of the test {@link CandidateSession} having
      * the given ID (xid).
      */
     public void renderCurrentCandidateTestSessionState(final long xid, final String sessionToken,
-            final RenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            final TestRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
-        final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
-        renderCurrentCandidateSessionState(candidateSession, renderingOptions, outputStreamer);
+        final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateTestSession(xid, sessionToken);
+        renderCurrentCandidateTestSessionState(candidateSession, renderingOptions, outputStreamer);
     }
 
     public void renderCurrentCandidateTestSessionState(final CandidateSession candidateSession,
-            final RenderingOptions renderingOptions,
+            final TestRenderingOptions renderingOptions,
             final OutputStreamer outputStreamer) throws IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
+
+        /* Look up most recent event */
+        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+
+        /* Load the TestSessionState */
+        final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(latestEvent);
+
+        /* Touch the session's duration state if appropriate */
+        if (testSessionState.isEntered() && !testSessionState.isEnded()) {
+            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+            final TestSessionController testSessionController = createTestSessionController(candidateSession, testSessionState);
+//            testSessionController.touchDuration(timestamp);
+        }
 
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
@@ -334,7 +320,7 @@ public class CandidateRenderingService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderState(candidateSession, renderingOptions, resultOutputStream);
+                renderTestEvent(latestEvent, testSessionState, renderingOptions, resultOutputStream);
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -370,7 +356,77 @@ public class CandidateRenderingService {
         }
     }
 
-    private void renderState(final CandidateSession candidateSession, final RenderingOptions renderingOptions, final OutputStream resultStream) {
+    private void renderTestEvent(final CandidateEvent candidateEvent, final TestSessionState testSessionState,
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
+        final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        /*
+         *
+         * I'M HERE!!!!!
+         *
+         * FINISH ME TOMORROW!!!!
+         *
+         *
+         */
+
+        /* Create and partially configure rendering request */
+        final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
+        renderingRequest.setItemSessionState(testSessionState);
+        renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
+        renderingRequest.setRenderingOptions(renderingOptions);
+
+        /* If session has terminated, render appropriate state and exit */
+        if (candidateSession.isTerminated()) {
+            assessmentRenderer.renderTeminated(renderingRequest, resultStream);
+            return;
+        }
+
+        /* Handle "modal" events. These cause a particular rendering state to be
+         * displayed, which candidate will then leave.
+         */
+        if (itemEventType==CandidateItemEventType.SOLUTION) {
+            renderingRequest.setRenderingMode(RenderingMode.SOLUTION);
+        }
+
+        /* Now set candidate action permissions depending on state of session */
+        if (testSessionState.isOpen()) {
+            /* Item session is open (interacting) */
+            renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
+            renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
+            renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
+            renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenInteracting());
+            renderingRequest.setResultAllowed(false);
+            renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
+            renderingRequest.setCandidateCommentAllowed(itemDeliverySettings.isAllowCandidateComment());
+        }
+        else if (testSessionState.isEnded() && !testSessionState.isExited()) {
+            /* Item session is ended (closed) */
+            renderingRequest.setCloseAllowed(false);
+            renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenClosed());
+            renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenClosed());
+            renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
+            renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
+            renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
+            renderingRequest.setCandidateCommentAllowed(false);
+        }
+
+        /* Finally pass to rendering layer */
+        candidateAuditLogger.logStandaloneItemRendering(candidateEvent, renderingRequest);
+        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
+        assessmentRenderer.renderStandaloneItem(renderingRequest, notifications, resultStream);
+    }
+
+
+
+    private void renderState(final CandidateSession candidateSession, final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         if (candidateSession.isTerminated()) {
             /* Session is terminated */
             renderTerminated(candidateSession, renderingOptions, resultStream);
@@ -383,7 +439,7 @@ public class CandidateRenderingService {
     }
 
     private void renderTerminated(final CandidateSession candidateSession,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         final Delivery delivery = candidateSession.getDelivery();
         final DeliverySettings deliverySettings = delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
@@ -395,7 +451,7 @@ public class CandidateRenderingService {
     }
 
     private void renderEvent(final CandidateEvent candidateEvent,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(candidateEvent);
         final CandidateTestEventType testEventType = candidateEvent.getTestEventType(); /* (Not null) */
 
@@ -424,7 +480,7 @@ public class CandidateRenderingService {
 
     private void renderCurrentTestState(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
         if (testSessionState.isEnded()) {
             /* At end of test, so show overall test feedback */
@@ -457,7 +513,7 @@ public class CandidateRenderingService {
 
     private void renderTestEntry(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -474,7 +530,7 @@ public class CandidateRenderingService {
     }
 
     private void renderTestPartNonlinearNavigationMenu(final CandidateEvent candidateEvent,
-            final TestSessionState testSessionState, final RenderingOptions renderingOptions,
+            final TestSessionState testSessionState, final TestRenderingOptions renderingOptions,
             final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
@@ -497,7 +553,7 @@ public class CandidateRenderingService {
 
     private void renderTestFeedback(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -514,7 +570,7 @@ public class CandidateRenderingService {
 
     private void renderTestPartFeedback(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -531,7 +587,7 @@ public class CandidateRenderingService {
 
     private void renderSelectedItem(final CandidateEvent candidateEvent,
             final TestSessionState testSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
 
@@ -547,7 +603,7 @@ public class CandidateRenderingService {
 
     private void renderItemEventWhenInteracting(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
         /* (The logic here is simpler than for single items, as we don't support some of the more
          * exotic lifecycle methods within tests)
          */
@@ -558,7 +614,7 @@ public class CandidateRenderingService {
 
     private TestItemRenderingRequest initItemRenderingRequestWhenInteracting(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions) {
+            final TestRenderingOptions renderingOptions) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -582,7 +638,7 @@ public class CandidateRenderingService {
 
     private void renderItemEventWhenClosed(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions,  final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions,  final OutputStream resultStream) {
         /* (The logic here is simpler than for single items, as we don't support some of the more
          * exotic lifecycle methods within tests)
          */
@@ -593,7 +649,7 @@ public class CandidateRenderingService {
 
     private TestItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions) {
+            final TestRenderingOptions renderingOptions) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
@@ -616,7 +672,7 @@ public class CandidateRenderingService {
     }
 
     private void renderItemReview(final CandidateEvent candidateEvent,
-            final TestSessionState testSessionState, final RenderingOptions renderingOptions,
+            final TestSessionState testSessionState, final TestRenderingOptions renderingOptions,
             final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
 
@@ -642,7 +698,7 @@ public class CandidateRenderingService {
     }
 
     private void renderItemSolution(final CandidateEvent candidateEvent,
-            final TestSessionState testSessionState, final RenderingOptions renderingOptions,
+            final TestSessionState testSessionState, final TestRenderingOptions renderingOptions,
             final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
 
@@ -673,7 +729,7 @@ public class CandidateRenderingService {
 
     private TestItemRenderingRequest initTestItemRenderingRequest(final CandidateSession candidateSession,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
+            final TestRenderingOptions renderingOptions, final RenderingMode renderingMode) {
         final Delivery delivery = candidateSession.getDelivery();
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
@@ -693,7 +749,7 @@ public class CandidateRenderingService {
 
     private void initBaseRenderingRequest(final AbstractRenderingRequest renderingRequest,
             final AssessmentPackage assessmentPackage, final DeliverySettings deliverySettings,
-            final RenderingOptions renderingOptions) {
+            final TestRenderingOptions renderingOptions) {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
@@ -799,6 +855,13 @@ public class CandidateRenderingService {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         return candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
+    }
+
+    private TestSessionController createTestSessionController(final CandidateSession candidateSession, final TestSessionState testSessionState) {
+        final Delivery delivery = candidateSession.getDelivery();
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        return candidateDataServices.createTestSessionController(delivery,
+                testSessionState, notificationRecorder);
     }
 
     //----------------------------------------------------
