@@ -79,7 +79,7 @@ public class TestNavigationRenderingTest {
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setTestSessionState(testSessionState);
-            renderingRequest.setRenderingOptions(renderingOptions);
+//            renderingRequest.setItemRenderingOptions(renderingOptions);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

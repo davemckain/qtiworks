@@ -7,8 +7,8 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -69,14 +69,14 @@ public class StandaloneItemRenderingTest {
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = RunUtilities.createRenderingOptions();
+            final StandaloneItemRenderingOptions renderingOptions = RunUtilities.createItemRenderingOptions();
             final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
             renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setRenderingOptions(renderingOptions);
+            renderingRequest.setItemRenderingOptions(renderingOptions);
             renderingRequest.setPrompt("This is an item!");
             renderingRequest.setAuthorMode(true);
             renderingRequest.setSolutionAllowed(true);
@@ -97,6 +97,7 @@ public class StandaloneItemRenderingTest {
             renderer.setJsr303Validator(validator);
             renderer.setJqtiExtensionManager(jqtiExtensionManager);
             renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
+            renderer.setWebappContextPath("/qtiworks");
             renderer.init();
 
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();

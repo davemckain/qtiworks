@@ -34,54 +34,46 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
-import java.net.URI;
+import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
 /**
- * Base for {@link StandaloneItemRenderingRequest} and {@link TestPartNavigationRenderingRequest} containing things
- * that are required in both cases.
+ * Encapsulates general options for passing to the {@link AssessmentRenderer}.
+ *
+ * FIXME: Split item- & test-specific options
  *
  * @author David McKain
  */
-public abstract class AbstractRenderingRequest {
+public abstract class AbstractRenderingOptions implements Serializable {
+
+    private static final long serialVersionUID = 971871443108075384L;
+
+    /** Required {@link SerializationMethod} */
+    @NotNull
+    private SerializationMethod serializationMethod;
 
     @NotNull
-    private ResourceLocator assessmentResourceLocator;
-
-    @NotNull
-    private URI assessmentResourceUri;
-
-    private boolean authorMode;
+    private String serveFileUrl;
 
     //----------------------------------------------------
 
-    public ResourceLocator getAssessmentResourceLocator() {
-        return assessmentResourceLocator;
+    public SerializationMethod getSerializationMethod() {
+        return serializationMethod;
     }
 
-    public void setAssessmentResourceLocator(final ResourceLocator assessmentResourceLocator) {
-        this.assessmentResourceLocator = assessmentResourceLocator;
-    }
-
-
-    public URI getAssessmentResourceUri() {
-        return assessmentResourceUri;
-    }
-
-    public void setAssessmentResourceUri(final URI assessmentResourceUri) {
-        this.assessmentResourceUri = assessmentResourceUri;
+    public void setSerializationMethod(final SerializationMethod serializationMethod) {
+        this.serializationMethod = serializationMethod;
     }
 
 
-    public boolean isAuthorMode() {
-        return authorMode;
+    public String getServeFileUrl() {
+        return serveFileUrl;
     }
 
-    public void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
+    public void setServeFileUrl(final String serveFileUrl) {
+        this.serveFileUrl = serveFileUrl;
     }
 
     //----------------------------------------------------

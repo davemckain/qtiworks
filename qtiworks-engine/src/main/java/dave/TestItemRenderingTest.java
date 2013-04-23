@@ -97,7 +97,7 @@ public class TestItemRenderingTest {
             renderingRequest.setTestSessionState(testSessionState);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
-            renderingRequest.setRenderingOptions(renderingOptions);
+//            renderingRequest.setItemRenderingOptions(renderingOptions);
             renderingRequest.setAuthorMode(true);
             renderingRequest.setAllowComment(true);
             renderingRequest.setItemKey(firstItemRef.getKey());

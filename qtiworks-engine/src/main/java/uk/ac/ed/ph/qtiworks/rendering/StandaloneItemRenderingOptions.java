@@ -34,54 +34,113 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-
-import java.net.URI;
 
 import javax.validation.constraints.NotNull;
 
 /**
- * Base for {@link StandaloneItemRenderingRequest} and {@link TestPartNavigationRenderingRequest} containing things
- * that are required in both cases.
+ * FIXME: Document this type!
  *
  * @author David McKain
  */
-public abstract class AbstractRenderingRequest {
+public final class StandaloneItemRenderingOptions extends AbstractRenderingOptions {
+
+    private static final long serialVersionUID = -9121795157165098560L;
 
     @NotNull
-    private ResourceLocator assessmentResourceLocator;
+    private String attemptUrl;
 
     @NotNull
-    private URI assessmentResourceUri;
+    private String closeUrl;
 
-    private boolean authorMode;
+    @NotNull
+    private String resetUrl;
+
+    @NotNull
+    private String reinitUrl;
+
+    @NotNull
+    private String solutionUrl;
+
+    @NotNull
+    private String resultUrl;
+
+    @NotNull
+    private String sourceUrl;
+
+    @NotNull
+    private String terminateUrl;
 
     //----------------------------------------------------
 
-    public ResourceLocator getAssessmentResourceLocator() {
-        return assessmentResourceLocator;
+    public String getAttemptUrl() {
+        return attemptUrl;
     }
 
-    public void setAssessmentResourceLocator(final ResourceLocator assessmentResourceLocator) {
-        this.assessmentResourceLocator = assessmentResourceLocator;
-    }
-
-
-    public URI getAssessmentResourceUri() {
-        return assessmentResourceUri;
-    }
-
-    public void setAssessmentResourceUri(final URI assessmentResourceUri) {
-        this.assessmentResourceUri = assessmentResourceUri;
+    public void setAttemptUrl(final String attemptUrl) {
+        this.attemptUrl = attemptUrl;
     }
 
 
-    public boolean isAuthorMode() {
-        return authorMode;
+    public String getCloseUrl() {
+        return closeUrl;
     }
 
-    public void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
+    public void setCloseUrl(final String closeUrl) {
+        this.closeUrl = closeUrl;
+    }
+
+
+    public String getResetUrl() {
+        return resetUrl;
+    }
+
+    public void setResetUrl(final String resetUrl) {
+        this.resetUrl = resetUrl;
+    }
+
+
+    public String getReinitUrl() {
+        return reinitUrl;
+    }
+
+    public void setReinitUrl(final String reinitUrl) {
+        this.reinitUrl = reinitUrl;
+    }
+
+
+    public String getSolutionUrl() {
+        return solutionUrl;
+    }
+
+    public void setSolutionUrl(final String solutionUrl) {
+        this.solutionUrl = solutionUrl;
+    }
+
+
+    public String getResultUrl() {
+        return resultUrl;
+    }
+
+    public void setResultUrl(final String resultUrl) {
+        this.resultUrl = resultUrl;
+    }
+
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(final String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+
+
+    public String getTerminateUrl() {
+        return terminateUrl;
+    }
+
+    public void setTerminateUrl(final String terminateUrl) {
+        this.terminateUrl = terminateUrl;
     }
 
     //----------------------------------------------------

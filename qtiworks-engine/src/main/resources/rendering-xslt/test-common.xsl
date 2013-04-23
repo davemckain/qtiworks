@@ -28,6 +28,17 @@ Base templates used in test rendering
   <!-- Outcome declarations in test -->
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
 
+  <!-- Action URLs -->
+  <xsl:param name="testPartNavigationUrl" as="xs:string" required="yes"/>
+  <xsl:param name="selectTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="finishTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="endTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reviewTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="showTestItemSolutionUrl" as="xs:string" required="yes"/>
+  <xsl:param name="advanceTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="exitTestUrl" as="xs:string" required="yes"/>
+
   <!-- ************************************************************ -->
 
   <!-- Current TestPart details in the TestPlan -->

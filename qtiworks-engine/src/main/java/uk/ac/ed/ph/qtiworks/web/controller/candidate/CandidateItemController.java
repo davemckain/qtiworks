@@ -36,8 +36,8 @@ package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
@@ -98,8 +98,7 @@ public class CandidateItemController {
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath(webRequest.getContextPath());
+        final StandaloneItemRenderingOptions renderingOptions = new StandaloneItemRenderingOptions();
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
         renderingOptions.setCloseUrl(sessionBaseUrl + "/close");
@@ -110,15 +109,6 @@ public class CandidateItemController {
         renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
-        renderingOptions.setSelectTestItemUrl("");
-        renderingOptions.setFinishTestItemUrl("");
-        renderingOptions.setEndTestPartUrl("");
-        renderingOptions.setReviewTestPartUrl("");
-        renderingOptions.setReviewTestItemUrl("");
-        renderingOptions.setShowTestItemSolutionUrl("");
-        renderingOptions.setAdvanceTestPartUrl("");
-        renderingOptions.setExitTestUrl("");
-        renderingOptions.setTestPartNavigationUrl("");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateItemDeliveryService.renderCurrentCandidateSessionState(xid, sessionToken, renderingOptions, outputStreamer);

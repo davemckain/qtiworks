@@ -46,6 +46,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
+@Deprecated
 public final class RenderingOptions implements Serializable {
 
     private static final long serialVersionUID = -1744991243897646596L;

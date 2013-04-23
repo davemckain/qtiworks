@@ -73,7 +73,7 @@ public final class TestItemRenderingRequest extends AbstractItemRenderingRequest
     private boolean showFeedback;
 
     /**
-     * When in interactiving, this is the effective value of 'allowComment' for this Node.
+     * When in interacting, this is the effective value of 'allowComment' for this Node.
      * @see EffectiveItemSessionControl#isAllowComment()
      */
     private boolean allowComment;

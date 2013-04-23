@@ -33,6 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 /**
  * Encapsulates the required data for rendering the current state of a standalone
  * item.
@@ -40,6 +43,10 @@ package uk.ac.ed.ph.qtiworks.rendering;
  * @author David McKain
  */
 public final class StandaloneItemRenderingRequest extends AbstractItemRenderingRequest {
+
+    @NotNull
+    @Valid
+    private StandaloneItemRenderingOptions itemRenderingOptions;
 
     private String prompt;
     private boolean closeAllowed;
@@ -51,6 +58,15 @@ public final class StandaloneItemRenderingRequest extends AbstractItemRenderingR
     private boolean candidateCommentAllowed;
 
     //----------------------------------------------------
+
+    public StandaloneItemRenderingOptions getItemRenderingOptions() {
+        return itemRenderingOptions;
+    }
+
+    public void setItemRenderingOptions(final StandaloneItemRenderingOptions itemRenderingOptions) {
+        this.itemRenderingOptions = itemRenderingOptions;
+    }
+
 
     public String getPrompt() {
         return prompt;

@@ -588,7 +588,7 @@ public class CandidateTestDeliveryService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
-        renderingRequest.setRenderingOptions(renderingOptions);
+//        renderingRequest.setItemRenderingOptions(renderingOptions);
     }
 
     private void doRendering(final CandidateEvent candidateEvent,

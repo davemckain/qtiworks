@@ -33,6 +33,7 @@
  */
 package dave;
 
+import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 
@@ -43,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
  */
 public final class RunUtilities {
 
+    @Deprecated
     public static RenderingOptions createRenderingOptions() {
         final RenderingOptions renderingOptions = new RenderingOptions();
         renderingOptions.setContextPath("/qtiworks");
@@ -66,6 +68,21 @@ public final class RunUtilities {
         renderingOptions.setExitTestUrl("/exit-test");
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         return renderingOptions;
+    }
+
+    public static StandaloneItemRenderingOptions createItemRenderingOptions() {
+        final StandaloneItemRenderingOptions result = new StandaloneItemRenderingOptions();
+        result.setAttemptUrl("/attempt");
+        result.setCloseUrl("/close");
+        result.setResetUrl("/reset");
+        result.setReinitUrl("/reinit");
+        result.setSolutionUrl("/solution");
+        result.setResultUrl("/result");
+        result.setSourceUrl("/source");
+        result.setServeFileUrl("/serveFile");
+        result.setTerminateUrl("/terminate");
+        result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        return result;
     }
 
 }

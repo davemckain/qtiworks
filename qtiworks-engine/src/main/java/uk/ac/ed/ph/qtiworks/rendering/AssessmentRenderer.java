@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
@@ -111,6 +112,9 @@ public class AssessmentRenderer {
     @Resource
     private Validator jsr303Validator;
 
+    @Resource
+    private String webappContextPath;
+
     private XsltStylesheetManager stylesheetManager;
 
     //----------------------------------------------------
@@ -148,6 +152,15 @@ public class AssessmentRenderer {
 
     public void setJsr303Validator(final Validator jsr303Validator) {
         this.jsr303Validator = jsr303Validator;
+    }
+
+
+    public String getWebappContextPath() {
+        return webappContextPath;
+    }
+
+    public void setWebappContextPath(final String webappContextPath) {
+        this.webappContextPath = webappContextPath;
     }
 
     //----------------------------------------------------
@@ -283,12 +296,38 @@ public class AssessmentRenderer {
         final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
         xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
         xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
+
+//        final StandaloneItemRenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
+//        /* Set config & control parameters */
+//        xsltParameters.put("qtiWorksVersion", qtiWorksProperties.getQtiWorksVersion());
+//        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+//        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
+//        xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
+//        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
+//        xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
+//        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
+//        xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
+//        xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
+//        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
+//        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
+//        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
     }
 
     private void setStandaloneItemRenderingParameters(final Map<String, Object> xsltParameters,
             final StandaloneItemRenderingRequest renderingRequest) {
         /* Set config parameters */
         xsltParameters.put("prompt", renderingRequest.getPrompt());
+
+        final StandaloneItemRenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
+        xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
+        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
+        xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
+        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
+        xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
+        xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
+        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
+        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
+        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
 
         /* Set control parameters */
         xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
@@ -302,30 +341,10 @@ public class AssessmentRenderer {
 
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters,
             final AbstractRenderingRequest renderingRequest) {
-        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
         /* Set config & control parameters */
-        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
         xsltParameters.put("qtiWorksVersion", qtiWorksProperties.getQtiWorksVersion());
         xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
-        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
-        xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
-        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
-        xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
-        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
-        xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
-        xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
-        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
-        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
-        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
-        xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
-        xsltParameters.put("selectTestItemUrl", renderingOptions.getSelectTestItemUrl());
-        xsltParameters.put("finishTestItemUrl", renderingOptions.getFinishTestItemUrl());
-        xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
-        xsltParameters.put("reviewTestPartUrl", renderingOptions.getReviewTestPartUrl());
-        xsltParameters.put("reviewTestItemUrl", renderingOptions.getReviewTestItemUrl());
-        xsltParameters.put("showTestItemSolutionUrl", renderingOptions.getShowTestItemSolutionUrl());
-        xsltParameters.put("advanceTestPartUrl", renderingOptions.getAdvanceTestPartUrl());
-        xsltParameters.put("exitTestUrl", renderingOptions.getExitTestUrl());
+        xsltParameters.put("webappContextPath", webappContextPath);
     }
 
     //----------------------------------------------------
@@ -353,18 +372,12 @@ public class AssessmentRenderer {
                     + " Object: " + errors);
         }
 
-        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
-
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         setBaseRenderingParameters(xsltParameters, renderingRequest);
+        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         setTestRenderingParameters(xsltParameters, renderingRequest);
-
-        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
-        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
-        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
 
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
@@ -397,7 +410,7 @@ public class AssessmentRenderer {
                     + " Object: " + errors);
         }
 
-        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+//        final RenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
 
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
@@ -405,10 +418,6 @@ public class AssessmentRenderer {
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         setBaseRenderingParameters(xsltParameters, renderingRequest);
         setTestRenderingParameters(xsltParameters, renderingRequest);
-
-        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
-        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
-        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
 
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
@@ -444,7 +453,7 @@ public class AssessmentRenderer {
                     + " Object: " + errors);
         }
 
-        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+//        final RenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
 
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
@@ -452,10 +461,6 @@ public class AssessmentRenderer {
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         setBaseRenderingParameters(xsltParameters, renderingRequest);
         setTestRenderingParameters(xsltParameters, renderingRequest);
-
-        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
-        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
-        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
 
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
@@ -487,7 +492,7 @@ public class AssessmentRenderer {
                     + " Object: " + errors);
         }
 
-        final RenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+//        final RenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
 
         /* Pass request info to XSLT as parameters */
         final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
@@ -495,10 +500,6 @@ public class AssessmentRenderer {
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         setBaseRenderingParameters(xsltParameters, renderingRequest);
         setTestRenderingParameters(xsltParameters, renderingRequest);
-
-        xsltParameters.put("webappContextPath", renderingOptions.getContextPath());
-        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
-        xsltParameters.put("serializationMethod", renderingOptions.getSerializationMethod().toString());
 
         /* Pass TestSessionState as XML */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
@@ -511,6 +512,13 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     private void doTransform(final AbstractRenderingRequest renderingRequest, final URI stylesheetUri,
+            final URI inputUri,
+            final OutputStream resultStream, final Map<String, Object> xsltParameters) {
+        throw new QtiWorksLogicException("FILL IN");
+    }
+
+
+    private void doTransform(final StandaloneItemRenderingRequest renderingRequest, final URI stylesheetUri,
             final URI inputUri,
             final OutputStream resultStream, final Map<String, Object> xsltParameters) {
         final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);
@@ -531,7 +539,7 @@ public class AssessmentRenderer {
         transformer.setParameter("systemId", inputUri);
 
         /* Configure requested serialization */
-        final SerializationMethod serializationMethod = renderingRequest.getRenderingOptions().getSerializationMethod();
+        final SerializationMethod serializationMethod = renderingRequest.getItemRenderingOptions().getSerializationMethod();
         transformer.setParameter("serializationMethod", serializationMethod.toString());
         transformer.setParameter("outputMethod", serializationMethod.getMethod());
         transformer.setParameter("contentType", serializationMethod.getContentType());

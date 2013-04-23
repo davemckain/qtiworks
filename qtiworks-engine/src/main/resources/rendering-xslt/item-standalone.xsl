@@ -33,6 +33,17 @@ Renders a standalone assessmentItem
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="candidateCommentAllowed" as="xs:boolean" required="yes"/>
 
+  <!-- Action URLs -->
+  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
+  <xsl:param name="resetUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
+  <xsl:param name="closeUrl" as="xs:string" required="yes"/>
+  <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
+  <xsl:param name="terminateUrl" as="xs:string" required="yes"/>
+  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
+  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
+  <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
+
   <!-- ************************************************************ -->
 
   <xsl:template match="/">

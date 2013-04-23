@@ -33,25 +33,8 @@ rendering.
   <!-- Notificates produced during the event being rendered -->
   <xsl:param name="notifications" as="element(qw:notification)*"/>
 
-  <!-- Action URLs -->
-  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
-  <xsl:param name="resetUrl" as="xs:string" required="yes"/>
-  <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
-  <xsl:param name="closeUrl" as="xs:string" required="yes"/>
-  <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
-  <xsl:param name="terminateUrl" as="xs:string" required="yes"/>
-  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
-  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
+  <!-- Common Action URLs -->
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
-  <xsl:param name="testPartNavigationUrl" as="xs:string" required="yes"/>
-  <xsl:param name="selectTestItemUrl" as="xs:string" required="yes"/>
-  <xsl:param name="finishTestItemUrl" as="xs:string" required="yes"/>
-  <xsl:param name="endTestPartUrl" as="xs:string" required="yes"/>
-  <xsl:param name="reviewTestPartUrl" as="xs:string" required="yes"/>
-  <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>
-  <xsl:param name="showTestItemSolutionUrl" as="xs:string" required="yes"/>
-  <xsl:param name="advanceTestPartUrl" as="xs:string" required="yes"/>
-  <xsl:param name="exitTestUrl" as="xs:string" required="yes"/>
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>

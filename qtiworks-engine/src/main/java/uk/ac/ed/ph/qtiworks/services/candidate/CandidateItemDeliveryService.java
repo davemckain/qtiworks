@@ -51,8 +51,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
@@ -192,14 +192,14 @@ public class CandidateItemDeliveryService {
      * the given ID (xid).
      */
     public void renderCurrentCandidateSessionState(final long xid, final String sessionToken,
-            final RenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            final StandaloneItemRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
         renderCurrentCandidateSessionState(candidateSession, renderingOptions, outputStreamer);
     }
 
     public void renderCurrentCandidateSessionState(final CandidateSession candidateSession,
-            final RenderingOptions renderingOptions,
+            final StandaloneItemRenderingOptions renderingOptions,
             final OutputStreamer outputStreamer) throws IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
@@ -253,7 +253,7 @@ public class CandidateItemDeliveryService {
 
     private void renderEvent(final CandidateSession candidateSession,
             final CandidateEvent candidateEvent,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final StandaloneItemRenderingOptions renderingOptions, final OutputStream resultStream) {
         final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(candidateEvent);
         final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
         switch (itemEventType) {
@@ -275,7 +275,7 @@ public class CandidateItemDeliveryService {
     private void renderCurrentItemState(final CandidateSession candidateSession,
             final ItemSessionState itemSessionState,
             final CandidateEvent candidateEvent,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final StandaloneItemRenderingOptions renderingOptions, final OutputStream resultStream) {
         if (candidateSession.isTerminated()) {
             /* Session is terminated */
             renderTerminated(candidateEvent, renderingOptions, resultStream);
@@ -291,7 +291,7 @@ public class CandidateItemDeliveryService {
     }
 
     private void renderWhenInteracting(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final ItemSessionState itemSessionState, final StandaloneItemRenderingOptions renderingOptions,
             final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
@@ -320,7 +320,7 @@ public class CandidateItemDeliveryService {
     }
 
     private void renderWhenClosed(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final ItemSessionState itemSessionState, final StandaloneItemRenderingOptions renderingOptions,
             final RenderingMode renderingMode, final OutputStream resultStream) {
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequestWhenClosed(candidateEvent,
                 itemSessionState, renderingOptions, renderingMode);
@@ -328,7 +328,7 @@ public class CandidateItemDeliveryService {
     }
 
     private StandaloneItemRenderingRequest initItemRenderingRequestWhenClosed(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final ItemSessionState itemSessionState, final StandaloneItemRenderingOptions renderingOptions,
             final RenderingMode renderingMode) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
@@ -348,7 +348,7 @@ public class CandidateItemDeliveryService {
     }
 
     private void renderTerminated(final CandidateEvent candidateEvent,
-            final RenderingOptions renderingOptions, final OutputStream resultStream) {
+            final StandaloneItemRenderingOptions renderingOptions, final OutputStream resultStream) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final DeliverySettings deliverySettings = delivery.getDeliverySettings();
@@ -367,7 +367,7 @@ public class CandidateItemDeliveryService {
     }
 
     private StandaloneItemRenderingRequest initItemRenderingRequest(final CandidateEvent candidateEvent,
-            final ItemSessionState itemSessionState, final RenderingOptions renderingOptions,
+            final ItemSessionState itemSessionState, final StandaloneItemRenderingOptions renderingOptions,
             final RenderingMode renderingMode) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
@@ -380,16 +380,16 @@ public class CandidateItemDeliveryService {
         renderingRequest.setRenderingMode(renderingMode);
         renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
+        renderingRequest.setItemRenderingOptions(renderingOptions);
         return renderingRequest;
     }
 
     private void initBaseRenderingRequest(final AbstractRenderingRequest renderingRequest,
             final AssessmentPackage assessmentPackage, final DeliverySettings deliverySettings,
-            final RenderingOptions renderingOptions) {
+            final StandaloneItemRenderingOptions renderingOptions) {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
-        renderingRequest.setRenderingOptions(renderingOptions);
     }
 
     //----------------------------------------------------
