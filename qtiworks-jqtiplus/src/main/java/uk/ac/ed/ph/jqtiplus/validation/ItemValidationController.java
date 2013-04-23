@@ -60,27 +60,27 @@ public class ItemValidationController extends AbstractValidationContext<Assessme
     }
 
     @Override
-    public ResolvedAssessmentItem getResolvedAssessmentItem() {
+    public final ResolvedAssessmentItem getResolvedAssessmentItem() {
         return resolvedAssessmentItem;
     }
 
     @Override
-    public boolean isSubjectItem() {
+    public final boolean isSubjectItem() {
         return true;
     }
 
     @Override
-    public boolean isSubjectTest() {
+    public final boolean isSubjectTest() {
         return false;
     }
 
     @Override
-    public AssessmentItem getSubjectItem() {
+    public final AssessmentItem getSubjectItem() {
         return item;
     }
 
     @Override
-    public VariableDeclaration isValidLocalVariableReference(final Identifier variableReferenceIdentifier) {
+    public final VariableDeclaration isValidLocalVariableReference(final Identifier variableReferenceIdentifier) {
         final List<VariableDeclaration> variableDeclarations = resolvedAssessmentItem.resolveVariableReference(variableReferenceIdentifier);
         if (variableDeclarations==null) {
             /* Item lookup failed, which is impossible here */

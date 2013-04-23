@@ -34,21 +34,38 @@
 package uk.ac.ed.ph.jqtiplus.testutils;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
+import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileResourceLocator;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
+import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.List;
+
+import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FIXME: Refactor this more appropriately!
@@ -57,13 +74,10 @@ import java.net.URISyntaxException;
  */
 public final class UnitTestHelper {
 
-    public static URI createTestResourceUri(final Class<?> baseClass, final String fileName) {
-        try {
-            return baseClass.getResource(fileName).toURI();
-        }
-        catch (final URISyntaxException e) {
-            throw new RuntimeException("Unexpected Exception", e);
-        }
+    private static final Logger logger = LoggerFactory.getLogger(UnitTestHelper.class);
+
+    public static URI createTestResourceUri(final String testFilePath) {
+        return URI.create("classpath:/" + testFilePath);
     }
 
     public static JqtiExtensionManager createJqtiExtensionManager() {
@@ -74,30 +88,41 @@ public final class UnitTestHelper {
         return new QtiXmlReader(createJqtiExtensionManager());
     }
 
+    public static ResourceLocator createTestFileResourceLocator() {
+        return new ClassPathResourceLocator();
+    }
+
     public static QtiObjectReader createUnitTestQtiObjectReader(final boolean schemaValidating) {
-        final ResourceLocator testFileResourceLocator = new FileResourceLocator();
-        return createUnitTestQtiXmlReader().createQtiObjectReader(testFileResourceLocator, schemaValidating);
+        return createUnitTestQtiXmlReader().createQtiObjectReader(createTestFileResourceLocator(), schemaValidating);
     }
 
     public static AssessmentObjectXmlLoader createUnitTestAssessmentObjectXmlLoader() {
         final QtiXmlReader qtiXmlReader = createUnitTestQtiXmlReader();
-        return new AssessmentObjectXmlLoader(qtiXmlReader, new FileResourceLocator());
+        return new AssessmentObjectXmlLoader(qtiXmlReader, createTestFileResourceLocator());
     }
 
-    public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final Class<?> baseClass, final String fileName) {
+    public static XmlReadResult readTestFile(final String testFilePath, final boolean schemaValiadating)
+            throws XmlResourceNotFoundException {
+        final QtiXmlReader reader = createUnitTestQtiXmlReader();
+        final URI testFileUri = createTestResourceUri(testFilePath);
+        return reader.read(testFileUri, createTestFileResourceLocator(), schemaValiadating);
+    }
+
+    public static ResolvedAssessmentItem resolveUnitTestAssessmentItem(final String testFilePath) {
         final AssessmentObjectXmlLoader assessmentObjectXmlLoader = createUnitTestAssessmentObjectXmlLoader();
-        final URI fileUri = createTestResourceUri(baseClass, fileName);
-        return assessmentObjectXmlLoader.loadAndResolveAssessmentItem(fileUri);
+        final URI testFileUri = createTestResourceUri(testFilePath);
+        return assessmentObjectXmlLoader.loadAndResolveAssessmentItem(testFileUri);
     }
 
-    public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final Class<?> baseClass, final String fileName) {
+    public static ResolvedAssessmentTest resolveUnitTestAssessmentTest(final String testFilePath) {
         final AssessmentObjectXmlLoader assessmentObjectXmlLoader = createUnitTestAssessmentObjectXmlLoader();
-        final URI fileUri = createTestResourceUri(baseClass, fileName);
-        return assessmentObjectXmlLoader.loadAndResolveAssessmentTest(fileUri);
+        final URI testFileUri = createTestResourceUri(testFilePath);
+        return assessmentObjectXmlLoader.loadAndResolveAssessmentTest(testFileUri);
     }
 
-    public static ItemSessionController loadUnitTestAssessmentItemForControl(final String fileName, final Class<?> baseClass, final boolean isValid) {
-        final ResolvedAssessmentItem resolvedAssessmentItem = resolveUnitTestAssessmentItem(baseClass, fileName);
+    public static ItemSessionController loadUnitTestAssessmentItemForControl(final String testFilePath, final boolean isValid) {
+        final ResolvedAssessmentItem resolvedAssessmentItem = resolveUnitTestAssessmentItem(testFilePath);
+        assertSuccessfulResolution(resolvedAssessmentItem);
 
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, isValid).initialize();
@@ -106,4 +131,30 @@ public final class UnitTestHelper {
                 itemProcessingMap, itemSessionState);
     }
 
+    public static TestSessionController loadUnitTestAssessmentTestForControl(final String testFilePath, final boolean isValid) {
+        final ResolvedAssessmentTest resolvedAssessmentTest = resolveUnitTestAssessmentTest(testFilePath);
+        assertSuccessfulResolution(resolvedAssessmentTest);
+
+        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
+        final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, isValid).initialize();
+        final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
+        final TestPlan testPlan = testPlanner.generateTestPlan();
+        final TestSessionState testSessionState = new TestSessionState(testPlan);
+        return new TestSessionController(createJqtiExtensionManager(), testSessionControllerSettings,
+                testProcessingMap, testSessionState);
+    }
+
+    private static void assertSuccessfulResolution(final ResolvedAssessmentObject<?> resolvedAssessmentObject) {
+        if (!resolvedAssessmentObject.getRootNodeLookup().wasSuccessful()) {
+            logger.error(ObjectDumper.dumpObject(resolvedAssessmentObject.getRootNodeLookup().getBadResourceException()));
+            Assert.fail("Failed to load and resolve unit test resource " + resolvedAssessmentObject.getRootNodeLookup().getSystemId());
+        }
+    }
+
+    public static TestPlanNode assertSingleTestPlanNode(final TestPlan testPlan, final String identifier) {
+        final List<TestPlanNode> nodes = testPlan.getNodes(Identifier.assumedLegal(identifier));
+        Assert.assertNotNull("Failed lookup for identifier " + identifier, nodes);
+        Assert.assertEquals("Expected 1 match for identifier " + identifier, 1, nodes.size());
+        return nodes.get(0);
+    }
 }

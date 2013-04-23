@@ -37,10 +37,8 @@ import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionPackage;
 import uk.ac.ed.ph.jqtiplus.JqtiLifecycleEventType;
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
-import uk.ac.ed.ph.jqtiplus.exception.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.Context;
@@ -48,23 +46,22 @@ import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.SessionIdentifier;
 import uk.ac.ed.ph.jqtiplus.node.result.TestResult;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.shared.declaration.DefaultValue;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
+import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
 import uk.ac.ed.ph.jqtiplus.node.test.SubmissionMode;
 import uk.ac.ed.ph.jqtiplus.node.test.TemplateDefault;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.node.test.outcome.processing.OutcomeProcessing;
-import uk.ac.ed.ph.jqtiplus.notification.ListenerNotificationForwarder;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedTestVariableReference;
+import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionSessionState;
+import uk.ac.ed.ph.jqtiplus.state.ControlObjectSessionState;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
-import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
@@ -73,102 +70,74 @@ import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-import uk.ac.ed.ph.jqtiplus.types.ComplexReferenceIdentifier;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
-import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
-import uk.ac.ed.ph.jqtiplus.utils.TreeWalkNodeHandler;
-import uk.ac.ed.ph.jqtiplus.validation.TestValidationController;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME: Document this type
+ * High level controller for running an {@link AssessmentTest}.
+ * <p>
+ * Rendering and delivery engines will probably want to use this to perform the core
+ * QTI processing.
+ * <p>
+ * Typical lifecycle:
+ * <ul>
+ *   <li>{@link #initialize(Date)}</li>
+ *   <li>{@link #enterTest(Date)}</li>
+ *   <li>{@link #enterNextAvailableTestPart(Date)}</li>
+ *   <li>(Then navigate through the testPart as below)</li>
+ *   <li>{@link #endCurrentTestPart(Date)}</li>
+ *   <li>(Repeat enter/end until there are no more testParts)</li>
+ *   <li>{@link #exitTest(Date)}}</li>
+ * </ul>
+ * Navigation within a {@link TestPart} depends on its {@link NavigationMode:
+ * <ul>
+ *   <li>Linear mode:
+ *     <ul>
+ *       <li>{@link #enterNextAvailableTestPart(Date)} will select the first available item</li>
+ *       <li>Use {@link #endItemLinear(Date)} to navigate through items</li>
+ *     </ul>
+ *   </li>
+ *   <li>Nonlinear mode:
+ *     <ul>
+ *       <li>Use {@link #selectItemNonlinear(Date, TestPlanNodeKey)} to select items</li>
+ *   </li>
+ * </ul>
+ * Responses can be submitted while an item is selected via {@link #handleResponsesToCurrentItem(Date, Map)}
  *
  * Usage: one-shot, not thread safe.
  *
  * @author David McKain
  */
-public final class TestSessionController extends TestValidationController implements TestProcessingContext {
+public final class TestSessionController extends TestProcessingController {
 
     private static final Logger logger = LoggerFactory.getLogger(TestSessionController.class);
 
-    private final TestSessionControllerSettings testSessionControllerSettings;
     private final TestProcessingMap testProcessingMap;
     private final TestSessionState testSessionState;
 
     /** NB: These are created lazily */
     private final Map<TestPlanNodeKey, ItemSessionController> itemSessionControllerMap;
 
-    private final ListenerNotificationForwarder listenerNotificationForwarder;
-
-    private Long randomSeed;
-    private Random randomGenerator;
-
     public TestSessionController(final JqtiExtensionManager jqtiExtensionManager,
             final TestSessionControllerSettings testSessionControllerSettings,
             final TestProcessingMap testProcessingMap,
             final TestSessionState testSessionState) {
-        super(jqtiExtensionManager, testProcessingMap!=null ? testProcessingMap.getResolvedAssessmentTest() : null);
-        Assert.notNull(testSessionControllerSettings, "testSessionControllerSettings");
-        Assert.notNull(testSessionState, "testSessionState");
-        this.testSessionControllerSettings = new TestSessionControllerSettings(testSessionControllerSettings);
-        this.listenerNotificationForwarder = new ListenerNotificationForwarder(this);
+        super(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
         this.testProcessingMap = testProcessingMap;
         this.testSessionState = testSessionState;
-        this.randomSeed = null;
-        this.randomGenerator = null;
         this.itemSessionControllerMap = new HashMap<TestPlanNodeKey, ItemSessionController>();
-    }
-
-    public TestSessionControllerSettings getTestSessionControllerSettings() {
-        return testSessionControllerSettings;
-    }
-
-    @Override
-    public TestProcessingMap getTestProcessingMap() {
-        return testProcessingMap;
-    }
-
-    @Override
-    public TestSessionState getTestSessionState() {
-        return testSessionState;
-    }
-
-    @Override
-    public boolean isSubjectValid() {
-        return testProcessingMap.isValid();
-    }
-
-    //-------------------------------------------------------------------
-
-    public Long getRandomSeed() {
-        return randomSeed;
-    }
-
-    public void setRandomSeed(final Long randomSeed) {
-        this.randomSeed = randomSeed;
-        this.randomGenerator = null;
-    }
-
-    @Override
-    public Random getRandomGenerator() {
-        if (randomGenerator==null) {
-            randomGenerator = randomSeed!=null ? new Random(randomSeed) : new Random();
-        }
-        return randomGenerator;
     }
 
     //-------------------------------------------------------------------
@@ -179,88 +148,59 @@ public final class TestSessionController extends TestValidationController implem
         }
     }
 
-    @Override
-    public ItemProcessingContext getItemSessionContext(final TestPlanNode itemRefNode) {
-        return getItemSessionController(itemRefNode);
-    }
-
-    /**
-     * Gets the {@link ItemSessionController} for the {@link TestPlanNode} corresponding to
-     * an {@link AssessmentItemRef}, lazily creating one if required.
-     *
-     * @param itemRefNode
-     */
-    private ItemSessionController getItemSessionController(final TestPlanNode itemRefNode) {
-        Assert.notNull(itemRefNode);
-        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
-            throw new IllegalArgumentException("TestPlanNode must have type " + TestNodeType.ASSESSMENT_ITEM_REF
-                    + " rather than " + itemRefNode.getTestNodeType());
-        }
-        final TestPlanNodeKey key = itemRefNode.getKey();
-        ItemSessionController result = itemSessionControllerMap.get(key);
-        if (result==null) {
-            /* Create controller lazily */
-            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(key);
-            result = createItemSessionController(itemRefNode, itemSessionState);
-            itemSessionControllerMap.put(key, result);
-        }
-        return result;
-    }
-
-    private ItemSessionController createItemSessionController(final TestPlanNode itemRefNode, final ItemSessionState itemSessionState) {
-        final ItemProcessingMap itemProcessingMap = testProcessingMap.resolveItemProcessingMap(itemRefNode);
-        final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(itemRefNode);
-
-        /* Copy relevant bits of ItemSessionControl into ItemSessionControllerSettings */
-        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
-        itemSessionControllerSettings.setTemplateProcessingLimit(testSessionControllerSettings.getTemplateProcessingLimit());
-        itemSessionControllerSettings.setMaxAttempts(effectiveItemSessionControl.getMaxAttempts());
-
-        /* Create controller and forward any notifications it generates */
-        final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
-                itemSessionControllerSettings, itemProcessingMap, itemSessionState);
-        itemSessionController.addNotificationListener(listenerNotificationForwarder);
-
-        return itemSessionController;
-    }
-
     //-------------------------------------------------------------------
     // Initialization
 
     /**
-     * Sets all explicitly-defined (valid) variables to NULL, and the
-     * <code>duration</code> variable to 0, and calls {@link #initialize()} on each item in the
-     * test plan.
+     * Sets all explicitly-defined (valid) variables to their default value, and the
+     * <code>duration</code> variable to 0, and calls {@link #initialize()} on each
+     * item in the test plan.
+     * <p>
+     * Preconditions: None, this can be called at any time.
+     * <p>
+     * Postconditions: (Valid) outcome variables will be set to their default values,
+     * states for each testPart and assessmentSection will be reset,
+     * {@link ItemSessionController#initialize(Date)} will be called for each item,
+     * <code>duration</code> will be set to 0. Duration tim will not yet start.
+     *
+     * @param initialisation timestamp, which must not be null
+     *
+     * @throws IllegalArgumentException if timestamp is null
      */
-    public void initialize() {
-        /* Clear ItemSessionController map as we'll have to create new ones for new item states */
+    public void initialize(final Date timestamp) {
+        Assert.notNull(timestamp, "timestamp");
+
+        /* Clear existing ItemSessionController map */
         itemSessionControllerMap.clear();
 
         /* Reset test variables */
         testSessionState.reset();
         resetOutcomeVariables();
-        for (final Identifier identifier : testProcessingMap.getValidOutcomeDeclarationMap().keySet()) {
-            testSessionState.setOutcomeValue(identifier, NullValue.INSTANCE);
-        }
-        testSessionState.resetBuiltinVariables();
 
-        /* Initialise state for each testPart */
-        for (final TestPlanNode testPartNode : testSessionState.getTestPlan().getTestPartNodes()) {
-            final TestPlanNodeKey key = testPartNode.getKey();
-            final TestPartSessionState testPartSessionState = new TestPartSessionState();
-            testSessionState.getTestPartSessionStates().put(key, testPartSessionState);
-        }
-
-        /* Initialise state & controller for each item instance */
+        /* Initialise each testPart, assessmentSection and item instance */
         for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
-            if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
-                final TestPlanNodeKey key = testPlanNode.getKey();
-                final ItemSessionState itemSessionState = new ItemSessionState();
-                testSessionState.getItemSessionStates().put(key, itemSessionState);
+            final TestPlanNodeKey key = testPlanNode.getKey();
+            switch (testPlanNode.getTestNodeType()) {
+                case TEST_PART:
+                    final TestPartSessionState testPartSessionState = new TestPartSessionState();
+                    testSessionState.getTestPartSessionStates().put(key, testPartSessionState);
+                    break;
 
-                final ItemSessionController itemSessionController = createItemSessionController(testPlanNode, itemSessionState);
-                itemSessionController.initialize();
-                itemSessionControllerMap.put(key, itemSessionController);
+                case ASSESSMENT_SECTION:
+                    final AssessmentSectionSessionState assessmentSectionSessionState = new AssessmentSectionSessionState();
+                    testSessionState.getAssessmentSectionSessionStates().put(key, assessmentSectionSessionState);
+                    break;
+
+                case ASSESSMENT_ITEM_REF:
+                    final ItemSessionState itemSessionState = new ItemSessionState();
+                    testSessionState.getItemSessionStates().put(key, itemSessionState);
+
+                    final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
+                    itemSessionController.initialize(timestamp);
+                    break;
+
+                default:
+                    throw new QtiLogicException("Unexpected switch case " + testPlanNode.getTestNodeType());
             }
         }
     }
@@ -277,73 +217,61 @@ public final class TestSessionController extends TestValidationController implem
      * Precondition: the test must not have already been entered.
      * <p>
      * Postcondition: the test will be marked as having been entered. No {@link TestPart}
-     * will have been entered, no item will have been selected. Outcomes variables will
-     * be set to their default values.
+     * will been entered, no item will have been selected. The duration timer will start on the test.
+     *
+     * @param timestamp test entry timestamp, which must not be null
      *
      * @return number of {@link TestPart}s in the test.
      *
-     * @see #getNextAvailableTestPart()
+     * @throws IllegalArgumentException if timestamp is null
+     * @throws QtiCandidateStateException if the test has already been entered.
+     *
+     * @see #findNextEnterableTestPart()
      * @see #enterNextAvailableTestPart()
      */
-    public int enterTest() {
-    	ensureTestNotEntered();
+    public int enterTest(final Date timestamp) {
+        Assert.notNull(timestamp, "timestamp");
+    	assertTestNotEntered();
+    	logger.debug("Entering test {}", getSubject().getSystemId());
 
-    	logger.debug("Entering test");
-    	testSessionState.setEntered(true);
+    	testSessionState.setEntryTime(timestamp);
         testSessionState.setCurrentTestPartKey(null);
         testSessionState.setCurrentItemKey(null);
-        resetOutcomeVariables();
+        startControlObjectTimer(testSessionState, timestamp);
 
         return testSessionState.getTestPlan().getTestPartNodes().size();
     }
 
     /**
-	 * Exits the test after it has been ended.
-	 * <p>
-	 * Precondition: The test must have been ended
-	 * <p>
-	 * Postcondition: The test will be marked as being exited.
-	 */
-	public void exitTest() {
-		ensureTestNotExited();
-		testSessionState.setExited(true);
-	}
-
-	private void ensureTestNotEntered() {
-    	if (testSessionState.isEntered()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => false");
-    	}
-    }
-
-    private void ensureTestNotEnded() {
-    	if (testSessionState.isEnded()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isEnded() => false");
-    	}
-    }
-
-    private void ensureTestNotExited() {
-    	if (testSessionState.isExited()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isExited() => false");
-    	}
-    }
-
-    private void ensureInsideTest() {
-    	if (!testSessionState.isEntered()) {
-    		throw new QtiCandidateStateException("Expected TestSessionState.isEntered() => true");
-    	}
-    	ensureTestNotEnded();
+     * Returns the currently visited {@link TestPart}, or null if we are not currently
+     * inside a {@link TestPart}.
+     * <p>
+     * Precondition: None.
+     * <p>
+     * Postcondition: None.
+     */
+    public TestPart getCurrentTestPart() {
+        final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
+        if (currentTestPartNode==null) {
+            return null;
+        }
+        return expectTestPart(currentTestPartNode);
     }
 
     /**
-     * Finds the {@link TestPlanNode} corresponding to the next available {@link TestPart},
+     * Finds the {@link TestPlanNode} corresponding to the next enterable {@link TestPart},
      * starting from the one after the current one (if a {@link TestPart} is already selected)
      * or the first {@link TestPart} (if there is no current {@link TestPart}), applying
-     * {@link PreCondition}s along the way.
+     * {@link PreCondition}s along the way. Returns null if there are no enterable {@link TestPart}s.
      * <p>
-     * Precondition: The test must have been entered.
+     * Precondition: The test must have been entered and not ended.
+     * <p>
+     * Postcondition: None.
+     *
+     * @throws QtiCandidateStateException if the test has not been entered or if the test has ended
      */
-    public TestPlanNode getNextAvailableTestPart() {
-    	ensureInsideTest();
+    public TestPlanNode findNextEnterableTestPart() {
+    	assertTestOpen();
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
 
@@ -355,21 +283,76 @@ public final class TestSessionController extends TestValidationController implem
             nextTestPartIndex = 0;
         }
         else {
-        	nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
+            /* We're currently inside a TestPart. Check any BranchRules declared on it */
+            final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+            final Identifier branchTargetIdentifier = evaluateBranchRules(currentTestPart);
+            if (branchTargetIdentifier!=null) {
+                if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                    /* This will end the test */
+                    return null;
+                }
+                else if (BranchRule.EXIT_TESTPART.equals(branchTargetIdentifier)) {
+                    fireRuntimeWarning(currentTestPart, "Ignoring EXIT_TESTPART branchRule on a testPart");
+                    nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                }
+                else {
+                    final TestPlanNode branchTargetNode = findBranchRuleTestPartTarget(currentTestPartNode, currentTestPart, branchTargetIdentifier);
+                    if (branchTargetNode!=null) {
+                        nextTestPartIndex = branchTargetNode.getSiblingIndex();
+                    }
+                    else {
+                        nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                    }
+                }
+            }
+            else {
+                /* No branches, so start from next testPart */
+                nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
+            }
         }
 
         /* Now locate the first of these for which any preConditions are satisfied */
-        TestPlanNode nextAvailableTestPartNode = null;
+        TestPlanNode nextEnterableTestPartNode = null;
         int searchIndex=nextTestPartIndex;
         for (; searchIndex<testPartNodes.size(); searchIndex++) {
         	final TestPlanNode testPlanNode = testPartNodes.get(searchIndex);
-        	final TestPart testPart = ensureTestPart(testPlanNode);
+        	final TestPart testPart = expectTestPart(testPlanNode);
         	if (testPart.arePreConditionsMet(this)) {
-        		nextAvailableTestPartNode = testPlanNode;
+        		nextEnterableTestPartNode = testPlanNode;
         		break;
         	}
         }
-        return nextAvailableTestPartNode;
+        return nextEnterableTestPartNode;
+    }
+
+    private TestPlanNode findBranchRuleTestPartTarget(final TestPlanNode currentTestPartNode, final TestPart currentTestPart, final Identifier branchTargetIdentifier) {
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final TestPlanNode testPartTarget = testPlan.getTestPartNode(branchTargetIdentifier);
+        if (testPartTarget!=null) {
+            if (testPartTarget.getSiblingIndex() > currentTestPartNode.getSiblingIndex()) {
+                return testPartTarget;
+            }
+            fireRuntimeWarning(currentTestPart, "Cannot branch to earlier testPart target " + branchTargetIdentifier + " from " + currentTestPart.getIdentifier());
+        }
+        else {
+            fireRuntimeWarning(currentTestPart, "Could not find branchRule testPart target " + branchTargetIdentifier);
+        }
+        return null;
+    }
+
+    /**
+     * Evaluates each {@link BranchRule} declared on the given {@link AbstractPart} in order,
+     * until a {@link BranchRule} evaluates to true. If this happens, we return the target of
+     * the {@link BranchRule}. If all rules evaluate to false (or there are no rules) then we
+     * return null.
+     */
+    private Identifier evaluateBranchRules(final AbstractPart abstractPart) {
+        for (final BranchRule branchRule : abstractPart.getBranchRules()) {
+            if (branchRule.evaluatesTrue(this)) {
+                return branchRule.getTarget();
+            }
+        }
+        return null;
     }
 
     /**
@@ -380,26 +363,84 @@ public final class TestSessionController extends TestValidationController implem
      * If the newly-presented {@link TestPart} has {@link NavigationMode#LINEAR} then we will
      * attempt to select the first item.
      * <p>
-     * Precondition: The test must have been entered but not yet ended.
+     * Precondition: The test must have been entered but not yet ended. The current testPart
+     * (if appropriate) must have been ended.
      * <p>
-     * Postcondition: The next available {@link TestPart} will be entered, if one is available.
+     * Postcondition: The current testPart will be exited, as will all assessmentSections and
+     * item instances therein. The next available {@link TestPart} will be entered, if one is available.
      * Otherwise the test itself will be ended.
+     *
+     * @param timestamp timestamp for this operation, which must not be null
+     *
+     * @return {@link TestPlanNode} corresponding to the newly-selected {@link TestPart}, or null if there
+     * were not more available {@link TestPart}s and the test was exited.
+     *
+     * @throws QtiCandidateStateException if the test has not been entered, or has ended
+     * @throws IllegalArgumentException if timestamp is null
      */
-    public TestPlanNode enterNextAvailableTestPart() {
-    	ensureInsideTest();
+    public TestPlanNode enterNextAvailableTestPart(final Date timestamp) {
+        Assert.notNull(timestamp, "timestamp");
+    	assertTestOpen();
+        endControlObjectTimer(testSessionState, timestamp);
+
         final TestPlan testPlan = testSessionState.getTestPlan();
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
+        final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
+
+        /* Clear current part/item */
+        testSessionState.setCurrentTestPartKey(null);
+        testSessionState.setCurrentItemKey(null);
 
         /* Exit current testPart (if appropriate) and locate next testPart */
-        final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
-        int nextTestPartIndex;
+        int nextTestPartIndex = 0;
         if (currentTestPartNode!=null) {
-            final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
-            currentTestPartSessionState.setExited(true);
+            /* Check pre-condition on testPart */
+            final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
+            assertTestPartEnded(currentTestPartSessionState);
+
+    	    /* Exit all items */
+    	    for (final TestPlanNode itemRefNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF)) {
+                getItemSessionController(itemRefNode).exitItem(timestamp);
+    	    }
+
+    	    /* Exit all assessmentSections */
+    	    for (final TestPlanNode testPlanNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_SECTION)) {
+                final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
+                assessmentSectionSessionState.setExitTime(timestamp);
+    	    }
+
+    	    /* Exit the testPart itself */
+            currentTestPartSessionState.setExitTime(timestamp);
+
+            /* Check any BranchRules declared on this testPart */
+            final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+            final Identifier branchTargetIdentifier = evaluateBranchRules(currentTestPart);
+            if (branchTargetIdentifier!=null) {
+                if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                    logger.debug("branchRule has requested end of test");
+                    currentTestPartSessionState.setBranchRuleTarget(BranchRule.EXIT_TEST.toString());
+                    testSessionState.setEndTime(timestamp);
+                    return null;
+                }
+                else if (BranchRule.EXIT_TESTPART.equals(branchTargetIdentifier)) {
+                    fireRuntimeWarning(currentTestPart, "Ignoring invalid EXIT_TESTPART branchRule on a testPart");
+                    nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                }
+                else {
+                    /* Must be a branch to an explicit testPart */
+                    final TestPlanNode branchTargetNode = findBranchRuleTestPartTarget(currentTestPartNode, currentTestPart, branchTargetIdentifier);
+                    if (branchTargetNode!=null) {
+                        nextTestPartIndex = branchTargetNode.getSiblingIndex();
+                        currentTestPartSessionState.setBranchRuleTarget(branchTargetNode.getKey().toString());
+                    }
+                    else {
+                        nextTestPartIndex = currentTestPartNode.getSiblingIndex();
+                    }
+                }
+            }
+
+            /* Choose next testPart index */
             nextTestPartIndex = currentTestPartNode.getSiblingIndex() + 1;
-        }
-        else {
-        	nextTestPartIndex = 0;
         }
 
         /* Work from next testPart onwards, applying preConditions until successful (or we run out of testParts) */
@@ -407,45 +448,43 @@ public final class TestSessionController extends TestValidationController implem
         int searchIndex=nextTestPartIndex;
         for (; searchIndex<testPartNodes.size(); searchIndex++) {
         	final TestPlanNode testPlanNode = testPartNodes.get(searchIndex);
-        	final TestPart testPart = ensureTestPart(testPlanNode);
+        	final TestPart testPart = expectTestPart(testPlanNode);
         	if (testPart.arePreConditionsMet(this)) {
         		nextAvailableTestPartNode = testPlanNode;
         		break;
         	}
         	else {
         		/* Record failed preCondition */
-        		ensureTestPartSessionState(testPlanNode).setPreConditionFailed(true);
+        		expectTestPartSessionState(testPlanNode).setPreConditionFailed(true);
         	}
         }
-
-        /* Clear current part/item */
-        testSessionState.setCurrentTestPartKey(null);
-        testSessionState.setCurrentItemKey(null);
 
         /* Exit test if no more testParts are available */
         if (nextAvailableTestPartNode==null) {
             logger.debug("No more testParts available, so ending test");
-            testSessionState.setEnded(true);
+            testSessionState.setEndTime(timestamp);
             return null;
         }
 
-        /* Enter next testPart and mark as presented */
+        /* Enter next testPart */
         logger.debug("Entering testPart {} and running template processing on each item", nextAvailableTestPartNode.getIdentifier());
-        final TestPartSessionState nextTestPartSessionState = ensureTestPartSessionState(nextAvailableTestPartNode);
+        final TestPart nextTestPart = expectTestPart(nextAvailableTestPartNode);
+        final TestPartSessionState nextTestPartSessionState = expectTestPartSessionState(nextAvailableTestPartNode);
         testSessionState.setCurrentTestPartKey(nextAvailableTestPartNode.getKey());
-        nextTestPartSessionState.setEntered(true);
+        nextTestPartSessionState.setEntryTime(timestamp);
+        startControlObjectTimer(nextTestPartSessionState, timestamp);
+        startControlObjectTimer(testSessionState, timestamp);
 
         /* Perform template processing on each item */
         final List<TestPlanNode> itemRefNodes = nextAvailableTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
         for (final TestPlanNode itemRefNode : itemRefNodes) {
-            performTemplateProcessing(itemRefNode);
+            performTemplateProcessing(itemRefNode, timestamp);
         }
 
         /* If linear navigation, select the first item (if possible) */
-        final TestPart nextTestPart = ensureTestPart(nextAvailableTestPartNode);
         if (nextTestPart.getNavigationMode()==NavigationMode.LINEAR) {
         	logger.debug("Auto-selecting first item in testPart as we are in LINEAR mode");
-            selectNextItemOrEndTestPart();
+            enterNextEnterableItemOrEndTestPart(nextAvailableTestPartNode, timestamp);
         }
 
         return nextAvailableTestPartNode;
@@ -454,26 +493,34 @@ public final class TestSessionController extends TestValidationController implem
     /**
 	 * Performs template processing on the given {@link TestPlanNode} corresponding to an
 	 * {@link AssessmentItemRef}
+	 *
+	 * @param timestamp timestamp for this operation, which must not be null
+	 *
+     * @throws IllegalArgumentException if timestamp is null
 	 */
-	private void performTemplateProcessing(final TestPlanNode itemRefNode) {
+	private void performTemplateProcessing(final TestPlanNode itemRefNode, final Date timestamp) {
+        Assert.notNull(timestamp, "timestamp");
 	    Assert.notNull(itemRefNode);
-	    ensureItemRefNode(itemRefNode);
 
-	    final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
+	    final AssessmentItemRef assessmentItemRef = expectItemRef(itemRefNode);
 	    final List<TemplateDefault> templateDefaults = assessmentItemRef.getTemplateDefaults();
 
 	    final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-	    itemSessionController.performTemplateProcessing(templateDefaults);
+	    itemSessionController.performTemplateProcessing(timestamp, templateDefaults);
 	}
 
 	/**
-	 * Can we end the current test part?
+	 * Returns whether we can exit the current {@link TestPart}.
+	 * <p>
+	 * Precondition: there must be a current {@link TestPart}.
+	 * <p>
+	 * Postcondition: None
 	 *
 	 * @throws QtiCandidateStateException if no test part is selected
 	 */
-	public boolean mayEndTestPart() {
-	    final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-	    final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+	public boolean mayEndCurrentTestPart() {
+	    final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+	    final TestPart currentTestPart = expectTestPart(currentTestPartNode);
 	    if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
 	        /* (allowSkipping & validateResponses only apply in INDIVIDUAL submission mode) */
 	        final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
@@ -496,113 +543,210 @@ public final class TestSessionController extends TestValidationController implem
 	/**
 	 * Marks the current test part as ended, if allowed, performing any processing
 	 * required at this time and updating state as appropriate.
+	 * <p>
+	 * Precondition: {@link #mayEndCurrentTestPart()} must return true
+	 * <p>
+	 * Postcondition: If the {@link TestPart} has {@link SubmissionMode#SIMULTANEOUS} then
+	 * any uncommitted responses will be committed, then Response Processing and Outcome Processing will be run.
+	 * All item and assessment section states in testPart
+	 * will be ended if they haven't done so already, current test state will be marked as ended,
+	 * current item will be cleared.
 	 *
-	 * PRECONDITION: {@link #mayEndTestPart()} must return true
-	 * POSTCONDITIONS: all item states in testPart will be closed, current test
-	 *   state marked as ended, current item cleared.
+	 * @param timestamp timestamp for this operation, which must not be null
+	 *
+	 * @throws QtiCandidateStateException if there is no current {@link TestPart}, or if
+	 *   {@link #mayEndCurrentTestPart()} returns false.
+     * @throws IllegalArgumentException if timestamp is null
 	 */
-	public void endTestPart() {
-	    if (!mayEndTestPart()) {
+	public void endCurrentTestPart(final Date timestamp) {
+        Assert.notNull(timestamp, "timestamp");
+	    if (!mayEndCurrentTestPart()) {
 	        throw new QtiCandidateStateException("Current test part cannot be ended");
 	    }
 
-	    final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-	    final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+	    final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+	    final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
+	    final TestPart currentTestPart = expectTestPart(currentTestPartNode);
 	    final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
 	    if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
-	        /* If we're in SIMULTANEOUS mode, we run response processing on all items now */
+	        /* We're in SIMULTANEOUS mode. Commit responses on each item then run RP */
 	        for (final TestPlanNode itemRefNode : itemRefNodes) {
 	            final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-	            itemSessionController.performResponseProcessing();
+	            final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+	            if (itemSessionState.isEntered()) {
+	                if (itemSessionState.isSuspended()) {
+	                    itemSessionController.unsuspendItemSession(timestamp);
+	                }
+	                if (itemSessionState.hasUncommittedResponseValues()) {
+	                    itemSessionController.commitResponses(timestamp);
+	                }
+	                itemSessionController.performResponseProcessing(timestamp);
+	            }
 	        }
 	        /* Then we'll run outcome processing for the test */
 	        performOutcomeProcessing();
 	    }
 
-	    /* Close all items */
+	    /* End all items (if not done so already due to RP ending the item or during LINEAR navigation) */
 	    for (final TestPlanNode itemRefNode : itemRefNodes) {
-	        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-	        itemSessionState.setClosed(true);
+            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+            if (!itemSessionState.isEnded() && !itemSessionState.isPreConditionFailed()) {
+                getItemSessionController(itemRefNode).endItem(timestamp);
+            }
 	    }
+
+	    /* End all assessmentSections (if not done so already during LINEAR navigation) */
+	    for (final TestPlanNode testPlanNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_SECTION)) {
+            final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
+            if (!assessmentSectionSessionState.isEnded() && !assessmentSectionSessionState.isPreConditionFailed()) {
+            	assessmentSectionSessionState.setEndTime(timestamp);
+            	if (assessmentSectionSessionState.getDurationIntervalStartTime()!=null) {
+            	    endControlObjectTimer(assessmentSectionSessionState, timestamp);
+            	}
+            }
+	    }
+
+	    /* End testPart */
+        currentTestPartSessionState.setEndTime(timestamp);
+        endControlObjectTimer(currentTestPartSessionState, timestamp);
+
+        /* Update test duration */
+        touchControlObjectTimer(testSessionState, timestamp);
 
 	    /* Deselect item */
 	    testSessionState.setCurrentItemKey(null);
 
-	    /* Update state for this test part */
-	    final TestPartSessionState currentTestPartSessionState = ensureTestPartSessionState(currentTestPartNode);
-	    currentTestPartSessionState.setEnded(true);
 	    logger.debug("Ended testPart {}", currentTestPartNode.getIdentifier());
 	}
+
+    /**
+     * Exits the test after it has been ended.
+     * <p>
+     * Precondition: The test must have been ended and not already exited.
+     * <p>
+     * Postcondition: The test will be marked as being exited.
+     *
+     * @param timestamp timestamp for this operation, which must not be null
+     *
+     * @throws QtiCandidateStateException if the test has not been ended, or has already been
+     *   exited.
+     * @throws IllegalArgumentException if timestamp is null
+     */
+    public void exitTest(final Date timestamp) {
+        Assert.notNull(timestamp, "timestamp");
+        assertTestEnded();
+        assertTestNotExited();
+
+        testSessionState.setExitTime(timestamp);
+    }
 
     //-------------------------------------------------------------------
     // Nonlinear navigation within a testPart
 
 	/**
-     * Returns whether the candidate may select the item in the current {@link NavigationMode#NONLINEAR}
-     * {@link TestPart} having the given {@link TestPlanNodeKey}.
+     * Returns whether the current {@link NavigationMode#NONLINEAR} {@link TestPart} contains
+     * the item having the given {@link TestPlanNodeKey}.
+     * <p>
+     * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#NONLINEAR}
+     * navigation mode. The {@link TestPart} must be open.
+     * <p>
+     * Postcondition: None.
      *
-     * @param itemKey key for the requested item, or null to indicate that we want to deselect the
-     *   current item.
+     * @param itemKey key for the requested item, which must not be null.
+     *
+     * @throws IllegalArgumentException if the given itemKey is null, or if it does not correspond to an item in the test.
+     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart is not
+     *   open or does not have {@link NavigationMode#NONLINEAR}
      *
      * @see #selectItemNonlinear(TestPlanNodeKey)
      */
     public boolean maySelectItemNonlinear(final TestPlanNodeKey itemKey) {
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+        Assert.notNull(itemKey, "itemKey");
+        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+        assertNonlinearTestPart(currentTestPartNode);
 
-        /* Make sure we're in nonlinear navigation mode */
-        if (currentTestPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
-            throw new QtiCandidateStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
-        }
-
-        if (itemKey!=null) {
-            final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-            if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPartNode)) {
-                return false;
-            }
-            return true;
-        }
-        else {
-            /* Allow deselection */
-            return true;
-        }
+        final TestPlanNode itemRefNode = assertItemRefNode(itemKey);
+        return itemRefNode.hasAncestor(currentTestPartNode);
     }
 
     /**
      * Select an item within the current {@link NavigationMode#NONLINEAR} {@link TestPart}, or
      * deselects the current item is the given key is null.
+     * <p>
+     * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#NONLINEAR}
+     * navigation mode. The {@link TestPart} must be open.
+     * <p>
+     * Postcondition: The current item session (if applicable) will be suspended. The requested
+     * item (if applicable) will be entered (if not already entered) or unsuspended (if not yet ended).
+     * Duration timers on parent {@link AssessmentSection}s will be updated if they have not been
+     * ended.
      *
+     * @param timestamp timestamp for this operation, which must not be null
      * @param itemKey key for the requested item, or null to indicate that we want to deselect the
      *   current item.
      *
-     * @param itemKey item to select, or null to select no item
+     * @return true if the current testPart contains an item having the given itemKey, false otherwise.
      *
-     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart
-     *   does not have {@link NavigationMode#NONLINEAR}, or if the requested item is not in the current part.
+     * @throws IllegalArgumentException if the timestamp is null, or if itemKey is not null and does
+     *   not correspond to an item within the test
+     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart is not
+     *   open or does not have {@link NavigationMode#NONLINEAR}, or if the requested itemKey is not within the
+     *   current testPart.
      *
      * @see #maySelectItemNonlinear(TestPlanNodeKey)
      */
-    public TestPlanNode selectItemNonlinear(final TestPlanNodeKey itemKey) {
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+    public TestPlanNode selectItemNonlinear(final Date timestamp, final TestPlanNodeKey itemKey) {
+        Assert.notNull(timestamp, "timestamp");
+        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+        final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
+        assertNonlinearTestPart(currentTestPartNode);
+        assertTestPartOpen(currentTestPartSessionState);
 
-        /* Make sure we're in nonlinear navigation mode */
-        if (currentTestPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
-            throw new QtiCandidateStateException("Explicit selection is not allowed in NONLINEAR navigationMode");
+        /* If an item is currently selected then suspend the session (if still open) and update timer on parent sections */
+        final TestPlanNode currentItemRefNode = getCurrentItemRefNode();
+        if (currentItemRefNode!=null) {
+            final ItemSessionState currentItemSessionState = expectItemRefState(currentItemRefNode);
+            if (!currentItemSessionState.isEnded()) {
+                getItemSessionController(currentItemRefNode).suspendItemSession(timestamp);
+            }
+            for (final TestPlanNode sectionNode : currentItemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
+                endControlObjectTimer(expectAssessmentSectionSessionState(sectionNode), timestamp);
+            }
         }
 
+        /* Touch duration on test & testPart */
+        touchControlObjectTimer(testSessionState, timestamp);
+        touchControlObjectTimer(currentTestPartSessionState, timestamp);
+
         if (itemKey!=null) {
-            final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-            ensureItemRefNode(itemRefNode);
-            if (!itemRefNode.hasAncestor(currentTestPartNode)) {
-                throw new QtiCandidateStateException(itemRefNode + " is not a descendant of " + currentTestPartNode);
+            final TestPlanNode newItemRefNode = assertItemRefNode(itemKey);
+            final ItemSessionState newItemSessionState = expectItemRefState(newItemRefNode);
+            if (!newItemRefNode.hasAncestor(currentTestPartNode)) {
+                throw new QtiCandidateStateException(newItemRefNode + " is not a descendant of " + currentTestPartNode);
             }
-            testSessionState.setCurrentItemKey(itemRefNode.getKey());
+            testSessionState.setCurrentItemKey(newItemRefNode.getKey());
 
-            /* Mark item as being presented */
-            getItemSessionController(itemRefNode).markPresented();
+            /* Enter/unsuspend item as appropriate */
+            final ItemSessionController newItemSessionController = getItemSessionController(newItemRefNode);
+            if (!newItemSessionState.isEntered()) {
+                newItemSessionController.enterItem(timestamp);
+            }
+            else if (!newItemSessionState.isEnded()) {
+                newItemSessionController.unsuspendItemSession(timestamp);
+            }
 
-            return itemRefNode;
+            /* enter and/or start timer on parent sections */
+            for (final TestPlanNode sectionNode : newItemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
+            	final AssessmentSectionSessionState assessmentSectionSessionState = expectAssessmentSectionSessionState(sectionNode);
+            	if (!assessmentSectionSessionState.isEntered()) {
+            		assessmentSectionSessionState.setEntryTime(timestamp);
+            	}
+            	if (!assessmentSectionSessionState.isEnded()) {
+            	    startControlObjectTimer(expectAssessmentSectionSessionState(sectionNode), timestamp);
+            	}
+            }
+
+            return newItemRefNode;
         }
         else {
             /* Allow deselection */
@@ -611,156 +755,431 @@ public final class TestSessionController extends TestValidationController implem
         }
     }
 
+    private TestPart assertNonlinearTestPart(final TestPlanNode currentTestPartNode) {
+        final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+        if (currentTestPart.getNavigationMode()!=NavigationMode.NONLINEAR) {
+            throw new QtiCandidateStateException("Expected this testPart to have NONLINEAR navigationMode");
+        }
+        return currentTestPart;
+    }
+
     //-------------------------------------------------------------------
     // Linear navigation within a testPart
 
-    public boolean mayFinishItemLinear() {
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
-
-        /* Make sure we're in linear navigation mode */
-        if (currentTestPart.getNavigationMode()!=NavigationMode.LINEAR) {
-            throw new QtiCandidateStateException("Finishing an item is only supported in LINEAR navigationMode");
-        }
-
-        /* Get current item */
-        final TestPlanNode currentItemRefNode = getCurrentItemRefNode();
-        if (currentItemRefNode==null) {
-            return false;
-        }
+    /**
+     * Returns whether the currently-selected item within a {@link TestPart} with
+     * {@link NavigationMode#LINEAR} may be ended. (Ending may be prevented by
+     * {@link ItemSessionControl} conditions.)
+     * <p>
+     * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#LINEAR}
+     * navigation mode. An item must be selected.
+     * <p>
+     * Postcondition: None
+     *
+     * @return true if the item may be ended, false otherwise.
+     *
+     * @throws QtiCandidateStateException if we are not currently in a {@link TestPart},
+     *   if the current {@link TestPart} does not have {@link NavigationMode#NONLINEAR},
+     *   or if there is no currently selected item.
+     */
+    public boolean mayEndItemLinear() {
+        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+        final TestPart currentTestPart = assertLinearTestPart(currentTestPartNode);
+        final TestPlanNodeKey currentItemKey = assertItemSelected();
 
         /* The only thing preventing submission is allowSkipping and validateResponses, which
          * only apply in INDIVIDUAL submission mode.
          */
         if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
-            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
-            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(currentItemRefNode);
+            final ItemSessionState itemSessionState = expectItemRefState(currentItemKey);
+            final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(expectItemRefNode(currentItemKey));
             if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
                 /* Not responded, and allowSkipping=false */
-                logger.debug("Item {} has not been responded and allowSkipping=false, so finishing item is forbidden", currentItemRefNode.getKey());
+                logger.debug("Item {} has not been responded and allowSkipping=false, so ending item is forbidden", currentItemKey);
                 return false;
             }
             if (itemSessionState.isRespondedInvalidly() && effectiveItemSessionControl.isValidateResponses()) {
                 /* Invalid response, and validateResponses=true */
-                logger.debug("Item {} has been responded with bad/invalid responses and validateResponses=true, so ending item will be forbidden", currentItemRefNode.getKey());
+                logger.debug("Item {} has been responded with bad/invalid responses and validateResponses=true, so ending item will be forbidden", currentItemKey);
                 return false;
             }
         }
-
         return true;
     }
 
-    public TestPlanNode finishItemLinear() {
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+    /**
+     * Ends the currently-selected item within a {@link TestPart} with
+     * {@link NavigationMode#LINEAR}, if possible. The test will then advance
+     * to the next available item, or end the {@link TestPart}.
+     * <p>
+     * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#LINEAR}
+     * navigation mode. An item must be selected. The effective {@link ItemSessionControl} for
+     * the selected item must allow it to be ended.
+     * <p>
+     * Postcondition: Item session will be ended.
+     *
+     * @param timestamp timestamp for this operation, which must not be null
+     *
+     * @return the {@link TestPlanNode} corresponding to the next selected item,
+     *   or null if there are no more available items and the {@link TestPart} has
+     *   ended.
+     *
+     * @throws QtiCandidateStateException if we are not currently in a {@link TestPart},
+     *   if the current {@link TestPart} does not have {@link NavigationMode#NONLINEAR},
+     *   if there is no currently selected item, or if the effective {@link ItemSessionControl}
+     *   for the item does not allow it to be ended.
+     * @throws IllegalArgumentException if timestamp is null
+     */
+    public TestPlanNode endItemLinear(final Date timestamp) {
+        Assert.notNull(timestamp, "timestamp");
+        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+        final TestPart currentTestPart = assertLinearTestPart(currentTestPartNode);
+        final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
+        final TestPlanNodeKey currentItemKey = assertItemSelected();
 
-        /* Make sure we're in linear navigation mode */
-        if (currentTestPart.getNavigationMode()!=NavigationMode.LINEAR) {
-            throw new QtiCandidateStateException("Finishing an item is only supported in LINEAR navigationMode");
-        }
-
-        /* Make sure an item is selected and it can be finished */
-        final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
-
-        /* Make sure item can be finished (see mayFinishLinearItem() for logic summary) */
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
+        /* Make sure item can be ended (see mayEndLinearItem() for logic summary) */
+        final ItemSessionState itemSessionState = expectItemRefState(currentItemKey);
+        final TestPlanNode currentItemRefNode = expectItemRefNode(currentItemKey);
         if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
             final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(currentItemRefNode);
             if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
-                throw new QtiCandidateStateException("Item " + currentItemRefNode.getKey() + " has not been responded and allowSkipping=false, so finishing item is forbidden");
+                throw new QtiCandidateStateException("Item " + currentItemKey + " has not been responded and allowSkipping=false, so ending item is forbidden");
             }
             if (itemSessionState.isRespondedInvalidly() && effectiveItemSessionControl.isValidateResponses()) {
-                throw new QtiCandidateStateException("Item " + currentItemRefNode.getKey() + " has been responded with bad/invalid responses and validateResponses=true, so finishing is forbidden");
+                throw new QtiCandidateStateException("Item " + currentItemKey + " has been responded with bad/invalid responses and validateResponses=true, so ending item is forbidden");
             }
         }
 
+        /* End item (if it hasn't done so during RP) */
+        final ItemSessionController currentItemSessionController = getItemSessionController(currentItemRefNode);
+        final ItemSessionState currentItemSessionState = currentItemSessionController.getItemSessionState();
+        if (!currentItemSessionState.isEnded()) {
+        	currentItemSessionController.endItem(timestamp);
+        }
+
+        /* Update duration on test and testPart */
+        touchControlObjectTimer(currentTestPartSessionState, timestamp);
+        touchControlObjectTimer(testSessionState, timestamp);
+
         /* Log what's happened */
-        logger.debug("Finished item {}", currentItemRefNode.getKey());
+        logger.debug("Finished item {}", currentItemKey);
 
         /* Select next item (if one is available) or end the testPart */
-        return selectNextItemOrEndTestPart();
+        return enterNextEnterableItemOrEndTestPart(currentTestPartNode, timestamp);
     }
 
     /**
-     * Select the next item in a {@link NavigationMode#LINEAR} {@link TestPart}
+     * Enters the next item in the given ({@link NavigationMode#LINEAR}) {@link TestPart}, applying
+     * any {@link PreCondition}s on the way.
      * <p>
      * Returns the newly selected {@link TestPlanNode}, or null if there are no more items
-     * to select.
-     *
-     * @throws QtiCandidateStateException if no testPart is selected, if the current testPart
-     *   does not have {@link NavigationMode#LINEAR}.
+     * that can be entered.
      */
-    private TestPlanNode selectNextItemOrEndTestPart() {
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPart currentTestPart = ensureTestPart(currentTestPartNode);
+    private TestPlanNode enterNextEnterableItemOrEndTestPart(final TestPlanNode currentTestPartNode, final Date timestamp) {
+        /* First, we work out where to start looking from, taking into account any branchRules */
+        TestPlanNode startSearchNode = null;
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+        if (currentItemKey!=null) {
+            final TestPlanNode currentItemNode = getCurrentItemRefNode();
+            final AssessmentItemRef currentItemRef = expectItemRef(currentItemNode);
 
-        /* Make sure we're in linear navigation mode */
-        if (currentTestPart.getNavigationMode()!=NavigationMode.LINEAR) {
-            throw new QtiCandidateStateException("Selection of next item is only supported in LINEAR navigationMode");
-        }
+            /* Evaluate any branchRules on current item */
+            boolean branchSucceeded = false;
+            final Identifier branchTargetIdentifier = evaluateBranchRules(currentItemRef);
+            if (branchTargetIdentifier!=null) {
+                final ItemSessionState currentItemState = expectItemRefState(currentItemNode);
+                if (BranchRule.EXIT_TESTPART.equals(branchTargetIdentifier)) {
+                    /* Branch to end of testPart */
+                    logger.debug("branchRule requested end of testPart");
+                    currentItemState.setBranchRuleTarget(BranchRule.EXIT_TESTPART.toString());
+                    testSessionState.setCurrentItemKey(null);
+                    endCurrentTestPart(timestamp);
+                    branchSucceeded = true;
+                    return null;
+                }
+                else if (BranchRule.EXIT_SECTION.equals(branchTargetIdentifier)) {
+                    /* Branch to end of section */
+                    logger.debug("branchRule requested end of section");
+                    currentItemState.setBranchRuleTarget(BranchRule.EXIT_SECTION.toString());
 
-        /* Find next item */
-        final TestPlan testPlan = testSessionState.getTestPlan();
-        final List<TestPlanNode> itemsInTestPart = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
-        final TestPlanNodeKey itemKey = testSessionState.getCurrentItemKey();
-        TestPlanNode nextItemRefNode;
-        if (itemKey==null) {
-            /* Haven't entered any items yet, so select first if available */
-            nextItemRefNode = !itemsInTestPart.isEmpty() ? itemsInTestPart.get(0) : null;
+                    /* End section */
+                    final TestPlanNode parentSectionNode = currentItemNode.getParent();
+                    final AssessmentSectionSessionState assessmentSectionSessionState = expectAssessmentSectionSessionState(parentSectionNode);
+                    assessmentSectionSessionState.setEndTime(timestamp);
+                    endControlObjectTimer(assessmentSectionSessionState, timestamp);
+
+                    /* Then walk to next node */
+                    startSearchNode = walkToNextSiblingOrAncestorNode(parentSectionNode, timestamp);
+                    branchSucceeded = true;
+                }
+                else if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                    fireValidationError(expectItemRef(currentItemNode), "Ignoring illegal EXIT_TEST branchRule");
+                }
+                else {
+                    /* BRANCH TO REQUESTED ITEM/SECTION */
+                    logger.debug("branchRule requested target {}", branchTargetIdentifier);
+                    startSearchNode = walkToBranchTarget(currentItemNode, branchTargetIdentifier, timestamp);
+                    if (startSearchNode!=null) {
+                        currentItemState.setBranchRuleTarget(startSearchNode.getKey().toString());
+                        branchSucceeded = true;
+                    }
+                    else {
+                        fireRuntimeWarning(testProcessingMap.resolveAbstractPart(currentItemNode),
+                                "branchRule failed to move forward to target " + branchTargetIdentifier
+                                + " so is being ignored. Check the validity of this test!");
+                    }
+                }
+            }
+
+        	/* If no branchRule, or the branch attempt failed, then walk to next sibling/ancestor of the current item
+        	 * so that we can search for next enterable item */
+            if (!branchSucceeded) {
+                startSearchNode = walkToNextSiblingOrAncestorNode(currentItemNode, timestamp);
+            }
         }
         else {
-            final TestPlanNode currentItem = testPlan.getTestPlanNodeMap().get(itemKey);
-            final int currentItemIndex = itemsInTestPart.indexOf(currentItem);
-            nextItemRefNode = currentItemIndex+1 < itemsInTestPart.size() ? itemsInTestPart.get(currentItemIndex+1) : null;
+        	/* Haven't entered any items yet, so search from first child (if available) */
+        	if (currentTestPartNode.getChildCount()==0) {
+        		return null;
+        	}
+        	startSearchNode = currentTestPartNode.getChildAt(0);
         }
-        testSessionState.setCurrentItemKey(nextItemRefNode!=null ? nextItemRefNode.getKey() : null);
 
+        /* Walk to next enterable item */
+        final TestPlanNode nextItemRefNode = walkToNextEnterableItemDepthFirst(currentTestPartNode, startSearchNode, timestamp);
         if (nextItemRefNode!=null) {
-            /* Mark item as being presented */
-            logger.debug("Selected and presenting item {}", nextItemRefNode.getKey());
-            getItemSessionController(nextItemRefNode).markPresented();
+            /* Enterable item */
+            testSessionState.setCurrentItemKey(nextItemRefNode.getKey());
+            getItemSessionController(nextItemRefNode).enterItem(timestamp);
+            logger.debug("Entered item {}", nextItemRefNode.getKey());
+
         }
         else {
-            /* No more items available, so end testPart */
-            endTestPart();
+            /* No (more) items available, so end testPart */
+            testSessionState.setCurrentItemKey(null);
+            endCurrentTestPart(timestamp);
+            logger.debug("Linear navigation has reached end of testPart");
         }
         return nextItemRefNode;
     }
 
+    private TestPlanNode walkToNextSiblingOrAncestorNode(final TestPlanNode startNode, final Date timestamp) {
+        final TestPlanNode currentNode = startNode;
+        if (currentNode.hasFollowingSibling()) {
+            /* Walk to next sibling */
+            return currentNode.getFollowingSibling();
+        }
+        else {
+            /* No more siblings, so go up to parent then onto its next sibling */
+            final TestPlanNode parentNode = currentNode.getParent();
+            switch (parentNode.getTestNodeType()) {
+                case TEST_PART:
+                    /* We've reached the end of the TestPart, so stop searching altogether */
+                    return null;
+
+                case ASSESSMENT_SECTION:
+                    /* Reached end of section. So exit then move on */
+                    final AssessmentSectionSessionState assessmentSectionSessionState = expectAssessmentSectionSessionState(parentNode);
+                    assessmentSectionSessionState.setEndTime(timestamp);
+                    endControlObjectTimer(assessmentSectionSessionState, timestamp);
+                    return walkToNextSiblingOrAncestorNode(parentNode, timestamp);
+
+                default:
+                    throw new QtiLogicException("Did not expect to meet a Node of type " + currentNode.getTestNodeType());
+            }
+        }
+    }
+
+    /**
+     * Walks from the given starting Node to the section or item node matching the given branchRule
+     * target identifier.
+     * <p>
+     * If there are multiple branch targets, then we walk to the first one after the current node within
+     * the {@link TestPlan} for the current testPart.
+     *
+     * @return target Node, or null if suitable target was not found.
+     */
+    private TestPlanNode walkToBranchTarget(final TestPlanNode startNode, final Identifier branchTargetIdentifier, final Date timestamp) {
+        /* Find and check the target */
+        final AbstractPart startPart = testProcessingMap.resolveAbstractPart(startNode);
+        final int currentGlobalIndex = startNode.getKey().getGlobalIndex();
+        final List<TestPlanNode> branchTargetNodes = testSessionState.getTestPlan().getNodes(branchTargetIdentifier);
+        if (branchTargetNodes==null) {
+            fireRuntimeError(startPart, "Failed to find branchRule target with identifier " + branchTargetIdentifier
+                    + ", so ignoring this branchRule. Check test validity.");
+            return null;
+        }
+        TestPlanNode branchTargetNode = null;
+        for (final TestPlanNode branchTargetCandidateNode : branchTargetNodes) {
+            if (branchTargetCandidateNode.getKey().getGlobalIndex() > currentGlobalIndex) {
+                /* Found suitable target */
+                branchTargetNode = branchTargetCandidateNode;
+                break;
+            }
+        }
+        if (branchTargetNode==null) {
+            fireRuntimeError(startPart, "No branchRule target found with identifier " + branchTargetIdentifier
+                    + " after node with key " + startNode.getKey() + ". Ignoring branchRule. Check test validity.");
+            return null;
+        }
+        /* Make sure branch target is in this testPart */
+        if (!startNode.searchEnclosingTestPartNode().equals(branchTargetNode.searchEnclosingTestPartNode())) {
+            fireRuntimeError(startPart, "branchRule target found with identifier " + branchTargetIdentifier
+                    + " is in a different testPart to the current node with key " + startNode.getKey()
+                    + ". Ignoring branchRule. Check test validity");
+            return null;
+        }
+
+        /* The walk to the branchTarget is quite complicated. Probably best explained by
+         * an example:
+         *
+         * Suppose we're at P/A/B/C/D
+         *    branch to     P/A/X/Y
+         *
+         * then we need to move up to the common ancestor (A), ending sections C and B on the way.
+         * We then descend into X and Y, opening them as required.
+         */
+        TestPlanNode goingUpNode = startNode;
+        while (!(branchTargetNode.hasAncestor(goingUpNode))) {
+            if (goingUpNode.getTestNodeType()==TestNodeType.ASSESSMENT_SECTION) {
+                final AssessmentSectionSessionState assessmentSectionSessionState = expectAssessmentSectionSessionState(goingUpNode);
+                assessmentSectionSessionState.setEndTime(timestamp);
+                endControlObjectTimer(assessmentSectionSessionState, timestamp);
+            }
+            goingUpNode = goingUpNode.getParent();
+        }
+        /* Now we traverse down to the startNode, entering sections as required.
+         * (The easiest way to code this is to enter from the targetNode upwards.)
+         */
+        TestPlanNode goingDownNode = branchTargetNode;
+        while (goingDownNode.hasAncestor(goingUpNode)) {
+            if (goingDownNode.getTestNodeType()==TestNodeType.ASSESSMENT_SECTION) {
+                final AssessmentSectionSessionState assessmentSectionSessionState = expectAssessmentSectionSessionState(goingDownNode);
+                assessmentSectionSessionState.setEntryTime(timestamp);
+                startControlObjectTimer(assessmentSectionSessionState, timestamp);
+            }
+            goingDownNode = goingDownNode.getParent();
+        }
+        /* That's us done now */
+        return branchTargetNode;
+    }
+
+    private TestPlanNode walkToNextEnterableItemDepthFirst(final TestPlanNode currentTestPartNode, final TestPlanNode startNode, final Date timestamp) {
+        final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+        TestPlanNode currentNode = startNode;
+        SEARCH: while (currentNode!=null) {
+            switch (currentNode.getTestNodeType()) {
+                case ASSESSMENT_SECTION:
+                    /* We're at a section. Check preconditions and enter (if met) or move on (otherwise) */
+                    final AssessmentSection assessmentSection = expectAssessmentSection(currentNode);
+                    final AssessmentSectionSessionState assessmentSectionSessionState = expectAssessmentSectionSessionState(currentNode);
+                    if (currentTestPart.areJumpsEnabled() && !assessmentSection.arePreConditionsMet(this)) {
+                        /* preCondition on section failed, so note this. */
+                        assessmentSectionSessionState.setPreConditionFailed(true);
+                    }
+                    else {
+                        /* Enter section and search its child nodes */
+                        assessmentSectionSessionState.setEntryTime(timestamp);
+                        startControlObjectTimer(assessmentSectionSessionState, timestamp);
+                        if (currentNode.getChildCount()>0) {
+                            currentNode = currentNode.getChildAt(0);
+                            continue SEARCH;
+                        }
+                    }
+                    break;
+
+                case ASSESSMENT_ITEM_REF:
+                    /* We're at an item. Check if it can be entered */
+                    final AssessmentItemRef assessmentItemRef = expectItemRef(currentNode);
+                    final ItemSessionState itemSessionState = expectItemRefState(currentNode);
+                    if (currentTestPart.areJumpsEnabled() && !assessmentItemRef.arePreConditionsMet(this)) {
+                        /* preCondition on assessmentItemRef, so note this. */
+                       itemSessionState.setPreConditionFailed(true);
+                    }
+                    else {
+                        /* Found enterable item */
+                        return currentNode;
+                    }
+                    break;
+
+                default:
+                    throw new QtiLogicException("Did not expect to meet a Node of type " + currentNode.getTestNodeType());
+            }
+            /* If we reach here, then the a depth-first search on the currentNode yielded nothing.
+             * So we move onto the next sibling. If there are no more siblings, we go up and move on.
+             * Continue until we reach the end of the testPart
+             */
+            currentNode = walkToNextSiblingOrAncestorNode(currentNode, timestamp);
+        }
+        return null;
+    }
+
+    private TestPart assertLinearTestPart(final TestPlanNode currentTestPartNode) {
+        final TestPart currentTestPart = expectTestPart(currentTestPartNode);
+        if (currentTestPart.getNavigationMode()!=NavigationMode.LINEAR) {
+            throw new QtiCandidateStateException("Expected this testPart to have LINEAR navigationMode");
+        }
+        return currentTestPart;
+    }
+
+    //-------------------------------------------------------------------
+    // Response submission
+
     /**
      * Returns whether responses may be submitted for the currently selected item.
+     * <p>
+     * Precondition: an item must be selected.
+     * <p>
+     * Postcondition: none
      *
      * @throws QtiCandidateStateException if no item is selected
      */
     public boolean maySubmitResponsesToCurrentItem() {
-        final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemRefNode.getKey());
+        final TestPlanNodeKey currentItemKey = assertItemSelected();
 
-        return !itemSessionState.isClosed();
+        final ItemSessionState itemSessionState = expectItemRefState(currentItemKey);
+        return !itemSessionState.isEnded();
     }
 
     /**
-     * Handles binding of responses for the currently selected item.
+     * Handle responses for the currently selected item. First, the responses will be bound to
+     * the current item as in {@link ItemSessionController#bindResponses(Date, Map)}.
      * <p>
-     * In {@link SubmissionMode#INDIVIDUAL} mode, response processing is then
-     * run, following by outcome processing.
+     * In {@link SubmissionMode#INDIVIDUAL} mode, the responses are then committed as in
+     * {@link ItemSessionController#commitResponses(Date)}, then response processing is run,
+     * followed by outcome processing.
      * <p>
-     * In {@link SubmissionMode#SIMULTANEOUS} mode, no processing happens.
+     * Precondition: an item must be selected, and its session must be open.
+     * <p>
+     * Postcondition: responses will be bound, validated and processed as described above.
+     *
+     * @param timestamp timestamp for this operation, which must not be null
+     * @param responseMap Map of response data, which must not be null
+     *
+     * @throws QtiCandidateStateException if no item is selected or if its session is not open
      */
-    public void handleResponses(final Map<Identifier, ResponseData> responseMap) {
+    public void handleResponsesToCurrentItem(final Date timestamp, final Map<Identifier, ResponseData> responseMap) {
+        Assert.notNull(timestamp, "timestamp");
         Assert.notNull(responseMap, "responseMap");
-        final TestPlanNode currentItemRefNode = ensureCurrentItemRefNode();
+        final TestPlanNodeKey currentItemKey = assertItemSelected();
+
+        /* Touch durations on item, ancestor sections, test part and test */
+        final TestPlanNode currentItemRefNode = expectItemRefNode(currentItemKey);
+        touchDurations(currentItemRefNode, timestamp);
 
         /* Bind responses */
         final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
-        final boolean boundSuccessfully = itemSessionController.bindResponses(responseMap);
+        final boolean boundSuccessfully = itemSessionController.bindResponses(timestamp, responseMap);
 
-        /* Do processing if we're in INDIVIDUAL mode */
-        final TestPart testPart = ensureCurrentTestPart();
+        /* If we're in INDIVIDUAL mode, then commit responses then do RP & OP */
+        final TestPart testPart = expectCurrentTestPart();
         if (testPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
+            /* Commit responses */
+            itemSessionController.commitResponses(timestamp);
+
             /* Run response processing if everything was bound successfully */
             if (boundSuccessfully) {
-                itemSessionController.performResponseProcessing();
+                itemSessionController.performResponseProcessing(timestamp);
             }
             /* Run outcome processing */
             performOutcomeProcessing();
@@ -768,131 +1187,119 @@ public final class TestSessionController extends TestValidationController implem
     }
 
     /**
-     * Tests whether the candidate may review the item having the given {@link TestPlanNodeKey}.
+     * Sets the candidate comment for the current item, replacing any comment that has already been
+     * set.
      * <p>
-     * Returns true if the item state is closed and its effective session control allows review,
-     * or showing feedback
+     * Precondition: an item must be selected, and its session must be open. The effective
+     * {@link ItemSessionControl} for the item must allow comments
+     * <p>
+     * Postcondition: Candidate comment will be changed.
      *
-     * @param key of the item to test, which must not be null
+     * @param timestamp timestamp for this event, which must not be null
+     * @param comment comment to record, which may be null. An empty or blank comment will be
+     *   treated in the same way as a null comment.
      */
-    public boolean mayReviewItem(final TestPlanNodeKey itemKey) {
-        Assert.notNull(itemKey);
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPartNode)) {
-            return false;
+    public void setCandidateCommentForCurrentItem(final Date timestamp, final String candidateComment) {
+        Assert.notNull(timestamp);
+        final TestPlanNodeKey currentItemKey = assertItemSelected();
+        final TestPlanNode currentItemRefNode = expectItemRefNode(currentItemKey);
+        final EffectiveItemSessionControl effectiveItemSessionControl = currentItemRefNode.getEffectiveItemSessionControl();
+        if (!effectiveItemSessionControl.isAllowComment()) {
+            throw new QtiCandidateStateException("The item has allowComment=false, so setting a candidate comment is not permitted");
         }
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
+        logger.debug("Setting candidate comment to {}", candidateComment);
 
-        return itemSessionState.isClosed()
-                && (effectiveItemSessionControl.isAllowReview()
-                || effectiveItemSessionControl.isShowFeedback());
+        final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
+        itemSessionController.setCandidateComment(timestamp, candidateComment);
     }
 
-    public boolean mayAccessItemSolution(final TestPlanNodeKey itemKey) {
-        Assert.notNull(itemKey);
-        final TestPlanNode currentTestPartNode = ensureCurrentTestPartNode();
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
-        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF || !itemRefNode.hasAncestor(currentTestPartNode)) {
-            return false;
+    /**
+     * Touches the duration for the given item, and the sections and testParts containing it.
+     */
+    private void touchDurations(final TestPlanNode itemRefNode, final Date timestamp) {
+        final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
+        itemSessionController.touchDuration(timestamp);
+        for (final TestPlanNode sectionNode : itemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
+            touchControlObjectTimer(expectAssessmentSectionSessionState(sectionNode), timestamp);
         }
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
-
-        return itemSessionState.isClosed()
-                && (effectiveItemSessionControl.isAllowReview() || effectiveItemSessionControl.isShowFeedback())
-                && effectiveItemSessionControl.isShowSolution();
+        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+        touchControlObjectTimer(expectTestPartSessionState(currentTestPartNode), timestamp);
+        touchControlObjectTimer(testSessionState, timestamp);
     }
 
     //-------------------------------------------------------------------
 
-    private TestPlanNode getCurrentItemRefNode() {
-        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
-        if (currentItemKey==null) {
-            return null;
+    /**
+     * Returns whether the candidate may review the item having the given {@link TestPlanNodeKey}.
+     * <p>
+     * Returns true if the item state is ended and its effective session control allows review,
+     * or showing feedback
+     * <p>
+     * Precondition: A TestPart must be selected
+     * <p>
+     * Postcondition: None
+     *
+     * @param key of the item to test, which must not be null
+     *
+     * @throws QtiCandidateStateException if there is no selected {@link TestPart},
+     *   if the requested item does not live within the current
+     *   {@link TestPart}, or if its session has not been ended.
+     * @throws IllegalArgumentException if itemKey is null or does not correspond to an item
+     *   within the current {@link TestPart}.
+     */
+    public boolean mayReviewItem(final TestPlanNodeKey itemKey) {
+        Assert.notNull(itemKey);
+        final TestPlanNode itemRefNode = assertItemRefNode(itemKey);
+        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+
+        if (!itemRefNode.hasAncestor(currentTestPartNode)) {
+            throw new IllegalArgumentException("Item with key " + itemKey + " does not live within the current TestPart " + currentTestPartNode.getKey());
         }
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentItemKey);
-        if (itemRefNode==null) {
-            throw new QtiLogicException("Unexpected map lookup failure");
-        }
-        return itemRefNode;
+        final ItemSessionState itemSessionState = expectItemRefState(itemRefNode);
+        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
+
+        return itemSessionState.isEnded()
+                && (effectiveItemSessionControl.isAllowReview()
+                || effectiveItemSessionControl.isShowFeedback());
     }
 
-    private TestPlanNode ensureCurrentItemRefNode() {
-        final TestPlanNode result = getCurrentItemRefNode();
-        if (result==null) {
-            throw new QtiCandidateStateException("Expected current item to be set");
-        }
-        return result;
-    }
+    /**
+     * Returns whether the candidate may access the solution to the item having the given {@link TestPlanNodeKey}.
+     * <p>
+     * Returns true if the item state is ended and its effective session control allows the
+     * solution to be shown
+     * <p>
+     * Precondition: A TestPart must be selected
+     * <p>
+     * Postcondition: None
+     *
+     * @param key of the item to test, which must not be null
+     *
+     * @throws QtiCandidateStateException if there is no selected {@link TestPart},
+     *   if the requested item does not live within the current
+     *   {@link TestPart}, or if its session has not been ended.
+     * @throws IllegalArgumentException if itemKey is null or does not correspond to an item
+     *   within the current {@link TestPart}.
+     */
+    public boolean mayAccessItemSolution(final TestPlanNodeKey itemKey) {
+        Assert.notNull(itemKey);
+        final TestPlanNode itemRefNode = assertItemRefNode(itemKey);
+        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
 
-    private TestPlanNode getCurrentTestPartNode() {
-        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
-        if (currentTestPartKey==null) {
-            return null;
+        if (!itemRefNode.hasAncestor(currentTestPartNode)) {
+            throw new IllegalArgumentException("Item with key " + itemKey + " does not live within the current TestPart " + currentTestPartNode.getKey());
         }
-        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentTestPartKey);
-        if (testPlanNode==null) {
-            throw new QtiLogicException("Unexpected map lookup failure");
-        }
-        return testPlanNode;
-    }
+        final ItemSessionState itemSessionState = expectItemRefState(itemRefNode);
+        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
 
-    private TestPlanNode ensureCurrentTestPartNode() {
-        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
-        if (currentTestPartKey==null) {
-            throw new QtiCandidateStateException("No current test part");
-        }
-        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentTestPartKey);
-        if (testPlanNode==null) {
-            throw new QtiLogicException("Unexpected map lookup failure");
-        }
-        return testPlanNode;
-    }
-
-    public TestPart getCurrentTestPart() {
-        final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
-        if (currentTestPartNode==null) {
-            return null;
-        }
-        return ensureTestPart(currentTestPartNode);
-    }
-
-    private TestPart ensureCurrentTestPart() {
-        final TestPart result = getCurrentTestPart();
-        if (result==null) {
-            throw new QtiCandidateStateException("No current test part");
-        }
-        return result;
-    }
-
-    private TestPart ensureTestPart(final TestPlanNode testPlanNode) {
-        final AbstractPart result = testProcessingMap.resolveAbstractPart(testPlanNode);
-        if (result==null || !(result instanceof TestPart)) {
-            throw new QtiLogicException("Expected " + testPlanNode + " to resolve to a TestPart");
-        }
-        return (TestPart) result;
-    }
-
-    private TestPartSessionState ensureTestPartSessionState(final TestPlanNode testPlanNode) {
-        final TestPartSessionState testPartSessionState = testSessionState.getTestPartSessionStates().get(testPlanNode.getKey());
-        if (testPartSessionState==null) {
-            throw new QtiLogicException("No TestPartSessionState corresponding to " + testPlanNode);
-        }
-        return testPartSessionState;
-    }
-
-    private void ensureItemRefNode(final TestPlanNode itemRefNode) {
-        if (itemRefNode==null || itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
-            throw new IllegalArgumentException("Expected " + itemRefNode + " to be an " + TestNodeType.ASSESSMENT_ITEM_REF);
-        }
+        return itemSessionState.isEnded()
+                && effectiveItemSessionControl.isShowSolution();
     }
 
     //-------------------------------------------------------------------
     // Outcome processing
 
-    public void performOutcomeProcessing() {
+    private void performOutcomeProcessing() {
         logger.debug("Outcome processing starting on test {}", getSubject().getSystemId());
         fireLifecycleEvent(JqtiLifecycleEventType.TEST_OUTCOME_PROCESSING_STARTING);
         try {
@@ -915,7 +1322,7 @@ public final class TestSessionController extends TestValidationController implem
         }
     }
 
-    public Value computeDefaultValue(final OutcomeDeclaration declaration) {
+    private Value computeDefaultValue(final OutcomeDeclaration declaration) {
         Assert.notNull(declaration);
         Value result;
         final DefaultValue defaultValue = declaration.getDefaultValue();
@@ -925,343 +1332,6 @@ public final class TestSessionController extends TestValidationController implem
         else {
             result = NullValue.INSTANCE;
         }
-        return result;
-    }
-
-    //-------------------------------------------------------------------
-
-    @Override
-    public VariableDeclaration ensureVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.notNull(identifier);
-        final VariableDeclaration result = getVariableDeclaration(identifier, permittedTypes);
-        if (result==null) {
-            throw new QtiInvalidLookupException(identifier);
-        }
-        return result;
-    }
-
-    private VariableDeclaration getVariableDeclaration(final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.notNull(identifier);
-        VariableDeclaration result = null;
-        if (permittedTypes.length==0) {
-            /* No types specified, so allow any variable */
-            if (identifier.equals(AssessmentTest.VARIABLE_DURATION_IDENTIFIER)) {
-                result = testProcessingMap.getDurationResponseDeclaration();
-            }
-            else {
-                result = testProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
-            }
-        }
-        else {
-            /* Only allows specified types of variables */
-            CHECK_LOOP: for (final VariableType type : permittedTypes) {
-                switch (type) {
-                    case OUTCOME:
-                        result = testProcessingMap.getValidOutcomeDeclarationMap().get(identifier);
-                        break;
-
-                    case RESPONSE:
-                        /* Only response variable is duration */
-                        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
-                            result = testProcessingMap.getDurationResponseDeclaration();
-                        }
-                        break;
-
-                    case TEMPLATE:
-                        /* No template variables in tests */
-                        break;
-
-                    default:
-                        throw new QtiLogicException("Unexpected switch case: " + type);
-                }
-                if (result!=null) {
-                    break CHECK_LOOP;
-                }
-            }
-        }
-        return result;
-    }
-
-    //-------------------------------------------------------------------
-
-    @Override
-    public Value evaluateVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
-        Assert.notNull(identifier);
-        if (!testProcessingMap.isValidVariableIdentifier(identifier)) {
-            throw new QtiInvalidLookupException(identifier);
-        }
-        final Value value = getVariableValue(identifier, permittedTypes);
-        if (value==null) {
-            throw new QtiCandidateStateException("TestSessionState lookup of variable " + identifier + " returned NULL, indicating state is not in sync");
-        }
-        return value;
-    }
-
-    private Value getVariableValue(final Identifier identifier, final VariableType... permittedTypes) {
-        Value value = null;
-        if (permittedTypes.length==0) {
-            /* No types specified, so allow any variable */
-            value = testSessionState.getVariableValue(identifier);
-        }
-        else {
-            /* Only allows specified types of variables */
-            CHECK_LOOP: for (final VariableType type : permittedTypes) {
-                switch (type) {
-                    case OUTCOME:
-                        value = testSessionState.getOutcomeValue(identifier);
-                        break;
-
-                    case RESPONSE:
-                        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
-                            value = testSessionState.getDurationValue();
-                        }
-                        break;
-
-                    case TEMPLATE:
-                        /* Nothing to do */
-                        break;
-
-                    default:
-                        throw new QtiLogicException("Unexpected switch case: " + type);
-                }
-                if (value!=null) {
-                    break CHECK_LOOP;
-                }
-            }
-        }
-        return value;
-    }
-
-    //-------------------------------------------------------------------
-
-    public Value evaluateVariableReference(final QtiNode caller, final Identifier referenceIdentifier) {
-        return dereferenceVariable(caller, referenceIdentifier, variableEvaluator);
-    }
-
-    public Value evaluateVariableReference(final QtiNode caller, final ComplexReferenceIdentifier referenceIdentifier) {
-        return dereferenceVariable(caller, referenceIdentifier, variableEvaluator);
-    }
-
-    public Value evaluateVariableReference(final QtiNode caller, final ResolvedTestVariableReference resolvedTestVariableReference) {
-        return dereferenceVariable(caller, resolvedTestVariableReference, variableEvaluator);
-    }
-
-    /**
-     * Shareable instance of a {@link DereferencedTestVariableHandler} that simply evaluates
-     * the resulting variables.
-     */
-    public static final DereferencedTestVariableHandler variableEvaluator = new DereferencedTestVariableHandler() {
-
-        @Override
-        public Value evaluateInThisTest(final TestProcessingContext testProcessingContext, final Identifier testVariableIdentifier) {
-            return testProcessingContext.evaluateVariableValue(testVariableIdentifier);
-        }
-
-        @Override
-        public Value evaluateInReferencedItem(final ItemProcessingContext itemProcessingContext,
-                final AssessmentItemRef assessmentItemRef, final TestPlanNode testPlanNode,
-                final Identifier itemVariableIdentifier) {
-            return itemProcessingContext.evaluateVariableValue(itemVariableIdentifier);
-        }
-    };
-
-    @Override
-    public Value dereferenceVariable(final QtiNode caller, final Identifier referenceIdentifier,
-            final DereferencedTestVariableHandler dereferencedTestVariableHandler) {
-        Assert.notNull(referenceIdentifier);
-        Assert.notNull(dereferencedTestVariableHandler);
-
-        final List<ResolvedTestVariableReference> resolvedVariableReferences = resolvedAssessmentTest.resolveVariableReference(referenceIdentifier);
-        if (resolvedVariableReferences==null) {
-            throw new QtiLogicException("Did not expect null result here");
-        }
-        if (resolvedVariableReferences.size()==0) {
-            throw new QtiInvalidLookupException(referenceIdentifier);
-        }
-        final ResolvedTestVariableReference resultingVariableReference = resolvedVariableReferences.get(0);
-        if (resolvedVariableReferences.size()>1) {
-            fireRuntimeWarning(caller, "Complex variable reference " + referenceIdentifier
-                    + " within test could be derefenced in " + resolvedVariableReferences + " ways. Using the first of these");
-        }
-        return dereferenceVariable(caller, resultingVariableReference, dereferencedTestVariableHandler);
-    }
-
-    @Override
-    public Value dereferenceVariable(final QtiNode caller, final ComplexReferenceIdentifier referenceIdentifier,
-            final DereferencedTestVariableHandler dereferencedTestVariableHandler) {
-        Assert.notNull(referenceIdentifier);
-        Assert.notNull(dereferencedTestVariableHandler);
-
-        final List<ResolvedTestVariableReference> resolvedVariableReferences = resolvedAssessmentTest.resolveVariableReference(referenceIdentifier);
-        if (resolvedVariableReferences==null) {
-            throw new QtiLogicException("Did not expect null result here");
-        }
-        if (resolvedVariableReferences.size()==0) {
-            throw new QtiInvalidLookupException(referenceIdentifier);
-        }
-        final ResolvedTestVariableReference resultingVariableReference = resolvedVariableReferences.get(0);
-        if (resolvedVariableReferences.size()>1) {
-            fireRuntimeWarning(caller, "Complex variable reference " + referenceIdentifier
-                    + " within test could be derefenced in " + resolvedVariableReferences + " ways. Using the first of these");
-        }
-        return dereferenceVariable(caller, resultingVariableReference, dereferencedTestVariableHandler);
-    }
-
-    public Value dereferenceVariable(final QtiNode caller, final ResolvedTestVariableReference resolvedTestVariableReference,
-            final DereferencedTestVariableHandler deferencedTestVariableHandler) {
-        Assert.notNull(resolvedTestVariableReference);
-        Assert.notNull(deferencedTestVariableHandler);
-
-        final VariableDeclaration targetVariableDeclaration = resolvedTestVariableReference.getVariableDeclaration();
-        final Identifier targetVariableIdentifier = targetVariableDeclaration.getIdentifier();
-        if (resolvedTestVariableReference.isTestVariableReference()) {
-            /* Refers to a variable within this test */
-            return deferencedTestVariableHandler.evaluateInThisTest(this, targetVariableIdentifier);
-        }
-        else {
-            /* Refers to a variable within a referenced item */
-            final TestPlan testPlan = testSessionState.getTestPlan();
-            final AssessmentItemRef assessmentItemRef = resolvedTestVariableReference.getAssessmentItemRef();
-            final Integer instanceNumber = resolvedTestVariableReference.getInstanceNumber();
-            TestPlanNode testPlanNode = null;
-            if (instanceNumber!=null) {
-                /* Referring to a particular instance */
-                testPlanNode = testPlan.getNodeInstance(assessmentItemRef.getIdentifier(), instanceNumber.intValue());
-                if (testPlanNode==null) {
-                    fireRuntimeWarning(caller,
-                            "Reference to variable " + targetVariableIdentifier
-                            + " in instance " + instanceNumber
-                            + " of assessmentItemRef " + assessmentItemRef
-                            + " yielded no result."
-                            + " This can happen if the assessmentItemRef was being selected, or if the item was not usable."
-                            + " Returning NULL");
-                    return NullValue.INSTANCE;
-                }
-                if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
-                    fireRuntimeWarning(caller,
-                            "Reference to instance " + instanceNumber
-                            + " of assessmentItemRef " + assessmentItemRef
-                            + " yielded something other than an assessmentItemRef. Returning NULL");
-                    return NullValue.INSTANCE;
-                }
-            }
-            else {
-                /* No instance number specified, so assume we mean 1 */
-                final List<TestPlanNode> testPlanNodes = testPlan.getNodes(assessmentItemRef.getIdentifier()); /* Not empty, but may be null */
-                if (testPlanNodes==null) {
-                    fireRuntimeWarning(caller,
-                            "Reference to variable " + targetVariableIdentifier
-                            + " in assessmentItemRef " + assessmentItemRef
-                            + " yielded no result."
-                            + " This can happen if the assessmentItemRef was being selected, or if the item was not usable."
-                            + " Returning NULL");
-                    return NullValue.INSTANCE;
-                }
-                testPlanNode = testPlanNodes.get(0);
-                if (testPlanNodes.size()>1) {
-                    fireRuntimeWarning(caller,
-                            "Reference to assessmentItemRef " + assessmentItemRef
-                            + " yielded " + testPlanNodes.size() + " possible instances. Returning the value of the first of these");
-                }
-                if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
-                    fireRuntimeWarning(caller,
-                            "Reference to assessmentItemRef " + assessmentItemRef
-                            + " yielded something other than an assessmentItemRef. Returning NULL");
-                    return NullValue.INSTANCE;
-                }
-            }
-            final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
-            return deferencedTestVariableHandler.evaluateInReferencedItem(itemSessionController,
-                    assessmentItemRef, testPlanNode, targetVariableIdentifier);
-        }
-    }
-
-    //-------------------------------------------------------------------
-
-    @Override
-    public List<TestPlanNode> computeItemSubset(final Identifier sectionIdentifier, final List<String> includeCategories, final List<String> excludeCategories) {
-        final TestPlan testPlan = testSessionState.getTestPlan();
-
-        final List<TestPlanNode> itemRefNodes = new ArrayList<TestPlanNode>();
-        if (sectionIdentifier!=null) {
-            /* Search all AssessmentItemRef instances in the TestPlan that are descendants
-             * of the AssessmentSection(s) having the given identifier in the ORIGINAL test
-             * structure.
-             */
-            final List<AssessmentItemRef> assessmentItemRefs = findAssessmentItemRefsInSections(sectionIdentifier);
-            for (final AssessmentItemRef assessmentItemRef : assessmentItemRefs) {
-                final List<TestPlanNode> selectedItemRefNodes = testPlan.getNodes(assessmentItemRef.getIdentifier());
-                if (selectedItemRefNodes!=null) { /* (May be null if assessmentItemRef wasn't selected */
-                    itemRefNodes.addAll(selectedItemRefNodes);
-                }
-            }
-        }
-        else {
-            /* Take all AssessmentItemRef instances */
-            itemRefNodes.addAll(testPlan.searchNodes(TestNodeType.ASSESSMENT_ITEM_REF));
-        }
-
-        /* Now apply includes/excludes */
-        for (int i=itemRefNodes.size()-1; i>=0; i--) { /* Easiest to move backwards, removing elements as required */
-            final TestPlanNode itemRefNode = itemRefNodes.get(i);
-            final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingMap.resolveAbstractPart(itemRefNode);
-            final List<String> categories = assessmentItemRef.getCategories();
-            boolean keep;
-            if (includeCategories!=null) {
-                keep = false;
-                for (final String includeCategory : includeCategories) {
-                    if (categories.contains(includeCategory)) {
-                        keep = true;
-                        break;
-                    }
-                }
-            }
-            else {
-                keep = true;
-            }
-
-            if (keep && excludeCategories!=null) {
-                for (final String excludeCategory : excludeCategories) {
-                    if (categories.contains(excludeCategory)) {
-                        keep = false;
-                        break;
-                    }
-                }
-            }
-            if (!keep) {
-                itemRefNodes.remove(i);
-            }
-        }
-        return itemRefNodes;
-    }
-
-    /**
-     * Helper method to find all {@link AssessmentItemRef}s living below the {@link AssessmentSection}(s)
-     * with given identifier.
-     * <p>
-     * IMPORTANT: This must search the *original* test structure. We need to do this as invisible
-     * sections may have been removed by the time the {@link TestPlan} gets computed.
-     *
-     * @param sectionIdentifier
-     * @return
-     */
-    private final List<AssessmentItemRef> findAssessmentItemRefsInSections(final Identifier sectionIdentifier) {
-        Assert.notNull(sectionIdentifier);
-        final List<AssessmentItemRef> result = new ArrayList<AssessmentItemRef>();
-        QueryUtils.walkTree(new TreeWalkNodeHandler() {
-            @Override
-            public boolean handleNode(final QtiNode node) {
-                if (node instanceof AssessmentSection) {
-                    final AssessmentSection assessmentSection = (AssessmentSection) node;
-                    if (assessmentSection.getIdentifier().equals(sectionIdentifier)) {
-                        /* Found matching section, so search for all assessmentItemRefs below this */
-                        result.addAll(QueryUtils.search(AssessmentItemRef.class, assessmentSection));
-                    }
-                }
-                /* Keep searching */
-                return true;
-            }
-        }, getSubjectTest());
         return result;
     }
 
@@ -1313,5 +1383,227 @@ public final class TestSessionController extends TestValidationController implem
             result.getItemVariables().add(variable);
         }
         return result;
+    }
+
+    //-------------------------------------------------------------------
+    // Precondition helpers
+
+    private void assertTestEntered() {
+        if (!testSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Test has not been entered");
+        }
+    }
+
+    private void assertTestNotEntered() {
+        if (testSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Test has already been entered");
+        }
+    }
+
+    private void assertTestNotEnded() {
+        if (testSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Test has already ended");
+        }
+    }
+
+    private void assertTestEnded() {
+        if (!testSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Test has not been ended");
+        }
+    }
+
+    private void assertTestNotExited() {
+        if (testSessionState.isExited()) {
+            throw new QtiCandidateStateException("Test has already been exited");
+        }
+    }
+
+    private void assertTestOpen() {
+        assertTestEntered();
+        assertTestNotEnded();
+    }
+
+    private TestPlanNodeKey assertTestPartSelected() {
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        if (currentTestPartKey==null) {
+            throw new QtiCandidateStateException("Expected to be inside a testPart");
+        }
+        return currentTestPartKey;
+    }
+
+    private void assertTestPartOpen(final TestPartSessionState testPartSessionState) {
+        if (!testPartSessionState.isEntered()) {
+            throw new QtiCandidateStateException("Current testPart has not been entered");
+        }
+        if (testPartSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Current testPart has been ended");
+        }
+    }
+
+    private void assertTestPartEnded(final TestPartSessionState testPartSessionState) {
+        if (!testPartSessionState.isEnded()) {
+            throw new QtiCandidateStateException("Current testPart has not been ended");
+        }
+    }
+
+    private TestPlanNodeKey assertItemSelected() {
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+        if (currentItemKey==null) {
+            throw new QtiCandidateStateException("Expected to be inside an item");
+        }
+        return currentItemKey;
+    }
+
+    //-------------------------------------------------------------------
+    // Lookup helpers & sanity checkers
+
+    private TestPlanNode assertCurrentTestPartNode() {
+        final TestPlanNodeKey currentTestPartKey = assertTestPartSelected();
+        return expectTestPartNode(currentTestPartKey);
+    }
+
+    private TestPlanNode getCurrentTestPartNode() {
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        if (currentTestPartKey==null) {
+            return null;
+        }
+        return expectTestPartNode(currentTestPartKey);
+    }
+
+    private TestPart expectCurrentTestPart() {
+        final TestPart result = getCurrentTestPart();
+        if (result==null) {
+            throw new QtiLogicException("No current test part");
+        }
+        return result;
+    }
+
+    private TestPlanNode expectTestPartNode(final TestPlanNodeKey key) {
+        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(key);
+        if (testPlanNode==null) {
+            throw new QtiLogicException("Failed to locate entry for testPart with key " + key + " in TestPlan");
+        }
+        if (testPlanNode.getTestNodeType()!=TestNodeType.TEST_PART) {
+            throw new QtiLogicException("Expected TestPlanNode with key " + key
+                    + " to be of type " + TestNodeType.TEST_PART
+                    + " but got " + testPlanNode.getTestNodeType());
+        }
+        return testPlanNode;
+    }
+
+    private TestPart expectTestPart(final TestPlanNode testPlanNode) {
+        final AbstractPart result = testProcessingMap.resolveAbstractPart(testPlanNode);
+        if (result==null || !(result instanceof TestPart)) {
+            throw new QtiLogicException("Expected " + testPlanNode + " to resolve to a TestPart");
+        }
+        return (TestPart) result;
+    }
+
+    private TestPartSessionState expectTestPartSessionState(final TestPlanNode testPlanNode) {
+        final TestPartSessionState testPartSessionState = testSessionState.getTestPartSessionStates().get(testPlanNode.getKey());
+        if (testPartSessionState==null) {
+            throw new QtiLogicException("No TestPartSessionState corresponding to " + testPlanNode);
+        }
+        return testPartSessionState;
+    }
+
+    private AssessmentSectionSessionState expectAssessmentSectionSessionState(final TestPlanNode testPlanNode) {
+        final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
+        if (assessmentSectionSessionState==null) {
+            throw new QtiLogicException("No AssessmentSectionSessionState corresponding to " + testPlanNode);
+        }
+        return assessmentSectionSessionState;
+    }
+
+    private AssessmentSection expectAssessmentSection(final TestPlanNode testPlanNode) {
+        final AbstractPart result = testProcessingMap.resolveAbstractPart(testPlanNode);
+        if (result==null || !(result instanceof AssessmentSection)) {
+            throw new QtiLogicException("Expected " + testPlanNode + " to resolve to an AssessmentSection");
+        }
+        return (AssessmentSection) result;
+    }
+
+    private TestPlanNode getCurrentItemRefNode() {
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+        if (currentItemKey==null) {
+            return null;
+        }
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentItemKey);
+        if (itemRefNode==null) {
+            throw new QtiLogicException("Failed to locate node in TestPlan for item with key " + currentItemKey);
+        }
+        return itemRefNode;
+    }
+
+    private TestPlanNode assertItemRefNode(final TestPlanNodeKey key) {
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(key);
+        if (itemRefNode==null) {
+            throw new IllegalArgumentException("Failed to locate entry for assessmentItemRef with key " + key + " in TestPlan");
+        }
+        if (itemRefNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
+            throw new IllegalArgumentException("TestPlanNode with key " + key
+                    + " is of type " + itemRefNode.getTestNodeType()
+                    + " rather than " + TestNodeType.ASSESSMENT_ITEM_REF);
+        }
+        return itemRefNode;
+    }
+
+    private TestPlanNode expectItemRefNode(final TestPlanNodeKey key) {
+        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(key);
+        if (testPlanNode==null) {
+            throw new QtiLogicException("Failed to locate entry for assessmentItemRef with key " + key + " in TestPlan");
+        }
+        if (testPlanNode.getTestNodeType()!=TestNodeType.ASSESSMENT_ITEM_REF) {
+            throw new QtiLogicException("Expected TestPlanNode with key " + key
+                    + " to be of type " + TestNodeType.ASSESSMENT_ITEM_REF
+                    + " but got " + testPlanNode.getTestNodeType());
+        }
+        return testPlanNode;
+    }
+
+    private ItemSessionState expectItemRefState(final TestPlanNodeKey key) {
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(key);
+        if (itemSessionState==null) {
+            throw new QtiLogicException("Failed to extract ItemSessionState corresponding to key " + key);
+        }
+        return itemSessionState;
+    }
+
+    private ItemSessionState expectItemRefState(final TestPlanNode itemRefNode) {
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
+        if (itemSessionState==null) {
+            throw new QtiLogicException("No ItemSessionState corresponding to " + itemRefNode);
+        }
+        return itemSessionState;
+    }
+
+    private AssessmentItemRef expectItemRef(final TestPlanNode itemRefNode) {
+        final AbstractPart result = testProcessingMap.resolveAbstractPart(itemRefNode);
+        if (result==null || !(result instanceof AssessmentItemRef)) {
+            throw new QtiLogicException("Expected " + itemRefNode + " to resolve to an AssessmentItemRef");
+        }
+        return (AssessmentItemRef) result;
+    }
+
+    //-------------------------------------------------------------------
+    // Duration management for Control Objects
+
+    private void startControlObjectTimer(final ControlObjectSessionState controlObjectState, final Date timestamp) {
+        controlObjectState.setDurationIntervalStartTime(timestamp);
+    }
+
+    private void endControlObjectTimer(final ControlObjectSessionState controlObjectState, final Date timestamp) {
+        final Date startTime = controlObjectState.getDurationIntervalStartTime();
+        if (startTime==null) {
+            throw new QtiLogicException("Start time on control Object " + controlObjectState + " was not expected to be null");
+        }
+        final long durationDelta = timestamp.getTime() - startTime.getTime();
+        controlObjectState.setDurationAccumulated(controlObjectState.getDurationAccumulated() + durationDelta);
+        controlObjectState.setDurationIntervalStartTime(null);
+    }
+
+    private void touchControlObjectTimer(final ControlObjectSessionState controlObjectState, final Date timestamp) {
+        endControlObjectTimer(controlObjectState, timestamp);
+        startControlObjectTimer(controlObjectState, timestamp);
     }
 }

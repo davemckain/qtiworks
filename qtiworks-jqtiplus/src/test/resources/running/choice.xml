@@ -1,0 +1,69 @@
+<!--
+
+This is a slightly modified version of the standard choice.xml,
+adding in some additional TP & RP to assist with unit testing.
+
+-->
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="choice" title="Unattended Luggage" adaptive="false" timeDependent="false">
+  <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
+    <correctResponse>
+      <value>ChoiceA</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration identifier="RP_DONE" cardinality="single" baseType="boolean">
+    <defaultValue>
+      <value>false</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <templateDeclaration identifier="TP_DONE" cardinality="single" baseType="boolean">
+    <defaultValue>
+      <value>false</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateProcessing>
+    <setTemplateValue identifier="TP_DONE">
+      <baseValue baseType="boolean">true</baseValue>
+    </setTemplateValue>
+  </templateProcessing>
+  <itemBody>
+    <p>Look at the text in the picture that does not exist.</p>
+    <p>
+      <img src="images/sign.png" alt="NEVER LEAVE LUGGAGE UNATTENDED"/>
+    </p>
+    <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
+      <prompt>What does it say?</prompt>
+      <simpleChoice identifier="ChoiceA">You must stay with your luggage at all times.</simpleChoice>
+      <simpleChoice identifier="ChoiceB">Do not let someone else look after your luggage.</simpleChoice>
+      <simpleChoice identifier="ChoiceC">Remember your luggage when you leave.</simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing>
+    <setOutcomeValue identifier="RP_DONE">
+      <baseValue baseType="boolean">true</baseValue>
+    </setOutcomeValue>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="RESPONSE"/>
+          <correct identifier="RESPONSE"/>
+        </match>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">1.0</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">0.0</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+  </responseProcessing>
+</assessmentItem>

@@ -104,12 +104,12 @@ public final class Selection extends AbstractNode {
             }
 
             if (select < required) {
-                context.fireValidationError(this, "Invalid selection. Required at least: " + required + ", but found: " + select);
+                context.fireValidationError(this, "Invalid selection. Required at least " + required + " but found " + select);
             }
 
             if (!getWithReplacement() && select > section.getSectionParts().size()) {
-                context.fireValidationError(this, "Invalid selection. Required no more than: " + section.getSectionParts().size()
-                        + ", but found: "
+                context.fireValidationError(this, "Invalid selection. Required no more than " + section.getSectionParts().size()
+                        + ", but found "
                         + select);
             }
         }

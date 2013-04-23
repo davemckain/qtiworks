@@ -43,7 +43,10 @@ import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * Extension of {@link ProcessingContext} passed when running an {@link AssessmentItem}
+ * Extension of {@link ProcessingContext} callback, available when running an {@link AssessmentItem}
+ *
+ * @see ItemProcessingController
+ * @see TestProcessingContext
  *
  * @author David McKain
  */
@@ -78,5 +81,6 @@ public interface ItemProcessingContext extends ProcessingContext, ItemValidation
 
     boolean isCorrect();
     boolean isIncorrect();
+
 
 }

@@ -69,7 +69,7 @@ public final class NumberResponded extends ItemSubset {
     protected Value handleSubset(final TestProcessingContext testProcessingContext, final List<TestPlanNode> matchedTestPlanNodes) {
         int respondedCount = 0;
         for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
-            final ItemProcessingContext itemProcessingContext = testProcessingContext.getItemSessionContext(itemRefNode);
+            final ItemProcessingContext itemProcessingContext = testProcessingContext.getItemProcessingContext(itemRefNode);
             if (itemProcessingContext.getItemSessionState().isResponded()) {
                 respondedCount++;
             }

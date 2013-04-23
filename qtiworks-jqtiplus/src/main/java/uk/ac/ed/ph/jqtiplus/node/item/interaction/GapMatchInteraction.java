@@ -42,7 +42,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.GapChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.content.Gap;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.utils.QueryUtils;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
@@ -83,7 +83,8 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public final class GapMatchInteraction extends BlockInteraction implements GapChoiceContainer, Shuffleable {
+public final class GapMatchInteraction extends BlockInteraction implements GapChoiceContainer,
+        Shuffleable<GapChoice> {
 
     private static final long serialVersionUID = 5859875788265167537L;
 
@@ -171,13 +172,12 @@ public final class GapMatchInteraction extends BlockInteraction implements GapCh
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getGapChoices());
+    public List<List<GapChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getGapChoices());
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {

@@ -86,6 +86,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -279,7 +280,7 @@ public class CandidateItemDeliveryService {
             /* Session is terminated */
             renderTerminated(candidateEvent, renderingOptions, resultStream);
         }
-        else if (itemSessionState.isClosed()) {
+        else if (itemSessionState.isEnded()) {
             /* Item is closed */
             renderWhenClosed(candidateEvent, itemSessionState, renderingOptions, RenderingMode.CLOSED, resultStream);
         }
@@ -297,8 +298,11 @@ public class CandidateItemDeliveryService {
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
 
         /* Update current value for 'duration' */
-        final double duration = computeItemSessionDuration(candidateSession);
-        itemSessionState.setDuration(duration);
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
+                itemSessionState, notificationRecorder);
+        itemSessionController.touchDuration(timestamp);
 
         /* Initialise rendering request */
         final StandaloneItemRenderingRequest renderingRequest = initItemRenderingRequest(candidateEvent,
@@ -309,6 +313,7 @@ public class CandidateItemDeliveryService {
         renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenInteracting());
         renderingRequest.setResultAllowed(false);
         renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
+        renderingRequest.setCandidateCommentAllowed(itemDeliverySettings.isAllowCandidateComment());
 
         /* Pass to rendering layer */
         doRendering(candidateEvent, renderingRequest, resultStream);
@@ -337,6 +342,7 @@ public class CandidateItemDeliveryService {
         renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenClosed());
         renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
         renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
+        renderingRequest.setCandidateCommentAllowed(false);
 
         return renderingRequest;
     }
@@ -386,38 +392,30 @@ public class CandidateItemDeliveryService {
         renderingRequest.setRenderingOptions(renderingOptions);
     }
 
-    /**
-     * Computes the current value for the <code>duration</code> variable for this session.
-     * <p>
-     * Currently, this is just the length of time since the session was first opened.
-     * We DO NOT yet support breaking sessions time-wise.
-     *
-     * @return computed value for <code>duration</code>, which will be non-negative.
-     */
-    private double computeItemSessionDuration(final CandidateSession candidateSession) {
-        final long startTime = candidateSession.getCreationTime().getTime();
-        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
-
-        final double duration = (currentTime - startTime) / 1000.0;
-        return duration;
-    }
-
     //----------------------------------------------------
-    // Attempt
+    // Response handling
 
-    public void handleAttempt(final long xid, final String sessionToken,
+    public void handleResponses(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap,
+            final String candidateComment)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        handleAttempt(candidateSession, stringResponseMap, fileResponseMap);
+        handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
 
-    public void handleAttempt(final CandidateSession candidateSession,
+    /**
+     * @param candidateComment optional candidate comment, or null if no comment has been sent
+     *
+     * @throws CandidateForbiddenException
+     */
+    public void handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap,
+            final String candidateComment)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) candidateSession.getDelivery().getDeliverySettings();
 
         /* Set up listener to record any notifications from JQTI candidateAuditLogger.logic */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -428,8 +426,13 @@ public class CandidateItemDeliveryService {
 
         /* Make sure an attempt is allowed */
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        if (itemSessionState.isClosed()) {
+        if (itemSessionState.isEnded()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
+        }
+
+        /* Make sure candidate may comment (if set) */
+        if (candidateComment!=null && !itemDeliverySettings.isAllowCandidateComment()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SUBMIT_COMMENT);
         }
 
         /* Build response map in required format for JQTI+.
@@ -484,9 +487,16 @@ public class CandidateItemDeliveryService {
             candidateResponseMap.put(responseIdentifier, candidateResponse);
         }
 
+        /* Submit comment (if provided)
+         * NB: Do this first in case next actions end the item session.
+         */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        if (candidateComment!=null) {
+            itemSessionController.setCandidateComment(timestamp, candidateComment);
+        }
+
         /* Attempt to bind responses */
-        itemSessionController.bindResponses(responseDataMap);
-        itemSessionController.markPendingResponseProcessing();
+        itemSessionController.bindResponses(timestamp, responseDataMap);
 
         /* Note any responses that failed to bind */
         final Set<Identifier> badResponseIdentifiers = itemSessionState.getUnboundResponseIdentifiers();
@@ -508,13 +518,13 @@ public class CandidateItemDeliveryService {
             }
         }
 
+        /* (We commit responses immediately here) */
+        itemSessionController.commitResponses(timestamp);
+
         /* Invoke response processing (only if responses are valid) */
         if (allResponsesValid) {
-            itemSessionController.performResponseProcessing();
+            itemSessionController.performResponseProcessing(timestamp);
         }
-
-        /* Update JQTI state */
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
 
         /* Record resulting attempt and event */
         final CandidateItemEventType eventType = allResponsesBound ?
@@ -531,7 +541,7 @@ public class CandidateItemDeliveryService {
         }
 
         /* Check whether processing wants to close the session and persist state */
-        if (itemSessionState.isClosed()) {
+        if (itemSessionState.isEnded()) {
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
             candidateSession.setClosed(true);
         }
@@ -562,7 +572,7 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (itemSessionState.isClosed()) {
+        if (itemSessionState.isEnded()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.CLOSE_SESSION_WHEN_CLOSED);
         }
         else if (!itemDeliverySettings.isAllowClose()) {
@@ -570,11 +580,11 @@ public class CandidateItemDeliveryService {
         }
 
         /* Update state */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.markClosed();
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
+        itemSessionController.endItem(timestamp);
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
@@ -597,58 +607,45 @@ public class CandidateItemDeliveryService {
      * updated {@link CandidateSession}. At QTI level, this reruns template processing, so
      * randomised values will change as a result of this process.
      */
-    public CandidateSession reinitCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession resetCandidateSessionHard(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return reinitCandidateSession(candidateSession);
+        return resetCandidateSessionHard(candidateSession);
     }
 
-    public CandidateSession reinitCandidateSession(final CandidateSession candidateSession)
+    public CandidateSession resetCandidateSessionHard(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current session state */
-        ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
+        final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
 
         /* Make sure caller may reinit the session */
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowReinitWhenClosed()) {
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowReinitWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
         }
 
-        /* Might as well just create fresh JQTI+ state */
-        itemSessionState = new ItemSessionState();
-
-        /* Update session state */
+        /* Update state */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-
-        /* Mark item as being presented */
-        itemSessionController.markPresented();
-
-        /* Maybe mark as pending submission */
-        if (!itemSessionState.isClosed()) {
-            itemSessionController.markPendingSubmission();
-        }
+        itemSessionController.resetItemSessionHard(timestamp, true);
 
         /* Record and log event */
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.REINIT, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session depending on state after processing. Record final result if session closed immediately */
-        candidateSession.setClosed(itemSessionState.isClosed());
-        if (itemSessionState.isClosed()) {
+        candidateSession.setClosed(itemSessionState.isEnded());
+        if (itemSessionState.isEnded()) {
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         }
         candidateSessionDao.update(candidateSession);
@@ -665,13 +662,13 @@ public class CandidateItemDeliveryService {
      * was in immediately after the last {@link CandidateItemEventType#REINIT} (if applicable),
      * or after the original {@link CandidateItemEventType#INIT}.
      */
-    public CandidateSession resetCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession resetCandidateSessionSoft(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        return resetCandidateSession(candidateSession);
+        return resetCandidateSessionSoft(candidateSession);
     }
 
-    public CandidateSession resetCandidateSession(final CandidateSession candidateSession)
+    public CandidateSession resetCandidateSessionSoft(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -682,35 +679,27 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenInteracting()) {
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenClosed()) {
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
         }
 
         /* Update state */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.resetItemSession();
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
-
-        /* Mark item as being presented */
-        itemSessionController.markPresented();
-
-        /* Maybe mark as pending submission */
-        if (!itemSessionState.isClosed()) {
-            itemSessionController.markPendingSubmission();
-        }
+        itemSessionController.resetItemSessionSoft(timestamp, true);
 
         /* Record and event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session depending on state after processing. Record final result if session closed immediately */
-        candidateSession.setClosed(itemSessionState.isClosed());
-        if (itemSessionState.isClosed()) {
+        candidateSession.setClosed(itemSessionState.isEnded());
+        if (itemSessionState.isEnded()) {
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         }
         candidateSessionDao.update(candidateSession);
@@ -742,22 +731,22 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isClosed() && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isClosed() && !itemDeliverySettings.isAllowResetWhenClosed()) {
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenClosed()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
         }
 
         /* Close session if required */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
         boolean isClosingSession = false;
-        if (!itemSessionState.isClosed()) {
+        if (!itemSessionState.isEnded()) {
             isClosingSession = true;
-            itemSessionController.markClosed();
-            itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
+            itemSessionController.endItem(timestamp);
         }
 
         /* Record and log event */
@@ -800,18 +789,18 @@ public class CandidateItemDeliveryService {
         /* Get current session state */
         final ItemSessionState itemSessionState = candidateDataServices.computeCurrentItemSessionState(candidateSession);
 
-
         /* Record and log event */
-        itemSessionState.setDuration(computeItemSessionDuration(candidateSession));
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
                 CandidateItemEventType.TERMINATE, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Are we terminating a session that hasn't been closed? If so, record the final result. */
-        if (!itemSessionState.isClosed()) {
+        /* Are we terminating a session that hasn't been ended? If so, record the final result. */
+        if (!itemSessionState.isEnded()) {
+            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
             final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
             final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                     itemSessionState, notificationRecorder);
+            itemSessionController.endItem(timestamp);
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         }
 

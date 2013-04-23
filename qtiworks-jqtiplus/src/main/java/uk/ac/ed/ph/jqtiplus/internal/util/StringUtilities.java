@@ -162,6 +162,16 @@ public final class StringUtilities {
     }
 
     /**
+     * Convenience method that turns a String to null if it is blank or null.
+     *
+     * @param string
+     * @return same string if it is non-null and non-empty, otherwise null.
+     */
+    public static String nullIfBlank(final String string) {
+        return isNullOrBlank(string) ? null : string;
+    }
+
+    /**
      * Convenience method that turns a String to an empty String ("") if it is null.
      *
      * @param string

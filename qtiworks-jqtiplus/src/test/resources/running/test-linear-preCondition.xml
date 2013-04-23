@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<assessmentTest
+  xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+  identifier="test"
+  title="Test Complex Linear Navigation">
+
+  <testPart identifier="p" navigationMode="linear" submissionMode="individual">
+    <assessmentSection identifier="s11" title="Section" visible="true">
+      <assessmentSection identifier="s111" title="Section" visible="true">
+        <assessmentItemRef identifier="i1111" href="choice.xml"/>
+        <assessmentItemRef identifier="i1112" href="choice.xml">
+          <preCondition>
+            <null/>
+          </preCondition>
+        </assessmentItemRef>
+      </assessmentSection>
+      <assessmentSection identifier="s112" title="Section" visible="true">
+        <preCondition>
+          <null/>
+        </preCondition>
+        <assessmentItemRef identifier="i1121" href="choice.xml"/>
+      </assessmentSection>
+      <assessmentSection identifier="s113" title="Section" visible="true">
+        <assessmentItemRef identifier="i1131" href="choice.xml">
+          <preCondition>
+            <null/>
+          </preCondition>
+        </assessmentItemRef>
+        <assessmentItemRef identifier="i1132" href="choice.xml"/>
+        <assessmentItemRef identifier="i1133" href="choice.xml"/>
+      </assessmentSection>
+    </assessmentSection>
+    <assessmentSection identifier="s12" title="Section" visible="true">
+      <assessmentSection identifier="s121" title="Section" visible="true">
+        <assessmentItemRef identifier="i1211" href="choice.xml"/>
+      </assessmentSection>
+      <assessmentItemRef identifier="i122" href="choice.xml">
+        <preCondition>
+          <null/>
+        </preCondition>
+      </assessmentItemRef>
+      <assessmentItemRef identifier="i123" href="choice.xml"/>
+      <assessmentItemRef identifier="i124" href="choice.xml">
+        <preCondition>
+          <null/>
+        </preCondition>
+      </assessmentItemRef>
+    </assessmentSection>
+  </testPart>
+
+</assessmentTest>

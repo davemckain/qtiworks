@@ -130,7 +130,7 @@ public final class TestVariables extends ItemSubset {
         final BaseType baseType = getBaseTypeAttrValue();
         boolean floatFound = false;
         for (final TestPlanNode itemRefNode : matchedTestPlanNodes) {
-            final ItemProcessingContext itemProcessingContext = testProcessingContext.getItemSessionContext(itemRefNode);
+            final ItemProcessingContext itemProcessingContext = testProcessingContext.getItemProcessingContext(itemRefNode);
             final AssessmentItemRef assessmentItemRef = (AssessmentItemRef) testProcessingContext.getTestProcessingMap().resolveAbstractPart(itemRefNode);
             final Value value = itemProcessingContext.evaluateVariableValue(getVariableIdentifier());
             if (!value.isNull() && value.getCardinality() == Cardinality.SINGLE) {

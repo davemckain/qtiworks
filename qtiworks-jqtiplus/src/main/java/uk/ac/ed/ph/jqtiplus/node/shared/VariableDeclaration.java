@@ -33,10 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.shared;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.BaseTypeAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.enumerate.CardinalityAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.outcome.declaration.DefaultValueGroup;
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AbstractNode;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
@@ -169,9 +171,25 @@ public abstract class VariableDeclaration extends AbstractNode implements Unique
         return cardinality!=null && !(cardinality==Cardinality.RECORD && baseType!=null);
     }
 
+    public static boolean isReservedIdentifier(final Identifier identifier) {
+        Assert.notNull(identifier, "identifier");
+        return identifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)
+                || identifier.equals(QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER)
+                || identifier.equals(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
+    }
+
     @Override
     protected void validateThis(final ValidationContext context) {
-        validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
+        final Identifier identifier = getIdentifier();
+        if (identifier!=null) {
+            /* Make sure identifier is unique */
+            validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), identifier);
+
+            /* Make sure identifier is not reserved */
+            if (isReservedIdentifier(identifier)) {
+                context.fireValidationError(this, "The identifier" + identifier + " is reserved for in-built response variables");
+            }
+        }
 
         final Cardinality cardinality = getCardinality();
         if (cardinality!=null) {

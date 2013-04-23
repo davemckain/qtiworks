@@ -38,70 +38,16 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
- * Encapsulates the state of a {@link TestPart}.
+ * Encapsulates the candidate state within a {@link TestPart}.
  *
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public class TestPartSessionState implements Serializable {
+public final class TestPartSessionState extends AbstractPartSessionState implements Serializable {
 
     private static final long serialVersionUID = -1041244926292225923L;
-
-    private boolean preConditionFailed;
-    private boolean entered;
-    private boolean ended;
-    private boolean exited;
-
-    public TestPartSessionState() {
-        reset();
-    }
-
-    public void reset() {
-    	this.preConditionFailed = false;
-        this.entered = false;
-        this.ended = false;
-        this.exited = false;
-    }
-
-    //----------------------------------------------------------------
-
-    public boolean isPreConditionFailed() {
-		return preConditionFailed;
-	}
-
-	public void setPreConditionFailed(final boolean preConditionFailed) {
-		this.preConditionFailed = preConditionFailed;
-	}
-
-
-	public boolean isEntered() {
-        return entered;
-    }
-
-	public void setEntered(final boolean entered) {
-        this.entered = entered;
-    }
-
-
-    public boolean isEnded() {
-        return ended;
-    }
-
-    public void setEnded(final boolean ended) {
-        this.ended = ended;
-    }
-
-
-    public boolean isExited() {
-        return exited;
-    }
-
-    public void setExited(final boolean exited) {
-        this.exited = exited;
-    }
 
     //----------------------------------------------------------------
 
@@ -111,29 +57,19 @@ public class TestPartSessionState implements Serializable {
             return false;
         }
         final TestPartSessionState other = (TestPartSessionState) obj;
-        return preConditionFailed==other.preConditionFailed
-        		&& entered==other.entered
-                && ended==other.ended
-                && exited==other.exited;
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(new Object[] {
-        		preConditionFailed,
-                entered,
-                ended,
-                exited
-        });
+        return super.equals(other);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(preConditionFailed=" + preConditionFailed
-                + ",entered=" + entered
-                + ",ended=" + ended
-                + ",exited=" + exited
+                + ",branchRuleTarget=" + branchRuleTarget
+                + ",entryTime=" + getEntryTime()
+                + ",endTime=" + getEndTime()
+                + ",exitTime=" + getExitTime()
+                + ",durationAccumulated=" + getDurationAccumulated()
+                + ",durationIntervalStartTime=" + getDurationIntervalStartTime()
                 + ")";
     }
 }

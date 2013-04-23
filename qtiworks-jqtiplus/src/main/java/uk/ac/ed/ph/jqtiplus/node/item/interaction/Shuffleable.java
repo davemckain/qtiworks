@@ -33,15 +33,35 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item.interaction;
 
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
+
+import java.util.List;
+
 /**
- * Marker interface for {@link Interaction}s that support the <tt>shuffle</tt> attribute.
- * 
+ * Interface for {@link Interaction}s that support the <tt>shuffle</tt> attribute.
+ *
+ * @param <C> type of {@link Choice} supported for shuffling
+ *
  * @author David McKain
  */
-public interface Shuffleable {
+public interface Shuffleable<C extends Choice> {
 
+    /**
+     * Returns whether shuffling is enabled.
+     */
     boolean getShuffle();
 
+    /**
+     * Sets whether shuffling is enabled.
+     */
     void setShuffle(boolean shuffle);
+
+    /**
+     * Computes and returns groups of shuffleable choices so that they
+     * can be shuffled.
+     * <p>
+     * This will only be called if {@link #getShuffle()} returns true.
+     */
+    List<List<C>> computeShuffleableChoices();
 
 }

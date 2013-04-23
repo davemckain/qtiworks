@@ -27,46 +27,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.test;
+package uk.ac.ed.ph.jqtiplus.running;
 
-import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
-import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
-import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
+import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.CustomInteraction;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 
 /**
- * Extension of {@link ControlObject} that mixes in that {@link UniqueNode} interface.
+ * Callback interface that {@link Interaction}s use to bind
+ * response data to (uncommitted) response variables.
  *
  * @author David McKain
  */
-public abstract class UniqueControlObject extends ControlObject<Identifier> implements UniqueNode<Identifier> {
+public interface InteractionBindingContext {
 
-    private static final long serialVersionUID = -4531023498836564003L;
+    /**
+     * Binds the given {@link Value} to the (uncommitted) Response Variable
+     * having the given {@link Identifier}.
+     *
+     * @param responseIdentifier Response Identifier, which will not be null.
+     * @param value Value to bind, which will not be null (but may be a {@link NullValue}).
+     */
+    void bindResponseVariable(Identifier responseIdentifier, Value value);
 
-    public UniqueControlObject(final ControlObject<?> parent, final String qtiClassName) {
-        super(parent, qtiClassName);
-
-        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
-    }
-
-    @Override
-    public Identifier getIdentifier() {
-        return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
-    }
-
-    @Override
-    public void setIdentifier(final Identifier identifier) {
-        getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
-    }
+    /**
+     * Access to the {@link JqtiExtensionManager}, which is useful for {@link CustomInteraction}s.
+     */
+    JqtiExtensionManager getJqtiExtensionManager();
 
 
-    @Override
-    protected void validateThis(final ValidationContext context) {
-        validateUniqueIdentifier(context, getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME), getIdentifier());
-    }
 }

@@ -33,12 +33,13 @@
  */
 package uk.ac.ed.ph.jqtiplus.reading;
 
-import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import uk.ac.ed.ph.jqtiplus.testutils.UnitTestHelper;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
@@ -184,7 +185,7 @@ public class QtiXmlReaderTest {
     }
 
     private URI makeSystemId(final String testFileName) {
-        return URI.create("classpath:/uk/ac/ed/ph/jqtiplus/reading/" + testFileName);
+        return UnitTestHelper.createTestResourceUri("reading/" + testFileName);
     }
 
 }

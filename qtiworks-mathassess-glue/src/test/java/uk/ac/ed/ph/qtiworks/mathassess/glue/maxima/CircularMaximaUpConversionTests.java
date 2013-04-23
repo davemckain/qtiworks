@@ -33,15 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcessManager;
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.SimpleQtiMaximaProcessManager;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.MathsContentOutputValueWrapper;
 
 import java.util.Collection;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -53,39 +49,39 @@ import org.slf4j.LoggerFactory;
  * This tests the up-conversion process by feeding some raw Maxima input to Maxima,
  * getting MathML back, up-converting and then checking that the input and the output
  * are "the same" (module lots of irritating brackets).
- * 
+ *
  * @author David McKain
  */
 @RunWith(Parameterized.class)
 public class CircularMaximaUpConversionTests extends QtiMaximaSessionTestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(CircularMaximaUpConversionTests.class);
-    
+
     public static final String TEST_RESOURCE_NAME = "circular-maxima-upconversion-tests.txt";
-    
+
     @Parameters
     public static Collection<String[]> data() throws Exception {
         return TestFileHelper.readAndParseSingleLineInputTestResource(TEST_RESOURCE_NAME);
     }
-    
+
     private final String inputMaxima;
     private final String expectedOutputMaxima;
-    
+
     public CircularMaximaUpConversionTests(final String inputMaxima, final String expectedOutputMaxima) {
         this.inputMaxima = inputMaxima;
         this.expectedOutputMaxima = expectedOutputMaxima;
     }
-    
+
     @Test
     public void runTest() throws Throwable {
-        QtiMaximaProcessManager factory = new SimpleQtiMaximaProcessManager();
-        QtiMaximaProcess session = factory.obtainProcess();
+        final QtiMaximaProcessManager factory = new SimpleQtiMaximaProcessManager();
+        final QtiMaximaProcess session = factory.obtainProcess();
         MathsContentOutputValueWrapper result = null;
         try {
             result = session.executeMathOutput(inputMaxima, false);
             Assert.assertEquals(expectedOutputMaxima, result.getMaximaInput());
         }
-        catch (Throwable e) {
+        catch (final Throwable e) {
             logger.error("Input was: " + inputMaxima);
             logger.error("Exception was " + e);
             if (result!=null) {

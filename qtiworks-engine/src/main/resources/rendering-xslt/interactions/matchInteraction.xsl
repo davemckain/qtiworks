@@ -44,7 +44,7 @@
                 <td align="center">
                   <xsl:variable name="responseValue" select="concat($set1Identifier, ' ', $set2Identifier)" as="xs:string"/>
                   <input type="checkbox" name="qtiworks_response_{$responseIdentifier}" value="{$responseValue}">
-                    <xsl:if test="$isSessionClosed">
+                    <xsl:if test="$isSessionEnded">
                       <xsl:attribute name="disabled">disabled</xsl:attribute>
                     </xsl:if>
                     <xsl:if test="qw:value-contains(qw:get-response-value(/, $responseIdentifier), $responseValue)">
@@ -57,7 +57,7 @@
           </xsl:for-each>
         </tbody>
       </table>
-      <xsl:if test="$isSessionInteracting">
+      <xsl:if test="$isSessionOpen">
         <script type='text/javascript'>
           QtiWorksRendering.registerMatchInteraction('<xsl:value-of select="@responseIdentifier"/>',
             <xsl:value-of select="@maxAssociations"/>,

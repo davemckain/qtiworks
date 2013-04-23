@@ -71,11 +71,6 @@ public abstract class SectionPart extends AbstractPart {
         return (AbstractPart) super.getParent();
     }
 
-    /**
-     * Gets parent assessment section of this part or null if parent is test part.
-     *
-     * @return parent assessment section of this part or null if parent is test part
-     */
     public AssessmentSection getParentSection() {
         return getParent() instanceof AssessmentSection ? (AssessmentSection) getParent() : null;
     }
@@ -96,48 +91,5 @@ public abstract class SectionPart extends AbstractPart {
 
     public void setFixed(final Boolean fixed) {
         getAttributes().getBooleanAttribute(ATTR_FIXED_NAME).setValue(fixed);
-    }
-
-    @Deprecated
-    @Override
-    public boolean isJumpSafeSource() {
-        final AssessmentSection parent = getParentSection();
-        if (parent != null) {
-            if (parent.getOrdering() != null && parent.getOrdering().getShuffle()) {
-                if (!getFixed()) {
-                    return false;
-                }
-            }
-
-            return parent.isJumpSafeSource();
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean isJumpSafeTarget() {
-        final AssessmentSection parent = getParentSection();
-        if (parent != null) {
-            if (parent.getSelection() != null) {
-                if (!getRequired()) {
-                    return false;
-                }
-
-                if (parent.getSelection().getWithReplacement()) {
-                    return false;
-                }
-            }
-
-            if (parent.getOrdering() != null && parent.getOrdering().getShuffle()) {
-                if (!getFixed()) {
-                    return false;
-                }
-            }
-
-            return parent.isJumpSafeTarget();
-        }
-
-        return true;
     }
 }

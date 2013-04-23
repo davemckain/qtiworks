@@ -15,7 +15,6 @@ import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -28,6 +27,7 @@ import uk.ac.ed.ph.jqtiplus.validation.TestValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,22 +67,20 @@ public final class AssessmentTestExample {
         final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
         testSessionController.addNotificationListener(notificationLogListener);
 
-        testSessionController.initialize();
-        testSessionController.enterTest();
-        testSessionController.enterNextAvailableTestPart();
-        System.out.println("Test state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
+        Date timestamp = new Date();
+        testSessionController.initialize(timestamp);
+        testSessionController.enterTest(timestamp);
+        testSessionController.enterNextAvailableTestPart(timestamp);
+        System.out.println("Test state after entry into fist test part: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
         final TestPlanNode firstItemRefNode = testPlan.getTestPartNodes().get(0).searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
-        testSessionController.selectItemNonlinear(firstItemRefNode.getKey());
+        testSessionController.selectItemNonlinear(timestamp, firstItemRefNode.getKey());
         System.out.println("First item is " + firstItemRefNode);
 
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(Identifier.parseString("RESPONSE"), new StringResponseData("ChoiceA"));
-        testSessionController.handleResponses(responseMap);
+        testSessionController.handleResponsesToCurrentItem(timestamp, responseMap);
 
         System.out.println("Test state at end: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
-
-        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRefNode.getKey());
-        System.out.println("First item state: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
     }
 }

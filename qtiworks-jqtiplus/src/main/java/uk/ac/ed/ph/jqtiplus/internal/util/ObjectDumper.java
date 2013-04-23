@@ -63,7 +63,7 @@ public final class ObjectDumper {
     /** Maximum child Object depth to traverse to before issuing circularity error */
     private int maxDepth;
 
-    public ObjectDumper(StringBuilder result) {
+    public ObjectDumper(final StringBuilder result) {
         this.result = result;
         this.indentWidth = DEFAULT_INDENT_WIDTH;
         this.maxDepth = DEFAULT_MAX_DEPTH;
@@ -71,14 +71,23 @@ public final class ObjectDumper {
 
     //-------------------------------------------------------
 
-    /**
-     * Convenience method to do a {@link DumpMode#DEEP} dump of a single Object
-     * and return the resulting String.
-     */
-    public static String dumpObject(Object object, DumpMode dumpMode) {
+    public static String dumpObject(final Object object, final DumpMode dumpMode) {
         final StringBuilder builder = new StringBuilder();
         new ObjectDumper(builder).appendObject(object, dumpMode);
         return builder.toString();
+    }
+
+    public static String dumpObject(final Object object) {
+        return dumpObject(object, DumpMode.DEEP);
+    }
+
+    public static void dumpObjectToStdout(final Object object) {
+        System.out.println(dumpObject(object));
+    }
+
+
+    public static void dumpObjectToStderr(final Object object) {
+        System.err.println(dumpObject(object));
     }
 
     //-------------------------------------------------------
@@ -87,7 +96,7 @@ public final class ObjectDumper {
         return this.indentWidth;
     }
 
-    public void setIndentWidth(int indentWidth) {
+    public void setIndentWidth(final int indentWidth) {
         this.indentWidth = indentWidth;
     }
 
@@ -96,7 +105,7 @@ public final class ObjectDumper {
         return this.maxDepth;
     }
 
-    public void setMaxDepth(int maxDepth) {
+    public void setMaxDepth(final int maxDepth) {
         this.maxDepth = maxDepth;
     }
 
@@ -106,7 +115,7 @@ public final class ObjectDumper {
      * Does a dump of the given Object, using whatever {@link DumpMode} is providied for its
      * class. If the Object is null, then {@link DumpMode#TO_STRING} is used.
      */
-    public void appendObject(Object object) {
+    public void appendObject(final Object object) {
         DumpMode dumpMode = DumpMode.TO_STRING;
         if (object != null) {
             dumpMode = getElementDumpMode(object, dumpMode);
@@ -121,7 +130,7 @@ public final class ObjectDumper {
      * @param dumpMode if {@link DumpMode#DEEP} then the Object is dumped deeply, if {@link DumpMode#TO_STRING} then the Object's {@link #toString()} is called,
      *            if {@link DumpMode#IGNORE} then nothing happens.
      */
-    public void appendObject(Object object, DumpMode dumpMode) {
+    public void appendObject(final Object object, final DumpMode dumpMode) {
         Assert.notNull(dumpMode, "dumpMode");
         appendObject(object, dumpMode, 0);
         result.append("\n");
@@ -129,7 +138,7 @@ public final class ObjectDumper {
 
     //-------------------------------------------------------
 
-    private void appendObject(Object object, DumpMode dumpMode, int depth) {
+    private void appendObject(final Object object, final DumpMode dumpMode, final int depth) {
         /* First check depth */
         if (object != null && depth > maxDepth) {
             result.append("[Maximum graph depth exceeded by child Object of type " + object.getClass() + "]");
@@ -180,7 +189,7 @@ public final class ObjectDumper {
         }
     }
 
-    private void appendArray(Object[] array, DumpMode dumpMode, int depth) {
+    private void appendArray(final Object[] array, final DumpMode dumpMode, final int depth) {
         final Class<?> componentType = array.getClass().getComponentType();
         result.append(componentType.getName())
                 .append("[]@")
@@ -202,7 +211,7 @@ public final class ObjectDumper {
         result.append("]");
     }
 
-    private <E> void appendSet(Set<E> set, DumpMode dumpMode, int depth) {
+    private <E> void appendSet(final Set<E> set, final DumpMode dumpMode, final int depth) {
         final Class<?> collectionClass = set.getClass();
         result.append(collectionClass.getName()).append("{");
         if (set.isEmpty()) {
@@ -220,7 +229,7 @@ public final class ObjectDumper {
         result.append("}");
     }
 
-    private <E> void appendList(List<E> list, DumpMode dumpMode, int depth) {
+    private <E> void appendList(final List<E> list, final DumpMode dumpMode, final int depth) {
         final Class<?> collectionClass = list.getClass();
         result.append(collectionClass.getName()).append("[");
         if (list.isEmpty()) {
@@ -241,7 +250,7 @@ public final class ObjectDumper {
         result.append("]");
     }
 
-    private <E> void appendCollection(Collection<E> collection, DumpMode dumpMode, int depth) {
+    private <E> void appendCollection(final Collection<E> collection, final DumpMode dumpMode, final int depth) {
         final Class<?> collectionClass = collection.getClass();
         result.append(collectionClass.getName()).append("[");
         if (collection.isEmpty()) {
@@ -260,7 +269,7 @@ public final class ObjectDumper {
         result.append("]");
     }
 
-    private <K, V> void appendMap(Map<K, V> map, DumpMode dumpMode, int depth) {
+    private <K, V> void appendMap(final Map<K, V> map, final DumpMode dumpMode, final int depth) {
         final Class<?> collectionClass = map.getClass();
         result.append(collectionClass.getName()).append("(");
         if (map.isEmpty()) {
@@ -283,7 +292,7 @@ public final class ObjectDumper {
         result.append(")");
     }
 
-    private void appendObjectDeep(Object object, int depth) {
+    private void appendObjectDeep(final Object object, final int depth) {
         final Class<?> objectClass = object.getClass();
         result.append(objectClass.getName())
                 .append("@")
@@ -368,7 +377,7 @@ public final class ObjectDumper {
      * @param currentDumpMode DumpMode currently in operation, used if nothing is specified
      *            for the Object's class or if the Object is null.
      */
-    private DumpMode getElementDumpMode(Object object, DumpMode currentDumpMode) {
+    private DumpMode getElementDumpMode(final Object object, final DumpMode currentDumpMode) {
         DumpMode resultingDumpMode = currentDumpMode;
         if (object != null) {
             final ObjectDumperOptions annotation = object.getClass().getAnnotation(ObjectDumperOptions.class);
@@ -379,7 +388,7 @@ public final class ObjectDumper {
         return resultingDumpMode;
     }
 
-    private void makeIndent(int depth) {
+    private void makeIndent(final int depth) {
         for (int i = 0; i < depth * DEFAULT_INDENT_WIDTH; i++) {
             result.append(' ');
         }

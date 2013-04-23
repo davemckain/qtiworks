@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.running;
 
+import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiInvalidLookupException;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
@@ -75,6 +76,9 @@ public interface ProcessingContext extends ValidationContext {
      * <p>
      * If no {@link VariableDeclaration} is found satisfying the specified conditions then a
      * {@link QtiInvalidLookupException} is thrown.
+     * <p>
+     * Note: This also works for built-in variables, returning an "internal" declaration for
+     * the variable.
      *
      * @param identifier required variable Identifier, which must not be null
      * @param permittedTypes permitted variable types. An empty array is treated as "any type allowed"
@@ -87,6 +91,19 @@ public interface ProcessingContext extends ValidationContext {
 
     /**
      * Returns the current value of the variable having the
+     * given {@link VariableDeclaration}.
+     * <p>
+     * The returned value will not be null (but may be a {@link NullValue}).
+     *
+     * @param variableDeclaration required variable declaration
+     *
+     * @throws QtiCandidateStateException if the current item/test state does not appear to be in sync
+     * @throws IllegalArgumentException if variableDeclaration is null
+     */
+    Value evaluateVariableValue(VariableDeclaration variableDeclaration);
+
+    /**
+     * Returns the current value of the variable having the
      * given {@link Identifier} and having the given permitted variable types.
      * <p>
      * The returned value will not be null (but may be a {@link NullValue}).
@@ -95,8 +112,21 @@ public interface ProcessingContext extends ValidationContext {
      * @param permittedTypes permitted variable types. An empty array is treated as "any type allowed"
      *
      * @throws QtiInvalidLookupException if the identifier could not be successfully dereferenced
-     * @throws IllegalStateException if the current item/test state does not appear to be in sync
+     * @throws QtiCandidateStateException if the current item/test state does not appear to be in sync
      * @throws IllegalArgumentException if identifier is null
      */
     Value evaluateVariableValue(Identifier identifier, VariableType... permittedTypes);
+
+    /**
+     * Sets the value of the variable corresponding to the given {@link VariableDeclaration}.
+     * <p>
+     * Built-in variables may not be set, except for the <code>completionStatus</code> variable on
+     * an item.
+     *
+     * @param variableDeclaration required variable declaration
+     *
+     * @throws IllegalArgumentException if variableDeclaration is null or if it corresponds to
+     *   a built-in variable which cannot be directly mutated.
+     */
+    void setVariableValue(VariableDeclaration variableDeclaration, Value value);
 }

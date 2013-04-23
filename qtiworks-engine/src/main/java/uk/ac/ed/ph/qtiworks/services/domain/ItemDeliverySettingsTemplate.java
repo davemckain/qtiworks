@@ -54,6 +54,7 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
     private boolean allowSolutionWhenClosed;
     private boolean allowSource;
     private boolean allowResult;
+    private boolean allowCandidateComment;
 
     //------------------------------------------------------------
 
@@ -80,24 +81,6 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
 
     public void setAllowClose(final boolean allowClose) {
         this.allowClose = allowClose;
-    }
-
-
-    public boolean isAllowSource() {
-        return allowSource;
-    }
-
-    public void setAllowSource(final boolean allowSource) {
-        this.allowSource = allowSource;
-    }
-
-
-    public boolean isAllowResult() {
-        return allowResult;
-    }
-
-    public void setAllowResult(final boolean allowResult) {
-        this.allowResult = allowResult;
     }
 
 
@@ -152,5 +135,32 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
 
     public void setAllowSolutionWhenClosed(final boolean allowSolutionWhenClosed) {
         this.allowSolutionWhenClosed = allowSolutionWhenClosed;
+    }
+
+
+    public boolean isAllowSource() {
+        return allowSource;
+    }
+
+    public void setAllowSource(final boolean allowSource) {
+        this.allowSource = allowSource;
+    }
+
+
+    public boolean isAllowResult() {
+        return allowResult;
+    }
+
+    public void setAllowResult(final boolean allowResult) {
+        this.allowResult = allowResult;
+    }
+
+
+    public boolean isAllowCandidateComment() {
+        return allowCandidateComment;
+    }
+
+    public void setAllowCandidateComment(final boolean allowCandidateComment) {
+        this.allowCandidateComment = allowCandidateComment;
     }
 }

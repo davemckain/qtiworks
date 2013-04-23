@@ -46,7 +46,6 @@ import uk.ac.ed.ph.jqtiplus.group.expression.ExpressionGroup;
 import uk.ac.ed.ph.jqtiplus.node.expression.ExpressionParent;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingContext;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
@@ -119,7 +118,6 @@ public final class ScriptRule extends MathAssessOperator {
 
         /* Read variables back */
         logger.debug("Reading variables back from Maxima");
-        final ItemSessionState itemSessionState = context.getItemSessionState();
         final List<VariableDeclaration> outputDeclarations = getAllCASWriteableVariableDeclarations();
         for (final VariableDeclaration var : outputDeclarations) {
             final Class<? extends ValueWrapper> resultClass = GlueValueBinder.getCasReturnClass(var.getBaseType(), var.getCardinality());
@@ -144,7 +142,7 @@ public final class ScriptRule extends MathAssessOperator {
                 catch (final MathsContentTooComplexException e) {
                     context.fireRuntimeError(this, "The value of the variable " + var.getIdentifier() + " was too complex to extract from Maxima, so it was set to NULL");
                 }
-                itemSessionState.setVariableValue(var, resultValue);
+                context.setVariableValue(var, resultValue);
             }
             else {
                 context.fireRuntimeInfo(this, "Variable " + var.getIdentifier() + " is not of a supported baseType and/or cardinality for passing to the CAS so its value is being left unchanged");

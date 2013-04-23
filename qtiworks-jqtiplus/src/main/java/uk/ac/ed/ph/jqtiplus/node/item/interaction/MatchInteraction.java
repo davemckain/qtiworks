@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSet;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleMatchSetContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.DirectedPairValue;
@@ -83,7 +83,8 @@ import java.util.Map;
  *
  * @author Jonathon Hare
  */
-public final class MatchInteraction extends BlockInteraction implements SimpleMatchSetContainer, Shuffleable {
+public final class MatchInteraction extends BlockInteraction implements SimpleMatchSetContainer,
+        Shuffleable<SimpleAssociableChoice> {
 
     private static final long serialVersionUID = 8556474552543752269L;
 
@@ -176,19 +177,17 @@ public final class MatchInteraction extends BlockInteraction implements SimpleMa
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-
+    public List<List<SimpleAssociableChoice>> computeShuffleableChoices() {
         final List<SimpleMatchSet> simpleMatchSets = getSimpleMatchSets();
         final List<List<SimpleAssociableChoice>> choiceLists = new ArrayList<List<SimpleAssociableChoice>>(simpleMatchSets.size());
         for (final SimpleMatchSet simpleMatchSet : simpleMatchSets) {
             choiceLists.add(simpleMatchSet.getSimpleAssociableChoices());
         }
-        itemSessionController.shuffleInteractionChoiceOrders(this, choiceLists);
+        return choiceLists;
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         /* Extract response values */
         final List<DirectedPairValue> responseAssociations = new ArrayList<DirectedPairValue>();
         if (responseValue.isNull()) {

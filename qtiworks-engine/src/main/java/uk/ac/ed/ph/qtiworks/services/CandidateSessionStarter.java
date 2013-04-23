@@ -39,6 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
+import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
@@ -66,6 +67,7 @@ import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -91,6 +93,9 @@ public class CandidateSessionStarter {
 
     @Resource
     private IdentityContext identityContext;
+
+    @Resource
+    private RequestTimestampContext requestTimestampContext;
 
     @Resource
     private CandidateAuditLogger candidateAuditLogger;
@@ -239,18 +244,12 @@ public class CandidateSessionStarter {
         final ItemSessionState itemSessionState = new ItemSessionState();
 
         /* Initialise state */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
                 itemSessionState, notificationRecorder);
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
-
-        /* Mark item as being presented */
-        itemSessionController.markPresented();
-
-        /* Maybe mark as pending submission */
-        if (!itemSessionState.isClosed()) {
-            itemSessionController.markPendingSubmission();
-        }
+        itemSessionController.initialize(timestamp);
+        itemSessionController.performTemplateProcessing(timestamp);
+        itemSessionController.enterItem(timestamp);
 
         /* Create new session entity and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();
@@ -258,7 +257,7 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
-        candidateSession.setClosed(itemSessionState.isClosed());
+        candidateSession.setClosed(itemSessionState.isEnded());
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */
@@ -266,7 +265,7 @@ public class CandidateSessionStarter {
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Handle the pathological case where the session closes immediately by saving the final result */
-        if (itemSessionState.isClosed()) {
+        if (itemSessionState.isEnded()) {
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         }
 
@@ -289,14 +288,15 @@ public class CandidateSessionStarter {
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Initialise test state and enter test */
-        testSessionController.initialize();
-        final int testPartCount = testSessionController.enterTest();
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.initialize(timestamp);
+        final int testPartCount = testSessionController.enterTest(timestamp);
         if (testPartCount==1) {
             /* If there is only testPart, then enter this (if possible).
              * (Note that this may cause the test to exit immediately if there is a failed
              * PreCondition on this part.)
              */
-            testSessionController.enterNextAvailableTestPart();
+            testSessionController.enterNextAvailableTestPart(timestamp);
         }
         else {
             /* Don't enter first testPart yet - we shall tell candidate that

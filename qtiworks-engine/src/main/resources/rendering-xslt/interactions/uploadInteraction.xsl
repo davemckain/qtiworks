@@ -24,7 +24,7 @@
             Uploaded: <xsl:value-of select="$responseValue/qw:value/@fileName"/>
           </div>
           <xsl:choose>
-            <xsl:when test="$isSessionInteracting">
+            <xsl:when test="$isSessionOpen">
               <div class="fileUploadInstruction">
                 Upload New File
               </div>
@@ -38,7 +38,7 @@
         <xsl:otherwise>
           <!-- Nothing uploaded yet -->
           <xsl:choose>
-            <xsl:when test="$isSessionInteracting">
+            <xsl:when test="$isSessionOpen">
               <div class="fileUploadInstruction">
                 Upload File
               </div>

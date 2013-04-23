@@ -18,7 +18,6 @@ Renders a standalone assessmentItem
 
   <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="item-common.xsl"/>
-  <xsl:import href="item-common.xsl"/>
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
@@ -165,9 +164,17 @@ Renders a standalone assessmentItem
 
         <xsl:apply-templates/>
 
-        <xsl:if test="$isSessionInteracting">
+        <xsl:if test="$candidateCommentAllowed">
+          <fieldset class="candidateComment">
+            <legend>Please use the following text box if you need to provide any additional information, comments or feedback during this test:</legend>
+            <input name="qtiworks_comment_presented" type="hidden" value="true"/>
+            <textarea name="qtiworks_comment"><xsl:value-of select="$itemSessionState/qw:candidateComment"/></textarea>
+          </fieldset>
+        </xsl:if>
+
+        <xsl:if test="$isSessionOpen">
           <div class="controls">
-            <input id="submit_button" name="submit" type="submit" value="SUBMIT ANSWER"/>
+            <input id="submit_button" name="submit" type="submit" value="SUBMIT RESPONSE"/>
           </div>
         </xsl:if>
       </form>
@@ -182,14 +189,18 @@ Renders a standalone assessmentItem
       <h3>Candidate Session State</h3>
 
       <p>The current candidate rendering mode state is: <xsl:value-of select="$renderingMode"/></p>
-      <p>Current value of sessionStatus is: <xsl:value-of select="$sessionStatus"/></p>
-      <p>
-        Flags:
-        initialized=<xsl:value-of select="$itemSessionState/@initialized"/>,
-        presented=<xsl:value-of select="$itemSessionState/@presented"/>,
-        responded=<xsl:value-of select="$itemSessionState/@responded"/>,
-        closed=<xsl:value-of select="$itemSessionState/@closed"/>.
-      </p>
+
+      <h3>Item Session State</h3>
+      <ul>
+        <li>Entry time: <xsl:value-of select="$itemSessionState/@entryTime"/></li>
+        <li>End time: <xsl:value-of select="$itemSessionState/@endTime"/></li>
+        <li>Duration accumulated: <xsl:value-of select="$itemSessionState/@durationAccumulated"/> ms</li>
+        <li>Initialized: <xsl:value-of select="$itemSessionState/@initialized"/></li>
+        <li>Responded: <xsl:value-of select="$itemSessionState/@responded"/></li>
+        <li><code>sessionStatus</code>: <xsl:value-of select="$sessionStatus"/></li>
+        <li><code>numAttempts</code>: <xsl:value-of select="$itemSessionState/@numAttempts"/></li>
+        <li><code>completionStatus</code>: <xsl:value-of select="$itemSessionState/@completionStatus"/></li>
+      </ul>
 
       <!-- Show response stuff -->
       <xsl:if test="exists($unboundResponseIdentifiers) or exists($invalidResponseIdentifiers)">
@@ -230,7 +241,7 @@ Renders a standalone assessmentItem
       </xsl:if>
 
       <!-- Show current state -->
-      <h3>Item Session State</h3>
+      <h3>Item Variables</h3>
       <p>
         The current values of all item variables are shown below:
       </p>
@@ -293,6 +304,9 @@ Renders a standalone assessmentItem
 
         <dt>View <code>&lt;itemResult&gt;</code> XML?</dt>
         <dd><xsl:value-of select="$resultAllowed"/></dd>
+
+        <dt>Submit candidate comment?</dt>
+        <dd><xsl:value-of select="$candidateCommentAllowed"/></dd>
       </dl>
     </div>
   </xsl:template>

@@ -50,6 +50,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -87,7 +88,7 @@ public class TextEntryInteractionTest {
      *
      * @return test data for this test
      */
-    @Parameters
+    @Parameters(name="{index}: {0} {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
                 { "TextEntryInteraction-basic.xml", "foo", new StringValue("foo"), null, true },
@@ -126,21 +127,23 @@ public class TextEntryInteractionTest {
 
     @Test
     public void test() throws Exception {
-        final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl(fileName, TextEntryInteractionTest.class, true);
+        final ItemSessionController itemSessionController = UnitTestHelper.loadUnitTestAssessmentItemForControl("item/interactions/" + fileName, true);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
+        final Date timestamp = new Date();
+        itemSessionController.initialize(timestamp);
+        itemSessionController.performTemplateProcessing(timestamp);
+        itemSessionController.enterItem(timestamp);
 
         final Map<Identifier, ResponseData> responses = new HashMap<Identifier, ResponseData>();
         responses.put(Identifier.parseString(RESPONSE_NAME), new StringResponseData(stringResponse));
 
-        itemSessionController.bindResponses(responses);
+        itemSessionController.bindResponses(timestamp, responses);
 
         final Set<Identifier> unboundResponses = itemSessionState.getUnboundResponseIdentifiers();
         final Set<Identifier> invalidResponses = itemSessionState.getInvalidResponseIdentifiers();
         assertEquals(0, unboundResponses.size());
         assertEquals(expectedValidates, invalidResponses.isEmpty());
-        assertEquals(expectedResponse, itemSessionState.getResponseValue(Identifier.parseString(RESPONSE_NAME)));
-        assertEquals(expectedStringResponse, itemSessionState.getResponseValue(Identifier.parseString(STRING_RESPONSE_NAME)));
+        assertEquals(expectedResponse, itemSessionState.getUncommittedResponseValue(Identifier.parseString(RESPONSE_NAME)));
+        assertEquals(expectedStringResponse, itemSessionState.getUncommittedResponseValue(Identifier.parseString(STRING_RESPONSE_NAME)));
     }
 }

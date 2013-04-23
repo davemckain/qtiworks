@@ -34,6 +34,8 @@
 package uk.ac.ed.ph.jqtiplus.node.shared;
 
 /**
+ * Enumerates the three different types of QTI variables. (This is new in JQTI+.)
+ *
  * @author David McKain
  */
 public enum VariableType {
@@ -45,13 +47,13 @@ public enum VariableType {
     OUTCOME("Outcome"),
 
     ;
-    
+
     private final String name;
-    
-    private VariableType(String name) {
+
+    private VariableType(final String name) {
         this.name = name;
     }
-    
+
     public String getName() {
         return name;
     }

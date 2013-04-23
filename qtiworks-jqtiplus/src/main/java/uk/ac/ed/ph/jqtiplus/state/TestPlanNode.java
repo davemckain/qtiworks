@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
@@ -117,6 +118,7 @@ public final class TestPlanNode implements Serializable {
     public TestPlanNode(final TestNodeType testNodeType, final TestPlanNodeKey key,
             final EffectiveItemSessionControl effectiveItemSessionControl,
             final String sectionPartTitle, final URI itemSystemId) {
+        Assert.notNull(testNodeType, "TestNodeType");
         this.parentNode = null;
         this.siblingIndex = -1;
         this.testNodeType = testNodeType;
@@ -181,14 +183,81 @@ public final class TestPlanNode implements Serializable {
         return Collections.unmodifiableList(children);
     }
 
+    public TestPlanNode getChildAt(final int index) {
+    	if (index<0 || index>=children.size()) {
+    		throw new IndexOutOfBoundsException();
+    	}
+    	return children.get(index);
+    }
+
+    public int getChildCount() {
+    	return children.size();
+    }
+
+    public void addChild(final TestPlanNode childNode) {
+        childNode.siblingIndex = children.size();
+        childNode.parentNode = this;
+        children.add(childNode);
+    }
+
+    public boolean hasPreviousSibling() {
+        return parentNode!=null && siblingIndex>0;
+    }
+
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
+    public TestPlanNode getPreviousSibling() {
+        return hasPreviousSibling() ? parentNode.getChildAt(siblingIndex-1) : null;
+    }
+
+    public boolean hasFollowingSibling() {
+        return parentNode!=null && siblingIndex+1 < parentNode.getChildCount();
+    }
+
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
+    public TestPlanNode getFollowingSibling() {
+        return hasFollowingSibling() ? parentNode.getChildAt(siblingIndex+1) : null;
+    }
+
     public boolean hasAncestor(final TestPlanNode node) {
         if (parentNode==null) {
             return false;
         }
-        if (parentNode.key.equals(node.key)) {
+        if (ObjectUtilities.nullSafeEquals(parentNode.key, node.key)) {
             return true;
         }
         return parentNode.hasAncestor(node);
+    }
+
+    public List<TestPlanNode> searchAncestorsOrSelf() {
+        return searchAncestorsOrSelf(null);
+    }
+
+    public List<TestPlanNode> searchAncestorsOrSelf(final TestNodeType testNodeType) {
+        final ArrayList<TestPlanNode> resultBuilder = new ArrayList<TestPlanNode>();
+        buildAncestorsOrSelf(resultBuilder, this, testNodeType);
+        return Collections.unmodifiableList(resultBuilder);
+    }
+
+    public List<TestPlanNode> searchAncestors() {
+        return searchAncestors(null);
+    }
+
+    public List<TestPlanNode> searchAncestors(final TestNodeType testNodeType) {
+        final ArrayList<TestPlanNode> resultBuilder = new ArrayList<TestPlanNode>();
+        if (parentNode!=null) {
+            buildAncestorsOrSelf(resultBuilder, parentNode, testNodeType);
+        }
+        return Collections.unmodifiableList(resultBuilder);
+    }
+
+    private void buildAncestorsOrSelf(final List<TestPlanNode> resultBuilder, final TestPlanNode testPlanNode, final TestNodeType testNodeType) {
+        if (testNodeType==null || testPlanNode.getTestNodeType()==testNodeType) {
+            resultBuilder.add(testPlanNode);
+        }
+        final TestPlanNode parent = testPlanNode.getParent();
+        if (parent!=null) {
+            buildAncestorsOrSelf(resultBuilder, parent, testNodeType);
+        }
     }
 
     public boolean hasDescendant(final TestPlanNode node) {
@@ -226,14 +295,54 @@ public final class TestPlanNode implements Serializable {
         }
     }
 
-    public void addChild(final TestPlanNode childNode) {
-        childNode.siblingIndex = children.size();
-        childNode.parentNode = this;
-        children.add(childNode);
+    public TestPlanNode searchEnclosingTestPartNode() {
+        final List<TestPlanNode> enclosingTestPartNodes = searchAncestorsOrSelf(TestNodeType.TEST_PART);
+        return enclosingTestPartNodes.size()==1 ? enclosingTestPartNodes.get(0) : null;
     }
+
+    //-------------------------------------------------------------------
 
     @Override
     public String toString() {
         return ObjectUtilities.beanToString(this);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof TestPlanNode)) {
+            return false;
+        }
+        final TestPlanNode other = (TestPlanNode) obj;
+
+        /* We have to be a bit careful here with the tree structure, so we'll check parent & child separately */
+        if (!(ObjectUtilities.nullSafeEquals(key, other.key)
+                && siblingIndex==other.siblingIndex
+                && testNodeType.equals(other.testNodeType)
+                && ObjectUtilities.nullSafeEquals(effectiveItemSessionControl, other.effectiveItemSessionControl)
+                && ObjectUtilities.nullSafeEquals(sectionPartTitle, other.sectionPartTitle)
+                && ObjectUtilities.nullSafeEquals(itemSystemId, other.itemSystemId))) {
+            return false;
+        }
+        /* Check parent now */
+        if ((parentNode!=null && other.parentNode==null)
+                || (parentNode==null && other.parentNode!=null)
+                || (parentNode!=null && other.parentNode!=null && !ObjectUtilities.nullSafeEquals(parentNode.key, other.parentNode.key))) {
+            return false;
+        }
+        /* Check keys on children */
+        if (children.size()!=other.children.size()) {
+            return false;
+        }
+        for (int i=0; i<children.size(); i++) {
+            if (!(ObjectUtilities.nullSafeEquals(children.get(i), other.children.get(i)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return key!=null ? key.hashCode() : super.hashCode();
     }
 }

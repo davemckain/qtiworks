@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.resolution;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -95,13 +96,13 @@ public final class ResolvedAssessmentItem extends ResolvedAssessmentObject<Asses
         }
         final AssessmentItem item = itemLookup.extractAssumingSuccessful();
         final List<VariableDeclaration> result = new ArrayList<VariableDeclaration>();
-        if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_DURATION_IDENTIFIER)) {
+        if (variableReferenceIdentifier.equals(QtiConstants.VARIABLE_DURATION_IDENTIFIER)) {
             result.add(item.getDurationResponseDeclaration());
         }
-        else if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
+        else if (variableReferenceIdentifier.equals(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER)) {
             result.add(item.getNumAttemptsResponseDeclaration());
         }
-        else if (variableReferenceIdentifier.equals(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
+        else if (variableReferenceIdentifier.equals(QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER)) {
             result.add(item.getCompletionStatusOutcomeDeclaration());
         }
         else {

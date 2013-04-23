@@ -9,7 +9,6 @@ import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -28,6 +27,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
 import java.net.URI;
+import java.util.Date;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.output.StringBuilderWriter;
@@ -61,13 +61,15 @@ public class StandaloneItemRenderingTest {
             itemSessionController.addNotificationListener(notificationLogListener);
 
             System.out.println("\nInitialising");
-            itemSessionController.initialize();
-            itemSessionController.performTemplateProcessing();
-            System.out.println("Item session state after init: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
+            final Date timestamp = new Date();
+            itemSessionController.initialize(timestamp);
+            itemSessionController.performTemplateProcessing(timestamp);
+            itemSessionController.enterItem(timestamp);
+            System.out.println("Item session state after entry: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = createRenderingOptions();
+            final RenderingOptions renderingOptions = RunUtilities.createRenderingOptions();
             final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
             renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
@@ -82,6 +84,7 @@ public class StandaloneItemRenderingTest {
             renderingRequest.setReinitAllowed(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
+            renderingRequest.setCandidateCommentAllowed(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
@@ -104,30 +107,5 @@ public class StandaloneItemRenderingTest {
         finally {
             jqtiExtensionManager.destroy();
         }
-    }
-
-    public static RenderingOptions createRenderingOptions() {
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath("/qtiworks");
-        renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setCloseUrl("/close");
-        renderingOptions.setResetUrl("/reset");
-        renderingOptions.setReinitUrl("/reinit");
-        renderingOptions.setSolutionUrl("/solution");
-        renderingOptions.setResultUrl("/result");
-        renderingOptions.setSourceUrl("/source");
-        renderingOptions.setServeFileUrl("/serveFile");
-        renderingOptions.setTerminateUrl("/terminate");
-        renderingOptions.setTestPartNavigationUrl("/test-part-navigation");
-        renderingOptions.setSelectTestItemUrl("/select-item");
-        renderingOptions.setFinishTestItemUrl("/finish-item");
-        renderingOptions.setEndTestPartUrl("/end-test-part");
-        renderingOptions.setReviewTestPartUrl("/review-test-part");
-        renderingOptions.setReviewTestItemUrl("/review-item");
-        renderingOptions.setShowTestItemSolutionUrl("/item-solution");
-        renderingOptions.setAdvanceTestPartUrl("/advance-test-part");
-        renderingOptions.setExitTestUrl("/exit-test");
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        return renderingOptions;
     }
 }

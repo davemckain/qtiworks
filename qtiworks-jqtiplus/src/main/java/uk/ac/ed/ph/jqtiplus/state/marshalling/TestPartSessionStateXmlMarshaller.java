@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 
 import java.io.StringReader;
@@ -55,16 +54,13 @@ public final class TestPartSessionStateXmlMarshaller {
     public static Document marshal(final TestPartSessionState testPartSessionState) {
         final DocumentBuilder documentBuilder = XmlMarshallerCore.createNsAwareDocumentBuilder();
         final Document document = documentBuilder.newDocument();
-        appendTestSessionState(document, testPartSessionState);
+        appendTestPartSessionState(document, testPartSessionState);
         return document;
     }
 
-    static void appendTestSessionState(final Node documentOrElement, final TestPartSessionState testPartSessionState) {
+    static void appendTestPartSessionState(final Node documentOrElement, final TestPartSessionState testPartSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testPartSessionState");
-        element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(testPartSessionState.isPreConditionFailed()));
-        element.setAttribute("entered", StringUtilities.toTrueFalse(testPartSessionState.isEntered()));
-        element.setAttribute("ended", StringUtilities.toTrueFalse(testPartSessionState.isEnded()));
-        element.setAttribute("exited", StringUtilities.toTrueFalse(testPartSessionState.isExited()));
+        XmlMarshallerCore.addAbstractPartSessionStateAttributes(element, testPartSessionState);
     }
 
     //----------------------------------------------
@@ -87,10 +83,7 @@ public final class TestPartSessionStateXmlMarshaller {
         final TestPartSessionState result = new TestPartSessionState();
 
         /* Extract state attributes */
-        result.setPreConditionFailed(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "preConditionFailed", false));
-        result.setEntered(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "entered", false));
-        result.setEnded(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "ended", false));
-        result.setExited(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "exited", false));
+        XmlMarshallerCore.parseAbstractPartSessionStateAttributes(result, element);
 
         return result;
     }

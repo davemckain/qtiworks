@@ -33,7 +33,10 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Encapsulates file-based response data
@@ -44,11 +47,14 @@ public final class FileResponseData implements ResponseData {
 
     private static final long serialVersionUID = -7780168487104250697L;
 
-    private File file;
-    private String contentType;
-    private String fileName;
+    private final File file;
+    private final String contentType;
+    private final String fileName;
 
     public FileResponseData(final File file, final String contentType, final String fileName) {
+        Assert.notNull(file, "file");
+        Assert.notNull(contentType, "contentType");
+        Assert.notNull(fileName, "fileName");
         this.file = file;
         this.contentType = contentType;
         this.fileName = fileName;
@@ -63,28 +69,13 @@ public final class FileResponseData implements ResponseData {
         return file;
     }
 
-    public void setFile(final File file) {
-        this.file = file;
-    }
-
-
     public String getContentType() {
         return contentType;
     }
 
-    public void setContentType(final String contentType) {
-        this.contentType = contentType;
-    }
-
-
     public String getFileName() {
         return fileName;
     }
-
-    public void setFileName(final String fileName) {
-        this.fileName = fileName;
-    }
-
 
     @Override
     public String toString() {
@@ -93,5 +84,25 @@ public final class FileResponseData implements ResponseData {
                 + ",contentType=" + contentType
                 + ",fileName=" + fileName
                 + ")";
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof FileResponseData)) {
+            return false;
+        }
+        final FileResponseData other = (FileResponseData) obj;
+        return file.equals(other.file)
+                && contentType.equals(other.contentType)
+                && fileName.equals(other.fileName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[] {
+                file,
+                contentType,
+                fileName
+        });
     }
 }

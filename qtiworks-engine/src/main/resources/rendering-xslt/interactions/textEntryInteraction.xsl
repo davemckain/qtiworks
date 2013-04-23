@@ -31,7 +31,7 @@
         ')')" as="xs:string"/>
 
       <input type="text" name="qtiworks_response_{@responseIdentifier}">
-        <xsl:if test="$isSessionClosed">
+        <xsl:if test="$isSessionEnded">
           <xsl:attribute name="disabled">disabled</xsl:attribute>
         </xsl:if>
         <xsl:if test="$is-bad-response or $is-invalid-response">

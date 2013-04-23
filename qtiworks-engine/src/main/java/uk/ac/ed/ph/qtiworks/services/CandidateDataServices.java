@@ -55,6 +55,7 @@ import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.JqtiPlus;
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.Attribute;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -63,7 +64,6 @@ import uk.ac.ed.ph.jqtiplus.node.result.AbstractResult;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.node.result.ItemVariable;
 import uk.ac.ed.ph.jqtiplus.node.result.OutcomeVariable;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.notification.Notification;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
@@ -492,7 +492,7 @@ public class CandidateDataServices {
         candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);
         for (final ItemVariable itemVariable : resultNode.getItemVariables()) {
             if (itemVariable instanceof OutcomeVariable
-                    || AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(itemVariable.getIdentifier())) {
+                    || QtiConstants.VARIABLE_DURATION_IDENTIFIER.equals(itemVariable.getIdentifier())) {
                 final CandidateSessionOutcome outcome = new CandidateSessionOutcome();
                 outcome.setCandidateSession(candidateSession);
                 outcome.setOutcomeIdentifier(itemVariable.getIdentifier().toString());

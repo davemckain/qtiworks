@@ -33,12 +33,15 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.test;
 
+import uk.ac.ed.ph.jqtiplus.attribute.value.IdentifierAttribute;
 import uk.ac.ed.ph.jqtiplus.group.test.BranchRuleGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.ItemSessionControlGroup;
 import uk.ac.ed.ph.jqtiplus.group.test.PreConditionGroup;
+import uk.ac.ed.ph.jqtiplus.node.IdentifiableNode;
+import uk.ac.ed.ph.jqtiplus.node.UniqueNode;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 import java.util.List;
 
@@ -48,18 +51,32 @@ import java.util.List;
  * NB: This is not explicitly defined in the QTI specification, but is convenient here.
  *
  * @author Jiri Kajaba
+ * @author David McKain (refactored)
  */
-public abstract class AbstractPart extends UniqueControlObject {
+public abstract class AbstractPart extends ControlObject<Identifier> implements UniqueNode<Identifier> {
 
     private static final long serialVersionUID = 2243928073967479375L;
 
     public AbstractPart(final ControlObject<?> parent,  final String qtiClassName) {
         super(parent, qtiClassName);
 
+        getAttributes().add(new IdentifierAttribute(this, IdentifiableNode.ATTR_IDENTIFIER_NAME, true));
+
         getNodeGroups().add(0, new PreConditionGroup(this));
         getNodeGroups().add(1, new BranchRuleGroup(this));
         getNodeGroups().add(2, new ItemSessionControlGroup(this));
     }
+
+    @Override
+    public Identifier getIdentifier() {
+        return getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).getComputedValue();
+    }
+
+    @Override
+    public void setIdentifier(final Identifier identifier) {
+        getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME).setValue(identifier);
+    }
+
 
     public List<PreCondition> getPreConditions() {
         return getNodeGroups().getPreConditionGroup().getPreConditions();
@@ -83,7 +100,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      * (returns itself if this part is instance of test part).
      */
     public TestPart getEnclosingTestPart() {
-        return getNearestAncestorOrSelf(TestPart.class);
+        return searchNearestAncestorOrSelf(TestPart.class);
     }
 
     /**
@@ -95,7 +112,7 @@ public abstract class AbstractPart extends UniqueControlObject {
      * @param identifier identifier of requested object
      * @return object with given identifier or null
      */
-    public final AbstractPart lookupFirstDescendantOrSelf(final Identifier identifier) {
+    public final AbstractPart searchFirstDescendantOrSelf(final Identifier identifier) {
         if (identifier.equals(getIdentifier())) {
             return this;
         }
@@ -118,33 +135,33 @@ public abstract class AbstractPart extends UniqueControlObject {
     }
 
     /**
-     * Returns true if it is safe to jump from this object; false otherwise.
-     * <p>
-     * It is not safe to jump from shuffled not fixed object (or if any parent is shuffled and not fixed), because object could be moved after jump target (it
-     * is not allowed).
-     *
-     * @return true if it is safe to jump from this object; false otherwise
+     * Returns whether or not this {@link AbstractPart} is in "scope" of an {@link Ordering}
+     * or {@link Selection} defined on an ancestor {@link AssessmentSection}.
      */
-    @ToRefactor
-    @Deprecated
-    public boolean isJumpSafeSource() {
-        return true;
+    public boolean isInScopeOfOrderingOrSelection() {
+        final ControlObject<?> parentNode = getParent();
+        if (parentNode==null || !(parentNode instanceof AssessmentSection)) {
+            return false;
+        }
+        else {
+            final AssessmentSection parentSection = (AssessmentSection) parentNode;
+            if (parentSection.getSelection()!=null || parentSection.getOrdering()!=null) {
+                return true;
+            }
+            return parentSection.isInScopeOfOrderingOrSelection();
+        }
     }
 
-    /**
-     * Returns true if this object is safe target of jump; false otherwise.
-     * <p>
-     * It is not save to jump on not required object in selection group (same for all its parents), because object could disappear (not be selected) and jump
-     * target is no longer valid.
-     * <p>
-     * It is not safe to jump on shuffled not fixed object (or if any parent is shuffled and not fixed), because object could be moved before jump source (it is
-     * not allowed).
-     *
-     * @return true if this object is safe target of jump; false otherwise
-     */
-    @ToRefactor
-    @Deprecated
-    public boolean isJumpSafeTarget() {
-        return true;
+    @Override
+    protected void validateThis(final ValidationContext context) {
+        final Identifier identifier = getIdentifier();
+        if (identifier!=null) {
+            final IdentifierAttribute identifierAttribute = getAttributes().getIdentifierAttribute(IdentifiableNode.ATTR_IDENTIFIER_NAME);
+            validateUniqueIdentifier(context, identifierAttribute, identifier);
+            if (BranchRule.isSpecial(identifier)) {
+                context.fireAttributeValidationError(identifierAttribute, "The identifier " + identifier
+                        + " is reserved in tests as a special target for branchRule");
+            }
+        }
     }
 }

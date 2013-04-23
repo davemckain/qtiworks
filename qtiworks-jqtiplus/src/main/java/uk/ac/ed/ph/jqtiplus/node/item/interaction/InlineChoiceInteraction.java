@@ -38,7 +38,7 @@ import uk.ac.ed.ph.jqtiplus.group.item.interaction.choice.InlineChoiceGroup;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.InlineChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
@@ -68,7 +68,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public final class InlineChoiceInteraction extends InlineInteraction implements Shuffleable {
+public final class InlineChoiceInteraction extends InlineInteraction implements Shuffleable<InlineChoice> {
 
     private static final long serialVersionUID = 1331855266262194665L;
 
@@ -150,13 +150,12 @@ public final class InlineChoiceInteraction extends InlineInteraction implements 
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getInlineChoices());
+    public List<List<InlineChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getInlineChoices());
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         if (responseValue.isNull()) {
             if (getRequired()) {
                 return false;

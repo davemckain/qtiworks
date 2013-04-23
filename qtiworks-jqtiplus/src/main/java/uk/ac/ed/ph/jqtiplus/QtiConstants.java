@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus;
 
+import uk.ac.ed.ph.jqtiplus.types.Identifier;
+
 /**
  * Some useful QTI-related constants
  *
@@ -53,5 +55,36 @@ public final class QtiConstants {
 
     public static final String MATHML_NAMESPACE_URI = "http://www.w3.org/1998/Math/MathML";
     public static final String MATHML_SCHEMA_LOCATION = "http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd";
+
+    /** Name of <code>duration</code> built-in variable. */
+    public static final String VARIABLE_DURATION_NAME = "duration";
+
+    /** Identifier of <code>duration</code> built-in variable. */
+    public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal(VARIABLE_DURATION_NAME);
+
+    /** Name of <code>numAttempts</code> built-in variable. */
+    public static final String VARIABLE_NUMBER_OF_ATTEMPTS = "numAttempts";
+
+    /** Identifier of <code>numAttempts</code> built-in variable. */
+    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.assumedLegal(VARIABLE_NUMBER_OF_ATTEMPTS);
+
+    /** Name of <code>completionStatus</code> built-in variable. */
+    public static final String VARIABLE_COMPLETION_STATUS = "completionStatus";
+
+    /** Identifier of <code>completionStatus</code> built-in variable. */
+    public static final Identifier VARIABLE_COMPLETION_STATUS_IDENTIFIER = Identifier.assumedLegal("completionStatus");
+
+    /** Value of completion status built-in variable. */
+    public static final String COMPLETION_STATUS_NOT_ATTEMPTED = "not_attempted";
+
+    /** Value of completion status built-in variable. */
+    public static final String COMPLETION_STATUS_UNKNOWN = "unknown";
+
+    /** Value of completion status built-in variable. */
+    public static final String COMPLETION_STATUS_COMPLETED = "completed";
+
+    /** Value of completion status built-in variable. */
+    public static final String COMPLETION_STATUS_INCOMPLETE = "incomplete";
+
 
 }

@@ -43,7 +43,6 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.BooleanValue;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.Value;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 /**
  * Parent for all jump objects (preCondition and branchRule).
@@ -88,23 +87,6 @@ public abstract class AbstractJump extends AbstractNode implements ExpressionPar
         return new BaseType[] { BaseType.BOOLEAN };
     }
 
-    @ToRefactor
-    @Override
-    protected void validateThis(final ValidationContext context) {
-        final TestPart parentTestPart = getParent().getEnclosingTestPart();
-        if (parentTestPart.getNavigationMode() != null && parentTestPart.getSubmissionMode() != null) {
-            if (getParent() != parentTestPart && !parentTestPart.areJumpsEnabled()) {
-                context.fireValidationWarning(this, "Jump will be ignored for modes: " +
-                        parentTestPart.getNavigationMode() + " " + parentTestPart.getSubmissionMode());
-            }
-        }
-    }
-
-    /**
-     * Evaluates condition of this jump.
-     *
-     * @return evaluated condition of this jump
-     */
     public boolean evaluatesTrue(final TestProcessingContext testProcessingContext) {
         final Value value = getExpression().evaluate(testProcessingContext);
         return BooleanValue.TRUE.equals(value);

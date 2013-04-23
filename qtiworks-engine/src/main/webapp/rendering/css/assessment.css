@@ -297,6 +297,22 @@ body {
   margin-right: 0.5em;
 }
 
+/* Candidate comment */
+
+.candidateComment {
+  padding: 0;
+  margin: 2em 0;
+  border: none;
+}
+
+.candidateComment legend {
+}
+
+.candidateComment textarea {
+  display: block;
+  width: 100%;
+}
+
 /* Item status colours */
 
 .itemStatus.review {

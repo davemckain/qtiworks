@@ -46,6 +46,7 @@ import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,12 +56,12 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Integration test that checks that template processing runs correctly on the sample items
- * 
+ *
  * @author David McKain
  */
 @RunWith(Parameterized.class)
 public class TemplateProcessingSampleTests extends AbstractIntegrationTest {
-    
+
     @Parameters
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
@@ -71,18 +72,19 @@ public class TemplateProcessingSampleTests extends AbstractIntegrationTest {
                 LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
         );
     }
-    
-    public TemplateProcessingSampleTests(QtiSampleAssessment qtiSampleAssessment) {
+
+    public TemplateProcessingSampleTests(final QtiSampleAssessment qtiSampleAssessment) {
         super(qtiSampleAssessment);
     }
-    
+
     @Test
     public void test() throws Exception {
         final ItemSessionController itemSessionController = createItemSessionController(true);
-        ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
-        
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+
         Assert.assertTrue(itemSessionState.getTemplateValues().isEmpty());
-        itemSessionController.initialize();
-        itemSessionController.performTemplateProcessing();
+        final Date timestamp = new Date();
+        itemSessionController.initialize(timestamp);
+        itemSessionController.performTemplateProcessing(timestamp);
     }
 }

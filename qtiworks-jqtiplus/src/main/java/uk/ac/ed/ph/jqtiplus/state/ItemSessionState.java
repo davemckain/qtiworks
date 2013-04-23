@@ -33,11 +33,11 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Interaction;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.Shuffleable;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -59,6 +59,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,7 +70,8 @@ import java.util.Set;
  * Encapsulates the current state of a candidate's item session.
  * <p>
  * An instance of this class is mutable, but you must let JQTI+ perform all
- * mutation operations for you via the {@link ItemSessionController}.
+ * mutation operations for you via the {@link ItemSessionController} to
+ * ensure the integrity of state.
  * <p>
  * An instance of this class is NOT safe for use by multiple threads.
  *
@@ -78,7 +80,7 @@ import java.util.Set;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class ItemSessionState implements Serializable {
+public final class ItemSessionState extends AbstractPartSessionState implements Serializable {
 
     private static final long serialVersionUID = -7586529679289092485L;
 
@@ -88,76 +90,101 @@ public final class ItemSessionState implements Serializable {
      */
     private final Map<Identifier, List<Identifier>> shuffledInteractionChoiceOrders;
 
+    /**
+     * Map of template values, keyed on Identifier.
+     */
+    private final Map<Identifier, Value> templateValues;
+
+    /**
+     * Map of (committed) response values, keyed on Identifier.
+     * <p>
+     * This does not include the implicit <code>duration</code>
+     * and <code>numAttempts</code> variables.
+     */
+    private final Map<Identifier, Value> responseValues;
+
+    /**
+     * Map of outcome values, keyed on Identifier.
+     * <p>
+     * This does not include the implicit <code>completionStatus</code>
+     * variable.
+     */
+    private final Map<Identifier, Value> outcomeValues;
+
     private final Map<Identifier, ResponseData> rawResponseDataMap;
     private final Set<Identifier> unboundResponseIdentifiers;
     private final Set<Identifier> invalidResponseIdentifiers;
+
+    /**
+     * Bound but not yet committed response variables.
+     */
+    private final Map<Identifier, Value> uncommittedResponseValues;
 
     private final Map<Identifier, Value> overriddenTemplateDefaultValues;
     private final Map<Identifier, Value> overriddenResponseDefaultValues;
     private final Map<Identifier, Value> overriddenOutcomeDefaultValues;
     private final Map<Identifier, Value> overriddenCorrectResponseValues;
 
-    private final Map<Identifier, Value> templateValues;
-    private final Map<Identifier, Value> responseValues;
-    private final Map<Identifier, Value> outcomeValues;
+    private int numAttempts;
+    private String completionStatus;
 
     private SessionStatus sessionStatus;
-
     private boolean initialized;
-
-    /** Has item been presented? */
-    private boolean presented;
-
     private boolean responded;
-    private boolean closed;
+    private Date suspendTime;
     private String candidateComment;
 
     public ItemSessionState() {
-        this.initialized = false;
+        super();
         this.shuffledInteractionChoiceOrders = new HashMap<Identifier, List<Identifier>>();
+        this.templateValues = new HashMap<Identifier, Value>();
+        this.responseValues = new HashMap<Identifier, Value>();
+        this.outcomeValues = new HashMap<Identifier, Value>();
         this.rawResponseDataMap = new HashMap<Identifier, ResponseData>();
         this.unboundResponseIdentifiers = new HashSet<Identifier>();
         this.invalidResponseIdentifiers = new HashSet<Identifier>();
+        this.uncommittedResponseValues = new HashMap<Identifier, Value>();
         this.overriddenTemplateDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenResponseDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenOutcomeDefaultValues = new HashMap<Identifier, Value>();
         this.overriddenCorrectResponseValues = new HashMap<Identifier, Value>();
-        this.templateValues = new HashMap<Identifier, Value>();
-        this.responseValues = new HashMap<Identifier, Value>();
-        this.outcomeValues = new HashMap<Identifier, Value>();
         this.sessionStatus = null;
-
-        /* Set built-in variables */
+        this.initialized = false;
+        this.responded = false;
+        this.suspendTime = null;
+        this.candidateComment = null;
         resetBuiltinVariables();
     }
 
     //----------------------------------------------------------------
 
+    @Override
     public void reset() {
-        this.initialized = false;
-        this.presented = false;
-        this.responded = false;
-        this.closed = false;
-        this.candidateComment = null;
+        super.reset();
+        this.shuffledInteractionChoiceOrders.clear();
+        this.templateValues.clear();
+        this.responseValues.clear();
+        this.outcomeValues.clear();
         this.rawResponseDataMap.clear();
         this.unboundResponseIdentifiers.clear();
         this.invalidResponseIdentifiers.clear();
-        this.shuffledInteractionChoiceOrders.clear();
+        this.uncommittedResponseValues.clear();
         this.overriddenTemplateDefaultValues.clear();
         this.overriddenResponseDefaultValues.clear();
         this.overriddenOutcomeDefaultValues.clear();
         this.overriddenCorrectResponseValues.clear();
-        this.templateValues.clear();
-        this.responseValues.clear();
-        this.outcomeValues.clear();
         this.sessionStatus = SessionStatus.INITIAL;
+        this.initialized = false;
+        this.responded = false;
+        this.suspendTime = null;
+        this.candidateComment = null;
         resetBuiltinVariables();
     }
 
     public void resetBuiltinVariables() {
-        setDuration(0);
+        resetDuration();
         setNumAttempts(0);
-        setCompletionStatus(AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED);
+        setCompletionStatus(QtiConstants.COMPLETION_STATUS_NOT_ATTEMPTED);
     }
 
     //----------------------------------------------------------------
@@ -211,13 +238,9 @@ public final class ItemSessionState implements Serializable {
         this.sessionStatus = sessionStatus;
     }
 
-
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public boolean isPresented() {
-        return presented;
-    }
-
-    public void setPresented(final boolean presented) {
-        this.presented = presented;
+        return isEntered();
     }
 
 
@@ -234,17 +257,23 @@ public final class ItemSessionState implements Serializable {
         return isResponded() && unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
     public boolean isRespondedInvalidly() {
         return isResponded() && !(unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty());
     }
 
 
-    public boolean isClosed() {
-        return closed;
+    public Date getSuspendTime() {
+        return ObjectUtilities.safeClone(suspendTime);
     }
 
-    public void setClosed(final boolean closed) {
-        this.closed = closed;
+    public void setSuspendTime(final Date suspendTime) {
+        this.suspendTime = ObjectUtilities.safeClone(suspendTime);
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public boolean isSuspended() {
+        return suspendTime!=null;
     }
 
 
@@ -259,68 +288,55 @@ public final class ItemSessionState implements Serializable {
     //----------------------------------------------------------------
     // Built-in variable manipulation
 
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public FloatValue getDurationValue() {
-        return (FloatValue) responseValues.get(AssessmentItem.VARIABLE_DURATION_IDENTIFIER);
+    public long computeDurationMillis() {
+        if (getDurationIntervalStartTime()!=null) {
+            return -1;
+        }
+        return getDurationAccumulated();
     }
 
-    public void setDurationValue(final FloatValue value) {
-        Assert.notNull(value);
-        responseValues.put(AssessmentItem.VARIABLE_DURATION_IDENTIFIER, value);
+    public double computeDuration() {
+        return computeDurationMillis() / 1000.0;
     }
-
-    public double getDuration() {
-        return getDurationValue().doubleValue();
-    }
-
-    public void setDuration(final double duration) {
-        setDurationValue(new FloatValue(duration));
-    }
-
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public IntegerValue getNumAttemptsValue() {
-        return (IntegerValue) responseValues.get(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
+    public FloatValue computeDurationValue() {
+        return new FloatValue(computeDuration());
     }
 
-    public void setNumAttemptsValue(final IntegerValue value) {
-        Assert.notNull(value);
-        responseValues.put(AssessmentItem.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER, value);
-    }
 
     public int getNumAttempts() {
-        return getNumAttemptsValue().intValue();
+        return numAttempts;
     }
 
     public void setNumAttempts(final int numAttempts) {
-        setNumAttemptsValue(new IntegerValue(numAttempts));
+        this.numAttempts = numAttempts;
     }
-
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public IdentifierValue getCompletionStatusValue() {
-        return (IdentifierValue) outcomeValues.get(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER);
+    public IntegerValue getNumAttemptsValue() {
+        return new IntegerValue(numAttempts);
     }
 
-    public void setCompletionStatusValue(final IdentifierValue value) {
-        Assert.notNull(value);
-        final String status = value.toQtiString();
-        if (!AssessmentItem.VALUE_ITEM_IS_UNKNOWN.equals(status)
-                && !AssessmentItem.VALUE_ITEM_IS_NOT_ATTEMPTED.equals(status)
-                && !AssessmentItem.VALUE_ITEM_IS_COMPLETED.equals(status)
-                && !AssessmentItem.VALUE_ITEM_IS_INCOMPLETE.equals(status)) {
-            throw new IllegalArgumentException("Value " + status + " is not an acceptable completionStatus");
-        }
-        outcomeValues.put(AssessmentItem.VARIABLE_COMPLETION_STATUS_IDENTIFIER, value);
-    }
 
     public String getCompletionStatus() {
-        return getCompletionStatusValue().toQtiString();
+        return this.completionStatus;
     }
 
     public void setCompletionStatus(final String completionStatus) {
         Assert.notNull(completionStatus);
-        setCompletionStatusValue(new IdentifierValue(Identifier.parseString(completionStatus)));
+        if (!QtiConstants.COMPLETION_STATUS_UNKNOWN.equals(completionStatus)
+                && !QtiConstants.COMPLETION_STATUS_NOT_ATTEMPTED.equals(completionStatus)
+                && !QtiConstants.COMPLETION_STATUS_COMPLETED.equals(completionStatus)
+                && !QtiConstants.COMPLETION_STATUS_INCOMPLETE.equals(completionStatus)) {
+            throw new IllegalArgumentException("Value " + completionStatus + " is not an acceptable completionStatus");
+        }
+        this.completionStatus = completionStatus;
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public IdentifierValue getCompletionStatusValue() {
+        return new IdentifierValue(completionStatus);
     }
 
     //----------------------------------------------------------------
@@ -543,6 +559,52 @@ public final class ItemSessionState implements Serializable {
     }
 
 
+    public Value getUncommittedResponseValue(final Identifier identifier) {
+        Assert.notNull(identifier);
+        return uncommittedResponseValues.get(identifier);
+    }
+
+    public Value getUncommittedResponseValue(final ResponseDeclaration responseDeclaration) {
+        Assert.notNull(responseDeclaration);
+        return getUncommittedResponseValue(responseDeclaration.getIdentifier());
+    }
+
+    public Value getUncommittedResponseValue(final Interaction interaction) {
+        Assert.notNull(interaction);
+        return getUncommittedResponseValue(interaction.getResponseIdentifier());
+    }
+
+    public void setUncommittedResponseValue(final Identifier identifier, final Value value) {
+        Assert.notNull(identifier);
+        Assert.notNull(value);
+        uncommittedResponseValues.put(identifier, value);
+    }
+
+    public void setUncommittedResponseValue(final ResponseDeclaration responseDeclaration, final Value value) {
+        Assert.notNull(responseDeclaration);
+        Assert.notNull(value);
+        setUncommittedResponseValue(responseDeclaration.getIdentifier(), value);
+    }
+
+    public void setUncommittedResponseValue(final Interaction interaction, final Value value) {
+        Assert.notNull(interaction);
+        Assert.notNull(value);
+        setUncommittedResponseValue(interaction.getResponseIdentifier(), value);
+    }
+
+    public void clearUncommittedResponseValues() {
+        uncommittedResponseValues.clear();
+    }
+
+    public Map<Identifier, Value> getUncommittedResponseValues() {
+        return Collections.unmodifiableMap(uncommittedResponseValues);
+    }
+
+    public boolean hasUncommittedResponseValues() {
+        return !uncommittedResponseValues.isEmpty();
+    }
+
+
     public Value getResponseValue(final Identifier identifier) {
         Assert.notNull(identifier);
         return responseValues.get(identifier);
@@ -576,6 +638,10 @@ public final class ItemSessionState implements Serializable {
         setResponseValue(interaction.getResponseIdentifier(), value);
     }
 
+    /**
+     * NB: This does not include the <code>numAttempts</code>
+     * and <code>duration</code> response values.
+     */
     public Map<Identifier, Value> getResponseValues() {
         return Collections.unmodifiableMap(responseValues);
     }
@@ -592,14 +658,12 @@ public final class ItemSessionState implements Serializable {
         return getOutcomeValue(outcomeDeclaration.getIdentifier());
     }
 
-    /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
     public void setOutcomeValue(final Identifier identifier, final Value value) {
         Assert.notNull(identifier);
         Assert.notNull(value);
         outcomeValues.put(identifier, value);
     }
 
-    /* NB: It's OK to set completionStatus this way, unlike the reserved response values */
     public void setOutcomeValue(final OutcomeDeclaration outcomeDeclaration, final Value value) {
         Assert.notNull(outcomeDeclaration);
         setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
@@ -615,66 +679,14 @@ public final class ItemSessionState implements Serializable {
         setOutcomeValue(outcomeDeclaration.getIdentifier(), targetValue);
     }
 
+    /**
+     * NB: This does not include the <code>completionStatus</code> value.
+     */
     public Map<Identifier, Value> getOutcomeValues() {
         return Collections.unmodifiableMap(outcomeValues);
     }
 
     //---------------------------------------------------------------
-
-    /**
-     * FIXME: Is this still necessary?
-     *
-     * Gets A template or outcome variable with given identifier or null.
-     * DM: This used to be called getValue() in JQTI, but I've renamed it to be
-     * clearer
-     *
-     * @param identifier
-     *            given identifier
-     * @return value of templateDeclaration or outcomeDeclaration with given
-     *         identifier or null
-     */
-    public Value getTemplateOrOutcomeValue(final Identifier identifier) {
-        Assert.notNull(identifier);
-        Value result = getTemplateValue(identifier);
-        if (result == null) {
-            result = getOutcomeValue(identifier);
-        }
-        return result;
-    }
-
-    public Value getVariableValue(final Identifier identifier) {
-        Assert.notNull(identifier);
-        Value result = getResponseValue(identifier);
-        if (result == null) {
-            result = getTemplateOrOutcomeValue(identifier);
-        }
-        return result;
-    }
-
-    public Value getVariableValue(final VariableDeclaration variableDeclaration) {
-        Assert.notNull(variableDeclaration);
-        return getVariableValue(variableDeclaration.getIdentifier());
-    }
-
-    public void setVariableValue(final VariableDeclaration variableDeclaration, final Value value) {
-        Assert.notNull(variableDeclaration);
-        Assert.notNull(value);
-        final Identifier identifier = variableDeclaration.getIdentifier();
-        if (variableDeclaration instanceof TemplateDeclaration) {
-            templateValues.put(identifier, value);
-        }
-        else if (variableDeclaration instanceof ResponseDeclaration) {
-            responseValues.put(identifier, value);
-        }
-        else if (variableDeclaration instanceof OutcomeDeclaration) {
-            outcomeValues.put(identifier, value);
-        }
-        else {
-            throw new QtiLogicException("Unexpected logic branch");
-        }
-    }
-
-    //----------------------------------------------------------------
 
     @Override
     public boolean equals(final Object obj) {
@@ -682,43 +694,52 @@ public final class ItemSessionState implements Serializable {
             return false;
         }
         final ItemSessionState other = (ItemSessionState) obj;
-        return initialized==other.initialized
-                && sessionStatus==other.sessionStatus
-                && presented==other.presented
+        return super.equals(obj)
+                && numAttempts==other.numAttempts
+                && initialized==other.initialized
                 && responded==other.responded
-                && closed==other.closed
+                && ObjectUtilities.nullSafeEquals(suspendTime, other.suspendTime)
+                && ObjectUtilities.nullSafeEquals(completionStatus, other.completionStatus)
+                && ObjectUtilities.nullSafeEquals(sessionStatus, other.sessionStatus)
+                && ObjectUtilities.nullSafeEquals(candidateComment, other.candidateComment)
                 && shuffledInteractionChoiceOrders.equals(other.shuffledInteractionChoiceOrders)
-                && overriddenTemplateDefaultValues.equals(other.overriddenCorrectResponseValues)
-                && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
-                && overriddenOutcomeDefaultValues.equals(other.overriddenOutcomeDefaultValues)
-                && overriddenCorrectResponseValues.equals(other.overriddenCorrectResponseValues)
                 && rawResponseDataMap.equals(other.rawResponseDataMap)
                 && unboundResponseIdentifiers.equals(other.unboundResponseIdentifiers)
                 && invalidResponseIdentifiers.equals(other.invalidResponseIdentifiers)
+                && uncommittedResponseValues.equals(other.uncommittedResponseValues)
                 && templateValues.equals(other.templateValues)
                 && responseValues.equals(other.responseValues)
-                && outcomeValues.equals(other.outcomeValues);
+                && outcomeValues.equals(other.outcomeValues)
+                && overriddenTemplateDefaultValues.equals(other.overriddenTemplateDefaultValues)
+                && overriddenResponseDefaultValues.equals(other.overriddenResponseDefaultValues)
+                && overriddenOutcomeDefaultValues.equals(other.overriddenOutcomeDefaultValues)
+                && overriddenCorrectResponseValues.equals(other.overriddenCorrectResponseValues)
+                ;
     }
 
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
+                super.hashCode(),
+                numAttempts,
+                completionStatus,
                 initialized,
                 sessionStatus,
-                presented,
                 responded,
-                closed,
+                suspendTime,
+                candidateComment,
                 shuffledInteractionChoiceOrders,
-                overriddenTemplateDefaultValues,
-                overriddenResponseDefaultValues,
-                overriddenOutcomeDefaultValues,
-                overriddenCorrectResponseValues,
                 rawResponseDataMap,
                 unboundResponseIdentifiers,
                 invalidResponseIdentifiers,
+                uncommittedResponseValues,
                 templateValues,
                 responseValues,
-                outcomeValues
+                outcomeValues,
+                overriddenTemplateDefaultValues,
+                overriddenResponseDefaultValues,
+                overriddenOutcomeDefaultValues,
+                overriddenCorrectResponseValues
         });
     }
 
@@ -727,9 +748,18 @@ public final class ItemSessionState implements Serializable {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(initialized=" + initialized
                 + ",sessionStatus=" + sessionStatus
-                + ",presented=" + presented
+                + ",preConditionFailed=" + isPreConditionFailed()
+                + ",branchRuleTarget=" + branchRuleTarget
+                + ",entryTime=" + getEntryTime()
+                + ",endTime=" + getEndTime()
+                + ",exitTime=" + getExitTime()
+                + ",durationAccumulated=" + getDurationAccumulated()
+                + ",durationIntervalStartTime=" + getDurationIntervalStartTime()
+                + ",numAttempts=" + getNumAttempts()
+                + ",completionStatus=" + getCompletionStatus()
                 + ",responded=" + responded
-                + ",closed=" + closed
+                + ",suspendTime=" + suspendTime
+                + ",candidateComment=" + candidateComment
                 + ",shuffledInteractionChoiceOrders=" + shuffledInteractionChoiceOrders
                 + ",overriddenTemplateDefaultValues=" + overriddenTemplateDefaultValues
                 + ",overriddenResponseDefaultValues=" + overriddenResponseDefaultValues
@@ -738,6 +768,7 @@ public final class ItemSessionState implements Serializable {
                 + ",rawResponseDataMap=" + rawResponseDataMap
                 + ",unboundResponseIdentifiers=" + unboundResponseIdentifiers
                 + ",invalidResponseIdentifiers=" + invalidResponseIdentifiers
+                + ",uncommittedResponseValues=" + uncommittedResponseValues
                 + ",templateValues=" + templateValues
                 + ",responseValues=" + responseValues
                 + ",outcomesValues=" + outcomeValues

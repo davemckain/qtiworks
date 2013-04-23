@@ -65,9 +65,6 @@ public final class ObjectUtilities {
         return Collections.unmodifiableSet(result);
     }
 
-    /**
-     * Trivial convenience extension around {@link Collections#unmodifiableList(List)}
-     */
     public static <T> List<T> unmodifiableList(final List<T> input) {
         List<T> result;
         if (input!=null && !input.isEmpty()) {
@@ -99,6 +96,10 @@ public final class ObjectUtilities {
             result = Collections.emptyMap();
         }
         return result;
+    }
+
+    public static Date addToTime(final Date date, final long milliseconds) {
+        return new Date(date.getTime() + milliseconds);
     }
 
     /**

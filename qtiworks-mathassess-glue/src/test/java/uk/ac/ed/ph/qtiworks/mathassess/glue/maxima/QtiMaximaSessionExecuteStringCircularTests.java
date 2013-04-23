@@ -33,13 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.QtiMaximaProcess;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 import java.util.Collection;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -58,18 +56,18 @@ public class QtiMaximaSessionExecuteStringCircularTests extends QtiMaximaSession
     public static Collection<Object[]> data() throws Exception {
         return MaximaDataBindingSamples.CIRCULAR_EXAMPLES;
     }
-    
+
     private final String maximaRepresentation;
     private final ValueWrapper valueWrapper;
-    
-    public QtiMaximaSessionExecuteStringCircularTests(String maximaRepresentation, ValueWrapper valueWrapper) {
+
+    public QtiMaximaSessionExecuteStringCircularTests(final String maximaRepresentation, final ValueWrapper valueWrapper) {
         this.maximaRepresentation = maximaRepresentation;
         this.valueWrapper = valueWrapper;
     }
-    
+
     @Test
     public void runTest() throws Exception {
-        ValueWrapper valueWrapperResult = process.executeStringOutput(maximaRepresentation, false, valueWrapper.getClass());
+        final ValueWrapper valueWrapperResult = process.executeStringOutput(maximaRepresentation, false, valueWrapper.getClass());
         Assert.assertEquals(valueWrapper, valueWrapperResult);
     }
 }

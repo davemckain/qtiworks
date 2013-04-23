@@ -33,15 +33,13 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.MaximaDataBinder;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.BooleanValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.StringOrderedValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.StringValueWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueOrVariableWrapper;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.WrapperUtilities;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -52,55 +50,55 @@ import org.junit.Test;
 public class MaximaDataBinderTests {
 
     private final MaximaDataBinder binder = new MaximaDataBinder();
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testToMaximaExpressionNull1() {
         binder.toMaximaExpression((ValueOrVariableWrapper) null);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testParseMaximaLinearOutputNull1() {
         binder.parseMaximaLinearOutput(null, BooleanValueWrapper.class);
     }
-    
+
     @Test(expected=IllegalArgumentException.class)
     public void testParseMaximaLinearOutputNull2() {
         binder.parseMaximaLinearOutput("", null);
     }
-    
+
     @Test
     public void testParseEmptyStringCase() {
         /* string("") -> empty result special case test */
-        StringValueWrapper result = binder.parseMaximaLinearOutput("", StringValueWrapper.class);
+        final StringValueWrapper result = binder.parseMaximaLinearOutput("", StringValueWrapper.class);
         Assert.assertEquals("", result.getValue());
     }
-    
+
     @Test
     public void testParseMultiLineStringCase() {
         /* string("a\nb") -> "a\\\nb" special case test */
-        StringValueWrapper result = binder.parseMaximaLinearOutput("\"a\\\nb\"", StringValueWrapper.class);
+        final StringValueWrapper result = binder.parseMaximaLinearOutput("\"a\\\nb\"", StringValueWrapper.class);
         Assert.assertNotNull(result);
         Assert.assertEquals("a\nb", result.getValue());
     }
-    
+
     @Test
     public void testParseEmptyStringList1Case() {
         /* string([""]) -> [] special case test */
-        StringOrderedValueWrapper result = binder.parseMaximaLinearOutput("[]", StringOrderedValueWrapper.class);
+        final StringOrderedValueWrapper result = binder.parseMaximaLinearOutput("[]", StringOrderedValueWrapper.class);
         Assert.assertEquals(WrapperUtilities.createCompoundValue(StringOrderedValueWrapper.class, StringValueWrapper.class, ""), result);
     }
-    
+
     @Test
     public void testParseEmptyStringList2Case() {
         /* string(["",""]) -> [,] special case test */
-        StringOrderedValueWrapper result = binder.parseMaximaLinearOutput("[,]", StringOrderedValueWrapper.class);
+        final StringOrderedValueWrapper result = binder.parseMaximaLinearOutput("[,]", StringOrderedValueWrapper.class);
         Assert.assertEquals(WrapperUtilities.createCompoundValue(StringOrderedValueWrapper.class, StringValueWrapper.class, "", ""), result);
     }
-    
+
     @Test
     public void testParseEmptyStringList3Case() {
         /* string(["","a"]) -> [,"a"] special case test */
-        StringOrderedValueWrapper result = binder.parseMaximaLinearOutput("[,\"a\"]", StringOrderedValueWrapper.class);
+        final StringOrderedValueWrapper result = binder.parseMaximaLinearOutput("[,\"a\"]", StringOrderedValueWrapper.class);
         Assert.assertEquals(WrapperUtilities.createCompoundValue(StringOrderedValueWrapper.class, StringValueWrapper.class, "", "a"), result);
     }
 }

@@ -33,11 +33,12 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
@@ -48,7 +49,7 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -64,28 +65,26 @@ import java.util.Map;
  * @author David McKain
  */
 @ObjectDumperOptions(DumpMode.DEEP)
-public final class TestSessionState implements Serializable {
+public final class TestSessionState extends ControlObjectSessionState implements Serializable {
 
     private static final long serialVersionUID = 9006603629987329773L;
 
     private final TestPlan testPlan;
-    private final Map<Identifier, Value> outcomeValues;
-    private FloatValue durationValue;
     private final Map<TestPlanNodeKey, TestPartSessionState> testPartSessionStates;
+    private final Map<TestPlanNodeKey, AssessmentSectionSessionState> assessmentSectionSessionStates;
     private final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates;
+    private final Map<Identifier, Value> outcomeValues;
 
-    private boolean entered;
-    private boolean ended;
-    private boolean exited;
     private TestPlanNodeKey currentTestPartKey;
     private TestPlanNodeKey currentItemKey;
 
     public TestSessionState(final TestPlan testPlan) {
         Assert.notNull(testPlan, "testPlan");
         this.testPlan = testPlan;
-        this.outcomeValues = new HashMap<Identifier, Value>();
-        this.testPartSessionStates = new HashMap<TestPlanNodeKey, TestPartSessionState>();
-        this.itemSessionStates = new HashMap<TestPlanNodeKey, ItemSessionState>();
+        this.testPartSessionStates = new LinkedHashMap<TestPlanNodeKey, TestPartSessionState>();
+        this.assessmentSectionSessionStates = new LinkedHashMap<TestPlanNodeKey, AssessmentSectionSessionState>();
+        this.itemSessionStates = new LinkedHashMap<TestPlanNodeKey, ItemSessionState>();
+        this.outcomeValues = new LinkedHashMap<Identifier, Value>();
         reset();
     }
 
@@ -99,56 +98,29 @@ public final class TestSessionState implements Serializable {
         return testPartSessionStates;
     }
 
+    public Map<TestPlanNodeKey, AssessmentSectionSessionState> getAssessmentSectionSessionStates() {
+        return assessmentSectionSessionStates;
+    }
+
     public Map<TestPlanNodeKey, ItemSessionState> getItemSessionStates() {
         return itemSessionStates;
     }
 
     //----------------------------------------------------------------
 
+    @Override
     public void reset() {
-        this.entered = false;
-        this.ended = false;
-        this.exited = false;
+        super.reset();
+        this.testPartSessionStates.clear();
+        this.assessmentSectionSessionStates.clear();
+        this.itemSessionStates.clear();
+        this.outcomeValues.clear();
         this.currentTestPartKey = null;
         this.currentItemKey = null;
-        this.outcomeValues.clear();
-        this.testPartSessionStates.clear();
-        this.itemSessionStates.clear();
-        resetBuiltinVariables();
-    }
 
-    public void resetBuiltinVariables() {
-        setDuration(0);
     }
 
     //----------------------------------------------------------------
-
-    public boolean isEntered() {
-		return entered;
-	}
-
-	public void setEntered(final boolean entered) {
-		this.entered = entered;
-	}
-
-
-    public boolean isEnded() {
-		return ended;
-	}
-
-	public void setEnded(final boolean ended) {
-		this.ended = ended;
-	}
-
-
-	public boolean isExited() {
-        return exited;
-    }
-
-	public void setExited(final boolean exited) {
-        this.exited = exited;
-    }
-
 
     public TestPlanNodeKey getCurrentTestPartKey() {
         return currentTestPartKey;
@@ -173,24 +145,19 @@ public final class TestSessionState implements Serializable {
     }
 
     //----------------------------------------------------------------
-    // Built-in variable manipulation
+    // Duration calculation
 
     @ObjectDumperOptions(DumpMode.IGNORE)
-    public FloatValue getDurationValue() {
-        return durationValue;
+    public FloatValue computeDurationValue() {
+        return new FloatValue(computeDuration());
     }
 
-    public void setDurationValue(final FloatValue value) {
-        Assert.notNull(value);
-        this.durationValue = value;
-    }
-
-    public double getDuration() {
-        return getDurationValue().doubleValue();
-    }
-
-    public void setDuration(final double duration) {
-        setDurationValue(new FloatValue(duration));
+    public double computeDuration() {
+        if (getDurationIntervalStartTime()!=null) {
+            /* Duration interval is open, so return nonsense value but don't actually fail */
+            return -1;
+        }
+        return getDurationAccumulated() / 1000.0;
     }
 
     //----------------------------------------------------------------
@@ -237,8 +204,8 @@ public final class TestSessionState implements Serializable {
     public Value getVariableValue(final Identifier identifier) {
         Assert.notNull(identifier);
         Value result;
-        if (AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
-            result = durationValue;
+        if (QtiConstants.VARIABLE_DURATION_IDENTIFIER.equals(identifier)) {
+            result = computeDurationValue();
         }
         else {
             result = getOutcomeValue(identifier);
@@ -255,31 +222,28 @@ public final class TestSessionState implements Serializable {
         }
 
         final TestSessionState other = (TestSessionState) obj;
-        return testPlan.equals(other.testPlan)
-        		&& entered==other.entered
-        		&& ended==other.ended
-                && exited==other.exited
-                && currentTestPartKey.equals(other.currentTestPartKey)
-                && currentItemKey.equals(other.currentItemKey)
-                && durationValue.equals(other.durationValue)
-                && outcomeValues.equals(other.outcomeValues)
+        return super.equals(obj)
+                && ObjectUtilities.nullSafeEquals(currentTestPartKey, other.currentTestPartKey)
+                && ObjectUtilities.nullSafeEquals(currentItemKey, other.currentItemKey)
                 && testPartSessionStates.equals(other.testPartSessionStates)
-                && itemSessionStates.equals(other.itemSessionStates);
+                && assessmentSectionSessionStates.equals(other.assessmentSectionSessionStates)
+                && itemSessionStates.equals(other.itemSessionStates)
+                && outcomeValues.equals(other.outcomeValues)
+                && testPlan.equals(other.testPlan)
+                ;
     }
 
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[] {
+                super.hashCode(),
                 testPlan,
-                entered,
-                ended,
-                exited,
+                testPartSessionStates,
+                assessmentSectionSessionStates,
+                itemSessionStates,
                 currentTestPartKey,
                 currentItemKey,
-                durationValue,
-                outcomeValues,
-                testPartSessionStates,
-                itemSessionStates
+                outcomeValues
         });
     }
 
@@ -287,14 +251,16 @@ public final class TestSessionState implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(testPlan=" + testPlan
-                + ",entered=" + entered
-                + ",ended=" + ended
-                + ",exited=" + exited
+                + ",entryTime=" + getEntryTime()
+                + ",endTime=" + getEndTime()
+                + ",exitTime=" + getExitTime()
+                + ",durationAccumulated=" + getDurationAccumulated()
+                + ",durationIntervalStartTime=" + getDurationIntervalStartTime()
                 + ",currentTestPartKey=" + currentTestPartKey
                 + ",currentItemKey=" + currentItemKey
-                + ",durationValue=" + durationValue
                 + ",outcomeValues=" + outcomeValues
                 + ",testPartSessionStates=" + testPartSessionStates
+                + ",assessmentSectionSessionStates=" + assessmentSectionSessionStates
                 + ",itemSessionStates=" + itemSessionStates
                 + ")";
     }

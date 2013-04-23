@@ -36,6 +36,9 @@ package uk.ac.ed.ph.jqtiplus.state.marshalling;
 import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.state.AbstractPartSessionState;
+import uk.ac.ed.ph.jqtiplus.state.ControlObjectSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -51,8 +54,11 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +85,8 @@ public final class XmlMarshallerCore {
     /** Namespace used for custom QTIWorks XML */
     public static final String QTIWORKS_NAMESPACE = "http://www.ph.ed.ac.uk/qtiworks";
 
+	private static final String dateFormatString = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZ";
+
     //----------------------------------------------
     // Marshalling to XML
 
@@ -103,10 +111,39 @@ public final class XmlMarshallerCore {
         }
     }
 
+    static void maybeAddStringAttribute(final Element element, final String attributeName, final String value) {
+        if (value!=null) {
+            element.setAttribute(attributeName, value);
+        }
+    }
+
     static void maybeAddIdentifierListAttribute(final Element element, final String attributeName, final Collection<Identifier> values) {
         if (!values.isEmpty()) {
             element.setAttribute(attributeName, StringUtilities.join(values, " "));
         }
+    }
+
+    static void maybeAddDateAttribute(final Element element, final String attributeName, final Date date) {
+        if (date!=null) {
+            element.setAttribute(attributeName, new SimpleDateFormat(dateFormatString).format(date));
+        }
+    }
+
+    static void addAbstractPartSessionStateAttributes(final Element element, final AbstractPartSessionState abstractPartSessionState) {
+    	addControlObjectSessionStateAttributes(element, abstractPartSessionState);
+        element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(abstractPartSessionState.isPreConditionFailed()));
+        final String branchRuleTarget = abstractPartSessionState.getBranchRuleTarget();
+        if (branchRuleTarget!=null) {
+            element.setAttribute("branchRuleTarget", branchRuleTarget.toString());
+        }
+    }
+
+    static void addControlObjectSessionStateAttributes(final Element element, final ControlObjectSessionState controlObjectState) {
+        maybeAddDateAttribute(element, "entryTime", controlObjectState.getEntryTime());
+        maybeAddDateAttribute(element, "endTime", controlObjectState.getEndTime());
+        maybeAddDateAttribute(element, "exitTime", controlObjectState.getExitTime());
+        maybeAddDateAttribute(element, "durationIntervalStartTime", controlObjectState.getDurationIntervalStartTime());
+        element.setAttribute("durationAccumulated", Long.toString(controlObjectState.getDurationAccumulated()));
     }
 
     static void appendValues(final Element parentElement, final String elementName, final Map<Identifier, Value> valueMap) {
@@ -257,8 +294,34 @@ public final class XmlMarshallerCore {
         }
     }
 
+    static long parseOptionalLongAttribute(final Element element, final String attrName, final long defaultValue) {
+        if (!element.hasAttribute(attrName)) {
+            return defaultValue;
+        }
+        final String attrValue = element.getAttribute(attrName);
+        try {
+            return Long.parseLong(attrValue);
+        }
+        catch (final NumberFormatException e) {
+            throw new XmlUnmarshallingException("Could not parse long attribute value " + attrValue + " for " + attrName);
+        }
+    }
+
     static String parseOptionalStringAttribute(final Element element, final String attrName) {
         return element.hasAttribute(attrName) ? element.getAttribute(attrName) : null;
+    }
+
+    static Date parseOptionalDateAttribute(final Element element, final String attrName) {
+        final String attrValue = element.getAttribute(attrName);
+        if (attrValue.isEmpty()) {
+            return null;
+        }
+        try {
+			return new SimpleDateFormat(dateFormatString).parse(attrValue);
+		}
+        catch (final ParseException e) {
+            throw new XmlUnmarshallingException("Could not parse Date attribute", e);
+		}
     }
 
     static URI parseOptionalUriAttribute(final Element element, final String attrName) {
@@ -268,6 +331,27 @@ public final class XmlMarshallerCore {
         catch (final URISyntaxException e) {
             throw new XmlUnmarshallingException("Could not parse URI attribute", e);
         }
+    }
+
+    static TestPlanNodeKey parseOptionalTestPlanNodeKeyAttribute(final Element element, final String localName) {
+        if (!element.hasAttribute(localName)) {
+            return null;
+        }
+        return TestPlanXmlMarshaller.requireTestPlanNodeKeyAttribute(element, localName);
+    }
+
+    static void parseAbstractPartSessionStateAttributes(final AbstractPartSessionState target, final Element element) {
+    	parseControlObjectSessionStateAttributes(target, element);
+    	target.setPreConditionFailed(parseOptionalBooleanAttribute(element, "preConditionFailed", false));
+    	target.setBranchRuleTarget(parseOptionalStringAttribute(element, "branchRuleTarget"));
+    }
+
+    static void parseControlObjectSessionStateAttributes(final ControlObjectSessionState target, final Element element) {
+        target.setEntryTime(parseOptionalDateAttribute(element, "entryTime"));
+        target.setEndTime(parseOptionalDateAttribute(element, "endTime"));
+        target.setExitTime(parseOptionalDateAttribute(element, "exitTime"));
+        target.setDurationIntervalStartTime(parseOptionalDateAttribute(element, "durationIntervalStartTime"));
+        target.setDurationAccumulated(parseOptionalLongAttribute(element, "durationAccumulated", 0L));
     }
 
     static Value parseValue(final Element element) {

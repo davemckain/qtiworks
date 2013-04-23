@@ -80,6 +80,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
@@ -97,6 +98,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,12 +125,8 @@ import org.springframework.web.multipart.MultipartFile;
  * - solutions
  * - itemSessionControl (all but candidateComment)
  * - multiple testParts
- * - preCondition on testParts
+ * - preConditon and branchRule
  * - test / test part "during" and "atEnd" feedback
- *
- * STILL TO DO:
- * - preCondition (elsewhere)
- * - branchRule
  *
  * @author David McKain
  *
@@ -381,7 +379,7 @@ public class CandidateTestDeliveryService {
         final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
         renderingRequest.setTestSessionState(testSessionState);
-        renderingRequest.setEndTestPartAllowed(testSessionController.mayEndTestPart());
+        renderingRequest.setEndTestPartAllowed(testSessionController.mayEndCurrentTestPart());
 
         candidateAuditLogger.logTestPartNavigationRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
@@ -428,8 +426,8 @@ public class CandidateTestDeliveryService {
         final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
         final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(currentItemKey);
 
-        if (itemSessionState.isClosed()) {
-            /* Item session closed */
+        if (itemSessionState.isEnded()) {
+            /* Item session ended */
             renderItemEventWhenClosed(candidateEvent, currentItemKey, testSessionState, itemSessionState, renderingOptions, resultStream);
         }
         else {
@@ -456,19 +454,19 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
 //        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
 
-        /* Compute current value for 'duration' */
-        final double duration = computeTestSessionDuration(candidateSession);
-
         /* Will need to query certain parts of state */
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, new NotificationRecorder(NotificationLevel.INFO));
         final TestPart currentTestPart = testSessionController.getCurrentTestPart();
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
 
-        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequestCustomDuration(candidateSession,
-                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING, duration);
+        final EffectiveItemSessionControl effectiveItemSessionControl = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey).getEffectiveItemSessionControl();
+
+        final TestItemRenderingRequest renderingRequest = initTestItemRenderingRequest(candidateSession,
+                itemKey, testSessionState, itemSessionState, renderingOptions, RenderingMode.INTERACTING);
         renderingRequest.setTestPartNavigationAllowed(navigationMode==NavigationMode.NONLINEAR);
-        renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayFinishItemLinear());
+        renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndItemLinear());
+        renderingRequest.setCandidateCommentAllowed(effectiveItemSessionControl.isAllowComment());
         return renderingRequest;
     }
 
@@ -502,6 +500,7 @@ public class CandidateTestDeliveryService {
         renderingRequest.setFinishItemAllowed(navigationMode==NavigationMode.LINEAR);
         renderingRequest.setReviewTestPartAllowed(false); /* Not in review state yet */
         renderingRequest.setTestItemSolutionAllowed(false); /* Ditto */
+        renderingRequest.setCandidateCommentAllowed(false); /* No comments allowed now */
         return renderingRequest;
     }
 
@@ -564,26 +563,12 @@ public class CandidateTestDeliveryService {
     private TestItemRenderingRequest initTestItemRenderingRequest(final CandidateSession candidateSession,
             final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
             final RenderingOptions renderingOptions, final RenderingMode renderingMode) {
-        return initTestItemRenderingRequestCustomDuration(candidateSession, itemKey, testSessionState,
-                itemSessionState, renderingOptions, renderingMode, -1.0);
-    }
-
-    private TestItemRenderingRequest initTestItemRenderingRequestCustomDuration(final CandidateSession candidateSession,
-            final TestPlanNodeKey itemKey, final TestSessionState testSessionState, final ItemSessionState itemSessionState,
-            final RenderingOptions renderingOptions, final RenderingMode renderingMode,
-            final double durationOverride) {
         final Delivery delivery = candidateSession.getDelivery();
         final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
         /* Get System ID of current item */
         final URI itemSystemId = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey).getItemSystemId();
-
-        /* Extract ItemSessionState XML for this event and override the value for duration if caller
-         * supplies a non-negative duration */
-        if (durationOverride >= 0.0) {
-            testSessionState.setDuration(durationOverride);
-        }
 
         final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
         initBaseRenderingRequest(renderingRequest, assessmentPackage, testDeliverySettings, renderingOptions);
@@ -612,36 +597,22 @@ public class CandidateTestDeliveryService {
         assessmentRenderer.renderTestItem(renderingRequest, notifications, resultStream);
     }
 
-    /**
-     * Computes the current value for the <code>duration</code> variable for this session.
-     * <p>
-     * Currently, this is just the length of time since the session was first opened.
-     * We DO NOT yet support breaking sessions time-wise.
-     *
-     * @return computed value for <code>duration</code>, which will be non-negative.
-     */
-    private double computeTestSessionDuration(final CandidateSession candidateSession) {
-        final long startTime = candidateSession.getCreationTime().getTime();
-        final long currentTime = requestTimestampContext.getCurrentRequestTimestamp().getTime();
-
-        final double duration = (currentTime - startTime) / 1000.0;
-        return duration;
-    }
-
     //----------------------------------------------------
-    // Attempt
+    // Response handling
 
     public void handleResponses(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap,
+            final String candidateComment)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        handleResponses(candidateSession, stringResponseMap, fileResponseMap);
+        handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
 
     public void handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
-            final Map<Identifier, MultipartFile> fileResponseMap)
+            final Map<Identifier, MultipartFile> fileResponseMap,
+            final String candidateComment)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -711,8 +682,16 @@ public class CandidateTestDeliveryService {
             candidateResponseMap.put(responseIdentifier, candidateItemResponse);
         }
 
+        /* Submit comment (if provided).
+         * NB: Need to do this first in case later response handling ends the item session.
+         */
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        if (candidateComment!=null) {
+            testSessionController.setCandidateCommentForCurrentItem(timestamp, candidateComment);
+        }
+
         /* Attempt to bind responses (and maybe perform RP & OP) */
-        testSessionController.handleResponses(responseDataMap);
+        testSessionController.handleResponsesToCurrentItem(timestamp, responseDataMap);
 
         /* Note any responses that failed to bind */
         final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();
@@ -734,9 +713,6 @@ public class CandidateTestDeliveryService {
                 }
             }
         }
-
-        /* Update JQTI state */
-        testSessionState.setDuration(computeTestSessionDuration(candidateSession));
 
         /* Classify this event */
         final SubmissionMode submissionMode = testSessionController.getCurrentTestPart().getSubmissionMode();
@@ -789,7 +765,8 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        testSessionController.selectItemNonlinear(null);
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.selectItemNonlinear(requestTimestamp, null);
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -823,7 +800,8 @@ public class CandidateTestDeliveryService {
         }
 
         /* Update state */
-        testSessionController.selectItemNonlinear(itemKey);
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.selectItemNonlinear(requestTimestamp, itemKey);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -851,12 +829,13 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-        if (!testSessionController.mayFinishItemLinear()) {
+        if (!testSessionController.mayEndItemLinear()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
         }
 
         /* Update state */
-        testSessionController.finishItemLinear();
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.endItemLinear(requestTimestamp);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -889,8 +868,8 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        /* FIXME: This is probably not the right logic in general but works OK in this restricted case */
-        testSessionController.endTestPart();
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.endCurrentTestPart(requestTimestamp);
 
         /* Record assessmentResult (not necessarily final) */
         final AssessmentResult assessmentResult = candidateDataServices.computeTestAssessmentResult(candidateSession, testSessionController);
@@ -1036,23 +1015,34 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart();
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
 
-        if (nextTestPart==null) {
-            /* We exited the last test part.
-             *
-             * For single part tests, we terminate the test completely as the test feedback was shown with the testPart feedback.
+
+        CandidateTestEventType eventType;
+        if (nextTestPart!=null) {
+            /* Moved into next test part */
+            eventType = CandidateTestEventType.ADVANCE_TEST_PART;
+        }
+        else {
+            /* No more test parts */
+            /* For single part tests, we terminate the test completely now as the test feedback was shown with the testPart feedback.
              * For multi-part tests, we shall keep the test open so that the test feedback can be viewed.
              */
             if (testSessionState.getTestPlan().getTestPartNodes().size()==1) {
+                eventType = CandidateTestEventType.EXIT_TEST;
+                testSessionController.exitTest(timestamp);
                 candidateSession.setTerminated(true);
                 candidateSessionDao.update(candidateSession);
+            }
+            else {
+                eventType = CandidateTestEventType.ADVANCE_TEST_PART;
             }
         }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.ADVANCE_TEST_PART, testSessionState, notificationRecorder);
+                eventType, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;
@@ -1082,7 +1072,8 @@ public class CandidateTestDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
-        testSessionController.exitTest();
+        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        testSessionController.exitTest(requestTimestamp);
 
         /* Update CandidateSession as appropriate */
         candidateSession.setTerminated(true);
@@ -1090,7 +1081,7 @@ public class CandidateTestDeliveryService {
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
-                CandidateTestEventType.EXIT_MULTI_PART_TEST, testSessionState, notificationRecorder);
+                CandidateTestEventType.EXIT_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         return candidateSession;

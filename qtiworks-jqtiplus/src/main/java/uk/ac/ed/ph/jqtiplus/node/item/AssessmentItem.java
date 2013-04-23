@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.node.item;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.value.BooleanAttribute;
 import uk.ac.ed.ph.jqtiplus.attribute.value.StringAttribute;
 import uk.ac.ed.ph.jqtiplus.group.item.ItemBodyGroup;
@@ -54,7 +55,6 @@ import uk.ac.ed.ph.jqtiplus.node.item.response.processing.ResponseProcessing;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.item.template.processing.TemplateProcessing;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
@@ -72,6 +72,7 @@ import javax.xml.XMLConstants;
  *
  * @author Jonathon Hare
  * @author Jiri Kajaba
+ * @author David McKain
  */
 public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
@@ -101,41 +102,19 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /** Name of toolVersion attribute in xml schema. */
     public static final String ATTR_TOOL_VERSION_NAME = "toolVersion";
 
-    /** Name of completion status built-in variable. */
-    public static final String VARIABLE_COMPLETION_STATUS = "completionStatus";
-
-    /** Name of completion status built-in variable. */
-    public static final Identifier VARIABLE_COMPLETION_STATUS_IDENTIFIER = Identifier.assumedLegal("completionStatus");
-
-    /** Value of completion status built-in variable. */
-    public static final String VALUE_ITEM_IS_NOT_ATTEMPTED = "not_attempted";
-
-    /** Value of completion status built-in variable. */
-    public static final String VALUE_ITEM_IS_UNKNOWN = "unknown";
-
-    /** Value of completion status built-in variable. */
-    public static final String VALUE_ITEM_IS_COMPLETED = "completed";
-
-    /** Value of completion status built-in variable. */
-    public static final String VALUE_ITEM_IS_INCOMPLETE = "incomplete";
-
-    /** Name of number of attempts built-in variable. */
-    public static final String VARIABLE_NUMBER_OF_ATTEMPTS = "numAttempts";
-
-    public static final Identifier VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER = Identifier.assumedLegal(VARIABLE_NUMBER_OF_ATTEMPTS);
-
-    /** Name of duration built-in variable. */
-    public static final String VARIABLE_DURATION = "duration";
-
-    public static final Identifier VARIABLE_DURATION_IDENTIFIER = Identifier.assumedLegal(VARIABLE_DURATION);
-
-    private URI systemId;
-
+    /** (Implicit) declaration for <code>completionStatus</code> */
     private final OutcomeDeclaration completionStatusOutcomeDeclaration;
 
+    /** (Implicit) declaration for <code>numAttempts</code> */
     private final ResponseDeclaration numAttemptsResponseDeclaration;
 
+    /** (Implicit) declaraiton for <code>duration</code> */
     private final ResponseDeclaration durationResponseDeclaration;
+
+    /** System ID of this RootNode (optional) */
+    private URI systemId;
+
+
 
     /**
      * Constructs assessmentItem.
@@ -165,19 +144,19 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
         /* create a special declaration for the internal completionStatus variable */
         completionStatusOutcomeDeclaration = new OutcomeDeclaration(this);
-        completionStatusOutcomeDeclaration.setIdentifier(VARIABLE_COMPLETION_STATUS_IDENTIFIER);
+        completionStatusOutcomeDeclaration.setIdentifier(QtiConstants.VARIABLE_COMPLETION_STATUS_IDENTIFIER);
         completionStatusOutcomeDeclaration.setCardinality(Cardinality.SINGLE);
         completionStatusOutcomeDeclaration.setBaseType(BaseType.IDENTIFIER);
 
         /* create a special declaration for the internal numAttempts variable */
         numAttemptsResponseDeclaration = new ResponseDeclaration(this);
-        numAttemptsResponseDeclaration.setIdentifier(VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
+        numAttemptsResponseDeclaration.setIdentifier(QtiConstants.VARIABLE_NUMBER_OF_ATTEMPTS_IDENTIFIER);
         numAttemptsResponseDeclaration.setCardinality(Cardinality.SINGLE);
         numAttemptsResponseDeclaration.setBaseType(BaseType.INTEGER);
 
         /* create a special declaration for the internal duration variable */
         durationResponseDeclaration = new ResponseDeclaration(this);
-        durationResponseDeclaration.setIdentifier(VARIABLE_DURATION_IDENTIFIER);
+        durationResponseDeclaration.setIdentifier(QtiConstants.VARIABLE_DURATION_IDENTIFIER);
         durationResponseDeclaration.setCardinality(Cardinality.SINGLE);
         durationResponseDeclaration.setBaseType(BaseType.FLOAT);
     }
@@ -388,7 +367,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Returns {@link ResponseDeclaration} for the implicitly-defined
-     * {@link #VARIABLE_DURATION_IDENTIFIER} variable
+     * {@link QtiConstants#VARIABLE_DURATION_IDENTIFIER} variable
      */
     public ResponseDeclaration getDurationResponseDeclaration() {
         return durationResponseDeclaration;
@@ -396,7 +375,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Returns {@link ResponseDeclaration} for the implicitly-defined
-     * {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variable
+     * {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS} variable
      */
     public ResponseDeclaration getNumAttemptsResponseDeclaration() {
         return numAttemptsResponseDeclaration;
@@ -404,7 +383,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Returns {@link OutcomeDeclaration} for the implicitly-defined
-     * {@link #VARIABLE_COMPLETION_STATUS_IDENTIFIER} variable
+     * {@link QtiConstants#VARIABLE_COMPLETION_STATUS_IDENTIFIER} variable
      */
     public OutcomeDeclaration getCompletionStatusOutcomeDeclaration() {
         return completionStatusOutcomeDeclaration;
@@ -412,23 +391,9 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     //---------------------------------------------------------------
 
-    @Deprecated
-    @Override
-    public VariableDeclaration getVariableDeclaration(final Identifier identifier) {
-        Assert.notNull(identifier);
-        VariableDeclaration result = getResponseDeclaration(identifier);
-        if (result == null) {
-            result = getOutcomeDeclaration(identifier);
-            if (result == null) {
-                result = getTemplateDeclaration(identifier);
-            }
-        }
-        return result;
-    }
-
     /**
      * Gets all explicitly-defined outcomeDeclaration children.
-     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_COMPLETION_STATUS} variable
+     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_COMPLETION_STATUS} variable
      *
      * @return outcomeDeclaration children
      */
@@ -440,7 +405,7 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
     /**
      * Gets (first) explicitly-defined outcomeDeclaration with given identifier,
      * or null if no such declaration exists.
-     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_COMPLETION_STATUS} variable
+     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_COMPLETION_STATUS} variable
      *
      * @param identifier given identifier
      * @return outcomeDeclaration with given identifier or null
@@ -460,8 +425,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
 
     /**
      * Gets all responseDeclaration children.
-     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_DURATION}
-     * and {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variables.
+     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_DURATION}
+     * and {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS} variables.
      *
      * @return responseDeclaration children
      */
@@ -473,8 +438,8 @@ public class AssessmentItem extends AbstractNode implements AssessmentObject {
      * Gets (first) explicitly-defined responseDeclaration with given identifier,
      * or null if no such variable is defined.
      * <p>
-     * NB: Doesn't include the implicitly-defined {@link #VARIABLE_DURATION}
-     * and {@link #VARIABLE_NUMBER_OF_ATTEMPTS} variables.
+     * NB: Doesn't include the implicitly-defined {@link QtiConstants#VARIABLE_DURATION}
+     * and {@link QtiConstants#VARIABLE_NUMBER_OF_ATTEMPTS} variables.
      *
      * @param identifier given identifier
      * @return responseDeclaration with given identifier or null

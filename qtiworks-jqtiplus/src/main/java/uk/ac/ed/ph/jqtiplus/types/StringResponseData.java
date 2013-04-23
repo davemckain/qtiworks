@@ -78,4 +78,18 @@ public final class StringResponseData implements ResponseData {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(" + responseData + ")";
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof StringResponseData)) {
+            return false;
+        }
+        final StringResponseData other = (StringResponseData) obj;
+        return responseData.equals(other.responseData);
+    }
+
+    @Override
+    public int hashCode() {
+        return responseData.hashCode();
+    }
 }

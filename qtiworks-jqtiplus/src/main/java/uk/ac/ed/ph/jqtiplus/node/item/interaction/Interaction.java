@@ -40,10 +40,11 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.content.BodyElement;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.Choice;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.types.FileResponseData;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.ResponseData;
@@ -62,14 +63,16 @@ import uk.ac.ed.ph.jqtiplus.value.Value;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Interactions allow the candidate to interact with the item.
  * Through an interaction, the candidate selects or constructs A response.
  * The candidate's responses are stored in the response variables. Each
  * interaction is associated with (at least) one response variable.
  *
+ * @see Shuffleable
+ *
  * @author Jonathon Hare
+ * @author David McKain
  */
 public abstract class Interaction extends BodyElement {
 
@@ -95,7 +98,6 @@ public abstract class Interaction extends BodyElement {
     public void setResponseIdentifier(final Identifier responseIdentifier) {
         getAttributes().getIdentifierAttribute(ATTR_RESPONSE_IDENTIFIER_NAME).setValue(responseIdentifier);
     }
-
 
     /**
      * NB: Don't use this for validation as it only returns the first {@link ResponseDeclaration}
@@ -132,12 +134,13 @@ public abstract class Interaction extends BodyElement {
     protected abstract void validateThis(final ValidationContext context, final ResponseDeclaration responseDeclaration);
 
     /**
-     * Initializes the interaction. (E.g. shuffling choices)
-     * <p>
-     * Subclasses should override this method as required.
+     * Helper for implementations of {@link Shuffleable} to wrap up simple (single)
+     * lists of choice in the form expected by {@link Shuffleable#computeShuffleableChoices()}
      */
-    public void initialize(@SuppressWarnings("unused") final ItemSessionController itemSessionController) {
-        /* Let subclasses override as required */
+    public static <C extends Choice> List<List<C>> wrapSingleChoiceList(final List<C> choices) {
+        final List<List<C>> result = new ArrayList<List<C>>();
+        result.add(choices);
+        return result;
     }
 
     /**
@@ -145,7 +148,7 @@ public abstract class Interaction extends BodyElement {
      * List of Strings, set the appropriate response variables.
      * <p>
      * This default implementation calls up {@link #parseResponse(ResponseDeclaration, ResponseData)}
-     * and sets the value of the appropriate response declaration. You'll need to override this
+     * and sets the value of the appropriate uncommitted response declaration. You'll need to override this
      * for things that might do more, such as string interactions that might bind two variables.
      * <p>
      * (This was called <tt>processResponse</tt> previously, which I found confusing.)
@@ -154,12 +157,12 @@ public abstract class Interaction extends BodyElement {
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
-    public void bindResponse(final ItemSessionController itemSessionController, final ResponseData responseData)
+    public void bindResponse(final InteractionBindingContext interactionBindingContext, final ResponseData responseData)
             throws ResponseBindingException {
         Assert.notNull(responseData, "responseData");
         final ResponseDeclaration responseDeclaration = getResponseDeclaration();
         final Value value = parseResponse(responseDeclaration, responseData);
-        itemSessionController.getItemSessionState().setResponseValue(this, value);
+        interactionBindingContext.bindResponseVariable(responseDeclaration.getIdentifier(), value);
     }
 
     /**
@@ -175,7 +178,7 @@ public abstract class Interaction extends BodyElement {
      *
      * @param responseData Response to process, which will never be null
      * @param responseDeclaration underlying response declaration
-     * @see #bindResponse(ItemSessionController, ResponseData)
+     * @see #bindResponse(InteractionBindingContext, ResponseData)
      * @throws ResponseBindingException if the response cannot be bound to the
      *             value encoded by the responseList
      */
@@ -230,9 +233,9 @@ public abstract class Interaction extends BodyElement {
 
     /**
      * Validate the response associated with this interaction.
-     * This is called after {@link #bindResponse(ItemSessionController, ResponseData)}
+     * This is called after {@link #bindResponse(InteractionBindingContext, ResponseData)}
      *
      * @return true if the response is valid, false otherwise
      */
-    public abstract boolean validateResponse(ItemSessionController itemSessionController, Value responseValue);
+    public abstract boolean validateResponse(InteractionBindingContext interactionBindingContext, Value responseValue);
 }

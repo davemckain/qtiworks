@@ -11,7 +11,7 @@
     </defaultValue>
   </outcomeDeclaration>
   <testPart identifier="P1" navigationMode="nonlinear" submissionMode="individual">
-    <itemSessionControl allowReview="true" showFeedback="true" showSolution="true"/>
+    <itemSessionControl allowReview="true" showFeedback="true" showSolution="true" allowComment="true"/>
     <assessmentSection identifier="S1" title="Simple Nonlinear/Individual Test" visible="true">
       <rubricBlock view="candidate">
         <p>

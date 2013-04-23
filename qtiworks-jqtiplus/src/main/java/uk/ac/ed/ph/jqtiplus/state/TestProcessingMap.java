@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
@@ -136,7 +137,7 @@ public final class TestProcessingMap implements Serializable {
 
     public boolean isValidVariableIdentifier(final Identifier identifier) {
         return validOutcomeDeclarationMap.containsKey(identifier) ||
-                AssessmentTest.VARIABLE_DURATION_IDENTIFIER.equals(identifier);
+                QtiConstants.VARIABLE_DURATION_IDENTIFIER.equals(identifier);
     }
 
     public Map<Identifier, OutcomeDeclaration> getValidOutcomeDeclarationMap() {

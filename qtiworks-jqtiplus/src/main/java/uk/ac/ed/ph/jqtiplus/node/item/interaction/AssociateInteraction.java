@@ -40,7 +40,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleAssociableChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.ListValue;
@@ -73,7 +73,8 @@ import java.util.Map;
  *
  * @author Jonathon Hare
  */
-public final class AssociateInteraction extends BlockInteraction implements SimpleAssociableChoiceContainer, Shuffleable {
+public final class AssociateInteraction extends BlockInteraction implements SimpleAssociableChoiceContainer,
+        Shuffleable<SimpleAssociableChoice> {
 
     private static final long serialVersionUID = -6064451970355204988L;
 
@@ -174,13 +175,12 @@ public final class AssociateInteraction extends BlockInteraction implements Simp
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getSimpleAssociableChoices());
+    public List<List<SimpleAssociableChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getSimpleAssociableChoices());
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         /* Extract response values */
         final List<PairValue> responseAssociations = new ArrayList<PairValue>();
         if (responseValue.isNull()) {

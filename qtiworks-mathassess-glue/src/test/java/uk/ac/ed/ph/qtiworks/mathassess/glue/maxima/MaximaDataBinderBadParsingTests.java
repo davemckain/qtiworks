@@ -33,14 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.mathassess.glue.maxima;
 
-
-import uk.ac.ed.ph.qtiworks.mathassess.glue.maxima.MaximaDataBinder;
 import uk.ac.ed.ph.qtiworks.mathassess.glue.types.ValueWrapper;
 
 import java.util.Collection;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -53,24 +50,24 @@ import org.junit.runners.Parameterized.Parameters;
  */
 @RunWith(Parameterized.class)
 public class MaximaDataBinderBadParsingTests {
-    
+
     @Parameters
     public static Collection<Object[]> data() throws Exception {
         return MaximaDataBindingSamples.BAD_PARSING_EXAMPLES;
     }
-    
+
     private final String maximaRepresentation;
     private final Class<? extends ValueWrapper> valueWrapperClass;
-    
-    public MaximaDataBinderBadParsingTests(String maximaRepresentation, Class<? extends ValueWrapper> valueWrapperClass) {
+
+    public MaximaDataBinderBadParsingTests(final String maximaRepresentation, final Class<? extends ValueWrapper> valueWrapperClass) {
         this.maximaRepresentation = maximaRepresentation;
         this.valueWrapperClass = valueWrapperClass;
     }
-    
+
     @Test
     public void runTest() {
-        MaximaDataBinder binder = new MaximaDataBinder();
-        ValueWrapper valueWrapperResult = binder.parseMaximaLinearOutput(maximaRepresentation, valueWrapperClass);
+        final MaximaDataBinder binder = new MaximaDataBinder();
+        final ValueWrapper valueWrapperResult = binder.parseMaximaLinearOutput(maximaRepresentation, valueWrapperClass);
         Assert.assertNull(valueWrapperResult);
     }
 }

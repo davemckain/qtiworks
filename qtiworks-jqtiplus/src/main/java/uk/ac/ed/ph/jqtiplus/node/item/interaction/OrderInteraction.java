@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleChoice;
 import uk.ac.ed.ph.jqtiplus.node.item.interaction.choice.SimpleChoiceContainer;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
+import uk.ac.ed.ph.jqtiplus.running.InteractionBindingContext;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
@@ -92,7 +92,7 @@ import java.util.Set;
  *
  * @author Jonathon Hare
  */
-public final class OrderInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable {
+public final class OrderInteraction extends BlockInteraction implements SimpleChoiceContainer, Shuffleable<SimpleChoice> {
 
     private static final long serialVersionUID = 4283024380579062066L;
 
@@ -207,13 +207,12 @@ public final class OrderInteraction extends BlockInteraction implements SimpleCh
     }
 
     @Override
-    public void initialize(final ItemSessionController itemSessionController) {
-        super.initialize(itemSessionController);
-        itemSessionController.shuffleInteractionChoiceOrder(this, getSimpleChoices());
+    public List<List<SimpleChoice>> computeShuffleableChoices() {
+        return Interaction.wrapSingleChoiceList(getSimpleChoices());
     }
 
     @Override
-    public boolean validateResponse(final ItemSessionController itemSessionController, final Value responseValue) {
+    public boolean validateResponse(final InteractionBindingContext interactionBindingContext, final Value responseValue) {
         /* Extract response values */
         final Set<Identifier> responseChoiceIdentifiers = new HashSet<Identifier>();
         if (responseValue.isNull()) {

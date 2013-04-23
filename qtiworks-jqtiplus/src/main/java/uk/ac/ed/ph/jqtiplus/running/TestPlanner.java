@@ -58,8 +58,8 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -126,7 +126,7 @@ public final class TestPlanner extends ListenerNotificationFirer {
         this.testProcessingMap = testProcessingMap;
         this.resolvedAssessmentTest = testProcessingMap.getResolvedAssessmentTest();
         this.test = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
-        this.testPlanNodesByIdentifierMap = new HashMap<Identifier, List<TestPlanNode>>();
+        this.testPlanNodesByIdentifierMap = new LinkedHashMap<Identifier, List<TestPlanNode>>();
         this.testPlanRootNode = TestPlanNode.createRoot();
     }
 
