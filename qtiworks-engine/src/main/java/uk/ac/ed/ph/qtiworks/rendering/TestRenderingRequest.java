@@ -35,17 +35,68 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
-import java.net.URI;
+import javax.validation.constraints.NotNull;
 
 /**
- * FIXME: Document this!
+ * Encapsulates the required data for rendering the current state of an item
+ * within a test
  *
  * @author David McKain
  */
-interface TestRenderingRequest {
+public abstract class TestRenderingRequest extends AbstractRenderingRequest<TestRenderingOptions> {
 
-    URI getAssessmentResourceUri();
+    /** {@link TestSessionState} owning this item */
+    @NotNull
+    private TestSessionState testSessionState;
 
-    TestSessionState getTestSessionState();
+    private boolean testPartNavigationAllowed;
+    private boolean finishItemAllowed;
+    private boolean reviewTestPartAllowed;
+    private boolean testItemSolutionAllowed;
 
+    //----------------------------------------------------
+
+    public TestSessionState getTestSessionState() {
+        return testSessionState;
+    }
+
+    public void setTestSessionState(final TestSessionState testSessionState) {
+        this.testSessionState = testSessionState;
+    }
+
+
+    public boolean isTestPartNavigationAllowed() {
+        return testPartNavigationAllowed;
+    }
+
+    public void setTestPartNavigationAllowed(final boolean testPartNavigationAllowed) {
+        this.testPartNavigationAllowed = testPartNavigationAllowed;
+    }
+
+
+    public boolean isFinishItemAllowed() {
+        return finishItemAllowed;
+    }
+
+    public void setFinishItemAllowed(final boolean finishItemAllowed) {
+        this.finishItemAllowed = finishItemAllowed;
+    }
+
+
+    public boolean isReviewTestPartAllowed() {
+        return reviewTestPartAllowed;
+    }
+
+    public void setReviewTestPartAllowed(final boolean reviewTestPartAllowed) {
+        this.reviewTestPartAllowed = reviewTestPartAllowed;
+    }
+
+
+    public boolean isTestItemSolutionAllowed() {
+        return testItemSolutionAllowed;
+    }
+
+    public void setTestItemSolutionAllowed(final boolean testItemSolutionAllowed) {
+        this.testItemSolutionAllowed = testItemSolutionAllowed;
+    }
 }

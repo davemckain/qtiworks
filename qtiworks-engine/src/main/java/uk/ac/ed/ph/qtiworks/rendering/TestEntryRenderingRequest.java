@@ -45,7 +45,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class TestEntryRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
+public final class TestEntryRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequestIF {
 
     /** Required {@link TestSessionState} to be rendered */
     @NotNull

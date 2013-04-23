@@ -7,9 +7,8 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -89,18 +88,18 @@ public class TestItemRenderingTest {
 
             System.out.println("\nRendering state after selection of first item");
 
-            final RenderingOptions renderingOptions = RunUtilities.createRenderingOptions();
+            final TestRenderingOptions renderingOptions = RunUtilities.createTestRenderingOptions();
             final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setAssessmentItemUri(itemUri);
             renderingRequest.setTestSessionState(testSessionState);
             renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
-//            renderingRequest.setItemRenderingOptions(renderingOptions);
+            renderingRequest.setItemKey(firstItemRef.getKey());
+            renderingRequest.setRenderingMode(null);
+            renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAuthorMode(true);
             renderingRequest.setAllowComment(true);
-            renderingRequest.setItemKey(firstItemRef.getKey());
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

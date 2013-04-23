@@ -34,8 +34,8 @@
 package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 
 /**
  * FIXME: Document this type
@@ -44,19 +44,10 @@ import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
  */
 public final class RunUtilities {
 
-    @Deprecated
-    public static RenderingOptions createRenderingOptions() {
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath("/qtiworks");
-        renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setCloseUrl("/close");
-        renderingOptions.setResetUrl("/reset");
-        renderingOptions.setReinitUrl("/reinit");
-        renderingOptions.setSolutionUrl("/solution");
-        renderingOptions.setResultUrl("/result");
-        renderingOptions.setSourceUrl("/source");
+    public static TestRenderingOptions createTestRenderingOptions() {
+        final TestRenderingOptions renderingOptions = new TestRenderingOptions();
+        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setServeFileUrl("/serveFile");
-        renderingOptions.setTerminateUrl("/terminate");
         renderingOptions.setTestPartNavigationUrl("/test-part-navigation");
         renderingOptions.setSelectTestItemUrl("/select-item");
         renderingOptions.setFinishTestItemUrl("/finish-item");
@@ -66,13 +57,13 @@ public final class RunUtilities {
         renderingOptions.setShowTestItemSolutionUrl("/item-solution");
         renderingOptions.setAdvanceTestPartUrl("/advance-test-part");
         renderingOptions.setExitTestUrl("/exit-test");
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         return renderingOptions;
     }
 
     public static ItemRenderingOptions createItemRenderingOptions() {
         final ItemRenderingOptions result = new ItemRenderingOptions();
         result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        result.setServeFileUrl("/serveFile");
         result.setAttemptUrl("/attempt");
         result.setCloseUrl("/close");
         result.setResetUrl("/reset");
@@ -80,7 +71,6 @@ public final class RunUtilities {
         result.setSolutionUrl("/solution");
         result.setResultUrl("/result");
         result.setSourceUrl("/source");
-        result.setServeFileUrl("/serveFile");
         result.setTerminateUrl("/terminate");
         return result;
     }

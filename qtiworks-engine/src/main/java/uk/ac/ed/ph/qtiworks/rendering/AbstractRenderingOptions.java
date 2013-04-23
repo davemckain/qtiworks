@@ -42,8 +42,6 @@ import javax.validation.constraints.NotNull;
 /**
  * Encapsulates general options for passing to the {@link AssessmentRenderer}.
  *
- * FIXME: Split item- & test-specific options
- *
  * @author David McKain
  */
 public abstract class AbstractRenderingOptions implements Serializable {

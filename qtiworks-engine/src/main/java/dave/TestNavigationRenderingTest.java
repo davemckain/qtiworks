@@ -74,7 +74,7 @@ public class TestNavigationRenderingTest {
 
             System.out.println("\nRendering");
 
-            final RenderingOptions renderingOptions = RunUtilities.createRenderingOptions();
+            final RenderingOptions renderingOptions = RunUtilities.createTestRenderingOptions();
             final TestPartNavigationRenderingRequest renderingRequest = new TestPartNavigationRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);

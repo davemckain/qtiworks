@@ -33,58 +33,20 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import java.net.URI;
 
-import javax.validation.constraints.NotNull;
-
 /**
- * Base class for item rendering
+ * FIXME: Document this!
  *
  * @author David McKain
  */
-public abstract class AbstractItemRenderingRequest<P extends AbstractRenderingOptions> extends AbstractRenderingRequest<P> {
+@Deprecated
+interface TestRenderingRequestIF {
 
-    /** URI of the {@link AssessmentItem} being rendered */
-    @NotNull
-    private URI assessmentItemUri;
+    URI getAssessmentResourceUri();
 
-    /** Selected {@link RenderingMode} */
-    @ToRefactor
-    private RenderingMode renderingMode;
+    TestSessionState getTestSessionState();
 
-    /** Required {@link ItemSessionState} to be rendered */
-    @NotNull
-    private ItemSessionState itemSessionState;
-
-    //----------------------------------------------------
-
-    public URI getAssessmentItemUri() {
-        return assessmentItemUri;
-    }
-
-    public void setAssessmentItemUri(final URI assessmentItemUri) {
-        this.assessmentItemUri = assessmentItemUri;
-    }
-
-
-    public RenderingMode getRenderingMode() {
-        return renderingMode;
-    }
-
-    public void setRenderingMode(final RenderingMode renderingMode) {
-        this.renderingMode = renderingMode;
-    }
-
-
-    public ItemSessionState getItemSessionState() {
-        return itemSessionState;
-    }
-
-    public void setItemSessionState(final ItemSessionState itemSessionState) {
-        this.itemSessionState = itemSessionState;
-    }
 }

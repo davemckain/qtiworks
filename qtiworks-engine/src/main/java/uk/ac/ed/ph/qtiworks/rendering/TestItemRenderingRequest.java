@@ -33,10 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
+
+import java.net.URI;
 
 import javax.validation.constraints.NotNull;
 
@@ -46,11 +51,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class TestItemRenderingRequest extends AbstractItemRenderingRequest implements TestRenderingRequest {
-
-    /** {@link TestSessionState} owning this item */
-    @NotNull
-    private TestSessionState testSessionState;
+public final class TestItemRenderingRequest extends TestRenderingRequest {
 
     /**
      * Key of the item being rendered within the test.
@@ -61,10 +62,17 @@ public final class TestItemRenderingRequest extends AbstractItemRenderingRequest
     @NotNull
     private TestPlanNodeKey itemKey;
 
-    private boolean testPartNavigationAllowed;
-    private boolean finishItemAllowed;
-    private boolean reviewTestPartAllowed;
-    private boolean testItemSolutionAllowed;
+    /** URI of the {@link AssessmentItem} being rendered */
+    @NotNull
+    private URI assessmentItemUri;
+
+    /** Selected {@link RenderingMode} */
+    @ToRefactor
+    private RenderingMode renderingMode;
+
+    /** Required {@link ItemSessionState} to be rendered */
+    @NotNull
+    private ItemSessionState itemSessionState;
 
     /**
      * When in review state, this is the effective value of 'showFeedback' for this Node.
@@ -80,16 +88,6 @@ public final class TestItemRenderingRequest extends AbstractItemRenderingRequest
 
     //----------------------------------------------------
 
-    @Override
-    public TestSessionState getTestSessionState() {
-        return testSessionState;
-    }
-
-    public void setTestSessionState(final TestSessionState testSessionState) {
-        this.testSessionState = testSessionState;
-    }
-
-
     public TestPlanNodeKey getItemKey() {
         return itemKey;
     }
@@ -99,39 +97,30 @@ public final class TestItemRenderingRequest extends AbstractItemRenderingRequest
     }
 
 
-    public boolean isTestPartNavigationAllowed() {
-        return testPartNavigationAllowed;
+    public URI getAssessmentItemUri() {
+        return assessmentItemUri;
     }
 
-    public void setTestPartNavigationAllowed(final boolean testPartNavigationAllowed) {
-        this.testPartNavigationAllowed = testPartNavigationAllowed;
-    }
-
-
-    public boolean isFinishItemAllowed() {
-        return finishItemAllowed;
-    }
-
-    public void setFinishItemAllowed(final boolean finishItemAllowed) {
-        this.finishItemAllowed = finishItemAllowed;
+    public void setAssessmentItemUri(final URI assessmentItemUri) {
+        this.assessmentItemUri = assessmentItemUri;
     }
 
 
-    public boolean isReviewTestPartAllowed() {
-        return reviewTestPartAllowed;
+    public RenderingMode getRenderingMode() {
+        return renderingMode;
     }
 
-    public void setReviewTestPartAllowed(final boolean reviewTestPartAllowed) {
-        this.reviewTestPartAllowed = reviewTestPartAllowed;
+    public void setRenderingMode(final RenderingMode renderingMode) {
+        this.renderingMode = renderingMode;
     }
 
 
-    public boolean isTestItemSolutionAllowed() {
-        return testItemSolutionAllowed;
+    public ItemSessionState getItemSessionState() {
+        return itemSessionState;
     }
 
-    public void setTestItemSolutionAllowed(final boolean testItemSolutionAllowed) {
-        this.testItemSolutionAllowed = testItemSolutionAllowed;
+    public void setItemSessionState(final ItemSessionState itemSessionState) {
+        this.itemSessionState = itemSessionState;
     }
 
 
