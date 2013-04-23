@@ -246,6 +246,7 @@ public class AssessmentRenderer {
         setTestRenderingParameters(xsltParameters, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         xsltParameters.put("itemKey", renderingRequest.getItemKey().toString());
+        xsltParameters.put("allowComment", Boolean.valueOf(renderingRequest.isCandidateCommentAllowed())); /* FIXME: Change this! */
         xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.isShowFeedback()));
 
         /* Set navigation action permissions */

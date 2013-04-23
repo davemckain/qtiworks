@@ -40,6 +40,9 @@ NB: This is used both while being presented, and during review.
   <!-- Effective value of itemSessionControl/@showFeedback for this item -->
   <xsl:param name="showFeedback" as="xs:boolean"/>
 
+  <!-- Effective value of itemSessionControl/@allowComment for this item -->
+  <xsl:param name="allowComment" as="xs:boolean"/>
+
   <!--
   Keep reference to assesssmentItem element as the processing chain goes off on a tangent
   at one point.
@@ -262,7 +265,7 @@ NB: This is used both while being presented, and during review.
         <xsl:apply-templates/>
 
         <xsl:choose>
-          <xsl:when test="$isSessionOpen and $candidateCommentAllowed">
+          <xsl:when test="$isSessionOpen and $allowComment">
             <fieldset class="candidateComment">
               <legend>Please use the following text box if you need to provide any additional information, comments or feedback during this test:</legend>
               <input name="qtiworks_comment_presented" type="hidden" value="true"/>
