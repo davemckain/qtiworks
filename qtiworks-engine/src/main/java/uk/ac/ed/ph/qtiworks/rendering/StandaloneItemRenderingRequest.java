@@ -33,35 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-
-import java.net.URI;
-
-import javax.validation.constraints.NotNull;
-
 /**
  * Encapsulates the required data for rendering the current state of a standalone
  * item.
  *
  * @author David McKain
  */
-public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
-
-    /** URI of the {@link AssessmentItem} being rendered */
-    @NotNull
-    private URI assessmentItemUri;
-
-    /** Selected {@link RenderingMode} */
-    @NotNull
-    private RenderingMode renderingMode;
-
-    /** Required {@link ItemSessionState} to be rendered */
-    @NotNull
-    private ItemSessionState itemSessionState;
+public final class StandaloneItemRenderingRequest extends AbstractItemRenderingRequest {
 
     private String prompt;
-
     private boolean closeAllowed;
     private boolean resetAllowed;
     private boolean reinitAllowed;
@@ -71,33 +51,6 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
     private boolean candidateCommentAllowed;
 
     //----------------------------------------------------
-
-    public URI getAssessmentItemUri() {
-        return assessmentItemUri;
-    }
-
-    public void setAssessmentItemUri(final URI assessmentItemUri) {
-        this.assessmentItemUri = assessmentItemUri;
-    }
-
-
-    public RenderingMode getRenderingMode() {
-        return renderingMode;
-    }
-
-    public void setRenderingMode(final RenderingMode renderingMode) {
-        this.renderingMode = renderingMode;
-    }
-
-
-    public ItemSessionState getItemSessionState() {
-        return itemSessionState;
-    }
-
-    public void setItemSessionState(final ItemSessionState itemSessionState) {
-        this.itemSessionState = itemSessionState;
-    }
-
 
     public String getPrompt() {
         return prompt;

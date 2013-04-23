@@ -210,6 +210,7 @@ public class AssessmentRenderer {
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, renderingRequest);
         setItemRenderingParameters(xsltParameters, renderingRequest);
+        setStandaloneItemRenderingParameters(xsltParameters, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
 
         doTransform(renderingRequest, itemStandaloneXsltUri, renderingRequest.getAssessmentItemUri(),
@@ -246,7 +247,7 @@ public class AssessmentRenderer {
         setTestRenderingParameters(xsltParameters, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         xsltParameters.put("itemKey", renderingRequest.getItemKey().toString());
-        xsltParameters.put("allowComment", Boolean.valueOf(renderingRequest.isCandidateCommentAllowed())); /* FIXME: Change this! */
+        xsltParameters.put("allowComment", Boolean.valueOf(renderingRequest.isAllowComment())); /* FIXME: Change this! */
         xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.isShowFeedback()));
 
         /* Set navigation action permissions */
@@ -274,16 +275,22 @@ public class AssessmentRenderer {
         /* Pass ItemSessionState (as DOM Document) */
         final TestSessionState testSessionState = renderingRequest.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
-
     }
 
     private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
+            final AbstractItemRenderingRequest renderingRequest) {
+        /* Pass ItemSessionState (as DOM Document) */
+        final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
+        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
+        xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
+    }
+
+    private void setStandaloneItemRenderingParameters(final Map<String, Object> xsltParameters,
             final StandaloneItemRenderingRequest renderingRequest) {
         /* Set config parameters */
         xsltParameters.put("prompt", renderingRequest.getPrompt());
 
         /* Set control parameters */
-        xsltParameters.put("renderingMode", renderingRequest.getRenderingMode().toString());
         xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
         xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
         xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));
@@ -291,10 +298,6 @@ public class AssessmentRenderer {
         xsltParameters.put("sourceAllowed", Boolean.valueOf(renderingRequest.isSourceAllowed()));
         xsltParameters.put("resultAllowed", Boolean.valueOf(renderingRequest.isResultAllowed()));
         xsltParameters.put("candidateCommentAllowed", Boolean.valueOf(renderingRequest.isCandidateCommentAllowed()));
-
-        /* Pass ItemSessionState (as DOM Document) */
-        final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
-        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
     }
 
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters,

@@ -46,7 +46,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class TestItemRenderingRequest extends StandaloneItemRenderingRequest implements TestRenderingRequest {
+public final class TestItemRenderingRequest extends AbstractItemRenderingRequest implements TestRenderingRequest {
 
     /** {@link TestSessionState} owning this item */
     @NotNull
@@ -71,6 +71,12 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
      * @see EffectiveItemSessionControl#isShowFeedback()
      */
     private boolean showFeedback;
+
+    /**
+     * When in interactiving, this is the effective value of 'allowComment' for this Node.
+     * @see EffectiveItemSessionControl#isAllowComment()
+     */
+    private boolean allowComment;
 
     //----------------------------------------------------
 
@@ -135,5 +141,14 @@ public final class TestItemRenderingRequest extends StandaloneItemRenderingReque
 
     public void setShowFeedback(final boolean showFeedback) {
         this.showFeedback = showFeedback;
+    }
+
+
+    public boolean isAllowComment() {
+        return allowComment;
+    }
+
+    public void setAllowComment(final boolean allowComment) {
+        this.allowComment = allowComment;
     }
 }
