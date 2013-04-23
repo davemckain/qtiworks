@@ -210,7 +210,7 @@ public class AssessmentRenderer {
         }
 
         /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, renderingRequest);
         setItemRenderingParameters(xsltParameters, renderingRequest);
@@ -243,7 +243,7 @@ public class AssessmentRenderer {
         }
 
         /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
 
         setBaseRenderingParameters(xsltParameters, renderingRequest);
@@ -369,7 +369,7 @@ public class AssessmentRenderer {
         }
 
         /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters, renderingRequest);
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
@@ -409,7 +409,7 @@ public class AssessmentRenderer {
 //        final RenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
 
         /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         setBaseRenderingParameters(xsltParameters, renderingRequest);
@@ -452,7 +452,7 @@ public class AssessmentRenderer {
 //        final RenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
 
         /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         setBaseRenderingParameters(xsltParameters, renderingRequest);
@@ -491,7 +491,7 @@ public class AssessmentRenderer {
 //        final RenderingOptions renderingOptions = renderingRequest.getItemRenderingOptions();
 
         /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder(jqtiExtensionManager);
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
         setBaseRenderingParameters(xsltParameters, renderingRequest);
