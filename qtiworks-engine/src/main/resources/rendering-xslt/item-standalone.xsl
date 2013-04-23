@@ -123,15 +123,15 @@ Renders a standalone assessmentItem
         </xsl:if>
 
         <!-- Candidate status -->
-        <xsl:if test="$renderingMode=('SOLUTION', 'CLOSED')">
+        <xsl:if test="$isItemSessionEnded">
           <div class="candidateStatus">
             <xsl:choose>
               <xsl:when test="$renderingMode='SOLUTION'">
                 A model solution to this assessment is shown below.
               </xsl:when>
-              <xsl:when test="$renderingMode='CLOSED'">
+              <xsl:otherwise>
                 This assessment is now complete.
-              </xsl:when>
+              </xsl:otherwise>
             </xsl:choose>
           </div>
         </xsl:if>
@@ -186,14 +186,14 @@ Renders a standalone assessmentItem
         <xsl:if test="$resetAllowed">
           <li>
             <form action="{$webappContextPath}{$resetUrl}" method="post">
-              <input type="submit" value="Reset{if ($isSessionEnded) then ' and play again' else ''}"/>
+              <input type="submit" value="Reset{if ($isItemSessionEnded) then ' and play again' else ''}"/>
             </form>
           </li>
         </xsl:if>
         <xsl:if test="$reinitAllowed">
           <li>
             <form action="{$webappContextPath}{$reinitUrl}" method="post">
-              <input type="submit" value="Reinitialise{if ($isSessionEnded) then ' and play again' else ''}"/>
+              <input type="submit" value="Reinitialise{if ($isItemSessionEnded) then ' and play again' else ''}"/>
             </form>
           </li>
         </xsl:if>
@@ -265,7 +265,7 @@ Renders a standalone assessmentItem
           </fieldset>
         </xsl:if>
 
-        <xsl:if test="$isSessionOpen">
+        <xsl:if test="$isItemSessionOpen">
           <div class="controls">
             <input id="submit_button" name="submit" type="submit" value="SUBMIT RESPONSE"/>
           </div>

@@ -48,6 +48,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRemove;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -511,13 +512,6 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
-    private void doTransform(final AbstractRenderingRequest renderingRequest, final URI stylesheetUri,
-            final URI inputUri,
-            final OutputStream resultStream, final Map<String, Object> xsltParameters) {
-        throw new QtiWorksLogicException("FILL IN");
-    }
-
-
     private void doTransform(final StandaloneItemRenderingRequest renderingRequest, final URI stylesheetUri,
             final URI inputUri,
             final OutputStream resultStream, final Map<String, Object> xsltParameters) {
@@ -579,4 +573,13 @@ public class AssessmentRenderer {
             throw new QtiRenderingException("Unexpected Exception doing XSLT transform", e);
         }
     }
+
+    @ToRemove
+    private void doTransform(final AbstractRenderingRequest renderingRequest, final URI stylesheetUri,
+            final URI inputUri,
+            final OutputStream resultStream, final Map<String, Object> xsltParameters) {
+        throw new QtiWorksLogicException("FILL IN");
+    }
+
+
 }

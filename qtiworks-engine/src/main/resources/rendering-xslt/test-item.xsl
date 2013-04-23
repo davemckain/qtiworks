@@ -265,14 +265,14 @@ NB: This is used both while being presented, and during review.
         <xsl:apply-templates/>
 
         <xsl:choose>
-          <xsl:when test="$isSessionOpen and $allowComment">
+          <xsl:when test="$isItemSessionOpen and $allowComment">
             <fieldset class="candidateComment">
               <legend>Please use the following text box if you need to provide any additional information, comments or feedback during this test:</legend>
               <input name="qtiworks_comment_presented" type="hidden" value="true"/>
               <textarea name="qtiworks_comment"><xsl:value-of select="$itemSessionState/qw:candidateComment"/></textarea>
             </fieldset>
           </xsl:when>
-          <xsl:when test="$isSessionEnded and exists($itemSessionState/qw:candidateComment)">
+          <xsl:when test="$isItemSessionEnded and exists($itemSessionState/qw:candidateComment)">
             <fieldset class="candidateComment">
               <legend>You submitted the folllowing comment with this item:</legend>
               <input name="qtiworks_comment_presented" type="hidden" value="true"/>
@@ -281,7 +281,7 @@ NB: This is used both while being presented, and during review.
           </xsl:when>
         </xsl:choose>
 
-        <xsl:if test="$isSessionOpen">
+        <xsl:if test="$isItemSessionOpen">
           <xsl:variable name="submitText" as="xs:string"
             select="if ($currentTestPart/@submissionMode='individual') then 'SUBMIT ANSWER' else 'SAVE ANSWER'"/>
           <div class="controls">
@@ -300,7 +300,7 @@ NB: This is used both while being presented, and during review.
   </xsl:template>
 
   <!-- Disable any buttons in the question (from endAttemptInteraction) if not in interacting state -->
-  <xsl:template match="qti:endAttemptInteraction[not($isSessionOpen)]">
+  <xsl:template match="qti:endAttemptInteraction[not($isItemSessionOpen)]">
     <input type="submit" name="{@responseIdentifier}" value="{@title}" disabled="disabled"/>
   </xsl:template>
 

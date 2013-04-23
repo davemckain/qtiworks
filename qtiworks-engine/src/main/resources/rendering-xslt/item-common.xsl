@@ -34,8 +34,8 @@ rendering.
   <xsl:variable name="outcomeValues" select="$itemSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
   <xsl:variable name="overriddenCorrectResponses" select="$itemSessionState/qw:overriddenCorrectResponse" as="element(qw:overriddenCorrectResponse)*"/>
   <xsl:variable name="sessionStatus" select="$itemSessionState/@sessionStatus" as="xs:string"/>
-  <xsl:variable name="isSessionEnded" as="xs:boolean" select="$itemSessionState/@endTime!=''"/>
-  <xsl:variable name="isSessionOpen" as="xs:boolean" select="$itemSessionState/@entryTime!='' and not($isSessionEnded)"/>
+  <xsl:variable name="isItemSessionEnded" as="xs:boolean" select="$itemSessionState/@endTime!=''"/>
+  <xsl:variable name="isItemSessionOpen" as="xs:boolean" select="$itemSessionState/@entryTime!='' and not($isItemSessionEnded)"/>
 
   <!-- Raw response inputs -->
   <xsl:variable name="responseInputs" select="$itemSessionState/qw:responseInput" as="element(qw:responseInput)*"/>

@@ -39,7 +39,7 @@
         <!-- Now generate selection widget -->
         <xsl:variable name="orientation" select="if (@orientation) then @orientation else 'horizontal'" as="xs:string"/>
         <div class="source box {$orientation}">
-          <xsl:if test="$isSessionOpen">
+          <xsl:if test="$isItemSessionOpen">
             <span class="info">Drag unused items from here...</span>
           </xsl:if>
           <ul class="{$orientation}">
@@ -48,7 +48,7 @@
           <br/>
         </div>
         <div class="target box {$orientation}">
-          <xsl:if test="$isSessionOpen">
+          <xsl:if test="$isItemSessionOpen">
             <span class="info">Drop and order your selected items here...</span>
           </xsl:if>
           <ul class="{$orientation}">

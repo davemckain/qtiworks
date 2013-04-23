@@ -34,6 +34,8 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
+ * FIXME: Redocument this! It no longer works as intended.
+ *
  * This is a (still somewhat experimental) attempt to provide granular information
  * about the current rendering state.
  * <p>
@@ -44,11 +46,15 @@ package uk.ac.ed.ph.qtiworks.rendering;
  */
 public enum RenderingMode {
 
+    @Deprecated
     INTERACTING,
+
+    @Deprecated
     CLOSED,
-    REVIEW, /* NB: Only supported in tests currently */
-    SOLUTION,
-    TERMINATED,
+
+    REVIEW, /* Test only */
+
+    SOLUTION, /* Test & item */
     ;
 
 }
