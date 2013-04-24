@@ -42,12 +42,6 @@ public enum TestRenderingMode {
 
     ITEM_REVIEW,
     ITEM_SOLUTION,
-
-    X_TEST_ENTRY,
-    X_TEST_PART_MENU,
-    X_TEST_ITEM,
-    X_TEST_PART_FEEDBACK,
-    X_TEST_FEEDBACK,
     ;
 
 }

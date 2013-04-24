@@ -48,7 +48,7 @@ import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
-import uk.ac.ed.ph.jqtiplus.node.result.ItemResult;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
@@ -103,15 +103,15 @@ public class CandidateItemController {
         final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
         final ItemRenderingOptions renderingOptions = new ItemRenderingOptions();
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
+        renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
+        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
         renderingOptions.setCloseUrl(sessionBaseUrl + "/close");
         renderingOptions.setSolutionUrl(sessionBaseUrl + "/solution");
         renderingOptions.setResetUrl(sessionBaseUrl + "/reset");
         renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
-        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
-        renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
-        renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateRenderingService.renderCurrentCandidateItemSessionState(xid, sessionToken, renderingOptions, outputStreamer);
@@ -277,7 +277,7 @@ public class CandidateItemController {
     // Informational actions
 
     /**
-     * Streams an {@link ItemResult} representing the current state of the given
+     * Streams an {@link AssessmentResult} representing the current state of the given
      * {@link CandidateSession}
      */
     @RequestMapping(value="/session/{xid}/{sessionToken}/result", method=RequestMethod.GET)

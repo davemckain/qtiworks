@@ -175,6 +175,25 @@ public class CandidateDataServices {
     }
 
     //----------------------------------------------------
+    // Item or Test methods
+
+    public AssessmentResult computeAssessmentResult(final CandidateEvent candidateEvent) {
+        final AssessmentObjectType assessmentType = candidateEvent.getCandidateSession().getDelivery().getAssessment().getAssessmentType();
+        switch (assessmentType) {
+            case ASSESSMENT_ITEM:
+                final ItemSessionController itemSessionController = createItemSessionController(candidateEvent, null);
+                return computeItemAssessmentResult(candidateEvent.getCandidateSession(), itemSessionController);
+
+            case ASSESSMENT_TEST:
+                final TestSessionController testSessionController = createTestSessionController(candidateEvent, null);
+                return computeTestAssessmentResult(candidateEvent.getCandidateSession(), testSessionController);
+
+            default:
+                throw new QtiWorksLogicException("Unexpected switch case " + assessmentType);
+        }
+    }
+
+    //----------------------------------------------------
     // Item methods
 
     public void storeItemSessionState(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState) {

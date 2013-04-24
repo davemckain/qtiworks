@@ -40,7 +40,7 @@ import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 
 /**
- * General options for passing to the {@link AssessmentRenderer}.
+ * General base options for passing to the {@link AssessmentRenderer}.
  *
  * @author David McKain
  */

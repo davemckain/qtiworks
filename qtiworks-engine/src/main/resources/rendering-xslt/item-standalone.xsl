@@ -34,15 +34,11 @@ Renders a standalone assessmentItem
   <xsl:param name="candidateCommentAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Action URLs -->
-  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
   <xsl:param name="resetUrl" as="xs:string" required="yes"/>
   <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
   <xsl:param name="closeUrl" as="xs:string" required="yes"/>
   <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
   <xsl:param name="terminateUrl" as="xs:string" required="yes"/>
-  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
-  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
-  <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
   <!-- ************************************************************ -->
 
@@ -207,7 +203,11 @@ Renders a standalone assessmentItem
         <xsl:if test="$solutionAllowed and $hasModelSolution">
           <li>
             <form action="{$webappContextPath}{$solutionUrl}" method="post">
-              <input type="submit" value="Show model solution"/>
+              <input type="submit" value="Show model solution">
+                <xsl:if test="$solutionMode">
+                  <!-- Already in solution mode -->
+                  <xsl:attribute name="disabled" select="'disabled'"/>
+                </xsl:if>
             </form>
           </li>
         </xsl:if>
@@ -220,7 +220,7 @@ Renders a standalone assessmentItem
       <xsl:if test="$authorMode">
         <div class="authorMode">
           The candidate currently has the following options for this session.
-          You can choose exactly which options are available via the "item delivery".
+          You can choose exactly which options are available via your Item Delivery Settings.
         </div>
       </xsl:if>
       <ul class="controls">
@@ -278,7 +278,7 @@ Renders a standalone assessmentItem
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
       <xsl:when test="$solutionMode">
-        <div class="itemStatus ended">Model Solution</div>
+        <div class="itemStatus review">Model Solution</div>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-imports/>

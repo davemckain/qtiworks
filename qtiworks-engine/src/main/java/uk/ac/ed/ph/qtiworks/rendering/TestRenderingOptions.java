@@ -38,16 +38,13 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import javax.validation.constraints.NotNull;
 
 /**
- * Encapsulates general options for passing to the {@link AssessmentRenderer}.
- *
- * FIXME: Split item- & test-specific options
+ * Rendering options used when rendering tests.
  *
  * @author David McKain
  */
 public final class TestRenderingOptions extends AbstractRenderingOptions {
 
     private static final long serialVersionUID = -1121298920996208870L;
-
 
     @NotNull
     private String selectTestItemUrl;

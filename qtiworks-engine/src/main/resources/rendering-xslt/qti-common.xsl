@@ -24,6 +24,16 @@ rendering.
   <!-- QTIWorks version number -->
   <xsl:param name="qtiWorksVersion" as="xs:string" required="yes"/>
 
+  <!-- Global action permissions -->
+  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
+
+  <!-- Global action URLs -->
+  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
+  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
+  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
+  <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
+
   <!-- URI of the Item or Test being rendered -->
   <xsl:param name="systemId" as="xs:string" required="yes"/>
 
@@ -32,9 +42,6 @@ rendering.
 
   <!-- Notificates produced during the event being rendered -->
   <xsl:param name="notifications" as="element(qw:notification)*"/>
-
-  <!-- Common Action URLs -->
-  <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>

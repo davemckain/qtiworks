@@ -120,9 +120,6 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
 
     //----------------------------------------------------
 
-
-
-
     @Override
     public String toString() {
         return ObjectUtilities.beanToString(this);

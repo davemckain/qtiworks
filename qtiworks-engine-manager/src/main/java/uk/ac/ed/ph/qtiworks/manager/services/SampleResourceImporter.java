@@ -347,6 +347,8 @@ public class SampleResourceImporter {
                 case TEST_WORK_IN_PROGRESS: {
                     final TestDeliverySettings testDeliverySettings = createBaseTestDeliverySettings();
                     testDeliverySettings.setTitle("Tests (work in progress)");
+                    testDeliverySettings.setAllowResult(true);
+                    testDeliverySettings.setAllowSource(true);
                     deliverySettings = testDeliverySettings;
                     break;
                 }

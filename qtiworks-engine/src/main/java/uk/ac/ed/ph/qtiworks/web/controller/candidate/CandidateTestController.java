@@ -48,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -100,6 +101,7 @@ public class CandidateTestController {
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
+        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");
         renderingOptions.setSelectTestItemUrl(sessionBaseUrl + "/select-item");
@@ -338,6 +340,39 @@ public class CandidateTestController {
     }
 
     //----------------------------------------------------
+    // Informational actions
+
+    /**
+     * Streams an {@link AssessmentResult} representing the current state of the given
+     * {@link CandidateSession}
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        response.setContentType("application/xml");
+        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
+    }
+
+    /**
+     * Serves the source of the given {@link AssessmentPackage}
+     *
+     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/source", method=RequestMethod.GET)
+    public void streamPackageSource(@PathVariable final long xid,
+            @PathVariable final String sessionToken,
+            final HttpServletRequest request, final HttpServletResponse response)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
+        final String requestEtag = request.getHeader("If-None-Match");
+        if (resourceEtag.equals(requestEtag)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+        else {
+            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
+            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
+        }
+    }
 
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}

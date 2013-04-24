@@ -7,7 +7,6 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.TestRenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingRequest;
 
@@ -44,7 +43,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  *
  * @author David McKain
  */
-public class TestItemRenderingTest {
+public class TestRenderingTest {
 
     public static void main(final String[] args) {
         final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-testFeedback.xml");
@@ -95,7 +94,7 @@ public class TestItemRenderingTest {
             renderingRequest.setAuthorMode(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
-            renderingRequest.setTestRenderingMode(TestRenderingMode.X_TEST_ITEM);
+            renderingRequest.setTestRenderingMode(null);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

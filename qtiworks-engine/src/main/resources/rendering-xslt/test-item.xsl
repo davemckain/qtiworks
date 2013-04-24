@@ -42,9 +42,6 @@ NB: This is used both while being presented, and during review.
   <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
 
-  <!-- Action URLs -->
-  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
-
   <!-- Relevant properties of EffectiveItemSessionControl for this item -->
   <xsl:param name="showFeedback" as="xs:boolean" required="yes"/>
   <xsl:param name="allowComment" as="xs:boolean" required="yes"/>
@@ -61,8 +58,8 @@ NB: This is used both while being presented, and during review.
       then (/qti:assessentItem/@adaptive='true' or $showFeedback)
       else ($solutionMode)"/>
 
-  <xsl:variable name="itemSolutionAllowed" as="xs:boolean"
-    select="$reviewMode and $showSolution"/>
+  <xsl:variable name="provideItemSolutionButton" as="xs:boolean"
+    select="$reviewMode and $showSolution and not($solutionMode)"/>
 
   <!-- ************************************************************ -->
 
@@ -132,8 +129,9 @@ NB: This is used both while being presented, and during review.
           <xsl:apply-templates select="$assessmentTest/qti:testFeedback[@access='during']"/>
         </xsl:if>
 
-        <!-- Test Session control -->
+        <!-- Session control -->
         <xsl:call-template name="qw:test-controls"/>
+        <xsl:call-template name="qw:session-controls"/>
       </body>
     </html>
   </xsl:template>
@@ -163,7 +161,7 @@ NB: This is used both while being presented, and during review.
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$itemSolutionAllowed">
+        <xsl:if test="$provideItemSolutionButton">
           <li>
             <form action="{$webappContextPath}{$showTestItemSolutionUrl}/{$itemKey}" method="post">
               <input type="submit" value="Show Solution"/>
@@ -224,21 +222,7 @@ NB: This is used both while being presented, and during review.
   <xsl:template match="qti:assessmentItem" mode="render-item">
     <!-- Item title -->
     <h1 class="itemTitle">
-      <!-- FIXME: This isn't very nice! -->
       <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
-      HELLO
-      <xsl:choose>
-        <xsl:when test="$reviewMode">
-          <div class="itemStatus review">Review</div>
-        </xsl:when>
-        <xsl:when test="$solutionMode">
-          <div class="itemStatus review">Model Solution</div>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:value-of select="@title"/>
     </h1>
 
     <!-- Render item body -->
@@ -321,6 +305,10 @@ NB: This is used both while being presented, and during review.
   <!-- Overridden to add support for review state -->
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
+      <!-- NB: Ordering of next 2 is significant -->
+      <xsl:when test="$solutionMode">
+        <div class="itemStatus review">Model Solution</div>
+      </xsl:when>
       <xsl:when test="$reviewMode">
         <div class="itemStatus review">Review</div>
       </xsl:when>

@@ -182,4 +182,35 @@ Base templates used in test rendering
     </xsl:if>
   </xsl:template>
 
+  <!-- ************************************************************ -->
+
+  <xsl:template name="qw:session-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following options for this session.
+          You can choose exactly which options are available via your Test Delivery Settings.
+        </div>
+      </xsl:if>
+      <ul class="controls">
+        <xsl:if test="$resultAllowed">
+          <li>
+            <form action="{$webappContextPath}{$resultUrl}" method="get" class="showXmlInDialog" title="Item Result XML">
+              <input type="submit" value="View &lt;assessmentResult&gt;"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$sourceAllowed">
+          <li>
+            <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">
+              <input type="submit" value="View Item source"/>
+            </form>
+          </li>
+        </xsl:if>
+      </ul>
+    </div>
+  </xsl:template>
+
+
+
 </xsl:stylesheet>

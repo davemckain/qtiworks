@@ -82,8 +82,6 @@ import org.springframework.validation.Validator;
 /**
  * FIXME: Redocument this!
  *
- * FIXME: Refactor this. It has become very messy since starting to implement the test spec!
- *
  * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
  * containing a mixture of C & P. The idea would be that we use the PMathML, if available,
  * or convert the CMathML to PMathML once all substitutions have been made. Potential
@@ -219,9 +217,7 @@ public class AssessmentRenderer {
 
         /* Pass request info to XSLT as parameters */
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
-        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
-        setBaseRenderingParameters(xsltParameters, request);
+        setBaseRenderingParameters(xsltParameters, request, notifications);
 
         /* Pass ItemSessionState (as DOM Document) */
         final ItemSessionState itemSessionState = request.getItemSessionState();
@@ -234,8 +230,6 @@ public class AssessmentRenderer {
         xsltParameters.put("resetAllowed", Boolean.valueOf(request.isResetAllowed()));
         xsltParameters.put("reinitAllowed", Boolean.valueOf(request.isReinitAllowed()));
         xsltParameters.put("solutionAllowed", Boolean.valueOf(request.isSolutionAllowed()));
-        xsltParameters.put("sourceAllowed", Boolean.valueOf(request.isSourceAllowed()));
-        xsltParameters.put("resultAllowed", Boolean.valueOf(request.isResultAllowed()));
         xsltParameters.put("candidateCommentAllowed", Boolean.valueOf(request.isCandidateCommentAllowed()));
 
         /* Set action URLs */
@@ -245,8 +239,6 @@ public class AssessmentRenderer {
         xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
         xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
         xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
-        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
-        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
 
         /* Perform transform */
         doTransform(request, itemStandaloneXsltUri, xsltParameters, resultStream);
@@ -275,10 +267,24 @@ public class AssessmentRenderer {
 
         /* Set up general XSLT parameters */
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
-        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
-        setBaseRenderingParameters(xsltParameters, request);
-        setTestRenderingParameters(xsltParameters, request);
+        setBaseRenderingParameters(xsltParameters, request, notifications);
+
+        final TestSessionController testSessionController = request.getTestSessionController();
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+        xsltParameters.put("testSystemId", request.getAssessmentResourceUri().toString());
+
+        /* Pass rendering options */
+        final TestRenderingOptions renderingOptions = request.getRenderingOptions();
+        xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
+        xsltParameters.put("selectTestItemUrl", renderingOptions.getSelectTestItemUrl());
+        xsltParameters.put("finishTestItemUrl", renderingOptions.getFinishTestItemUrl());
+        xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
+        xsltParameters.put("reviewTestPartUrl", renderingOptions.getReviewTestPartUrl());
+        xsltParameters.put("reviewTestItemUrl", renderingOptions.getReviewTestItemUrl());
+        xsltParameters.put("showTestItemSolutionUrl", renderingOptions.getShowTestItemSolutionUrl());
+        xsltParameters.put("advanceTestPartUrl", renderingOptions.getAdvanceTestPartUrl());
+        xsltParameters.put("exitTestUrl", renderingOptions.getExitTestUrl());
 
         final TestRenderingMode testRenderingMode = request.getTestRenderingMode();
         if (testRenderingMode==TestRenderingMode.ITEM_REVIEW) {
@@ -289,8 +295,6 @@ public class AssessmentRenderer {
         }
         else {
             /* Render current state */
-            final TestSessionController testSessionController = request.getTestSessionController();
-            final TestSessionState testSessionState = testSessionController.getTestSessionState();
             final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
             if (testSessionState.isEnded()) {
                 /* At end of test, so show overall test feedback */
@@ -443,47 +447,31 @@ public class AssessmentRenderer {
         return itemRefNode.getItemSystemId();
     }
 
-    private void setTestRenderingParameters(final Map<String, Object> xsltParameters,
-            final TestRenderingRequest renderingRequest) {
-        xsltParameters.put("testSystemId", renderingRequest.getAssessmentResourceUri().toString());
-
-        /* Pass TestSessionState (as DOM Document) */
-        final TestSessionState testSessionState = renderingRequest.getTestSessionController().getTestSessionState();
-        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
-
-        final TestRenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
-        xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
-        xsltParameters.put("selectTestItemUrl", renderingOptions.getSelectTestItemUrl());
-        xsltParameters.put("finishTestItemUrl", renderingOptions.getFinishTestItemUrl());
-        xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
-        xsltParameters.put("reviewTestPartUrl", renderingOptions.getReviewTestPartUrl());
-        xsltParameters.put("reviewTestItemUrl", renderingOptions.getReviewTestItemUrl());
-        xsltParameters.put("showTestItemSolutionUrl", renderingOptions.getShowTestItemSolutionUrl());
-        xsltParameters.put("advanceTestPartUrl", renderingOptions.getAdvanceTestPartUrl());
-        xsltParameters.put("exitTestUrl", renderingOptions.getExitTestUrl());
-    }
-
     private <P extends AbstractRenderingOptions> void setBaseRenderingParameters(final Map<String, Object> xsltParameters,
-            final AbstractRenderingRequest<P> renderingRequest) {
+            final AbstractRenderingRequest<P> request, final List<CandidateEventNotification> notifications) {
         setBaseRenderingParameters(xsltParameters);
-        xsltParameters.put("authorMode", renderingRequest.isAuthorMode());
+
+        /* Pass notifications */
+        if (notifications!=null) {
+            xsltParameters.put("notifications", new XsltParamBuilder().notificationsToElements(notifications));
+        }
+
+        /* Pass common control parameters */
+        xsltParameters.put("authorMode", request.isAuthorMode());
+        xsltParameters.put("sourceAllowed", Boolean.valueOf(request.isSourceAllowed()));
+        xsltParameters.put("resultAllowed", Boolean.valueOf(request.isResultAllowed()));
 
         /* Pass common action URLs */
-        final P renderingOptions = renderingRequest.getRenderingOptions();
+        final P renderingOptions = request.getRenderingOptions();
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
+        xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
+        xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
     }
 
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters) {
         xsltParameters.put("qtiWorksVersion", qtiWorksProperties.getQtiWorksVersion());
         xsltParameters.put("webappContextPath", webappContextPath);
-    }
-
-    private void setNotificationParameters(final Map<String, Object> xsltParameters,
-            final XsltParamBuilder xsltParamBuilder, final List<CandidateEventNotification> notifications) {
-        if (notifications!=null) {
-            xsltParameters.put("notifications", xsltParamBuilder.notificationsToElements(notifications));
-        }
     }
 
     //----------------------------------------------------

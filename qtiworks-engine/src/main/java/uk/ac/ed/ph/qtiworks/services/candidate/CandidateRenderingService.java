@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
@@ -356,7 +357,7 @@ public class CandidateRenderingService {
         final CandidateTestEventType testEventType = candidateEvent.getTestEventType();
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
         /* Create and partially configure rendering request */
@@ -364,9 +365,11 @@ public class CandidateRenderingService {
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
+        renderingRequest.setAuthorMode(testDeliverySettings.isAuthorMode());
         renderingRequest.setTestSessionController(testSessionController);
         renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setResultAllowed(testDeliverySettings.isAllowResult());
+        renderingRequest.setSourceAllowed(testDeliverySettings.isAllowSource());
 
         /* If session has terminated, render appropriate state and exit */
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
@@ -478,12 +481,11 @@ public class CandidateRenderingService {
         /* Make sure candidate is actually allowed to get results for this delivery */
         ensureCallerMayViewResult(candidateSession);
 
-        /* Get current state */
+        /* Get most recent event */
         final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
 
-        /* Generate result Object from state */
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, null);
-        final AssessmentResult assessmentResult = candidateDataServices.computeItemAssessmentResult(candidateSession, itemSessionController);
+        /* Generate result Object from current state */
+        final AssessmentResult assessmentResult = candidateDataServices.computeAssessmentResult(mostRecentEvent);
 
         /* Send result */
         qtiSerializer.serializeJqtiObject(assessmentResult, outputStream);
