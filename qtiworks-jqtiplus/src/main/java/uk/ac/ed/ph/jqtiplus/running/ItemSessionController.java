@@ -405,7 +405,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         /* Check closed status */
         updateClosedStatus(timestamp); /* (This can't change anything here but I'll keep for completeness) */
 
-        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
+        startItemSessionTimerIfOpen(itemSessionState, timestamp);
         if (!itemSessionState.isEnded()) {
             /* Update SessionStatus */
             itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
@@ -414,10 +414,10 @@ public final class ItemSessionController extends ItemProcessingController implem
 
     /**
      * Touches (updates) the <code>duration</code> variable in the item session if the session is
-     * currently open. Call this
-     * method before rendering and other operations that use rather than change the session state.
+     * currently open. Call this method before rendering and other operations that use rather than
+     * change the session state.
      * <p>
-     * Pre-condition: Item Session must be open and not suspended
+     * Pre-condition: Item Session must have been initialized.
      * <p>
      * Post-condition: Duration variable will be updated (if the item session is currently open)
      *
@@ -425,12 +425,11 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void touchDuration(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertItemOpen();
-        assertItemNotSuspended();
+        assertItemInitialized();
         logger.debug("Touching duration for item {}", item.getSystemId());
 
-        endItemSessionTimer(itemSessionState, timestamp);
-        startItemSessionTimer(itemSessionState, timestamp);
+        endItemSessionTimerIfRunning(itemSessionState, timestamp);
+        startItemSessionTimerIfOpen(itemSessionState, timestamp);
     }
 
     /**
@@ -470,7 +469,7 @@ public final class ItemSessionController extends ItemProcessingController implem
             itemSessionState.setDurationAccumulated(duration);
         }
 
-        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
+        startItemSessionTimerIfOpen(itemSessionState, timestamp);
     }
 
     /**
@@ -508,7 +507,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         /* Check closed status */
         updateClosedStatus(timestamp);
 
-        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
+        startItemSessionTimerIfOpen(itemSessionState, timestamp);
         if (!itemSessionState.isEnded()) {
             /* Update SessionStatus */
             itemSessionState.setSessionStatus(SessionStatus.PENDING_SUBMISSION);
@@ -701,7 +700,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         itemSessionState.setInvalidResponseIdentifiers(invalidResponseIdentifiers);
 
         /* Restart duration timer (if item has stayed open) */
-        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
+        startItemSessionTimerIfOpen(itemSessionState, timestamp);
 
         return unboundResponseIdentifiers.isEmpty() && invalidResponseIdentifiers.isEmpty();
     }
@@ -755,7 +754,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         itemSessionState.setSessionStatus(SessionStatus.PENDING_RESPONSE_PROCESSING);
 
         /* Restart the duration timer (if appropriate) */
-        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
+        startItemSessionTimerIfOpen(itemSessionState, timestamp);
     }
 
 
@@ -848,7 +847,7 @@ public final class ItemSessionController extends ItemProcessingController implem
             updateClosedStatus(timestamp);
 
             /* Start timer again to keep calculating duration */
-            startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
+            startItemSessionTimerIfOpen(itemSessionState, timestamp);
         }
         finally {
             fireJqtiLifecycleEvent(JqtiLifecycleEventType.ITEM_RESPONSE_PROCESSING_FINISHED);
@@ -876,7 +875,7 @@ public final class ItemSessionController extends ItemProcessingController implem
         initResponseState();
         itemSessionState.setSessionStatus(SessionStatus.INITIAL);
         updateClosedStatus(timestamp);
-        startItemSessionTimerIfNotEnded(itemSessionState, timestamp);
+        startItemSessionTimerIfOpen(itemSessionState, timestamp);
     }
 
     /**
@@ -988,8 +987,8 @@ public final class ItemSessionController extends ItemProcessingController implem
         itemSessionState.setDurationIntervalStartTime(timestamp);
     }
 
-    private void startItemSessionTimerIfNotEnded(final ItemSessionState itemSessionState, final Date timestamp) {
-        if (!itemSessionState.isEnded()) {
+    private void startItemSessionTimerIfOpen(final ItemSessionState itemSessionState, final Date timestamp) {
+        if (itemSessionState.isOpen()) {
             startItemSessionTimer(itemSessionState, timestamp);
         }
     }
