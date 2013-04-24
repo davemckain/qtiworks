@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state.marshalling;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.state.AssessmentSectionSessionState;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
@@ -78,6 +79,7 @@ public final class TestSessionStateXmlMarshaller {
     static void appendTestSessionState(final Node documentOrElement, final TestSessionState testSessionState) {
         final Element element = XmlMarshallerCore.appendElement(documentOrElement, "testSessionState");
         XmlMarshallerCore.addControlObjectSessionStateAttributes(element, testSessionState);
+        element.setAttribute("initialized", StringUtilities.toTrueFalse(testSessionState.isInitialized()));
         maybeAddStringifiableAttribute(element, "currentTestPartKey", testSessionState.getCurrentTestPartKey());
         maybeAddStringifiableAttribute(element, "currentItemKey", testSessionState.getCurrentItemKey());
 
@@ -150,6 +152,7 @@ public final class TestSessionStateXmlMarshaller {
 
         /* Extract state attributes */
         XmlMarshallerCore.parseControlObjectSessionStateAttributes(result, element);
+        result.setInitialized(XmlMarshallerCore.parseOptionalBooleanAttribute(element, "initialized", false));
         result.setCurrentTestPartKey(XmlMarshallerCore.parseOptionalTestPlanNodeKeyAttribute(element, "currentTestPartKey"));
         result.setCurrentItemKey(XmlMarshallerCore.parseOptionalTestPlanNodeKeyAttribute(element, "currentItemKey"));
 
