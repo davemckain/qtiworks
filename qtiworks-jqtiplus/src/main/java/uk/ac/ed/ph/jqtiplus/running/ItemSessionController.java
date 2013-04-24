@@ -261,10 +261,10 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Performs Template Processing, with no <code>templateDefaults</code>, then
      * resets Response and Outcome variables to their default values.
      * <p>
-     * Pre-condition: {@link ItemSessionState} must have been initialized. Candidate
+     * Precondition: {@link ItemSessionState} must have been initialized. Candidate
      *   must not have entered the item.
      * <p>
-     * Post-condition: Template variables will be initialized. Response and Outcome
+     * Postcondition: Template variables will be initialized. Response and Outcome
      *   variables will be reset to their default values.
      *
      * @param timestamp timestamp for this event, which must not be null
@@ -279,10 +279,10 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Performs Template Processing using the given <code>templateDefaults</code>,
      * then resets Response and Outcome variables to their default values.
      * <p>
-     * Pre-condition: {@link ItemSessionState} must have been initialized. Candidate
+     * Precondition: {@link ItemSessionState} must have been initialized. Candidate
      *   must not have entered the item.
      * <p>
-     * Post-condition: Template variables will be initialized. Response and Outcome
+     * Postcondition: Template variables will be initialized. Response and Outcome
      *   variables will be reset to their default values.
      *
      * @param timestamp timestamp for this event, which must not be null
@@ -387,9 +387,9 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * "Enters" the item, marking it as having been presented.
      * <p>
-     * Pre-condition: Item Session must have been initialized and not already entered.
+     * Precondition: Item Session must have been initialized and not already entered.
      * <p>
-     * Post-condition: Item Session will have its entry time set and the duration timer
+     * Postcondition: Item Session will have its entry time set and the duration timer
      * will start. The {@link SessionStatus} will be changed to {@link SessionStatus#PENDING_SUBMISSION}
      *
      * @param timestamp timestamp for this event, which must not be null
@@ -417,9 +417,9 @@ public final class ItemSessionController extends ItemProcessingController implem
      * currently open. Call this method before rendering and other operations that use rather than
      * change the session state.
      * <p>
-     * Pre-condition: Item Session must have been initialized.
+     * Precondition: Item Session must have been initialized.
      * <p>
-     * Post-condition: Duration variable will be updated (if the item session is currently open)
+     * Postcondition: Duration variable will be updated (if the item session is currently open)
      *
      * @param timestamp timestamp for this event, which must not be null
      */
@@ -437,9 +437,9 @@ public final class ItemSessionController extends ItemProcessingController implem
      * choose new interaction shuffle orders and run template processing again. The accumulated
      * duration can be reset or maintained as required.
      * <p>
-     * Pre-condition: Item Session must have been entered.
+     * Precondition: Item Session must have been entered.
      * <p>
-     * Post-condition: Item Session will be reinitialized, then template processing will be
+     * Postcondition: Item Session will be reinitialized, then template processing will be
      * run again. The item's entry time will be maintained. The duration timer is reset,
      * if requested, and then restarted.
      *
@@ -477,9 +477,9 @@ public final class ItemSessionController extends ItemProcessingController implem
      * processing. Template variables and shuffled interactions will have their existing state
      * maintained. The accumulated duration can be reset or maintained as required.
      * <p>
-     * Pre-condition: Item Session must have been entered.
+     * Precondition: Item Session must have been entered.
      * <p>
-     * Post-condition: Item Session will be reset back to the state it was on entry. I.e.
+     * Postcondition: Item Session will be reset back to the state it was on entry. I.e.
      * Template Variables will have the values they had after init and template processing;
      * Outcome and Response variables will be reset. The duration timer is reset, if requested,
      * and then restarted. The existing entry time will be maintained.
@@ -517,9 +517,9 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Marks the item session as suspended.
      * <p>
-     * Pre-condition: Item must be open and not suspended.
+     * Precondition: Item must be open and not suspended.
      * <p>
-     * Post-conditions: Item session state will be marked as suspended. Duration
+     * Postconditions: Item session state will be marked as suspended. Duration
      * timer will be stopped.
      *
      * @param timestamp
@@ -537,9 +537,9 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Un-suspends an item previously marked as suspended.
      * <p>
-     * Pre-condition: Item must be open and have been marked as suspended.
+     * Precondition: Item must be open and have been marked as suspended.
      * <p>
-     * Post-conditions: Item session state will be marked as not suspended. Duration
+     * Postconditions: Item session state will be marked as not suspended. Duration
      *   timer will be restarted.
      *
      * @param timestamp timestamp for this event, which must not be null
@@ -557,10 +557,10 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Ends (closes) the item session.
      * <p>
-     * Pre-condition: Item must have been initialized and not have already been ended.
+     * Precondition: Item must have been initialized and not have already been ended.
      * It is OK if the item hasn't been entered.
      * <p>
-     * Post-conditions: Item session state will be marked as ended (closed). Duration
+     * Postconditions: Item session state will be marked as ended (closed). Duration
      * timer will be stopped.
      *
      * @param timestamp timestamp for this event, which must not be null
@@ -577,10 +577,10 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Exits the item session. (This isn't strictly needed when running single items.)
      * <p>
-     * Pre-condition: Item session must have been ended (closed) or not entered due to a
+     * Precondition: Item session must have been ended (closed) or not entered due to a
      * failed preCondition, and not already exited
      * <p>
-     * Post-condition: Exit time will be recorded.
+     * Postcondition: Exit time will be recorded.
      *
      * @param timestamp
      */
@@ -605,9 +605,9 @@ public final class ItemSessionController extends ItemProcessingController implem
      * will be reset from the current committed values at the start of this process. The uncommitted values of {@link EndAttemptInteraction}s
      * are set to {@link BooleanValue#FALSE}.
      * <p>
-     * Pre-condition: Item session must be open and not suspended
+     * Precondition: Item session must be open and not suspended
      * <p>
-     * Post-conditions:
+     * Postconditions:
      * <ul>
      *   <li>Raw response variables will be saved and become available via {@link ItemSessionState#getRawResponseDataMap()}.</li>
      *   <li>The map of uncommitted response variables, available via {@link ItemSessionState#getUncommittedResponseValue(Identifier)}
@@ -710,10 +710,10 @@ public final class ItemSessionController extends ItemProcessingController implem
      * <p>
      * NB: This is not counted as an attempt until {@link #performResponseProcessing(Date)} is invoked.
      * <p>
-     * Pre-condition: Item session must be open and not suspended. Uncommitted response values must previously
+     * Precondition: Item session must be open and not suspended. Uncommitted response values must previously
      * have been saved via {@link #bindResponses(Date, Map)}.
      * <p>
-     * Post-conditions: Committed response variables will be replaced by the uncommitted variables. The
+     * Postconditions: Committed response variables will be replaced by the uncommitted variables. The
      * committed responses can be accessed via {@link ItemSessionState#getResponseValues()} and friends.
      * The uncommitted response variables available via {@link ItemSessionState#getUncommittedResponseValues()}
      * will be cleared. The data about raw, unbound and invalid responses will be maintained.
@@ -762,9 +762,9 @@ public final class ItemSessionController extends ItemProcessingController implem
      * Performs response processing on the <em>currently committed</em> responses,
      * changing {@link #itemSessionState} as appropriate.
      * <p>
-     * Pre-condition: item session must be open and not suspended
+     * Precondition: item session must be open and not suspended
      * <p>
-     * Post-conditions: Outcome Variables will be updated. SessionStatus will be changed to
+     * Postconditions: Outcome Variables will be updated. SessionStatus will be changed to
      * {@link SessionStatus#FINAL}. The <code>numAttempts</code> variables will be incremented (unless
      * directed otherwise by an {@link EndAttemptInteraction}).
      *
@@ -858,9 +858,9 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Resets all responses
      * <p>
-     * Pre-condition: Item session must be open and not suspended
+     * Precondition: Item session must be open and not suspended
      * <p>
-     * Post-condition: Responses are reset to their default values. SessionStatus is
+     * Postcondition: Responses are reset to their default values. SessionStatus is
      * reset to {@link SessionStatus#INITIAL}.
      *
      * @param timestamp timestamp for this event, which must not be null
@@ -881,9 +881,9 @@ public final class ItemSessionController extends ItemProcessingController implem
     /**
      * Sets the candidate comment for this item, replacing any comment that has already been set.
      * <p>
-     * Pre-condition: Item session must be open and not suspended
+     * Precondition: Item session must be open and not suspended
      * <p>
-     * Post-condition: Candidate comment will be changed.
+     * Postcondition: Candidate comment will be changed.
      *
      * @param timestamp timestamp for this event, which must not be null
      * @param comment comment to record, which may be null. An empty or blank comment will be
