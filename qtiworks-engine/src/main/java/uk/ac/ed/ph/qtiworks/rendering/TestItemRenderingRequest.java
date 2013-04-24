@@ -74,17 +74,9 @@ public final class TestItemRenderingRequest extends TestRenderingRequest {
     @NotNull
     private ItemSessionState itemSessionState;
 
-    /**
-     * When in review state, this is the effective value of 'showFeedback' for this Node.
-     * @see EffectiveItemSessionControl#isShowFeedback()
-     */
-    private boolean showFeedback;
-
-    /**
-     * When in interacting, this is the effective value of 'allowComment' for this Node.
-     * @see EffectiveItemSessionControl#isAllowComment()
-     */
-    private boolean allowComment;
+    /** Computed {@link EffectiveItemSessionControl} for this item */
+    @NotNull
+    private EffectiveItemSessionControl effectiveItemSessionControl;
 
     //----------------------------------------------------
 
@@ -124,20 +116,11 @@ public final class TestItemRenderingRequest extends TestRenderingRequest {
     }
 
 
-    public boolean isShowFeedback() {
-        return showFeedback;
+    public EffectiveItemSessionControl getEffectiveItemSessionControl() {
+        return effectiveItemSessionControl;
     }
 
-    public void setShowFeedback(final boolean showFeedback) {
-        this.showFeedback = showFeedback;
-    }
-
-
-    public boolean isAllowComment() {
-        return allowComment;
-    }
-
-    public void setAllowComment(final boolean allowComment) {
-        this.allowComment = allowComment;
+    public void setEffectiveItemSessionControl(final EffectiveItemSessionControl effectiveItemSessionControl) {
+        this.effectiveItemSessionControl = effectiveItemSessionControl;
     }
 }

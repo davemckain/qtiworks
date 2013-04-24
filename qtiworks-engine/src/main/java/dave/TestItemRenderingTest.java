@@ -96,12 +96,12 @@ public class TestItemRenderingTest {
             renderingRequest.setTestSessionState(testSessionState);
             renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setItemKey(firstItemRef.getKey());
+            renderingRequest.setEffectiveItemSessionControl(testSessionState.getTestPlan().getTestPlanNodeMap().get(firstItemRef.getKey()).getEffectiveItemSessionControl());
             renderingRequest.setRenderingMode(null);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAuthorMode(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
-            renderingRequest.setAllowComment(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

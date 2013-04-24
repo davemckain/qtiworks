@@ -40,10 +40,8 @@ NB: This is used both while being presented, and during review.
   <!-- Action URLs -->
   <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
 
-  <!-- Effective value of itemSessionControl/@showFeedback for this item -->
+  <!-- Relevant properties of EffectiveItemSessionControl for this item -->
   <xsl:param name="showFeedback" as="xs:boolean"/>
-
-  <!-- Effective value of itemSessionControl/@allowComment for this item -->
   <xsl:param name="allowComment" as="xs:boolean"/>
 
   <!--
@@ -268,14 +266,14 @@ NB: This is used both while being presented, and during review.
         <xsl:apply-templates/>
 
         <xsl:choose>
-          <xsl:when test="$isItemSessionOpen and $allowComment">
+          <xsl:when test="$allowComment and $isItemSessionOpen">
             <fieldset class="candidateComment">
               <legend>Please use the following text box if you need to provide any additional information, comments or feedback during this test:</legend>
               <input name="qtiworks_comment_presented" type="hidden" value="true"/>
               <textarea name="qtiworks_comment"><xsl:value-of select="$itemSessionState/qw:candidateComment"/></textarea>
             </fieldset>
           </xsl:when>
-          <xsl:when test="$isItemSessionEnded and exists($itemSessionState/qw:candidateComment)">
+          <xsl:when test="$allowComment and $isItemSessionEnded and exists($itemSessionState/qw:candidateComment)">
             <fieldset class="candidateComment">
               <legend>You submitted the folllowing comment with this item:</legend>
               <input name="qtiworks_comment_presented" type="hidden" value="true"/>
@@ -295,7 +293,7 @@ NB: This is used both while being presented, and during review.
     </div>
   </xsl:template>
 
-  <!-- Override using $showFeedback -->
+  <!-- Override using 'showFeedback' -->
   <xsl:template match="qti:feedbackInline | qti:feedbackBlock">
     <xsl:if test="$itemFeedbackAllowed">
       <xsl:apply-imports/>

@@ -274,8 +274,9 @@ public class AssessmentRenderer {
 
         /* Set config parameters */
         xsltParameters.put("itemKey", renderingRequest.getItemKey().toString());
-        xsltParameters.put("allowComment", Boolean.valueOf(renderingRequest.isAllowComment()));
-        xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.isShowFeedback()));
+        xsltParameters.put("allowComment", Boolean.valueOf(renderingRequest.getEffectiveItemSessionControl().isAllowComment()));
+        xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.getEffectiveItemSessionControl().isShowFeedback()));
+        /* (Pass any additional itemSessionControl parameters as required by the XSLT) */
 
         /* NB: We do the transform on the item */
         final URI testItemUri = renderingRequest.getAssessmentItemUri();
