@@ -27,23 +27,29 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTITools and MathAssessEngine.
- * QTITools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+
 /**
- * Enumerate the various modes of navigation through a test.
+ * Extension of {@link QtiWorksRuntimeException} used when an unexpected {@link Exception}
+ * occurs during rendering.
  *
  * @author David McKain
  */
-public enum TestNavigationRenderingMode {
+public final class QtiWorksRenderingException extends QtiWorksRuntimeException {
 
-    TEST_ENTRY,
-    TEST_PART_MENU,
-    TEST_PART_FEEDBACK,
-    TEST_FEEDBACK,
-    ;
+    private static final long serialVersionUID = -2343145716203604174L;
 
+    public QtiWorksRenderingException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public QtiWorksRenderingException(final String message) {
+        super(message);
+    }
 }

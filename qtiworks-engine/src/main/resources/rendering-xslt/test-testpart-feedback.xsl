@@ -21,9 +21,6 @@ Renders the test(Part) feedback
   <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <!-- Relevant action URLs -->
-  <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>
-
   <!-- This test -->
   <xsl:variable name="assessmentTest" select="/*[1]" as="element(qti:assessmentTest)"/>
 

@@ -396,6 +396,7 @@ rendering.
 
   <!-- ************************************************************ -->
 
+  <!-- Basic item states. NB: Some templates override this -->
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
       <xsl:when test="@endTime!=''">

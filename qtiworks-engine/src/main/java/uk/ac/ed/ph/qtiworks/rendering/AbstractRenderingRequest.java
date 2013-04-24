@@ -42,7 +42,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Base for {@link StandaloneItemRenderingRequest} and {@link TestNavigationRenderingRequest} containing things
+ * Base for {@link ItemRenderingRequest} and {@link TestRenderingRequest} containing things
  * that are required in both cases.
  *
  * @author David McKain

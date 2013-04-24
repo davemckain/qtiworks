@@ -33,14 +33,19 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.state.EffectiveItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPartSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.state.marshalling.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.state.marshalling.TestSessionStateXmlMarshaller;
@@ -179,49 +184,62 @@ public class AssessmentRenderer {
      * <p>
      * The caller is responsible for closing this stream afterwards.
      */
-    public void renderTeminated(final AbstractRenderingRequest<?> renderingRequest, final OutputStream resultStream) {
+    public void renderTeminated(final AbstractRenderingRequest<?> request, final OutputStream resultStream) {
         Assert.notNull(resultStream, "resultStream");
 
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters);
 
-        doTransform(renderingRequest, terminatedXsltUri, resultStream,
-                xsltParameters);
+        doTransform(request, terminatedXsltUri, xsltParameters, resultStream);
     }
 
     /**
-     * Renders the given {@link StandaloneItemRenderingRequest}, sending the results as
+     * Renders the given {@link ItemRenderingRequest}, sending the results as
      * UTF-8 encoded XML to the given {@link OutputStream}.
+     * <p>
+     * The rendering shows the current state of the item, unless {@link ItemRenderingRequest#isSolutionMode()}
+     * returns true, in which case the model solution is rendered.
      * <p>
      * The caller is responsible for closing this stream afterwards.
      *
-     * @throws QtiRenderingException if an unexpected Exception happens during rendering
+     * @throws QtiWorksRenderingException if an unexpected Exception happens during rendering
      */
-    public void renderStandaloneItem(final StandaloneItemRenderingRequest renderingRequest,
+    public void renderItem(final ItemRenderingRequest request,
             final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
-        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(request, "request");
         Assert.notNull(resultStream, "resultStream");
 
         /* Check request is valid */
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "standloneItemRenderingRequest");
-        jsr303Validator.validate(renderingRequest, errors);
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "itemRenderingRequest");
+        jsr303Validator.validate(request, errors);
         if (errors.hasErrors()) {
-            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
                     + " Object: " + errors);
         }
 
         /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        setBaseRenderingParameters(xsltParameters, renderingRequest);
-        setItemRenderingParameters(xsltParameters, renderingRequest);
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+        setBaseRenderingParameters(xsltParameters, request);
 
-        /* Set config parameters */
-        xsltParameters.put("prompt", renderingRequest.getPrompt());
+        /* Pass ItemSessionState (as DOM Document) */
+        final ItemSessionState itemSessionState = request.getItemSessionState();
+        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
+
+        /* Set control parameters */
+        xsltParameters.put("prompt", request.getPrompt());
+        xsltParameters.put("solutionMode", Boolean.valueOf(request.isSolutionMode()));
+        xsltParameters.put("closeAllowed", Boolean.valueOf(request.isCloseAllowed()));
+        xsltParameters.put("resetAllowed", Boolean.valueOf(request.isResetAllowed()));
+        xsltParameters.put("reinitAllowed", Boolean.valueOf(request.isReinitAllowed()));
+        xsltParameters.put("solutionAllowed", Boolean.valueOf(request.isSolutionAllowed()));
+        xsltParameters.put("sourceAllowed", Boolean.valueOf(request.isSourceAllowed()));
+        xsltParameters.put("resultAllowed", Boolean.valueOf(request.isResultAllowed()));
+        xsltParameters.put("candidateCommentAllowed", Boolean.valueOf(request.isCandidateCommentAllowed()));
 
         /* Set action URLs */
-        final ItemRenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
+        final ItemRenderingOptions renderingOptions = request.getRenderingOptions();
         xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
         xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
         xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
@@ -230,129 +248,207 @@ public class AssessmentRenderer {
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
 
-        /* Set control parameters */
-        xsltParameters.put("closeAllowed", Boolean.valueOf(renderingRequest.isCloseAllowed()));
-        xsltParameters.put("resetAllowed", Boolean.valueOf(renderingRequest.isResetAllowed()));
-        xsltParameters.put("reinitAllowed", Boolean.valueOf(renderingRequest.isReinitAllowed()));
-        xsltParameters.put("solutionAllowed", Boolean.valueOf(renderingRequest.isSolutionAllowed()));
-        xsltParameters.put("sourceAllowed", Boolean.valueOf(renderingRequest.isSourceAllowed()));
-        xsltParameters.put("resultAllowed", Boolean.valueOf(renderingRequest.isResultAllowed()));
-        xsltParameters.put("candidateCommentAllowed", Boolean.valueOf(renderingRequest.isCandidateCommentAllowed()));
-
-        doTransform(renderingRequest, itemStandaloneXsltUri, resultStream,
-                xsltParameters);
+        /* Perform transform */
+        doTransform(request, itemStandaloneXsltUri, xsltParameters, resultStream);
     }
 
     /**
-     * Renders the given {@link TestItemRenderingRequest}, sending the results as UTF-8 encoded XML
+     * Renders the given {@link TestItemRenderingDetails}, sending the results as UTF-8 encoded XML
      * to the given {@link OutputStream}.
      * <p>
      * The caller is responsible for closing this stream afterwards.
      *
-     * @throws QtiRenderingException if an unexpected Exception happens during rendering
+     * @throws QtiWorksRenderingException if an unexpected Exception happens during rendering
      */
-    public void renderTestItem(final TestItemRenderingRequest renderingRequest,
+    public void renderTest(final TestRenderingRequest request,
             final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
-        Assert.notNull(renderingRequest, "renderingRequest");
+        Assert.notNull(request, "renderingRequest");
         Assert.notNull(resultStream, "resultStream");
 
         /* Check request is valid */
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testItemRenderingRequest");
-        jsr303Validator.validate(renderingRequest, errors);
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "testRenderingRequest");
+        jsr303Validator.validate(request, errors);
         if (errors.hasErrors()) {
-            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
+            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
                     + " Object: " + errors);
         }
 
-        /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
+        /* Set up general XSLT parameters */
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        setBaseRenderingParameters(xsltParameters, renderingRequest);
-        setItemRenderingParameters(xsltParameters, renderingRequest);
-        setTestRenderingParameters(xsltParameters, renderingRequest);
+        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
         setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
+        setBaseRenderingParameters(xsltParameters, request);
+        setTestRenderingParameters(xsltParameters, request);
 
-        /* Set config parameters */
-        xsltParameters.put("itemKey", renderingRequest.getItemKey().toString());
-        xsltParameters.put("allowComment", Boolean.valueOf(renderingRequest.getEffectiveItemSessionControl().isAllowComment()));
-        xsltParameters.put("showFeedback", Boolean.valueOf(renderingRequest.getEffectiveItemSessionControl().isShowFeedback()));
-        /* (Pass any additional itemSessionControl parameters as required by the XSLT) */
-
-        /* NB: We do the transform on the item */
-        final URI testItemUri = renderingRequest.getAssessmentItemUri();
-
-        doTransform(renderingRequest, testItemXsltUri, testItemUri, resultStream, xsltParameters);
+        final TestRenderingMode testRenderingMode = request.getTestRenderingMode();
+        if (testRenderingMode==TestRenderingMode.ITEM_REVIEW) {
+            doRenderTestItemReview(request, xsltParameters, resultStream);
+        }
+        else if (testRenderingMode==TestRenderingMode.ITEM_SOLUTION) {
+            doRenderTestItemSolution(request, xsltParameters, resultStream);
+        }
+        else {
+            /* Render current state */
+            final TestSessionController testSessionController = request.getTestSessionController();
+            final TestSessionState testSessionState = testSessionController.getTestSessionState();
+            final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+            if (testSessionState.isEnded()) {
+                /* At end of test, so show overall test feedback */
+                doRenderTestFeedback(request, xsltParameters, resultStream);
+            }
+            else if (currentTestPartKey!=null) {
+                final TestPartSessionState currentTestPartSessionState = testSessionState.getTestPartSessionStates().get(currentTestPartKey);
+                final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+                if (currentItemKey!=null) {
+                    /* An item is selected, so render it in appropriate state */
+                    doRenderCurrentTestItem(request, xsltParameters, resultStream);
+                }
+                else {
+                    /* No item selected */
+                    if (currentTestPartSessionState.isEnded()) {
+                        /* testPart has ended, so must be showing testPart feedback */
+                        doRenderTestPartFeedback(request, xsltParameters, resultStream);
+                    }
+                    else {
+                        /* testPart not ended, so we must be showing the navigation menu in nonlinear mode */
+                        doRenderTestPartNavigation(request, xsltParameters, resultStream);
+                    }
+                }
+            }
+            else {
+                /* No current testPart == start of multipart test */
+                doRenderTestEntry(request, xsltParameters, resultStream);
+            }
+        }
     }
 
-    /**
-     *Renders the given {@link TestNavigationRenderingRequest}, sending the results as UTF-8 encoded XML
-     * to the given {@link OutputStream}.
-     * <p>
-     * The caller is responsible for closing this stream afterwards.
-     * FIXME: Document this!
-     *
-     * The caller is responsible for closing this stream afterwards.
-     *
-     * @param renderingRequest
-     * @param resultStream
-     *
-     * @throws QtiRenderingException if an unexpected Exception happens during rendering
-     */
-    public void renderTestNavigation(final TestNavigationRenderingRequest renderingRequest,
-            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
-        Assert.notNull(renderingRequest, "renderingRequest");
-        Assert.notNull(resultStream, "resultStream");
+    private void doRenderTestEntry(final TestRenderingRequest request,
+            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+        doTransform(request, testEntryXsltUri, xsltParameters, resultStream);
+    }
 
-        /* Check request is valid */
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(renderingRequest, "testNavigationRenderingRequest");
-        jsr303Validator.validate(renderingRequest, errors);
-        if (errors.hasErrors()) {
-            throw new IllegalArgumentException("Invalid " + renderingRequest.getClass().getSimpleName()
-                    + " Object: " + errors);
-        }
+    private void doRenderTestPartNavigation(final TestRenderingRequest request,
+            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+        /* Determine whether candidate may exist testPart */
+        final TestSessionController testSessionController = request.getTestSessionController();
+        xsltParameters.put("endTestPartAllowed", Boolean.valueOf(testSessionController.mayEndCurrentTestPart()));
 
-        /* Pass request info to XSLT as parameters */
-        final XsltParamBuilder xsltParamBuilder = new XsltParamBuilder();
-        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        setNotificationParameters(xsltParameters, xsltParamBuilder, notifications);
-        setBaseRenderingParameters(xsltParameters, renderingRequest);
-        setTestRenderingParameters(xsltParameters, renderingRequest);
+        doTransform(request, testPartNavigationXsltUri, xsltParameters, resultStream);
+    }
 
-        /* Decide which stylesheet to use */
-        final URI xsltUri;
-        switch (renderingRequest.getTestNavigationRenderingMode()) {
-            case TEST_ENTRY:
-                xsltUri = testEntryXsltUri;
-                break;
+    private void doRenderTestPartFeedback(final TestRenderingRequest request,
+            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+        doTransform(request, testPartFeedbackXsltUri, xsltParameters, resultStream);
+    }
 
-            case TEST_PART_MENU:
-                xsltUri = testPartNavigationXsltUri;
-                break;
+    private void doRenderTestFeedback(final TestRenderingRequest request,
+            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+        doTransform(request, testFeedbackXsltUri, xsltParameters, resultStream);
+    }
 
-            case TEST_PART_FEEDBACK:
-                xsltUri = testPartFeedbackXsltUri;
-                break;
+    private void doRenderCurrentTestItem(final TestRenderingRequest request,
+            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+        /* Extract the item to be rendered */
+        final TestSessionController testSessionController = request.getTestSessionController();
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+        final TestPlanNodeKey itemKey = testSessionState.getCurrentItemKey();
 
-            case TEST_FEEDBACK:
-                xsltUri = testFeedbackXsltUri;
-                break;
+        /* Set item parameters */
+        final URI itemSystemId = setTestItemParameters(request, itemKey, xsltParameters);
 
-            default:
-                throw new QtiWorksLogicException("Unexpected switch case " + renderingRequest.getTestNavigationRenderingMode());
-        }
+        /* Set specific parameters for this rendering */
+        final TestPart currentTestPart = testSessionController.getCurrentTestPart();
+        final NavigationMode navigationMode = currentTestPart.getNavigationMode();
+        xsltParameters.put("reviewMode", Boolean.FALSE);
+        xsltParameters.put("solutionMode", Boolean.FALSE);
+        xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(navigationMode==NavigationMode.NONLINEAR));
+        xsltParameters.put("finishItemAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndItemLinear()));
+        xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
-        doTransform(renderingRequest, xsltUri, resultStream,
-                xsltParameters);
+        /* We finally do the transform on the _item_ (NB!) */
+        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, resultStream);
+    }
+
+    private void doRenderTestItemReview(final TestRenderingRequest request,
+            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+        /* Extract item to review */
+        final TestPlanNodeKey reviewItemKey = request.getModalItemKey();
+
+        /* Set item parameters */
+        final URI itemSystemId = setTestItemParameters(request, reviewItemKey, xsltParameters);
+
+        /* Set specific parameters for this rendering */
+        xsltParameters.put("reviewMode", Boolean.TRUE);
+        xsltParameters.put("solutionMode", Boolean.FALSE);
+        xsltParameters.put("testPartNavigationAllowed", Boolean.FALSE);
+        xsltParameters.put("finishItemAllowed", Boolean.FALSE);
+        xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
+
+        /* We finally do the transform on the _item_ (NB!) */
+        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, resultStream);
+    }
+
+    private void doRenderTestItemSolution(final TestRenderingRequest request,
+            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+        /* Extract item to review */
+        final TestPlanNodeKey solutionItemKey = request.getModalItemKey();
+
+        /* Set item parameters */
+        final URI itemSystemId = setTestItemParameters(request, solutionItemKey, xsltParameters);
+
+        /* Set specific parameters for this rendering */
+        xsltParameters.put("reviewMode", Boolean.TRUE);
+        xsltParameters.put("solutionMode", Boolean.TRUE);
+        xsltParameters.put("testPartNavigationAllowed", Boolean.FALSE);
+        xsltParameters.put("finishItemAllowed", Boolean.FALSE);
+        xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
+
+        /* We finally do the transform on the _item_ (NB!) */
+        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, resultStream);
     }
 
     //----------------------------------------------------
+
+    private URI setTestItemParameters(final TestRenderingRequest request, final TestPlanNodeKey itemKey,
+            final Map<String, Object> xsltParameters) {
+        final TestSessionController testSessionController = request.getTestSessionController();
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+        if (itemRefNode==null) {
+            throw new QtiWorksRenderingException("Failed to locate item with key " + itemKey + " in TestPlan");
+        }
+        final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemKey);
+        if (itemSessionState==null) {
+            throw new QtiWorksRenderingException("Failed to locate ItemSessionState for item with key " + itemKey);
+        }
+
+        /* Add item-specific parameters */
+        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
+        xsltParameters.put("itemKey", itemKey.toString());
+
+        /* Pass ItemSessionControl parameters */
+        /* (Add any future additional itemSessionControl parameters here as required) */
+        final EffectiveItemSessionControl effectiveItemSessionControl = itemRefNode.getEffectiveItemSessionControl();
+        xsltParameters.put("allowComment", Boolean.valueOf(effectiveItemSessionControl.isAllowComment()));
+        xsltParameters.put("showFeedback", Boolean.valueOf(effectiveItemSessionControl.isShowFeedback()));
+        xsltParameters.put("showSolution", Boolean.valueOf(effectiveItemSessionControl.isShowSolution()));
+
+        /* The caller should reset the following parameters to suit */
+        xsltParameters.put("reviewMode", Boolean.FALSE);
+        xsltParameters.put("solutionMode", Boolean.FALSE);
+        xsltParameters.put("testPartNavigationAllowed", Boolean.FALSE);
+        xsltParameters.put("finishItemAllowed", Boolean.FALSE);
+        xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
+
+        return itemRefNode.getItemSystemId();
+    }
 
     private void setTestRenderingParameters(final Map<String, Object> xsltParameters,
             final TestRenderingRequest renderingRequest) {
         xsltParameters.put("testSystemId", renderingRequest.getAssessmentResourceUri().toString());
 
         /* Pass TestSessionState (as DOM Document) */
-        final TestSessionState testSessionState = renderingRequest.getTestSessionState();
+        final TestSessionState testSessionState = renderingRequest.getTestSessionController().getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
 
         final TestRenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
@@ -365,29 +461,6 @@ public class AssessmentRenderer {
         xsltParameters.put("showTestItemSolutionUrl", renderingOptions.getShowTestItemSolutionUrl());
         xsltParameters.put("advanceTestPartUrl", renderingOptions.getAdvanceTestPartUrl());
         xsltParameters.put("exitTestUrl", renderingOptions.getExitTestUrl());
-
-        /* Set navigation action permissions */
-        xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(renderingRequest.isTestPartNavigationAllowed()));
-        xsltParameters.put("finishItemAllowed", Boolean.valueOf(renderingRequest.isFinishItemAllowed()));
-        xsltParameters.put("reviewTestPartAllowed", Boolean.valueOf(renderingRequest.isReviewTestPartAllowed()));
-        xsltParameters.put("testItemSolutionAllowed", Boolean.valueOf(renderingRequest.isTestItemSolutionAllowed()));
-        xsltParameters.put("endTestPartAllowed", Boolean.valueOf(renderingRequest.isEndTestPartAllowed()));
-    }
-
-    private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
-            final StandaloneItemRenderingRequest renderingRequest) {
-        /* Pass ItemSessionState (as DOM Document) */
-        final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
-        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
-        xsltParameters.put("renderingMode", ObjectUtilities.safeToString(renderingRequest.getRenderingMode()));
-    }
-
-    private void setItemRenderingParameters(final Map<String, Object> xsltParameters,
-            final TestItemRenderingRequest renderingRequest) {
-        /* Pass ItemSessionState (as DOM Document) */
-        final ItemSessionState itemSessionState = renderingRequest.getItemSessionState();
-        xsltParameters.put("itemSessionState", ItemSessionStateXmlMarshaller.marshal(itemSessionState).getDocumentElement());
-        xsltParameters.put("renderingMode", ObjectUtilities.safeToString(renderingRequest.getRenderingMode()));
     }
 
     private <P extends AbstractRenderingOptions> void setBaseRenderingParameters(final Map<String, Object> xsltParameters,
@@ -416,20 +489,20 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI stylesheetUri,
-            final OutputStream resultStream,
-            final Map<String, Object> xsltParameters) {
-        doTransform(renderingRequest, stylesheetUri, renderingRequest.getAssessmentResourceUri(), resultStream, xsltParameters);
+            final Map<String, Object> xsltParameters,
+            final OutputStream resultStream) {
+        doTransform(renderingRequest, stylesheetUri, renderingRequest.getAssessmentResourceUri(), xsltParameters, resultStream);
     }
 
     private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI stylesheetUri,
-            final URI inputUri, final OutputStream resultStream, final Map<String, Object> xsltParameters) {
+            final URI inputUri, final Map<String, Object> xsltParameters, final OutputStream resultStream) {
         final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);
         Transformer transformer;
         try {
             transformer = templates.newTransformer();
         }
         catch (final TransformerConfigurationException e) {
-            throw new QtiRenderingException("Could not complile stylesheet " + stylesheetUri, e);
+            throw new QtiWorksRenderingException("Could not complile stylesheet " + stylesheetUri, e);
         }
         if (xsltParameters!=null) {
             for (final Entry<String, Object> paramEntry : xsltParameters.entrySet()) {
@@ -460,7 +533,7 @@ public class AssessmentRenderer {
                 resultStream.write("<!DOCTYPE html>\n".getBytes(Charsets.UTF_8));
             }
             catch (final IOException e) {
-                throw new QtiRenderingException("Could not write HTML5 prolog to resultStream", e);
+                throw new QtiWorksRenderingException("Could not write HTML5 prolog to resultStream", e);
             }
         }
 
@@ -478,7 +551,7 @@ public class AssessmentRenderer {
             transformer.transform(assessmentSource, result);
         }
         catch (final TransformerException e) {
-            throw new QtiRenderingException("Unexpected Exception doing XSLT transform", e);
+            throw new QtiWorksRenderingException("Unexpected Exception doing XSLT transform", e);
         }
     }
 }

@@ -7,8 +7,9 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -22,7 +23,6 @@ import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
@@ -48,7 +48,6 @@ public class TestItemRenderingTest {
 
     public static void main(final String[] args) {
         final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-testFeedback.xml");
-        final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/addition-feedback.xml");
 
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
@@ -84,24 +83,19 @@ public class TestItemRenderingTest {
             final Date timestamp3 = ObjectUtilities.addToTime(timestamp1, 5000L);
             final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
             testSessionController.selectItemNonlinear(timestamp3, firstItemRef.getKey());
-            final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(firstItemRef.getKey());
 
             System.out.println("\nRendering state after selection of first item");
-
             final TestRenderingOptions renderingOptions = RunUtilities.createTestRenderingOptions();
-            final TestItemRenderingRequest renderingRequest = new TestItemRenderingRequest();
+            final TestRenderingRequest renderingRequest = new TestRenderingRequest();
+            renderingRequest.setTestSessionController(testSessionController);
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(testUri);
-            renderingRequest.setAssessmentItemUri(itemUri);
-            renderingRequest.setTestSessionState(testSessionState);
-            renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setItemKey(firstItemRef.getKey());
-            renderingRequest.setEffectiveItemSessionControl(testSessionState.getTestPlan().getTestPlanNodeMap().get(firstItemRef.getKey()).getEffectiveItemSessionControl());
-            renderingRequest.setRenderingMode(null);
+            renderingRequest.setTestSessionController(testSessionController);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAuthorMode(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
+            renderingRequest.setTestRenderingMode(TestRenderingMode.X_TEST_ITEM);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
@@ -118,7 +112,7 @@ public class TestItemRenderingTest {
             renderer.init();
 
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-            renderer.renderTestItem(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            renderer.renderTest(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
             final String rendered = stringBuilderWriter.toString();
             System.out.println("Rendered page: " + rendered);
         }

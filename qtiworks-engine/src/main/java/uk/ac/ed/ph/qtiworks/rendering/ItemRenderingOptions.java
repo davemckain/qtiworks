@@ -59,12 +59,6 @@ public final class ItemRenderingOptions extends AbstractRenderingOptions {
     private String solutionUrl;
 
     @NotNull
-    private String resultUrl;
-
-    @NotNull
-    private String sourceUrl;
-
-    @NotNull
     private String terminateUrl;
 
     //----------------------------------------------------
@@ -102,24 +96,6 @@ public final class ItemRenderingOptions extends AbstractRenderingOptions {
 
     public void setSolutionUrl(final String solutionUrl) {
         this.solutionUrl = solutionUrl;
-    }
-
-
-    public String getResultUrl() {
-        return resultUrl;
-    }
-
-    public void setResultUrl(final String resultUrl) {
-        this.resultUrl = resultUrl;
-    }
-
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(final String sourceUrl) {
-        this.sourceUrl = sourceUrl;
     }
 
 

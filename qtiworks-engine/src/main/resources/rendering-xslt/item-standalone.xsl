@@ -126,7 +126,7 @@ Renders a standalone assessmentItem
         <xsl:if test="$isItemSessionEnded">
           <div class="candidateStatus">
             <xsl:choose>
-              <xsl:when test="$renderingMode='SOLUTION'">
+              <xsl:when test="$solutionMode">
                 A model solution to this assessment is shown below.
               </xsl:when>
               <xsl:otherwise>
@@ -274,16 +274,25 @@ Renders a standalone assessmentItem
     </div>
   </xsl:template>
 
+  <!-- Overridden to add support for solution state -->
+  <xsl:template match="qw:itemSessionState" mode="item-status">
+    <xsl:choose>
+      <xsl:when test="$solutionMode">
+        <div class="itemStatus ended">Model Solution</div>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-imports/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <!-- ************************************************************ -->
 
   <xsl:template name="qw:item-authoring-feedback">
     <div class="authorInfo authorMode">
       <h2>QTI authoring feedback</h2>
-      <h3>Candidate Session State</h3>
 
-      <p>The current candidate rendering mode state is: <xsl:value-of select="$renderingMode"/></p>
-
-      <h3>Item Session State</h3>
+      <h3>Candidate Item Session State</h3>
       <ul>
         <li>Entry time: <xsl:value-of select="$itemSessionState/@entryTime"/></li>
         <li>End time: <xsl:value-of select="$itemSessionState/@endTime"/></li>
@@ -293,6 +302,7 @@ Renders a standalone assessmentItem
         <li><code>sessionStatus</code>: <xsl:value-of select="$sessionStatus"/></li>
         <li><code>numAttempts</code>: <xsl:value-of select="$itemSessionState/@numAttempts"/></li>
         <li><code>completionStatus</code>: <xsl:value-of select="$itemSessionState/@completionStatus"/></li>
+        <li>Solution mode? <xsl:value-of select="$solutionMode"/></li>
       </ul>
 
       <!-- Show response stuff -->

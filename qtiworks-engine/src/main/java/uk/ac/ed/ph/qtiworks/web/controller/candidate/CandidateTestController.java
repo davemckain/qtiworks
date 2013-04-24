@@ -67,7 +67,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -93,7 +92,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
     public void renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
-            final WebRequest webRequest, final HttpServletResponse response)
+            final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + sessionToken;

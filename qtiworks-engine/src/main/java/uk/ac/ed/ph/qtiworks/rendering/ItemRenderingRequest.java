@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import javax.validation.constraints.NotNull;
 
@@ -44,15 +43,13 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class StandaloneItemRenderingRequest extends AbstractRenderingRequest<ItemRenderingOptions> {
-
-    /** Selected {@link RenderingMode} */
-    @ToRefactor
-    private RenderingMode renderingMode;
+public final class ItemRenderingRequest extends AbstractRenderingRequest<ItemRenderingOptions> {
 
     /** Required {@link ItemSessionState} to be rendered */
     @NotNull
     private ItemSessionState itemSessionState;
+
+    private boolean solutionMode;
 
     private String prompt;
     private boolean closeAllowed;
@@ -63,21 +60,21 @@ public final class StandaloneItemRenderingRequest extends AbstractRenderingReque
 
     //----------------------------------------------------
 
-    public RenderingMode getRenderingMode() {
-        return renderingMode;
-    }
-
-    public void setRenderingMode(final RenderingMode renderingMode) {
-        this.renderingMode = renderingMode;
-    }
-
-
     public ItemSessionState getItemSessionState() {
         return itemSessionState;
     }
 
     public void setItemSessionState(final ItemSessionState itemSessionState) {
         this.itemSessionState = itemSessionState;
+    }
+
+
+    public boolean isSolutionMode() {
+        return solutionMode;
+    }
+
+    public void setSolutionMode(final boolean solutionMode) {
+        this.solutionMode = solutionMode;
     }
 
 

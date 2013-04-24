@@ -33,80 +33,54 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 
 import javax.validation.constraints.NotNull;
 
 /**
- * Encapsulates the required data for rendering the current state of an item
- * within a test
+ * Request for rendering a particular test navigation screen.
+ * <p>
+ * The {@link TestRenderingMode} is used to determine what should be generated.
  *
  * @author David McKain
  */
-public abstract class TestRenderingRequest extends AbstractRenderingRequest<TestRenderingOptions> {
+public final class TestRenderingRequest extends AbstractRenderingRequest<TestRenderingOptions> {
 
-    /** {@link TestSessionState} owning this item */
     @NotNull
-    private TestSessionState testSessionState;
+    private TestSessionController testSessionController;
 
-    private boolean endTestPartAllowed;
-    private boolean testPartNavigationAllowed;
-    private boolean finishItemAllowed;
-    private boolean reviewTestPartAllowed;
-    private boolean testItemSolutionAllowed;
+    private TestRenderingMode testRenderingMode;
+    private TestPlanNodeKey modalItemKey;
 
     //----------------------------------------------------
 
-    public TestSessionState getTestSessionState() {
-        return testSessionState;
+    public TestSessionController getTestSessionController() {
+        return testSessionController;
     }
 
-    public void setTestSessionState(final TestSessionState testSessionState) {
-        this.testSessionState = testSessionState;
-    }
-
-
-    public boolean isEndTestPartAllowed() {
-        return endTestPartAllowed;
-    }
-
-    public void setEndTestPartAllowed(final boolean endTestPartAllowed) {
-        this.endTestPartAllowed = endTestPartAllowed;
+    public void setTestSessionController(final TestSessionController testSessionController) {
+        this.testSessionController = testSessionController;
     }
 
 
-    public boolean isTestPartNavigationAllowed() {
-        return testPartNavigationAllowed;
+    public TestRenderingMode getTestRenderingMode() {
+        return testRenderingMode;
     }
 
-    public void setTestPartNavigationAllowed(final boolean testPartNavigationAllowed) {
-        this.testPartNavigationAllowed = testPartNavigationAllowed;
-    }
-
-
-    public boolean isFinishItemAllowed() {
-        return finishItemAllowed;
-    }
-
-    public void setFinishItemAllowed(final boolean finishItemAllowed) {
-        this.finishItemAllowed = finishItemAllowed;
+    public void setTestRenderingMode(final TestRenderingMode testRenderingMode) {
+        this.testRenderingMode = testRenderingMode;
     }
 
 
-    public boolean isReviewTestPartAllowed() {
-        return reviewTestPartAllowed;
+    public TestPlanNodeKey getModalItemKey() {
+        return modalItemKey;
     }
 
-    public void setReviewTestPartAllowed(final boolean reviewTestPartAllowed) {
-        this.reviewTestPartAllowed = reviewTestPartAllowed;
+    public void setModalItemKey(final TestPlanNodeKey modalItemKey) {
+        this.modalItemKey = modalItemKey;
     }
 
 
-    public boolean isTestItemSolutionAllowed() {
-        return testItemSolutionAllowed;
-    }
 
-    public void setTestItemSolutionAllowed(final boolean testItemSolutionAllowed) {
-        this.testItemSolutionAllowed = testItemSolutionAllowed;
-    }
 }

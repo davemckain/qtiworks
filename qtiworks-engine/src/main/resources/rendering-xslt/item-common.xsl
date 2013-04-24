@@ -23,8 +23,8 @@ rendering.
   <!-- State of item being rendered -->
   <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
 
-  <!-- Optional modal rendering mode -->
-  <xsl:param name="renderingMode" as="xs:string*" required="no"/>
+  <!-- Flag to enable modal rendering of model solution for this item -->
+  <xsl:param name="solutionMode" as="xs:boolean" required="yes"/>
 
   <!-- Extract information from the <itemSessionState> -->
   <xsl:variable name="shuffledChoiceOrders" select="$itemSessionState/qw:shuffledInteractionChoiceOrder"
@@ -34,7 +34,7 @@ rendering.
   <xsl:variable name="outcomeValues" select="$itemSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
   <xsl:variable name="overriddenCorrectResponses" select="$itemSessionState/qw:overriddenCorrectResponse" as="element(qw:overriddenCorrectResponse)*"/>
   <xsl:variable name="sessionStatus" select="$itemSessionState/@sessionStatus" as="xs:string"/>
-  <xsl:variable name="isItemSessionEnded" as="xs:boolean" select="$itemSessionState/@endTime!=''"/>
+  <xsl:variable name="isItemSessionEnded" as="xs:boolean" select="$itemSessionState/@endTime!='' or $solutionMode"/>
   <xsl:variable name="isItemSessionOpen" as="xs:boolean" select="$itemSessionState/@entryTime!='' and not($isItemSessionEnded)"/>
   <xsl:variable name="isItemSessionExited" as="xs:boolean" select="$itemSessionState/@exitTime!=''"/>
 
@@ -134,7 +134,7 @@ rendering.
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:variable name="responseDeclaration" select="qw:get-response-declaration($document, $identifier)" as="element(qti:responseDeclaration)?"/>
     <xsl:choose>
-      <xsl:when test="$renderingMode='SOLUTION' and $overriddenCorrectResponses[@identifier=$identifier]">
+      <xsl:when test="$solutionMode and $overriddenCorrectResponses[@identifier=$identifier]">
         <!-- Correct response has been set during template processing -->
         <xsl:for-each select="$overriddenCorrectResponses[@identifier=$identifier]">
           <qw:responseVariable>
@@ -143,7 +143,7 @@ rendering.
           </qw:responseVariable>
         </xsl:for-each>
       </xsl:when>
-      <xsl:when test="$renderingMode='SOLUTION' and $responseDeclaration/qti:correctResponse">
+      <xsl:when test="$solutionMode and $responseDeclaration/qti:correctResponse">
         <!-- <correctResponse> has been set in the QTI -->
         <!-- (We need to convert QTI <qti:correctResponse/> to <qw:responseVariable/>) -->
         <xsl:for-each select="$responseDeclaration/qti:correctResponse">

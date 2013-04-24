@@ -27,34 +27,27 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
 /**
- * FIXME: Redocument this! It no longer works as intended.
- *
- * This is a (still somewhat experimental) attempt to provide granular information
- * about the current rendering state.
- * <p>
- * (This is presently referred to as the "secondary session state" in the author debug mode
- * in rendered content.)
+ * Enumerate the various modes of navigation through a test.
  *
  * @author David McKain
  */
-public enum RenderingMode {
+public enum TestRenderingMode {
 
-    @Deprecated
-    INTERACTING,
+    ITEM_REVIEW,
+    ITEM_SOLUTION,
 
-    @Deprecated
-    CLOSED,
-
-    REVIEW, /* Test only */
-
-    SOLUTION, /* Test & item */
+    X_TEST_ENTRY,
+    X_TEST_PART_MENU,
+    X_TEST_ITEM,
+    X_TEST_PART_FEEDBACK,
+    X_TEST_FEEDBACK,
     ;
 
 }

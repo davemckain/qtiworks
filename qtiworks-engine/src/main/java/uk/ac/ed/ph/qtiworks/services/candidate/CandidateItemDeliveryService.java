@@ -78,17 +78,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Service the manages the real-time delivery of a standalone {@link AssessmentItem}
+ * Service for the real-time control of a standalone {@link AssessmentItem}
  * to a candidate.
- * <p>
- * NOTE: Current single item delivery assumes that items are always presented immediately after
- * template processing runs, and that attempts are always treated as being submitted.
  * <p>
  * NOTE: Remember there is no {@link IdentityContext} for candidates.
  *
- * @author David McKain
- *
  * @see CandidateSessionStarter
+ * @see CandidateRenderingService
+ * @see CandidateTestDeliveryService
+ *
+ * @author David McKain
  */
 @Service
 @Transactional(propagation=Propagation.REQUIRED)

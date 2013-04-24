@@ -35,8 +35,6 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
-import uk.ac.ed.ph.qtiworks.rendering.TestItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidatePrivilege;
 
@@ -70,26 +68,13 @@ public class CandidateAuditLogger {
         logSessionAction(candidateSession, "action=" + actionName);
     }
 
-    public void logStandaloneItemRendering(final CandidateEvent candidateEvent, final StandaloneItemRenderingRequest renderingRequest) {
-        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_STANDALONE_ITEM mode=" + renderingRequest.getRenderingMode());
+    public void logItemRendering(final CandidateEvent candidateEvent) {
+        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_ITEM");
     }
 
-    public void logTestEntryRendering(final CandidateEvent candidateEvent) {
-        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST_ENTRY_PAGE");
+    public void logTestRendering(final CandidateEvent candidateEvent) {
+        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST");
     }
-
-    public void logTestItemRendering(final CandidateEvent candidateEvent, final TestItemRenderingRequest renderingRequest) {
-        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST_ITEM mode=" + renderingRequest.getRenderingMode());
-    }
-
-    public void logTestPartNavigationRendering(final CandidateEvent candidateEvent) {
-        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_CURRENT_TEST_PART_NAVIGATION");
-    }
-
-    public void logTestFeedbackRendering(final CandidateEvent candidateEvent) {
-        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST_FEEDBACK");
-    }
-
 
     public void logCandidateEvent(final CandidateEvent candidateEvent) {
         final StringBuilder messageBuilder = new StringBuilder("action=CANDIDATE_EVENT xeid=")
