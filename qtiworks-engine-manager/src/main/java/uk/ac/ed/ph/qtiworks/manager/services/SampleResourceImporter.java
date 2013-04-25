@@ -241,9 +241,9 @@ public class SampleResourceImporter {
                     itemDeliverySettings.setPrompt("This is a typical MathAssess item. It has rich feedback, so this demo lets you try "
                             + "the item as many times as you like. There is no template processing (randomisation) in this "
                             + "example.");
-                    itemDeliverySettings.setAllowClose(true);
-                    itemDeliverySettings.setAllowResetWhenInteracting(true);
-                    itemDeliverySettings.setAllowResetWhenClosed(true);
+                    itemDeliverySettings.setAllowEnd(true);
+                    itemDeliverySettings.setAllowSoftResetWhenOpen(true);
+                    itemDeliverySettings.setAllowSoftResetWhenEnded(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }
@@ -254,11 +254,11 @@ public class SampleResourceImporter {
                     itemDeliverySettings.setPrompt("This is a typical MathAssess item. It has rich feedback, so this demo lets you try "
                             + "the item as many times as you like. This item contains template processing (randomisation), "
                             + "so we have provided a button to let you reinitialise your session with a freshly generated instance of the item");
-                    itemDeliverySettings.setAllowClose(true);
-                    itemDeliverySettings.setAllowReinitWhenInteracting(true);
-                    itemDeliverySettings.setAllowReinitWhenClosed(true);
-                    itemDeliverySettings.setAllowResetWhenInteracting(true);
-                    itemDeliverySettings.setAllowResetWhenClosed(true);
+                    itemDeliverySettings.setAllowEnd(true);
+                    itemDeliverySettings.setAllowHardResetWhenOpen(true);
+                    itemDeliverySettings.setAllowHardResetWhenEnded(true);
+                    itemDeliverySettings.setAllowSoftResetWhenOpen(true);
+                    itemDeliverySettings.setAllowSoftResetWhenEnded(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }
@@ -270,11 +270,11 @@ public class SampleResourceImporter {
                             + "This example lets you try this out as many times as you like, and also reset the question "
                             + "if you want to start again. A model solution is provided.");
                     itemDeliverySettings.setMaxAttempts(Integer.valueOf(1));
-                    itemDeliverySettings.setAllowClose(true);
-                    itemDeliverySettings.setAllowResetWhenInteracting(true);
-                    itemDeliverySettings.setAllowResetWhenClosed(true);
-                    itemDeliverySettings.setAllowSolutionWhenInteracting(true);
-                    itemDeliverySettings.setAllowSolutionWhenClosed(true);
+                    itemDeliverySettings.setAllowEnd(true);
+                    itemDeliverySettings.setAllowSoftResetWhenOpen(true);
+                    itemDeliverySettings.setAllowSoftResetWhenEnded(true);
+                    itemDeliverySettings.setAllowSolutionWhenOpen(true);
+                    itemDeliverySettings.setAllowSolutionWhenEnded(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }
@@ -286,10 +286,10 @@ public class SampleResourceImporter {
                             + "feedback. In this example, we'll let you give you one attempt at the question before it "
                             + "closes. You can still reset the question and try it again, though.");
                     itemDeliverySettings.setMaxAttempts(Integer.valueOf(1));
-                    itemDeliverySettings.setAllowClose(true);
-                    itemDeliverySettings.setAllowResetWhenClosed(true);
-                    itemDeliverySettings.setAllowSolutionWhenInteracting(true);
-                    itemDeliverySettings.setAllowSolutionWhenClosed(true);
+                    itemDeliverySettings.setAllowEnd(true);
+                    itemDeliverySettings.setAllowSoftResetWhenEnded(true);
+                    itemDeliverySettings.setAllowSolutionWhenOpen(true);
+                    itemDeliverySettings.setAllowSolutionWhenEnded(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }
@@ -300,11 +300,11 @@ public class SampleResourceImporter {
                     itemDeliverySettings.setPrompt("This is a typical standard IMS sample question. It has a model solution... "
                             + "and this one also has feedback. In this example, we'll let you make as many attempts as you like. "
                             + "You can still reset the question and try it again, though.");
-                    itemDeliverySettings.setAllowClose(true);
-                    itemDeliverySettings.setAllowResetWhenInteracting(true);
-                    itemDeliverySettings.setAllowResetWhenClosed(true);
-                    itemDeliverySettings.setAllowSolutionWhenInteracting(true);
-                    itemDeliverySettings.setAllowSolutionWhenClosed(true);
+                    itemDeliverySettings.setAllowEnd(true);
+                    itemDeliverySettings.setAllowSoftResetWhenOpen(true);
+                    itemDeliverySettings.setAllowSoftResetWhenEnded(true);
+                    itemDeliverySettings.setAllowSolutionWhenOpen(true);
+                    itemDeliverySettings.setAllowSolutionWhenEnded(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }
@@ -315,7 +315,7 @@ public class SampleResourceImporter {
                     itemDeliverySettings.setPrompt("This is a very basic standard IMS sample question. It has no response processing (scoring) "
                             + "built in so isn't very interactve. There is also no model solution. It's therefore not much fun "
                             + "to play around with!");
-                    itemDeliverySettings.setAllowResetWhenInteracting(true);
+                    itemDeliverySettings.setAllowSoftResetWhenOpen(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }
@@ -326,8 +326,8 @@ public class SampleResourceImporter {
                     itemDeliverySettings.setPrompt("This is a standard IMS sample question demonstrating template processing (randomisation). "
                             + "It has no model solution and no feedback, so it's fun to render but not much fun to actually try out. "
                             + "Try playing with the 'Reinitialize' option to generate the question with different values");
-                    itemDeliverySettings.setAllowResetWhenInteracting(true);
-                    itemDeliverySettings.setAllowReinitWhenInteracting(true);
+                    itemDeliverySettings.setAllowSoftResetWhenOpen(true);
+                    itemDeliverySettings.setAllowHardResetWhenOpen(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }
@@ -338,8 +338,8 @@ public class SampleResourceImporter {
                     itemDeliverySettings.setPrompt("This question has a model solution and feedback. In this example, we'll let you try "
                             + "the item once and see the result. You can always reset it and try again afterwards if you like.");
                     itemDeliverySettings.setMaxAttempts(Integer.valueOf(1));
-                    itemDeliverySettings.setAllowResetWhenInteracting(true);
-                    itemDeliverySettings.setAllowSolutionWhenInteracting(true);
+                    itemDeliverySettings.setAllowSoftResetWhenOpen(true);
+                    itemDeliverySettings.setAllowSolutionWhenOpen(true);
                     deliverySettings = itemDeliverySettings;
                     break;
                 }

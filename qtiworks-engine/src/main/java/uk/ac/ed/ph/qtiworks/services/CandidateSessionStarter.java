@@ -261,7 +261,7 @@ public class CandidateSessionStarter {
         candidateSessionDao.persist(candidateSession);
 
         /* Record and log event */
-        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
+        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.ENTER, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Handle the pathological case where the session closes immediately by saving the final result */

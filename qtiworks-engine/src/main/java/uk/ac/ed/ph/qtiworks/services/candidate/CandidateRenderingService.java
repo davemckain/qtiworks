@@ -246,20 +246,20 @@ public class CandidateRenderingService {
         /* Now set candidate action permissions depending on state of session */
         if (itemEventType==CandidateItemEventType.SOLUTION || itemSessionState.isEnded()) {
             /* Item session is ended (closed) */
-            renderingRequest.setCloseAllowed(false);
-            renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenClosed());
-            renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenClosed());
-            renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenClosed());
+            renderingRequest.setEndAllowed(false);
+            renderingRequest.setHardResetAllowed(itemDeliverySettings.isAllowHardResetWhenEnded());
+            renderingRequest.setSoftResetAllowed(itemDeliverySettings.isAllowSoftResetWhenEnded());
+            renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenEnded());
             renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
             renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
             renderingRequest.setCandidateCommentAllowed(false);
         }
         else if (itemSessionState.isOpen()) {
             /* Item session is open (interacting) */
-            renderingRequest.setCloseAllowed(itemDeliverySettings.isAllowClose());
-            renderingRequest.setReinitAllowed(itemDeliverySettings.isAllowReinitWhenInteracting());
-            renderingRequest.setResetAllowed(itemDeliverySettings.isAllowResetWhenInteracting());
-            renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenInteracting());
+            renderingRequest.setEndAllowed(itemDeliverySettings.isAllowEnd());
+            renderingRequest.setHardResetAllowed(itemDeliverySettings.isAllowHardResetWhenOpen());
+            renderingRequest.setSoftResetAllowed(itemDeliverySettings.isAllowSoftResetWhenOpen());
+            renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenOpen());
             renderingRequest.setResultAllowed(false);
             renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
             renderingRequest.setCandidateCommentAllowed(itemDeliverySettings.isAllowCandidateComment());

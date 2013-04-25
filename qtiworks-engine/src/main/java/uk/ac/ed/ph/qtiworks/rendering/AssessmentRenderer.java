@@ -226,18 +226,18 @@ public class AssessmentRenderer {
         /* Set control parameters */
         xsltParameters.put("prompt", request.getPrompt());
         xsltParameters.put("solutionMode", Boolean.valueOf(request.isSolutionMode()));
-        xsltParameters.put("closeAllowed", Boolean.valueOf(request.isCloseAllowed()));
-        xsltParameters.put("resetAllowed", Boolean.valueOf(request.isResetAllowed()));
-        xsltParameters.put("reinitAllowed", Boolean.valueOf(request.isReinitAllowed()));
+        xsltParameters.put("endAllowed", Boolean.valueOf(request.isEndAllowed()));
+        xsltParameters.put("softSoftResetAllowed", Boolean.valueOf(request.isSoftResetAllowed()));
+        xsltParameters.put("hardResetAllowed", Boolean.valueOf(request.isHardResetAllowed()));
         xsltParameters.put("solutionAllowed", Boolean.valueOf(request.isSolutionAllowed()));
         xsltParameters.put("candidateCommentAllowed", Boolean.valueOf(request.isCandidateCommentAllowed()));
 
         /* Set action URLs */
         final ItemRenderingOptions renderingOptions = request.getRenderingOptions();
-        xsltParameters.put("closeUrl", renderingOptions.getCloseUrl());
-        xsltParameters.put("resetUrl", renderingOptions.getResetUrl());
-        xsltParameters.put("reinitUrl", renderingOptions.getReinitUrl());
-        xsltParameters.put("terminateUrl", renderingOptions.getTerminateUrl());
+        xsltParameters.put("endUrl", renderingOptions.getEndUrl());
+        xsltParameters.put("softResetUrl", renderingOptions.getSoftResetUrl());
+        xsltParameters.put("hardResetUrl", renderingOptions.getHardResetUrl());
+        xsltParameters.put("exitUrl", renderingOptions.getExitUrl());
         xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
 
         /* Perform transform */
@@ -464,7 +464,7 @@ public class AssessmentRenderer {
         /* Pass common action URLs */
         final P renderingOptions = request.getRenderingOptions();
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
-        xsltParameters.put("attemptUrl", renderingOptions.getAttemptUrl());
+        xsltParameters.put("responseUrl", renderingOptions.getResponseUrl());
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
     }

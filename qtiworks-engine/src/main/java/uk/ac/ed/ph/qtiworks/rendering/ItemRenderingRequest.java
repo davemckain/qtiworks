@@ -49,12 +49,13 @@ public final class ItemRenderingRequest extends AbstractRenderingRequest<ItemRen
     @NotNull
     private ItemSessionState itemSessionState;
 
+    /** Set to enable the modal solution mode */
     private boolean solutionMode;
 
     private String prompt;
-    private boolean closeAllowed;
-    private boolean resetAllowed;
-    private boolean reinitAllowed;
+    private boolean endAllowed;
+    private boolean softSoftResetAllowed;
+    private boolean hardResetAllowed;
     private boolean solutionAllowed;
     private boolean candidateCommentAllowed;
 
@@ -87,30 +88,30 @@ public final class ItemRenderingRequest extends AbstractRenderingRequest<ItemRen
     }
 
 
-    public boolean isCloseAllowed() {
-        return closeAllowed;
+    public boolean isEndAllowed() {
+        return endAllowed;
     }
 
-    public void setCloseAllowed(final boolean closeAllowed) {
-        this.closeAllowed = closeAllowed;
-    }
-
-
-    public boolean isResetAllowed() {
-        return resetAllowed;
-    }
-
-    public void setResetAllowed(final boolean resetAllowed) {
-        this.resetAllowed = resetAllowed;
+    public void setEndAllowed(final boolean endAllowed) {
+        this.endAllowed = endAllowed;
     }
 
 
-    public boolean isReinitAllowed() {
-        return reinitAllowed;
+    public boolean isSoftResetAllowed() {
+        return softSoftResetAllowed;
     }
 
-    public void setReinitAllowed(final boolean reinitAllowed) {
-        this.reinitAllowed = reinitAllowed;
+    public void setSoftResetAllowed(final boolean softSoftResetAllowed) {
+        this.softSoftResetAllowed = softSoftResetAllowed;
+    }
+
+
+    public boolean isHardResetAllowed() {
+        return hardResetAllowed;
+    }
+
+    public void setHardResetAllowed(final boolean hardResetAllowed) {
+        this.hardResetAllowed = hardResetAllowed;
     }
 
 

@@ -552,14 +552,14 @@ public class AssessmentManagementService {
     }
 
     private void mergeItemDeliverySettings(final ItemDeliverySettingsTemplate template, final ItemDeliverySettings target) {
-        target.setAllowClose(template.isAllowClose());
-        target.setAllowReinitWhenClosed(template.isAllowReinitWhenClosed());
-        target.setAllowReinitWhenInteracting(template.isAllowReinitWhenInteracting());
-        target.setAllowResetWhenClosed(template.isAllowResetWhenClosed());
-        target.setAllowResetWhenInteracting(template.isAllowResetWhenInteracting());
+        target.setAllowEnd(template.isAllowEnd());
+        target.setAllowHardResetWhenEnded(template.isAllowHardResetWhenEnded());
+        target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
+        target.setAllowSoftResetWhenEnded(template.isAllowSoftResetWhenEnded());
+        target.setAllowSoftResetWhenOpen(template.isAllowSoftResetWhenOpen());
         target.setAllowResult(template.isAllowResult());
-        target.setAllowSolutionWhenClosed(template.isAllowSolutionWhenClosed());
-        target.setAllowSolutionWhenInteracting(template.isAllowSolutionWhenInteracting());
+        target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
+        target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
         target.setAllowSource(template.isAllowSource());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
         target.setAuthorMode(template.isAuthorMode());
@@ -569,14 +569,14 @@ public class AssessmentManagementService {
     }
 
     public void mergeItemDeliverySettings(final ItemDeliverySettings template, final ItemDeliverySettingsTemplate target) {
-        target.setAllowClose(template.isAllowClose());
-        target.setAllowReinitWhenClosed(template.isAllowReinitWhenClosed());
-        target.setAllowReinitWhenInteracting(template.isAllowReinitWhenInteracting());
-        target.setAllowResetWhenClosed(template.isAllowResetWhenClosed());
-        target.setAllowResetWhenInteracting(template.isAllowResetWhenInteracting());
+        target.setAllowEnd(template.isAllowEnd());
+        target.setAllowHardResetWhenEnded(template.isAllowHardResetWhenEnded());
+        target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
+        target.setAllowSoftResetWhenEnded(template.isAllowSoftResetWhenEnded());
+        target.setAllowSoftResetWhenOpen(template.isAllowSoftResetWhenOpen());
         target.setAllowResult(template.isAllowResult());
-        target.setAllowSolutionWhenClosed(template.isAllowSolutionWhenClosed());
-        target.setAllowSolutionWhenInteracting(template.isAllowSolutionWhenInteracting());
+        target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
+        target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
         target.setAllowSource(template.isAllowSource());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
         target.setAuthorMode(template.isAuthorMode());
@@ -898,14 +898,14 @@ public class AssessmentManagementService {
 
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
-        template.setAllowClose(true);
-        template.setAllowReinitWhenClosed(true);
-        template.setAllowReinitWhenInteracting(true);
-        template.setAllowResetWhenClosed(true);
-        template.setAllowResetWhenInteracting(true);
+        template.setAllowEnd(true);
+        template.setAllowHardResetWhenEnded(true);
+        template.setAllowHardResetWhenOpen(true);
+        template.setAllowSoftResetWhenEnded(true);
+        template.setAllowSoftResetWhenOpen(true);
         template.setAllowResult(true);
-        template.setAllowSolutionWhenClosed(true);
-        template.setAllowSolutionWhenInteracting(true);
+        template.setAllowSolutionWhenEnded(true);
+        template.setAllowSolutionWhenOpen(true);
         template.setAllowSource(false);
         template.setAuthorMode(false);
         template.setMaxAttempts(0);

@@ -45,7 +45,7 @@ public enum CandidateItemEventType {
      * Item session first initialised and template processing happened
      * (NB: Only in standalone item sessions)
      */
-    INIT,
+    ENTER,
 
     /** Responses made and counted as attempt, all responses bound successfully and valid */
     ATTEMPT_VALID,
@@ -75,16 +75,14 @@ public enum CandidateItemEventType {
     SOLUTION,
 
     /**
-     * Candidate has closed the current session and moved it into
-     * {@link CandidateSessionState#CLOSED} state
+     * Candidate has ended (closed) the current session
      */
-    CLOSE,
+    END,
 
     /**
-     * Candidate has terminated the session and moved it into
-     * {@link CandidateSessionState#TERMINATED} state
+     * Candidate has exited (terminated) the session
      */
-    TERMINATE,
+    EXIT,
 
     ;
 

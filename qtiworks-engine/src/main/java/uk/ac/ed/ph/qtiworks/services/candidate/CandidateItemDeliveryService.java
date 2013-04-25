@@ -301,19 +301,19 @@ public class CandidateItemDeliveryService {
     }
 
     //----------------------------------------------------
-    // Session close(by candidate)
+    // Session end/close (by candidate)
 
     /**
-     * Closes the {@link CandidateSession} having the given ID (xid), moving it
-     * into closed state.
+     * Ends/closes the {@link CandidateSession} having the given ID (xid), moving it
+     * into ended state.
      */
-    public CandidateSession closeCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession endCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
-        return closeCandidateSession(candidateSession);
+        return endCandidateSession(candidateSession);
     }
 
-    public CandidateSession closeCandidateSession(final CandidateSession candidateSession)
+    public CandidateSession endCandidateSession(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -325,10 +325,10 @@ public class CandidateItemDeliveryService {
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
         if (itemSessionState.isEnded()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.CLOSE_SESSION_WHEN_CLOSED);
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_SESSION_WHEN_ENDED);
         }
-        else if (!itemDeliverySettings.isAllowClose()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.CLOSE_SESSION_WHEN_INTERACTING);
+        else if (!itemDeliverySettings.isAllowEnd()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_SESSION_WHEN_INTERACTING);
         }
 
         /* Update state */
@@ -340,7 +340,7 @@ public class CandidateItemDeliveryService {
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
-                CandidateItemEventType.CLOSE, itemSessionState, notificationRecorder);
+                CandidateItemEventType.END, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Update session state and record result */
@@ -352,12 +352,13 @@ public class CandidateItemDeliveryService {
     }
 
     //----------------------------------------------------
-    // Session reinit
+    // Session hard reset
 
     /**
-     * Re-initialises the {@link CandidateSession} having the given ID (xid), returning the
-     * updated {@link CandidateSession}. At QTI level, this reruns template processing, so
-     * randomised values will change as a result of this process.
+     * Performs a hard reset on the {@link CandidateSession} having the given ID (xid), returning the
+     * updated {@link CandidateSession}.
+     *
+     * @see ItemSessionController#resetItemSessionHard(Date, boolean)
      */
     public CandidateSession resetCandidateSessionHard(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
@@ -376,11 +377,11 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowReinitWhenInteracting()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_INTERACTING);
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowHardResetWhenOpen()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.HARD_RESET_SESSION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowReinitWhenClosed()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REINIT_SESSION_WHEN_CLOSED);
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowHardResetWhenEnded()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.HARD_RESET_SESSION_WHEN_ENDED);
         }
 
         /* Update state */
@@ -406,13 +407,13 @@ public class CandidateItemDeliveryService {
     }
 
     //----------------------------------------------------
-    // Session reset
+    // Session soft reset
 
     /**
-     * Resets the {@link CandidateSession} having the given ID (xid), returning the
-     * updated {@link CandidateSession}. This takes the session back to the state it
-     * was in immediately after the last {@link CandidateItemEventType#REINIT} (if applicable),
-     * or after the original {@link CandidateItemEventType#INIT}.
+     * Performs a soft reset on the {@link CandidateSession} having the given ID (xid), returning the
+     * updated {@link CandidateSession}.
+     *
+     * @see ItemSessionController#resetItemSessionSoft(Date, boolean)
      */
     public CandidateSession resetCandidateSessionSoft(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
@@ -431,11 +432,11 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenInteracting()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_INTERACTING);
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenOpen()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOFT_RESET_SESSION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenClosed()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.RESET_SESSION_WHEN_CLOSED);
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenEnded()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOFT_RESET_SESSION_WHEN_ENDED);
         }
 
         /* Update state */
@@ -483,11 +484,11 @@ public class CandidateItemDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSolutionWhenInteracting()) {
+        if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSolutionWhenOpen()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
         }
-        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowResetWhenClosed()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_CLOSED);
+        else if (itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenEnded()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_ENDED);
         }
 
         /* Close session if required */
@@ -519,18 +520,18 @@ public class CandidateItemDeliveryService {
     // Session termination (by candidate)
 
     /**
-     * Terminates the {@link CandidateSession} having the given ID (xid).
+     * Exits/terminates the {@link CandidateSession} having the given ID (xid).
      * <p>
      * Currently we're always allowing this action to be made when in
      * interacting or closed states.
      */
-    public CandidateSession terminateCandidateSession(final long xid, final String sessionToken)
+    public CandidateSession exitCandidateSession(final long xid, final String sessionToken)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
-        return terminateCandidateSession(candidateSession);
+        return exitCandidateSession(candidateSession);
     }
 
-    public CandidateSession terminateCandidateSession(final CandidateSession candidateSession)
+    public CandidateSession exitCandidateSession(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
@@ -543,7 +544,7 @@ public class CandidateItemDeliveryService {
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
-                CandidateItemEventType.TERMINATE, itemSessionState);
+                CandidateItemEventType.EXIT, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Are we terminating a session that hasn't been ended? If so, record the final result. */

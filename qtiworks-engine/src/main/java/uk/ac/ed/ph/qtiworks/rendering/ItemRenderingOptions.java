@@ -47,46 +47,46 @@ public final class ItemRenderingOptions extends AbstractRenderingOptions {
     private static final long serialVersionUID = -9121795157165098560L;
 
     @NotNull
-    private String closeUrl;
+    private String endUrl;
 
     @NotNull
-    private String resetUrl;
+    private String softResetUrl;
 
     @NotNull
-    private String reinitUrl;
+    private String hardResetUrl;
 
     @NotNull
     private String solutionUrl;
 
     @NotNull
-    private String terminateUrl;
+    private String exitUrl;
 
     //----------------------------------------------------
 
-    public String getCloseUrl() {
-        return closeUrl;
+    public String getEndUrl() {
+        return endUrl;
     }
 
-    public void setCloseUrl(final String closeUrl) {
-        this.closeUrl = closeUrl;
-    }
-
-
-    public String getResetUrl() {
-        return resetUrl;
-    }
-
-    public void setResetUrl(final String resetUrl) {
-        this.resetUrl = resetUrl;
+    public void setEndUrl(final String endUrl) {
+        this.endUrl = endUrl;
     }
 
 
-    public String getReinitUrl() {
-        return reinitUrl;
+    public String getSoftResetUrl() {
+        return softResetUrl;
     }
 
-    public void setReinitUrl(final String reinitUrl) {
-        this.reinitUrl = reinitUrl;
+    public void setSoftResetUrl(final String softResetUrl) {
+        this.softResetUrl = softResetUrl;
+    }
+
+
+    public String getHardResetUrl() {
+        return hardResetUrl;
+    }
+
+    public void setHardResetUrl(final String hardResetUrl) {
+        this.hardResetUrl = hardResetUrl;
     }
 
 
@@ -99,12 +99,12 @@ public final class ItemRenderingOptions extends AbstractRenderingOptions {
     }
 
 
-    public String getTerminateUrl() {
-        return terminateUrl;
+    public String getExitUrl() {
+        return exitUrl;
     }
 
-    public void setTerminateUrl(final String terminateUrl) {
-        this.terminateUrl = terminateUrl;
+    public void setExitUrl(final String exitUrl) {
+        this.exitUrl = exitUrl;
     }
 
     //----------------------------------------------------

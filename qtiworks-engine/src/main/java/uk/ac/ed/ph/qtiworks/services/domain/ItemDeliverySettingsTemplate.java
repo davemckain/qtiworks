@@ -46,13 +46,13 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
 
     private String prompt;
     private int maxAttempts;
-    private boolean allowClose;
-    private boolean allowResetWhenInteracting;
-    private boolean allowResetWhenClosed;
-    private boolean allowReinitWhenInteracting;
-    private boolean allowReinitWhenClosed;
-    private boolean allowSolutionWhenInteracting;
-    private boolean allowSolutionWhenClosed;
+    private boolean allowEnd;
+    private boolean allowSoftResetWhenOpen;
+    private boolean allowSoftResetWhenEnded;
+    private boolean allowHardResetWhenOpen;
+    private boolean allowHardResetWhenEnded;
+    private boolean allowSolutionWhenOpen;
+    private boolean allowSolutionWhenEnded;
 
     private boolean allowCandidateComment;
 
@@ -83,66 +83,66 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
     }
 
 
-    public boolean isAllowClose() {
-        return allowClose;
+    public boolean isAllowEnd() {
+        return allowEnd;
     }
 
-    public void setAllowClose(final boolean allowClose) {
-        this.allowClose = allowClose;
-    }
-
-
-    public boolean isAllowResetWhenInteracting() {
-        return allowResetWhenInteracting;
-    }
-
-    public void setAllowResetWhenInteracting(final boolean allowReset) {
-        this.allowResetWhenInteracting = allowReset;
+    public void setAllowEnd(final boolean allowEnd) {
+        this.allowEnd = allowEnd;
     }
 
 
-    public boolean isAllowResetWhenClosed() {
-        return allowResetWhenClosed;
+    public boolean isAllowSoftResetWhenOpen() {
+        return allowSoftResetWhenOpen;
     }
 
-    public void setAllowResetWhenClosed(final boolean allowReset) {
-        this.allowResetWhenClosed = allowReset;
-    }
-
-
-    public boolean isAllowReinitWhenInteracting() {
-        return allowReinitWhenInteracting;
-    }
-
-    public void setAllowReinitWhenInteracting(final boolean allowReinit) {
-        this.allowReinitWhenInteracting = allowReinit;
+    public void setAllowSoftResetWhenOpen(final boolean allowReset) {
+        this.allowSoftResetWhenOpen = allowReset;
     }
 
 
-    public boolean isAllowReinitWhenClosed() {
-        return allowReinitWhenClosed;
+    public boolean isAllowSoftResetWhenEnded() {
+        return allowSoftResetWhenEnded;
     }
 
-    public void setAllowReinitWhenClosed(final boolean allowReinitWhenClosed) {
-        this.allowReinitWhenClosed = allowReinitWhenClosed;
-    }
-
-
-    public boolean isAllowSolutionWhenInteracting() {
-        return allowSolutionWhenInteracting;
-    }
-
-    public void setAllowSolutionWhenInteracting(final boolean allowSolution) {
-        this.allowSolutionWhenInteracting = allowSolution;
+    public void setAllowSoftResetWhenEnded(final boolean allowReset) {
+        this.allowSoftResetWhenEnded = allowReset;
     }
 
 
-    public boolean isAllowSolutionWhenClosed() {
-        return allowSolutionWhenClosed;
+    public boolean isAllowHardResetWhenOpen() {
+        return allowHardResetWhenOpen;
     }
 
-    public void setAllowSolutionWhenClosed(final boolean allowSolutionWhenClosed) {
-        this.allowSolutionWhenClosed = allowSolutionWhenClosed;
+    public void setAllowHardResetWhenOpen(final boolean allowReinit) {
+        this.allowHardResetWhenOpen = allowReinit;
+    }
+
+
+    public boolean isAllowHardResetWhenEnded() {
+        return allowHardResetWhenEnded;
+    }
+
+    public void setAllowHardResetWhenEnded(final boolean allowHardResetWhenEnded) {
+        this.allowHardResetWhenEnded = allowHardResetWhenEnded;
+    }
+
+
+    public boolean isAllowSolutionWhenOpen() {
+        return allowSolutionWhenOpen;
+    }
+
+    public void setAllowSolutionWhenOpen(final boolean allowSolution) {
+        this.allowSolutionWhenOpen = allowSolution;
+    }
+
+
+    public boolean isAllowSolutionWhenEnded() {
+        return allowSolutionWhenEnded;
+    }
+
+    public void setAllowSolutionWhenEnded(final boolean allowSolutionWhenEnded) {
+        this.allowSolutionWhenEnded = allowSolutionWhenEnded;
     }
 
 

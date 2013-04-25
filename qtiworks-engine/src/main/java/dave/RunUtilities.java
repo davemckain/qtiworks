@@ -63,18 +63,18 @@ public final class RunUtilities {
     public static ItemRenderingOptions createItemRenderingOptions() {
         final ItemRenderingOptions result = new ItemRenderingOptions();
         setBaseOptions(result);
-        result.setCloseUrl("/close");
-        result.setResetUrl("/reset");
-        result.setReinitUrl("/reinit");
+        result.setEndUrl("/close");
+        result.setSoftResetUrl("/reset-soft");
+        result.setHardResetUrl("/reset-hard");
         result.setSolutionUrl("/solution");
-        result.setTerminateUrl("/terminate");
+        result.setExitUrl("/terminate");
         return result;
     }
 
     private static void setBaseOptions(final AbstractRenderingOptions result) {
         result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         result.setServeFileUrl("/serveFile");
-        result.setAttemptUrl("/attempt");
+        result.setResponseUrl("/response");
         result.setResultUrl("/result");
         result.setSourceUrl("/source");
     }

@@ -29,7 +29,7 @@ rendering.
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Global action URLs -->
-  <xsl:param name="attemptUrl" as="xs:string" required="yes"/>
+  <xsl:param name="responseUrl" as="xs:string" required="yes"/>
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>

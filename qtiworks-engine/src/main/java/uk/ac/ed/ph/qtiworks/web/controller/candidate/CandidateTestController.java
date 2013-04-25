@@ -99,7 +99,7 @@ public class CandidateTestController {
         final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + sessionToken;
         final TestRenderingOptions renderingOptions = new TestRenderingOptions();
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
+        renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
@@ -124,7 +124,7 @@ public class CandidateTestController {
     /**
      * Handles submission of candidate responses
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/attempt", method=RequestMethod.POST)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/response", method=RequestMethod.POST)
     public String handleResponses(final HttpServletRequest request, @PathVariable final long xid,
             @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {

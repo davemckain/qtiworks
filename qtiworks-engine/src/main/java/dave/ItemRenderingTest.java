@@ -77,8 +77,8 @@ public class ItemRenderingTest {
             renderingRequest.setPrompt("This is an item!");
             renderingRequest.setAuthorMode(true);
             renderingRequest.setSolutionAllowed(true);
-            renderingRequest.setResetAllowed(true);
-            renderingRequest.setReinitAllowed(true);
+            renderingRequest.setSoftResetAllowed(true);
+            renderingRequest.setHardResetAllowed(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
             renderingRequest.setCandidateCommentAllowed(true);

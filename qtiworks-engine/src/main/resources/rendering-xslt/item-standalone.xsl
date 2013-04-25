@@ -25,20 +25,20 @@ Renders a standalone assessmentItem
   <xsl:param name="prompt" select="()" as="xs:string?"/>
 
   <!-- Action permissions -->
-  <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="endAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="softSoftResetAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="hardResetAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="candidateCommentAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Action URLs -->
-  <xsl:param name="resetUrl" as="xs:string" required="yes"/>
-  <xsl:param name="reinitUrl" as="xs:string" required="yes"/>
-  <xsl:param name="closeUrl" as="xs:string" required="yes"/>
+  <xsl:param name="softResetUrl" as="xs:string" required="yes"/>
+  <xsl:param name="hardResetUrl" as="xs:string" required="yes"/>
+  <xsl:param name="endUrl" as="xs:string" required="yes"/>
   <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
-  <xsl:param name="terminateUrl" as="xs:string" required="yes"/>
+  <xsl:param name="exitUrl" as="xs:string" required="yes"/>
 
   <!-- ************************************************************ -->
 
@@ -179,23 +179,23 @@ Renders a standalone assessmentItem
         </div>
       </xsl:if>
       <ul class="controls">
-        <xsl:if test="$resetAllowed">
+        <xsl:if test="$softSoftResetAllowed">
           <li>
-            <form action="{$webappContextPath}{$resetUrl}" method="post">
+            <form action="{$webappContextPath}{$softResetUrl}" method="post">
               <input type="submit" value="Reset{if ($isItemSessionEnded) then ' and play again' else ''}"/>
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$reinitAllowed">
+        <xsl:if test="$hardResetAllowed">
           <li>
-            <form action="{$webappContextPath}{$reinitUrl}" method="post">
+            <form action="{$webappContextPath}{$hardResetUrl}" method="post">
               <input type="submit" value="Reinitialise{if ($isItemSessionEnded) then ' and play again' else ''}"/>
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$closeAllowed">
+        <xsl:if test="$endAllowed">
           <li>
-            <form action="{$webappContextPath}{$closeUrl}" method="post">
+            <form action="{$webappContextPath}{$endUrl}" method="post">
               <input type="submit" value="Finish and review"/>
             </form>
           </li>
@@ -208,6 +208,7 @@ Renders a standalone assessmentItem
                   <!-- Already in solution mode -->
                   <xsl:attribute name="disabled" select="'disabled'"/>
                 </xsl:if>
+              </input>
             </form>
           </li>
         </xsl:if>
@@ -239,7 +240,7 @@ Renders a standalone assessmentItem
           </li>
         </xsl:if>
         <li>
-          <form action="{$webappContextPath}{$terminateUrl}" method="post">
+          <form action="{$webappContextPath}{$exitUrl}" method="post">
             <input type="submit" value="Exit"/>
           </form>
         </li>
@@ -251,7 +252,7 @@ Renders a standalone assessmentItem
 
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
-      <form method="post" action="{$webappContextPath}{$attemptUrl}"
+      <form method="post" action="{$webappContextPath}{$responseUrl}"
         onsubmit="return QtiWorksRendering.submit()" enctype="multipart/form-data"
         onreset="QtiWorksRendering.reset()" autocomplete="off">
 
@@ -391,13 +392,13 @@ Renders a standalone assessmentItem
       </p>
       <dl>
         <dt>Reset session?</dt>
-        <dd><xsl:value-of select="$resetAllowed"/></dd>
+        <dd><xsl:value-of select="$softSoftResetAllowed"/></dd>
 
         <dt>Reinitialize session?</dt>
-        <dd><xsl:value-of select="$reinitAllowed"/></dd>
+        <dd><xsl:value-of select="$hardResetAllowed"/></dd>
 
         <dt>Close session?</dt>
-        <dd><xsl:value-of select="$closeAllowed"/></dd>
+        <dd><xsl:value-of select="$endAllowed"/></dd>
 
         <dt>View solution?</dt>
         <dd><xsl:value-of select="$solutionAllowed"/></dd>
