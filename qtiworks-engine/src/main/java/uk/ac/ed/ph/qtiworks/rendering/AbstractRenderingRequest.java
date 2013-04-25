@@ -45,6 +45,8 @@ import javax.validation.constraints.NotNull;
  * Base for {@link ItemRenderingRequest} and {@link TestRenderingRequest} containing things
  * that are required in both cases.
  *
+ * @param <P> specific subtype of {@link AbstractRenderingOptions} attached to this request.
+ *
  * @author David McKain
  */
 public abstract class AbstractRenderingRequest<P extends AbstractRenderingOptions> {

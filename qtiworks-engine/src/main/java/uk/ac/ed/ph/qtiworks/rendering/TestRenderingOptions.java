@@ -47,6 +47,9 @@ public final class TestRenderingOptions extends AbstractRenderingOptions {
     private static final long serialVersionUID = -1121298920996208870L;
 
     @NotNull
+    private String testPartNavigationUrl;
+
+    @NotNull
     private String selectTestItemUrl;
 
     @NotNull
@@ -63,9 +66,6 @@ public final class TestRenderingOptions extends AbstractRenderingOptions {
 
     @NotNull
     private String showTestItemSolutionUrl;
-
-    @NotNull
-    private String testPartNavigationUrl;
 
     @NotNull
     private String advanceTestPartUrl;

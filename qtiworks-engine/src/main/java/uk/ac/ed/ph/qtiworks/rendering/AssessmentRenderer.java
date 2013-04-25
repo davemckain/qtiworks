@@ -80,7 +80,19 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
 
 /**
- * FIXME: Redocument this!
+ * This key service performs the actual rendering of items and tests, supporting the
+ * rendering of specific states and particular modal states (e.g. reviewing an item
+ * in a test during testPart review).
+ * <p>
+ * This stands separately from the main QTIWorks domain model and is potentially usable
+ * outside of the rest of the QTIWorks engine. I've chosen not to make it a separate module
+ * for now.
+ *
+ * <h2>Usage</h2>
+ * <ul>
+ *   <li>An instance of this class is safe to use concurrently by multiple threads.</li>
+ *   <li>If using outside QTIWorks engine, rememeber to set the necessary properties then call {@link #init()}</li>
+ * </ul>
  *
  * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
  * containing a mixture of C & P. The idea would be that we use the PMathML, if available,
@@ -88,8 +100,6 @@ import org.springframework.validation.Validator;
  * complexity exists if we add support for substituting both CMathML and PMathML in a
  * MathML expression containing both PMathML and CMathML annotations. What guarantee is there
  * that we get the same result? I think the spec needs more thought wrt MathML.
- *
- * An instance of this class is safe to use concurrently by multiple threads.
  *
  * @author David McKain
  */
@@ -119,6 +129,9 @@ public class AssessmentRenderer {
     @Resource
     private String webappContextPath;
 
+    /**
+     * Manager for the XSLT stylesheets, created during init.
+     */
     private XsltStylesheetManager stylesheetManager;
 
     //----------------------------------------------------
