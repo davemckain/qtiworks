@@ -58,6 +58,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -67,12 +68,12 @@ import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.Charsets;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
@@ -191,35 +192,36 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     /**
-     * Renders a terminated session, sending the results as UTF-8 encoded XML
-     * to the given {@link OutputStream}.
+     * Renders a terminated session, sending the result to the provided JAXP {@link Result}.
      * <p>
-     * The caller is responsible for closing this stream afterwards.
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
      */
-    public void renderTeminated(final AbstractRenderingRequest<?> request, final OutputStream resultStream) {
-        Assert.notNull(resultStream, "resultStream");
+    public void renderTeminated(final AbstractRenderingRequest<?> request, final Result result) {
+        Assert.notNull(result, "result");
 
         final Map<String, Object> xsltParameters = new HashMap<String, Object>();
         setBaseRenderingParameters(xsltParameters);
 
-        doTransform(request, terminatedXsltUri, xsltParameters, resultStream);
+        doTransform(request, terminatedXsltUri, xsltParameters, result);
     }
 
     /**
-     * Renders the given {@link ItemRenderingRequest}, sending the results as
-     * UTF-8 encoded XML to the given {@link OutputStream}.
+     * Renders the given {@link ItemRenderingRequest}, sending the result to the provided JAXP {@link Result}.
      * <p>
      * The rendering shows the current state of the item, unless {@link ItemRenderingRequest#isSolutionMode()}
      * returns true, in which case the model solution is rendered.
      * <p>
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
      * The caller is responsible for closing this stream afterwards.
-     *
-     * @throws QtiWorksRenderingException if an unexpected Exception happens during rendering
      */
     public void renderItem(final ItemRenderingRequest request,
-            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
+            final List<CandidateEventNotification> notifications, final Result result) {
         Assert.notNull(request, "request");
-        Assert.notNull(resultStream, "resultStream");
+        Assert.notNull(result, "result");
 
         /* Check request is valid */
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "itemRenderingRequest");
@@ -255,21 +257,22 @@ public class AssessmentRenderer {
         xsltParameters.put("solutionUrl", renderingOptions.getSolutionUrl());
 
         /* Perform transform */
-        doTransform(request, itemStandaloneXsltUri, xsltParameters, resultStream);
+        doTransform(request, itemStandaloneXsltUri, xsltParameters, result);
     }
 
     /**
-     * Renders the given {@link TestItemRenderingDetails}, sending the results as UTF-8 encoded XML
-     * to the given {@link OutputStream}.
+     * Renders the given {@link TestItemRenderingDetails}, sending the result to the provided JAXP {@link Result}.
      * <p>
-     * The caller is responsible for closing this stream afterwards.
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
      *
      * @throws QtiWorksRenderingException if an unexpected Exception happens during rendering
      */
     public void renderTest(final TestRenderingRequest request,
-            final List<CandidateEventNotification> notifications, final OutputStream resultStream) {
+            final List<CandidateEventNotification> notifications, final Result result) {
         Assert.notNull(request, "renderingRequest");
-        Assert.notNull(resultStream, "resultStream");
+        Assert.notNull(result, "result");
 
         /* Check request is valid */
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "testRenderingRequest");
@@ -302,70 +305,70 @@ public class AssessmentRenderer {
 
         final TestRenderingMode testRenderingMode = request.getTestRenderingMode();
         if (testRenderingMode==TestRenderingMode.ITEM_REVIEW) {
-            doRenderTestItemReview(request, xsltParameters, resultStream);
+            doRenderTestItemReview(request, xsltParameters, result);
         }
         else if (testRenderingMode==TestRenderingMode.ITEM_SOLUTION) {
-            doRenderTestItemSolution(request, xsltParameters, resultStream);
+            doRenderTestItemSolution(request, xsltParameters, result);
         }
         else {
             /* Render current state */
             final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
             if (testSessionState.isEnded()) {
                 /* At end of test, so show overall test feedback */
-                doRenderTestFeedback(request, xsltParameters, resultStream);
+                doRenderTestFeedback(request, xsltParameters, result);
             }
             else if (currentTestPartKey!=null) {
                 final TestPartSessionState currentTestPartSessionState = testSessionState.getTestPartSessionStates().get(currentTestPartKey);
                 final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
                 if (currentItemKey!=null) {
                     /* An item is selected, so render it in appropriate state */
-                    doRenderCurrentTestItem(request, xsltParameters, resultStream);
+                    doRenderCurrentTestItem(request, xsltParameters, result);
                 }
                 else {
                     /* No item selected */
                     if (currentTestPartSessionState.isEnded()) {
                         /* testPart has ended, so must be showing testPart feedback */
-                        doRenderTestPartFeedback(request, xsltParameters, resultStream);
+                        doRenderTestPartFeedback(request, xsltParameters, result);
                     }
                     else {
                         /* testPart not ended, so we must be showing the navigation menu in nonlinear mode */
-                        doRenderTestPartNavigation(request, xsltParameters, resultStream);
+                        doRenderTestPartNavigation(request, xsltParameters, result);
                     }
                 }
             }
             else {
                 /* No current testPart == start of multipart test */
-                doRenderTestEntry(request, xsltParameters, resultStream);
+                doRenderTestEntry(request, xsltParameters, result);
             }
         }
     }
 
     private void doRenderTestEntry(final TestRenderingRequest request,
-            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
-        doTransform(request, testEntryXsltUri, xsltParameters, resultStream);
+            final Map<String, Object> xsltParameters, final Result result) {
+        doTransform(request, testEntryXsltUri, xsltParameters, result);
     }
 
     private void doRenderTestPartNavigation(final TestRenderingRequest request,
-            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+            final Map<String, Object> xsltParameters, final Result result) {
         /* Determine whether candidate may exist testPart */
         final TestSessionController testSessionController = request.getTestSessionController();
         xsltParameters.put("endTestPartAllowed", Boolean.valueOf(testSessionController.mayEndCurrentTestPart()));
 
-        doTransform(request, testPartNavigationXsltUri, xsltParameters, resultStream);
+        doTransform(request, testPartNavigationXsltUri, xsltParameters, result);
     }
 
     private void doRenderTestPartFeedback(final TestRenderingRequest request,
-            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
-        doTransform(request, testPartFeedbackXsltUri, xsltParameters, resultStream);
+            final Map<String, Object> xsltParameters, final Result result) {
+        doTransform(request, testPartFeedbackXsltUri, xsltParameters, result);
     }
 
     private void doRenderTestFeedback(final TestRenderingRequest request,
-            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
-        doTransform(request, testFeedbackXsltUri, xsltParameters, resultStream);
+            final Map<String, Object> xsltParameters, final Result result) {
+        doTransform(request, testFeedbackXsltUri, xsltParameters, result);
     }
 
     private void doRenderCurrentTestItem(final TestRenderingRequest request,
-            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+            final Map<String, Object> xsltParameters, final Result result) {
         /* Extract the item to be rendered */
         final TestSessionController testSessionController = request.getTestSessionController();
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
@@ -384,11 +387,11 @@ public class AssessmentRenderer {
         xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
         /* We finally do the transform on the _item_ (NB!) */
-        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, resultStream);
+        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
     }
 
     private void doRenderTestItemReview(final TestRenderingRequest request,
-            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+            final Map<String, Object> xsltParameters, final Result result) {
         /* Extract item to review */
         final TestPlanNodeKey reviewItemKey = request.getModalItemKey();
 
@@ -403,11 +406,11 @@ public class AssessmentRenderer {
         xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
         /* We finally do the transform on the _item_ (NB!) */
-        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, resultStream);
+        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
     }
 
     private void doRenderTestItemSolution(final TestRenderingRequest request,
-            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+            final Map<String, Object> xsltParameters, final Result result) {
         /* Extract item to review */
         final TestPlanNodeKey solutionItemKey = request.getModalItemKey();
 
@@ -422,7 +425,7 @@ public class AssessmentRenderer {
         xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
         /* We finally do the transform on the _item_ (NB!) */
-        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, resultStream);
+        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
     }
 
     //----------------------------------------------------
@@ -491,12 +494,13 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI rendererStylesheetUri,
-            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
-        doTransform(renderingRequest, rendererStylesheetUri, renderingRequest.getAssessmentResourceUri(), xsltParameters, resultStream);
+            final Map<String, Object> xsltParameters, final Result result) {
+        doTransform(renderingRequest, rendererStylesheetUri, renderingRequest.getAssessmentResourceUri(),
+                xsltParameters, result);
     }
 
     private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI rendererStylesheetUri,
-            final URI inputUri, final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+            final URI inputUri, final Map<String, Object> xsltParameters, final Result result) {
         /* We do this as an XML pipeline:
          *
          * Input -> Rendering XSLT -> Serialization XSLT -> Result
@@ -521,26 +525,40 @@ public class AssessmentRenderer {
 
         /* Configure the serializer */
         final Transformer serializerTransformer = serializerTransformerHandler.getTransformer();
+        final AbstractRenderingOptions renderingOptions = renderingRequest.getRenderingOptions();
         final SerializationMethod serializationMethod = renderingRequest.getRenderingOptions().getSerializationMethod();
+
         serializerTransformer.setParameter("serializationMethod", serializationMethod.toString());
         serializerTransformer.setParameter("outputMethod", serializationMethod.getMethod());
         serializerTransformer.setParameter("contentType", serializationMethod.getContentType());
         serializerTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        serializerTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         serializerTransformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         serializerTransformer.setOutputProperty(OutputKeys.MEDIA_TYPE, serializationMethod.getContentType());
         serializerTransformer.setOutputProperty(OutputKeys.METHOD, serializationMethod.getMethod());
         serializerTransformer.setOutputProperty("include-content-type", "no");
 
-        /* If we're building HTML5, add in its custom pseudo-DOCTYPE as we can't generate this in XSLT.
-         * (NB: This only works sanely as we've hard-coded a reasonable encoding.)
-         */
-        if (serializationMethod==SerializationMethod.HTML5_MATHJAX) {
+        /* If we're writing to an OutputStream, then select the encoding to use */
+        final StreamResult streamResult = (result instanceof StreamResult) ? (StreamResult) result : null;
+        final boolean isOutputStreamResult = streamResult!=null && streamResult.getOutputStream()!=null;
+        final String outputStreamEncoding = renderingOptions.getEncoding()!=null ? renderingOptions.getEncoding() : "UTF-8";
+        if (isOutputStreamResult) {
+            serializerTransformer.setOutputProperty(OutputKeys.ENCODING, outputStreamEncoding);
+        }
+
+        /* If we're building HTML5, send its custom pseudo-DOCTYPE to the Result, as we can't generate this in XSLT. */
+        if (streamResult!=null && serializationMethod==SerializationMethod.HTML5_MATHJAX) {
+            final String html5Doctype = "<!DOCTYPE html>\n";
             try {
-                resultStream.write("<!DOCTYPE html>\n".getBytes(Charsets.UTF_8));
+                if (isOutputStreamResult) {
+                    /* Need to send doctype in correct encoding */
+                    streamResult.getOutputStream().write(html5Doctype.getBytes(outputStreamEncoding));
+                }
+                else if (streamResult.getWriter()!=null) {
+                    streamResult.getWriter().write(html5Doctype);
+                }
             }
             catch (final IOException e) {
-                throw new QtiWorksRenderingException("Could not write HTML5 prolog to resultStream", e);
+                throw new QtiWorksRenderingException("Could not write HTML5 prolog to result", e);
             }
         }
 
@@ -550,10 +568,7 @@ public class AssessmentRenderer {
         final InputSource assessmentSaxSource = new InputSource(assessmentStream);
         assessmentSaxSource.setSystemId(inputUri.toString());
 
-        /* Set up the final Result */
-        final StreamResult result = new StreamResult(resultStream);
-
-        /* Now join the pipeline together
+        /* Now join the pipeline together.
          *
          * NB: I'm not bothering to set up LexicalHandlers, so comments and things like that won't
          * be passed through the pipeline. If that becomes important, change the code below to

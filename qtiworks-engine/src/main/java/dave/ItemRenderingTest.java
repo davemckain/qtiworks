@@ -56,9 +56,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 import java.net.URI;
 import java.util.Date;
 
-import org.apache.commons.io.Charsets;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
@@ -125,7 +125,9 @@ public class ItemRenderingTest {
             renderer.init();
 
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-            renderer.renderItem(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            final StreamResult result = new StreamResult(stringBuilderWriter);
+
+            renderer.renderItem(renderingRequest, null, result);
             final String rendered = stringBuilderWriter.toString();
             System.out.println("Rendered page: " + rendered);
         }

@@ -52,6 +52,9 @@ public abstract class AbstractRenderingOptions implements Serializable {
     @NotNull
     private SerializationMethod serializationMethod;
 
+    /** Encoding to use (when sending the result to an OutputStream). UTF-8 will be used if not specified */
+    private String encoding;
+
     @NotNull
     private String responseUrl;
 
@@ -72,6 +75,15 @@ public abstract class AbstractRenderingOptions implements Serializable {
 
     public void setSerializationMethod(final SerializationMethod serializationMethod) {
         this.serializationMethod = serializationMethod;
+    }
+
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(final String encoding) {
+        this.encoding = encoding;
     }
 
 

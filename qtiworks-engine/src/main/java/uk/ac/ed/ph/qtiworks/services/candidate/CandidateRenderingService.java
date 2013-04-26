@@ -83,6 +83,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
@@ -176,7 +177,7 @@ public class CandidateRenderingService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderItemEvent(latestEvent, itemSessionState, renderingOptions, resultOutputStream);
+                renderItemEvent(latestEvent, itemSessionState, renderingOptions, new StreamResult(resultOutputStream));
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -213,7 +214,7 @@ public class CandidateRenderingService {
     }
 
     private void renderItemEvent(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState,
-            final ItemRenderingOptions renderingOptions, final OutputStream resultStream) {
+            final ItemRenderingOptions renderingOptions, final StreamResult result) {
         final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
@@ -232,7 +233,7 @@ public class CandidateRenderingService {
 
         /* If session has terminated, render appropriate state and exit */
         if (candidateSession.isTerminated() || itemSessionState.isExited()) {
-            assessmentRenderer.renderTeminated(renderingRequest, resultStream);
+            assessmentRenderer.renderTeminated(renderingRequest, result);
             return;
         }
 
@@ -272,7 +273,7 @@ public class CandidateRenderingService {
         /* Finally pass to rendering layer */
         candidateAuditLogger.logItemRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
-        assessmentRenderer.renderItem(renderingRequest, notifications, resultStream);
+        assessmentRenderer.renderItem(renderingRequest, notifications, result);
     }
 
     //----------------------------------------------------
@@ -316,7 +317,7 @@ public class CandidateRenderingService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderTestEvent(latestEvent, testSessionController, renderingOptions, resultOutputStream);
+                renderTestEvent(latestEvent, testSessionController, renderingOptions, new StreamResult(resultOutputStream));
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -353,7 +354,7 @@ public class CandidateRenderingService {
     }
 
     private void renderTestEvent(final CandidateEvent candidateEvent, final TestSessionController testSessionController,
-            final TestRenderingOptions renderingOptions, final OutputStream resultStream) {
+            final TestRenderingOptions renderingOptions, final StreamResult result) {
         final CandidateTestEventType testEventType = candidateEvent.getTestEventType();
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
@@ -374,7 +375,7 @@ public class CandidateRenderingService {
         /* If session has terminated, render appropriate state and exit */
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
         if (candidateSession.isTerminated() || testSessionState.isExited()) {
-            assessmentRenderer.renderTeminated(renderingRequest, resultStream);
+            assessmentRenderer.renderTeminated(renderingRequest, result);
             return;
         }
 
@@ -395,7 +396,7 @@ public class CandidateRenderingService {
         /* Pass to rendering layer */
         candidateAuditLogger.logTestRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
-        assessmentRenderer.renderTest(renderingRequest, notifications, resultStream);
+        assessmentRenderer.renderTest(renderingRequest, notifications, result);
     }
 
     private TestPlanNodeKey extractTargetItemKey(final CandidateEvent candidateEvent) {
