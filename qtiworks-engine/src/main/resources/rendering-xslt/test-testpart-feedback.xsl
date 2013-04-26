@@ -18,20 +18,10 @@ Renders the test(Part) feedback
 
   <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
-  <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
   <!-- This test -->
   <xsl:variable name="assessmentTest" select="/*[1]" as="element(qti:assessmentTest)"/>
-
-  <!-- ************************************************************ -->
-
-  <xsl:template match="/">
-    <xsl:variable name="unserialized-output" as="element()">
-      <xsl:apply-templates select="qw:to-qti21(/)/*"/>
-    </xsl:variable>
-    <xsl:apply-templates select="$unserialized-output" mode="serialize"/>
-  </xsl:template>
 
   <!-- ************************************************************ -->
 

@@ -18,17 +18,7 @@ Test Entry page (shown when there are multiple testParts)
 
   <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
-  <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
-
-  <!-- ************************************************************ -->
-
-  <xsl:template match="/">
-    <xsl:variable name="unserialized-output" as="element()">
-      <xsl:apply-templates select="qw:to-qti21(/)/*"/>
-    </xsl:variable>
-    <xsl:apply-templates select="$unserialized-output" mode="serialize"/>
-  </xsl:template>
 
   <!-- ************************************************************ -->
 

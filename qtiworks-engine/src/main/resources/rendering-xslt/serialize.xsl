@@ -27,7 +27,7 @@ hence slightly easier to debug.
 
   <!-- ************************************************************ -->
 
-  <xsl:template match="xhtml:html" as="element()" mode="serialize">
+  <xsl:template match="xhtml:html" as="element()">
     <xsl:variable name="containsMathML" select="exists(xhtml:body//m:*)" as="xs:boolean"/>
     <!-- Generate XHTML tree in usual namespace -->
     <xsl:variable name="html" as="element(xhtml:html)">
@@ -55,7 +55,7 @@ hence slightly easier to debug.
           </xsl:if>
           <!-- Pull in <head/> stuff added by other stylesheets -->
           <xsl:for-each select="xhtml:head/*">
-            <xsl:apply-templates select="." mode="serialize"/>
+            <xsl:apply-templates select="."/>
             <xsl:text>&#x0a;</xsl:text>
           </xsl:for-each>
           <!-- Finally pull in MathJax if required -->
@@ -74,7 +74,7 @@ hence slightly easier to debug.
             <xsl:text>&#x0a;</xsl:text>
           </xsl:if>
         </head>
-        <xsl:apply-templates select="xhtml:body" mode="serialize"/>
+        <xsl:apply-templates select="xhtml:body"/>
       </html>
     </xsl:variable>
     <!--
@@ -92,7 +92,7 @@ hence slightly easier to debug.
   </xsl:template>
 
   <!-- Add @type attribute to <script> if we're not generating HTML5 -->
-  <xsl:template match="xhtml:script[not($serializationMethod='HTML5_MATHJAX') and not(@type)]" mode="serialize">
+  <xsl:template match="xhtml:script[not($serializationMethod='HTML5_MATHJAX') and not(@type)]">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
       <xsl:attribute name="type" select="'text/javascript'"/>
@@ -101,34 +101,34 @@ hence slightly easier to debug.
 
   <!-- ************************************************************ -->
 
-  <xsl:template match="xhtml:*" mode="serialize">
+  <xsl:template match="xhtml:*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
-      <xsl:apply-templates mode="serialize"/>
+      <xsl:apply-templates/>
     </xsl:copy>
   </xsl:template>
 
-  <xsl:template match="m:*" mode="serialize">
+  <xsl:template match="m:*">
     <xsl:choose>
       <xsl:when test="$serializationMethod='IE_MATHPLAYER'">
         <xsl:element name="m:{local-name()}">
           <xsl:copy-of select="@*"/>
-          <xsl:apply-templates mode="serialize"/>
+          <xsl:apply-templates/>
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
         <xsl:copy>
           <xsl:copy-of select="@*"/>
-          <xsl:apply-templates mode="serialize"/>
+          <xsl:apply-templates/>
         </xsl:copy>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="*" mode="serialize">
+  <xsl:template match="*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
-      <xsl:apply-templates mode="serialize"/>
+      <xsl:apply-templates/>
     </xsl:copy>
   </xsl:template>
 
@@ -137,11 +137,11 @@ hence slightly easier to debug.
     <xsl:sequence select="boolean($element[self::xhtml:* and local-name()=('p','table','div','tbody','tr','td','form','ul','li')])"/>
   </xsl:function>
 
-  <xsl:template match="m:*/text()" mode="serialize">
+  <xsl:template match="m:*/text()">
     <xsl:copy-of select="."/>
   </xsl:template>
 
-  <xsl:template match="text()" mode="serialize">
+  <xsl:template match="text()">
     <xsl:variable name="trimmed" as="xs:string">
       <xsl:choose>
         <xsl:when test="normalize-space(.)='' and (qw:is-xhtml-block-element(following-sibling::node()[1]) or qw:is-xhtml-block-element(preceding-sibling::node()[1]))">

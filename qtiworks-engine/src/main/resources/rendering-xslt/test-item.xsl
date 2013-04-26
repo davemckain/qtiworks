@@ -21,7 +21,6 @@ NB: This is used both while being presented, and during review.
   <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
   <xsl:import href="item-common.xsl"/>
-  <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
   <!--
@@ -63,17 +62,14 @@ NB: This is used both while being presented, and during review.
 
   <!-- ************************************************************ -->
 
+  <!-- Item may be QTI 2.0 or 2.1, so we'll put a template in here to fix namespaces to QTI 2.1 -->
   <xsl:template match="/">
-    <xsl:variable name="unserialized-output" as="element()">
-      <xsl:apply-templates select="*"/>
-    </xsl:variable>
-    <xsl:apply-templates select="$unserialized-output" mode="serialize"/>
+    <xsl:apply-templates select="qw:to-qti21(/)/*"/>
   </xsl:template>
 
   <!-- ************************************************************ -->
 
   <xsl:template match="qti:assessmentItem" as="element(html)">
-    <xsl:variable name="contains-mathml" select="exists(qti:itemBody//m:*)" as="xs:boolean"/>
     <xsl:variable name="containsMathEntryInteraction"
       select="exists(qti:itemBody//qti:customInteraction[@class='org.qtitools.mathassess.MathEntryInteraction'])"
       as="xs:boolean"/>

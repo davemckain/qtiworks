@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
+import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -51,7 +52,6 @@ import uk.ac.ed.ph.jqtiplus.state.marshalling.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.state.marshalling.TestSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
@@ -67,17 +67,17 @@ import java.util.Map.Entry;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.Charsets;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
 /**
  * This key service performs the actual rendering of items and tests, supporting the
@@ -497,11 +497,20 @@ public class AssessmentRenderer {
 
     private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI rendererStylesheetUri,
             final URI inputUri, final Map<String, Object> xsltParameters, final OutputStream resultStream) {
-        /* We do this as a pipeline. First obtain the required compiled stylesheets */
-        final Transformer rendererTransformer = requireTransformer(rendererStylesheetUri);
-        final Transformer serializerTransformer = requireTransformer(serializeXsltUri);
+        /* We do this as an XML pipeline:
+         *
+         * Input -> Rendering XSLT -> Serialization XSLT -> Result
+         *
+         * NB: I'm not bothering to set up LexicalHandlers, so comments and things like that won't
+         * be passed through the pipeline. If that becomes important, change the code below to
+         * support that.
+         */
+         /* First obtain the required compiled stylesheets */
+        final TransformerHandler rendererTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(rendererStylesheetUri);
+        final TransformerHandler serializerTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(serializeXsltUri);
 
         /* Pass necessary parameters to renderer */
+        final Transformer rendererTransformer = rendererTransformerHandler.getTransformer();
         if (xsltParameters!=null) {
             for (final Entry<String, Object> paramEntry : xsltParameters.entrySet()) {
                 rendererTransformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
@@ -510,7 +519,8 @@ public class AssessmentRenderer {
         /* Pass system ID of the input document */
         rendererTransformer.setParameter("systemId", inputUri);
 
-        /* Pass necessary parameters to serializer */
+        /* Configure the serializer */
+        final Transformer serializerTransformer = serializerTransformerHandler.getTransformer();
         final SerializationMethod serializationMethod = renderingRequest.getRenderingOptions().getSerializationMethod();
         serializerTransformer.setParameter("serializationMethod", serializationMethod.toString());
         serializerTransformer.setParameter("outputMethod", serializationMethod.getMethod());
@@ -534,31 +544,34 @@ public class AssessmentRenderer {
             }
         }
 
-        /* Set up Source */
+        /* Set up the XML source */
         final ResourceLocator assessmentResourceLocator = renderingRequest.getAssessmentResourceLocator();
         final InputStream assessmentStream = assessmentResourceLocator.findResource(inputUri);
-        final StreamSource assessmentSource = new StreamSource(assessmentStream, inputUri.toString());
+        final InputSource assessmentSaxSource = new InputSource(assessmentStream);
+        assessmentSaxSource.setSystemId(inputUri.toString());
 
-        /* Set up Result */
+        /* Set up the final Result */
         final StreamResult result = new StreamResult(resultStream);
 
-        /* Perform transform */
-        try {
-            rendererTransformer.setURIResolver(new XsltResourceResolver(assessmentResourceLocator));
-            rendererTransformer.transform(assessmentSource, result);
-        }
-        catch (final TransformerException e) {
-            throw new QtiWorksRenderingException("Unexpected Exception doing XSLT transform", e);
-        }
-    }
+        /* Now join the pipeline together
+         *
+         * NB: I'm not bothering to set up LexicalHandlers, so comments and things like that won't
+         * be passed through the pipeline. If that becomes important, change the code below to
+         * support that.
+         */
+        final XMLReader xmlReader = XmlUtilities.createNsAwareSaxReader(false);
+        xmlReader.setContentHandler(rendererTransformerHandler);
+        final SAXResult rendererResult = new SAXResult(serializerTransformerHandler);
+        rendererTransformerHandler.setResult(rendererResult);
+        rendererResult.setHandler(serializerTransformerHandler);
+        serializerTransformerHandler.setResult(result);
 
-    private Transformer requireTransformer(final URI xsltUri) {
-        final Templates templates = stylesheetManager.getCompiledStylesheet(xsltUri);
+        /* Finally we run the pipeline */
         try {
-            return templates.newTransformer();
+            xmlReader.parse(assessmentSaxSource);
         }
-        catch (final TransformerConfigurationException e) {
-            throw new QtiWorksRenderingException("Could not complile stylesheet " + xsltUri, e);
+        catch (final Exception e) {
+            throw new QtiWorksRenderingException("Unexpected Exception running rendering XML pipeline", e);
         }
     }
 }

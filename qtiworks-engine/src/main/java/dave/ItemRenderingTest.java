@@ -95,7 +95,6 @@ public class ItemRenderingTest {
             System.out.println("Item session state after entry: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
-
             final ItemRenderingOptions renderingOptions = RunUtilities.createItemRenderingOptions();
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
