@@ -106,6 +106,7 @@ import org.springframework.validation.Validator;
 @Service
 public class AssessmentRenderer {
 
+    private static final URI serializeXsltUri = URI.create("classpath:/rendering-xslt/serialize.xsl");
     private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
@@ -489,42 +490,37 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
-    private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI stylesheetUri,
-            final Map<String, Object> xsltParameters,
-            final OutputStream resultStream) {
-        doTransform(renderingRequest, stylesheetUri, renderingRequest.getAssessmentResourceUri(), xsltParameters, resultStream);
+    private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI rendererStylesheetUri,
+            final Map<String, Object> xsltParameters, final OutputStream resultStream) {
+        doTransform(renderingRequest, rendererStylesheetUri, renderingRequest.getAssessmentResourceUri(), xsltParameters, resultStream);
     }
 
-    private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI stylesheetUri,
+    private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI rendererStylesheetUri,
             final URI inputUri, final Map<String, Object> xsltParameters, final OutputStream resultStream) {
-        final Templates templates = stylesheetManager.getCompiledStylesheet(stylesheetUri);
-        Transformer transformer;
-        try {
-            transformer = templates.newTransformer();
-        }
-        catch (final TransformerConfigurationException e) {
-            throw new QtiWorksRenderingException("Could not complile stylesheet " + stylesheetUri, e);
-        }
+        /* We do this as a pipeline. First obtain the required compiled stylesheets */
+        final Transformer rendererTransformer = requireTransformer(rendererStylesheetUri);
+        final Transformer serializerTransformer = requireTransformer(serializeXsltUri);
+
+        /* Pass necessary parameters to renderer */
         if (xsltParameters!=null) {
             for (final Entry<String, Object> paramEntry : xsltParameters.entrySet()) {
-                transformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
+                rendererTransformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
             }
         }
+        /* Pass system ID of the input document */
+        rendererTransformer.setParameter("systemId", inputUri);
 
-        /* Set system ID of the input document */
-        transformer.setParameter("systemId", inputUri);
-
-        /* Configure requested serialization */
+        /* Pass necessary parameters to serializer */
         final SerializationMethod serializationMethod = renderingRequest.getRenderingOptions().getSerializationMethod();
-        transformer.setParameter("serializationMethod", serializationMethod.toString());
-        transformer.setParameter("outputMethod", serializationMethod.getMethod());
-        transformer.setParameter("contentType", serializationMethod.getContentType());
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        transformer.setOutputProperty(OutputKeys.MEDIA_TYPE, serializationMethod.getContentType());
-        transformer.setOutputProperty(OutputKeys.METHOD, serializationMethod.getMethod());
-        transformer.setOutputProperty("include-content-type", "no");
+        serializerTransformer.setParameter("serializationMethod", serializationMethod.toString());
+        serializerTransformer.setParameter("outputMethod", serializationMethod.getMethod());
+        serializerTransformer.setParameter("contentType", serializationMethod.getContentType());
+        serializerTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        serializerTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        serializerTransformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        serializerTransformer.setOutputProperty(OutputKeys.MEDIA_TYPE, serializationMethod.getContentType());
+        serializerTransformer.setOutputProperty(OutputKeys.METHOD, serializationMethod.getMethod());
+        serializerTransformer.setOutputProperty("include-content-type", "no");
 
         /* If we're building HTML5, add in its custom pseudo-DOCTYPE as we can't generate this in XSLT.
          * (NB: This only works sanely as we've hard-coded a reasonable encoding.)
@@ -548,11 +544,21 @@ public class AssessmentRenderer {
 
         /* Perform transform */
         try {
-            transformer.setURIResolver(new XsltResourceResolver(assessmentResourceLocator));
-            transformer.transform(assessmentSource, result);
+            rendererTransformer.setURIResolver(new XsltResourceResolver(assessmentResourceLocator));
+            rendererTransformer.transform(assessmentSource, result);
         }
         catch (final TransformerException e) {
             throw new QtiWorksRenderingException("Unexpected Exception doing XSLT transform", e);
+        }
+    }
+
+    private Transformer requireTransformer(final URI xsltUri) {
+        final Templates templates = stylesheetManager.getCompiledStylesheet(xsltUri);
+        try {
+            return templates.newTransformer();
+        }
+        catch (final TransformerConfigurationException e) {
+            throw new QtiWorksRenderingException("Could not complile stylesheet " + xsltUri, e);
         }
     }
 }
