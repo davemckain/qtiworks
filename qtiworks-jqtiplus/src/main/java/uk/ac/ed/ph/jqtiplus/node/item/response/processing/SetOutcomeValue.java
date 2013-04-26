@@ -112,7 +112,7 @@ public final class SetOutcomeValue extends ProcessResponseValue {
         final Value value = getExpression().evaluate(context);
         if (isThisRuleValid(context)) {
             final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) context.ensureVariableDeclaration(getIdentifier(), VariableType.OUTCOME);
-            context.getItemSessionState().setOutcomeValue(outcomeDeclaration, value);
+            context.setVariableValue(outcomeDeclaration, value);
         }
         else {
             context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());
