@@ -628,7 +628,13 @@ $(document).ready(function() {
         var title =$(this).attr('title');
         var action = $(this).attr('action');
         $.get(action, function(data, textStatus, jqXHR) {
-            var xmlDiv = $("<pre class='xmlSource'></pre>");
+            if (document.getElementById('prettifier')==null) {
+                var script = document.createElement('script');
+                script.src = 'https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js';
+                script.id = 'prettifier';
+                $('head').append(script);
+            }
+            var xmlDiv = $("<pre class='prettyprint xmlSource'></pre>");
             xmlDiv.text(jqXHR.responseText);
             xmlDiv.dialog({
                 modal: true,
