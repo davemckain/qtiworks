@@ -60,8 +60,8 @@ ALTER TABLE item_delivery_settings DROP allow_solution_when_closed;
 
 -- Some changes to event names
 UPDATE candidate_events SET test_event_type='EXIT_TEST' WHERE test_event_type='EXIT_MULTI_PART_TEST';
-UPDATE candidate_events SET item_event_type='EXIT' WHERE test_event_type='TERMINATE';
-UPDATE candidate_events SET item_event_type='END' WHERE test_event_type='CLOSE';
-UPDATE candidate_events SET item_event_type='ENTER' WHERE test_event_type='INIT';
+UPDATE candidate_events SET item_event_type='EXIT' WHERE item_event_type='TERMINATE';
+UPDATE candidate_events SET item_event_type='END' WHERE item_event_type='CLOSE';
+UPDATE candidate_events SET item_event_type='ENTER' WHERE item_event_type='INIT';
 
 COMMIT WORK;
