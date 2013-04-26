@@ -45,6 +45,7 @@ import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
+import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -115,7 +116,11 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
             }
 
             final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) context.ensureVariableDeclaration(getIdentifier(), VariableType.OUTCOME);
-            context.getItemSessionState().setOutcomeValueFromLookupTable(outcomeDeclaration, numberValue);
+            Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(numberValue.doubleValue());
+            if (targetValue == null) {
+                targetValue = NullValue.INSTANCE;
+            }
+            context.setVariableValue(outcomeDeclaration, targetValue);
         }
         else {
             context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());

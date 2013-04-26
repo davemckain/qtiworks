@@ -51,8 +51,6 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.IdentifierValue;
 import uk.ac.ed.ph.jqtiplus.value.IntegerValue;
-import uk.ac.ed.ph.jqtiplus.value.NullValue;
-import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.io.Serializable;
@@ -667,16 +665,6 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
     public void setOutcomeValue(final OutcomeDeclaration outcomeDeclaration, final Value value) {
         Assert.notNull(outcomeDeclaration);
         setOutcomeValue(outcomeDeclaration.getIdentifier(), value);
-    }
-
-    public void setOutcomeValueFromLookupTable(final OutcomeDeclaration outcomeDeclaration, final NumberValue value) {
-        Assert.notNull(outcomeDeclaration);
-        Assert.notNull(value);
-        Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(value.doubleValue());
-        if (targetValue == null) {
-            targetValue = NullValue.INSTANCE;
-        }
-        setOutcomeValue(outcomeDeclaration.getIdentifier(), targetValue);
     }
 
     /**

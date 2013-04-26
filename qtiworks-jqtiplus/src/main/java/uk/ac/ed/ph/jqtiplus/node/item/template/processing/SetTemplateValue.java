@@ -76,7 +76,7 @@ public final class SetTemplateValue extends ProcessTemplateValue {
         final Value value = getExpression().evaluate(context);
         if (isThisRuleValid(context)) {
             final TemplateDeclaration templateDeclaration = (TemplateDeclaration) context.ensureVariableDeclaration(getIdentifier(), VariableType.TEMPLATE);
-            context.getItemSessionState().setTemplateValue(templateDeclaration, value);
+            context.setVariableValue(templateDeclaration, value);
         }
         else {
             context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());

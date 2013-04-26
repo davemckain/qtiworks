@@ -39,6 +39,8 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
@@ -122,6 +124,10 @@ public interface ProcessingContext extends ValidationContext {
      * <p>
      * Built-in variables may not be set, except for the <code>completionStatus</code> variable on
      * an item.
+     * <p>
+     * You <strong>MUST</strong> use this method instead of setting variables directly within the
+     * {@link ItemSessionState} or {@link TestSessionState}. This method ensures that built-in
+     * variables (e.g. <code>completionStatus</code>) get handled the correct way.
      *
      * @param variableDeclaration required variable declaration
      *
