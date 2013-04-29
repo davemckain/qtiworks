@@ -501,6 +501,8 @@ public class CandidateDataServices {
                 final CandidateSessionOutcome outcome = new CandidateSessionOutcome();
                 outcome.setCandidateSession(candidateSession);
                 outcome.setOutcomeIdentifier(itemVariable.getIdentifier().toString());
+                outcome.setBaseType(itemVariable.getBaseType());
+                outcome.setCardinality(itemVariable.getCardinality());
                 outcome.setStringValue(itemVariable.getComputedValue().toQtiString());
                 candidateSessionOutcomeDao.persist(outcome);
             }

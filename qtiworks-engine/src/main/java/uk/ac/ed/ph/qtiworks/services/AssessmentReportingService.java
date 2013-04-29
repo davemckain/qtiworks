@@ -48,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrR
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -108,38 +109,56 @@ public class AssessmentReportingService {
         final List<CandidateSessionOutcome> candidateSessionOutcomes = candidateSessionOutcomeDao.getForDelivery(delivery);
 
         /* Convert outcomes into an easy form for manipulating */
-        final Map<Long, Map<String, String>> outcomesBySessionIdMap = new HashMap<Long, Map<String,String>>();
-        final LinkedHashSet<String> outcomeNames = new LinkedHashSet<String>();
+        final Map<Long, Map<String, String>> numericOutcomesBySessionIdMap = new HashMap<Long, Map<String,String>>();
+        final Map<Long, Map<String, String>> otherOutcomesBySessionIdMap = new HashMap<Long, Map<String,String>>();
+        final LinkedHashSet<String> numericOutcomeNames = new LinkedHashSet<String>();
+        final LinkedHashSet<String> otherOutcomeNames = new LinkedHashSet<String>();
         for (final CandidateSessionOutcome candidateSessionOutcome : candidateSessionOutcomes) {
             final CandidateSession candidateSession = candidateSessionOutcome.getCandidateSession();
             final String outcomeName = candidateSessionOutcome.getOutcomeIdentifier();
             final String outcomeValue = candidateSessionOutcome.getStringValue();
-            outcomeNames.add(candidateSessionOutcome.getOutcomeIdentifier());
-            Map<String, String> outcomesForSession = outcomesBySessionIdMap.get(candidateSession.getId());
-            if (outcomesForSession==null) {
-                outcomesForSession = new HashMap<String, String>();
-                outcomesBySessionIdMap.put(candidateSession.getId(), outcomesForSession);
+            if (candidateSessionOutcome.getBaseType().isNumeric() && candidateSessionOutcome.getCardinality()==Cardinality.SINGLE) {
+                numericOutcomeNames.add(candidateSessionOutcome.getOutcomeIdentifier());
+                Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
+                if (numericOutcomesForSession==null) {
+                    numericOutcomesForSession = new HashMap<String, String>();
+                    numericOutcomesBySessionIdMap.put(candidateSession.getId(), numericOutcomesForSession);
+                }
+                numericOutcomesForSession.put(outcomeName, outcomeValue);
             }
-            outcomesForSession.put(outcomeName, outcomeValue);
-        }
+            else {
+                otherOutcomeNames.add(candidateSessionOutcome.getOutcomeIdentifier());
+                Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(candidateSession.getId());
+                if (otherOutcomesForSession==null) {
+                    otherOutcomesForSession = new HashMap<String, String>();
+                    otherOutcomesBySessionIdMap.put(candidateSession.getId(), otherOutcomesForSession);
+                }
+                otherOutcomesForSession.put(outcomeName, outcomeValue);
+            }
 
-        /* Build up an ordered set of all outcomes reported */
-        for (final CandidateSessionOutcome candidateSessionOutcome : candidateSessionOutcomes) {
-            outcomeNames.add(candidateSessionOutcome.getOutcomeIdentifier());
         }
 
         /* Now build report for each session */
         final List<DcsrRow> rows = new ArrayList<DcsrRow>();
         for (int i=0; i<candidateSessions.size(); i++) {
             final CandidateSession candidateSession = candidateSessions.get(i);
-            final Map<String, String> outcomesForSession = outcomesBySessionIdMap.get(candidateSession.getId());
-            List<String> outcomeValues = null;
-            if (outcomesForSession!=null) {
-                outcomeValues = new ArrayList<String>(outcomeNames.size());
-                for (final String outcomeName : outcomeNames) {
-                    outcomeValues.add(outcomesForSession.get(outcomeName));
+            List<String> numericOutcomeValues = null;
+            final Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
+            if (numericOutcomesForSession!=null) {
+                numericOutcomeValues = new ArrayList<String>(numericOutcomeNames.size());
+                for (final String outcomeName : numericOutcomeNames) {
+                    numericOutcomeValues.add(numericOutcomesForSession.get(outcomeName));
                 }
             }
+            final Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(candidateSession.getId());
+            List<String> otherOutcomeValues = null;
+            if (otherOutcomesForSession!=null) {
+                otherOutcomeValues = new ArrayList<String>(otherOutcomeNames.size());
+                for (final String outcomeName : otherOutcomeNames) {
+                    otherOutcomeValues.add(otherOutcomesForSession.get(outcomeName));
+                }
+            }
+
             final User candidate = candidateSession.getCandidate();
             final DcsrRow row = new DcsrRow(candidateSession.getId().longValue(),
                     candidateSession.getCreationTime(),
@@ -148,12 +167,14 @@ public class AssessmentReportingService {
                     candidate.getEmailAddress(),
                     candidateSession.isClosed(),
                     candidateSession.isTerminated(),
-                    outcomeValues);
+                    numericOutcomeValues,
+                    otherOutcomeValues);
             rows.add(row);
         }
 
         auditLogger.recordEvent("Generated candidate summary report for delivery #" + delivery.getId());
-        return new DeliveryCandidateSummaryReport(new ArrayList<String>(outcomeNames), rows);
+        return new DeliveryCandidateSummaryReport(new ArrayList<String>(numericOutcomeNames),
+                new ArrayList<String>(otherOutcomeNames), rows);
     }
 
     //-------------------------------------------------

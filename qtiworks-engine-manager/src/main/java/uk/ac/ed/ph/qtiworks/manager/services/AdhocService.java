@@ -87,7 +87,7 @@ public class AdhocService {
 
         /* Write header */
         final StringBuilder headerBuilder = new StringBuilder("Session ID,First Name,Last Name,Email Address");
-        for (final String outcomeName : report.getOutcomeNames()) {
+        for (final String outcomeName : report.getNumericalOutcomeNames()) {
             headerBuilder.append(outcomeName);
         }
 
@@ -97,9 +97,9 @@ public class AdhocService {
             csvWriter.write(row.getLastName());
             csvWriter.write(StringUtilities.emptyIfNull(row.getEmailAddress()));
             csvWriter.write(row.isSessionClosed() ? "Finished" : "In Progress");
-            final List<String> outcomeValues = row.getOutcomeValues();
+            final List<String> outcomeValues = row.getNumericalOutcomeValues();
             if (outcomeValues!=null) {
-                for (final String outcomeValue : row.getOutcomeValues()) {
+                for (final String outcomeValue : row.getNumericalOutcomeValues()) {
                     csvWriter.write(outcomeValue, true);
                 }
             }

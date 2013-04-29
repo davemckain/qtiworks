@@ -55,6 +55,15 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
 
     private static final long serialVersionUID = -428993945767139061L;
 
+    /** List of names of numeric outcome variables (having single cardinality) */
+    private final List<String> numericOutcomeNames;
+
+    /** List of names of other outcome variables */
+    private final List<String> otherOutcomeNames;
+
+    /** List of rows in this report */
+    private final List<DcsrRow> rows;
+
     public static final class DcsrRow implements Serializable {
 
         private static final long serialVersionUID = 9044689689638050265L;
@@ -65,12 +74,17 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
         private final String emailAddress; /* May be null */
         private final boolean sessionClosed;
         private final boolean sessionTerminated;
-        private final List<String> outcomeValues;
+
+        /** List of all numeric outcome values (and single cardinality) */
+        private final List<String> numericOutcomeValues;
+
+        /** List of all other outcome values */
+        private final List<String> otherOutcomeValues;
 
         public DcsrRow(final long sessionId, final Date launchTime, final String firstName,
                 final String lastName, final String emailAddress,
                 final boolean sessionClosed, final boolean sessionTerminated,
-                final List<String> outcomeValues) {
+                final List<String> numericOutcomeValues, final List<String> otherOutcomeValues) {
             this.launchTime = launchTime;
             this.sessionId = sessionId;
             this.firstName = firstName;
@@ -78,7 +92,8 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
             this.emailAddress = emailAddress;
             this.sessionClosed = sessionClosed;
             this.sessionTerminated = sessionTerminated;
-            this.outcomeValues = outcomeValues;
+            this.otherOutcomeValues = otherOutcomeValues;
+            this.numericOutcomeValues = numericOutcomeValues;
         }
 
         public long getSessionId() {
@@ -113,8 +128,12 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
             return sessionClosed ? "Finished" : (sessionTerminated ? "Forcibly Terminated" : "In Progress");
         }
 
-        public List<String> getOutcomeValues() {
-            return outcomeValues!=null ? Collections.unmodifiableList(outcomeValues) : null;
+        public List<String> getNumericOutcomeValues() {
+            return numericOutcomeValues!=null ? Collections.unmodifiableList(numericOutcomeValues) : null;
+        }
+
+        public List<String> getOtherOutcomeValues() {
+            return otherOutcomeValues!=null ? Collections.unmodifiableList(otherOutcomeValues) : null;
         }
 
         @Override
@@ -123,16 +142,19 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
         }
     }
 
-    private final List<String> outcomeNames;
-    private final List<DcsrRow> rows;
-
-    public DeliveryCandidateSummaryReport(final List<String> outcomeNames, final List<DcsrRow> rows) {
-        this.outcomeNames = outcomeNames;
+    public DeliveryCandidateSummaryReport(final List<String> numericOutcomeNames,
+            final List<String> otherOutcomeNames, final List<DcsrRow> rows) {
+        this.numericOutcomeNames = numericOutcomeNames;
+        this.otherOutcomeNames = otherOutcomeNames;
         this.rows = rows;
     }
 
-    public List<String> getOutcomeNames() {
-        return Collections.unmodifiableList(outcomeNames);
+    public List<String> getNumericOutcomeNames() {
+        return Collections.unmodifiableList(numericOutcomeNames);
+    }
+
+    public List<String> getOtherOutcomeNames() {
+        return Collections.unmodifiableList(otherOutcomeNames);
     }
 
     public List<DcsrRow> getRows() {

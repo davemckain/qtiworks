@@ -116,7 +116,10 @@ public class InstructorAssessmentReportingController {
 
         /* Write header */
         final StringBuilder headerBuilder = new StringBuilder("Session ID,Email Address,First Name,Last Name,Launch Time,Session Status");
-        for (final String outcomeName : report.getOutcomeNames()) {
+        for (final String outcomeName : report.getNumericOutcomeNames()) {
+            headerBuilder.append(',').append(outcomeName);
+        }
+        for (final String outcomeName : report.getOtherOutcomeNames()) {
             headerBuilder.append(',').append(outcomeName);
         }
         csvWriter.writeComment(headerBuilder.toString());
@@ -129,22 +132,27 @@ public class InstructorAssessmentReportingController {
             csvWriter.write(row.getLastName());
             csvWriter.write(row.getLaunchTime().toString());
             csvWriter.write(row.getSessionStatus());
-            final List<String> outcomeValues = row.getOutcomeValues();
-            if (outcomeValues!=null) {
-                /* Outcomes have been recorded, so show them */
-                for (final String outcomeValue : outcomeValues) {
-                    csvWriter.write(outcomeValue, true);
-                }
-            }
-            else {
-                /* No outcomes recorded for this candidate */
-                for (int i=0; i<report.getOutcomeNames().size(); i++) {
-                    csvWriter.write("");
-                }
-            }
+            writeOutcomes(csvWriter, report.getNumericOutcomeNames(), row.getNumericOutcomeValues());
+            writeOutcomes(csvWriter, report.getOtherOutcomeNames(), row.getOtherOutcomeValues());
             csvWriter.endRecord();
         }
         csvWriter.close();
+    }
+
+    private void writeOutcomes(final CsvWriter csvWriter, final List<String> outcomeNames, final List<String> outcomeValues)
+            throws IOException {
+        if (outcomeValues!=null) {
+            /* Outcomes have been recorded, so output them */
+            for (final String outcomeValue : outcomeValues) {
+                csvWriter.write(outcomeValue, true);
+            }
+        }
+        else {
+            /* No outcomes recorded for this candidate */
+            for (int i=0; i<outcomeNames.size(); i++) {
+                csvWriter.write("");
+            }
+        }
     }
 
     @RequestMapping(value="/delivery/candidate-results-{did}.zip", method=RequestMethod.GET)
