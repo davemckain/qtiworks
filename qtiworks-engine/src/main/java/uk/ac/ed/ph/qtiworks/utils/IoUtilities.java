@@ -282,7 +282,6 @@ public final class IoUtilities {
      * @return String representing the data we read in
      * @throws IOException
      */
-    @Deprecated
     public static String readUnicodeFile(final File file) throws IOException {
         final InputStream inStream = new FileInputStream(file);
         try {

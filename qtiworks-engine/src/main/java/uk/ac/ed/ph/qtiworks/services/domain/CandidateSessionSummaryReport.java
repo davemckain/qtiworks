@@ -31,49 +31,48 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Draws together a basic status report for a single {@link CandidateSession}.
  *
  * @author David McKain
  */
-public enum Privilege {
+public final class CandidateSessionSummaryReport implements Serializable {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    private static final long serialVersionUID = 4368979153446301019L;
 
-    OWN_ASSESSMENT,
-    CREATE_ASSESSMENT,
-    VIEW_ASSESSMENT,
+    private final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata;
+    private final CandidateSessionSummaryData candidateSessionSummaryData;
+    private final String assessmentResultXml;
 
-    /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
-    MATCH_DELIVERY_SETTINGS,
+    public CandidateSessionSummaryReport(final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata,
+            final CandidateSessionSummaryData candidateSessionSummaryData, final String assessmentResultXml) {
+        this.candidateSessionSummaryMetadata = candidateSessionSummaryMetadata;
+        this.candidateSessionSummaryData = candidateSessionSummaryData;
+        this.assessmentResultXml = assessmentResultXml;
+    }
 
-    ACCESS_DELIVERY_SETTINGS,
+    public CandidateSessionSummaryMetadata getCandidateSessionSummaryMetadata() {
+        return candidateSessionSummaryMetadata;
+    }
 
-    /** FIXME: Rename this! */
-    OWN_DELIVERY_SETTINGS,
+    public CandidateSessionSummaryData getCandidateSessionSummaryData() {
+        return candidateSessionSummaryData;
+    }
 
-    /** FIXME: Rename this! */
-    CREATE_DELIVERY_SETTINGS,
+    public String getAssessmentResultXml() {
+        return assessmentResultXml;
+    }
 
-    LAUNCH_ASSESSMENT_AS_SAMPLE,
-    LAUNCH_INVALID_ASSESSMENT,
-    LAUNCH_DELIVERY,
-    LAUNCH_CLOSED_DELIVERY,
-
-    DELETE_USED_DELIVERY_SETTINGS,
-
-    PROCTOR_SESSION,
-
-    ;
-
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

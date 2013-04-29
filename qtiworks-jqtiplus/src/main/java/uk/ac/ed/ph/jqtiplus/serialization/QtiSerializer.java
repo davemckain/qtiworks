@@ -74,8 +74,8 @@ public final class QtiSerializer {
         return resultWriter.toString();
     }
 
-    public String
-            serializeJqtiObject(final QtiNode jqtiObject, final SaxFiringOptions saxFiringOptions, final XsltSerializationOptions xsltSerializationOptions) {
+    public String serializeJqtiObject(final QtiNode jqtiObject, final SaxFiringOptions saxFiringOptions,
+            final XsltSerializationOptions xsltSerializationOptions) {
         final StringWriter resultWriter = new StringWriter();
         serializeJqtiObject(jqtiObject, new StreamResult(resultWriter), saxFiringOptions, xsltSerializationOptions);
         return resultWriter.toString();

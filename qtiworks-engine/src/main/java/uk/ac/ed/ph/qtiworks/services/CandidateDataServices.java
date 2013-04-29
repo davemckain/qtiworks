@@ -51,6 +51,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -86,6 +87,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 
 import javax.annotation.Resource;
@@ -447,6 +449,11 @@ public class CandidateDataServices {
         return testSessionController.computeAssessmentResult(requestTimestampContext.getCurrentRequestTimestamp(), sessionIdentifier, sessionIdentifierSourceId);
     }
 
+    public void computeAndRecordTestAssessmentResult(final CandidateSession candidateSession, final TestSessionController testSessionController) {
+        final AssessmentResult assessmentResult = computeTestAssessmentResult(candidateSession, testSessionController);
+        recordTestAssessmentResult(candidateSession, assessmentResult);
+    }
+
     public void recordTestAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         /* First record full result XML to filesystem */
         storeResultFile(candidateSession, assessmentResult);
@@ -507,6 +514,20 @@ public class CandidateDataServices {
         return new File(sessionFolder, "assessmentResult.xml");
     }
 
+    public String readResultFile(final CandidateSession candidateSession) {
+        final File resultFile = getResultFile(candidateSession);
+        if (!resultFile.exists()) {
+            return null;
+        }
+        try {
+            /* NB: We're using the fact that we're writing out as UTF-8 when storing these files */
+            return IoUtilities.readUnicodeFile(getResultFile(candidateSession));
+        }
+        catch (final IOException e) {
+            throw new QtiWorksRuntimeException("Unexpected Exception", e);
+        }
+    }
+
     private void recordOutcomeVariables(final CandidateSession candidateSession, final AbstractResult resultNode) {
         candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);
         for (final ItemVariable itemVariable : resultNode.getItemVariables()) {
@@ -515,6 +536,8 @@ public class CandidateDataServices {
                 final CandidateSessionOutcome outcome = new CandidateSessionOutcome();
                 outcome.setCandidateSession(candidateSession);
                 outcome.setOutcomeIdentifier(itemVariable.getIdentifier().toString());
+                outcome.setBaseType(itemVariable.getBaseType());
+                outcome.setCardinality(itemVariable.getCardinality());
                 outcome.setStringValue(itemVariable.getComputedValue().toQtiString());
                 candidateSessionOutcomeDao.persist(outcome);
             }

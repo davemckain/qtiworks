@@ -33,9 +33,14 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
+import uk.ac.ed.ph.jqtiplus.value.Cardinality;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -50,7 +55,7 @@ import org.hibernate.annotations.Type;
 
 /**
  * Encapsulates the stringified value of a particular (non-file)
- * outcome variable, computed at the end of an assessment.
+ * outcome variable, computed after each action during an assessment delivery.
  *
  * @author David McKain
  */
@@ -93,6 +98,18 @@ public class CandidateSessionOutcome implements BaseEntity {
     @Column(name="outcome_identifier", updatable=false)
     private String outcomeIdentifier;
 
+    /** QTI {@link BaseType} of this variable */
+    @Basic(optional=true)
+    @Column(name="base_type", updatable=false, length=14)
+    @Enumerated(EnumType.STRING)
+    private BaseType baseType;
+
+    /** QTI {@link Cardinality} of this variable */
+    @Basic(optional=true)
+    @Column(name="cardinality", updatable=false, length=8)
+    @Enumerated(EnumType.STRING)
+    private Cardinality cardinality;
+
     /** Variable as string */
     @Lob
     @Type(type="org.hibernate.type.TextType")
@@ -130,6 +147,23 @@ public class CandidateSessionOutcome implements BaseEntity {
         this.outcomeIdentifier = outcomeIdentifier;
     }
 
+
+    public BaseType getBaseType() {
+        return baseType;
+    }
+
+    public void setBaseType(final BaseType baseType) {
+        this.baseType = baseType;
+    }
+
+
+    public Cardinality getCardinality() {
+        return cardinality;
+    }
+
+    public void setCardinality(final Cardinality cardinality) {
+        this.cardinality = cardinality;
+    }
 
     public String getStringValue() {
         return stringValue;

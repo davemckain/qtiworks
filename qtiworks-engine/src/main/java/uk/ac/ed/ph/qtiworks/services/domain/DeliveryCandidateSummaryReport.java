@@ -33,15 +33,21 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
+
 /**
- * FIXME: Document this type
+ * Draws together data making up a summary report of the candidate sessions for a particular
+ * {@link Delivery}.
+ *
+ * @see AssessmentReportingService#buildDeliveryCandidateSummaryReport(Delivery)
  *
  * @author David McKain
  */
@@ -49,77 +55,23 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
 
     private static final long serialVersionUID = -428993945767139061L;
 
-    public static final class DcsrRow implements Serializable {
+    private final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata;
 
-        private static final long serialVersionUID = 9044689689638050265L;
-        private final long sessionId;
-        private final Date launchTime;
-        private final String firstName; /* Not null */
-        private final String lastName; /* Not null */
-        private final String emailAddress; /* May be null */
-        private final boolean sessionClosed;
-        private final List<String> outcomeValues;
+    /** List of rows in this report */
+    private final ImmutableList<CandidateSessionSummaryData> rows;
 
-        public DcsrRow(final long sessionId, final Date launchTime, final String firstName,
-                final String lastName, final String emailAddress, final boolean sessionClosed,
-                final List<String> outcomeValues) {
-            this.launchTime = launchTime;
-            this.sessionId = sessionId;
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.emailAddress = emailAddress;
-            this.sessionClosed = sessionClosed;
-            this.outcomeValues = outcomeValues;
-        }
-
-        public long getSessionId() {
-            return sessionId;
-        }
-
-        public Date getLaunchTime() {
-            return launchTime;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public String getEmailAddress() {
-            return emailAddress;
-        }
-
-        public boolean isSessionClosed() {
-            return sessionClosed;
-        }
-
-        public List<String> getOutcomeValues() {
-            return outcomeValues!=null ? Collections.unmodifiableList(outcomeValues) : null;
-        }
-
-        @Override
-        public String toString() {
-            return ObjectUtilities.beanToString(this);
-        }
+    public DeliveryCandidateSummaryReport(final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata,
+            final List<CandidateSessionSummaryData> rows) {
+        this.candidateSessionSummaryMetadata = candidateSessionSummaryMetadata;
+        this.rows = ImmutableList.<CandidateSessionSummaryData>copyOf(rows);
     }
 
-    private final List<String> outcomeNames;
-    private final List<DcsrRow> rows;
-
-    public DeliveryCandidateSummaryReport(final List<String> outcomeNames, final List<DcsrRow> rows) {
-        this.outcomeNames = outcomeNames;
-        this.rows = rows;
+    public CandidateSessionSummaryMetadata getCandidateSessionSummaryMetadata() {
+        return candidateSessionSummaryMetadata;
     }
 
-    public List<String> getOutcomeNames() {
-        return Collections.unmodifiableList(outcomeNames);
-    }
-
-    public List<DcsrRow> getRows() {
-        return Collections.unmodifiableList(rows);
+    public List<CandidateSessionSummaryData> getRows() {
+        return rows;
     }
 
     @Override

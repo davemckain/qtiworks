@@ -31,49 +31,47 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 /**
- * Represents a "privilege" that a {@link User} needs to have to do something
- * or access a particular Object.
- *
- * @see PrivilegeException
+ * Metadata ("table headers") for CandidateSessionSummaryData ("table rows").
  *
  * @author David McKain
  */
-public enum Privilege {
+public final class CandidateSessionSummaryMetadata implements Serializable {
 
-    USER_INSTRUCTOR,
-    USER_CANDIDATE,
-    USER_ANONYMOUS,
+    private static final long serialVersionUID = -8351979121069561828L;
 
-    OWN_ASSESSMENT,
-    CREATE_ASSESSMENT,
-    VIEW_ASSESSMENT,
+    /** List of names of numeric outcome variables (having single cardinality) */
+    private final ImmutableList<String> numericOutcomeIdentifiers;
 
-    /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
-    MATCH_DELIVERY_SETTINGS,
+    /** List of names of other outcome variables */
+    private final ImmutableList<String> otherOutcomeIdentifiers;
 
-    ACCESS_DELIVERY_SETTINGS,
+    public CandidateSessionSummaryMetadata(final Collection<String> numericOutcomeIdentifiers,
+            final Collection<String> otherOutcomeIdentifiers) {
+        this.numericOutcomeIdentifiers = ImmutableList.<String>copyOf(numericOutcomeIdentifiers);
+        this.otherOutcomeIdentifiers = ImmutableList.<String>copyOf(otherOutcomeIdentifiers);
+    }
 
-    /** FIXME: Rename this! */
-    OWN_DELIVERY_SETTINGS,
+    public List<String> getNumericOutcomeIdentifiers() {
+        return numericOutcomeIdentifiers;
+    }
 
-    /** FIXME: Rename this! */
-    CREATE_DELIVERY_SETTINGS,
+    public List<String> getOtherOutcomeIdentifiers() {
+        return otherOutcomeIdentifiers;
+    }
 
-    LAUNCH_ASSESSMENT_AS_SAMPLE,
-    LAUNCH_INVALID_ASSESSMENT,
-    LAUNCH_DELIVERY,
-    LAUNCH_CLOSED_DELIVERY,
-
-    DELETE_USED_DELIVERY_SETTINGS,
-
-    PROCTOR_SESSION,
-
-    ;
-
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

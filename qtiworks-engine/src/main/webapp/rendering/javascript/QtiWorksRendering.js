@@ -20,15 +20,15 @@ var QtiWorksRendering = (function() {
 
     var registerSubmitCallback = function(callback) {
         submitCallbacks.push(callback);
-    }
+    };
 
     var registerResetCallback = function(callback) {
         resetCallbacks.push(callback);
-    }
+    };
 
     var queryInputElements = function(responseIdentifier) {
         return $('input[name=qtiworks_response_' + responseIdentifier + ']');
-    }
+    };
 
     /************************************************************/
     /* sliderInteraction */
@@ -76,7 +76,7 @@ var QtiWorksRendering = (function() {
         registerResetCallback(function() {
             interaction.reset();
         });
-    }
+    };
 
     /************************************************************/
     /* matchInteraction */
@@ -202,12 +202,12 @@ var QtiWorksRendering = (function() {
                 }
                 interaction.updateDisabledStates(responseIdentifier);
             });
-        }
+        };
 
         registerResetCallback(function() {
             interaction.resetChecks();
         });
-    }
+    };
 
     /************************************************************/
     /* gapMatchInteraction (NB: no JS validation of matchMin/required here) */
@@ -341,12 +341,12 @@ var QtiWorksRendering = (function() {
                 }
                 interaction.updateDisabledStates(responseIdentifier);
             });
-        }
+        };
 
         registerResetCallback(function() {
             interaction.reset();
         });
-    }
+    };
 
     /************************************************************/
     /* orderInteraction */
@@ -447,7 +447,7 @@ var QtiWorksRendering = (function() {
                 return true;
             });
         };
-    }
+    };
 
     /************************************************************/
     /* Interactions using Applets.
@@ -512,7 +512,7 @@ var QtiWorksRendering = (function() {
                 interaction.reset();
             });
         };
-    }
+    };
 
     /************************************************************/
     /* Public methods */

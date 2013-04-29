@@ -16,6 +16,8 @@ ALTER TABLE delivery_settings ADD allow_source boolean;
 ALTER TABLE delivery_settings ADD allow_result boolean;
 UPDATE delivery_settings ds SET allow_source = ids.allow_source FROM item_delivery_settings ids WHERE ids.dsid = ds.dsid;
 UPDATE delivery_settings ds SET allow_result = ids.allow_result FROM item_delivery_settings ids WHERE ids.dsid = ds.dsid;
+UPDATE delivery_settings SET allow_source = FALSE where allow_source IS NULL;
+UPDATE delivery_settings SET allow_result = FALSE where allow_result IS NULL;
 ALTER TABLE delivery_settings ALTER allow_source SET NOT NULL;
 ALTER TABLE delivery_settings ALTER allow_result SET NOT NULL;
 ALTER TABLE item_delivery_settings DROP allow_source;
@@ -63,5 +65,13 @@ UPDATE candidate_events SET test_event_type='EXIT_TEST' WHERE test_event_type='E
 UPDATE candidate_events SET item_event_type='EXIT' WHERE item_event_type='TERMINATE';
 UPDATE candidate_events SET item_event_type='END' WHERE item_event_type='CLOSE';
 UPDATE candidate_events SET item_event_type='ENTER' WHERE item_event_type='INIT';
+
+-- Add columns to candidate_session_outcomes
+ALTER TABLE candidate_session_outcomes ADD base_type VARCHAR(14);
+ALTER TABLE candidate_session_outcomes ADD cardinality VARCHAR(8);
+UPDATE candidate_session_outcomes SET base_type = 'STRING';
+UPDATE candidate_session_outcomes SET cardinality = 'SINGLE';
+ALTER TABLE candidate_session_outcomes ALTER base_type SET NOT NULL;
+ALTER TABLE candidate_session_outcomes ALTER cardinality SET NOT NULL;
 
 COMMIT WORK;
