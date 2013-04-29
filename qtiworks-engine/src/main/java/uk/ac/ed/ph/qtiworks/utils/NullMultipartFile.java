@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -74,12 +73,12 @@ public class NullMultipartFile implements MultipartFile {
     }
 
     @Override
-    public byte[] getBytes() throws IOException {
+    public byte[] getBytes() {
         return new byte[0];
     }
 
     @Override
-    public InputStream getInputStream() throws IOException {
+    public InputStream getInputStream() {
         return new ByteArrayInputStream(new byte[0]);
     }
 
