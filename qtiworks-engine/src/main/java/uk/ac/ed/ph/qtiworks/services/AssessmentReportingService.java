@@ -159,7 +159,7 @@ public class AssessmentReportingService {
     // Report ZIP building
 
     /**
-     * Generates a ZIP file containing the <code>assessmentReport</code>s for all (closed)
+     * Generates a ZIP file containing the <code>assessmentReport</code>s for all closed or terminated
      * candidate sessions for the given {@link Delivery}, streaming the result to the given stream.
      * <p>
      * The stream will be flushed at the end of this; the caller is responsible for closing it.
@@ -176,7 +176,7 @@ public class AssessmentReportingService {
         final ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
         boolean hasIncludedSomething = false;
         for (final CandidateSession candidateSession : candidateSessions) {
-            if (candidateSession.isClosed()) {
+            if (candidateSession.isClosed() || candidateSession.isTerminated()) {
                 addAssessmentReport(zipOutputStream, candidateSession);
                 hasIncludedSomething = true;
             }
