@@ -804,6 +804,7 @@ public class CandidateItemDeliveryService {
                     itemSessionState, notificationRecorder);
             itemSessionController.endItem(timestamp);
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+            candidateSession.setClosed(true);
         }
 
         /* Update session */
