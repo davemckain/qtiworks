@@ -33,33 +33,99 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
 /**
- * Request for rendering the entry page in an {@link AssessmentTest}
- * having more than one {@link TestPart}.
+ * General base options for passing to the {@link AssessmentRenderer}.
  *
  * @author David McKain
  */
-public final class TestEntryRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
+public abstract class AbstractRenderingOptions implements Serializable {
 
-    /** Required {@link TestSessionState} to be rendered */
+    private static final long serialVersionUID = 971871443108075384L;
+
+    /** Required {@link SerializationMethod} */
     @NotNull
-    private TestSessionState testSessionState;
+    private SerializationMethod serializationMethod;
+
+    /** Encoding to use (when sending the result to an OutputStream). UTF-8 will be used if not specified */
+    private String encoding;
+
+    @NotNull
+    private String responseUrl;
+
+    @NotNull
+    private String serveFileUrl;
+
+    @NotNull
+    private String resultUrl;
+
+    @NotNull
+    private String sourceUrl;
+
+    //----------------------------------------------------
+
+    public SerializationMethod getSerializationMethod() {
+        return serializationMethod;
+    }
+
+    public void setSerializationMethod(final SerializationMethod serializationMethod) {
+        this.serializationMethod = serializationMethod;
+    }
+
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(final String encoding) {
+        this.encoding = encoding;
+    }
+
+
+    public String getResponseUrl() {
+        return responseUrl;
+    }
+
+    public void setResponseUrl(final String responseUrl) {
+        this.responseUrl = responseUrl;
+    }
+
+
+    public String getServeFileUrl() {
+        return serveFileUrl;
+    }
+
+    public void setServeFileUrl(final String serveFileUrl) {
+        this.serveFileUrl = serveFileUrl;
+    }
+
+
+    public String getResultUrl() {
+        return resultUrl;
+    }
+
+    public void setResultUrl(final String resultUrl) {
+        this.resultUrl = resultUrl;
+    }
+
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(final String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
 
     //----------------------------------------------------
 
     @Override
-    public TestSessionState getTestSessionState() {
-        return testSessionState;
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
-
-    public void setTestSessionState(final TestSessionState testSessionState) {
-        this.testSessionState = testSessionState;
-    }
-
 }

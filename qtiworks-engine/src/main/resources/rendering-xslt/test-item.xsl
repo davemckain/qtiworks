@@ -21,8 +21,14 @@ NB: This is used both while being presented, and during review.
   <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="test-common.xsl"/>
   <xsl:import href="item-common.xsl"/>
-  <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
+
+  <!--
+  Flag to indicate that item is being modally rendered in review mode at the end
+  of the current testPart. When unset, we will be rendering the current state of
+  the current item.
+  -->
+  <xsl:param name="reviewMode" as="xs:boolean" required="yes"/>
 
   <!--
   Key for item being rendered is passed here.
@@ -34,11 +40,11 @@ NB: This is used both while being presented, and during review.
   <!-- Action permissions -->
   <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="reviewTestPartAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="testItemSolutionAllowed" as="xs:boolean" required="yes"/>
 
-  <!-- Effective value of itemSessionControl/@showFeedback for this item -->
-  <xsl:param name="showFeedback" as="xs:boolean"/>
+  <!-- Relevant properties of EffectiveItemSessionControl for this item -->
+  <xsl:param name="showFeedback" as="xs:boolean" required="yes"/>
+  <xsl:param name="allowComment" as="xs:boolean" required="yes"/>
+  <xsl:param name="showSolution" as="xs:boolean" required="yes"/>
 
   <!--
   Keep reference to assesssmentItem element as the processing chain goes off on a tangent
@@ -47,23 +53,23 @@ NB: This is used both while being presented, and during review.
   <xsl:variable name="assessmentItem" select="/*[1]" as="element(qti:assessmentItem)"/>
 
   <xsl:variable name="itemFeedbackAllowed" as="xs:boolean"
-    select="if ($renderingMode='REVIEW')
+    select="if ($reviewMode)
       then (/qti:assessentItem/@adaptive='true' or $showFeedback)
-      else ($renderingMode!='SOLUTION')"/>
+      else ($solutionMode)"/>
+
+  <xsl:variable name="provideItemSolutionButton" as="xs:boolean"
+    select="$reviewMode and $showSolution and not($solutionMode)"/>
 
   <!-- ************************************************************ -->
 
+  <!-- Item may be QTI 2.0 or 2.1, so we'll put a template in here to fix namespaces to QTI 2.1 -->
   <xsl:template match="/">
-    <xsl:variable name="unserialized-output" as="element()">
-      <xsl:apply-templates select="*"/>
-    </xsl:variable>
-    <xsl:apply-templates select="$unserialized-output" mode="serialize"/>
+    <xsl:apply-templates select="qw:to-qti21(/)/*"/>
   </xsl:template>
 
   <!-- ************************************************************ -->
 
   <xsl:template match="qti:assessmentItem" as="element(html)">
-    <xsl:variable name="contains-mathml" select="exists(qti:itemBody//m:*)" as="xs:boolean"/>
     <xsl:variable name="containsMathEntryInteraction"
       select="exists(qti:itemBody//qti:customInteraction[@class='org.qtitools.mathassess.MathEntryInteraction'])"
       as="xs:boolean"/>
@@ -119,8 +125,9 @@ NB: This is used both while being presented, and during review.
           <xsl:apply-templates select="$assessmentTest/qti:testFeedback[@access='during']"/>
         </xsl:if>
 
-        <!-- Test Session control -->
+        <!-- Session control -->
         <xsl:call-template name="qw:test-controls"/>
+        <xsl:call-template name="qw:session-controls"/>
       </body>
     </html>
   </xsl:template>
@@ -143,21 +150,21 @@ NB: This is used both while being presented, and during review.
           </li>
         </xsl:if>
         <!-- Review state -->
-        <xsl:if test="$reviewTestPartAllowed">
+        <xsl:if test="$reviewMode">
           <li>
             <form action="{$webappContextPath}{$reviewTestPartUrl}" method="post">
               <input type="submit" value="Back to Test Feedback"/>
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$testItemSolutionAllowed">
+        <xsl:if test="$provideItemSolutionButton">
           <li>
             <form action="{$webappContextPath}{$showTestItemSolutionUrl}/{$itemKey}" method="post">
               <input type="submit" value="Show Solution"/>
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$renderingMode='SOLUTION'">
+        <xsl:if test="$reviewMode and $solutionMode">
           <!-- Allow return to item review state -->
           <li>
             <form action="{$webappContextPath}{$reviewTestItemUrl}/{$itemKey}" method="post">
@@ -211,19 +218,7 @@ NB: This is used both while being presented, and during review.
   <xsl:template match="qti:assessmentItem" mode="render-item">
     <!-- Item title -->
     <h1 class="itemTitle">
-      <!-- FIXME: This isn't very nice! -->
-      <xsl:choose>
-        <xsl:when test="$renderingMode='REVIEW'">
-          <div class="itemStatus review">Review</div>
-        </xsl:when>
-        <xsl:when test="$renderingMode='SOLUTION'">
-          <div class="itemStatus review">Model Solution</div>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:value-of select="@title"/>
+      <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
     </h1>
 
     <!-- Render item body -->
@@ -255,21 +250,21 @@ NB: This is used both while being presented, and during review.
 
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
-      <form method="post" action="{$webappContextPath}{$attemptUrl}"
+      <form method="post" action="{$webappContextPath}{$responseUrl}"
         onsubmit="return QtiWorksRendering.submit()" enctype="multipart/form-data"
         onreset="QtiWorksRendering.reset()" autocomplete="off">
 
         <xsl:apply-templates/>
 
         <xsl:choose>
-          <xsl:when test="$isSessionOpen and $candidateCommentAllowed">
+          <xsl:when test="$allowComment and $isItemSessionOpen">
             <fieldset class="candidateComment">
               <legend>Please use the following text box if you need to provide any additional information, comments or feedback during this test:</legend>
               <input name="qtiworks_comment_presented" type="hidden" value="true"/>
               <textarea name="qtiworks_comment"><xsl:value-of select="$itemSessionState/qw:candidateComment"/></textarea>
             </fieldset>
           </xsl:when>
-          <xsl:when test="$isSessionEnded and exists($itemSessionState/qw:candidateComment)">
+          <xsl:when test="$allowComment and $isItemSessionEnded and exists($itemSessionState/qw:candidateComment)">
             <fieldset class="candidateComment">
               <legend>You submitted the folllowing comment with this item:</legend>
               <input name="qtiworks_comment_presented" type="hidden" value="true"/>
@@ -278,7 +273,7 @@ NB: This is used both while being presented, and during review.
           </xsl:when>
         </xsl:choose>
 
-        <xsl:if test="$isSessionOpen">
+        <xsl:if test="$isItemSessionOpen">
           <xsl:variable name="submitText" as="xs:string"
             select="if ($currentTestPart/@submissionMode='individual') then 'SUBMIT ANSWER' else 'SAVE ANSWER'"/>
           <div class="controls">
@@ -289,7 +284,7 @@ NB: This is used both while being presented, and during review.
     </div>
   </xsl:template>
 
-  <!-- Override using $showFeedback -->
+  <!-- Override using 'showFeedback' -->
   <xsl:template match="qti:feedbackInline | qti:feedbackBlock">
     <xsl:if test="$itemFeedbackAllowed">
       <xsl:apply-imports/>
@@ -297,8 +292,26 @@ NB: This is used both while being presented, and during review.
   </xsl:template>
 
   <!-- Disable any buttons in the question (from endAttemptInteraction) if not in interacting state -->
-  <xsl:template match="qti:endAttemptInteraction[not($isSessionOpen)]">
+  <xsl:template match="qti:endAttemptInteraction[not($isItemSessionOpen)]">
     <input type="submit" name="{@responseIdentifier}" value="{@title}" disabled="disabled"/>
+  </xsl:template>
+
+  <!-- ************************************************************ -->
+
+  <!-- Overridden to add support for review state -->
+  <xsl:template match="qw:itemSessionState" mode="item-status">
+    <xsl:choose>
+      <!-- NB: Ordering of next 2 is significant -->
+      <xsl:when test="$solutionMode">
+        <div class="itemStatus review">Model Solution</div>
+      </xsl:when>
+      <xsl:when test="$reviewMode">
+        <div class="itemStatus review">Review</div>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-imports/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 </xsl:stylesheet>

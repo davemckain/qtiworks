@@ -93,11 +93,6 @@ public abstract class ControlObjectSessionState implements Serializable {
         this.entryTime = ObjectUtilities.safeClone(enteredTime);
     }
 
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public final boolean isEntered() {
-        return entryTime!=null;
-    }
-
 
     public final Date getEndTime() {
         return ObjectUtilities.safeClone(endTime);
@@ -107,11 +102,6 @@ public abstract class ControlObjectSessionState implements Serializable {
         this.endTime = ObjectUtilities.safeClone(endTime);
     }
 
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public final boolean isEnded() {
-        return endTime!=null;
-    }
-
 
     public final Date getExitTime() {
         return ObjectUtilities.safeClone(exitTime);
@@ -119,11 +109,6 @@ public abstract class ControlObjectSessionState implements Serializable {
 
     public final void setExitTime(final Date exitTime) {
         this.exitTime = ObjectUtilities.safeClone(exitTime);
-    }
-
-    @ObjectDumperOptions(DumpMode.IGNORE)
-    public final boolean isExited() {
-        return exitTime!=null;
     }
 
 
@@ -142,6 +127,28 @@ public abstract class ControlObjectSessionState implements Serializable {
 
     public final void setDurationAccumulated(final long durationAccumulated) {
         this.durationAccumulated = durationAccumulated;
+    }
+
+    //----------------------------------------------------------------
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public final boolean isEntered() {
+        return entryTime!=null;
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public final boolean isOpen() {
+        return isEntered() && !isEnded();
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public final boolean isEnded() {
+        return endTime!=null;
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public final boolean isExited() {
+        return exitTime!=null;
     }
 
     //----------------------------------------------------------------

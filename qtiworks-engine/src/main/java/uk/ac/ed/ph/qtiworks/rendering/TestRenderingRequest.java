@@ -33,19 +33,54 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 
-import java.net.URI;
+import javax.validation.constraints.NotNull;
 
 /**
- * FIXME: Document this!
+ * Request for rendering a particular test navigation screen.
+ * <p>
+ * The {@link TestRenderingMode} is used to determine what should be generated.
  *
  * @author David McKain
  */
-interface TestRenderingRequest {
+public final class TestRenderingRequest extends AbstractRenderingRequest<TestRenderingOptions> {
 
-    URI getAssessmentResourceUri();
+    @NotNull
+    private TestSessionController testSessionController;
 
-    TestSessionState getTestSessionState();
+    private TestRenderingMode testRenderingMode;
+    private TestPlanNodeKey modalItemKey;
+
+    //----------------------------------------------------
+
+    public TestSessionController getTestSessionController() {
+        return testSessionController;
+    }
+
+    public void setTestSessionController(final TestSessionController testSessionController) {
+        this.testSessionController = testSessionController;
+    }
+
+
+    public TestRenderingMode getTestRenderingMode() {
+        return testRenderingMode;
+    }
+
+    public void setTestRenderingMode(final TestRenderingMode testRenderingMode) {
+        this.testRenderingMode = testRenderingMode;
+    }
+
+
+    public TestPlanNodeKey getModalItemKey() {
+        return modalItemKey;
+    }
+
+    public void setModalItemKey(final TestPlanNodeKey modalItemKey) {
+        this.modalItemKey = modalItemKey;
+    }
+
+
 
 }

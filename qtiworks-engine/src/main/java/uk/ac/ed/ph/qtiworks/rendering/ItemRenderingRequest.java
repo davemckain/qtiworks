@@ -33,10 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
-
-import java.net.URI;
 
 import javax.validation.constraints.NotNull;
 
@@ -46,49 +43,23 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
-
-    /** URI of the {@link AssessmentItem} being rendered */
-    @NotNull
-    private URI assessmentItemUri;
-
-    /** Selected {@link RenderingMode} */
-    @NotNull
-    private RenderingMode renderingMode;
+public final class ItemRenderingRequest extends AbstractRenderingRequest<ItemRenderingOptions> {
 
     /** Required {@link ItemSessionState} to be rendered */
     @NotNull
     private ItemSessionState itemSessionState;
 
-    private String prompt;
+    /** Set to enable the modal solution mode */
+    private boolean solutionMode;
 
-    private boolean closeAllowed;
-    private boolean resetAllowed;
-    private boolean reinitAllowed;
+    private String prompt;
+    private boolean endAllowed;
+    private boolean softSoftResetAllowed;
+    private boolean hardResetAllowed;
     private boolean solutionAllowed;
-    private boolean sourceAllowed;
-    private boolean resultAllowed;
     private boolean candidateCommentAllowed;
 
     //----------------------------------------------------
-
-    public URI getAssessmentItemUri() {
-        return assessmentItemUri;
-    }
-
-    public void setAssessmentItemUri(final URI assessmentItemUri) {
-        this.assessmentItemUri = assessmentItemUri;
-    }
-
-
-    public RenderingMode getRenderingMode() {
-        return renderingMode;
-    }
-
-    public void setRenderingMode(final RenderingMode renderingMode) {
-        this.renderingMode = renderingMode;
-    }
-
 
     public ItemSessionState getItemSessionState() {
         return itemSessionState;
@@ -96,6 +67,15 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
 
     public void setItemSessionState(final ItemSessionState itemSessionState) {
         this.itemSessionState = itemSessionState;
+    }
+
+
+    public boolean isSolutionMode() {
+        return solutionMode;
+    }
+
+    public void setSolutionMode(final boolean solutionMode) {
+        this.solutionMode = solutionMode;
     }
 
 
@@ -108,30 +88,30 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
     }
 
 
-    public boolean isCloseAllowed() {
-        return closeAllowed;
+    public boolean isEndAllowed() {
+        return endAllowed;
     }
 
-    public void setCloseAllowed(final boolean closeAllowed) {
-        this.closeAllowed = closeAllowed;
-    }
-
-
-    public boolean isResetAllowed() {
-        return resetAllowed;
-    }
-
-    public void setResetAllowed(final boolean resetAllowed) {
-        this.resetAllowed = resetAllowed;
+    public void setEndAllowed(final boolean endAllowed) {
+        this.endAllowed = endAllowed;
     }
 
 
-    public boolean isReinitAllowed() {
-        return reinitAllowed;
+    public boolean isSoftResetAllowed() {
+        return softSoftResetAllowed;
     }
 
-    public void setReinitAllowed(final boolean reinitAllowed) {
-        this.reinitAllowed = reinitAllowed;
+    public void setSoftResetAllowed(final boolean softSoftResetAllowed) {
+        this.softSoftResetAllowed = softSoftResetAllowed;
+    }
+
+
+    public boolean isHardResetAllowed() {
+        return hardResetAllowed;
+    }
+
+    public void setHardResetAllowed(final boolean hardResetAllowed) {
+        this.hardResetAllowed = hardResetAllowed;
     }
 
 
@@ -141,24 +121,6 @@ public class StandaloneItemRenderingRequest extends AbstractRenderingRequest {
 
     public void setSolutionAllowed(final boolean solutionAllowed) {
         this.solutionAllowed = solutionAllowed;
-    }
-
-
-    public boolean isSourceAllowed() {
-        return sourceAllowed;
-    }
-
-    public void setSourceAllowed(final boolean sourceAllowed) {
-        this.sourceAllowed = sourceAllowed;
-    }
-
-
-    public boolean isResultAllowed() {
-        return resultAllowed;
-    }
-
-    public void setResultAllowed(final boolean resultAllowed) {
-        this.resultAllowed = resultAllowed;
     }
 
 

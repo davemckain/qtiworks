@@ -18,19 +18,32 @@ Renders a standalone assessmentItem
 
   <xsl:import href="qti-fallback.xsl"/>
   <xsl:import href="item-common.xsl"/>
-  <xsl:import href="serialize.xsl"/>
   <xsl:import href="utils.xsl"/>
 
   <!-- Item prompt -->
   <xsl:param name="prompt" select="()" as="xs:string?"/>
 
+  <!-- Action permissions -->
+  <xsl:param name="endAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="softSoftResetAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="hardResetAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="candidateCommentAllowed" as="xs:boolean" required="yes"/>
+
+  <!-- Action URLs -->
+  <xsl:param name="softResetUrl" as="xs:string" required="yes"/>
+  <xsl:param name="hardResetUrl" as="xs:string" required="yes"/>
+  <xsl:param name="endUrl" as="xs:string" required="yes"/>
+  <xsl:param name="solutionUrl" as="xs:string" required="yes"/>
+  <xsl:param name="exitUrl" as="xs:string" required="yes"/>
+
   <!-- ************************************************************ -->
 
+  <!-- Item may be QTI 2.0 or 2.1, so we'll put a template in here to fix namespaces to QTI 2.1 -->
   <xsl:template match="/">
-    <xsl:variable name="unserialized-output" as="element()">
-      <xsl:apply-templates select="qw:to-qti21(/)/*"/>
-    </xsl:variable>
-    <xsl:apply-templates select="$unserialized-output" mode="serialize"/>
+    <xsl:apply-templates select="qw:to-qti21(/)/*"/>
   </xsl:template>
 
   <!-- ************************************************************ -->
@@ -103,15 +116,15 @@ Renders a standalone assessmentItem
         </xsl:if>
 
         <!-- Candidate status -->
-        <xsl:if test="$renderingMode=('SOLUTION', 'CLOSED')">
+        <xsl:if test="$isItemSessionEnded">
           <div class="candidateStatus">
             <xsl:choose>
-              <xsl:when test="$renderingMode='SOLUTION'">
+              <xsl:when test="$solutionMode">
                 A model solution to this assessment is shown below.
               </xsl:when>
-              <xsl:when test="$renderingMode='CLOSED'">
+              <xsl:otherwise>
                 This assessment is now complete.
-              </xsl:when>
+              </xsl:otherwise>
             </xsl:choose>
           </div>
         </xsl:if>
@@ -154,11 +167,89 @@ Renders a standalone assessmentItem
     </html>
   </xsl:template>
 
+  <xsl:template name="qw:item-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following options for this item.
+          You can choose exactly which options are available via the "item delivery".
+        </div>
+      </xsl:if>
+      <ul class="controls">
+        <xsl:if test="$softSoftResetAllowed">
+          <li>
+            <form action="{$webappContextPath}{$softResetUrl}" method="post">
+              <input type="submit" value="Reset{if ($isItemSessionEnded) then ' and play again' else ''}"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$hardResetAllowed">
+          <li>
+            <form action="{$webappContextPath}{$hardResetUrl}" method="post">
+              <input type="submit" value="Reinitialise{if ($isItemSessionEnded) then ' and play again' else ''}"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$endAllowed">
+          <li>
+            <form action="{$webappContextPath}{$endUrl}" method="post">
+              <input type="submit" value="Finish and review"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$solutionAllowed and $hasModelSolution">
+          <li>
+            <form action="{$webappContextPath}{$solutionUrl}" method="post">
+              <input type="submit" value="Show model solution">
+                <xsl:if test="$solutionMode">
+                  <!-- Already in solution mode -->
+                  <xsl:attribute name="disabled" select="'disabled'"/>
+                </xsl:if>
+              </input>
+            </form>
+          </li>
+        </xsl:if>
+      </ul>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="qw:session-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following options for this session.
+          You can choose exactly which options are available via your Item Delivery Settings.
+        </div>
+      </xsl:if>
+      <ul class="controls">
+        <xsl:if test="$resultAllowed">
+          <li>
+            <form action="{$webappContextPath}{$resultUrl}" method="get" class="showXmlInDialog" title="Item Result XML">
+              <input type="submit" value="View &lt;assessmentResult&gt;"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$sourceAllowed">
+          <li>
+            <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">
+              <input type="submit" value="View Item source"/>
+            </form>
+          </li>
+        </xsl:if>
+        <li>
+          <form action="{$webappContextPath}{$exitUrl}" method="post">
+            <input type="submit" value="Exit"/>
+          </form>
+        </li>
+      </ul>
+    </div>
+  </xsl:template>
+
   <!-- ************************************************************ -->
 
   <xsl:template match="qti:itemBody">
     <div id="itemBody">
-      <form method="post" action="{$webappContextPath}{$attemptUrl}"
+      <form method="post" action="{$webappContextPath}{$responseUrl}"
         onsubmit="return QtiWorksRendering.submit()" enctype="multipart/form-data"
         onreset="QtiWorksRendering.reset()" autocomplete="off">
 
@@ -172,7 +263,7 @@ Renders a standalone assessmentItem
           </fieldset>
         </xsl:if>
 
-        <xsl:if test="$isSessionOpen">
+        <xsl:if test="$isItemSessionOpen">
           <div class="controls">
             <input id="submit_button" name="submit" type="submit" value="SUBMIT RESPONSE"/>
           </div>
@@ -181,16 +272,25 @@ Renders a standalone assessmentItem
     </div>
   </xsl:template>
 
+  <!-- Overridden to add support for solution state -->
+  <xsl:template match="qw:itemSessionState" mode="item-status">
+    <xsl:choose>
+      <xsl:when test="$solutionMode">
+        <div class="itemStatus review">Model Solution</div>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-imports/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <!-- ************************************************************ -->
 
   <xsl:template name="qw:item-authoring-feedback">
     <div class="authorInfo authorMode">
       <h2>QTI authoring feedback</h2>
-      <h3>Candidate Session State</h3>
 
-      <p>The current candidate rendering mode state is: <xsl:value-of select="$renderingMode"/></p>
-
-      <h3>Item Session State</h3>
+      <h3>Candidate Item Session State</h3>
       <ul>
         <li>Entry time: <xsl:value-of select="$itemSessionState/@entryTime"/></li>
         <li>End time: <xsl:value-of select="$itemSessionState/@endTime"/></li>
@@ -200,6 +300,7 @@ Renders a standalone assessmentItem
         <li><code>sessionStatus</code>: <xsl:value-of select="$sessionStatus"/></li>
         <li><code>numAttempts</code>: <xsl:value-of select="$itemSessionState/@numAttempts"/></li>
         <li><code>completionStatus</code>: <xsl:value-of select="$itemSessionState/@completionStatus"/></li>
+        <li>Solution mode? <xsl:value-of select="$solutionMode"/></li>
       </ul>
 
       <!-- Show response stuff -->
@@ -288,13 +389,13 @@ Renders a standalone assessmentItem
       </p>
       <dl>
         <dt>Reset session?</dt>
-        <dd><xsl:value-of select="$resetAllowed"/></dd>
+        <dd><xsl:value-of select="$softSoftResetAllowed"/></dd>
 
         <dt>Reinitialize session?</dt>
-        <dd><xsl:value-of select="$reinitAllowed"/></dd>
+        <dd><xsl:value-of select="$hardResetAllowed"/></dd>
 
         <dt>Close session?</dt>
-        <dd><xsl:value-of select="$closeAllowed"/></dd>
+        <dd><xsl:value-of select="$endAllowed"/></dd>
 
         <dt>View solution?</dt>
         <dd><xsl:value-of select="$solutionAllowed"/></dd>

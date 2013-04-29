@@ -42,12 +42,18 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Base for {@link StandaloneItemRenderingRequest} and {@link TestPartNavigationRenderingRequest} containing things
+ * Base for {@link ItemRenderingRequest} and {@link TestRenderingRequest} containing things
  * that are required in both cases.
+ *
+ * @param <P> specific subtype of {@link AbstractRenderingOptions} attached to this request.
  *
  * @author David McKain
  */
-public abstract class AbstractRenderingRequest {
+public abstract class AbstractRenderingRequest<P extends AbstractRenderingOptions> {
+
+    @NotNull
+    @Valid
+    private P renderingOptions;
 
     @NotNull
     private ResourceLocator assessmentResourceLocator;
@@ -55,13 +61,20 @@ public abstract class AbstractRenderingRequest {
     @NotNull
     private URI assessmentResourceUri;
 
-    @NotNull
-    @Valid
-    private RenderingOptions renderingOptions;
-
     private boolean authorMode;
+    private boolean sourceAllowed;
+    private boolean resultAllowed;
 
     //----------------------------------------------------
+
+    public P getRenderingOptions() {
+        return renderingOptions;
+    }
+
+    public void setRenderingOptions(final P renderingOptions) {
+        this.renderingOptions = renderingOptions;
+    }
+
 
     public ResourceLocator getAssessmentResourceLocator() {
         return assessmentResourceLocator;
@@ -81,21 +94,30 @@ public abstract class AbstractRenderingRequest {
     }
 
 
-    public RenderingOptions getRenderingOptions() {
-        return renderingOptions;
-    }
-
-    public void setRenderingOptions(final RenderingOptions renderingOptions) {
-        this.renderingOptions = renderingOptions;
-    }
-
-
     public boolean isAuthorMode() {
         return authorMode;
     }
 
     public void setAuthorMode(final boolean authorMode) {
         this.authorMode = authorMode;
+    }
+
+
+    public boolean isSourceAllowed() {
+        return sourceAllowed;
+    }
+
+    public void setSourceAllowed(final boolean sourceAllowed) {
+        this.sourceAllowed = sourceAllowed;
+    }
+
+
+    public boolean isResultAllowed() {
+        return resultAllowed;
+    }
+
+    public void setResultAllowed(final boolean resultAllowed) {
+        this.resultAllowed = resultAllowed;
     }
 
     //----------------------------------------------------

@@ -33,8 +33,10 @@
  */
 package dave;
 
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 
 /**
  * FIXME: Document this type
@@ -43,29 +45,38 @@ import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
  */
 public final class RunUtilities {
 
-    public static RenderingOptions createRenderingOptions() {
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath("/qtiworks");
-        renderingOptions.setAttemptUrl("/attempt");
-        renderingOptions.setCloseUrl("/close");
-        renderingOptions.setResetUrl("/reset");
-        renderingOptions.setReinitUrl("/reinit");
-        renderingOptions.setSolutionUrl("/solution");
-        renderingOptions.setResultUrl("/result");
-        renderingOptions.setSourceUrl("/source");
-        renderingOptions.setServeFileUrl("/serveFile");
-        renderingOptions.setTerminateUrl("/terminate");
-        renderingOptions.setTestPartNavigationUrl("/test-part-navigation");
-        renderingOptions.setSelectTestItemUrl("/select-item");
-        renderingOptions.setFinishTestItemUrl("/finish-item");
-        renderingOptions.setEndTestPartUrl("/end-test-part");
-        renderingOptions.setReviewTestPartUrl("/review-test-part");
-        renderingOptions.setReviewTestItemUrl("/review-item");
-        renderingOptions.setShowTestItemSolutionUrl("/item-solution");
-        renderingOptions.setAdvanceTestPartUrl("/advance-test-part");
-        renderingOptions.setExitTestUrl("/exit-test");
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        return renderingOptions;
+    public static TestRenderingOptions createTestRenderingOptions() {
+        final TestRenderingOptions result = new TestRenderingOptions();
+        setBaseOptions(result);
+        result.setTestPartNavigationUrl("/test-part-navigation");
+        result.setSelectTestItemUrl("/select-item");
+        result.setFinishTestItemUrl("/finish-item");
+        result.setEndTestPartUrl("/end-test-part");
+        result.setReviewTestPartUrl("/review-test-part");
+        result.setReviewTestItemUrl("/review-item");
+        result.setShowTestItemSolutionUrl("/item-solution");
+        result.setAdvanceTestPartUrl("/advance-test-part");
+        result.setExitTestUrl("/exit-test");
+        return result;
+    }
+
+    public static ItemRenderingOptions createItemRenderingOptions() {
+        final ItemRenderingOptions result = new ItemRenderingOptions();
+        setBaseOptions(result);
+        result.setEndUrl("/close");
+        result.setSoftResetUrl("/reset-soft");
+        result.setHardResetUrl("/reset-hard");
+        result.setSolutionUrl("/solution");
+        result.setExitUrl("/terminate");
+        return result;
+    }
+
+    private static void setBaseOptions(final AbstractRenderingOptions result) {
+        result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        result.setServeFileUrl("/serveFile");
+        result.setResponseUrl("/response");
+        result.setResultUrl("/result");
+        result.setSourceUrl("/source");
     }
 
 }

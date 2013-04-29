@@ -26,15 +26,6 @@ Renders the navigation for the current testPart
 
   <!-- ************************************************************ -->
 
-  <xsl:template match="/">
-    <xsl:variable name="unserialized-output" as="element()">
-      <xsl:apply-templates select="qw:to-qti21(/)/*"/>
-    </xsl:variable>
-    <xsl:apply-templates select="$unserialized-output" mode="serialize"/>
-  </xsl:template>
-
-  <!-- ************************************************************ -->
-
   <xsl:template match="qti:assessmentTest" as="element(html)">
     <html>
       <xsl:if test="@lang">

@@ -141,15 +141,9 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Column(name="public")
     private boolean isPublic;
 
+
     //------------------------------------------------------------
     // Settings common to both items and tests
-
-    /** Optional prompt to show to candidates */
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Basic(optional=true)
-    @Column(name="prompt")
-    private String prompt;
 
     /** Author mode includes additional debugging information in the rendering */
     @Basic(optional=false)
@@ -167,6 +161,16 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="template_processing_limit")
     private int templateProcessingLimit;
+
+    /** Allow candidate to view assessment source(s) */
+    @Basic(optional=false)
+    @Column(name="allow_source")
+    private boolean allowSource;
+
+    /** Allow candidate to access result XML */
+    @Basic(optional=false)
+    @Column(name="allow_result")
+    private boolean allowResult;
 
     //------------------------------------------------------------
 
@@ -240,15 +244,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     //------------------------------------------------------------
 
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public void setPrompt(final String prompt) {
-        this.prompt = prompt;
-    }
-
-
     public boolean isAuthorMode() {
         return authorMode;
     }
@@ -265,6 +260,24 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     public void setTemplateProcessingLimit(final int templateProcessingLimit) {
         this.templateProcessingLimit = templateProcessingLimit;
+    }
+
+
+    public boolean isAllowSource() {
+        return allowSource;
+    }
+
+    public void setAllowSource(final boolean allowSource) {
+        this.allowSource = allowSource;
+    }
+
+
+    public boolean isAllowResult() {
+        return allowResult;
+    }
+
+    public void setAllowResult(final boolean allowResult) {
+        this.allowResult = allowResult;
     }
 
     //------------------------------------------------------------

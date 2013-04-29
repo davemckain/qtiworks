@@ -105,7 +105,7 @@ public final class XsltParamDocumentBuilder {
             return document;
         }
         catch (final Exception e) {
-            throw new QtiRenderingException("Unexpected Exception generating DOM parameter", e);
+            throw new QtiWorksRenderingException("Unexpected Exception generating DOM parameter", e);
         }
     }
 }

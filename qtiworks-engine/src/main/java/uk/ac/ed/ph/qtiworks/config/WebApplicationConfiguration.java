@@ -85,7 +85,7 @@ public class WebApplicationConfiguration {
     }
 
     @Bean
-    public String contextPath() {
+    public String webappContextPath() {
         return applicationContext.getServletContext().getContextPath();
     }
 

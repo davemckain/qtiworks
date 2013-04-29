@@ -107,7 +107,7 @@ DM: I don't have anything to test this out with!
     <xsl:param name="checkJavaScript" as="xs:string?"/>
     <xsl:variable name="responseInputString" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
     <textarea cols="40" rows="6" name="qtiworks_response_{@responseIdentifier}">
-      <xsl:if test="$isSessionEnded">
+      <xsl:if test="$isItemSessionEnded">
         <xsl:attribute name="disabled">disabled</xsl:attribute>
       </xsl:if>
       <xsl:if test="@expectedLines">

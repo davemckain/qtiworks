@@ -52,6 +52,7 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentItemRef;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
+import uk.ac.ed.ph.jqtiplus.node.test.ControlObject;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import uk.ac.ed.ph.jqtiplus.node.test.NavigationMode;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
@@ -99,6 +100,8 @@ import org.slf4j.LoggerFactory;
  *   <li>(Then navigate through the testPart as below)</li>
  *   <li>{@link #endCurrentTestPart(Date)}</li>
  *   <li>(Repeat enter/end until there are no more testParts)</li>
+ *   <li>(Call {@link #touchDurations(Date)} to update various timers when accessing but not
+ *     changing the state.)</li>
  *   <li>{@link #exitTest(Date)}}</li>
  * </ul>
  * Navigation within a {@link TestPart} depends on its {@link NavigationMode:
@@ -203,6 +206,9 @@ public final class TestSessionController extends TestProcessingController {
                     throw new QtiLogicException("Unexpected switch case " + testPlanNode.getTestNodeType());
             }
         }
+
+        /* Mark test session as initialized */
+        testSessionState.setInitialized(true);
     }
 
     //-------------------------------------------------------------------
@@ -214,7 +220,7 @@ public final class TestSessionController extends TestProcessingController {
      * The caller would be expected to call {@link #enterNextAvailableTestPart()}
      * next.
      * <p>
-     * Precondition: the test must not have already been entered.
+     * Precondition: the test must have been initialized and not have already been entered.
      * <p>
      * Postcondition: the test will be marked as having been entered. No {@link TestPart}
      * will been entered, no item will have been selected. The duration timer will start on the test.
@@ -231,6 +237,7 @@ public final class TestSessionController extends TestProcessingController {
      */
     public int enterTest(final Date timestamp) {
         Assert.notNull(timestamp, "timestamp");
+        assertTestInitialized();
     	assertTestNotEntered();
     	logger.debug("Entering test {}", getSubject().getSystemId());
 
@@ -240,6 +247,48 @@ public final class TestSessionController extends TestProcessingController {
         startControlObjectTimer(testSessionState, timestamp);
 
         return testSessionState.getTestPlan().getTestPartNodes().size();
+    }
+
+    /**
+     * Touches (updates) the <code>duration</code> variables for all of the {@link ControlObject}s
+     * within the test that are currently open.
+     * Call this method before rendering and other operations that use rather than
+     * change the session state.
+     * <p>
+     * Precondition: Test Session must have been initialized.
+     * <p>
+     * Postcondition: Duration variables will be updated as appropriate.
+     *
+     * @param timestamp timestamp for this event, which must not be null
+     */
+    public void touchDurations(final Date timestamp) {
+        Assert.notNull(timestamp);
+        assertTestInitialized();
+
+        logger.debug("Touching durations on test");
+
+        /* Touch durations on item and ancestor sections (if applicable) */
+        final TestPlanNodeKey currentItemKey = testSessionState.getCurrentItemKey();
+        if (currentItemKey!=null) {
+            final TestPlanNode currentItemRefNode = expectItemRefNode(currentItemKey);
+            final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
+            itemSessionController.touchDuration(timestamp);
+            for (final TestPlanNode sectionNode : currentItemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
+                final AssessmentSectionSessionState assessmentSectionSessionState = expectAssessmentSectionSessionState(sectionNode);
+                touchControlObjectTimerIfOpen(assessmentSectionSessionState, timestamp);
+            }
+        }
+
+        /* Touch duration on testPart (if applicable) */
+        final TestPlanNodeKey currentTestPartKey = testSessionState.getCurrentTestPartKey();
+        if (currentTestPartKey!=null) {
+            final TestPlanNode testPartNode = expectTestPartNode(currentTestPartKey);
+            final TestPartSessionState testPartSessionState = expectTestPartSessionState(testPartNode);
+            touchControlObjectTimerIfOpen(testPartSessionState, timestamp);
+        }
+
+        /* Finally touch duration on test */
+        touchControlObjectTimerIfOpen(testSessionState, timestamp);
     }
 
     /**
@@ -1165,7 +1214,7 @@ public final class TestSessionController extends TestProcessingController {
 
         /* Touch durations on item, ancestor sections, test part and test */
         final TestPlanNode currentItemRefNode = expectItemRefNode(currentItemKey);
-        touchDurations(currentItemRefNode, timestamp);
+        touchDurations(timestamp);
 
         /* Bind responses */
         final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
@@ -1211,20 +1260,6 @@ public final class TestSessionController extends TestProcessingController {
 
         final ItemSessionController itemSessionController = getItemSessionController(currentItemRefNode);
         itemSessionController.setCandidateComment(timestamp, candidateComment);
-    }
-
-    /**
-     * Touches the duration for the given item, and the sections and testParts containing it.
-     */
-    private void touchDurations(final TestPlanNode itemRefNode, final Date timestamp) {
-        final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
-        itemSessionController.touchDuration(timestamp);
-        for (final TestPlanNode sectionNode : itemRefNode.searchAncestors(TestNodeType.ASSESSMENT_SECTION)) {
-            touchControlObjectTimer(expectAssessmentSectionSessionState(sectionNode), timestamp);
-        }
-        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
-        touchControlObjectTimer(expectTestPartSessionState(currentTestPartNode), timestamp);
-        touchControlObjectTimer(testSessionState, timestamp);
     }
 
     //-------------------------------------------------------------------
@@ -1387,6 +1422,12 @@ public final class TestSessionController extends TestProcessingController {
 
     //-------------------------------------------------------------------
     // Precondition helpers
+
+    private void assertTestInitialized() {
+        if (!testSessionState.isInitialized()) {
+            throw new QtiCandidateStateException("Test has not been initialized");
+        }
+    }
 
     private void assertTestEntered() {
         if (!testSessionState.isEntered()) {
@@ -1605,5 +1646,11 @@ public final class TestSessionController extends TestProcessingController {
     private void touchControlObjectTimer(final ControlObjectSessionState controlObjectState, final Date timestamp) {
         endControlObjectTimer(controlObjectState, timestamp);
         startControlObjectTimer(controlObjectState, timestamp);
+    }
+
+    private void touchControlObjectTimerIfOpen(final ControlObjectSessionState controlObjectState, final Date timestamp) {
+        if (controlObjectState.isOpen()) {
+            touchControlObjectTimer(controlObjectState, timestamp);
+        }
     }
 }

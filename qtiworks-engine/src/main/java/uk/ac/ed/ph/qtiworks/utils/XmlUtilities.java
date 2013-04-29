@@ -38,9 +38,12 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.XMLReader;
 
 /**
- * FIXME: Document this type
+ * Some generic XML-related utilities.
  *
  * @author David McKain
  */
@@ -53,7 +56,20 @@ public final class XmlUtilities {
             return documentBuilderFactory.newDocumentBuilder();
         }
         catch (final ParserConfigurationException e) {
-            throw new QtiWorksRuntimeException("Could not create NS Aware DocumentBuilder. Check deployment/runtime ClassPath", e);
+            throw new QtiWorksRuntimeException("Could not create NS-aware DocumentBuilder. Check deployment/runtime ClassPath", e);
+        }
+    }
+
+    public static final XMLReader createNsAwareSaxReader(final boolean validating) {
+        try {
+            final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            parserFactory.setNamespaceAware(true);
+            parserFactory.setValidating(validating);
+            return parserFactory.newSAXParser().getXMLReader();
+
+        }
+        catch (final Exception e) {
+            throw new QtiWorksRuntimeException("Could not create NS-aware SAXParser with validating=" + validating + ". Check deployment/runtime ClassPath", e);
         }
     }
 

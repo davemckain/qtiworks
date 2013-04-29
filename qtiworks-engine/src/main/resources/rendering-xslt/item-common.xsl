@@ -23,33 +23,8 @@ rendering.
   <!-- State of item being rendered -->
   <xsl:param name="itemSessionState" as="element(qw:itemSessionState)"/>
 
-  <!-- Rendering mode -->
-  <xsl:param name="renderingMode" as="xs:string" required="yes"/>
-
-  <!-- Action permissions -->
-  <xsl:param name="closeAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="solutionAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="resetAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="reinitAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="candidateCommentAllowed" as="xs:boolean" required="yes"/>
-
-  <xsl:function name="qw:describe-candidate-event" as="xs:string">
-    <xsl:param name="candidate-event-type" as="xs:string"/>
-    <xsl:variable name="descriptions" as="element(qw:description)+">
-      <qw:description type="INIT">Initial presentation of your assessment</qw:description>
-      <qw:description type="ATTEMPT_VALID">Submission of an answer</qw:description>
-      <qw:description type="ATTEMPT_INVALID">Submission of an answer that did not fit what was asked for</qw:description>
-      <qw:description type="ATTEMPT_BAD">Submission of the wrong type of answer</qw:description>
-      <qw:description type="REINIT">Re-initialisation of your assessment</qw:description>
-      <qw:description type="RESET">Reset of your assessment</qw:description>
-      <qw:description type="SOLUTION">Display of a model solution for this assessment</qw:description>
-      <qw:description type="CLOSE">Completion of your assessment</qw:description>
-      <qw:description type="TERMINATE">Termination of your assessment</qw:description>
-    </xsl:variable>
-    <xsl:sequence select="$descriptions[@type=$candidate-event-type]/text()"/>
-  </xsl:function>
+  <!-- Flag to enable modal rendering of model solution for this item -->
+  <xsl:param name="solutionMode" as="xs:boolean" required="yes"/>
 
   <!-- Extract information from the <itemSessionState> -->
   <xsl:variable name="shuffledChoiceOrders" select="$itemSessionState/qw:shuffledInteractionChoiceOrder"
@@ -59,8 +34,9 @@ rendering.
   <xsl:variable name="outcomeValues" select="$itemSessionState/qw:outcomeVariable" as="element(qw:outcomeVariable)*"/>
   <xsl:variable name="overriddenCorrectResponses" select="$itemSessionState/qw:overriddenCorrectResponse" as="element(qw:overriddenCorrectResponse)*"/>
   <xsl:variable name="sessionStatus" select="$itemSessionState/@sessionStatus" as="xs:string"/>
-  <xsl:variable name="isSessionEnded" as="xs:boolean" select="$itemSessionState/@endTime!=''"/>
-  <xsl:variable name="isSessionOpen" as="xs:boolean" select="$itemSessionState/@entryTime!='' and not($isSessionEnded)"/>
+  <xsl:variable name="isItemSessionEnded" as="xs:boolean" select="$itemSessionState/@endTime!='' or $solutionMode"/>
+  <xsl:variable name="isItemSessionOpen" as="xs:boolean" select="$itemSessionState/@entryTime!='' and not($isItemSessionEnded)"/>
+  <xsl:variable name="isItemSessionExited" as="xs:boolean" select="$itemSessionState/@exitTime!=''"/>
 
   <!-- Raw response inputs -->
   <xsl:variable name="responseInputs" select="$itemSessionState/qw:responseInput" as="element(qw:responseInput)*"/>
@@ -158,7 +134,7 @@ rendering.
     <xsl:param name="identifier" as="xs:string"/>
     <xsl:variable name="responseDeclaration" select="qw:get-response-declaration($document, $identifier)" as="element(qti:responseDeclaration)?"/>
     <xsl:choose>
-      <xsl:when test="$renderingMode='SOLUTION' and $overriddenCorrectResponses[@identifier=$identifier]">
+      <xsl:when test="$solutionMode and $overriddenCorrectResponses[@identifier=$identifier]">
         <!-- Correct response has been set during template processing -->
         <xsl:for-each select="$overriddenCorrectResponses[@identifier=$identifier]">
           <qw:responseVariable>
@@ -167,7 +143,7 @@ rendering.
           </qw:responseVariable>
         </xsl:for-each>
       </xsl:when>
-      <xsl:when test="$renderingMode='SOLUTION' and $responseDeclaration/qti:correctResponse">
+      <xsl:when test="$solutionMode and $responseDeclaration/qti:correctResponse">
         <!-- <correctResponse> has been set in the QTI -->
         <!-- (We need to convert QTI <qti:correctResponse/> to <qw:responseVariable/>) -->
         <xsl:for-each select="$responseDeclaration/qti:correctResponse">
@@ -242,81 +218,6 @@ rendering.
     </xsl:variable>
     <xsl:sequence select="qw:filter-visible($orderedChoices)"/>
   </xsl:function>
-
-  <!-- ************************************************************ -->
-
-  <xsl:template name="qw:item-controls">
-    <div class="sessionControl">
-      <xsl:if test="$authorMode">
-        <div class="authorMode">
-          The candidate currently has the following options for this item.
-          You can choose exactly which options are available via the "item delivery".
-        </div>
-      </xsl:if>
-      <ul class="controls">
-        <xsl:if test="$resetAllowed">
-          <li>
-            <form action="{$webappContextPath}{$resetUrl}" method="post">
-              <input type="submit" value="Reset{if ($isSessionEnded) then ' and play again' else ''}"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$reinitAllowed">
-          <li>
-            <form action="{$webappContextPath}{$reinitUrl}" method="post">
-              <input type="submit" value="Reinitialise{if ($isSessionEnded) then ' and play again' else ''}"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$closeAllowed">
-          <li>
-            <form action="{$webappContextPath}{$closeUrl}" method="post">
-              <input type="submit" value="Finish and review"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$solutionAllowed and $hasModelSolution">
-          <li>
-            <form action="{$webappContextPath}{$solutionUrl}" method="post">
-              <input type="submit" value="Show model solution"/>
-            </form>
-          </li>
-        </xsl:if>
-      </ul>
-    </div>
-  </xsl:template>
-
-  <xsl:template name="qw:session-controls">
-    <div class="sessionControl">
-      <xsl:if test="$authorMode">
-        <div class="authorMode">
-          The candidate currently has the following options for this session.
-          You can choose exactly which options are available via the "item delivery".
-        </div>
-      </xsl:if>
-      <ul class="controls">
-        <xsl:if test="$resultAllowed">
-          <li>
-            <form action="{$webappContextPath}{$resultUrl}" method="get" class="showXmlInDialog" title="Item Result XML">
-              <input type="submit" value="View &lt;assessmentResult&gt;"/>
-            </form>
-          </li>
-        </xsl:if>
-        <xsl:if test="$sourceAllowed">
-          <li>
-            <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">
-              <input type="submit" value="View Item source"/>
-            </form>
-          </li>
-        </xsl:if>
-        <li>
-          <form action="{$webappContextPath}{$terminateUrl}" method="post">
-            <input type="submit" value="Exit"/>
-          </form>
-        </li>
-      </ul>
-    </div>
-  </xsl:template>
 
   <!-- ************************************************************ -->
 

@@ -33,13 +33,23 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+
 /**
- * FIXME: Document this type
+ * Extension of {@link QtiWorksRuntimeException} used when an unexpected {@link Exception}
+ * occurs during rendering.
  *
  * @author David McKain
  */
-public final class TerminatedRenderingRequest extends AbstractRenderingRequest {
+public final class QtiWorksRenderingException extends QtiWorksRuntimeException {
 
-    /* Nothing to add */
+    private static final long serialVersionUID = -2343145716203604174L;
 
+    public QtiWorksRenderingException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
+    public QtiWorksRenderingException(final String message) {
+        super(message);
+    }
 }

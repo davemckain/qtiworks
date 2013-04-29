@@ -41,8 +41,11 @@ import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Specifies settings controlling the delivery of an {@link AssessmentItem} to a group of candidates.
@@ -57,56 +60,53 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
 
     private static final long serialVersionUID = 6573748787230595395L;
 
+    /** Optional prompt to show to candidates */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="prompt")
+    private String prompt;
+
     /** Maximum number of attempts, as defined by {@link ItemSessionControl} */
     @Min(value=0)
     @Basic(optional=false)
     @Column(name="max_attempts")
     private Integer maxAttempts;
 
-    /** Allow candidate to close session */
+    /** Allow candidate to end (close) session */
     @Basic(optional=false)
-    @Column(name="allow_close")
-    private boolean allowClose;
+    @Column(name="allow_end")
+    private boolean allowEnd;
 
-    /** Allow candidate to reset attempt while in interacting state */
+    /** Allow candidate to perform a soft reset while in interacting state */
     @Basic(optional=false)
-    @Column(name="allow_reset_when_interacting")
-    private boolean allowResetWhenInteracting;
+    @Column(name="allow_soft_reset_when_open")
+    private boolean allowSoftResetWhenOpen;
 
-    /** Allow candidate to reset attempt while in closed state */
+    /** Allow candidate to  perform a soft reset while in closed state */
     @Basic(optional=false)
-    @Column(name="allow_reset_when_closed")
-    private boolean allowResetWhenClosed;
+    @Column(name="allow_soft_reset_when_ended")
+    private boolean allowSoftResetWhenEnded;
 
-    /** Allow candidate to re-initialize attempt while in interacting state */
+    /** Allow candidate to perform a hard reset while in interacting state */
     @Basic(optional=false)
-    @Column(name="allow_reinit_when_interacting")
-    private boolean allowReinitWhenInteracting;
+    @Column(name="allow_hard_reset_when_open")
+    private boolean allowHardResetWhenOpen;
 
-    /** Allow candidate to re-initialize attempt while in closed state */
+    /** Allow candidate to perform a hard reset attempt while in closed state */
     @Basic(optional=false)
-    @Column(name="allow_reinit_when_closed")
-    private boolean allowReinitWhenClosed;
+    @Column(name="allow_hard_reset_when_ended")
+    private boolean allowHardResetWhenEnded;
 
     /** Allow candidate to show solution when in interacting state */
     @Basic(optional=false)
-    @Column(name="allow_solution_when_interacting")
-    private boolean allowSolutionWhenInteracting;
+    @Column(name="allow_solution_when_open")
+    private boolean allowSolutionWhenOpen;
 
     /** Allow candidate to show solution when in closed state */
     @Basic(optional=false)
-    @Column(name="allow_solution_when_closed")
-    private boolean allowSolutionWhenClosed;
-
-    /** Allow candidate to view assessment source(s) */
-    @Basic(optional=false)
-    @Column(name="allow_source")
-    private boolean allowSource;
-
-    /** Allow candidate to access result XML */
-    @Basic(optional=false)
-    @Column(name="allow_result")
-    private boolean allowResult;
+    @Column(name="allow_solution_when_ended")
+    private boolean allowSolutionWhenEnded;
 
     /** Allow candidate to submit comments */
     @Basic(optional=false)
@@ -121,6 +121,15 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
 
     //------------------------------------------------------------
 
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(final String prompt) {
+        this.prompt = prompt;
+    }
+
+
     public Integer getMaxAttempts() {
         return maxAttempts;
     }
@@ -130,83 +139,66 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
     }
 
 
-    public boolean isAllowClose() {
-        return allowClose;
+    public boolean isAllowEnd() {
+        return allowEnd;
     }
 
-    public void setAllowClose(final boolean allowClose) {
-        this.allowClose = allowClose;
-    }
-
-
-    public boolean isAllowResetWhenInteracting() {
-        return allowResetWhenInteracting;
-    }
-
-    public void setAllowResetWhenInteracting(final boolean allowReset) {
-        this.allowResetWhenInteracting = allowReset;
+    public void setAllowEnd(final boolean allowEnd) {
+        this.allowEnd = allowEnd;
     }
 
 
-    public boolean isAllowResetWhenClosed() {
-        return allowResetWhenClosed;
+    public boolean isAllowSoftResetWhenOpen() {
+        return allowSoftResetWhenOpen;
     }
 
-    public void setAllowResetWhenClosed(final boolean allowReset) {
-        this.allowResetWhenClosed = allowReset;
-    }
-
-
-    public boolean isAllowReinitWhenInteracting() {
-        return allowReinitWhenInteracting;
-    }
-
-    public void setAllowReinitWhenInteracting(final boolean allowReinit) {
-        this.allowReinitWhenInteracting = allowReinit;
+    public void setAllowSoftResetWhenOpen(final boolean allowReset) {
+        this.allowSoftResetWhenOpen = allowReset;
     }
 
 
-    public boolean isAllowReinitWhenClosed() {
-        return allowReinitWhenClosed;
+    public boolean isAllowSoftResetWhenEnded() {
+        return allowSoftResetWhenEnded;
     }
 
-    public void setAllowReinitWhenClosed(final boolean allowReinitWhenClosed) {
-        this.allowReinitWhenClosed = allowReinitWhenClosed;
-    }
-
-
-    public boolean isAllowSolutionWhenInteracting() {
-        return allowSolutionWhenInteracting;
-    }
-
-    public void setAllowSolutionWhenInteracting(final boolean allowSolution) {
-        this.allowSolutionWhenInteracting = allowSolution;
+    public void setAllowSoftResetWhenEnded(final boolean allowReset) {
+        this.allowSoftResetWhenEnded = allowReset;
     }
 
 
-    public boolean isAllowSolutionWhenClosed() {
-        return allowSolutionWhenClosed;
+    public boolean isAllowHardResetWhenOpen() {
+        return allowHardResetWhenOpen;
     }
 
-    public void setAllowSolutionWhenClosed(final boolean allowSolutionWhenClosed) {
-        this.allowSolutionWhenClosed = allowSolutionWhenClosed;
-    }
-
-    public boolean isAllowSource() {
-        return allowSource;
-    }
-
-    public void setAllowSource(final boolean allowSource) {
-        this.allowSource = allowSource;
+    public void setAllowHardResetWhenOpen(final boolean allowReinit) {
+        this.allowHardResetWhenOpen = allowReinit;
     }
 
 
-    public boolean isAllowResult() {
-        return allowResult;
+    public boolean isAllowHardResetWhenEnded() {
+        return allowHardResetWhenEnded;
     }
 
-    public void setAllowResult(final boolean allowResult) {
-        this.allowResult = allowResult;
+    public void setAllowHardResetWhenEnded(final boolean allowHardResetWhenEnded) {
+        this.allowHardResetWhenEnded = allowHardResetWhenEnded;
+    }
+
+
+    public boolean isAllowSolutionWhenOpen() {
+        return allowSolutionWhenOpen;
+    }
+
+    public void setAllowSolutionWhenOpen(final boolean allowSolution) {
+        this.allowSolutionWhenOpen = allowSolution;
+    }
+
+
+    public boolean isAllowSolutionWhenEnded() {
+        return allowSolutionWhenEnded;
+    }
+
+    public void setAllowSolutionWhenEnded(final boolean allowSolutionWhenEnded) {
+        this.allowSolutionWhenEnded = allowSolutionWhenEnded;
     }
 
 

@@ -76,6 +76,7 @@ public final class TestSessionState extends ControlObjectSessionState implements
     private final Map<TestPlanNodeKey, ItemSessionState> itemSessionStates;
     private final Map<Identifier, Value> outcomeValues;
 
+    private boolean initialized;
     private TestPlanNodeKey currentTestPartKey;
     private TestPlanNodeKey currentItemKey;
 
@@ -116,12 +117,22 @@ public final class TestSessionState extends ControlObjectSessionState implements
         this.assessmentSectionSessionStates.clear();
         this.itemSessionStates.clear();
         this.outcomeValues.clear();
+        this.initialized = false;
         this.currentTestPartKey = null;
         this.currentItemKey = null;
 
     }
 
     //----------------------------------------------------------------
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void setInitialized(final boolean initialized) {
+        this.initialized = initialized;
+    }
+
 
     public TestPlanNodeKey getCurrentTestPartKey() {
         return currentTestPartKey;

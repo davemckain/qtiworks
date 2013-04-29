@@ -36,17 +36,19 @@ package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
+import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -66,7 +68,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -79,6 +80,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 public class CandidateTestController {
 
     @Resource
+    private CandidateRenderingService candidateRenderingService;
+
+    @Resource
     private CandidateTestDeliveryService candidateTestDeliveryService;
 
     //----------------------------------------------------
@@ -89,28 +93,15 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}", method=RequestMethod.GET)
     public void renderCurrentTestSessionState(@PathVariable final long xid, @PathVariable final String sessionToken,
-            final WebRequest webRequest, final HttpServletResponse response)
+            final HttpServletResponse response)
             throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
         /* Create appropriate options that link back to this controller */
-        final RenderingOptions renderingOptions = createTestRenderingOptions(webRequest, xid, sessionToken);
-
-        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
-        candidateTestDeliveryService.renderCurrentCandidateSessionState(xid, sessionToken, renderingOptions, outputStreamer);
-    }
-
-    private RenderingOptions createTestRenderingOptions(final WebRequest webRequest, final long xid, final String sessionToken) {
         final String sessionBaseUrl = "/candidate/testsession/" + xid + "/" + sessionToken;
-        final RenderingOptions renderingOptions = new RenderingOptions();
-        renderingOptions.setContextPath(webRequest.getContextPath());
+        final TestRenderingOptions renderingOptions = new TestRenderingOptions();
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setAttemptUrl(sessionBaseUrl + "/attempt");
-        renderingOptions.setCloseUrl(sessionBaseUrl + "/close");
-        renderingOptions.setSolutionUrl(sessionBaseUrl + "/solution");
-        renderingOptions.setResetUrl(sessionBaseUrl + "/reset");
-        renderingOptions.setReinitUrl(sessionBaseUrl + "/reinit");
-        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
-        renderingOptions.setTerminateUrl(sessionBaseUrl + "/terminate");
+        renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
+        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");
         renderingOptions.setSelectTestItemUrl(sessionBaseUrl + "/select-item");
@@ -121,7 +112,10 @@ public class CandidateTestController {
         renderingOptions.setEndTestPartUrl(sessionBaseUrl + "/end-test-part");
         renderingOptions.setAdvanceTestPartUrl(sessionBaseUrl + "/advance-test-part");
         renderingOptions.setExitTestUrl(sessionBaseUrl + "/exit-test");
-        return renderingOptions;
+
+        /* Now call up the rendering service */
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateRenderingService.renderCurrentCandidateTestSessionState(xid, sessionToken, renderingOptions, outputStreamer);
     }
 
     //----------------------------------------------------
@@ -130,7 +124,7 @@ public class CandidateTestController {
     /**
      * Handles submission of candidate responses
      */
-    @RequestMapping(value="/testsession/{xid}/{sessionToken}/attempt", method=RequestMethod.POST)
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/response", method=RequestMethod.POST)
     public String handleResponses(final HttpServletRequest request, @PathVariable final long xid,
             @PathVariable final String sessionToken)
             throws DomainEntityNotFoundException, CandidateForbiddenException {
@@ -346,6 +340,39 @@ public class CandidateTestController {
     }
 
     //----------------------------------------------------
+    // Informational actions
+
+    /**
+     * Streams an {@link AssessmentResult} representing the current state of the given
+     * {@link CandidateSession}
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        response.setContentType("application/xml");
+        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
+    }
+
+    /**
+     * Serves the source of the given {@link AssessmentPackage}
+     *
+     * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
+     */
+    @RequestMapping(value="/testsession/{xid}/{sessionToken}/source", method=RequestMethod.GET)
+    public void streamPackageSource(@PathVariable final long xid,
+            @PathVariable final String sessionToken,
+            final HttpServletRequest request, final HttpServletResponse response)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
+        final String requestEtag = request.getHeader("If-None-Match");
+        if (resourceEtag.equals(requestEtag)) {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+        else {
+            final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
+            candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
+        }
+    }
 
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
@@ -358,7 +385,7 @@ public class CandidateTestController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
-        final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateSession(xid, sessionToken);
+        final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateTestSession(xid, sessionToken);
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");

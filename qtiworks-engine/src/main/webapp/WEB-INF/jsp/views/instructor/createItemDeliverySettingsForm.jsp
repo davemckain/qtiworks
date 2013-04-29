@@ -100,12 +100,12 @@ itemDeliverySettingsTemplate - form backing template
       <legend>While interacting, the candidate is allowed to...</legend>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowClose">Close the session?</label>
+          <label for="allowEnd">Close the session?</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">
-            <form:radiobutton path="allowClose" value="true" /> Yes
-            <form:radiobutton path="allowClose" value="false" /> No
+            <form:radiobutton path="allowEnd" value="true" /> Yes
+            <form:radiobutton path="allowEnd" value="false" /> No
           </div>
         </div>
         <div class="grid_5">
@@ -119,12 +119,12 @@ itemDeliverySettingsTemplate - form backing template
       <div class="clear"></div>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowReinitWhenInteracting">Reinitialise the session?</label>
+          <label for="allowHardResetWhenOpen">Reinitialise the session?</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">
-            <form:radiobutton path="allowReinitWhenInteracting" value="true" /> Yes
-            <form:radiobutton path="allowReinitWhenInteracting" value="false" /> No
+            <form:radiobutton path="allowHardResetWhenOpen" value="true" /> Yes
+            <form:radiobutton path="allowHardResetWhenOpen" value="false" /> No
           </div>
         </div>
         <div class="grid_5">
@@ -139,12 +139,12 @@ itemDeliverySettingsTemplate - form backing template
       <div class="clear"></div>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowResetWhenInteracting">Reset the session?</label>
+          <label for="allowSoftResetWhenOpen">Reset the session?</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">
-            <form:radiobutton path="allowResetWhenInteracting" value="true" /> Yes
-            <form:radiobutton path="allowResetWhenInteracting" value="false" /> No
+            <form:radiobutton path="allowSoftResetWhenOpen" value="true" /> Yes
+            <form:radiobutton path="allowSoftResetWhenOpen" value="false" /> No
           </div>
         </div>
         <div class="grid_5">
@@ -159,12 +159,12 @@ itemDeliverySettingsTemplate - form backing template
       <div class="clear"></div>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowSolutionWhenInteracting">Request a model solution?</label>
+          <label for="allowSolutionWhenOpen">Request a model solution?</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">
-            <form:radiobutton path="allowSolutionWhenInteracting" value="true" /> Yes
-            <form:radiobutton path="allowSolutionWhenInteracting" value="false" /> No
+            <form:radiobutton path="allowSolutionWhenOpen" value="true" /> Yes
+            <form:radiobutton path="allowSolutionWhenOpen" value="false" /> No
           </div>
         </div>
         <div class="grid_5">
@@ -175,17 +175,36 @@ itemDeliverySettingsTemplate - form backing template
         </div>
       </div>
       <div class="clear"></div>
+      <div class="stdFormRow">
+        <div class="grid_4">
+          <label for="allowCandidateComment">Submit a comment?</label>
+        </div>
+        <div class="grid_3">
+          <div class="booleanButtons">
+            <form:radiobutton path="allowCandidateComment" value="true" /> Yes
+            <form:radiobutton path="allowCandidateComment" value="false" /> No
+          </div>
+        </div>
+        <div class="grid_5">
+          <aside>
+            If 'Yes', the candidate will be allowed to submit an optional
+            comment, as described in the "allowComment" attribute of the
+            QTI itemSessionControl class.
+          </aside>
+        </div>
+      </div>
+      <div class="clear"></div>
     </fieldset>
     <fieldset>
       <legend>Once session is closed, the candidate is allowed to...</legend>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowReinitWhenClosed">Reinitialise the session and try again</label>
+          <label for="allowHardResetWhenEnded">Reinitialise the session and try again</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">
-            <form:radiobutton path="allowReinitWhenClosed" value="true" /> Yes
-            <form:radiobutton path="allowReinitWhenClosed" value="false" /> No
+            <form:radiobutton path="allowHardResetWhenEnded" value="true" /> Yes
+            <form:radiobutton path="allowHardResetWhenEnded" value="false" /> No
           </div>
         </div>
         <div class="grid_5">
@@ -198,12 +217,12 @@ itemDeliverySettingsTemplate - form backing template
       <div class="clear"></div>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowResetWhenClosed">Reset the session and try again</label>
+          <label for="allowSoftResetWhenEnded">Reset the session and try again</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">
-            <form:radiobutton path="allowResetWhenClosed" value="true" /> Yes
-            <form:radiobutton path="allowResetWhenClosed" value="false" /> No
+            <form:radiobutton path="allowSoftResetWhenEnded" value="true" /> Yes
+            <form:radiobutton path="allowSoftResetWhenEnded" value="false" /> No
           </div>
         </div>
         <div class="grid_5">
@@ -216,12 +235,12 @@ itemDeliverySettingsTemplate - form backing template
       <div class="clear"></div>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowSolutionWhenClosed">Request a model solution</label>
+          <label for="allowSolutionWhenEnded">Request a model solution</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">
-            <form:radiobutton path="allowSolutionWhenClosed" value="true" /> Yes
-            <form:radiobutton path="allowSolutionWhenClosed" value="false" /> No
+            <form:radiobutton path="allowSolutionWhenEnded" value="true" /> Yes
+            <form:radiobutton path="allowSolutionWhenEnded" value="false" /> No
           </div>
         </div>
         <div class="grid_5">
@@ -254,7 +273,7 @@ itemDeliverySettingsTemplate - form backing template
       <div class="clear"></div>
       <div class="stdFormRow">
         <div class="grid_4">
-          <label for="allowResult">Generate an &lt;assessmentResult&gt; XML</label>
+          <label for="allowResult">View the &lt;assessmentResult&gt; XML</label>
         </div>
         <div class="grid_3">
           <div class="booleanButtons">

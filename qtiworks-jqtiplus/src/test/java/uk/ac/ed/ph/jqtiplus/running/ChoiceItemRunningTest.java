@@ -239,16 +239,17 @@ public final class ChoiceItemRunningTest {
         itemSessionController.touchDuration(null);
     }
 
-    @Test(expected=QtiCandidateStateException.class)
-    public void testTouchDurationNotEntered() {
-        itemSessionController.touchDuration(entryTimestamp);
-    }
-
-    @Test(expected=QtiCandidateStateException.class)
     public void testTouchDurationAfterEnd() {
         itemSessionController.enterItem(entryTimestamp);
         itemSessionController.endItem(entryTimestamp);
-        itemSessionController.touchDuration(entryTimestamp);
+
+        /* Touching duration after end should not change anything */
+        final long touchDelta = 2000L;
+        final Date touchTimestamp = ObjectUtilities.addToTime(entryTimestamp, touchDelta);
+        itemSessionController.touchDuration(touchTimestamp);
+
+        assertEquals(entryTimestamp, itemSessionState.getDurationAccumulated());
+        assertEquals(null, itemSessionState.getDurationIntervalStartTime());
     }
 
     //-------------------------------------------------------

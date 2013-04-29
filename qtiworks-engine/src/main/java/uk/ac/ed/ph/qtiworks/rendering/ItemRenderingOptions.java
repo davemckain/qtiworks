@@ -33,22 +33,84 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+
+import javax.validation.constraints.NotNull;
+
 /**
- * This is a (still somewhat experimental) attempt to provide granular information
- * about the current rendering state.
- * <p>
- * (This is presently referred to as the "secondary session state" in the author debug mode
- * in rendered content.)
+ * Rendering options used when rendering items in standalone mode.
  *
  * @author David McKain
  */
-public enum RenderingMode {
+public final class ItemRenderingOptions extends AbstractRenderingOptions {
 
-    INTERACTING,
-    CLOSED,
-    REVIEW, /* NB: Only supported in tests currently */
-    SOLUTION,
-    TERMINATED,
-    ;
+    private static final long serialVersionUID = -9121795157165098560L;
 
+    @NotNull
+    private String endUrl;
+
+    @NotNull
+    private String softResetUrl;
+
+    @NotNull
+    private String hardResetUrl;
+
+    @NotNull
+    private String solutionUrl;
+
+    @NotNull
+    private String exitUrl;
+
+    //----------------------------------------------------
+
+    public String getEndUrl() {
+        return endUrl;
+    }
+
+    public void setEndUrl(final String endUrl) {
+        this.endUrl = endUrl;
+    }
+
+
+    public String getSoftResetUrl() {
+        return softResetUrl;
+    }
+
+    public void setSoftResetUrl(final String softResetUrl) {
+        this.softResetUrl = softResetUrl;
+    }
+
+
+    public String getHardResetUrl() {
+        return hardResetUrl;
+    }
+
+    public void setHardResetUrl(final String hardResetUrl) {
+        this.hardResetUrl = hardResetUrl;
+    }
+
+
+    public String getSolutionUrl() {
+        return solutionUrl;
+    }
+
+    public void setSolutionUrl(final String solutionUrl) {
+        this.solutionUrl = solutionUrl;
+    }
+
+
+    public String getExitUrl() {
+        return exitUrl;
+    }
+
+    public void setExitUrl(final String exitUrl) {
+        this.exitUrl = exitUrl;
+    }
+
+    //----------------------------------------------------
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
 }

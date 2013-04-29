@@ -34,20 +34,10 @@
 package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEventNotification;
-import uk.ac.ed.ph.qtiworks.rendering.XsltParamDocumentBuilder.SaxFirerCallback;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
-import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.node.QtiNode;
-import uk.ac.ed.ph.jqtiplus.node.content.variable.RubricBlock;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
-import uk.ac.ed.ph.jqtiplus.node.test.TestFeedback;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSaxDocumentFirer;
-import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -55,9 +45,6 @@ import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * This little helper class converts various types of JQTIPlus Objects into DOM elements
@@ -74,24 +61,10 @@ public final class XsltParamBuilder {
     /** Prefix to use for QTIWorks Rendering XSLT that we'll use for certain custom elements/attrs */
     public static final String QTIWORKS_NAMESPACE_PREFIX = "qw";
 
-    private final JqtiExtensionManager jqtiExtensionManager;
     private final DocumentBuilder documentBuilder;
 
-    public XsltParamBuilder(final JqtiExtensionManager jqtiExtensionManager) {
-        this.jqtiExtensionManager = jqtiExtensionManager;
+    public XsltParamBuilder() {
         this.documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
-    }
-
-    @Deprecated
-    public static List<String> identifiersToList(final Collection<Identifier> identifiers) {
-        if (identifiers==null || identifiers.isEmpty()) {
-            return Collections.emptyList();
-        }
-        final List<String> result = new ArrayList<String>(identifiers.size());
-        for (final Identifier identifier : identifiers) {
-            result.add(identifier.toString());
-        }
-        return result;
     }
 
     public List<Node> notificationsToElements(final List<CandidateEventNotification> notifications) {
@@ -126,57 +99,5 @@ public final class XsltParamBuilder {
             result.add(element);
          }
         return result;
-    }
-
-    @Deprecated
-    public NodeList rubricsToNodeList(final List<List<RubricBlock>> values) {
-        return new XsltParamDocumentBuilder(jqtiExtensionManager, new SaxFirerCallback() {
-
-            @Override
-            public List<? extends QtiNode> getQtiNodes() {
-                final List<RubricBlock> allBlocks = new ArrayList<RubricBlock>();
-                for (final List<RubricBlock> section : values) {
-                    allBlocks.addAll(section);
-                }
-                return allBlocks;
-            }
-
-            @Override
-            public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-                for (final List<RubricBlock> section : values) {
-                    qtiSaxDocumentFirer.fireStartElement(section, "section", QTIWORKS_NAMESPACE, new AttributesImpl());
-                    for (final RubricBlock block : section) {
-                        block.fireSaxEvents(qtiSaxDocumentFirer);
-                    }
-                    qtiSaxDocumentFirer.fireEndElement(section, "section", QTIWORKS_NAMESPACE);
-                }
-            }
-        }).buildDocument().getDocumentElement().getChildNodes();
-    }
-
-    @Deprecated
-    public NodeList testFeedbacksToNodeList(final List<TestFeedback> values) {
-        return buildNodeList(values);
-    }
-
-    @Deprecated
-    public NodeList outcomeDeclarationsToNodeList(final List<OutcomeDeclaration> values) {
-        return buildNodeList(values);
-    }
-
-    private NodeList buildNodeList(final List<? extends QtiNode> values) {
-        return new XsltParamDocumentBuilder(jqtiExtensionManager, new SaxFirerCallback() {
-            @Override
-            public List<? extends QtiNode> getQtiNodes() {
-                return values;
-            }
-
-            @Override
-            public void fireSaxEvents(final QtiSaxDocumentFirer qtiSaxDocumentFirer) throws SAXException {
-                for (final QtiNode node : values) {
-                    node.fireSaxEvents(qtiSaxDocumentFirer);
-                }
-            }
-        }).buildDocument().getDocumentElement().getChildNodes();
     }
 }

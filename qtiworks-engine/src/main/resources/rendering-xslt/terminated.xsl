@@ -14,27 +14,15 @@ Renders a terminated assessment
 
   <!-- ************************************************************ -->
 
-  <xsl:import href="serialize.xsl"/>
-
   <!-- Web Application contextPath. Starts with a '/' -->
   <xsl:param name="webappContextPath" as="xs:string" required="yes"/>
 
   <!-- ************************************************************ -->
 
   <xsl:template match="/">
-    <xsl:variable name="unserialized-output" as="element()">
-      <xsl:call-template name="terminated"/>
-    </xsl:variable>
-    <xsl:apply-templates select="$unserialized-output" mode="serialize"/>
-  </xsl:template>
-
-  <!-- ************************************************************ -->
-
-  <xsl:template name="terminated" as="element(html)">
     <html>
       <head>
         <title>Assessment Completed</title>
-        <!-- QTIWorks Item styling -->
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks">

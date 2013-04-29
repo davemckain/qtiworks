@@ -154,14 +154,14 @@ public class ManagerServices {
     private void importDefaultItemDeliverySettings(final InstructorUser systemDefaultUser) {
         /* Full-featured settings */
         final ItemDeliverySettings fullSettings = new ItemDeliverySettings();
-        fullSettings.setAllowClose(true);
-        fullSettings.setAllowReinitWhenClosed(true);
-        fullSettings.setAllowReinitWhenInteracting(true);
-        fullSettings.setAllowResetWhenClosed(true);
-        fullSettings.setAllowResetWhenInteracting(true);
+        fullSettings.setAllowEnd(true);
+        fullSettings.setAllowHardResetWhenEnded(true);
+        fullSettings.setAllowHardResetWhenOpen(true);
+        fullSettings.setAllowSoftResetWhenEnded(true);
+        fullSettings.setAllowSoftResetWhenOpen(true);
         fullSettings.setAllowResult(true);
-        fullSettings.setAllowSolutionWhenClosed(true);
-        fullSettings.setAllowSolutionWhenInteracting(true);
+        fullSettings.setAllowSolutionWhenEnded(true);
+        fullSettings.setAllowSolutionWhenOpen(true);
         fullSettings.setAllowSource(true);
         fullSettings.setAuthorMode(true);
         fullSettings.setMaxAttempts(0);
@@ -176,7 +176,7 @@ public class ManagerServices {
 
         /* Summative example settings */
         final ItemDeliverySettings summativeSettings = new ItemDeliverySettings();
-        summativeSettings.setAllowClose(true);
+        summativeSettings.setAllowEnd(true);
         summativeSettings.setMaxAttempts(1);
         summativeSettings.setPublic(true);
         summativeSettings.setOwner(systemDefaultUser);

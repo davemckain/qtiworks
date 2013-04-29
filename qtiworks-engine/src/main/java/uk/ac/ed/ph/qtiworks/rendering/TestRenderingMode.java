@@ -27,35 +27,21 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-
-import javax.validation.constraints.NotNull;
-
 /**
- * Request for rendering test feedback.
+ * Enumerate the various modes of navigation through a test.
  *
  * @author David McKain
  */
-public final class TestFeedbackRenderingRequest extends AbstractRenderingRequest implements TestRenderingRequest {
+public enum TestRenderingMode {
 
-    /** Required {@link TestSessionState} to be rendered */
-    @NotNull
-    private TestSessionState testSessionState;
+    ITEM_REVIEW,
+    ITEM_SOLUTION,
+    ;
 
-    //----------------------------------------------------
-
-    @Override
-    public TestSessionState getTestSessionState() {
-        return testSessionState;
-    }
-
-    public void setTestSessionState(final TestSessionState testSessionState) {
-        this.testSessionState = testSessionState;
-    }
 }

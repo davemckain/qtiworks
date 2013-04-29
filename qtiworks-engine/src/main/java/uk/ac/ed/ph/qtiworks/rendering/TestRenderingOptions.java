@@ -35,57 +35,19 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import java.io.Serializable;
-
 import javax.validation.constraints.NotNull;
 
 /**
- * Encapsulates general options for passing to the {@link AssessmentRenderer}.
- *
- * FIXME: Split item- & test-specific options
+ * Rendering options used when rendering tests.
  *
  * @author David McKain
  */
-public final class RenderingOptions implements Serializable {
+public final class TestRenderingOptions extends AbstractRenderingOptions {
 
-    private static final long serialVersionUID = -1744991243897646596L;
-
-    /** Required {@link SerializationMethod} */
-    @NotNull
-    private SerializationMethod serializationMethod;
+    private static final long serialVersionUID = -1121298920996208870L;
 
     @NotNull
-    private String contextPath;
-
-    @NotNull
-    private String attemptUrl;
-
-    @NotNull
-    private String closeUrl;
-
-    @NotNull
-    private String resetUrl;
-
-    @NotNull
-    private String reinitUrl;
-
-    @NotNull
-    private String solutionUrl;
-
-    @NotNull
-    private String resultUrl;
-
-    @NotNull
-    private String sourceUrl;
-
-    @NotNull
-    private String terminateUrl;
-
-    @NotNull
-    private String serveFileUrl;
-
-    //----------------------------------------------
-    // Test-specific control URLs
+    private String testPartNavigationUrl;
 
     @NotNull
     private String selectTestItemUrl;
@@ -106,114 +68,12 @@ public final class RenderingOptions implements Serializable {
     private String showTestItemSolutionUrl;
 
     @NotNull
-    private String testPartNavigationUrl;
-
-    @NotNull
     private String advanceTestPartUrl;
 
     @NotNull
     private String exitTestUrl;
 
     //----------------------------------------------------
-
-    public SerializationMethod getSerializationMethod() {
-        return serializationMethod;
-    }
-
-    public void setSerializationMethod(final SerializationMethod serializationMethod) {
-        this.serializationMethod = serializationMethod;
-    }
-
-
-    public String getContextPath() {
-        return contextPath;
-    }
-
-    public void setContextPath(final String contextPath) {
-        this.contextPath = contextPath;
-    }
-
-
-    public String getAttemptUrl() {
-        return attemptUrl;
-    }
-
-    public void setAttemptUrl(final String attemptUrl) {
-        this.attemptUrl = attemptUrl;
-    }
-
-
-    public String getCloseUrl() {
-        return closeUrl;
-    }
-
-    public void setCloseUrl(final String closeUrl) {
-        this.closeUrl = closeUrl;
-    }
-
-
-    public String getResetUrl() {
-        return resetUrl;
-    }
-
-    public void setResetUrl(final String resetUrl) {
-        this.resetUrl = resetUrl;
-    }
-
-
-    public String getReinitUrl() {
-        return reinitUrl;
-    }
-
-    public void setReinitUrl(final String reinitUrl) {
-        this.reinitUrl = reinitUrl;
-    }
-
-
-    public String getSolutionUrl() {
-        return solutionUrl;
-    }
-
-    public void setSolutionUrl(final String solutionUrl) {
-        this.solutionUrl = solutionUrl;
-    }
-
-
-    public String getResultUrl() {
-        return resultUrl;
-    }
-
-    public void setResultUrl(final String resultUrl) {
-        this.resultUrl = resultUrl;
-    }
-
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(final String sourceUrl) {
-        this.sourceUrl = sourceUrl;
-    }
-
-
-    public String getTerminateUrl() {
-        return terminateUrl;
-    }
-
-    public void setTerminateUrl(final String terminateUrl) {
-        this.terminateUrl = terminateUrl;
-    }
-
-
-    public String getServeFileUrl() {
-        return serveFileUrl;
-    }
-
-    public void setServeFileUrl(final String serveFileUrl) {
-        this.serveFileUrl = serveFileUrl;
-    }
-
 
     public String getSelectTestItemUrl() {
         return selectTestItemUrl;

@@ -28,6 +28,17 @@ Base templates used in test rendering
   <!-- Outcome declarations in test -->
   <xsl:param name="testOutcomeDeclarations" select="()" as="element(qti:outcomeDeclaration)*"/>
 
+  <!-- Action URLs -->
+  <xsl:param name="testPartNavigationUrl" as="xs:string" required="yes"/>
+  <xsl:param name="selectTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="finishTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="endTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reviewTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="showTestItemSolutionUrl" as="xs:string" required="yes"/>
+  <xsl:param name="advanceTestPartUrl" as="xs:string" required="yes"/>
+  <xsl:param name="exitTestUrl" as="xs:string" required="yes"/>
+
   <!-- ************************************************************ -->
 
   <!-- Current TestPart details in the TestPlan -->
@@ -170,5 +181,36 @@ Base templates used in test rendering
       <xsl:copy-of select="$feedback-content"/>
     </xsl:if>
   </xsl:template>
+
+  <!-- ************************************************************ -->
+
+  <xsl:template name="qw:session-controls">
+    <div class="sessionControl">
+      <xsl:if test="$authorMode">
+        <div class="authorMode">
+          The candidate currently has the following options for this session.
+          You can choose exactly which options are available via your Test Delivery Settings.
+        </div>
+      </xsl:if>
+      <ul class="controls">
+        <xsl:if test="$resultAllowed">
+          <li>
+            <form action="{$webappContextPath}{$resultUrl}" method="get" class="showXmlInDialog" title="Item Result XML">
+              <input type="submit" value="View &lt;assessmentResult&gt;"/>
+            </form>
+          </li>
+        </xsl:if>
+        <xsl:if test="$sourceAllowed">
+          <li>
+            <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">
+              <input type="submit" value="View Item source"/>
+            </form>
+          </li>
+        </xsl:if>
+      </ul>
+    </div>
+  </xsl:template>
+
+
 
 </xsl:stylesheet>

@@ -1,15 +1,42 @@
-/* $Id:SAXErrorHandler.java 2824 2008-08-01 15:46:17Z davemckain $
+/* Copyright (c) 2012-2013, University of Edinburgh.
+ * All rights reserved.
  *
- * Copyright (c) 2012-2013, The University of Edinburgh.
- * All Rights Reserved
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * * Redistributions of source code must retain the above copyright notice, this
+ *   list of conditions and the following disclaimer.
+ *
+ * * Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * * Neither the name of the University of Edinburgh nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
+ * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
 package dave;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingMode;
-import uk.ac.ed.ph.qtiworks.rendering.RenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.StandaloneItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -29,9 +56,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 import java.net.URI;
 import java.util.Date;
 
-import org.apache.commons.io.Charsets;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.commons.io.output.StringBuilderWriter;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
@@ -39,7 +66,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  *
  * @author David McKain
  */
-public class StandaloneItemRenderingTest {
+public class ItemRenderingTest {
 
     public static void main(final String[] args) {
         final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
@@ -68,20 +95,17 @@ public class StandaloneItemRenderingTest {
             System.out.println("Item session state after entry: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
             System.out.println("\nRendering");
-
-            final RenderingOptions renderingOptions = RunUtilities.createRenderingOptions();
-            final StandaloneItemRenderingRequest renderingRequest = new StandaloneItemRenderingRequest();
-            renderingRequest.setRenderingMode(RenderingMode.INTERACTING);
+            final ItemRenderingOptions renderingOptions = RunUtilities.createItemRenderingOptions();
+            final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
-            renderingRequest.setAssessmentItemUri(itemUri);
-            renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setRenderingOptions(renderingOptions);
+            renderingRequest.setItemSessionState(itemSessionState);
             renderingRequest.setPrompt("This is an item!");
             renderingRequest.setAuthorMode(true);
             renderingRequest.setSolutionAllowed(true);
-            renderingRequest.setResetAllowed(true);
-            renderingRequest.setReinitAllowed(true);
+            renderingRequest.setSoftResetAllowed(true);
+            renderingRequest.setHardResetAllowed(true);
             renderingRequest.setResultAllowed(true);
             renderingRequest.setSourceAllowed(true);
             renderingRequest.setCandidateCommentAllowed(true);
@@ -97,10 +121,13 @@ public class StandaloneItemRenderingTest {
             renderer.setJsr303Validator(validator);
             renderer.setJqtiExtensionManager(jqtiExtensionManager);
             renderer.setXsltStylesheetCache(new SimpleXsltStylesheetCache());
+            renderer.setWebappContextPath("/qtiworks");
             renderer.init();
 
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
-            renderer.renderStandaloneItem(renderingRequest, null, new WriterOutputStream(stringBuilderWriter, Charsets.UTF_8));
+            final StreamResult result = new StreamResult(stringBuilderWriter);
+
+            renderer.renderItem(renderingRequest, null, result);
             final String rendered = stringBuilderWriter.toString();
             System.out.println("Rendered page: " + rendered);
         }
