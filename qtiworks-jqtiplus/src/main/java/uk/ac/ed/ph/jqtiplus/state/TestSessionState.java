@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.FloatValue;
@@ -139,10 +140,25 @@ public final class TestSessionState extends ControlObjectSessionState implements
         this.currentItemKey = currentItemKey;
     }
 
+    /**
+     * Convenience method to obtain the {@link TestPartSessionState} for the currently-selected
+     * {@link TestPart}, or null if no {@link TestPart} is selected.
+     */
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public TestPartSessionState getCurrentTestPartSessionState() {
+        return currentTestPartKey!=null ? testPartSessionStates.get(currentTestPartKey) : null;
+    }
+
+    /**
+     * Convenience method to obtain the {@link ItemSessionState} for the currently-selected
+     * item, or null if no item is selected.
+     */
     @ObjectDumperOptions(DumpMode.IGNORE)
     public ItemSessionState getCurrentItemSessionState() {
         return currentItemKey!=null ? itemSessionStates.get(currentItemKey) : null;
     }
+
+
 
     //----------------------------------------------------------------
     // Duration calculation

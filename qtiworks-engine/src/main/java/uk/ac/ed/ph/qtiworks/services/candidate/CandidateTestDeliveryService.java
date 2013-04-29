@@ -70,6 +70,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
+import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
@@ -599,32 +600,28 @@ public class CandidateTestDeliveryService {
     //----------------------------------------------------
     // Response handling
 
-    public void handleResponses(final long xid, final String sessionToken,
+    public CandidateSession handleResponses(final long xid, final String sessionToken,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
             throws CandidateForbiddenException, DomainEntityNotFoundException {
         final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
-        handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
+        return handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
 
-    public void handleResponses(final CandidateSession candidateSession,
+    public CandidateSession handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
+        ensureSessionNotTerminated(candidateSession);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
-
-        /* Make sure an attempt is allowed */
-        if (testSessionState.getCurrentItemKey()==null || !testSessionController.maySubmitResponsesToCurrentItem()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
-        }
 
         /* FIXME: Next wodge of code has some cut & paste! */
 
@@ -681,16 +678,22 @@ public class CandidateTestDeliveryService {
             candidateResponseMap.put(responseIdentifier, candidateItemResponse);
         }
 
-        /* Submit comment (if provided).
-         * NB: Need to do this first in case later response handling ends the item session.
-         */
-        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        if (candidateComment!=null) {
-            testSessionController.setCandidateCommentForCurrentItem(timestamp, candidateComment);
-        }
+        try {
+            /* Submit comment (if provided).
+             * NB: Need to do this first in case later response handling ends the item session.
+             */
+            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+            if (candidateComment!=null) {
+                testSessionController.setCandidateCommentForCurrentItem(timestamp, candidateComment);
+            }
 
-        /* Attempt to bind responses (and maybe perform RP & OP) */
-        testSessionController.handleResponsesToCurrentItem(timestamp, responseDataMap);
+            /* Attempt to bind responses (and maybe perform RP & OP) */
+            testSessionController.handleResponsesToCurrentItem(timestamp, responseDataMap);
+        }
+        catch (final QtiCandidateStateException e) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
+            return null;
+        }
 
         /* Note any responses that failed to bind */
         final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();
@@ -739,6 +742,7 @@ public class CandidateTestDeliveryService {
 
         /* Save any change to session state */
         candidateSessionDao.update(candidateSession);
+        return candidateSession;
     }
 
     //----------------------------------------------------
@@ -753,22 +757,24 @@ public class CandidateTestDeliveryService {
     public CandidateSession selectNavigationMenu(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
-
-        /* Get current session state */
-        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
-
-        /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
 
-        /* FIXME: Probably have further checks to do here? */
-
-        /* Update state */
+        /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final Delivery delivery = candidateSession.getDelivery();
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
-                testSessionState, notificationRecorder);
-        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.selectItemNonlinear(requestTimestamp, null);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+
+        try {
+            /* Perform action */
+            final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+            testSessionController.selectItemNonlinear(requestTimestamp, null);
+
+        }
+        catch (final QtiCandidateStateException e) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NONLINEAR_MENU);
+            return null;
+        }
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -791,6 +797,7 @@ public class CandidateTestDeliveryService {
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "key");
+        ensureSessionNotTerminated(candidateSession);
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -798,15 +805,15 @@ public class CandidateTestDeliveryService {
         final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
-        /* Make sure caller may do this */
-        ensureSessionNotTerminated(candidateSession);
-        if (!testSessionController.maySelectItemNonlinear(itemKey)) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NONLINEAR_TEST_ITEM);
+        try {
+            /* Perform action */
+            final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
+            testSessionController.selectItemNonlinear(requestTimestamp, itemKey);
         }
-
-        /* Update state */
-        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.selectItemNonlinear(requestTimestamp, itemKey);
+        catch (final QtiCandidateStateException e) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NONLINEAR_TEST_ITEM);
+            return null;
+        }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -837,7 +844,12 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-        if (!testSessionController.mayEndItemLinear()) {
+        try {
+            if (!testSessionController.mayEndItemLinear()) {
+                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
+            }
+        }
+        catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
         }
 
@@ -866,19 +878,25 @@ public class CandidateTestDeliveryService {
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
-        /* Get current session state */
-        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
+        /* Get current JQTI state and create JQTI controller */
+        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
+        try {
+            if (!testSessionController.mayEndCurrentTestPart()) {
+                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_TEST_PART);
+            }
+        }
+        catch (final QtiCandidateStateException e) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_TEST_PART);
+        }
 
-        /* FIXME: Add checks to make sure we can do this */
 
         /* Update state */
-        final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final Delivery delivery = candidateSession.getDelivery();
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
-                testSessionState, notificationRecorder);
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         testSessionController.endCurrentTestPart(requestTimestamp);
 
@@ -921,8 +939,9 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-
-        /* FIXME: Make sure the testPart is currently ended */
+        if (testSessionState.getCurrentTestPartKey()==null || !testSessionState.getCurrentTestPartSessionState().isEnded()) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_PART);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -951,7 +970,12 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-        if (!testSessionController.mayReviewItem(itemKey)) {
+        try {
+            if (!testSessionController.mayReviewItem(itemKey)) {
+                candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
+            }
+        }
+        catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
         }
 
@@ -978,6 +1002,7 @@ public class CandidateTestDeliveryService {
     public CandidateSession requestSolution(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(itemKey, "itemKey");
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -987,13 +1012,13 @@ public class CandidateTestDeliveryService {
 
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
-        if (itemKey!=null) {
+        try {
             if (!testSessionController.mayAccessItemSolution(itemKey)) {
                 candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_TEST_ITEM);
             }
         }
-        else {
-            /* FIXME: Need to check that the current test part is finished. We don't currently model this. */
+        catch (final QtiCandidateStateException e) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_TEST_ITEM);
         }
 
         /* Record and log event */
@@ -1019,21 +1044,24 @@ public class CandidateTestDeliveryService {
     public CandidateSession advanceTestPart(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
-
-        /* Get current session state */
-        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
-
-        /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
 
-        /* Update state */
+        /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final Delivery delivery = candidateSession.getDelivery();
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
-                testSessionState, notificationRecorder);
-        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        final TestPlanNode nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
+        /* Perform action */
+        final TestPlanNode nextTestPart;
+        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+        try {
+            nextTestPart = testSessionController.enterNextAvailableTestPart(timestamp);
+        }
+        catch (final QtiCandidateStateException e) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ADVANCE_TEST_PART);
+            return null;
+        }
 
         CandidateTestEventType eventType;
         if (nextTestPart!=null) {
@@ -1079,20 +1107,22 @@ public class CandidateTestDeliveryService {
     public CandidateSession exitTest(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
-
-        /* Get current session state */
-        final TestSessionState testSessionState = candidateDataServices.computeCurrentTestSessionState(candidateSession);
-
-        /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
 
-        /* Update state */
+        /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final Delivery delivery = candidateSession.getDelivery();
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(delivery,
-                testSessionState, notificationRecorder);
-        final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.exitTest(requestTimestamp);
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+
+        /* Perform action */
+        try {
+            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+            testSessionController.exitTest(timestamp);
+        }
+        catch (final QtiCandidateStateException e) {
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.EXIT_TEST);
+        }
 
         /* Update CandidateSession as appropriate */
         candidateSession.setTerminated(true);
