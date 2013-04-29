@@ -51,6 +51,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -86,6 +87,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
 
 import javax.annotation.Resource;
@@ -491,6 +493,20 @@ public class CandidateDataServices {
     public File getResultFile(final CandidateSession candidateSession) {
         final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
         return new File(sessionFolder, "assessmentResult.xml");
+    }
+
+    public String readResultFile(final CandidateSession candidateSession) {
+        final File resultFile = getResultFile(candidateSession);
+        if (!resultFile.exists()) {
+            return null;
+        }
+        try {
+            /* NB: We're using the fact that we're writing out as UTF-8 when storing these files */
+            return IoUtilities.readUnicodeFile(getResultFile(candidateSession));
+        }
+        catch (final IOException e) {
+            throw new QtiWorksRuntimeException("Unexpected Exception", e);
+        }
     }
 
     private void recordOutcomeVariables(final CandidateSession candidateSession, final AbstractResult resultNode) {

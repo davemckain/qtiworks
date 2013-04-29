@@ -33,45 +33,42 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
-import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
 
 /**
- * Draws together data making up a summary report of the candidate sessions for a particular
- * {@link Delivery}.
- *
- * @see AssessmentReportingService#buildDeliveryCandidateSummaryReport(Delivery)
+ * Draws together a basic status report for a single {@link CandidateSession}.
  *
  * @author David McKain
  */
-public final class DeliveryCandidateSummaryReport implements Serializable {
+public final class CandidateSessionSummaryReport implements Serializable {
 
-    private static final long serialVersionUID = -428993945767139061L;
+    private static final long serialVersionUID = 4368979153446301019L;
 
     private final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata;
+    private final CandidateSessionSummaryData candidateSessionSummaryData;
+    private final String assessmentResultXml;
 
-    /** List of rows in this report */
-    private final ImmutableList<CandidateSessionSummaryData> rows;
-
-    public DeliveryCandidateSummaryReport(final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata,
-            final List<CandidateSessionSummaryData> rows) {
+    public CandidateSessionSummaryReport(final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata,
+            final CandidateSessionSummaryData candidateSessionSummaryData, final String assessmentResultXml) {
         this.candidateSessionSummaryMetadata = candidateSessionSummaryMetadata;
-        this.rows = ImmutableList.<CandidateSessionSummaryData>copyOf(rows);
+        this.candidateSessionSummaryData = candidateSessionSummaryData;
+        this.assessmentResultXml = assessmentResultXml;
     }
 
     public CandidateSessionSummaryMetadata getCandidateSessionSummaryMetadata() {
         return candidateSessionSummaryMetadata;
     }
 
-    public List<CandidateSessionSummaryData> getRows() {
-        return rows;
+    public CandidateSessionSummaryData getCandidateSessionSummaryData() {
+        return candidateSessionSummaryData;
+    }
+
+    public String getAssessmentResultXml() {
+        return assessmentResultXml;
     }
 
     @Override

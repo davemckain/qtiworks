@@ -86,7 +86,7 @@ instructorAssessmentRouting (action -> URL)
     <li><page:postLink path="${deliveryRouting['delete']}"
       confirm="Are you sure? This will delete the Delivery and all candidate data collected for it."
       title="Delete Delivery"/></li>
-    <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReport'])}">View Candidate Reports</a></li>
+    <li><a href="${utils:escapeLink(deliveryRouting['candidateSessions'])}">Candidate Session Reports &amp; Proctoring</a></li>
   </ul>
 
 </page:page>

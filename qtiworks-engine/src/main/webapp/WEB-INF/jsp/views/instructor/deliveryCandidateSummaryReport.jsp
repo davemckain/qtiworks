@@ -13,10 +13,11 @@ assessmentRouting (action -> URL)
 instructorAssessmentRouting (action -> URL)
 deliveryRouting (action -> URL)
 deliveryCandidateSummaryReport
+candidateSessionListRouting (xid -> action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Candidate Session Report">
+<page:page title="Candidate Session Reports &amp; Proctoring">
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
@@ -25,7 +26,7 @@ deliveryCandidateSummaryReport
     <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
     <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a>
   </nav>
-  <h2>Candidate Session Report</h2>
+  <h2>Candidate Session Reports &amp; Proctoring</h2>
 
   <div class="hints">
     <p>
@@ -39,7 +40,8 @@ deliveryCandidateSummaryReport
 
   <c:choose>
     <c:when test="${!empty deliveryCandidateSummaryReport}">
-      <c:set var="numericOutcomeCount" value="${fn:length(deliveryCandidateSummaryReport.numericOutcomeNames)}"/>
+      <c:set var="candidateSessionSummaryMetadata" value="${deliveryCandidateSummaryReport.candidateSessionSummaryMetadata}"/>
+      <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
       <table class="assessmentList">
         <thead>
           <tr>
@@ -56,8 +58,8 @@ deliveryCandidateSummaryReport
             <th>Last Name</th>
             <c:choose>
               <c:when test="${numericOutcomeCount > 0}">
-                <c:forEach var="outcomeName" items="${deliveryCandidateSummaryReport.numericOutcomeNames}">
-                  <th>${fn:escapeXml(outcomeName)}</th>
+                <c:forEach var="outcomeIdentifier" items="${candidateSessionSummaryMetadata.numericOutcomeIdentifiers}">
+                  <th>${fn:escapeXml(outcomeIdentifier)}</th>
                 </c:forEach>
               </c:when>
               <c:otherwise>
@@ -69,7 +71,9 @@ deliveryCandidateSummaryReport
         <tbody>
           <c:forEach var="row" items="${deliveryCandidateSummaryReport.rows}">
             <tr>
-              <td align="center">${row.sessionId}</td>
+              <td align="center">
+                <a href="${utils:escapeLink(candidateSessionListRouting[row.sessionId]['show'])}">${row.sessionId}</a>
+              </td>
               <td align="center"><c:out value="${utils:formatDayDateAndTime(row.launchTime)}"/></td>
               <td align="center">${row.sessionStatus}</td>
               <td><c:out value="${row.emailAddress}"/></td>

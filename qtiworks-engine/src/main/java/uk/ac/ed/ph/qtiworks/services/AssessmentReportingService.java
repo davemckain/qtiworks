@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
+import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionOutcome;
@@ -43,8 +45,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryMetadata;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
-import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -82,6 +86,9 @@ public class AssessmentReportingService {
     private AuditLogger auditLogger;
 
     @Resource
+    private IdentityContext identityContext;
+
+    @Resource
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
@@ -92,6 +99,63 @@ public class AssessmentReportingService {
 
     @Resource
     private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
+
+    public CandidateSession lookupCandidateSession(final long xid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
+        ensureCallerOwnsAssessment(candidateSession);
+        return candidateSession;
+    }
+
+    /**
+     * Generates a {@link CandidateSessionSummaryReport} containing summary statistics
+     * about the candidate session having given ID (xid).
+     */
+    public CandidateSessionSummaryReport buildCandidateSessionSummaryReport(final long xid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid);
+        return buildCandidateSessionSummaryReport(candidateSession);
+    }
+
+    public CandidateSessionSummaryReport buildCandidateSessionSummaryReport(final CandidateSession candidateSession) {
+        Assert.notNull(candidateSession, "candidateSession");
+
+        final List<CandidateSessionOutcome> candidateSessionOutcomes = candidateSessionOutcomeDao.getForSession(candidateSession);
+        /* Convert outcomes into an easy form for manipulating */
+        final LinkedHashSet<String> numericOutcomeIdentifiers = new LinkedHashSet<String>();
+        final LinkedHashSet<String> otherOutcomeIdentifiers = new LinkedHashSet<String>();
+        final LinkedHashSet<String> numericOutcomeValues = new LinkedHashSet<String>();
+        final LinkedHashSet<String> otherOutcomeValues = new LinkedHashSet<String>();
+        for (final CandidateSessionOutcome candidateSessionOutcome : candidateSessionOutcomes) {
+            final String outcomeIdentifier = candidateSessionOutcome.getOutcomeIdentifier();
+            final String outcomeValue = candidateSessionOutcome.getStringValue();
+            if (candidateSessionOutcome.getBaseType().isNumeric() && candidateSessionOutcome.getCardinality()==Cardinality.SINGLE) {
+                numericOutcomeIdentifiers.add(outcomeIdentifier);
+                numericOutcomeValues.add(outcomeValue);
+            }
+            else {
+                otherOutcomeIdentifiers.add(outcomeIdentifier);
+                otherOutcomeValues.add(outcomeValue);
+            }
+        }
+        final CandidateSessionSummaryMetadata summaryMetadata = new CandidateSessionSummaryMetadata(numericOutcomeIdentifiers, otherOutcomeIdentifiers);
+        final User candidate = candidateSession.getCandidate();
+        final CandidateSessionSummaryData data = new CandidateSessionSummaryData(candidateSession.getId().longValue(),
+                candidateSession.getCreationTime(),
+                candidate.getFirstName(),
+                candidate.getLastName(),
+                candidate.getEmailAddress(),
+                candidateSession.isClosed(),
+                candidateSession.isTerminated(),
+                numericOutcomeValues,
+                otherOutcomeValues);
+
+        /* read assessmentResult XML */
+        final String assessmentResultXml = candidateDataServices.readResultFile(candidateSession);
+
+        auditLogger.recordEvent("Generated summary report for CandidateSession #" + candidateSession.getId());
+        return new CandidateSessionSummaryReport(summaryMetadata, data, assessmentResultXml);
+    }
 
     /**
      * Generates a {@link DeliveryCandidateSummaryReport} containing summary statistics
@@ -111,56 +175,55 @@ public class AssessmentReportingService {
         /* Convert outcomes into an easy form for manipulating */
         final Map<Long, Map<String, String>> numericOutcomesBySessionIdMap = new HashMap<Long, Map<String,String>>();
         final Map<Long, Map<String, String>> otherOutcomesBySessionIdMap = new HashMap<Long, Map<String,String>>();
-        final LinkedHashSet<String> numericOutcomeNames = new LinkedHashSet<String>();
-        final LinkedHashSet<String> otherOutcomeNames = new LinkedHashSet<String>();
+        final LinkedHashSet<String> numericOutcomeIdentifiers = new LinkedHashSet<String>();
+        final LinkedHashSet<String> otherOutcomeIdentifiers = new LinkedHashSet<String>();
         for (final CandidateSessionOutcome candidateSessionOutcome : candidateSessionOutcomes) {
             final CandidateSession candidateSession = candidateSessionOutcome.getCandidateSession();
-            final String outcomeName = candidateSessionOutcome.getOutcomeIdentifier();
+            final String outcomeIdentifier = candidateSessionOutcome.getOutcomeIdentifier();
             final String outcomeValue = candidateSessionOutcome.getStringValue();
             if (candidateSessionOutcome.getBaseType().isNumeric() && candidateSessionOutcome.getCardinality()==Cardinality.SINGLE) {
-                numericOutcomeNames.add(candidateSessionOutcome.getOutcomeIdentifier());
+                numericOutcomeIdentifiers.add(candidateSessionOutcome.getOutcomeIdentifier());
                 Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
                 if (numericOutcomesForSession==null) {
                     numericOutcomesForSession = new HashMap<String, String>();
                     numericOutcomesBySessionIdMap.put(candidateSession.getId(), numericOutcomesForSession);
                 }
-                numericOutcomesForSession.put(outcomeName, outcomeValue);
+                numericOutcomesForSession.put(outcomeIdentifier, outcomeValue);
             }
             else {
-                otherOutcomeNames.add(candidateSessionOutcome.getOutcomeIdentifier());
+                otherOutcomeIdentifiers.add(candidateSessionOutcome.getOutcomeIdentifier());
                 Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(candidateSession.getId());
                 if (otherOutcomesForSession==null) {
                     otherOutcomesForSession = new HashMap<String, String>();
                     otherOutcomesBySessionIdMap.put(candidateSession.getId(), otherOutcomesForSession);
                 }
-                otherOutcomesForSession.put(outcomeName, outcomeValue);
+                otherOutcomesForSession.put(outcomeIdentifier, outcomeValue);
             }
-
         }
+        final CandidateSessionSummaryMetadata summaryMetadata = new CandidateSessionSummaryMetadata(numericOutcomeIdentifiers, otherOutcomeIdentifiers);
 
         /* Now build report for each session */
-        final List<DcsrRow> rows = new ArrayList<DcsrRow>();
+        final List<CandidateSessionSummaryData> rows = new ArrayList<CandidateSessionSummaryData>();
         for (int i=0; i<candidateSessions.size(); i++) {
             final CandidateSession candidateSession = candidateSessions.get(i);
             List<String> numericOutcomeValues = null;
             final Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
             if (numericOutcomesForSession!=null) {
-                numericOutcomeValues = new ArrayList<String>(numericOutcomeNames.size());
-                for (final String outcomeName : numericOutcomeNames) {
-                    numericOutcomeValues.add(numericOutcomesForSession.get(outcomeName));
+                numericOutcomeValues = new ArrayList<String>(numericOutcomeIdentifiers.size());
+                for (final String outcomeIdentifier : numericOutcomeIdentifiers) {
+                    numericOutcomeValues.add(numericOutcomesForSession.get(outcomeIdentifier));
                 }
             }
             final Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(candidateSession.getId());
             List<String> otherOutcomeValues = null;
             if (otherOutcomesForSession!=null) {
-                otherOutcomeValues = new ArrayList<String>(otherOutcomeNames.size());
-                for (final String outcomeName : otherOutcomeNames) {
-                    otherOutcomeValues.add(otherOutcomesForSession.get(outcomeName));
+                otherOutcomeValues = new ArrayList<String>(otherOutcomeIdentifiers.size());
+                for (final String outcomeIdentifier : otherOutcomeIdentifiers) {
+                    otherOutcomeValues.add(otherOutcomesForSession.get(outcomeIdentifier));
                 }
             }
-
             final User candidate = candidateSession.getCandidate();
-            final DcsrRow row = new DcsrRow(candidateSession.getId().longValue(),
+            final CandidateSessionSummaryData row = new CandidateSessionSummaryData(candidateSession.getId().longValue(),
                     candidateSession.getCreationTime(),
                     candidate.getFirstName(),
                     candidate.getLastName(),
@@ -172,9 +235,18 @@ public class AssessmentReportingService {
             rows.add(row);
         }
 
-        auditLogger.recordEvent("Generated candidate summary report for delivery #" + delivery.getId());
-        return new DeliveryCandidateSummaryReport(new ArrayList<String>(numericOutcomeNames),
-                new ArrayList<String>(otherOutcomeNames), rows);
+        auditLogger.recordEvent("Generated candidate summary report for Delivery #" + delivery.getId());
+        return new DeliveryCandidateSummaryReport(summaryMetadata, rows);
+    }
+
+    private User ensureCallerOwnsAssessment(final CandidateSession candidateSession)
+            throws PrivilegeException {
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User assessmentOwner = candidateSession.getDelivery().getAssessment().getOwner();
+        if (!assessmentOwner.equals(caller)) {
+            throw new PrivilegeException(caller, Privilege.OWN_ASSESSMENT, candidateSession);
+        }
+        return caller;
     }
 
     //-------------------------------------------------

@@ -36,15 +36,21 @@ package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentProctoringService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryMetadata;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
-import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -87,12 +93,13 @@ public class InstructorAssessmentReportingController {
         instructorAssessmentManagementController.setupPrimaryRouting(model);
     }
 
-    @RequestMapping(value="/delivery/{did}/candidate-summary-report", method=RequestMethod.GET)
-    public String downloadDeliveryCandidateSummaryReportCsv(@PathVariable final long did, final Model model)
+    @RequestMapping(value="/delivery/{did}/candidate-sessions", method=RequestMethod.GET)
+    public String showDeliveryCandidateSummaryReport(@PathVariable final long did, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(did);
         instructorAssessmentManagementController.setupModelForDelivery(did, model);
         model.addAttribute(report);
+        model.addAttribute("candidateSessionListRouting", buildCandidateSessionListRouting(report));
         return "deliveryCandidateSummaryReport";
     }
 
@@ -101,7 +108,7 @@ public class InstructorAssessmentReportingController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final int terminated = assessmentProctoringService.terminateCandidateSessionsForDelivery(did);
         instructorRouter.addFlashMessage(model, "Terminated " + terminated + " candidate session" + (terminated>1 ? "s" : ""));
-        return instructorRouter.buildInstructorRedirect("/delivery/" + did + "/candidate-summary-report");
+        return instructorAssessmentManagementController.buildDeliveryRouting(did).get("candidateSessions");
     }
 
     @RequestMapping(value="/delivery/candidate-summary-report-{did}.csv", method=RequestMethod.GET)
@@ -116,24 +123,25 @@ public class InstructorAssessmentReportingController {
 
         /* Write header */
         final StringBuilder headerBuilder = new StringBuilder("Session ID,Email Address,First Name,Last Name,Launch Time,Session Status");
-        for (final String outcomeName : report.getNumericOutcomeNames()) {
+        final CandidateSessionSummaryMetadata metadata = report.getCandidateSessionSummaryMetadata();
+        for (final String outcomeName : metadata.getNumericOutcomeIdentifiers()) {
             headerBuilder.append(',').append(outcomeName);
         }
-        for (final String outcomeName : report.getOtherOutcomeNames()) {
+        for (final String outcomeName : metadata.getOtherOutcomeIdentifiers()) {
             headerBuilder.append(',').append(outcomeName);
         }
         csvWriter.writeComment(headerBuilder.toString());
 
         /* Write each row */
-        for (final DcsrRow row : report.getRows()) {
+        for (final CandidateSessionSummaryData row : report.getRows()) {
             csvWriter.write(Long.toString(row.getSessionId()));
             csvWriter.write(StringUtilities.emptyIfNull(row.getEmailAddress()));
             csvWriter.write(row.getFirstName());
             csvWriter.write(row.getLastName());
             csvWriter.write(row.getLaunchTime().toString());
             csvWriter.write(row.getSessionStatus());
-            writeOutcomes(csvWriter, report.getNumericOutcomeNames(), row.getNumericOutcomeValues());
-            writeOutcomes(csvWriter, report.getOtherOutcomeNames(), row.getOtherOutcomeValues());
+            writeOutcomes(csvWriter, metadata.getNumericOutcomeIdentifiers(), row.getNumericOutcomeValues());
+            writeOutcomes(csvWriter, metadata.getOtherOutcomeIdentifiers(), row.getOtherOutcomeValues());
             csvWriter.endRecord();
         }
         csvWriter.close();
@@ -160,5 +168,61 @@ public class InstructorAssessmentReportingController {
             throws PrivilegeException, DomainEntityNotFoundException, IOException {
         response.setContentType("application/zip");
         assessmentReportingService.streamAssessmentReports(did, response.getOutputStream());
+    }
+
+    //------------------------------------------------------
+
+    @RequestMapping(value="/candidate-session/{xid}", method=RequestMethod.GET)
+    public String showCandidateSession(@PathVariable final long xid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final CandidateSessionSummaryReport candidateSessionSummaryReport = assessmentReportingService.buildCandidateSessionSummaryReport(xid);
+        model.addAttribute(candidateSessionSummaryReport);
+        setupModelForCandidateSession(xid, model);
+        return "showCandidateSession";
+    }
+
+    @RequestMapping(value="/candidate-session/{xid}/terminate", method=RequestMethod.POST)
+    public String terminateCandidateSession(@PathVariable final long xid, final RedirectAttributes model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        assessmentProctoringService.terminateCandidateSession(xid);
+        instructorRouter.addFlashMessage(model, "Terminated Candidate Session #" + xid);
+        return buildCandidateSessionRouting(xid).get("show");
+    }
+
+    //------------------------------------------------------
+
+    public void setupModelForCandidateSession(final long xid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        setupModelForCandidateSession(assessmentReportingService.lookupCandidateSession(xid), model);
+    }
+
+    public void setupModelForCandidateSession(final CandidateSession candidateSession, final Model model) {
+        final Delivery delivery = candidateSession.getDelivery();
+        final Assessment assessment = delivery.getAssessment();
+        model.addAttribute(candidateSession);
+        model.addAttribute(delivery);
+        model.addAttribute(assessment);
+        model.addAttribute("candidateSessionRouting", buildCandidateSessionRouting(candidateSession.getId()));
+        model.addAttribute("deliveryRouting", instructorAssessmentManagementController.buildDeliveryRouting(delivery));
+        model.addAttribute("assessmentRouting", instructorAssessmentManagementController.buildAssessmentRouting(assessment));
+    }
+
+    public Map<Long, Map<String, String>> buildCandidateSessionListRouting(final DeliveryCandidateSummaryReport report) {
+        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
+        for (final CandidateSessionSummaryData row : report.getRows()) {
+            result.put(row.getSessionId(), buildCandidateSessionRouting(row));
+        }
+        return result;
+    }
+
+    public Map<String, String> buildCandidateSessionRouting(final CandidateSessionSummaryData row) {
+        return buildCandidateSessionRouting(row.getSessionId());
+    }
+
+    public Map<String, String> buildCandidateSessionRouting(final long xid) {
+        final Map<String, String> result = new HashMap<String, String>();
+        result.put("show", instructorRouter.buildWebUrl("/candidate-session/" + xid));
+        result.put("terminate", instructorRouter.buildWebUrl("/candidate-session/" + xid + "/terminate"));
+        return result;
     }
 }

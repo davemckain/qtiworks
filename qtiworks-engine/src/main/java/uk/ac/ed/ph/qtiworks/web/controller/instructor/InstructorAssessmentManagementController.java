@@ -461,7 +461,7 @@ public class InstructorAssessmentManagementController {
         result.put("edit", instructorRouter.buildWebUrl("/delivery/" + did + "/edit"));
         result.put("delete", instructorRouter.buildWebUrl("/delivery/" + did + "/delete"));
         result.put("try", instructorRouter.buildWebUrl("/delivery/" + did + "/try"));
-        result.put("candidateSummaryReport", instructorRouter.buildWebUrl("/delivery/" + did + "/candidate-summary-report"));
+        result.put("candidateSessions", instructorRouter.buildWebUrl("/delivery/" + did + "/candidate-sessions"));
         result.put("candidateSummaryReportCsv", instructorRouter.buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
         result.put("candidateResultsZip", instructorRouter.buildWebUrl("/delivery/candidate-results-" + did + ".zip"));
         result.put("terminateAllSessions", instructorRouter.buildWebUrl("/delivery/" + did + "/terminate-all-sessions"));

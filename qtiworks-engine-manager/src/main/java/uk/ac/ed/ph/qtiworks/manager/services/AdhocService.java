@@ -36,8 +36,8 @@ package uk.ac.ed.ph.qtiworks.manager.services;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
-import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
@@ -87,19 +87,19 @@ public class AdhocService {
 
         /* Write header */
         final StringBuilder headerBuilder = new StringBuilder("Session ID,First Name,Last Name,Email Address");
-        for (final String outcomeName : report.getNumericalOutcomeNames()) {
+        for (final String outcomeName : report.getCandidateSessionSummaryMetadata().getNumericOutcomeIdentifiers()) {
             headerBuilder.append(outcomeName);
         }
 
-        for (final DcsrRow row : report.getRows()) {
+        for (final CandidateSessionSummaryData row : report.getRows()) {
             csvWriter.write(Long.toString(row.getSessionId()));
             csvWriter.write(row.getFirstName());
             csvWriter.write(row.getLastName());
             csvWriter.write(StringUtilities.emptyIfNull(row.getEmailAddress()));
             csvWriter.write(row.isSessionClosed() ? "Finished" : "In Progress");
-            final List<String> outcomeValues = row.getNumericalOutcomeValues();
+            final List<String> outcomeValues = row.getNumericOutcomeValues();
             if (outcomeValues!=null) {
-                for (final String outcomeValue : row.getNumericalOutcomeValues()) {
+                for (final String outcomeValue : outcomeValues) {
                     csvWriter.write(outcomeValue, true);
                 }
             }

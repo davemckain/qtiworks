@@ -33,45 +33,41 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
-import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
 /**
- * Draws together data making up a summary report of the candidate sessions for a particular
- * {@link Delivery}.
- *
- * @see AssessmentReportingService#buildDeliveryCandidateSummaryReport(Delivery)
+ * Metadata ("table headers") for CandidateSessionSummaryData ("table rows").
  *
  * @author David McKain
  */
-public final class DeliveryCandidateSummaryReport implements Serializable {
+public final class CandidateSessionSummaryMetadata implements Serializable {
 
-    private static final long serialVersionUID = -428993945767139061L;
+    private static final long serialVersionUID = -8351979121069561828L;
 
-    private final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata;
+    /** List of names of numeric outcome variables (having single cardinality) */
+    private final ImmutableList<String> numericOutcomeIdentifiers;
 
-    /** List of rows in this report */
-    private final ImmutableList<CandidateSessionSummaryData> rows;
+    /** List of names of other outcome variables */
+    private final ImmutableList<String> otherOutcomeIdentifiers;
 
-    public DeliveryCandidateSummaryReport(final CandidateSessionSummaryMetadata candidateSessionSummaryMetadata,
-            final List<CandidateSessionSummaryData> rows) {
-        this.candidateSessionSummaryMetadata = candidateSessionSummaryMetadata;
-        this.rows = ImmutableList.<CandidateSessionSummaryData>copyOf(rows);
+    public CandidateSessionSummaryMetadata(final Collection<String> numericOutcomeIdentifiers,
+            final Collection<String> otherOutcomeIdentifiers) {
+        this.numericOutcomeIdentifiers = ImmutableList.<String>copyOf(numericOutcomeIdentifiers);
+        this.otherOutcomeIdentifiers = ImmutableList.<String>copyOf(otherOutcomeIdentifiers);
     }
 
-    public CandidateSessionSummaryMetadata getCandidateSessionSummaryMetadata() {
-        return candidateSessionSummaryMetadata;
+    public List<String> getNumericOutcomeIdentifiers() {
+        return numericOutcomeIdentifiers;
     }
 
-    public List<CandidateSessionSummaryData> getRows() {
-        return rows;
+    public List<String> getOtherOutcomeIdentifiers() {
+        return otherOutcomeIdentifiers;
     }
 
     @Override
