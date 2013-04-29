@@ -88,8 +88,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class InstructorAssessmentManagementController {
 
-    public static final String FLASH = "flashMessage";
-
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
@@ -203,7 +201,7 @@ public class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        addFlashMessage(model, "Assessment successfully created");
+        instructorRouter.addFlashMessage(model, "Assessment successfully created");
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
@@ -249,7 +247,7 @@ public class InstructorAssessmentManagementController {
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
         }
-        addFlashMessage(model, "Assessment successfully edited");
+        instructorRouter.addFlashMessage(model, "Assessment successfully edited");
         return instructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
 
@@ -303,7 +301,7 @@ public class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        addFlashMessage(model, "Assessment package content successfully replaced");
+        instructorRouter.addFlashMessage(model, "Assessment package content successfully replaced");
         return instructorRouter.buildInstructorRedirect("/assessment/{aid}");
     }
 
@@ -313,7 +311,7 @@ public class InstructorAssessmentManagementController {
     public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes model)
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentManagementService.deleteAssessment(aid);
-        addFlashMessage(model, "Assessment successfully deleted");
+        instructorRouter.addFlashMessage(model, "Assessment successfully deleted");
         return instructorRouter.buildInstructorRedirect("/assessments");
     }
 
@@ -394,7 +392,7 @@ public class InstructorAssessmentManagementController {
     public String createDelivery(final @PathVariable long aid, final RedirectAttributes model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.createDelivery(aid);
-        addFlashMessage(model, "Delivery successfully created");
+        instructorRouter.addFlashMessage(model, "Delivery successfully created");
         return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId().longValue());
     }
 
@@ -402,7 +400,7 @@ public class InstructorAssessmentManagementController {
     public String deleteDelivery(final @PathVariable long did, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.deleteDelivery(did);
-        redirectAttributes.addFlashAttribute(FLASH, "Delivery has been deleted");
+        redirectAttributes.addFlashAttribute(InstructorRouter.FLASH, "Delivery has been deleted");
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId() + "/deliveries");
     }
 
@@ -441,7 +439,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show */
-        addFlashMessage(model, "Delivery successfully edited");
+        instructorRouter.addFlashMessage(model, "Delivery successfully edited");
         return instructorRouter.buildInstructorRedirect("/delivery/" + did);
     }
 
@@ -466,6 +464,7 @@ public class InstructorAssessmentManagementController {
         result.put("candidateSummaryReport", instructorRouter.buildWebUrl("/delivery/" + did + "/candidate-summary-report"));
         result.put("candidateSummaryReportCsv", instructorRouter.buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
         result.put("candidateResultsZip", instructorRouter.buildWebUrl("/delivery/candidate-results-" + did + ".zip"));
+        result.put("terminateAllSessions", instructorRouter.buildWebUrl("/delivery/" + did + "/terminate-all-sessions"));
         result.put("ltiLaunch", qtiWorksDeploymentSettings.getBaseUrl() + "/lti/launch/" + did);
         return result;
     }
@@ -524,7 +523,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Go back to list */
-        addFlashMessage(model, "Item Delivery Settings successfully created");
+        instructorRouter.addFlashMessage(model, "Item Delivery Settings successfully created");
         return instructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
@@ -559,7 +558,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show/edit with a flash message */
-        model.addFlashAttribute(FLASH, "Item Delivery Settings successfully changed");
+        model.addFlashAttribute(InstructorRouter.FLASH, "Item Delivery Settings successfully changed");
         return instructorRouter.buildInstructorRedirect("/itemdeliverysettings/" + dsid);
     }
 
@@ -592,7 +591,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Go back to list */
-        addFlashMessage(model, "Test Delivery Settings successfully created");
+        instructorRouter.addFlashMessage(model, "Test Delivery Settings successfully created");
         return instructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
@@ -627,7 +626,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show/edit with a flash message */
-        addFlashMessage(model, "Test Delivery Settings successfully changed");
+        instructorRouter.addFlashMessage(model, "Test Delivery Settings successfully changed");
         return instructorRouter.buildInstructorRedirect("/testdeliverysettings/" + dsid);
     }
 
@@ -667,9 +666,5 @@ public class InstructorAssessmentManagementController {
 
     private void setupModelForDeliverySettings(final DeliverySettings deliverySettings, final Model model) {
         model.addAttribute("deliverySettings", deliverySettings);
-    }
-
-    private void addFlashMessage(final RedirectAttributes model, final String message) {
-        model.addFlashAttribute(FLASH, message);
     }
 }

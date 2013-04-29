@@ -147,6 +147,7 @@ public class AssessmentReportingService {
                     candidate.getLastName(),
                     candidate.getEmailAddress(),
                     candidateSession.isClosed(),
+                    candidateSession.isTerminated(),
                     outcomeValues);
             rows.add(row);
         }

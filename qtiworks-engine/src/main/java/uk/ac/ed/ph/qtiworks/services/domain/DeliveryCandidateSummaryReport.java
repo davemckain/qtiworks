@@ -33,6 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
@@ -41,7 +44,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * FIXME: Document this type
+ * Draws together data making up a summary report of the candidate sessions for a particular
+ * {@link Delivery}.
+ *
+ * @see AssessmentReportingService#buildDeliveryCandidateSummaryReport(Delivery)
  *
  * @author David McKain
  */
@@ -58,10 +64,12 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
         private final String lastName; /* Not null */
         private final String emailAddress; /* May be null */
         private final boolean sessionClosed;
+        private final boolean sessionTerminated;
         private final List<String> outcomeValues;
 
         public DcsrRow(final long sessionId, final Date launchTime, final String firstName,
-                final String lastName, final String emailAddress, final boolean sessionClosed,
+                final String lastName, final String emailAddress,
+                final boolean sessionClosed, final boolean sessionTerminated,
                 final List<String> outcomeValues) {
             this.launchTime = launchTime;
             this.sessionId = sessionId;
@@ -69,6 +77,7 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
             this.lastName = lastName;
             this.emailAddress = emailAddress;
             this.sessionClosed = sessionClosed;
+            this.sessionTerminated = sessionTerminated;
             this.outcomeValues = outcomeValues;
         }
 
@@ -94,6 +103,14 @@ public final class DeliveryCandidateSummaryReport implements Serializable {
 
         public boolean isSessionClosed() {
             return sessionClosed;
+        }
+
+        public boolean isSessionTerminated() {
+            return sessionTerminated;
+        }
+
+        public String getSessionStatus() {
+            return sessionClosed ? "Finished" : (sessionTerminated ? "Forcibly Terminated" : "In Progress");
         }
 
         public List<String> getOutcomeValues() {

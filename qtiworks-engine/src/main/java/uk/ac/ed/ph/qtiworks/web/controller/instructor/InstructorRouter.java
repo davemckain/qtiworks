@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Router for the Instructor MVC
@@ -44,6 +45,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class InstructorRouter {
+
+    public static final String FLASH = "flashMessage";
 
     @Resource
     private String contextPath;
@@ -58,5 +61,9 @@ public class InstructorRouter {
 
     public String buildInstructorRedirect(final String actionUrl) {
         return "redirect:" + buildWithinContextUrl(actionUrl);
+    }
+
+    public void addFlashMessage(final RedirectAttributes model, final String message) {
+        model.addFlashAttribute(InstructorRouter.FLASH, message);
     }
 }

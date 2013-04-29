@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.services.AssessmentProctoringService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport.DcsrRow;
@@ -55,11 +56,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.csvreader.CsvWriter;
 
 /**
- * Controller providing reporting functions for {@link Assessment}s
+ * Controller providing reporting and proctoring functions for {@link Assessment}s
  *
  * @author David McKain
  */
@@ -67,10 +69,16 @@ import com.csvreader.CsvWriter;
 public class InstructorAssessmentReportingController {
 
     @Resource
+    private AssessmentProctoringService assessmentProctoringService;
+
+    @Resource
     private AssessmentReportingService assessmentReportingService;
 
     @Resource
     private InstructorAssessmentManagementController instructorAssessmentManagementController;
+
+    @Resource
+    private InstructorRouter instructorRouter;
 
     //------------------------------------------------------
 
@@ -86,6 +94,14 @@ public class InstructorAssessmentReportingController {
         instructorAssessmentManagementController.setupModelForDelivery(did, model);
         model.addAttribute(report);
         return "deliveryCandidateSummaryReport";
+    }
+
+    @RequestMapping(value="/delivery/{did}/terminate-all-sessions", method=RequestMethod.POST)
+    public String terminateAllCandidateSessions(final RedirectAttributes model, @PathVariable final long did)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final int terminated = assessmentProctoringService.terminateCandidateSessionsForDelivery(did);
+        instructorRouter.addFlashMessage(model, "Terminated " + terminated + " candidate session" + (terminated>1 ? "s" : ""));
+        return instructorRouter.buildInstructorRedirect("/delivery/" + did + "/candidate-summary-report");
     }
 
     @RequestMapping(value="/delivery/candidate-summary-report-{did}.csv", method=RequestMethod.GET)
@@ -112,7 +128,7 @@ public class InstructorAssessmentReportingController {
             csvWriter.write(row.getFirstName());
             csvWriter.write(row.getLastName());
             csvWriter.write(row.getLaunchTime().toString());
-            csvWriter.write(row.isSessionClosed() ? "Finished" : "In Progress");
+            csvWriter.write(row.getSessionStatus());
             final List<String> outcomeValues = row.getOutcomeValues();
             if (outcomeValues!=null) {
                 /* Outcomes have been recorded, so show them */

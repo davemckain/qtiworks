@@ -60,7 +60,7 @@ deliveryCandidateSummaryReport
                 </c:forEach>
               </c:when>
               <c:otherwise>
-                <th>(Will appear when first session is closed)</th>
+                <th>(Will appear when first candidate session is started)</th>
               </c:otherwise>
             </c:choose>
           </tr>
@@ -70,7 +70,7 @@ deliveryCandidateSummaryReport
             <tr>
               <td align="center">${row.sessionId}</td>
               <td align="center"><c:out value="${utils:formatDayDateAndTime(row.launchTime)}"/></td>
-              <td align="center">${row.sessionClosed ? 'Finished' : 'In Progress'}</td>
+              <td align="center">${row.sessionStatus}</td>
               <td><c:out value="${row.emailAddress}"/></td>
               <td><c:out value="${row.firstName}"/></td>
               <td><c:out value="${row.lastName}"/></td>
@@ -98,6 +98,7 @@ deliveryCandidateSummaryReport
   <ul class="menu">
     <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReportCsv'])}">Download candidate outcome summary (CSV)</a></li>
     <li><a href="${utils:escapeLink(deliveryRouting['candidateResultsZip'])}">Download all candiate &lt;assessmentResult&gt; XML files (ZIP)</a></li>
+    <li><page:postLink path="${deliveryRouting['terminateAllSessions']}" confirm="Are you sure?" title="Terminate all remaining candidate sessions on this delivery"/></li>
   </ul>
 
 </page:page>

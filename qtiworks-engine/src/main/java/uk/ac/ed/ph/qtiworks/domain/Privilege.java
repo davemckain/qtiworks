@@ -72,6 +72,8 @@ public enum Privilege {
 
     DELETE_USED_DELIVERY_SETTINGS,
 
+    PROCTOR_SESSION,
+
     ;
 
 }
