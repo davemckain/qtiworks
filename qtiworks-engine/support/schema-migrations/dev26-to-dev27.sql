@@ -16,6 +16,8 @@ ALTER TABLE delivery_settings ADD allow_source boolean;
 ALTER TABLE delivery_settings ADD allow_result boolean;
 UPDATE delivery_settings ds SET allow_source = ids.allow_source FROM item_delivery_settings ids WHERE ids.dsid = ds.dsid;
 UPDATE delivery_settings ds SET allow_result = ids.allow_result FROM item_delivery_settings ids WHERE ids.dsid = ds.dsid;
+UPDATE delivery_settings SET allow_source = FALSE where allow_source IS NULL;
+UPDATE delivery_settings SET allow_result = FALSE where allow_result IS NULL;
 ALTER TABLE delivery_settings ALTER allow_source SET NOT NULL;
 ALTER TABLE delivery_settings ALTER allow_result SET NOT NULL;
 ALTER TABLE item_delivery_settings DROP allow_source;
