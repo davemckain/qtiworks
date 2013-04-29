@@ -540,11 +540,11 @@ public class CandidateItemDeliveryService {
             candidateResponseDao.persist(candidateResponse);
         }
 
-        /* Check whether processing wants to close the session and persist state */
-        if (itemSessionState.isEnded()) {
-            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-            candidateSession.setClosed(true);
-        }
+        /* Record current result */
+        candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+
+        /* Record whether the controller has ended the session */
+        candidateSession.setClosed(itemSessionState.isEnded());
         candidateSessionDao.update(candidateSession);
     }
 
@@ -643,11 +643,11 @@ public class CandidateItemDeliveryService {
                 CandidateItemEventType.REINIT, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Update session depending on state after processing. Record final result if session closed immediately */
+        /* Record current result state */
+        candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+
+        /* Update session depending on state after processing. */
         candidateSession.setClosed(itemSessionState.isEnded());
-        if (itemSessionState.isEnded()) {
-            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        }
         candidateSessionDao.update(candidateSession);
 
         return candidateSession;
@@ -693,15 +693,15 @@ public class CandidateItemDeliveryService {
                 itemSessionState, notificationRecorder);
         itemSessionController.resetItemSessionSoft(timestamp, true);
 
-        /* Record and event */
+        /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Update session depending on state after processing. Record final result if session closed immediately */
+        /* Record current result state */
+        candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+
+        /* Update session depending on state after processing. */
         candidateSession.setClosed(itemSessionState.isEnded());
-        if (itemSessionState.isEnded()) {
-            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        }
         candidateSessionDao.update(candidateSession);
 
         return candidateSession;
@@ -753,10 +753,12 @@ public class CandidateItemDeliveryService {
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.SOLUTION, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
+        /* Record current result state */
+        candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+
         /* Update session if required */
         if (isClosingSession) {
             candidateSession.setClosed(true);
-            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
             candidateSessionDao.update(candidateSession);
         }
 
@@ -794,7 +796,7 @@ public class CandidateItemDeliveryService {
                 CandidateItemEventType.TERMINATE, itemSessionState);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Are we terminating a session that hasn't been ended? If so, record the final result. */
+        /* Are we terminating a session that hasn't already been ended? If so, record the final result. */
         if (!itemSessionState.isEnded()) {
             final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
             final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);

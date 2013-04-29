@@ -264,10 +264,8 @@ public class CandidateSessionStarter {
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.INIT, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
-        /* Handle the pathological case where the session closes immediately by saving the final result */
-        if (itemSessionState.isEnded()) {
-            candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
-        }
+        /* Record current result state */
+        candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
 
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());
@@ -294,7 +292,7 @@ public class CandidateSessionStarter {
         if (testPartCount==1) {
             /* If there is only testPart, then enter this (if possible).
              * (Note that this may cause the test to exit immediately if there is a failed
-             * PreCondition on this part.)
+             * preCondition on this part.)
              */
             testSessionController.enterNextAvailableTestPart(timestamp);
         }
@@ -317,6 +315,9 @@ public class CandidateSessionStarter {
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ENTER_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
+
+        /* Record current result state */
+        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());

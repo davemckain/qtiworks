@@ -428,6 +428,11 @@ public class CandidateDataServices {
         return testSessionController.computeAssessmentResult(requestTimestampContext.getCurrentRequestTimestamp(), sessionIdentifier, sessionIdentifierSourceId);
     }
 
+    public void computeAndRecordTestAssessmentResult(final CandidateSession candidateSession, final TestSessionController testSessionController) {
+        final AssessmentResult assessmentResult = computeTestAssessmentResult(candidateSession, testSessionController);
+        recordTestAssessmentResult(candidateSession, assessmentResult);
+    }
+
     public void recordTestAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         /* First record full result XML to filesystem */
         storeResultFile(candidateSession, assessmentResult);
