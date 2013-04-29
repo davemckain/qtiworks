@@ -174,14 +174,14 @@ public class AssessmentReportingService {
 
         /* Create ZIP builder */
         final ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
-        boolean includedSomething = false;
+        boolean hasIncludedSomething = false;
         for (final CandidateSession candidateSession : candidateSessions) {
             if (candidateSession.isClosed()) {
                 addAssessmentReport(zipOutputStream, candidateSession);
-                includedSomething = true;
+                hasIncludedSomething = true;
             }
         }
-        safelyFinishZipStream(zipOutputStream, includedSomething);
+        safelyFinishZipStream(zipOutputStream, hasIncludedSomething);
         auditLogger.recordEvent("Generated assessmentResult ZIP file for delviery #" + did);
     }
 
@@ -193,6 +193,19 @@ public class AssessmentReportingService {
         }
 
         /* Work out what to call the ZIP entry */
+        final String zipEntryName = makeReportFileName(candidateSession);
+
+        /* Add result to ZIP */
+        zipOutputStream.putNextEntry(new ZipEntry(zipEntryName));
+        IoUtilities.transfer(new FileInputStream(resultFile), zipOutputStream, true, false);
+        zipOutputStream.closeEntry();
+    }
+
+    /**
+     * Generates a suitably readable and unique name for the assessmentResult XML file for the
+     * given {@link CandidateSession}
+     */
+    private String makeReportFileName(final CandidateSession candidateSession) {
         final User candidate = candidateSession.getCandidate();
         final StringBuilder entryNameBuilder = new StringBuilder("assessmentResult-")
             .append(candidateSession.getId())
@@ -206,11 +219,7 @@ public class AssessmentReportingService {
                 .append(candidate.getLastName());
         }
         entryNameBuilder.append(".xml");
-
-        /* Add result to ZIP */
-        zipOutputStream.putNextEntry(new ZipEntry(entryNameBuilder.toString()));
-        IoUtilities.transfer(new FileInputStream(resultFile), zipOutputStream, true, false);
-        zipOutputStream.closeEntry();
+        return entryNameBuilder.toString();
     }
 
     private void safelyFinishZipStream(final ZipOutputStream zipOutputStream, final boolean hasIncludedSomething)
