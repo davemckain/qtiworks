@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
@@ -62,9 +61,7 @@ import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -89,9 +86,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class InstructorAssessmentManagementController {
 
     @Resource
-    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
-
-    @Resource
     private InstructorRouter instructorRouter;
 
     @Resource
@@ -110,44 +104,13 @@ public class InstructorAssessmentManagementController {
     public String listOwnAssessments(final Model model) {
         final List<Assessment> assessments = entityGraphService.getCallerAssessments();
         model.addAttribute(assessments);
-        model.addAttribute("assessmentRouting", buildAssessmentListRouting(assessments));
+        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentListRouting(assessments));
         return "listAssessments";
-    }
-
-    public Map<Long, Map<String, String>> buildAssessmentListRouting(final List<Assessment> assessments) {
-        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
-        for (final Assessment assessment : assessments) {
-            result.put(assessment.getId(), buildAssessmentRouting(assessment));
-        }
-        return result;
-    }
-
-    public Map<String, String> buildAssessmentRouting(final Assessment assessment) {
-        return buildAssessmentRouting(assessment.getId().longValue());
-    }
-
-    public Map<String, String> buildAssessmentRouting(final long aid) {
-        final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", instructorRouter.buildWebUrl("/assessment/" + aid));
-        result.put("edit", instructorRouter.buildWebUrl("/assessment/" + aid + "/edit"));
-        result.put("upload", instructorRouter.buildWebUrl("/assessment/" + aid + "/upload"));
-        result.put("validate", instructorRouter.buildWebUrl("/assessment/" + aid + "/validate"));
-        result.put("delete", instructorRouter.buildWebUrl("/assessment/" + aid + "/delete"));
-        result.put("try", instructorRouter.buildWebUrl("/assessment/" + aid + "/try"));
-        result.put("deliveries", instructorRouter.buildWebUrl("/assessment/" + aid + "/deliveries"));
-        result.put("createDelivery", instructorRouter.buildWebUrl("/assessment/" + aid + "/deliveries/create"));
-        return result;
     }
 
     @ModelAttribute
     public void setupPrimaryRouting(final Model model) {
-        final Map<String, String> primaryRouting = new HashMap<String, String>();
-        primaryRouting.put("uploadAssessment", instructorRouter.buildWebUrl("/assessments/upload"));
-        primaryRouting.put("listAssessments", instructorRouter.buildWebUrl("/assessments"));
-        primaryRouting.put("listDeliverySettings", instructorRouter.buildWebUrl("/deliverysettings"));
-        primaryRouting.put("createItemDeliverySettings", instructorRouter.buildWebUrl("/itemdeliverysettings/create"));
-        primaryRouting.put("createTestDeliverySettings", instructorRouter.buildWebUrl("/testdeliverysettings/create"));
-        model.addAttribute("instructorAssessmentRouting", primaryRouting);
+        model.addAttribute("instructorAssessmentRouting", instructorRouter.buildPrimaryRouting());
     }
 
     private void setupModelForAssessment(final long aid, final Model model)
@@ -157,7 +120,7 @@ public class InstructorAssessmentManagementController {
 
     private void setupModelForAssessment(final Assessment assessment, final Model model) {
         model.addAttribute("assessment", assessment);
-        model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
+        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("assessmentPackage", entityGraphService.getCurrentAssessmentPackage(assessment));
         model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(assessment.getAssessmentType()));
     }
@@ -365,8 +328,8 @@ public class InstructorAssessmentManagementController {
         final List<Delivery> deliveries = entityGraphService.getCallerDeliveries(assessment);
         model.addAttribute(assessment);
         model.addAttribute(deliveries);
-        model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
-        model.addAttribute("deliveryListRouting", buildDeliveryListRouting(deliveries));
+        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
+        model.addAttribute("deliveryListRouting", instructorRouter.buildDeliveryListRouting(deliveries));
         return "listDeliveries";
     }
 
@@ -443,32 +406,6 @@ public class InstructorAssessmentManagementController {
         return instructorRouter.buildInstructorRedirect("/delivery/" + did);
     }
 
-    public Map<Long, Map<String, String>> buildDeliveryListRouting(final List<Delivery> deliveries) {
-        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
-        for (final Delivery delivery : deliveries) {
-            result.put(delivery.getId(), buildDeliveryRouting(delivery));
-        }
-        return result;
-    }
-
-    public Map<String, String> buildDeliveryRouting(final Delivery delivery) {
-        return buildDeliveryRouting(delivery.getId().longValue());
-    }
-
-    public Map<String, String> buildDeliveryRouting(final long did) {
-        final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", instructorRouter.buildWebUrl("/delivery/" + did));
-        result.put("edit", instructorRouter.buildWebUrl("/delivery/" + did + "/edit"));
-        result.put("delete", instructorRouter.buildWebUrl("/delivery/" + did + "/delete"));
-        result.put("try", instructorRouter.buildWebUrl("/delivery/" + did + "/try"));
-        result.put("candidateSessions", instructorRouter.buildWebUrl("/delivery/" + did + "/candidate-sessions"));
-        result.put("candidateSummaryReportCsv", instructorRouter.buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
-        result.put("candidateResultsZip", instructorRouter.buildWebUrl("/delivery/candidate-results-" + did + ".zip"));
-        result.put("terminateAllSessions", instructorRouter.buildWebUrl("/delivery/" + did + "/terminate-all-sessions"));
-        result.put("ltiLaunch", qtiWorksDeploymentSettings.getBaseUrl() + "/lti/launch/" + did);
-        return result;
-    }
-
     public void setupModelForDelivery(final long did, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         setupModelForDelivery(assessmentManagementService.lookupOwnDelivery(did), model);
@@ -478,8 +415,8 @@ public class InstructorAssessmentManagementController {
         final Assessment assessment = delivery.getAssessment();
         model.addAttribute(delivery);
         model.addAttribute(assessment);
-        model.addAttribute("assessmentRouting", buildAssessmentRouting(assessment));
-        model.addAttribute("deliveryRouting", buildDeliveryRouting(delivery));
+        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
+        model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
         model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));
     }
 
@@ -490,7 +427,7 @@ public class InstructorAssessmentManagementController {
     public String listOwnDeliverySettings(final Model model) {
         final List<DeliverySettings> deliverySettingsList = entityGraphService.getCallerDeliverySettings();
         model.addAttribute("deliverySettingsList", deliverySettingsList);
-        model.addAttribute("deliverySettingsRouting", buildDeliverySettingsListRouting(deliverySettingsList));
+        model.addAttribute("deliverySettingsRouting", instructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
         return "listDeliverySettings";
     }
 
@@ -628,35 +565,6 @@ public class InstructorAssessmentManagementController {
         /* Return to show/edit with a flash message */
         instructorRouter.addFlashMessage(model, "Test Delivery Settings successfully changed");
         return instructorRouter.buildInstructorRedirect("/testdeliverysettings/" + dsid);
-    }
-
-    public Map<Long, Map<String, String>> buildDeliverySettingsListRouting(final List<DeliverySettings> deliverySettingsList) {
-        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
-        for (final DeliverySettings deliverySettings : deliverySettingsList) {
-            result.put(deliverySettings.getId(), buildDeliverySettingsRouting(deliverySettings));
-        }
-        return result;
-    }
-
-    public Map<String, String> buildDeliverySettingsRouting(final DeliverySettings deliverySettings) {
-        final long dsid = deliverySettings.getId().longValue();
-        final Map<String, String> result = new HashMap<String, String>();
-
-        String showEditPath;
-        switch (deliverySettings.getAssessmentType()) {
-            case ASSESSMENT_ITEM:
-                showEditPath = "/itemdeliverysettings/" + dsid;
-                break;
-
-            case ASSESSMENT_TEST:
-                showEditPath = "/testdeliverysettings/" + dsid;
-                break;
-
-            default:
-                throw new QtiWorksLogicException("Unexpected switch case " + deliverySettings.getAssessmentType());
-        }
-        result.put("showOrEdit", instructorRouter.buildWebUrl(showEditPath));
-        return result;
     }
 
     private void setupModelForDeliverySettings(final long dsid, final Model model)

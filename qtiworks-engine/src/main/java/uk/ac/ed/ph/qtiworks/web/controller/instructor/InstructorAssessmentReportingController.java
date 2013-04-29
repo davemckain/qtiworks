@@ -48,9 +48,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -99,7 +97,7 @@ public class InstructorAssessmentReportingController {
         final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(did);
         instructorAssessmentManagementController.setupModelForDelivery(did, model);
         model.addAttribute(report);
-        model.addAttribute("candidateSessionListRouting", buildCandidateSessionListRouting(report));
+        model.addAttribute("candidateSessionListRouting", instructorRouter.buildCandidateSessionListRouting(report));
         return "deliveryCandidateSummaryReport";
     }
 
@@ -108,7 +106,7 @@ public class InstructorAssessmentReportingController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final int terminated = assessmentProctoringService.terminateCandidateSessionsForDelivery(did);
         instructorRouter.addFlashMessage(model, "Terminated " + terminated + " candidate session" + (terminated>1 ? "s" : ""));
-        return instructorAssessmentManagementController.buildDeliveryRouting(did).get("candidateSessions");
+        return instructorRouter.buildDeliveryRouting(did).get("candidateSessions");
     }
 
     @RequestMapping(value="/delivery/candidate-summary-report-{did}.csv", method=RequestMethod.GET)
@@ -186,7 +184,7 @@ public class InstructorAssessmentReportingController {
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentProctoringService.terminateCandidateSession(xid);
         instructorRouter.addFlashMessage(model, "Terminated Candidate Session #" + xid);
-        return buildCandidateSessionRouting(xid).get("show");
+        return instructorRouter.buildCandidateSessionRouting(xid).get("show");
     }
 
     //------------------------------------------------------
@@ -202,27 +200,9 @@ public class InstructorAssessmentReportingController {
         model.addAttribute(candidateSession);
         model.addAttribute(delivery);
         model.addAttribute(assessment);
-        model.addAttribute("candidateSessionRouting", buildCandidateSessionRouting(candidateSession.getId()));
-        model.addAttribute("deliveryRouting", instructorAssessmentManagementController.buildDeliveryRouting(delivery));
-        model.addAttribute("assessmentRouting", instructorAssessmentManagementController.buildAssessmentRouting(assessment));
+        model.addAttribute("candidateSessionRouting", instructorRouter.buildCandidateSessionRouting(candidateSession.getId()));
+        model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
+        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
     }
 
-    public Map<Long, Map<String, String>> buildCandidateSessionListRouting(final DeliveryCandidateSummaryReport report) {
-        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
-        for (final CandidateSessionSummaryData row : report.getRows()) {
-            result.put(row.getSessionId(), buildCandidateSessionRouting(row));
-        }
-        return result;
-    }
-
-    public Map<String, String> buildCandidateSessionRouting(final CandidateSessionSummaryData row) {
-        return buildCandidateSessionRouting(row.getSessionId());
-    }
-
-    public Map<String, String> buildCandidateSessionRouting(final long xid) {
-        final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", instructorRouter.buildWebUrl("/candidate-session/" + xid));
-        result.put("terminate", instructorRouter.buildWebUrl("/candidate-session/" + xid + "/terminate"));
-        return result;
-    }
 }

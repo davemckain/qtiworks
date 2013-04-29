@@ -33,6 +33,18 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
+import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -47,6 +59,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class InstructorRouter {
 
     public static final String FLASH = "flashMessage";
+
+    @Resource
+    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
     private String contextPath;
@@ -65,5 +80,113 @@ public class InstructorRouter {
 
     public void addFlashMessage(final RedirectAttributes model, final String message) {
         model.addFlashAttribute(InstructorRouter.FLASH, message);
+    }
+
+    public Map<String, String> buildPrimaryRouting() {
+        final Map<String, String> primaryRouting = new HashMap<String, String>();
+        primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
+        primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
+        primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
+        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/itemdeliverysettings/create"));
+        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/testdeliverysettings/create"));
+        return primaryRouting;
+    }
+
+    public Map<Long, Map<String, String>> buildAssessmentListRouting(final List<Assessment> assessments) {
+        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
+        for (final Assessment assessment : assessments) {
+            result.put(assessment.getId(), buildAssessmentRouting(assessment));
+        }
+        return result;
+    }
+
+    public Map<String, String> buildAssessmentRouting(final Assessment assessment) {
+        return buildAssessmentRouting(assessment.getId().longValue());
+    }
+
+    public Map<String, String> buildAssessmentRouting(final long aid) {
+        final Map<String, String> result = new HashMap<String, String>();
+        result.put("show", buildWebUrl("/assessment/" + aid));
+        result.put("edit", buildWebUrl("/assessment/" + aid + "/edit"));
+        result.put("upload", buildWebUrl("/assessment/" + aid + "/upload"));
+        result.put("validate", buildWebUrl("/assessment/" + aid + "/validate"));
+        result.put("delete", buildWebUrl("/assessment/" + aid + "/delete"));
+        result.put("try", buildWebUrl("/assessment/" + aid + "/try"));
+        result.put("deliveries", buildWebUrl("/assessment/" + aid + "/deliveries"));
+        result.put("createDelivery", buildWebUrl("/assessment/" + aid + "/deliveries/create"));
+        return result;
+    }
+    public Map<Long, Map<String, String>> buildDeliveryListRouting(final List<Delivery> deliveries) {
+        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
+        for (final Delivery delivery : deliveries) {
+            result.put(delivery.getId(), buildDeliveryRouting(delivery));
+        }
+        return result;
+    }
+
+    public Map<String, String> buildDeliveryRouting(final Delivery delivery) {
+        return buildDeliveryRouting(delivery.getId().longValue());
+    }
+
+    public Map<String, String> buildDeliveryRouting(final long did) {
+        final Map<String, String> result = new HashMap<String, String>();
+        result.put("show", buildWebUrl("/delivery/" + did));
+        result.put("edit", buildWebUrl("/delivery/" + did + "/edit"));
+        result.put("delete", buildWebUrl("/delivery/" + did + "/delete"));
+        result.put("try", buildWebUrl("/delivery/" + did + "/try"));
+        result.put("candidateSessions", buildWebUrl("/delivery/" + did + "/candidate-sessions"));
+        result.put("candidateSummaryReportCsv", buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
+        result.put("candidateResultsZip", buildWebUrl("/delivery/candidate-results-" + did + ".zip"));
+        result.put("terminateAllSessions", buildWebUrl("/delivery/" + did + "/terminate-all-sessions"));
+        result.put("ltiLaunch", qtiWorksDeploymentSettings.getBaseUrl() + "/lti/launch/" + did);
+        return result;
+    }
+
+    public Map<Long, Map<String, String>> buildDeliverySettingsListRouting(final List<DeliverySettings> deliverySettingsList) {
+        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
+        for (final DeliverySettings deliverySettings : deliverySettingsList) {
+            result.put(deliverySettings.getId(), buildDeliverySettingsRouting(deliverySettings));
+        }
+        return result;
+    }
+
+    public Map<String, String> buildDeliverySettingsRouting(final DeliverySettings deliverySettings) {
+        final long dsid = deliverySettings.getId().longValue();
+        final Map<String, String> result = new HashMap<String, String>();
+
+        String showEditPath;
+        switch (deliverySettings.getAssessmentType()) {
+            case ASSESSMENT_ITEM:
+                showEditPath = "/itemdeliverysettings/" + dsid;
+                break;
+
+            case ASSESSMENT_TEST:
+                showEditPath = "/testdeliverysettings/" + dsid;
+                break;
+
+            default:
+                throw new QtiWorksLogicException("Unexpected switch case " + deliverySettings.getAssessmentType());
+        }
+        result.put("showOrEdit", buildWebUrl(showEditPath));
+        return result;
+    }
+
+    public Map<Long, Map<String, String>> buildCandidateSessionListRouting(final DeliveryCandidateSummaryReport report) {
+        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
+        for (final CandidateSessionSummaryData row : report.getRows()) {
+            result.put(row.getSessionId(), buildCandidateSessionRouting(row));
+        }
+        return result;
+    }
+
+    public Map<String, String> buildCandidateSessionRouting(final CandidateSessionSummaryData row) {
+        return buildCandidateSessionRouting(row.getSessionId());
+    }
+
+    public Map<String, String> buildCandidateSessionRouting(final long xid) {
+        final Map<String, String> result = new HashMap<String, String>();
+        result.put("show", buildWebUrl("/candidate-session/" + xid));
+        result.put("terminate", buildWebUrl("/candidate-session/" + xid + "/terminate"));
+        return result;
     }
 }
