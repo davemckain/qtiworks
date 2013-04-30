@@ -169,22 +169,24 @@ public final class TestSessionState extends ControlObjectSessionState implements
         return currentItemKey!=null ? itemSessionStates.get(currentItemKey) : null;
     }
 
-
-
     //----------------------------------------------------------------
     // Duration calculation
 
+    /**
+     * Returns the accumulated duration in seconds. Note that this is the
+     * accumulated duration as recorded during the last "touch" of the state.
+     */
+    public double computeDuration() {
+        return getDurationAccumulated() / 1000.0;
+    }
+
+    /**
+     * Returns the accumulated duration as a {@link FloatValue}. Note that this is the
+     * accumulated duration as recorded during the last "touch" of the state.
+     */
     @ObjectDumperOptions(DumpMode.IGNORE)
     public FloatValue computeDurationValue() {
         return new FloatValue(computeDuration());
-    }
-
-    public double computeDuration() {
-        if (getDurationIntervalStartTime()!=null) {
-            /* Duration interval is open, so return nonsense value but don't actually fail */
-            return -1;
-        }
-        return getDurationAccumulated() / 1000.0;
     }
 
     //----------------------------------------------------------------

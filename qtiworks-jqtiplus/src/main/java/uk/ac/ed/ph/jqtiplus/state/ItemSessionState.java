@@ -286,17 +286,18 @@ public final class ItemSessionState extends AbstractPartSessionState implements 
     //----------------------------------------------------------------
     // Built-in variable manipulation
 
-    public long computeDurationMillis() {
-        if (getDurationIntervalStartTime()!=null) {
-            return -1;
-        }
-        return getDurationAccumulated();
-    }
-
+    /**
+     * Returns the accumulated duration in seconds. Note that this is the
+     * accumulated duration as recorded during the last "touch" of the state.
+     */
     public double computeDuration() {
-        return computeDurationMillis() / 1000.0;
+        return getDurationAccumulated() / 1000.0;
     }
 
+    /**
+     * Returns the accumulated duration as a {@link FloatValue}. Note that this is the
+     * accumulated duration as recorded during the last "touch" of the state.
+     */
     @ObjectDumperOptions(DumpMode.IGNORE)
     public FloatValue computeDurationValue() {
         return new FloatValue(computeDuration());
