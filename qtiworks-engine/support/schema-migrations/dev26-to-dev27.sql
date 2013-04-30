@@ -8,7 +8,6 @@ ALTER TABLE item_delivery_settings ALTER allow_candidate_comment SET NOT NULL;
 -- Moved 'prompt' down to item_delivery_settings
 ALTER TABLE item_delivery_settings ADD prompt text;
 UPDATE item_delivery_settings ids SET prompt = ds.prompt FROM delivery_settings ds WHERE ds.dsid = ids.dsid;
-ALTER TABLE item_delivery_settings ALTER prompt SET NOT NULL;
 ALTER TABLE delivery_settings DROP prompt;
 
 -- Moved 'allow result' & 'allow source' up to common delivery_settings
