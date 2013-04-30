@@ -12,6 +12,30 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV27 [Development] (30/04/2013)</h3>
+  <p>
+    This snapshot fills in the remaining parts of the test specification that we plan to implement, namely
+    <code>preCondition</code>, <code>branchRule</code> and the recording of duration at all required levels within
+    the test. The low-level test and item running logic has been significantly refactored, and split into new classes
+    called <code>TestSessionController</code> and <code>ItemSessionController</code> within JQTI+, which should be easier
+    to reuse for other purposes. A large number of units tests have been created to test these new classes. This API can now
+    be considered stable.
+  </p>
+  <p>
+    This snapshot also includes signficant refactorings to the higher-level code for running assessments, including the
+    rendering packages. Assessment result XMLs are now generated and stored after each interaction a candidate makes with an
+    assessment, so instructors can see and download partial results much
+    earlier if they need to. A few further changes will be needed, but the API
+    should now be considered stable.
+  </p>
+  <p>
+    Finally, the snapshot includes a couple of bits of very basic "proctoring" functionality, allowing instructors to forcibly
+    terminate candidate sessions if required.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV26 [Development] (07/03/2013)</h3>
   <p>
     This snapshot adds support for delivering tests containing multiple <code>testPart</code>s, and now
