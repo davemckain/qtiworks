@@ -69,21 +69,30 @@ candidateSessionListRouting (xid -> action -> URL)
           </tr>
         </thead>
         <tbody>
-          <c:forEach var="row" items="${deliveryCandidateSummaryReport.rows}">
-            <tr>
-              <td align="center">
-                <a href="${utils:escapeLink(candidateSessionListRouting[row.sessionId]['show'])}">${row.sessionId}</a>
-              </td>
-              <td align="center"><c:out value="${utils:formatDayDateAndTime(row.launchTime)}"/></td>
-              <td align="center">${row.sessionStatus}</td>
-              <td><c:out value="${row.emailAddress}"/></td>
-              <td><c:out value="${row.firstName}"/></td>
-              <td><c:out value="${row.lastName}"/></td>
-              <c:forEach var="outcomeValue" items="${row.numericOutcomeValues}">
-                <td align="center"><c:out value="${outcomeValue}"/></td>
+          <c:choose>
+            <c:when test="${fn:length(deliveryCandidateSummaryReport.rows) > 0}">
+              <c:forEach var="row" items="${deliveryCandidateSummaryReport.rows}">
+                <tr>
+                  <td align="center">
+                    <a href="${utils:escapeLink(candidateSessionListRouting[row.sessionId]['show'])}">${row.sessionId}</a>
+                  </td>
+                  <td align="center"><c:out value="${utils:formatDayDateAndTime(row.launchTime)}"/></td>
+                  <td align="center">${row.sessionStatus}</td>
+                  <td><c:out value="${row.emailAddress}"/></td>
+                  <td><c:out value="${row.firstName}"/></td>
+                  <td><c:out value="${row.lastName}"/></td>
+                  <c:forEach var="outcomeValue" items="${row.numericOutcomeValues}">
+                    <td align="center"><c:out value="${outcomeValue}"/></td>
+                  </c:forEach>
+                </tr>
               </c:forEach>
-            </tr>
-          </c:forEach>
+            </c:when>
+            <c:otherwise>
+              <tr>
+                <td align="center" colspan="${6 + (numericOutcomeCount > 0 ? numericOutcomeCount : 1)}">No Candidate Sessions have been started yet</td>
+              </tr>
+            </c:otherwise>
+          </c:choose>
         </tbody>
       </table>
     </c:when>
