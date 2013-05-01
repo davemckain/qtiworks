@@ -188,7 +188,7 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     public void testEntryIntoItem2() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1EntryTimestamp);
-        final TestPlanNode itemNode = testSessionController.endItemLinear(item1EndTimestamp);
+        final TestPlanNode itemNode = testSessionController.advanceItemLinear(item1EndTimestamp);
         Assert.assertEquals(getTestNode("i1113"), itemNode);
 
         /* Check state on test */
@@ -223,8 +223,8 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     public void testEntryIntoItem3() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1EntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        final TestPlanNode itemNode = testSessionController.endItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        final TestPlanNode itemNode = testSessionController.advanceItemLinear(item2EndTimestamp);
         Assert.assertEquals(getTestNode("i1122"), itemNode);
 
         /* Check state on test */
@@ -263,9 +263,9 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     public void testEntryIntoItem4() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1EntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        final TestPlanNode itemNode = testSessionController.endItemLinear(item3EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        final TestPlanNode itemNode = testSessionController.advanceItemLinear(item3EndTimestamp);
         Assert.assertEquals(getTestNode("i1131"), itemNode);
 
         /* Check state on test */
@@ -307,10 +307,10 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     public void testEndTestPart1AfterItem4() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1EntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        testSessionController.endItemLinear(item3EndTimestamp);
-        Assert.assertNull(testSessionController.endItemLinear(item4EndTimestamp));
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item3EndTimestamp);
+        Assert.assertNull(testSessionController.advanceItemLinear(item4EndTimestamp));
 
         /* Check state on test */
         assertTestOpen();
@@ -348,10 +348,10 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     public void testEntryIntoTestPart2AndItem5() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1EntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        testSessionController.endItemLinear(item3EndTimestamp);
-        Assert.assertNull(testSessionController.endItemLinear(item4EndTimestamp));
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item3EndTimestamp);
+        Assert.assertNull(testSessionController.advanceItemLinear(item4EndTimestamp));
         final TestPlanNode testPart2 = testSessionController.enterNextAvailableTestPart(testPart1ExitTimestamp);
         Assert.assertEquals(getTestPart2Node(), testPart2);
 
@@ -384,12 +384,12 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     public void testEndTestPart2AfterItem5() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1EntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        testSessionController.endItemLinear(item3EndTimestamp);
-        testSessionController.endItemLinear(item4EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item3EndTimestamp);
+        testSessionController.advanceItemLinear(item4EndTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1ExitTimestamp);
-        Assert.assertNull(testSessionController.endItemLinear(item5EndTimestamp));
+        Assert.assertNull(testSessionController.advanceItemLinear(item5EndTimestamp));
 
         /* Check state on test */
         assertTestOpen();
@@ -416,12 +416,12 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     public void testEndTestAfterTestPart2() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1EntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        testSessionController.endItemLinear(item3EndTimestamp);
-        testSessionController.endItemLinear(item4EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item3EndTimestamp);
+        testSessionController.advanceItemLinear(item4EndTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1ExitTimestamp);
-        testSessionController.endItemLinear(item5EndTimestamp);
+        testSessionController.advanceItemLinear(item5EndTimestamp);
         Assert.assertNull(testSessionController.enterNextAvailableTestPart(testPart2ExitTimestamp));
 
         /* Check state on test */
@@ -446,12 +446,12 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     public void testExitTestAfterTestPart2() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1EntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        testSessionController.endItemLinear(item3EndTimestamp);
-        testSessionController.endItemLinear(item4EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item3EndTimestamp);
+        testSessionController.advanceItemLinear(item4EndTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart1ExitTimestamp);
-        testSessionController.endItemLinear(item5EndTimestamp);
+        testSessionController.advanceItemLinear(item5EndTimestamp);
         testSessionController.enterNextAvailableTestPart(testPart2ExitTimestamp);
         testSessionController.exitTest(testExitTimestamp);
 

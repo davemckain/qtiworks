@@ -409,7 +409,7 @@ public class CandidateTestDeliveryService {
         /* Make sure caller may do this */
         ensureSessionNotTerminated(candidateSession);
         try {
-            if (!testSessionController.mayEndItemLinear()) {
+            if (!testSessionController.mayAdvanceItemLinear()) {
                 candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
                 return null;
             }
@@ -421,7 +421,7 @@ public class CandidateTestDeliveryService {
 
         /* Update state */
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.endItemLinear(requestTimestamp);
+        testSessionController.advanceItemLinear(requestTimestamp);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,

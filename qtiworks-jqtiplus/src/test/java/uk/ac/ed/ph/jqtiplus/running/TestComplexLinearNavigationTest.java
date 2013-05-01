@@ -158,14 +158,14 @@ public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
     public void testEndItem1NullTimestamp() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.endItemLinear(null);
+        testSessionController.advanceItemLinear(null);
     }
 
     @Test
     public void testEntryIntoItem2() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        final TestPlanNode itemNode = testSessionController.endItemLinear(item1EndTimestamp);
+        final TestPlanNode itemNode = testSessionController.advanceItemLinear(item1EndTimestamp);
         Assert.assertEquals(getTestNode("i1132"), itemNode);
 
         /* Check state on test */
@@ -204,8 +204,8 @@ public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
     public void testEntryIntoItem3() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        final TestPlanNode itemNode = testSessionController.endItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        final TestPlanNode itemNode = testSessionController.advanceItemLinear(item2EndTimestamp);
         Assert.assertEquals(getTestNode("i1133"), itemNode);
 
         /* Check state on test */
@@ -245,9 +245,9 @@ public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
     public void testEntryIntoItem4() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        final TestPlanNode itemNode = testSessionController.endItemLinear(item3EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        final TestPlanNode itemNode = testSessionController.advanceItemLinear(item3EndTimestamp);
         Assert.assertEquals(getTestNode("i1211"), itemNode);
 
         /* Check state on test */
@@ -288,10 +288,10 @@ public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
     public void testEntryIntoItem5() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        testSessionController.endItemLinear(item3EndTimestamp);
-        final TestPlanNode itemNode = testSessionController.endItemLinear(item4EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item3EndTimestamp);
+        final TestPlanNode itemNode = testSessionController.advanceItemLinear(item4EndTimestamp);
         Assert.assertEquals(getTestNode("i123"), itemNode);
 
         /* Check state on test */
@@ -335,11 +335,11 @@ public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
     public void testEndTestPartNaturallyAfterItem5() {
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
-        testSessionController.endItemLinear(item2EndTimestamp);
-        testSessionController.endItemLinear(item3EndTimestamp);
-        testSessionController.endItemLinear(item4EndTimestamp);
-        final TestPlanNode itemNode = testSessionController.endItemLinear(item5EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item2EndTimestamp);
+        testSessionController.advanceItemLinear(item3EndTimestamp);
+        testSessionController.advanceItemLinear(item4EndTimestamp);
+        final TestPlanNode itemNode = testSessionController.advanceItemLinear(item5EndTimestamp);
 
         /* This should have ended the testPart */
         Assert.assertNull(itemNode);
@@ -476,7 +476,7 @@ public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
         final Date testPartEndTimestamp = ObjectUtilities.addToTime(item1EndTimestamp, testPartEndDelta);
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
         testSessionController.endCurrentTestPart(testPartEndTimestamp);
 
         /* Check state on test */
@@ -521,7 +521,7 @@ public final class TestComplexLinearNavigationTest extends SinglePartTestBase {
         final Date testPartExitTimestamp = ObjectUtilities.addToTime(testPartEndTimestamp, testPartExitDelta);
         testSessionController.enterTest(testEntryTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartEntryTimestamp);
-        testSessionController.endItemLinear(item1EndTimestamp);
+        testSessionController.advanceItemLinear(item1EndTimestamp);
         testSessionController.endCurrentTestPart(testPartEndTimestamp);
         testSessionController.enterNextAvailableTestPart(testPartExitTimestamp);
 

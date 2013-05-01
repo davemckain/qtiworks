@@ -432,7 +432,7 @@ public class AssessmentRenderer {
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
         xsltParameters.put("reviewMode", Boolean.FALSE);
         xsltParameters.put("solutionMode", Boolean.FALSE);
-        xsltParameters.put("finishItemAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndItemLinear()));
+        xsltParameters.put("finishItemAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayAdvanceItemLinear()));
         xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(navigationMode==NavigationMode.NONLINEAR));
         xsltParameters.put("endTestPartAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndCurrentTestPart()));
 
