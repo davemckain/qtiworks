@@ -41,6 +41,9 @@ rendering.
   <!-- Raw response inputs -->
   <xsl:variable name="responseInputs" select="$itemSessionState/qw:responseInput" as="element(qw:responseInput)*"/>
 
+  <!-- Uncommitted response values -->
+  <xsl:variable name="uncommittedResponseValues" select="$itemSessionState/qw:uncommittedResponseValue" as="element(qw:uncommittedResponseValue)*"/>
+
   <!-- Bad/invalid responses -->
   <xsl:variable name="unboundResponseIdentifiers" select="$itemSessionState/@unboundResponseIdentifiers" as="xs:string*"/>
   <xsl:variable name="invalidResponseIdentifiers" select="$itemSessionState/@invalidResponseIdentifiers" as="xs:string*"/>
@@ -129,6 +132,7 @@ rendering.
     <xsl:sequence select="$document/qti:assessmentItem/qti:responseDeclaration[@identifier=$identifier]"/>
   </xsl:function>
 
+  <!-- NB: This now checks *uncommitted* responses first, then *committed* responses -->
   <xsl:function name="qw:get-response-value" as="element(qw:responseVariable)?">
     <xsl:param name="document" as="document-node()"/>
     <xsl:param name="identifier" as="xs:string"/>
@@ -158,7 +162,17 @@ rendering.
           </qw:responseVariable>
         </xsl:for-each>
       </xsl:when>
+      <xsl:when test="$uncommittedResponseValues[@identifier=$identifier]">
+        <!-- There's an uncommitted value here. We don't distinguish between uncommitted and committed during rendering -->
+        <xsl:for-each select="$uncommittedResponseValues[@identifier=$identifier]">
+          <qw:responseVariable>
+            <xsl:copy-of select="@cardinality, @baseType"/>
+            <xsl:copy-of select="qw:value"/>
+          </qw:responseVariable>
+        </xsl:for-each>
+      </xsl:when>
       <xsl:otherwise>
+        <!-- This is a committed value, which is already in a <qw:responseVariable/> -->
         <xsl:sequence select="$responseValues[@identifier=$identifier]"/>
       </xsl:otherwise>
     </xsl:choose>
