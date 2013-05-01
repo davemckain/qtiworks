@@ -373,6 +373,8 @@ public class SampleResourceImporter {
     private TestDeliverySettings createBaseTestDeliverySettings() {
         final TestDeliverySettings settings = new TestDeliverySettings();
         settings.setAuthorMode(true);
+        settings.setAllowResult(true);
+        settings.setAllowSource(true);
         return settings;
     }
 
