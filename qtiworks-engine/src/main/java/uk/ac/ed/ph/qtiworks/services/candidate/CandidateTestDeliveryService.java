@@ -145,9 +145,11 @@ public class CandidateTestDeliveryService {
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
         if (!sessionToken.equals(candidateSession.getSessionToken())) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
+            return null;
         }
         if (candidateSession.getDelivery().getAssessment().getAssessmentType()!=AssessmentObjectType.ASSESSMENT_TEST) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION_AS_TEST);
+            return null;
         }
         return candidateSession;
     }
@@ -409,10 +411,12 @@ public class CandidateTestDeliveryService {
         try {
             if (!testSessionController.mayEndItemLinear()) {
                 candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
+                return null;
             }
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
+            return null;
         }
 
         /* Update state */
@@ -451,10 +455,12 @@ public class CandidateTestDeliveryService {
         try {
             if (!testSessionController.mayEndCurrentTestPart()) {
                 candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_TEST_PART);
+                return null;
             }
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_TEST_PART);
+            return null;
         }
 
 
@@ -503,6 +509,7 @@ public class CandidateTestDeliveryService {
         ensureSessionNotTerminated(candidateSession);
         if (testSessionState.getCurrentTestPartKey()==null || !testSessionState.getCurrentTestPartSessionState().isEnded()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_PART);
+            return null;
         }
 
         /* Record and log event */
@@ -535,10 +542,12 @@ public class CandidateTestDeliveryService {
         try {
             if (!testSessionController.mayReviewItem(itemKey)) {
                 candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
+                return null;
             }
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
+            return null;
         }
 
         /* Record and log event */
@@ -577,10 +586,12 @@ public class CandidateTestDeliveryService {
         try {
             if (!testSessionController.mayAccessItemSolution(itemKey)) {
                 candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_TEST_ITEM);
+                return null;
             }
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_TEST_ITEM);
+            return null;
         }
 
         /* Record and log event */
@@ -684,6 +695,7 @@ public class CandidateTestDeliveryService {
         }
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.EXIT_TEST);
+            return null;
         }
 
         /* Update CandidateSession as appropriate */
@@ -724,6 +736,7 @@ public class CandidateTestDeliveryService {
         }
         if (resultingFileHref==null) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
+            return;
         }
 
         /* Finally stream the required resource */
