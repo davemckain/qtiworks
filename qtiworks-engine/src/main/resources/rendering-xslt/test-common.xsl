@@ -195,8 +195,8 @@ Base templates used in test rendering
       </xsl:if>
       <xsl:if test="$sourceAllowed">
         <li>
-          <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">
-            <input type="submit" value="View Item source"/>
+          <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Test Source XML">
+            <input type="submit" value="View Test source"/>
           </form>
         </li>
       </xsl:if>
