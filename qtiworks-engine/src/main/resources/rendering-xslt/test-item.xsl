@@ -219,6 +219,7 @@ NB: This is used both while being presented, and during review.
     <!-- Item title -->
     <h1 class="itemTitle">
       <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+      <xsl:value-of select="@title"/>
     </h1>
 
     <!-- Render item body -->
