@@ -105,7 +105,7 @@ public class CandidateTestController {
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");
         renderingOptions.setSelectTestItemUrl(sessionBaseUrl + "/select-item");
-        renderingOptions.setFinishTestItemUrl(sessionBaseUrl + "/finish-item");
+        renderingOptions.setAdvanceTestItemUrl(sessionBaseUrl + "/finish-item");
         renderingOptions.setReviewTestPartUrl(sessionBaseUrl + "/review-test-part");
         renderingOptions.setReviewTestItemUrl(sessionBaseUrl + "/review-item");
         renderingOptions.setShowTestItemSolutionUrl(sessionBaseUrl + "/item-solution");

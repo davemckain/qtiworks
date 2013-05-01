@@ -120,26 +120,23 @@ Renders the test(Part) feedback
             <xsl:attribute name="disabled" select="'disabled'"/>
           </xsl:if>
           <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
-          <div class="itemStatus review">
-            <!-- FIXME: Do this better -->
-            <xsl:choose>
-              <xsl:when test="not($reviewable)">
-                Not Reviewable
-              </xsl:when>
-              <xsl:when test="not(empty($itemSessionState/@unboundResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))">
-                Review (Invalid Answer)
-              </xsl:when>
-              <xsl:when test="$itemSessionState/@responded='true'">
-                Review
-              </xsl:when>
-              <xsl:when test="$itemSessionState/@entryTime!=''">
-                Review (Not Answered)
-              </xsl:when>
-              <xsl:otherwise>
-                Review (Not Seen)
-              </xsl:otherwise>
-            </xsl:choose>
-          </div>
+          <xsl:choose>
+            <xsl:when test="not($reviewable)">
+              <div class="itemStatus reviewNotAllowed">Not Reviewable</div>
+            </xsl:when>
+            <xsl:when test="not(empty($itemSessionState/@unboundResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))">
+              <div class="itemStatus reviewInvalid">Review (Invalid Answer)</div>
+            </xsl:when>
+            <xsl:when test="$itemSessionState/@responded='true'">
+              <div class="itemStatus review">Review</div>
+            </xsl:when>
+            <xsl:when test="$itemSessionState/@entryTime!=''">
+              <div class="itemStatus reviewNotAnswered">Review (Not Answered)</div>
+            </xsl:when>
+            <xsl:otherwise>
+              <div class="itemStatus reviewNotSeen">Review (Not Seen)</div>
+            </xsl:otherwise>
+          </xsl:choose>
         </button>
       </form>
     </li>

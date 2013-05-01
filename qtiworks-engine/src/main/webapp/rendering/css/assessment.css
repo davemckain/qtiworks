@@ -315,10 +315,6 @@ body {
 
 /* Item status colours */
 
-.itemStatus.review {
-  background-color: #f52887;
-}
-
 .itemStatus.ended {
   background-color: #999999;
 }
@@ -337,6 +333,18 @@ body {
 
 .itemStatus.notPresented {
   background-color: green;
+}
+
+.itemStatus.review {
+  background-color: #f52887;
+}
+
+.itemStatus.reviewNotAllowed,
+.itemStatus.reviewInvalid,
+.itemStatus.reviewNotAnswered,
+.itemStatus.reviewNotSeen {
+  background-color: #f52887;
+  opacity: 0.5;
 }
 
 /************************************************************/

@@ -31,7 +31,7 @@ Base templates used in test rendering
   <!-- Action URLs -->
   <xsl:param name="testPartNavigationUrl" as="xs:string" required="yes"/>
   <xsl:param name="selectTestItemUrl" as="xs:string" required="yes"/>
-  <xsl:param name="finishTestItemUrl" as="xs:string" required="yes"/>
+  <xsl:param name="advanceTestItemUrl" as="xs:string" required="yes"/>
   <xsl:param name="endTestPartUrl" as="xs:string" required="yes"/>
   <xsl:param name="reviewTestPartUrl" as="xs:string" required="yes"/>
   <xsl:param name="reviewTestItemUrl" as="xs:string" required="yes"/>

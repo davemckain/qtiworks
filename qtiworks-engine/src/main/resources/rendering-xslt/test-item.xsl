@@ -38,7 +38,7 @@ NB: This is used both while being presented, and during review.
   <xsl:param name="itemKey" as="xs:string"/>
 
   <!-- Action permissions -->
-  <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="advanceTestItemAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
 
@@ -137,9 +137,9 @@ NB: This is used both while being presented, and during review.
     <div class="sessionControl">
       <ul class="controls test">
         <!-- Interacting state -->
-        <xsl:if test="$finishItemAllowed">
+        <xsl:if test="$advanceTestItemAllowed">
           <li>
-            <form action="{$webappContextPath}{$finishTestItemUrl}" method="post">
+            <form action="{$webappContextPath}{$advanceTestItemUrl}" method="post">
               <input type="submit" value="Next Question"/>
             </form>
           </li>
@@ -312,12 +312,24 @@ NB: This is used both while being presented, and during review.
   <!-- Overridden to add support for review state -->
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
-      <!-- NB: Ordering of next 2 is significant -->
       <xsl:when test="$solutionMode">
         <div class="itemStatus review">Model Solution</div>
       </xsl:when>
       <xsl:when test="$reviewMode">
-        <div class="itemStatus review">Review</div>
+        <xsl:choose>
+          <xsl:when test="not(empty(@unboundResponseIdentifiers) and empty(@invalidResponseIdentifiers))">
+            <div class="itemStatus reviewInvalid">Review (Invalid Answer)</div>
+          </xsl:when>
+          <xsl:when test="@responded='true'">
+            <div class="itemStatus review">Review</div>
+          </xsl:when>
+          <xsl:when test="@entryTime!=''">
+            <div class="itemStatus reviewNotAnswered">Review (Not Answered)</div>
+          </xsl:when>
+          <xsl:otherwise>
+            <div class="itemStatus reviewNotSeen">Review (Not Seen)</div>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-imports/>

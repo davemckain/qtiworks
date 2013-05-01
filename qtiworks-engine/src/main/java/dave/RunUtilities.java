@@ -51,7 +51,7 @@ public final class RunUtilities {
         setBaseOptions(result);
         result.setTestPartNavigationUrl("/test-part-navigation");
         result.setSelectTestItemUrl("/select-item");
-        result.setFinishTestItemUrl("/finish-item");
+        result.setAdvanceTestItemUrl("/finish-item");
         result.setEndTestPartUrl("/end-test-part");
         result.setReviewTestPartUrl("/review-test-part");
         result.setReviewTestItemUrl("/review-item");
