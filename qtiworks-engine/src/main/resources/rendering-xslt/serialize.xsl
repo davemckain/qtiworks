@@ -111,16 +111,16 @@ hence slightly easier to debug.
   <xsl:template match="m:*">
     <xsl:choose>
       <xsl:when test="$serializationMethod='IE_MATHPLAYER'">
-        <xsl:element name="m:{local-name()}">
+        <xsl:element name="m:{local-name()}" namespace="http://www.w3.org/1998/Math/MathML">
           <xsl:copy-of select="@*"/>
           <xsl:apply-templates/>
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:copy>
+        <xsl:element name="{local-name()}" namespace="http://www.w3.org/1998/Math/MathML">
           <xsl:copy-of select="@*"/>
           <xsl:apply-templates/>
-        </xsl:copy>
+        </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

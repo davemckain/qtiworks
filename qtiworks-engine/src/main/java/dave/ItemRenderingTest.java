@@ -69,6 +69,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class ItemRenderingTest {
 
     public static void main(final String[] args) {
+        final ClassPathResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
         final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
 
         System.out.println("Reading");
@@ -77,7 +78,7 @@ public class ItemRenderingTest {
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
+            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, assessmentResourceLocator);
 
             final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectXmlLoader.loadAndResolveAssessmentItem(itemUri);
             final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
@@ -97,7 +98,7 @@ public class ItemRenderingTest {
             System.out.println("\nRendering");
             final ItemRenderingOptions renderingOptions = RunUtilities.createItemRenderingOptions();
             final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
-            renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
+            renderingRequest.setAssessmentResourceLocator(assessmentResourceLocator);
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setItemSessionState(itemSessionState);

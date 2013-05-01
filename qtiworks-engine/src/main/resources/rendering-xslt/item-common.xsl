@@ -383,6 +383,45 @@ rendering.
     </xsl:choose>
   </xsl:template>
 
+  <!-- mathml (ci) -->
+  <!--
+  We are extending the spec here in 2 ways:
+  1. Allowing MathsContent variables to be substituted
+  2. Allowing arbitrary response and outcome variables to be substituted.
+  -->
+  <xsl:template match="qti:assessmentItem//m:ci" as="element()*">
+    <xsl:variable name="content" select="normalize-space(text())" as="xs:string"/>
+    <xsl:variable name="templateValue" select="qw:get-template-value($content)" as="element(qw:templateVariable)?"/>
+    <xsl:variable name="responseValue" select="qw:get-response-value(/, $content)" as="element(qw:responseVariable)?"/>
+    <xsl:variable name="outcomeValue" select="qw:get-outcome-value($content)" as="element(qw:outcomeVariable)?"/>
+    <xsl:choose>
+      <xsl:when test="exists($templateValue) and qw:get-template-declaration(/, $content)[@mathVariable='true']">
+        <xsl:call-template name="substitute-ci">
+          <xsl:with-param name="identifier" select="$content"/>
+          <xsl:with-param name="value" select="$templateValue"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="exists($responseValue)">
+        <xsl:call-template name="substitute-ci">
+          <xsl:with-param name="identifier" select="$content"/>
+          <xsl:with-param name="value" select="$responseValue"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="exists($outcomeValue)">
+        <xsl:call-template name="substitute-ci">
+          <xsl:with-param name="identifier" select="$content"/>
+          <xsl:with-param name="value" select="$outcomeValue"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element name="ci" namespace="http://www.w3.org/1998/Math/MathML">
+          <xsl:copy-of select="@*"/>
+          <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <!-- ************************************************************ -->
 
   <!-- feedback (block and inline) -->

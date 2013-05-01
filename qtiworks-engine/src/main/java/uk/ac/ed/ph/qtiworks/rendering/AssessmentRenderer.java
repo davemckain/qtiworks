@@ -99,19 +99,13 @@ import org.xml.sax.XMLReader;
  *   <li>If using outside QTIWorks engine, remember to set the necessary properties then call {@link #init()}</li>
  * </ul>
  *
- * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
- * containing a mixture of C & P. The idea would be that we use the PMathML, if available,
- * or convert the CMathML to PMathML once all substitutions have been made. Potential
- * complexity exists if we add support for substituting both CMathML and PMathML in a
- * MathML expression containing both PMathML and CMathML annotations. What guarantee is there
- * that we get the same result? I think the spec needs more thought wrt MathML.
- *
  * @author David McKain
  */
 @Service
 public class AssessmentRenderer {
 
     private static final URI serializeXsltUri = URI.create("classpath:/rendering-xslt/serialize.xsl");
+    private static final URI ctopXsltUri = URI.create("classpath:/rendering-xslt/ctop.xsl");
     private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
     private static final URI itemAuthorDebugXsltUri = URI.create("classpath:/rendering-xslt/item-author-debug.xsl");
@@ -553,7 +547,7 @@ public class AssessmentRenderer {
             final URI inputUri, final Map<String, Object> xsltParameters, final Result result) {
         /* We do this as an XML pipeline:
          *
-         * Input -> Rendering XSLT -> Serialization XSLT -> Result
+         * Input --> Rendering XSLT --> MathML C-to-P --> Serialization XSLT --> Result
          *
          * NB: I'm not bothering to set up LexicalHandlers, so comments and things like that won't
          * be passed through the pipeline. If that becomes important, change the code below to
@@ -561,17 +555,17 @@ public class AssessmentRenderer {
          */
          /* First obtain the required compiled stylesheets. */
         final TransformerHandler rendererTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(rendererStylesheetUri, renderingRequest.getAssessmentResourceLocator());
+        final TransformerHandler mathmlTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(ctopXsltUri, null);
         final TransformerHandler serializerTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(serializeXsltUri, null);
 
         /* Pass necessary parameters to renderer */
         final Transformer rendererTransformer = rendererTransformerHandler.getTransformer();
+        rendererTransformer.setParameter("systemId", inputUri);
         if (xsltParameters!=null) {
             for (final Entry<String, Object> paramEntry : xsltParameters.entrySet()) {
                 rendererTransformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
             }
         }
-        /* Pass system ID of the input document */
-        rendererTransformer.setParameter("systemId", inputUri);
 
         /* Configure the serializer */
         final Transformer serializerTransformer = serializerTransformerHandler.getTransformer();
@@ -618,18 +612,19 @@ public class AssessmentRenderer {
         final InputSource assessmentSaxSource = new InputSource(assessmentStream);
         assessmentSaxSource.setSystemId(inputUri.toString());
 
-        /* Now join the pipeline together.
+        /* Now join the pipeline together (it's clearest to work backwards here)
          *
          * NB: I'm not bothering to set up LexicalHandlers, so comments and things like that won't
          * be passed through the pipeline. If that becomes important, change the code below to
          * support that.
          */
+        serializerTransformerHandler.setResult(result);
+        final SAXResult mathmlResult = new SAXResult(serializerTransformerHandler);
+        mathmlTransformerHandler.setResult(mathmlResult);
+        final SAXResult rendererResult = new SAXResult(mathmlTransformerHandler);
+        rendererTransformerHandler.setResult(rendererResult);
         final XMLReader xmlReader = XmlUtilities.createNsAwareSaxReader(false);
         xmlReader.setContentHandler(rendererTransformerHandler);
-        final SAXResult rendererResult = new SAXResult(serializerTransformerHandler);
-        rendererTransformerHandler.setResult(rendererResult);
-        rendererResult.setHandler(serializerTransformerHandler);
-        serializerTransformerHandler.setResult(result);
 
         /* Finally we run the pipeline */
         try {

@@ -214,6 +214,23 @@ rendering.
     </xsl:choose>
   </xsl:function>
 
+  <xsl:function name="qw:extract-maths-content-cmathml" as="element(m:math)">
+    <xsl:param name="valueHolder" as="element()"/>
+    <xsl:choose>
+      <xsl:when test="qw:is-maths-content-value($valueHolder)">
+        <xsl:variable name="cmathmlString" select="$valueHolder/qw:value[@fieldIdentifier='CMathML']" as="xs:string"/>
+        <xsl:variable name="cmathmlDocNode" select="saxon:parse($cmathmlString)" as="document-node()"/>
+        <xsl:copy-of select="$cmathmlDocNode/*"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:message terminate="yes">
+          Expected value <xsl:copy-of select="$valueHolder"/> to be a MathsContent value
+        </xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+
+
   <!-- ************************************************************ -->
   <!-- Variable substitution -->
   <!-- ************************************************************ -->
@@ -342,6 +359,44 @@ rendering.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <!-- MathML substitution (ci) -->
+  <xsl:template name="substitute-ci" as="element()*">
+    <xsl:param name="identifier" as="xs:string"/>
+    <xsl:param name="value" as="element()"/>
+    <xsl:choose>
+      <xsl:when test="qw:is-null-value($value)">
+        <!-- We shall omit nulls -->
+      </xsl:when>
+      <xsl:when test="qw:is-single-cardinality-value($value)">
+        <!-- Single cardinality template variables are substituted according to Section 6.3.1 of the
+        spec. Note that it does not define what should be done with multiple and ordered
+        cardinality variables. -->
+        <xsl:element name="cn" namespace="http://www.w3.org/1998/Math/MathML">
+          <xsl:copy-of select="@*"/>
+          <xsl:value-of select="qw:extract-single-cardinality-value($value)"/>
+        </xsl:element>
+      </xsl:when>
+      <xsl:when test="qw:is-maths-content-value($value)">
+        <!-- This is a MathAssess MathsContent variable. What we do here is
+        replace the matched MathML element with the child(ren) of the <math/> PMathML field
+        in this record, wrapping in an <mrow/> if required so as to ensure that we have a
+        single replacement element -->
+        <xsl:variable name="cmathml" select="qw:extract-maths-content-cmathml($value)" as="element(m:math)"/>
+        <xsl:copy-of select="$cmathml/*"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- Unsupported substitution -->
+        <xsl:message>
+          Substituting the variable <xsl:value-of select="$identifier"/> with value
+          <xsl:copy-of select="$value"/>
+          within MathML is not currently supported.
+        </xsl:message>
+        <xsl:element name="mtext" namespace="http://www.w3.org/1998/Math/MathML">(Unsupported variable substitution)</xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
 
   <!-- ************************************************************ -->
   <!-- QTI flow -->
