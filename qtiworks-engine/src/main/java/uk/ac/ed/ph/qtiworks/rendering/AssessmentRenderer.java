@@ -96,7 +96,7 @@ import org.xml.sax.XMLReader;
  * <h2>Usage</h2>
  * <ul>
  *   <li>An instance of this class is safe to use concurrently by multiple threads.</li>
- *   <li>If using outside QTIWorks engine, rememeber to set the necessary properties then call {@link #init()}</li>
+ *   <li>If using outside QTIWorks engine, remember to set the necessary properties then call {@link #init()}</li>
  * </ul>
  *
  * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
@@ -136,9 +136,7 @@ public class AssessmentRenderer {
     @Resource
     private String webappContextPath;
 
-    /**
-     * Manager for the XSLT stylesheets, created during init.
-     */
+    /** Manager for the XSLT stylesheets, created during init. */
     private XsltStylesheetManager stylesheetManager;
 
     //----------------------------------------------------
@@ -561,9 +559,9 @@ public class AssessmentRenderer {
          * be passed through the pipeline. If that becomes important, change the code below to
          * support that.
          */
-         /* First obtain the required compiled stylesheets */
-        final TransformerHandler rendererTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(rendererStylesheetUri);
-        final TransformerHandler serializerTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(serializeXsltUri);
+         /* First obtain the required compiled stylesheets. */
+        final TransformerHandler rendererTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(rendererStylesheetUri, renderingRequest.getAssessmentResourceLocator());
+        final TransformerHandler serializerTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(serializeXsltUri, null);
 
         /* Pass necessary parameters to renderer */
         final Transformer rendererTransformer = rendererTransformerHandler.getTransformer();

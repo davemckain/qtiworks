@@ -35,6 +35,7 @@ package uk.ac.ed.ph.jqtiplus.xmlutils.xslt;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.NullResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.XsltResourceResolver;
@@ -102,10 +103,10 @@ public final class XsltStylesheetManager {
 
     /**
      * Convenient static factory method for creating a simple serialization {@link Transformer}
-     * configured using the given {@link XsltSerializationOptions}
+     * configured using the given {@link XsltSerializationOptions} and no runtime URI resolution.
      */
     public static Transformer createSerializer(final XsltSerializationOptions xsltSerializationOptions) {
-        return new XsltStylesheetManager(NullResourceLocator.getInstance()).getSerializer(xsltSerializationOptions);
+        return new XsltStylesheetManager(NullResourceLocator.getInstance()).getSerializer(null, xsltSerializationOptions);
     }
 
     /**
@@ -113,7 +114,7 @@ public final class XsltStylesheetManager {
      * configured using the given {@link XsltSerializationOptions}
      */
     public static TransformerHandler createSerializerHandler(final XsltSerializationOptions xsltSerializationOptions) {
-        return new XsltStylesheetManager(NullResourceLocator.getInstance()).getSerializerHandler(xsltSerializationOptions);
+        return new XsltStylesheetManager(NullResourceLocator.getInstance()).getSerializerHandler(null, xsltSerializationOptions);
     }
 
     //----------------------------------------------------------
@@ -135,8 +136,26 @@ public final class XsltStylesheetManager {
     //----------------------------------------------------------
 
     /**
-     * Obtains the XSLT stylesheet at the given ClassPathURI, using the {@link XsltStylesheetCache}
-     * (if set) to cache stylesheets for efficiency.
+     * Configures the given {@link Transformer} so that it can use the provided {@link ResourceLocator}
+     * to locate XML resources when the stylesheet is being run.
+     * <p>
+     * (This will actually set up a {@link ChainedResourceLocator} that falls back to the
+     * configured {@link #xsltResourceLocator}.)
+     */
+    public void configureRuntimeUriResolution(final Transformer transformer, final ResourceLocator runtimeResourceLocator) {
+        Assert.notNull(transformer, "transformer");
+        if (runtimeResourceLocator!=null) {
+            final ChainedResourceLocator rendererResourceLocator = new ChainedResourceLocator(runtimeResourceLocator, xsltResourceLocator);
+            transformer.setURIResolver(new XsltResourceResolver(rendererResourceLocator));
+        }
+        else {
+            transformer.setURIResolver(xsltResourceResolver); /* (This should already have been set, but no harm done) */
+        }
+    }
+
+    /**
+     * Obtains the compiled XSLT stylesheet {@link Templates}s Object at the given URI,
+     * using the {@link XsltStylesheetCache} (if set) to cache stylesheets for efficiency.
      *
      * @param xsltUri location of the XSLT stylesheet in the ClassPath, following the
      *   URI scheme in {@link ClassPathURIResolver}.
@@ -161,7 +180,7 @@ public final class XsltStylesheetManager {
         return result;
     }
 
-    public TransformerHandler getCompiledStylesheetHandler(final URI xsltUri) {
+    public TransformerHandler getCompiledStylesheetHandler(final URI xsltUri, final ResourceLocator runtimeResourceLocator) {
         Assert.notNull(xsltUri, "xsltUri");
         TransformerHandler transformerHandler;
         try {
@@ -169,6 +188,9 @@ public final class XsltStylesheetManager {
         }
         catch (final TransformerConfigurationException e) {
             throw new QtiSerializationException("Unexpected failure instantiating TransformerHandler " + xsltUri, e);
+        }
+        if (runtimeResourceLocator!=null) {
+            configureRuntimeUriResolution(transformerHandler.getTransformer(), runtimeResourceLocator);
         }
         return transformerHandler;
     }
@@ -228,7 +250,7 @@ public final class XsltStylesheetManager {
 
     //----------------------------------------------------------
 
-    public Transformer getSerializer(final XsltSerializationOptions xsltSerializationOptions) {
+    public Transformer getSerializer(final ResourceLocator runtimeResourceLocator, final XsltSerializationOptions xsltSerializationOptions) {
         /* Create serializer */
         Transformer serializer;
         try {
@@ -239,10 +261,11 @@ public final class XsltStylesheetManager {
         }
 
         /* Then configure it as per options */
-        return configureSerializer(serializer, xsltSerializationOptions);
+        configureRuntimeUriResolution(serializer, runtimeResourceLocator);
+        return configureSerializer(serializer, runtimeResourceLocator, xsltSerializationOptions);
     }
 
-    public TransformerHandler getSerializerHandler(final XsltSerializationOptions xsltSerializationOptions) {
+    public TransformerHandler getSerializerHandler(final ResourceLocator runtimeResourceLocator, final XsltSerializationOptions xsltSerializationOptions) {
         /* Create serializer */
         TransformerHandler serializerHandler;
         try {
@@ -253,10 +276,10 @@ public final class XsltStylesheetManager {
         }
 
         /* Then configure it as per options */
-        return configureSerializerHandler(serializerHandler, xsltSerializationOptions);
+        return configureSerializerHandler(serializerHandler, runtimeResourceLocator, xsltSerializationOptions);
     }
 
-    public Transformer getSerializer(final URI serializerUri, final XsltSerializationOptions xsltSerializationOptions) {
+    public Transformer getSerializer(final URI serializerUri, final ResourceLocator runtimeResourceLocator, final XsltSerializationOptions xsltSerializationOptions) {
         Assert.notNull(serializerUri, "serializerUri");
         /* Create serializer */
         Transformer serializer;
@@ -268,11 +291,10 @@ public final class XsltStylesheetManager {
         }
 
         /* Then configure it as per options */
-        return configureSerializer(serializer, xsltSerializationOptions);
+        return configureSerializer(serializer, runtimeResourceLocator, xsltSerializationOptions);
     }
 
-
-    public TransformerHandler getSerializerHandler(final URI serializerUri, final XsltSerializationOptions xsltSerializationOptions) {
+    public TransformerHandler getSerializerHandler(final URI serializerUri, final ResourceLocator runtimeResourceLocator, final XsltSerializationOptions xsltSerializationOptions) {
         Assert.notNull(serializerUri, "serializerUri");
         TransformerHandler serializerHandler;
         try {
@@ -283,10 +305,10 @@ public final class XsltStylesheetManager {
         }
 
         /* Then configure it as per options */
-        return configureSerializerHandler(serializerHandler, xsltSerializationOptions);
+        return configureSerializerHandler(serializerHandler, runtimeResourceLocator, xsltSerializationOptions);
     }
 
-    public Transformer getSerializerDriver(final List<URI> serializerUris, final XsltSerializationOptions xsltSerializationOptions) {
+    public Transformer getSerializerDriver(final List<URI> serializerUris, final ResourceLocator runtimeResourceLocator, final XsltSerializationOptions xsltSerializationOptions) {
         Assert.notNull(serializerUris, "serializerUris");
         Transformer serializer;
         try {
@@ -297,10 +319,10 @@ public final class XsltStylesheetManager {
         }
 
         /* Then configure it as per options */
-        return configureSerializer(serializer, xsltSerializationOptions);
+        return configureSerializer(serializer, runtimeResourceLocator, xsltSerializationOptions);
     }
 
-    public TransformerHandler getSerializerDriverHandler(final List<URI> serializerUris, final XsltSerializationOptions xsltSerializationOptions) {
+    public TransformerHandler getSerializerDriverHandler(final List<URI> serializerUris, final ResourceLocator runtimeResourceLocator, final XsltSerializationOptions xsltSerializationOptions) {
         /* Create serializer */
         Assert.notNull(serializerUris, "serializerUris");
         TransformerHandler serializerHandler;
@@ -312,16 +334,16 @@ public final class XsltStylesheetManager {
         }
 
         /* Then configure it as per options */
-        return configureSerializerHandler(serializerHandler, xsltSerializationOptions);
+        return configureSerializerHandler(serializerHandler, runtimeResourceLocator, xsltSerializationOptions);
     }
 
-    private TransformerHandler configureSerializerHandler(final TransformerHandler serializerHandler, final XsltSerializationOptions xsltSerializationOptions) {
-        configureSerializer(serializerHandler.getTransformer(), xsltSerializationOptions);
+    private TransformerHandler configureSerializerHandler(final TransformerHandler serializerHandler, final ResourceLocator runtimeResourceLocator, final XsltSerializationOptions xsltSerializationOptions) {
+        configureSerializer(serializerHandler.getTransformer(), runtimeResourceLocator, xsltSerializationOptions);
         return serializerHandler;
     }
 
-    private Transformer configureSerializer(final Transformer serializer, final XsltSerializationOptions xsltSerializationOptions) {
-        /* Then configure it as per options */
+    private Transformer configureSerializer(final Transformer serializer, final ResourceLocator runtimeResourceLocator, final XsltSerializationOptions xsltSerializationOptions) {
+        configureRuntimeUriResolution(serializer, runtimeResourceLocator);
         if (xsltSerializationOptions!=null) {
             final boolean supportsXSLT20 = XsltFactoryUtilities.supportsXSLT20(serializer);
             XsltSerializationMethod serializationMethod = xsltSerializationOptions.getSerializationMethod();
