@@ -38,8 +38,9 @@ NB: This is used both while being presented, and during review.
   <xsl:param name="itemKey" as="xs:string"/>
 
   <!-- Action permissions -->
-  <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Relevant properties of EffectiveItemSessionControl for this item -->
   <xsl:param name="showFeedback" as="xs:boolean" required="yes"/>
@@ -135,6 +136,14 @@ NB: This is used both while being presented, and during review.
   <xsl:template name="qw:test-controls">
     <div class="sessionControl">
       <ul class="controls test">
+        <!-- Interacting state -->
+        <xsl:if test="$finishItemAllowed">
+          <li>
+            <form action="{$webappContextPath}{$finishTestItemUrl}" method="post">
+              <input type="submit" value="Next Question"/>
+            </form>
+          </li>
+        </xsl:if>
         <xsl:if test="$testPartNavigationAllowed">
           <li>
             <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
@@ -142,10 +151,11 @@ NB: This is used both while being presented, and during review.
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$finishItemAllowed">
+        <xsl:if test="$endTestPartAllowed">
           <li>
-            <form action="{$webappContextPath}{$finishTestItemUrl}" method="post">
-              <input type="submit" value="Finish Question"/>
+            <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
+              onsubmit="return confirm('Are you sure?')">
+              <input type="submit" value="End {$testOrTestPart}"/>
             </form>
           </li>
         </xsl:if>

@@ -432,9 +432,9 @@ public class AssessmentRenderer {
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
         xsltParameters.put("reviewMode", Boolean.FALSE);
         xsltParameters.put("solutionMode", Boolean.FALSE);
-        xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(navigationMode==NavigationMode.NONLINEAR));
         xsltParameters.put("finishItemAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndItemLinear()));
-        xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
+        xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(navigationMode==NavigationMode.NONLINEAR));
+        xsltParameters.put("endTestPartAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndCurrentTestPart()));
 
         /* We finally do the transform on the _item_ (NB!) */
         doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
