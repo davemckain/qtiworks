@@ -184,15 +184,12 @@ public final class GlueValueBinder {
             recordBuilder.put(MathAssessConstants.FIELD_CMATHML_IDENTIFIER, new StringValue(value.getCMathML()));
         }
         if (value.getAsciiMathInput() != null && value.getAsciiMathInput().length() > 0) {
-            recordBuilder.put(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER, new StringValue(value
-                    .getAsciiMathInput()));
+            recordBuilder.put(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER, new StringValue(value.getAsciiMathInput()));
         }
         if (value instanceof MathsContentInputValueWrapper) {
             /* (This goes outside the MathAssess spec, but if this is something
-             * that came from
-             * ASCIIMath input then we shall also include the bracketed PMathML
-             * so that it can
-             * be used in rendering. */
+             * that came from ASCIIMath input then we shall also include the bracketed PMathML
+             * so that it can be used in rendering. */
             final MathsContentInputValueWrapper inputValue = (MathsContentInputValueWrapper) value;
             if (inputValue.getPMathMLBracketed() != null && inputValue.getPMathMLBracketed().length() > 0) {
                 recordBuilder.put(MathAssessConstants.FIELD_PMATHML_BRACKETED_IDENTIFIER, new StringValue(inputValue.getPMathMLBracketed()));
