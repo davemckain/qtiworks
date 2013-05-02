@@ -105,8 +105,11 @@ NB: This is used both while being presented, and during review.
         <!-- Styling for JQuery -->
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.css"/>
 
-        <!-- QTIWorks Item styling -->
+        <!-- QTIWorks assessment styling -->
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
+
+        <!-- Include stylesheet declared within item -->
+        <xsl:apply-templates select="qti:stylesheet"/>
       </head>
       <body class="qtiworks assessmentItem assessmentTest">
 
