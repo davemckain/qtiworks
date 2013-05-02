@@ -123,7 +123,7 @@ Renders a standalone assessmentItem
                 A model solution to this assessment is shown below.
               </xsl:when>
               <xsl:otherwise>
-                This assessment is now complete.
+                This assessment is now finished.
               </xsl:otherwise>
             </xsl:choose>
           </div>
