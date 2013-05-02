@@ -71,7 +71,6 @@ ALTER TABLE candidate_session_outcomes ADD base_type VARCHAR(14);
 ALTER TABLE candidate_session_outcomes ADD cardinality VARCHAR(8);
 UPDATE candidate_session_outcomes SET base_type = 'STRING';
 UPDATE candidate_session_outcomes SET cardinality = 'SINGLE';
-ALTER TABLE candidate_session_outcomes ALTER base_type SET NOT NULL;
 ALTER TABLE candidate_session_outcomes ALTER cardinality SET NOT NULL;
 
 COMMIT WORK;

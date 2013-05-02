@@ -105,7 +105,7 @@ public class CandidateSessionOutcome implements BaseEntity {
     private BaseType baseType;
 
     /** QTI {@link Cardinality} of this variable */
-    @Basic(optional=true)
+    @Basic(optional=false)
     @Column(name="cardinality", updatable=false, length=8)
     @Enumerated(EnumType.STRING)
     private Cardinality cardinality;
