@@ -18,7 +18,7 @@ General utility templates
   <!-- ************************************************************ -->
 
   <xsl:function name="qw:escape-for-javascript-string" as="xs:string">
-    <xsl:param name="input" as="xs:string"/>
+    <xsl:param name="input" as="xs:string?"/>
     <xsl:sequence select="replace(replace($input, '[&#x0d;&#x0a;]', ''), '($apos)', '\\$1')"/>
   </xsl:function>
 
