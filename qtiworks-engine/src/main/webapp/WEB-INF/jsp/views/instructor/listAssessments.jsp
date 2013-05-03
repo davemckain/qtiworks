@@ -25,7 +25,7 @@ instructorAssessmentRouting (action -> URL)
       <table class="assessmentList">
         <thead>
           <tr>
-            <th></th>
+            <th colspan="2"></th>
             <th>Details</th>
             <th>Assessment Type</th>
             <th>Version</th>
@@ -37,6 +37,11 @@ instructorAssessmentRouting (action -> URL)
             <tr>
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>
+              </td>
+              <td align="center" class="launch">
+                <form action="${assessmentRouting[assessment.id]['try']}" method="post">
+                  <button type="submit" class="playButton">Quick Try</button>
+                </form>
               </td>
               <td>
                 <h4><a href="${utils:escapeLink(assessmentRouting[assessment.id]['show'])}"><c:out value="${assessment.name}"/></a></h4>
