@@ -408,7 +408,7 @@ rendering.
       <xsl:call-template name="feedback"/>
     </xsl:variable>
     <xsl:if test="exists($feedback)">
-      <span class="feedbackInline">
+      <span class="{string-join(('feedbackInline', @class), ' ')}">
         <xsl:sequence select="$feedback"/>
       </span>
     </xsl:if>
@@ -420,7 +420,7 @@ rendering.
       <xsl:call-template name="feedback"/>
     </xsl:variable>
     <xsl:if test="exists($feedback)">
-      <div class="feedbackBlock">
+      <div class="{string-join(('feedbackBlock', @class), ' ')}">
         <xsl:sequence select="$feedback"/>
       </div>
     </xsl:if>
