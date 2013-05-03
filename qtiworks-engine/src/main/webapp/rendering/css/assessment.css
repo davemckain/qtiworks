@@ -26,13 +26,13 @@ body {
   border: 2px solid #eeeeee;
   border-radius: 0.5em;
   background-color: #f7f7ff;
+  display: none; /* EXPERIMENTAL... DO WE REALLY NEED TO SEE THIS? */
 }
 
 .itemPrompt {
-  margin: 1em 0;
-  font-weight: bold;
-  font-size: larger;
-  color: #333333;
+  margin: 1.5em 0;
+  font-style: italic;
+  color: #666666;
 }
 
 #itemBody {
