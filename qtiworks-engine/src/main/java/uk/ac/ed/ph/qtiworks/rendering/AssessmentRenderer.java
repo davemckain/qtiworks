@@ -635,7 +635,7 @@ public class AssessmentRenderer {
             xmlReader.parse(assessmentSaxSource);
         }
         catch (final Exception e) {
-            logger.warn("Rendering XSLT pipeline failed for request {}", renderingRequest, e);
+            logger.error("Rendering XSLT pipeline failed for request {}", renderingRequest, e);
             throw new QtiWorksRenderingException("Unexpected Exception running rendering XML pipeline", e);
         }
     }
