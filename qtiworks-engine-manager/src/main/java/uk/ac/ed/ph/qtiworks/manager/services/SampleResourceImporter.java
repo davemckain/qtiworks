@@ -167,18 +167,18 @@ public class SampleResourceImporter {
 
         /* Pick out all of the valid samples */
         final QtiSampleSet[] qtiSampleSets = new QtiSampleSet[] {
-                StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
-                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
-                UpmcSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
-                StompSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
-                LanguageSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID),
-                TestImplementationSampleSet.instance().withoutFeature(Feature.NOT_FULLY_VALID)
+                StandardQtiSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
+                MathAssessSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
+                UpmcSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
+                StompSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
+                LanguageSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE),
+                TestImplementationSampleSet.instance().withoutFeatures(Feature.NOT_FULLY_VALID, Feature.NOT_RUNNABLE)
         };
 
         /* If MathAssess extensions are not enabled, filter out assessments that need them */
         if (!qtiWorksDeploymentSettings.isEnableMathAssessExtension()) {
             for (int i=0; i<qtiSampleSets.length; i++) {
-                qtiSampleSets[i] = qtiSampleSets[i].withoutFeature(Feature.REQUIRES_MATHASSES);
+                qtiSampleSets[i] = qtiSampleSets[i].withoutFeatures(Feature.REQUIRES_MATHASSES);
             }
         }
 

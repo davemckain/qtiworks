@@ -65,11 +65,11 @@ public class TemplateProcessingSampleTests extends AbstractIntegrationTest {
     @Parameters
     public static Collection<Object[]> data() {
         return TestUtils.makeTestParameters(
-                StandardQtiSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                MathAssessSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                UpmcSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                StompSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID),
-                LanguageSampleSet.instance().withoutFeature(Feature.NOT_SCHEMA_VALID)
+                StandardQtiSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
+                MathAssessSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
+                UpmcSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
+                StompSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID),
+                LanguageSampleSet.instance().withoutFeatures(Feature.NOT_SCHEMA_VALID)
         );
     }
 
