@@ -2,23 +2,18 @@
 <assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess"
-  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd 
- http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd"
   xmlns:m="http://www.w3.org/1998/Math/MathML" adaptive="true" timeDependent="false"
   identifier="MAD01-newSRinRP"
   title="Expand brackets in a(x+b)+cx and simplify (randomised with scriptRule, math entry, casCondition)">
-  <!-- This is MAD01-SRinRPRealCode.xml -->
-  <!-- 
-template processing with randomisation using ScriptRule, MathEntryInteraction and casCompare in response processing
--->
+
   <responseDeclaration identifier="RESPONSE" cardinality="record"/>
   <responseDeclaration baseType="string" cardinality="single" identifier="printMath"/>
   <responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
   <responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST"/>
   <outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="FEEDBACK"/>
   <outcomeDeclaration baseType="identifier" cardinality="single" identifier="EMPTY"/>
-  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0"
-    normalMinimum="0.0">
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE" normalMaximum="2.0" normalMinimum="0.0">
     <defaultValue>
       <value>0.0</value>
     </defaultValue>
@@ -329,60 +324,59 @@ template processing with randomisation using ScriptRule, MathEntryInteraction an
         </tr>
       </tbody>
     </table>
-    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
-      <div>
-        <m:math display="block">
-          <m:semantics>
-            <m:mtable>
-              <m:mtr>
-                <m:mtd columnalign="right">
-                  <m:mi>iA</m:mi>
-                  <m:mfenced close=")" open="(">
-                    <m:mrow>
-                      <m:mi>mX</m:mi>
-                      <m:mi>sSignB</m:mi>
-                      <m:mi>iAbsB</m:mi>
-                    </m:mrow>
-                  </m:mfenced>
-                  <m:mi>sSignC</m:mi>
-                  <m:mi>iAbsC</m:mi>
-                  <m:mi>mX</m:mi>
-                </m:mtd>
-                <m:mtd columnalign="center">
-                  <m:mo>=</m:mo>
-                </m:mtd>
-                <m:mtd columnalign="left">
-                  <m:mi>iA</m:mi>
-                  <m:mo>×</m:mo>
-                  <m:mi>mX</m:mi>
-                  <m:mi>sSignAB</m:mi>
-                  <m:mi>iAbsA</m:mi>
-                  <m:mo>×</m:mo>
-                  <m:mi>iAbsB</m:mi>
-                  <m:mi>sSignC</m:mi>
-                  <m:mi>iAbsC</m:mi>
-                  <m:mo>×</m:mo>
-                  <m:mi>mX</m:mi>
-                </m:mtd>
-              </m:mtr>
-              <m:mtr>
-                <m:mtd columnalign="right"/>
-                <m:mtd columnalign="center">
-                  <m:mo>=</m:mo>
-                </m:mtd>
-                <m:mtd columnalign="left">
-                  <m:mi>iApC</m:mi>
-                  <m:mi>mX</m:mi>
-                  <m:mi>sSignAB</m:mi>
-                  <m:mi>iAbsAB</m:mi>
-                </m:mtd>
-              </m:mtr>
-            </m:mtable>
-            <m:annotation encoding="SnuggleTeX">\begin{eqnarray*}\qv{iA}(\qv{mX} \qv{sSignB} \qv{iAbsB}) \qv{sSignC} \qv{iAbsC} \qv{mX} &amp;=&amp; \qv{iA} \times \qv{mX} \qv{sSignAB} \qv{iAbsA} \times \qv{iAbsB} \qv{sSignC} \qv{iAbsC} \times \qv{mX}\\ &amp;=&amp; \qv{iApC} \qv{mX} \qv{sSignAB} \qv{iAbsAB}\end{eqnarray*}</m:annotation>
-          </m:semantics>
-        </m:math>    </div>
+    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <m:math display="block">
+        <m:semantics>
+          <m:mtable>
+            <m:mtr>
+              <m:mtd columnalign="right">
+                <m:mi>iA</m:mi>
+                <m:mfenced close=")" open="(">
+                  <m:mrow>
+                    <m:mi>mX</m:mi>
+                    <m:mi>sSignB</m:mi>
+                    <m:mi>iAbsB</m:mi>
+                  </m:mrow>
+                </m:mfenced>
+                <m:mi>sSignC</m:mi>
+                <m:mi>iAbsC</m:mi>
+                <m:mi>mX</m:mi>
+              </m:mtd>
+              <m:mtd columnalign="center">
+                <m:mo>=</m:mo>
+              </m:mtd>
+              <m:mtd columnalign="left">
+                <m:mi>iA</m:mi>
+                <m:mo>×</m:mo>
+                <m:mi>mX</m:mi>
+                <m:mi>sSignAB</m:mi>
+                <m:mi>iAbsA</m:mi>
+                <m:mo>×</m:mo>
+                <m:mi>iAbsB</m:mi>
+                <m:mi>sSignC</m:mi>
+                <m:mi>iAbsC</m:mi>
+                <m:mo>×</m:mo>
+                <m:mi>mX</m:mi>
+              </m:mtd>
+            </m:mtr>
+            <m:mtr>
+              <m:mtd columnalign="right"/>
+              <m:mtd columnalign="center">
+                <m:mo>=</m:mo>
+              </m:mtd>
+              <m:mtd columnalign="left">
+                <m:mi>iApC</m:mi>
+                <m:mi>mX</m:mi>
+                <m:mi>sSignAB</m:mi>
+                <m:mi>iAbsAB</m:mi>
+              </m:mtd>
+            </m:mtr>
+          </m:mtable>
+          <m:annotation encoding="SnuggleTeX">\begin{eqnarray*}\qv{iA}(\qv{mX} \qv{sSignB} \qv{iAbsB}) \qv{sSignC} \qv{iAbsC} \qv{mX} &amp;=&amp; \qv{iA} \times \qv{mX} \qv{sSignAB} \qv{iAbsA} \times \qv{iAbsB} \qv{sSignC} \qv{iAbsC} \times \qv{mX}\\ &amp;=&amp; \qv{iApC} \qv{mX} \qv{sSignAB} \qv{iAbsAB}\end{eqnarray*}</m:annotation>
+        </m:semantics>
+      </m:math>
     </feedbackBlock>
-    <feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback hint">
+    <feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
       <p>Expand the bracket and collect like terms.</p>
     </feedbackBlock>
     <feedbackBlock identifier="SEEN-SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
@@ -391,13 +385,13 @@ template processing with randomisation using ScriptRule, MathEntryInteraction an
     <feedbackBlock identifier="SEEN-HINT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
       <p> Since you have viewed the hint, your score for this question will be halved. </p>
     </feedbackBlock>
-    <feedbackBlock identifier="askhint" outcomeIdentifier="ASKHINT" showHide="show">
+    <feedbackBlock identifier="askhint" outcomeIdentifier="ASKHINT" showHide="show" class="endAttemptInteraction">
       <p>
         <endAttemptInteraction id="endAttemptInteraction1" responseIdentifier="HINTREQUEST"
           title="Show Hint"/>
       </p>
     </feedbackBlock>
-    <feedbackBlock identifier="asksolution" outcomeIdentifier="ASKSOLUTION" showHide="show">
+    <feedbackBlock identifier="asksolution" outcomeIdentifier="ASKSOLUTION" showHide="show" class="endAttemptInteraction">
       <p>
         <endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="SOLREQUEST"
           title="Show Solution"/>
