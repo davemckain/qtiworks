@@ -77,6 +77,8 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
@@ -103,6 +105,8 @@ import org.xml.sax.XMLReader;
  */
 @Service
 public class AssessmentRenderer {
+
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentRenderer.class);
 
     private static final URI serializeXsltUri = URI.create("classpath:/rendering-xslt/serialize.xsl");
     private static final URI ctopXsltUri = URI.create("classpath:/rendering-xslt/ctop.xsl");
@@ -631,6 +635,7 @@ public class AssessmentRenderer {
             xmlReader.parse(assessmentSaxSource);
         }
         catch (final Exception e) {
+            logger.warn("Rendering XSLT pipeline failed for request {}", renderingRequest, e);
             throw new QtiWorksRenderingException("Unexpected Exception running rendering XML pipeline", e);
         }
     }
