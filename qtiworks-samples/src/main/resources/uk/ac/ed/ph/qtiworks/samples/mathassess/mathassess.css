@@ -1,0 +1,16 @@
+/* Some styling to jazz up the MathAssess examples a bit! */
+
+.horizontalInteraction .feedbackColumn {
+  padding: 1em;
+  font-size: larger;
+  font-weight: bold;
+}
+
+.questionFeedback {
+  font-size: larger;
+  font-weight: bold;
+}
+
+.hint:before {
+  content('Hint: ');
+}

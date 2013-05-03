@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
  * @author David McKain
  */
 public final class MathAssessSampleSet {
-    
+
     private static final QtiSampleSet instance = new QtiSampleSet("MathAssess examples",
             "These are the 'MathAssess' examples, some of which demonstrate the MathAssess QTI extensions "
             + "that allow you to use the Maxima Computer Algebra system for some very sophisticated "
@@ -50,7 +50,7 @@ public final class MathAssessSampleSet {
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml"),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAC02-SR.xml", Feature.REQUIRES_MATHASSES),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinCO-demo.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-newSRinRP.xml", Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-newSRinRP.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD03a.xml", Feature.REQUIRES_MATHASSES),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD04-ltgt-tVars.xml", Feature.REQUIRES_MATHASSES),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD05-Factors-CC.xml", Feature.REQUIRES_MATHASSES),
@@ -62,11 +62,11 @@ public final class MathAssessSampleSet {
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/GU-Formulae-006-BMI.xml"),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/diag00001.xml", Feature.REQUIRES_MATHASSES)
     );
-    
+
     private MathAssessSampleSet() {
         /* No constructor */
     }
-    
+
     public static QtiSampleSet instance() {
         return instance;
     }
