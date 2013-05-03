@@ -14,7 +14,8 @@
     <xsl:variable name="responseInput" select="qw:get-response-input(@responseIdentifier)" as="element(qw:responseInput)?"/>
     <xsl:variable name="responseValue" select="qw:get-response-value(/, @responseIdentifier)" as="element(qw:responseVariable)?"/>
     <xsl:variable name="asciiMathInput" select="qw:extract-single-cardinality-response-input($responseInput)" as="xs:string?"/>
-    <div class="mathEntryInteraction">
+    <xsl:variable name="orientation" select="if (../self::qti:td or count(../*)!=1) then 'vertical' else 'horizontal'" as="xs:string"/>
+    <div class="mathEntryInteraction {$orientation}">
       <div class="inputPanel">
         <a href="{$webappContextPath}/rendering/mathEntryInteractionHelp.html" target="_blank" id="qtiworks_id_mathEntryHelp_{@responseIdentifier}"></a>
         <input id="qtiworks_id_mathEntryInput_{@responseIdentifier}" name="qtiworks_response_{@responseIdentifier}" type="text"

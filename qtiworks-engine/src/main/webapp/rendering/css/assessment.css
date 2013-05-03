@@ -189,21 +189,40 @@ body {
 
 /* MathEntryInteraction styling for MathAssess */
 .assessmentItem .mathEntryInteraction {
-  border: 1px solid #eeeeee;
-  background-color: #f7faf7;
+  border: 1px solid #ddedfc;
+  background-color: #edf1f6;
+  background: linear-gradient(to top, #edf1f6 0%, #f6f9fb 100%);
   border-radius: 0.4em;
   padding: 1em;
   margin: 0.5em 0;
+}
+
+.assessmentItem .mathEntryInteraction.horizontal {
   min-height: 5em;
   width: 40em;
 }
 
+.assessmentItem .mathEntryInteraction.vertical {
+  min-height: 6em;
+}
+
 .assessmentItem .mathEntryInteraction .inputPanel {
+  line-height: 1em;
+  text-align: left;
+}
+
+.assessmentItem .mathEntryInteraction.horizontal .inputPanel {
   width: 45%;
   float: left;
-  line-height: 1em;
   margin: 2em 0;
-  text-align: left;
+}
+
+.assessmentItem .mathEntryInteraction.vertical .inputPanel {
+  padding: 0 5em;
+}
+
+.assessmentItem .mathEntryInteraction.vertical .inputPanel:before {
+  content: 'Input Maths: ';
 }
 
 .assessmentItem .mathEntryInteraction .inputPanel a {
@@ -224,15 +243,20 @@ body {
 .assessmentItem .mathEntryInteraction .inputPanel input {
   margin: 0;
   padding: 0;
-  x-height: 1em;
-  x-margin: 2em 0;
-  x-vertical-align: middle;
 }
 
 .assessmentItem .mathEntryInteraction .previewPanel {
-  margin-left: 40%;
-  width: 50%;
   text-align: center;
+}
+
+.assessmentItem .mathEntryInteraction.horizontal .previewPanel {
+  width: 50%;
+  margin-left: 40%;
+}
+
+.assessmentItem .mathEntryInteraction.vertical .previewPanel {
+  margin-top: 2em;
+  min-height: 4em;
 }
 
 .assessmentItem div.upConversionAjaxControlMessage {
