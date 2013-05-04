@@ -73,31 +73,18 @@
     <setTemplateValue identifier="tDummy">
       <customOperator class="org.qtitools.mathassess.ScriptRule" ma:syntax="text/x-maxima">
         <baseValue baseType="string"><![CDATA[
-
  simp:true;
-
  s1 : make_random_state(true)$ set_random_state(s1);
-
  iA: ev((random(6)+2)*(random(2)*2-1),simp);
-
  iB: ev((random(4)+2),simp);
-
  iAB: ev(iA*iB,simp);
-
  iBm1: ev(iB-1,simp);
-
  array(aarr,18);
-
  fillarray(aarr,[a,b,c,d,h,k,m,n,p,q,r,s,t,u,v,w,x,y,z]);
-
  mX:aarr[random(18)];
-
  mQues: iA*mX^iB;
-
  mDeriv: diff(mQues,mX);
-
  mInt: integrate(mQues,mX);
-
 ]]></baseValue>
       </customOperator>
     </setTemplateValue>
@@ -121,87 +108,84 @@
     <div>
       <customInteraction class="org.qtitools.mathassess.MathEntryInteraction"
         responseIdentifier="RESPONSE" ma:printIdentifier="pInput" ma:syntax="text/x-maxima"
-        ma:expectedLength="15" id="customInteraction0"/></div>
-    <div>
-      <feedbackInline id="feedbackInline0" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="Integrated"> You integrated! </feedbackInline>
+        ma:expectedLength="15" id="customInteraction0"/>
     </div>
-    <div>
-      <feedbackInline id="feedbackInline1" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="Original"> Your input is equivalent to the expression in the question.
-      </feedbackInline></div>
-    <div>
-      <feedbackInline id="feedbackInline2" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="Incorrect"> Incorrect - please see the solution.
-      </feedbackInline></div>
-    <div>
-      <feedbackInline id="feedbackInline3" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="Correct"> Good, you have successfully differentiated the expression.
-      </feedbackInline></div>
-    <div>
-      <feedbackInline id="feedbackInline4" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="MultNoRed"> You multiplied by the power, but you did not reduce the power by 1 - see the solution.
-      </feedbackInline></div>
-    <div>
-      <feedbackInline id="feedbackInline5" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="NoMultRed"> You reduced the power by 1 but you had not multiplied by the power - see the solution.
-      </feedbackInline></div>
-    <div>
-      <feedbackInline id="feedbackInline6" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="RedThenMul"> You should multiply by the power before reducing the power by 1 - see the solution.
-      </feedbackInline></div>
-    <div>
-      <feedbackInline id="feedbackInline7" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="MultInc"> You multiplied by the power, but you increased the power by 1 - see the solution.
-      </feedbackInline></div>
-    <div>
-      <feedbackInline id="feedbackInline8" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="RedDiv"> You reduced the power by 1 but you divided by the power - see the solution.
-      </feedbackInline></div>
-    <div>
-      <feedbackInline id="feedbackInline9" showHide="show" outcomeIdentifier="FEEDBACK"
-        identifier="IncThenMul"> You increased the power by 1 and multiplied by the power - see the solution.
-      </feedbackInline></div>
-    <div>
-      <feedbackBlock id="feedbackBlock11" identifier="THREETRIES" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
-        <p>You have had three attempts at answering this question,                        so here is the solution:</p>
-      </feedbackBlock>
-      <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
-        <p>To differentiate this expression, we "multiply by the power", so the coefficient
-          becomes</p>
-        <m:math display="block">
-          <m:semantics>
-            <m:mrow>
-              <m:mi>iA</m:mi>
-              <m:mo>&#xd7;</m:mo>
-              <m:mi>iB</m:mi>
-              <m:mo>=</m:mo>
-              <m:mi>iAB</m:mi>
-            </m:mrow>
-            <m:annotation encoding="LaTeX">\[
-              \qv{iA}\times\qv{iB}=\qv{iAB}\]</m:annotation>
-          </m:semantics>
-        </m:math>
-        <p>Then we "reduce the power by 1"</p>
-        <m:math display="block">
-          <m:semantics>
-            <m:mrow>
-              <m:mi>iB</m:mi>
-              <m:mo>-</m:mo>
-              <m:mn>1</m:mn>
-              <m:mo>=</m:mo>
-              <m:mi>iBm1</m:mi>
-            </m:mrow>
-            <m:annotation encoding="LaTeX">\[ \qv{iB}-1=\qv{iBm1}\]</m:annotation>
-          </m:semantics>
-        </m:math>
-        <p>So the derivative of <printedVariable identifier="mQues"/> is <printedVariable
-            identifier="mDeriv"/>.</p>
-      </feedbackBlock></div>
-    <div>
-      <feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
-        <p>Multiply by the power and reduce the power by 1.</p>
-      </feedbackBlock></div>
+    <div class="questionFeedback">
+      <feedbackInline id="feedbackInline0" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Integrated">
+        You integrated!
+      </feedbackInline>
+      <feedbackInline id="feedbackInline1" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Original">
+        Your input is equivalent to the expression in the question.
+      </feedbackInline>
+      <feedbackInline id="feedbackInline2" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Incorrect">
+        Incorrect - please see the solution.
+      </feedbackInline>
+      <feedbackInline id="feedbackInline3" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Correct">
+        Good, you have successfully differentiated the expression.
+      </feedbackInline>
+      <feedbackInline id="feedbackInline4" showHide="show" outcomeIdentifier="FEEDBACK" identifier="MultNoRed">
+        You multiplied by the power, but you did not reduce the power by 1 - see the solution.
+      </feedbackInline>
+      <feedbackInline id="feedbackInline5" showHide="show" outcomeIdentifier="FEEDBACK" identifier="NoMultRed">
+        You reduced the power by 1 but you had not multiplied by the power - see the solution.
+      </feedbackInline>
+      <feedbackInline id="feedbackInline6" showHide="show" outcomeIdentifier="FEEDBACK" identifier="RedThenMul">
+        You should multiply by the power before reducing the power by 1 - see the solution.
+      </feedbackInline>
+      <feedbackInline id="feedbackInline7" showHide="show" outcomeIdentifier="FEEDBACK" identifier="MultInc">
+        You multiplied by the power, but you increased the power by 1 - see the solution.
+      </feedbackInline>
+      <feedbackInline id="feedbackInline8" showHide="show" outcomeIdentifier="FEEDBACK" identifier="RedDiv">
+        You reduced the power by 1 but you divided by the power - see the solution.
+      </feedbackInline>
+      <feedbackInline id="feedbackInline9" showHide="show" outcomeIdentifier="FEEDBACK" identifier="IncThenMul">
+        You increased the power by 1 and multiplied by the power - see the solution.
+      </feedbackInline>
+    </div>
+    <feedbackBlock id="feedbackBlock11" identifier="THREETRIES" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <p>
+        You have had three attempts at answering this question,
+        so here is the solution:
+      </p>
+    </feedbackBlock>
+    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
+      <p>To differentiate this expression, we "multiply by the power", so the coefficient becomes</p>
+      <m:math display="block">
+        <m:semantics>
+          <m:mrow>
+            <m:mi>iA</m:mi>
+            <m:mo>&#xd7;</m:mo>
+            <m:mi>iB</m:mi>
+            <m:mo>=</m:mo>
+            <m:mi>iAB</m:mi>
+          </m:mrow>
+          <m:annotation encoding="LaTeX">\[
+            \qv{iA}\times\qv{iB}=\qv{iAB}\]</m:annotation>
+        </m:semantics>
+      </m:math>
+      <p>Then we "reduce the power by 1"</p>
+      <m:math display="block">
+        <m:semantics>
+          <m:mrow>
+            <m:mi>iB</m:mi>
+            <m:mo>-</m:mo>
+            <m:mn>1</m:mn>
+            <m:mo>=</m:mo>
+            <m:mi>iBm1</m:mi>
+          </m:mrow>
+          <m:annotation encoding="LaTeX">\[ \qv{iB}-1=\qv{iBm1}\]</m:annotation>
+        </m:semantics>
+      </m:math>
+      <p>
+        So the derivative of
+        <printedVariable identifier="mQues"/>
+        is
+        <printedVariable identifier="mDeriv"/>.
+      </p>
+    </feedbackBlock>
+    <feedbackBlock identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <p>Multiply by the power and reduce the power by 1.</p>
+    </feedbackBlock>
     <feedbackBlock identifier="SEEN-SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
       <p>Since you have viewed the solution, your score for this question will be 0.</p>
     </feedbackBlock>

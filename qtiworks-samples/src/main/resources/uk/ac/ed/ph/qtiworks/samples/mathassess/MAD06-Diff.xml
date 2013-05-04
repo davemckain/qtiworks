@@ -107,27 +107,21 @@
         responseIdentifier="RESPONSE" ma:printIdentifier="pInput" ma:syntax="text/x-maxima"
         ma:expectedLength="15" id="customInteraction0"/>
     </div>
-    <div>
+    <div class="questionFeedback">
       <feedbackInline id="feedbackInline0" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Integrated">
         You integrated!
       </feedbackInline>
-    </div>
-    <div>
       <feedbackInline id="feedbackInline1" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Original">
         Your input is equivalent to the expression in the question.
       </feedbackInline>
-    </div>
-    <div>
       <feedbackInline id="feedbackInline2" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Incorrect">
         Please see your tutor about this question.
       </feedbackInline>
-    </div>
-    <div>
       <feedbackInline id="feedbackInline3" showHide="show" outcomeIdentifier="FEEDBACK" identifier="Correct">
         Good, you have successfully differentiated the expression.
       </feedbackInline>
     </div>
-    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
       <p>To differentiate this expression, we "multiply by the power", so the coefficient becomes</p>
       <m:math display="block">
         <m:semantics>

@@ -209,7 +209,7 @@
       <simpleChoice identifier="NeverKnew" fixed="true">I never knew how to do
         this.</simpleChoice>
     </choiceInteraction>
-    <div>
+    <div class="questionFeedback">
       <feedbackInline class="PART_OK" identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
         That's right! If you like, you can check up on this topic
         <a href="http://www.mathcentre.ac.uk/topics/algebra/linearequations/">here</a>

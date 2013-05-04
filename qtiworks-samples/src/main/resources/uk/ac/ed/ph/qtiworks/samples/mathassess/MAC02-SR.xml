@@ -240,7 +240,7 @@
         </m:math>
         <feedbackInline id="feedbackInline4" identifier="ChoiceE" outcomeIdentifier="FEEDBACK" showHide="show">You should ask for tutor help on this question.</feedbackInline>    </simpleChoice>
     </choiceInteraction>
-    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
       <m:math display="block" id="mathML7">
         <m:semantics>
           <m:mtable>

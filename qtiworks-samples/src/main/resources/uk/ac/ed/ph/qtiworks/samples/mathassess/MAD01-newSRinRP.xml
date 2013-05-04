@@ -324,7 +324,7 @@
         </tr>
       </tbody>
     </table>
-    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
       <m:math display="block">
         <m:semantics>
           <m:mtable>

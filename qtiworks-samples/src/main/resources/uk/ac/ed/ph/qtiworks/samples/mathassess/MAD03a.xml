@@ -101,20 +101,22 @@ No randomisation in template processing, CasProcess to set answer and buggy answ
       </m:math>
       &#160;&#160;and simplify the result.
     </p>
-    <table>
+    <table class="horizontalInteraction">
       <tbody>
         <tr>
-          <td>
+          <td class="interactionColumn">
             <customInteraction class="org.qtitools.mathassess.MathEntryInteraction"
               responseIdentifier="RESPONSE" ma:syntax="text/x-maxima"
               ma:expectedLength="20" ma:printIdentifier="printMath"/>
           </td>
-          <td>
-            <feedbackInline identifier="CORRECT" outcomeIdentifier="FEEDBACK"
-              showHide="show"> Correct </feedbackInline>
-            <feedbackInline identifier="CORRECT-ORD" outcomeIdentifier="FEEDBACK"
-              showHide="show"> Your answer is correct, but it would be more usual
-              to write it in the form &#160;&#160; <m:math display="block">
+          <td class="feedbackColumn">
+            <feedbackInline identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+              Correct
+            </feedbackInline>
+            <feedbackInline identifier="CORRECT-ORD" outcomeIdentifier="FEEDBACK" showHide="show">
+              Your answer is correct, but it would be more usual
+              to write it in the form &#160;&#160;
+              <m:math display="block">
                 <m:semantics>
                   <m:mrow>
                     <m:mn>6</m:mn>
@@ -124,32 +126,37 @@ No randomisation in template processing, CasProcess to set answer and buggy answ
                   </m:mrow>
                   <m:annotation encoding="LaTeX">\[6x-10\]</m:annotation>
                 </m:semantics>
-              </m:math>. </feedbackInline>
-            <feedbackInline identifier="NOT-SIMP" outcomeIdentifier="FEEDBACK"
-              showHide="show"> You have expanded the bracket correctly but failed
-              to simplify as the question asks. </feedbackInline>
-            <feedbackInline identifier="NOT-ALL-MULT" outcomeIdentifier="FEEDBACK"
-              showHide="show"> Remember that, when expanding brackets, all terms
+              </m:math>
+            </feedbackInline>
+            <feedbackInline identifier="NOT-SIMP" outcomeIdentifier="FEEDBACK" showHide="show">
+              You have expanded the bracket correctly but failed
+              to simplify as the question asks.
+            </feedbackInline>
+            <feedbackInline identifier="NOT-ALL-MULT" outcomeIdentifier="FEEDBACK" showHide="show">
+              Remember that, when expanding brackets, all terms
               inside must be multiplied by whatever is outside. However, you got
-              one term in the answer correct. </feedbackInline>
-            <feedbackInline identifier="WRONG-SIGN-CONSTANT"
-              outcomeIdentifier="FEEDBACK" showHide="show"> When expanding the
-              bracket the product of 2 and -5 is -10. However, you got one term in
-              the answer correct. </feedbackInline>
-            <feedbackInline identifier="FACTOR-ALL" outcomeIdentifier="FEEDBACK"
-              showHide="show"> The question expects you to rewrite the expression
-              without brackets. </feedbackInline>
-            <feedbackInline identifier="ORIG-EXPR" outcomeIdentifier="FEEDBACK"
-              showHide="show"> Your input is equivalent to the expression we
-              started with! </feedbackInline>
-            <feedbackInline identifier="INCORRECT" outcomeIdentifier="FEEDBACK"
-              showHide="show"> You should ask for tutor help on this question.
+              one term in the answer correct.
+            </feedbackInline>
+            <feedbackInline identifier="WRONG-SIGN-CONSTANT" outcomeIdentifier="FEEDBACK" showHide="show">
+              When expanding the bracket the product of 2 and -5 is -10. However, you got one term in
+              the answer correct.
+            </feedbackInline>
+            <feedbackInline identifier="FACTOR-ALL" outcomeIdentifier="FEEDBACK" showHide="show">
+              The question expects you to rewrite the expression
+              without brackets.
+            </feedbackInline>
+            <feedbackInline identifier="ORIG-EXPR" outcomeIdentifier="FEEDBACK" showHide="show">
+              Your input is equivalent to the expression we
+              started with!
+            </feedbackInline>
+            <feedbackInline identifier="INCORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+              You should ask for tutor help on this question.
             </feedbackInline>
           </td>
         </tr>
       </tbody>
     </table>
-    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
       <m:math display="block" id="mathML7">
         <m:semantics>
           <m:mtable>

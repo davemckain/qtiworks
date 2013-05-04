@@ -169,22 +169,22 @@
             >\[\qv{iA}(\qv{mX}+\qv{iAbsB})+\qv{iAbsC}\qv{mX}\]</m:annotation>
         </m:semantics>
       </m:math>and simplify the result.</p>
-    <table>
+    <table class="horizontalInteraction">
       <tbody>
         <tr>
-          <td>
+          <td class="interactionColumn">
             <customInteraction class="org.qtitools.mathassess.MathEntryInteraction"
               id="customInteraction0" ma:expectedLength="20"
               ma:printIdentifier="printMath" ma:syntax="text/x-maxima"
               responseIdentifier="RESPONSE"/>
           </td>
-          <td>
-            <feedbackInline id="feedbackInline0" identifier="CORRECT"
-              outcomeIdentifier="FEEDBACK" showHide="show"> Correct </feedbackInline>
-            <feedbackInline id="feedbackInline1" identifier="CORRECT-ORD"
-              outcomeIdentifier="FEEDBACK" showHide="show"> Your answer is
-              correct, but it would be more usual to write it in the form   
-                <m:math display="block" id="mathML1">
+          <td class="feedbackColumn">
+            <feedbackInline id="feedbackInline0" identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+              Correct
+            </feedbackInline>
+            <feedbackInline id="feedbackInline1" identifier="CORRECT-ORD" outcomeIdentifier="FEEDBACK" showHide="show">
+              Your answer is correct, but it would be more usual to write it in the form   
+              <m:math display="block" id="mathML1">
                 <m:semantics>
                   <m:mrow>
                     <m:mi>iApC</m:mi>
@@ -195,27 +195,30 @@
                   <m:annotation encoding="LaTeX"
                     >\[\qv{iApC}\qv{mX}+\qv{iAbsAB}\]</m:annotation>
                 </m:semantics>
-              </m:math>. </feedbackInline>
-            <feedbackInline id="feedbackInline2" identifier="NOT-SIMP"
-              outcomeIdentifier="FEEDBACK" showHide="show"> You have expanded the
-              bracket correctly but failed to simplify as the question asks. </feedbackInline>
-            <feedbackInline id="feedbackInline3" identifier="NOT-ALL-MULT"
-              outcomeIdentifier="FEEDBACK" showHide="show"> Remember that, when
+              </m:math>
+            </feedbackInline>
+            <feedbackInline id="feedbackInline2" identifier="NOT-SIMP" outcomeIdentifier="FEEDBACK" showHide="show">
+              You have expanded the bracket correctly but failed to simplify as the question asks.
+            </feedbackInline>
+            <feedbackInline id="feedbackInline3" identifier="NOT-ALL-MULT" outcomeIdentifier="FEEDBACK" showHide="show">
+              Remember that, when
               expanding brackets, all terms inside must be multiplied by whatever
-              is outside. However, you got one term in the answer correct. </feedbackInline>
-            <feedbackInline id="feedbackInline4" identifier="WRONG-SIGN-CONSTANT"
-              outcomeIdentifier="FEEDBACK" showHide="show"> When expanding the
-              bracket the product of <printedVariable id="printedVariable0"
-                identifier="iA"/> and <printedVariable id="printedVariable1"
-                identifier="iB"/> is <printedVariable id="printedVariable2"
-                identifier="iAB"/>. However, you got one term in the answer
-              correct. </feedbackInline>
-            <feedbackInline id="feedbackInline5" identifier="ORIG-EXPR"
-              outcomeIdentifier="FEEDBACK" showHide="show"> Your input is
-              equivalent to the expression we started with! </feedbackInline>
-            <feedbackInline id="feedbackInline6" identifier="INCORRECT"
-              outcomeIdentifier="FEEDBACK" showHide="show"> You should ask for
-              tutor help on this question. </feedbackInline>
+              is outside. However, you got one term in the answer correct.
+            </feedbackInline>
+            <feedbackInline id="feedbackInline4" identifier="WRONG-SIGN-CONSTANT" outcomeIdentifier="FEEDBACK" showHide="show">
+              When expanding the bracket the product of
+              <printedVariable id="printedVariable0" identifier="iA"/> and
+              <printedVariable id="printedVariable1" identifier="iB"/> is
+              <printedVariable id="printedVariable2" identifier="iAB"/>.
+              However, you got one term in the answer
+              correct.
+            </feedbackInline>
+            <feedbackInline id="feedbackInline5" identifier="ORIG-EXPR" outcomeIdentifier="FEEDBACK" showHide="show">
+              Your input is equivalent to the expression we started with!
+            </feedbackInline>
+            <feedbackInline id="feedbackInline6" identifier="INCORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+              You should ask for tutor help on this question.
+            </feedbackInline>
           </td>
         </tr>
       </tbody>

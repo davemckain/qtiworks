@@ -106,7 +106,7 @@
         </tr>
       </tbody>
     </table>
-    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+    <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
       <m:math display="block" id="mathML7">
         <m:semantics>
           <m:mtable>

@@ -81,17 +81,17 @@
     <p>
       <printedVariable id="printedVariable0" identifier="mQues"/>
      </p>
-    <table>
+    <table class="horizontalInteraction">
       <tbody>
         <tr>
-          <td>
+          <td class="interactionColumn">
             <customInteraction
               class="org.qtitools.mathassess.MathEntryInteraction"
               id="customInteraction0" ma:expectedLength="20"
               ma:printIdentifier="printMath" ma:syntax="text/x-maxima"
               responseIdentifier="RESPONSE"/>
           </td>
-          <td>
+          <td class="feedbackColumn">
             <feedbackInline id="feedbackInline0" identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
               Correct.
             </feedbackInline>
