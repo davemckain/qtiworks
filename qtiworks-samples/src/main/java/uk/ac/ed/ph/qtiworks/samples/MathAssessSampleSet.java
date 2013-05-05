@@ -47,8 +47,8 @@ public final class MathAssessSampleSet {
             + "that allow you to use the Maxima Computer Algebra system for some very sophisticated "
             + "assessment.",
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAA01a.xml", new String[] { "mathassess.css" }),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml", new String[] { "mathassess.css" }),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAC02-SR.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+//            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml", new String[] { "mathassess.css" }),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinCO-demo.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-newSRinRP.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD03a.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
