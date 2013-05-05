@@ -145,7 +145,10 @@ hence slightly easier to debug.
     <xsl:copy-of select="."/>
   </xsl:template>
 
-  <xsl:template match="text()">
+  <!-- FIXME: This template does not work correctly and I am not sure whether it is needed now.
+       It is causing stuff like '<math>...</math>and more' to trim the character 'a' from the
+       following text. -->
+  <xsl:template match="text()[false()]">
     <xsl:variable name="trimmed" as="xs:string">
       <xsl:choose>
         <xsl:when test="normalize-space(.)='' and (qw:is-xhtml-block-element(following-sibling::node()[1]) or qw:is-xhtml-block-element(preceding-sibling::node()[1]))">
