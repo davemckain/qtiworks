@@ -48,6 +48,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.mathassess.GlueValueBinder;
+import uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
@@ -81,6 +83,9 @@ import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.state.marshalling.ItemSessionStateXmlMarshaller;
 import uk.ac.ed.ph.jqtiplus.state.marshalling.TestSessionStateXmlMarshaller;
+import uk.ac.ed.ph.jqtiplus.value.RecordValue;
+import uk.ac.ed.ph.jqtiplus.value.SingleValue;
+import uk.ac.ed.ph.jqtiplus.value.Value;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlSourceLocationInformation;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltSerializationOptions;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
@@ -538,10 +543,29 @@ public class CandidateDataServices {
                 outcome.setOutcomeIdentifier(itemVariable.getIdentifier().toString());
                 outcome.setBaseType(itemVariable.getBaseType());
                 outcome.setCardinality(itemVariable.getCardinality());
-                outcome.setStringValue(itemVariable.getComputedValue().toQtiString());
+                outcome.setStringValue(stringifyQtiValue(itemVariable.getComputedValue()));
                 candidateSessionOutcomeDao.persist(outcome);
             }
         }
+    }
+
+    private String stringifyQtiValue(final Value value) {
+        if (qtiWorksDeploymentSettings.isEnableMathAssessExtension() && GlueValueBinder.isMathsContentRecord(value)) {
+            /* This is a special MathAssess "Maths Content" variable. In this case, we'll record
+             * just the ASCIIMath input form or the Maxima form, if either are available.
+             */
+            final RecordValue mathsValue = (RecordValue) value;
+            final SingleValue asciiMathInput = mathsValue.get(MathAssessConstants.FIELD_CANDIDATE_INPUT_IDENTIFIER);
+            if (asciiMathInput!=null) {
+                return "ASCIIMath[" + asciiMathInput.toQtiString() + "]";
+            }
+            final SingleValue maximaForm = mathsValue.get(MathAssessConstants.FIELD_MAXIMA_IDENTIFIER);
+            if (maximaForm!=null) {
+                return "Maxima[" + maximaForm.toQtiString() + "]";
+            }
+        }
+        /* Just convert to QTI string in the usual way */
+        return value.toQtiString();
     }
 
     private Document loadStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName) {

@@ -38,8 +38,9 @@ NB: This is used both while being presented, and during review.
   <xsl:param name="itemKey" as="xs:string"/>
 
   <!-- Action permissions -->
+  <xsl:param name="advanceTestItemAllowed" as="xs:boolean" required="yes"/>
+  <xsl:param name="endTestPartAllowed" as="xs:boolean" required="yes"/>
   <xsl:param name="testPartNavigationAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="finishItemAllowed" as="xs:boolean" required="yes"/>
 
   <!-- Relevant properties of EffectiveItemSessionControl for this item -->
   <xsl:param name="showFeedback" as="xs:boolean" required="yes"/>
@@ -104,8 +105,11 @@ NB: This is used both while being presented, and during review.
         <!-- Styling for JQuery -->
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.css"/>
 
-        <!-- QTIWorks Item styling -->
+        <!-- QTIWorks assessment styling -->
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
+
+        <!-- Include stylesheet declared within item -->
+        <xsl:apply-templates select="qti:stylesheet"/>
       </head>
       <body class="qtiworks assessmentItem assessmentTest">
 
@@ -135,6 +139,14 @@ NB: This is used both while being presented, and during review.
   <xsl:template name="qw:test-controls">
     <div class="sessionControl">
       <ul class="controls test">
+        <!-- Interacting state -->
+        <xsl:if test="$advanceTestItemAllowed">
+          <li>
+            <form action="{$webappContextPath}{$advanceTestItemUrl}" method="post">
+              <input type="submit" value="Next Question"/>
+            </form>
+          </li>
+        </xsl:if>
         <xsl:if test="$testPartNavigationAllowed">
           <li>
             <form action="{$webappContextPath}{$testPartNavigationUrl}" method="post">
@@ -142,10 +154,11 @@ NB: This is used both while being presented, and during review.
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$finishItemAllowed">
+        <xsl:if test="$endTestPartAllowed">
           <li>
-            <form action="{$webappContextPath}{$finishTestItemUrl}" method="post">
-              <input type="submit" value="Finish Question"/>
+            <form action="{$webappContextPath}{$endTestPartUrl}" method="post"
+              onsubmit="return confirm('Are you sure?')">
+              <input type="submit" value="End {$testOrTestPart}"/>
             </form>
           </li>
         </xsl:if>
@@ -219,6 +232,7 @@ NB: This is used both while being presented, and during review.
     <!-- Item title -->
     <h1 class="itemTitle">
       <xsl:apply-templates select="$itemSessionState" mode="item-status"/>
+      <xsl:value-of select="@title"/>
     </h1>
 
     <!-- Render item body -->
@@ -301,12 +315,24 @@ NB: This is used both while being presented, and during review.
   <!-- Overridden to add support for review state -->
   <xsl:template match="qw:itemSessionState" mode="item-status">
     <xsl:choose>
-      <!-- NB: Ordering of next 2 is significant -->
       <xsl:when test="$solutionMode">
         <div class="itemStatus review">Model Solution</div>
       </xsl:when>
       <xsl:when test="$reviewMode">
-        <div class="itemStatus review">Review</div>
+        <xsl:choose>
+          <xsl:when test="not(empty(@unboundResponseIdentifiers) and empty(@invalidResponseIdentifiers))">
+            <div class="itemStatus reviewInvalid">Review (Invalid Answer)</div>
+          </xsl:when>
+          <xsl:when test="@responded='true'">
+            <div class="itemStatus review">Review</div>
+          </xsl:when>
+          <xsl:when test="@entryTime!=''">
+            <div class="itemStatus reviewNotAnswered">Review (Not Answered)</div>
+          </xsl:when>
+          <xsl:otherwise>
+            <div class="itemStatus reviewNotSeen">Review (Not Seen)</div>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-imports/>

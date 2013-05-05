@@ -21,8 +21,12 @@ hence slightly easier to debug.
   <xsl:param name="contentType" as="xs:string"/>
   <xsl:param name="outputMethod" as="xs:string"/>
 
-  <!-- (This is the HTTPS-safe version of the MathJax CDN URL -->
-  <xsl:param name="mathJaxUrl" select="'//d3eoax9i5htok0.cloudfront.net/mathjax/1.1-latest/MathJax.js?config=MML_HTMLorMML-full'" as="xs:string"/>
+  <!--
+  This is the HTTPS-safe version of the MathJax CDN URL.
+  Note that the current HTTPS CDN does not work over HTTP, so
+  I have chosen to force HTTPS here.
+  -->
+  <xsl:param name="mathJaxUrl" select="'https://c328740.ssl.cf1.rackcdn.com/mathjax/2.1-latest/MathJax.js?config=MML_HTMLorMML'" as="xs:string"/>
   <xsl:param name="mathJaxConfig" as="xs:string?"/>
 
   <!-- ************************************************************ -->
@@ -111,16 +115,16 @@ hence slightly easier to debug.
   <xsl:template match="m:*">
     <xsl:choose>
       <xsl:when test="$serializationMethod='IE_MATHPLAYER'">
-        <xsl:element name="m:{local-name()}">
+        <xsl:element name="m:{local-name()}" namespace="http://www.w3.org/1998/Math/MathML">
           <xsl:copy-of select="@*"/>
           <xsl:apply-templates/>
         </xsl:element>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:copy>
+        <xsl:element name="{local-name()}" namespace="http://www.w3.org/1998/Math/MathML">
           <xsl:copy-of select="@*"/>
           <xsl:apply-templates/>
-        </xsl:copy>
+        </xsl:element>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -141,7 +145,10 @@ hence slightly easier to debug.
     <xsl:copy-of select="."/>
   </xsl:template>
 
-  <xsl:template match="text()">
+  <!-- FIXME: This template does not work correctly and I am not sure whether it is needed now.
+       It is causing stuff like '<math>...</math>and more' to trim the character 'a' from the
+       following text. -->
+  <xsl:template match="text()[false()]">
     <xsl:variable name="trimmed" as="xs:string">
       <xsl:choose>
         <xsl:when test="normalize-space(.)='' and (qw:is-xhtml-block-element(following-sibling::node()[1]) or qw:is-xhtml-block-element(preceding-sibling::node()[1]))">

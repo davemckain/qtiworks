@@ -105,8 +105,8 @@ instructorAssessmentRouting (action -> URL)
             </ul>
           </c:when>
           <c:otherwise>
-            <%-- No options exist yet, so allow try out with a default set --%>
-            <page:postLink path="${assessmentRouting['try']}/${deliverySettings.id}" title="Try Out"/>
+            <%-- No options exist yet, so allow try out with a default set, which will be created automatically --%>
+            <page:postLink path="${assessmentRouting['try']}" title="Try Out"/>
             (You probably want to create some delivery settings to get more control over this!)
           </c:otherwise>
         </c:choose>

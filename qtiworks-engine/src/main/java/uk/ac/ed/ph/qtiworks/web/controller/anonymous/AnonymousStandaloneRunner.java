@@ -61,8 +61,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -84,8 +82,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class AnonymousStandaloneRunner {
-
-    private static final Logger logger = LoggerFactory.getLogger(AnonymousStandaloneRunner.class);
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -129,7 +125,7 @@ public class AnonymousStandaloneRunner {
             /* Make sure the required DeliverySettings exists */
             DeliverySettings deliverySettings = assessmentManagementService.lookupDeliverySettings(command.getDsid());
 
-            /* Now upload the Assessment and validate it */
+            /* Upload the Assessment and validate it */
             final Assessment assessment;
             assessment = assessmentManagementService.importAssessment(command.getFile());
             final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessment.getId().longValue());
@@ -138,11 +134,10 @@ public class AnonymousStandaloneRunner {
                 return "standalonerunner/invalidUpload";
             }
 
-            /* TEMP! Override user's delivery settings for tests, as they can currently only
-             * specify *item* settings, which are not appropriate
+            /* If we uploaded an item then we'll use the specified delivery settings.
+             * For tests, we'll use some default settings.
              */
             if (assessment.getAssessmentType()==AssessmentObjectType.ASSESSMENT_TEST) {
-                logger.warn("FIXME! Replacing user's delivery settings as item settings can't be used with a test");
                 deliverySettings = deliverySettingsDao.getAllPublicSettingsForType(AssessmentObjectType.ASSESSMENT_TEST).get(0);
             }
 

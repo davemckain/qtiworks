@@ -47,43 +47,44 @@ import java.util.Set;
  * @author David McKain
  */
 public final class QtiSampleAssessment implements Serializable {
-    
+
     private static final long serialVersionUID = -1829298855881792575L;
-    
+
     public static enum Feature {
         /* Add things here as required */
         NOT_SCHEMA_VALID, /* Example is not schema valid, but kept for historic purposes */
         NOT_FULLY_VALID,  /* Example isn't fully valid (according to our validation process) */
         REQUIRES_MATHASSES, /* Requires MathAssess extensions */
+        NOT_RUNNABLE,     /* QTIWorks can't run this example yet */
     }
-    
+
     private final AssessmentObjectType type;
     private final DeliveryStyle deliveryStyle;
     private final String assessmentHref;
     private final Set<String> otherQtiHrefs;
     private final Set<Feature> features;
     private final Set<String> fileHrefs;
-    
+
     /** Use this constructor for sample *items* only */
-    public QtiSampleAssessment(DeliveryStyle deliveryStyle, String itemHref, Feature... features) {
+    public QtiSampleAssessment(final DeliveryStyle deliveryStyle, final String itemHref, final Feature... features) {
         this(deliveryStyle, itemHref, new String[0], features);
     }
-    
+
     /** Use this constructor for sample *items* only */
-    public QtiSampleAssessment(DeliveryStyle deliveryStyle, String itemHref,
-            String[] fileRelativeHrefs, Feature... features) {
+    public QtiSampleAssessment(final DeliveryStyle deliveryStyle, final String itemHref,
+            final String[] fileRelativeHrefs, final Feature... features) {
         this(AssessmentObjectType.ASSESSMENT_ITEM, deliveryStyle, itemHref, new String[0], fileRelativeHrefs, features);
     }
-    
+
     /** Use this constructor for both items or tests */
-    public QtiSampleAssessment(AssessmentObjectType type, DeliveryStyle deliveryStyle,
-            String assessmentHref, String[] otherQtiRelativeHrefs, Feature... features) {
+    public QtiSampleAssessment(final AssessmentObjectType type, final DeliveryStyle deliveryStyle,
+            final String assessmentHref, final String[] otherQtiRelativeHrefs, final Feature... features) {
         this(type, deliveryStyle, assessmentHref, otherQtiRelativeHrefs, new String[0], features);
     }
-    
+
     /** Use this constructor for both items or tests */
-    public QtiSampleAssessment(AssessmentObjectType type, DeliveryStyle deliveryStyle,
-            String assessmentHref, String[] otherQtiRelativeHrefs, String[] fileRelativeHrefs, Feature... features) {
+    public QtiSampleAssessment(final AssessmentObjectType type, final DeliveryStyle deliveryStyle,
+            final String assessmentHref, final String[] otherQtiRelativeHrefs, final String[] fileRelativeHrefs, final Feature... features) {
         this.type = type;
         this.deliveryStyle = deliveryStyle;
         this.assessmentHref = assessmentHref;
@@ -91,56 +92,56 @@ public final class QtiSampleAssessment implements Serializable {
         this.fileHrefs = resolveHrefs(assessmentHref, fileRelativeHrefs);
         this.features = new HashSet<Feature>(Arrays.asList(features));
     }
-    
-    private static Set<String> resolveHrefs(final String baseHref, String... relativeHrefs) {
-        Set<String> result = new HashSet<String>();
-        for (String relativeHref : relativeHrefs) {
+
+    private static Set<String> resolveHrefs(final String baseHref, final String... relativeHrefs) {
+        final Set<String> result = new HashSet<String>();
+        for (final String relativeHref : relativeHrefs) {
             result.add(resolveHref(baseHref, relativeHref));
         }
         return result;
     }
-    
-    private static String resolveHref(String baseHref, String relativeHref) {
+
+    private static String resolveHref(final String baseHref, final String relativeHref) {
         return URI.create(baseHref).resolve(relativeHref).toString();
     }
-    
+
     public AssessmentObjectType getType() {
         return type;
     }
-    
+
     public DeliveryStyle getDeliveryStyle() {
         return deliveryStyle;
     }
-    
+
     public String getAssessmentHref() {
         return assessmentHref;
     }
-    
+
     public Set<String> getOtherQtiHrefs() {
         return otherQtiHrefs;
     }
-    
+
     public Set<String> getFileHrefs() {
         return fileHrefs;
     }
-    
+
     public Set<Feature> getFeatures() {
         return features;
     }
-    
-    public boolean hasFeature(Feature feature) {
+
+    public boolean hasFeature(final Feature feature) {
         return features.contains(feature);
     }
-    
-    
+
+
     public URI assessmentClassPathUri() {
         return toClassPathUri(assessmentHref);
     }
-    
+
     public URI fileClassPathUri(final String href) {
         return toClassPathUri(href);
     }
-    
+
     /**
      * Converts the href (relative file path) of a sample resource to a ClassPath URI
      * that can be used to load the resource.
@@ -148,8 +149,8 @@ public final class QtiSampleAssessment implements Serializable {
     public static URI toClassPathUri(final String sampleResourceHref) {
         return URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/" + sampleResourceHref);
     }
-    
-    
+
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))

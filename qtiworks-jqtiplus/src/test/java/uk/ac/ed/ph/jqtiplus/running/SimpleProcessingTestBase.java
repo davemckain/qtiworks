@@ -180,8 +180,12 @@ public abstract class SimpleProcessingTestBase extends SinglePartTestBase {
     }
 
     protected void handleChoiceResponse(final String choiceIdentifier) {
+        handleChoiceResponse(operationTimestamp, choiceIdentifier);
+    }
+
+    protected void handleChoiceResponse(final Date timestamp, final String choiceIdentifier) {
         final Map<Identifier, ResponseData> responseMap = new HashMap<Identifier, ResponseData>();
         responseMap.put(ITEM_RESPONSE, new StringResponseData(choiceIdentifier));
-        testSessionController.handleResponsesToCurrentItem(operationTimestamp, responseMap);
+        testSessionController.handleResponsesToCurrentItem(timestamp, responseMap);
     }
 }

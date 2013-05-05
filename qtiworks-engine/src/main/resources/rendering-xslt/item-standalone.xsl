@@ -82,7 +82,7 @@ Renders a standalone assessmentItem
         <!-- Styling for JQuery -->
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.css"/>
 
-        <!-- QTIWorks Item styling -->
+        <!-- QTIWorks assessment styling -->
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
 
         <!-- Include stylesheet declared within item -->
@@ -123,7 +123,7 @@ Renders a standalone assessmentItem
                 A model solution to this assessment is shown below.
               </xsl:when>
               <xsl:otherwise>
-                This assessment is now complete.
+                This assessment is now finished.
               </xsl:otherwise>
             </xsl:choose>
           </div>
@@ -209,6 +209,11 @@ Renders a standalone assessmentItem
             </form>
           </li>
         </xsl:if>
+        <li>
+          <form action="{$webappContextPath}{$exitUrl}" method="post">
+            <input type="submit" value="Exit"/>
+          </form>
+        </li>
       </ul>
     </div>
   </xsl:template>
@@ -236,11 +241,6 @@ Renders a standalone assessmentItem
             </form>
           </li>
         </xsl:if>
-        <li>
-          <form action="{$webappContextPath}{$exitUrl}" method="post">
-            <input type="submit" value="Exit"/>
-          </form>
-        </li>
       </ul>
     </div>
   </xsl:template>

@@ -53,7 +53,7 @@ public final class TestRenderingOptions extends AbstractRenderingOptions {
     private String selectTestItemUrl;
 
     @NotNull
-    private String finishTestItemUrl;
+    private String advanceTestItemUrl;
 
     @NotNull
     private String endTestPartUrl;
@@ -84,12 +84,12 @@ public final class TestRenderingOptions extends AbstractRenderingOptions {
     }
 
 
-    public String getFinishTestItemUrl() {
-        return finishTestItemUrl;
+    public String getAdvanceTestItemUrl() {
+        return advanceTestItemUrl;
     }
 
-    public void setFinishTestItemUrl(final String finishTestItemUrl) {
-        this.finishTestItemUrl = finishTestItemUrl;
+    public void setAdvanceTestItemUrl(final String advanceTestItemUrl) {
+        this.advanceTestItemUrl = advanceTestItemUrl;
     }
 
 

@@ -41,6 +41,9 @@ rendering.
   <!-- Raw response inputs -->
   <xsl:variable name="responseInputs" select="$itemSessionState/qw:responseInput" as="element(qw:responseInput)*"/>
 
+  <!-- Uncommitted response values -->
+  <xsl:variable name="uncommittedResponseValues" select="$itemSessionState/qw:uncommittedResponseValue" as="element(qw:uncommittedResponseValue)*"/>
+
   <!-- Bad/invalid responses -->
   <xsl:variable name="unboundResponseIdentifiers" select="$itemSessionState/@unboundResponseIdentifiers" as="xs:string*"/>
   <xsl:variable name="invalidResponseIdentifiers" select="$itemSessionState/@invalidResponseIdentifiers" as="xs:string*"/>
@@ -129,6 +132,7 @@ rendering.
     <xsl:sequence select="$document/qti:assessmentItem/qti:responseDeclaration[@identifier=$identifier]"/>
   </xsl:function>
 
+  <!-- NB: This now checks *uncommitted* responses first, then *committed* responses -->
   <xsl:function name="qw:get-response-value" as="element(qw:responseVariable)?">
     <xsl:param name="document" as="document-node()"/>
     <xsl:param name="identifier" as="xs:string"/>
@@ -158,7 +162,17 @@ rendering.
           </qw:responseVariable>
         </xsl:for-each>
       </xsl:when>
+      <xsl:when test="$uncommittedResponseValues[@identifier=$identifier]">
+        <!-- There's an uncommitted value here. We don't distinguish between uncommitted and committed during rendering -->
+        <xsl:for-each select="$uncommittedResponseValues[@identifier=$identifier]">
+          <qw:responseVariable>
+            <xsl:copy-of select="@cardinality, @baseType"/>
+            <xsl:copy-of select="qw:value"/>
+          </qw:responseVariable>
+        </xsl:for-each>
+      </xsl:when>
       <xsl:otherwise>
+        <!-- This is a committed value, which is already in a <qw:responseVariable/> -->
         <xsl:sequence select="$responseValues[@identifier=$identifier]"/>
       </xsl:otherwise>
     </xsl:choose>
@@ -362,6 +376,45 @@ rendering.
       </xsl:when>
       <xsl:otherwise>
         <xsl:element name="mi" namespace="http://www.w3.org/1998/Math/MathML">
+          <xsl:copy-of select="@*"/>
+          <xsl:apply-templates/>
+        </xsl:element>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <!-- mathml (ci) -->
+  <!--
+  We are extending the spec here in 2 ways:
+  1. Allowing MathsContent variables to be substituted
+  2. Allowing arbitrary response and outcome variables to be substituted.
+  -->
+  <xsl:template match="qti:assessmentItem//m:ci" as="element()*">
+    <xsl:variable name="content" select="normalize-space(text())" as="xs:string"/>
+    <xsl:variable name="templateValue" select="qw:get-template-value($content)" as="element(qw:templateVariable)?"/>
+    <xsl:variable name="responseValue" select="qw:get-response-value(/, $content)" as="element(qw:responseVariable)?"/>
+    <xsl:variable name="outcomeValue" select="qw:get-outcome-value($content)" as="element(qw:outcomeVariable)?"/>
+    <xsl:choose>
+      <xsl:when test="exists($templateValue) and qw:get-template-declaration(/, $content)[@mathVariable='true']">
+        <xsl:call-template name="substitute-ci">
+          <xsl:with-param name="identifier" select="$content"/>
+          <xsl:with-param name="value" select="$templateValue"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="exists($responseValue)">
+        <xsl:call-template name="substitute-ci">
+          <xsl:with-param name="identifier" select="$content"/>
+          <xsl:with-param name="value" select="$responseValue"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:when test="exists($outcomeValue)">
+        <xsl:call-template name="substitute-ci">
+          <xsl:with-param name="identifier" select="$content"/>
+          <xsl:with-param name="value" select="$outcomeValue"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:element name="ci" namespace="http://www.w3.org/1998/Math/MathML">
           <xsl:copy-of select="@*"/>
           <xsl:apply-templates/>
         </xsl:element>

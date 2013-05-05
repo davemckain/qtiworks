@@ -50,13 +50,14 @@ import org.slf4j.LoggerFactory;
  * a given base directory, which is useful for locating resources within (expanded) content
  * packages.
  * <p>
- * By default, the URI scheme will be called 'package', but this can be changed as required.
+ * By name of the URI scheme is defined by the {@link CustomUriScheme} used to create this
+ * locator.
  *
- * Example:
+ * Example with a {@link CustomUriScheme} using the 'package' scheme:
  *
  * <code>package:/a/b/c.xml</code> -> <code>File base/a/b/c.xml</code>
  *
- * A check is included to ensure that the resulting path does not end up outside the
+ * A check is included to ensure that the resulting path does not escape the "sandbox" of the
  * required base directory.
  *
  * @author David McKain

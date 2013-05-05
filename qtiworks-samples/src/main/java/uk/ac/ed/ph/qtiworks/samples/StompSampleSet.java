@@ -41,7 +41,7 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
  * @author David McKain
  */
 public final class StompSampleSet {
-    
+
     private static final QtiSampleSet instance = new QtiSampleSet("SToMP examples",
             "stomp/Examples from Dick Bacon's SToMP system",
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/a_mcq_dkG2.xml", new String[] { "ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
@@ -61,15 +61,15 @@ public final class StompSampleSet {
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/hottext.xml", new String[] { "ststyle.css" }),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/meanGS.xml", new String[] { "ststyle.css" }),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/nel1_1pg.xml", new String[] { "ststyle.css" }, Feature.NOT_SCHEMA_VALID, Feature.NOT_FULLY_VALID),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/precisionGS.xml", new String[] { "ststyle.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/precisionGS.xml", new String[] { "ststyle.css" }, Feature.NOT_RUNNABLE),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/slider2.xml", new String[] { "ststyle.css" }),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/xchoiceS.xml", new String[] { "ststyle.css" })
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "stomp/xchoiceS.xml", new String[] { "ststyle.css" }, Feature.NOT_RUNNABLE)
     );
-    
+
     private StompSampleSet() {
         /* No constructor */
     }
-    
+
     public static QtiSampleSet instance() {
         return instance;
     }

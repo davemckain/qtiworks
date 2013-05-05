@@ -47,9 +47,9 @@ itemDeliverySettingsList
             You may upload any of the following to the validator:
           </p>
           <ul>
-            <li>An IMS Content Package containing a QTI 2.1 Assessment Item plus any related resources, such as images, response processing templates...</li>
+            <li>An IMS Content Package containing a QTI 2.1 (or 2.0) Assessment Item, plus any related resources, such as images, response processing templates...</li>
             <li>An IMS Content Package containing a QTI 2.1 Assessment Test, its Assessment Items, plus any related resources.</li>
-            <li>A self-contained QTI 2.1 Assessment Item XML file.</li>
+            <li>A self-contained QTI 2.1 (or 2.0) Assessment Item XML file.</li>
           </ul>
         </aside>
       </div>
@@ -61,7 +61,7 @@ itemDeliverySettingsList
         <div class="workflowStep">2</div>
       </div>
       <div class="grid_5">
-        Select delivery settings:
+        Select delivery settings (if uploading an item):
         <ul class="dsSelector">
           <c:forEach var="ds" items="${itemDeliverySettingsList}">
             <c:set var="checked" value="${standaloneRunCommand.dsid==ds.id}"/>

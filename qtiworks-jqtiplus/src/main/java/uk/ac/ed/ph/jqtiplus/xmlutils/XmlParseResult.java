@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
@@ -43,7 +45,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Encapsulates the diagnostic results of parsing (and optionally schema-validating) XML
- * 
+ *
  * @author David McKain
  */
 public final class XmlParseResult implements Serializable {
@@ -60,10 +62,10 @@ public final class XmlParseResult implements Serializable {
     private final List<String> supportedSchemaNamespaces;
     private final List<String> unsupportedSchemaNamespaces;
 
-    public XmlParseResult(URI systemId, boolean parsed, boolean validated,
-            List<SAXParseException> warnings, List<SAXParseException> errors,
-            List<SAXParseException> fatalErrors, List<String> unresolvedEntitySystemIds,
-            List<String> supportedSchemaNamespaces, List<String> unsupportedSchemaNamespaces) {
+    public XmlParseResult(final URI systemId, final boolean parsed, final boolean validated,
+            final List<SAXParseException> warnings, final List<SAXParseException> errors,
+            final List<SAXParseException> fatalErrors, final List<String> unresolvedEntitySystemIds,
+            final List<String> supportedSchemaNamespaces, final List<String> unsupportedSchemaNamespaces) {
         this.systemId = systemId;
         this.parsed = parsed;
         this.validated = validated;
@@ -88,18 +90,21 @@ public final class XmlParseResult implements Serializable {
         return validated;
     }
 
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<SAXParseException> getWarnings() {
         return warnings;
     }
 
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<SAXParseException> getErrors() {
         return errors;
     }
 
+    @ObjectDumperOptions(DumpMode.DEEP)
     public List<SAXParseException> getFatalErrors() {
         return fatalErrors;
     }
-    
+
     public List<String> getUnresolvedEntitySystemIds() {
         return unresolvedEntitySystemIds;
     }

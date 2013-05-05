@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.samples;
 
+import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment.Feature;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
@@ -49,27 +51,27 @@ import java.util.List;
  * @author David McKain
  */
 public final class QtiSampleSet implements Serializable, Iterable<QtiSampleAssessment> {
-    
+
     private static final long serialVersionUID = 5889801740586064839L;
-    
+
     private final String title;
     private final String description;
     private final List<QtiSampleAssessment> assessments;
-    
-    public QtiSampleSet(String title, String description, QtiSampleAssessment... assessments) {
+
+    public QtiSampleSet(final String title, final String description, final QtiSampleAssessment... assessments) {
         this(title, description, Arrays.asList(assessments));
     }
-    
-    public QtiSampleSet(String title, String description, List<QtiSampleAssessment> assessments) {
+
+    public QtiSampleSet(final String title, final String description, final List<QtiSampleAssessment> assessments) {
         this.title = title;
         this.description = description;
         this.assessments = assessments;
     }
-    
+
     public String getTitle() {
         return title;
     }
-    
+
     public String getDescription() {
         return description;
     }
@@ -78,41 +80,38 @@ public final class QtiSampleSet implements Serializable, Iterable<QtiSampleAsses
     public Iterator<QtiSampleAssessment> iterator() {
         return assessments.iterator();
     }
-    
+
     public List<QtiSampleAssessment> getQtiSampleAssessments() {
         return assessments;
     }
-    
-    public QtiSampleSet havingType(AssessmentObjectType type) {
-        List<QtiSampleAssessment> filtered = new ArrayList<QtiSampleAssessment>();
-        for (QtiSampleAssessment resource : assessments) {
+
+    public QtiSampleSet havingType(final AssessmentObjectType type) {
+        final List<QtiSampleAssessment> filtered = new ArrayList<QtiSampleAssessment>();
+        for (final QtiSampleAssessment resource : assessments) {
             if (resource.getType()==type) {
                 filtered.add(resource);
             }
         }
         return new QtiSampleSet(title, description, filtered);
     }
-    
-    public QtiSampleSet havingFeature(QtiSampleAssessment.Feature feature) {
-        List<QtiSampleAssessment> filtered = new ArrayList<QtiSampleAssessment>();
-        for (QtiSampleAssessment resource : assessments) {
-            if (resource.getFeatures().contains(feature)) {
+
+    public QtiSampleSet withoutFeatures(final QtiSampleAssessment.Feature... unwantedFeatures) {
+        final List<QtiSampleAssessment> filtered = new ArrayList<QtiSampleAssessment>();
+        for (final QtiSampleAssessment resource : assessments) {
+            boolean hasUnwantedFeature = false;
+            for (final Feature unwantedFeature : unwantedFeatures) {
+                if (resource.getFeatures().contains(unwantedFeature)) {
+                    hasUnwantedFeature = true;
+                    break;
+                }
+            }
+            if (!hasUnwantedFeature) {
                 filtered.add(resource);
             }
         }
         return new QtiSampleSet(title, description, filtered);
     }
-    
-    public QtiSampleSet withoutFeature(QtiSampleAssessment.Feature feature) {
-        List<QtiSampleAssessment> filtered = new ArrayList<QtiSampleAssessment>();
-        for (QtiSampleAssessment resource : assessments) {
-            if (!resource.getFeatures().contains(feature)) {
-                filtered.add(resource);
-            }
-        }
-        return new QtiSampleSet(title, description, filtered);
-    }
-    
+
     @Override
     public String toString() {
         return ObjectUtilities.beanToString(this);

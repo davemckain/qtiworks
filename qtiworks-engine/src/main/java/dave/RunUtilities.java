@@ -34,6 +34,7 @@
 package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
@@ -50,7 +51,7 @@ public final class RunUtilities {
         setBaseOptions(result);
         result.setTestPartNavigationUrl("/test-part-navigation");
         result.setSelectTestItemUrl("/select-item");
-        result.setFinishTestItemUrl("/finish-item");
+        result.setAdvanceTestItemUrl("/finish-item");
         result.setEndTestPartUrl("/end-test-part");
         result.setReviewTestPartUrl("/review-test-part");
         result.setReviewTestItemUrl("/review-item");
@@ -68,6 +69,12 @@ public final class RunUtilities {
         result.setHardResetUrl("/reset-hard");
         result.setSolutionUrl("/solution");
         result.setExitUrl("/terminate");
+        return result;
+    }
+
+    public static ItemAuthorViewRenderingOptions createItemAuthorViewRenderingOptions() {
+        final ItemAuthorViewRenderingOptions result = new ItemAuthorViewRenderingOptions();
+        setBaseOptions(result);
         return result;
     }
 

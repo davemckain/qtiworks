@@ -186,8 +186,8 @@ body {
 }
 
 /************************************************************/
-
 /* MathEntryInteraction styling for MathAssess */
+
 .assessmentItem .mathEntryInteraction {
   border: 1px solid #ddedfc;
   background-color: #edf1f6;
@@ -208,13 +208,13 @@ body {
 
 .assessmentItem .mathEntryInteraction .inputPanel {
   line-height: 1em;
-  text-align: left;
 }
 
 .assessmentItem .mathEntryInteraction.horizontal .inputPanel {
   width: 45%;
   float: left;
   margin: 2em 0;
+  text-align: left;
 }
 
 .assessmentItem .mathEntryInteraction.vertical .inputPanel {

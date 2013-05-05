@@ -104,12 +104,12 @@ import org.slf4j.LoggerFactory;
  *     changing the state.)</li>
  *   <li>{@link #exitTest(Date)}}</li>
  * </ul>
- * Navigation within a {@link TestPart} depends on its {@link NavigationMode:
+ * Navigation within a {@link TestPart} depends on its {@link NavigationMode}:
  * <ul>
  *   <li>Linear mode:
  *     <ul>
  *       <li>{@link #enterNextAvailableTestPart(Date)} will select the first available item</li>
- *       <li>Use {@link #endItemLinear(Date)} to navigate through items</li>
+ *       <li>Use {@link #advanceItemLinear(Date)} to navigate through items</li>
  *     </ul>
  *   </li>
  *   <li>Nonlinear mode:
@@ -618,7 +618,7 @@ public final class TestSessionController extends TestProcessingController {
 	    final TestPart currentTestPart = expectTestPart(currentTestPartNode);
 	    final List<TestPlanNode> itemRefNodes = currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF);
 	    if (currentTestPart.getSubmissionMode()==SubmissionMode.SIMULTANEOUS) {
-	        /* We're in SIMULTANEOUS mode. Commit responses on each item then run RP */
+	        /* We're in SIMULTANEOUS mode. Commit responses on each item that has been visited, then run RP */
 	        for (final TestPlanNode itemRefNode : itemRefNodes) {
 	            final ItemSessionController itemSessionController = getItemSessionController(itemRefNode);
 	            final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
@@ -817,8 +817,9 @@ public final class TestSessionController extends TestProcessingController {
 
     /**
      * Returns whether the currently-selected item within a {@link TestPart} with
-     * {@link NavigationMode#LINEAR} may be ended. (Ending may be prevented by
-     * {@link ItemSessionControl} conditions.)
+     * {@link NavigationMode#LINEAR} may be advanced. (If the {@link TestPart} has
+     * {@link SubmissionMode#INDIVIDUAL} then advancing ends te item session, which may
+     * be prevented by {@link ItemSessionControl} conditions.)
      * <p>
      * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#LINEAR}
      * navigation mode. An item must be selected.
@@ -831,7 +832,7 @@ public final class TestSessionController extends TestProcessingController {
      *   if the current {@link TestPart} does not have {@link NavigationMode#NONLINEAR},
      *   or if there is no currently selected item.
      */
-    public boolean mayEndItemLinear() {
+    public boolean mayAdvanceItemLinear() {
         final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
         final TestPart currentTestPart = assertLinearTestPart(currentTestPartNode);
         final TestPlanNodeKey currentItemKey = assertItemSelected();
@@ -857,15 +858,19 @@ public final class TestSessionController extends TestProcessingController {
     }
 
     /**
-     * Ends the currently-selected item within a {@link TestPart} with
+     * Advances the currently-selected item within a {@link TestPart} with
      * {@link NavigationMode#LINEAR}, if possible. The test will then advance
-     * to the next available item, or end the {@link TestPart}.
+     * to the next available item, or will end the {@link TestPart}.
+     * <p>
+     * If the {@link TestPart} has {@link SubmissionMode#INDIVIDUAL} then the current item session
+     * will be ended first. Otherwise, the current item session will be suspended.
      * <p>
      * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#LINEAR}
-     * navigation mode. An item must be selected. The effective {@link ItemSessionControl} for
-     * the selected item must allow it to be ended.
+     * navigation mode. An item must be selected. If we are in {@link SubmissionMode#INDIVIDUAL} then
+     * the effective {@link ItemSessionControl} for the selected item must allow it to be ended.
      * <p>
-     * Postcondition: Item session will be ended.
+     * Postcondition: Item session will be ended (if in {@link SubmissionMode#INDIVIDUAL)} or
+     * suspended (if in {@link SubmissionMode#SIMULTANEOUS}).
      *
      * @param timestamp timestamp for this operation, which must not be null
      *
@@ -876,10 +881,10 @@ public final class TestSessionController extends TestProcessingController {
      * @throws QtiCandidateStateException if we are not currently in a {@link TestPart},
      *   if the current {@link TestPart} does not have {@link NavigationMode#NONLINEAR},
      *   if there is no currently selected item, or if the effective {@link ItemSessionControl}
-     *   for the item does not allow it to be ended.
+     *   for the item does not allow it to be ended (when in {@link SubmissionMode#SIMULTANEOUS} mode).
      * @throws IllegalArgumentException if timestamp is null
      */
-    public TestPlanNode endItemLinear(final Date timestamp) {
+    public TestPlanNode advanceItemLinear(final Date timestamp) {
         Assert.notNull(timestamp, "timestamp");
         final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
         final TestPart currentTestPart = assertLinearTestPart(currentTestPartNode);
@@ -889,7 +894,8 @@ public final class TestSessionController extends TestProcessingController {
         /* Make sure item can be ended (see mayEndLinearItem() for logic summary) */
         final ItemSessionState itemSessionState = expectItemRefState(currentItemKey);
         final TestPlanNode currentItemRefNode = expectItemRefNode(currentItemKey);
-        if (currentTestPart.getSubmissionMode()==SubmissionMode.INDIVIDUAL) {
+        final SubmissionMode submissionMode = currentTestPart.getSubmissionMode();
+        if (submissionMode==SubmissionMode.INDIVIDUAL) {
             final EffectiveItemSessionControl effectiveItemSessionControl = testProcessingMap.resolveEffectiveItemSessionControl(currentItemRefNode);
             if (!itemSessionState.isResponded() && !effectiveItemSessionControl.isAllowSkipping()) {
                 throw new QtiCandidateStateException("Item " + currentItemKey + " has not been responded and allowSkipping=false, so ending item is forbidden");
@@ -899,11 +905,17 @@ public final class TestSessionController extends TestProcessingController {
             }
         }
 
-        /* End item (if it hasn't done so during RP) */
         final ItemSessionController currentItemSessionController = getItemSessionController(currentItemRefNode);
-        final ItemSessionState currentItemSessionState = currentItemSessionController.getItemSessionState();
-        if (!currentItemSessionState.isEnded()) {
-        	currentItemSessionController.endItem(timestamp);
+        if (submissionMode==SubmissionMode.INDIVIDUAL) {
+            /* We're in INDIVIDUAL mode, so end item (if that hasn't already happened during RP) */
+            final ItemSessionState currentItemSessionState = currentItemSessionController.getItemSessionState();
+            if (!currentItemSessionState.isEnded()) {
+                currentItemSessionController.endItem(timestamp);
+            }
+        }
+        else {
+            /* We're in SIMULTANEOUS mode, so suspend the item session */
+            currentItemSessionController.suspendItemSession(timestamp);
         }
 
         /* Update duration on test and testPart */

@@ -13,449 +13,420 @@
   toolName="Mathqurate"
   toolVersion="0.9.7b"
   xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd">
-    <responseDeclaration baseType="float" cardinality="single" identifier="RESPONSE1"/>
-    <responseDeclaration baseType="float" cardinality="single" identifier="RESPONSE2"/>
-    <responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
-    <responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST"/>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE">
-        <defaultValue>
-            <value>0.0</value>
-        </defaultValue>
-    </outcomeDeclaration>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE1"/>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE2"/>
-    <outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="FEEDBACK"/>
-    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenSolution">
-        <defaultValue>
-            <value>false</value>
-        </defaultValue>
-    </outcomeDeclaration>
-    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenHint">
-        <defaultValue>
-            <value>false</value>
-        </defaultValue>
-    </outcomeDeclaration>
-    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="EMPTY"/>
-    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKHINT">
-        <defaultValue>
-            <value>askhint</value>
-        </defaultValue>
-    </outcomeDeclaration>
-    <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKSOLUTION">
-        <defaultValue>
-            <value>asksolution</value>
-        </defaultValue>
-    </outcomeDeclaration>
-    <outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="SOLPARTS"/>
-    <outcomeDeclaration baseType="boolean" cardinality="single" identifier="odummy"/>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="foVal1"/>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="foDVal1"/>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="foVal2"/>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="foDVal2"/>
-    <templateDeclaration baseType="boolean" cardinality="single" identifier="keepRandomSeed" mathVariable="false" paramVariable="false"/>
-    <templateDeclaration baseType="boolean" cardinality="single" identifier="doSubst" mathVariable="false" paramVariable="false">
-        <defaultValue>
-            <value>true</value>
-        </defaultValue>
-    </templateDeclaration>
-    <templateDeclaration baseType="integer" cardinality="single" identifier="iRandomSeed" mathVariable="false" paramVariable="false"/>
-    <templateDeclaration baseType="boolean" cardinality="single" identifier="tdummy" mathVariable="false" paramVariable="false"/>
-    <templateDeclaration baseType="identifier" cardinality="multiple" identifier="showSolParts" mathVariable="false" paramVariable="false"/>
-    <templateDeclaration baseType="integer" cardinality="single" identifier="iA" mathVariable="true" paramVariable="false">
-        <defaultValue>
-            <value>0</value>
-        </defaultValue>
-    </templateDeclaration>
-    <templateDeclaration baseType="integer" cardinality="single" identifier="iB" mathVariable="true" paramVariable="false">
-        <defaultValue>
-            <value>0</value>
-        </defaultValue>
-    </templateDeclaration>
-    <templateDeclaration baseType="integer" cardinality="single" identifier="iAbsB" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration cardinality="record" identifier="mSignB" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration baseType="integer" cardinality="single" identifier="iC" mathVariable="true" paramVariable="false">
-        <defaultValue>
-            <value>0</value>
-        </defaultValue>
-    </templateDeclaration>
-    <templateDeclaration baseType="integer" cardinality="single" identifier="iAbsC" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration cardinality="record" identifier="mSignC" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration cardinality="record" identifier="mQuad" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration cardinality="record" identifier="mDeriv" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration baseType="integer" cardinality="ordered" identifier="iRandomState" mathVariable="false" paramVariable="false"/>
-    <templateDeclaration baseType="float" cardinality="single" identifier="fStatPt" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration baseType="float" cardinality="single" identifier="fXDec" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration baseType="float" cardinality="single" identifier="fXInc" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration baseType="float" cardinality="single" identifier="fYDec" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration baseType="float" cardinality="single" identifier="fYInc" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration baseType="float" cardinality="single" identifier="fDYDec" mathVariable="true" paramVariable="false"/>
-    <templateDeclaration baseType="float" cardinality="single" identifier="fDYInc" mathVariable="true" paramVariable="false"/>
-    <templateProcessing>
-        <setTemplateValue identifier="tdummy">
-            <customOperator class="org.qtitools.mathassess.ScriptRule" ma:syntax="text/x-maxima">
-                <baseValue baseType="string"><![CDATA[
-
+  <responseDeclaration baseType="float" cardinality="single" identifier="RESPONSE1"/>
+  <responseDeclaration baseType="float" cardinality="single" identifier="RESPONSE2"/>
+  <responseDeclaration baseType="boolean" cardinality="single" identifier="HINTREQUEST"/>
+  <responseDeclaration baseType="boolean" cardinality="single" identifier="SOLREQUEST"/>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE">
+    <defaultValue>
+      <value>0.0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE1"/>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE2"/>
+  <outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="FEEDBACK"/>
+  <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenSolution">
+    <defaultValue>
+      <value>false</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="boolean" cardinality="single" identifier="seenHint">
+    <defaultValue>
+      <value>false</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="identifier" cardinality="single" identifier="EMPTY"/>
+  <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKHINT">
+    <defaultValue>
+      <value>askhint</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="identifier" cardinality="single" identifier="ASKSOLUTION">
+    <defaultValue>
+      <value>asksolution</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="identifier" cardinality="multiple" identifier="SOLPARTS"/>
+  <outcomeDeclaration baseType="boolean" cardinality="single" identifier="odummy"/>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="foVal1"/>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="foDVal1"/>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="foVal2"/>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="foDVal2"/>
+  <templateDeclaration baseType="boolean" cardinality="single" identifier="keepRandomSeed" mathVariable="false" paramVariable="false"/>
+  <templateDeclaration baseType="boolean" cardinality="single" identifier="doSubst" mathVariable="false" paramVariable="false">
+    <defaultValue>
+      <value>true</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration baseType="integer" cardinality="single" identifier="iRandomSeed" mathVariable="false" paramVariable="false"/>
+  <templateDeclaration baseType="boolean" cardinality="single" identifier="tdummy" mathVariable="false" paramVariable="false"/>
+  <templateDeclaration baseType="identifier" cardinality="multiple" identifier="showSolParts" mathVariable="false" paramVariable="false"/>
+  <templateDeclaration baseType="integer" cardinality="single" identifier="iA" mathVariable="true" paramVariable="false">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration baseType="integer" cardinality="single" identifier="iB" mathVariable="true" paramVariable="false">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration baseType="integer" cardinality="single" identifier="iAbsB" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration cardinality="record" identifier="mSignB" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration baseType="integer" cardinality="single" identifier="iC" mathVariable="true" paramVariable="false">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </templateDeclaration>
+  <templateDeclaration baseType="integer" cardinality="single" identifier="iAbsC" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration cardinality="record" identifier="mSignC" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration cardinality="record" identifier="mQuad" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration cardinality="record" identifier="mDeriv" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration baseType="integer" cardinality="ordered" identifier="iRandomState" mathVariable="false" paramVariable="false"/>
+  <templateDeclaration baseType="float" cardinality="single" identifier="fStatPt" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration baseType="float" cardinality="single" identifier="fXDec" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration baseType="float" cardinality="single" identifier="fXInc" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration baseType="float" cardinality="single" identifier="fYDec" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration baseType="float" cardinality="single" identifier="fYInc" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration baseType="float" cardinality="single" identifier="fDYDec" mathVariable="true" paramVariable="false"/>
+  <templateDeclaration baseType="float" cardinality="single" identifier="fDYInc" mathVariable="true" paramVariable="false"/>
+  <templateProcessing>
+    <setTemplateValue identifier="tdummy">
+      <customOperator class="org.qtitools.mathassess.ScriptRule" ma:syntax="text/x-maxima">
+        <baseValue baseType="string"><![CDATA[
  iA: ev((random(3)+1)*(random(2)*2-1),simp);
-
  iB: ev((random(5)+1)*(random(2)*2-1),simp);
-
  iC: ev((random(9)+1)*(random(2)*2-1),simp);
-
  iAbsB: ev(abs(iB),simp);
-
  if iB>0 then mSignB:maOperator("+") else mSignB:maOperator("-");
-
  iAbsC: ev(abs(iC),simp);
-
  if iC>0 then mSignC:maOperator("+") else mSignC:maOperator("-");
-
  simp:true;
-
  if equal(iA,1) then t1:x^2 else (if equal(iA,-1) then t1:-x^2 else t1:iA*x^2);
-
  mQuad: t1+iB*x+iC;
-
  mDeriv: diff(mQuad,x);
-
  fStatPt: ev(-iB/(2*iA),numer);
-
  if iA>0 then fXDec: ev(floor(fStatPt-3),numer) else fXDec: ev(ceiling(fStatPt+3),numer);
-
  if iA>0 then fXInc: ev(ceiling(fStatPt+3),numer) else fXInc: ev(floor(fStatPt-3),numer);
-
  fYDec:ev(subst(fXDec,x,mQuad),numer,simp);
-
  fDYDec:ev(subst(fXDec,x,mDeriv),numer,simp);
-
  fYInc:ev(subst(fXInc,x,mQuad),numer,simp);
-
  fDYInc:ev(subst(fXInc,x,mDeriv),numer,simp);
-
  iA: ev((random(3)+1)*(random(2)*2-1),simp);
-
  iB: ev((random(5)+1)*(random(2)*2-1),simp);
-
  iC: ev((random(9)+1)*(random(2)*2-1),simp);
-
  iAbsB: ev(abs(iB),simp);
-
  if iB>0 then mSignB:maOperator("+") else mSignB:maOperator("-");
-
  iAbsC: ev(abs(iC),simp);
-
  if iC>0 then mSignC:maOperator("+") else mSignC:maOperator("-");
-
  simp:true;
-
  if equal(iA,1) then t1:x^2 else (if equal(iA,-1) then t1:-x^2 else t1:iA*x^2);
-
  mQuad: t1+iB*x+iC;
-
  mDeriv: diff(mQuad,x);
-
  fStatPt: ev(-iB/(2*iA),numer);
-
  if iA>0 then fXDec: ev(floor(fStatPt-3),numer) else fXDec: ev(ceiling(fStatPt+3),numer);
-
  if iA>0 then fXInc: ev(ceiling(fStatPt+3),numer) else fXInc: ev(floor(fStatPt-3),numer);
-
  fYDec:ev(subst(fXDec,x,mQuad),numer,simp);
-
  fDYDec:ev(subst(fXDec,x,mDeriv),numer,simp);
-
  fYInc:ev(subst(fXInc,x,mQuad),numer,simp);
-
  fDYInc:ev(subst(fXInc,x,mDeriv),numer,simp);
-
- 
-
 ]]></baseValue>
-            </customOperator>
-        </setTemplateValue>
-    </templateProcessing>
-    <itemBody class="">
-        <div class="">
-            <p class="">Enter values of x for which the value of<printedVariable id="printedVariable0" identifier="mQuad"/>is</p>
-            <p class="">a. decreasing:<textEntryInteraction expectedLength="20" id="textEntryInteraction0" label="mathInput" responseIdentifier="RESPONSE1"/>        </p>
-            <p class="">
-                <feedbackInline id="feedbackInline0" identifier="CORRECT1" outcomeIdentifier="FEEDBACK" showHide="show"> Yes,				the function is decreasing at x = <printedVariable id="printedVariable1" identifier="foVal1"/>			</feedbackInline>
-                <feedbackInline id="feedbackInline1" identifier="INCORRECT1" outcomeIdentifier="FEEDBACK" showHide="show">				No, the function is not decreasing at x = <printedVariable id="printedVariable2" identifier="foVal1"/>			</feedbackInline>        </p>
-            <p class="">b. increasing:<textEntryInteraction expectedLength="20" id="textEntryInteraction1" label="mathInput" responseIdentifier="RESPONSE2"/>        </p>
-            <p class="">
-                <feedbackInline id="feedbackInline2" identifier="CORRECT2" outcomeIdentifier="FEEDBACK" showHide="show"> Yes,				the function is increasing at x = <printedVariable id="printedVariable3" identifier="foVal2"/>			</feedbackInline>
-                <feedbackInline id="feedbackInline3" identifier="INCORRECT2" outcomeIdentifier="FEEDBACK" showHide="show">				No, the function is not increasing at x = <printedVariable id="printedVariable4" identifier="foVal2"/>			</feedbackInline>        </p>
-            <p class="">[fXDec =<printedVariable id="printedVariable5" identifier="fXDec"/>, fXInc =<printedVariable id="printedVariable6" identifier="fXInc"/>, fYDec =<printedVariable id="printedVariable7" identifier="fYDec"/>, fYInc =<printedVariable id="printedVariable8" identifier="fYInc"/>, fDYDec =<printedVariable id="printedVariable9" identifier="fDYDec"/>, fDYInc =<printedVariable id="printedVariable10" identifier="fDYInc"/>]</p>
-            <feedbackBlock class="" id="feedbackBlock4" identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
-                <div class="">
-                    <m:math display="block" id="mathML0">
-                        <m:semantics>
-                            <m:mrow>
-                                <m:mi>f</m:mi>
-                                <m:mfenced close=")" open="(">
-                                    <m:mi>x</m:mi>
-                                </m:mfenced>
-                                <m:mo>=</m:mo>
-                                <m:mi>mQuad</m:mi>
-                            </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[f(x)=\qv{mQuad}\]</m:annotation>
-                        </m:semantics>
-                    </m:math>
-                    <m:math display="block" id="mathML1">
-                        <m:semantics>
-                            <m:mrow>
-                                <m:msup>
-                                    <m:mi>f</m:mi>
-                                    <m:mi>'</m:mi>
-                                </m:msup>
-                                <m:mfenced close=")" open="(">
-                                    <m:mi>x</m:mi>
-                                </m:mfenced>
-                                <m:mo>=</m:mo>
-                                <m:mi>mDeriv</m:mi>
-                            </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[f'(x)=\qv{mDeriv}\]</m:annotation>
-                        </m:semantics>
-                    </m:math>    </div>
-            </feedbackBlock>
-            <feedbackBlock class="" id="feedbackBlock5" identifier="SOLUTION1" outcomeIdentifier="FEEDBACK" showHide="show">
-                <div class="">
-                    <p class="">For example</p>
-                    <m:math display="block" id="mathML2">
-                        <m:semantics>
-                            <m:mrow>
-                                <m:msup>
-                                    <m:mi>f</m:mi>
-                                    <m:mi>'</m:mi>
-                                </m:msup>
-                                <m:mfenced close=")" open="(">
-                                    <m:mi>fXDec</m:mi>
-                                </m:mfenced>
-                                <m:mo>=</m:mo>
-                                <m:mi>fDYDec</m:mi>
-                            </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[f'(\qv{fXDec}) = \qv{fDYDec}\]</m:annotation>
-                        </m:semantics>
-                    </m:math>
-                    <p class="">so the function is decreasing at x =<printedVariable id="printedVariable11" identifier="fXDec"/>        </p>    </div>
-            </feedbackBlock>
-            <feedbackBlock class="" id="feedbackBlock6" identifier="SOLUTION2" outcomeIdentifier="FEEDBACK" showHide="show">
-                <div class="">
-                    <m:math display="block" id="mathML3">
-                        <m:semantics>
-                            <m:mrow>
-                                <m:msup>
-                                    <m:mi>f</m:mi>
-                                    <m:mi>'</m:mi>
-                                </m:msup>
-                                <m:mfenced close=")" open="(">
-                                    <m:mi>fXInc</m:mi>
-                                </m:mfenced>
-                                <m:mo>=</m:mo>
-                                <m:mi>fDYInc</m:mi>
-                            </m:mrow>
-                            <m:annotation encoding="SnuggleTeX">\[f'(\qv{fXInc}) = \qv{fDYInc}\]</m:annotation>
-                        </m:semantics>
-                    </m:math>
-                    <p class="">so the function is increasing at x =<printedVariable id="printedVariable12" identifier="fXInc"/>        </p>    </div>
-            </feedbackBlock>
-            <feedbackBlock id="feedbackBlock7" identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show">
-                <p>If it is decreasing, what can you say about the derivative? ...and if it's				increasing?</p>
-            </feedbackBlock>
-            <feedbackBlock id="feedbackBlock8" identifier="SEEN-SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show">
-                <p> Since you have viewed the solution, your score for this question will be 0. </p>
-            </feedbackBlock>
-            <feedbackBlock id="feedbackBlock9" identifier="SEEN-HINT" outcomeIdentifier="FEEDBACK" showHide="show">
-                <p> Since you have viewed the hint, your score for this question will be halved. </p>
-            </feedbackBlock>
-            <feedbackBlock id="feedbackBlock10" identifier="askhint" outcomeIdentifier="ASKHINT" showHide="show">
-                <p>
-                    <endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="HINTREQUEST" title="Show Hint"/>			</p>
-            </feedbackBlock>
-            <feedbackBlock id="feedbackBlock11" identifier="asksolution" outcomeIdentifier="ASKSOLUTION" showHide="show">
-                <p>
-                    <endAttemptInteraction id="endAttemptInteraction3" responseIdentifier="SOLREQUEST" title="Show Solution"/>			</p>
-            </feedbackBlock>    </div>
-    </itemBody>
-    <responseProcessing>
+      </customOperator>
+    </setTemplateValue>
+  </templateProcessing>
+  <stylesheet type="text/css" href="mathassess.css"/>
+  <itemBody>
+    <p>
+      Enter values of x for which the value of
+      <printedVariable id="printedVariable0" identifier="mQuad"/>
+      is
+    </p>
+    <p>
+      a. decreasing:<textEntryInteraction expectedLength="20" id="textEntryInteraction0" label="mathInput" responseIdentifier="RESPONSE1"/>
+    </p>
+    <feedbackBlock id="feedbackBlock0" identifier="CORRECT1" outcomeIdentifier="FEEDBACK" showHide="show">
+      <p>Yes, the function is decreasing at x = <printedVariable id="printedVariable1" identifier="foVal1"/></p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock1" identifier="INCORRECT1" outcomeIdentifier="FEEDBACK" showHide="show">
+      <p>No, the function is not decreasing at x = <printedVariable id="printedVariable2" identifier="foVal1"/></p>
+    </feedbackBlock>
+    <p>b. increasing:<textEntryInteraction expectedLength="20" id="textEntryInteraction1" label="mathInput" responseIdentifier="RESPONSE2"/>     </p>
+    <feedbackBlock id="feedbackBlock2" identifier="CORRECT2" outcomeIdentifier="FEEDBACK" showHide="show">
+      <p>Yes, the function is increasing at x = <printedVariable id="printedVariable3" identifier="foVal2"/></p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock3" identifier="INCORRECT2" outcomeIdentifier="FEEDBACK" showHide="show">
+      <p>No, the function is not increasing at x = <printedVariable id="printedVariable4" identifier="foVal2"/></p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock4" identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <m:math display="block" id="mathML0">
+        <m:semantics>
+          <m:mrow>
+            <m:mi>f</m:mi>
+            <m:mfenced close=")" open="(">
+              <m:mi>x</m:mi>
+            </m:mfenced>
+            <m:mo>=</m:mo>
+            <m:mi>mQuad</m:mi>
+          </m:mrow>
+          <m:annotation encoding="SnuggleTeX">\[f(x)=\qv{mQuad}\]</m:annotation>
+        </m:semantics>
+      </m:math>
+      <m:math display="block" id="mathML1">
+        <m:semantics>
+          <m:mrow>
+            <m:msup>
+              <m:mi>f</m:mi>
+              <m:mi>'</m:mi>
+            </m:msup>
+            <m:mfenced close=")" open="(">
+              <m:mi>x</m:mi>
+            </m:mfenced>
+            <m:mo>=</m:mo>
+            <m:mi>mDeriv</m:mi>
+          </m:mrow>
+          <m:annotation encoding="SnuggleTeX">\[f'(x)=\qv{mDeriv}\]</m:annotation>
+        </m:semantics>
+      </m:math>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock5" identifier="SOLUTION1" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <p>For example</p>
+      <m:math display="block" id="mathML2">
+        <m:semantics>
+          <m:mrow>
+            <m:msup>
+              <m:mi>f</m:mi>
+              <m:mi>'</m:mi>
+            </m:msup>
+            <m:mfenced close=")" open="(">
+              <m:mi>fXDec</m:mi>
+            </m:mfenced>
+            <m:mo>=</m:mo>
+            <m:mi>fDYDec</m:mi>
+          </m:mrow>
+          <m:annotation encoding="SnuggleTeX">\[f'(\qv{fXDec}) = \qv{fDYDec}\]</m:annotation>
+        </m:semantics>
+      </m:math>
+      <p>so the function is decreasing at x =<printedVariable id="printedVariable11" identifier="fXDec"/></p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock6" identifier="SOLUTION2" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <m:math display="block" id="mathML3">
+        <m:semantics>
+          <m:mrow>
+            <m:msup>
+              <m:mi>f</m:mi>
+              <m:mi>'</m:mi>
+            </m:msup>
+            <m:mfenced close=")" open="(">
+              <m:mi>fXInc</m:mi>
+            </m:mfenced>
+            <m:mo>=</m:mo>
+            <m:mi>fDYInc</m:mi>
+          </m:mrow>
+          <m:annotation encoding="SnuggleTeX">\[f'(\qv{fXInc}) = \qv{fDYInc}\]</m:annotation>
+        </m:semantics>
+      </m:math>
+      <p>so the function is increasing at x =<printedVariable id="printedVariable12" identifier="fXInc"/></p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock7" identifier="HINT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <p>If it is decreasing, what can you say about the derivative? ...and if it's    increasing?</p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock8" identifier="SEEN-SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <p>Since you have viewed the solution, your score for this question will be 0.</p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock9" identifier="SEEN-HINT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+      <p>Since you have viewed the hint, your score for this question will be halved.</p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock10" identifier="askhint" outcomeIdentifier="ASKHINT" showHide="show" class="endAttemptInteraction">
+      <p>
+        <endAttemptInteraction id="endAttemptInteraction2" responseIdentifier="HINTREQUEST" title="Show Hint"/>
+      </p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock11" identifier="asksolution" outcomeIdentifier="ASKSOLUTION" showHide="show" class="endAttemptInteraction">
+      <p>
+        <endAttemptInteraction id="endAttemptInteraction3" responseIdentifier="SOLREQUEST" title="Show Solution"/>
+      </p>
+    </feedbackBlock>
+  </itemBody>
+  <responseProcessing>
+    <setOutcomeValue identifier="FEEDBACK">
+      <multiple>
+        <variable identifier="EMPTY"/>
+      </multiple>
+    </setOutcomeValue>
+    <responseCondition>
+      <responseIf>
+        <variable identifier="HINTREQUEST"/>
         <setOutcomeValue identifier="FEEDBACK">
-            <multiple>
-                <variable identifier="EMPTY"/>
-            </multiple>
+          <multiple>
+            <baseValue baseType="identifier">HINT</baseValue>
+          </multiple>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="seenHint">
+          <baseValue baseType="boolean">true</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElseIf>
+        <variable identifier="SOLREQUEST"/>
+        <setOutcomeValue identifier="FEEDBACK">
+        <multiple>
+          <baseValue baseType="identifier">SOLUTION</baseValue>
+          <baseValue baseType="identifier">SOLUTION1</baseValue>
+          <baseValue baseType="identifier">SOLUTION2</baseValue>
+        </multiple>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="seenSolution">
+          <baseValue baseType="boolean">true</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="completionStatus">
+          <baseValue baseType="identifier">completed</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ASKHINT">
+          <baseValue baseType="identifier">null</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ASKSOLUTION">
+          <baseValue baseType="identifier">null</baseValue>
+        </setOutcomeValue>
+      </responseElseIf>
+      <responseElse>
+        <responseCondition>
+          <responseIf>
+            <isNull>
+              <variable identifier="RESPONSE1"/>
+            </isNull>
+            <setOutcomeValue identifier="SCORE1">
+              <baseValue baseType="float">0</baseValue>
+            </setOutcomeValue>
+          </responseIf>
+          <responseElse>
+            <setOutcomeValue identifier="foVal1">
+              <variable identifier="RESPONSE1"/>
+            </setOutcomeValue>
+            <setOutcomeValue identifier="foDVal1">
+              <customOperator class="org.qtitools.mathassess.CasProcess" ma:returnType="float" ma:syntax="text/x-maxima">
+                <baseValue baseType="string"><![CDATA[ev(subst(foVal1,x,mDeriv),numer,simp);]]></baseValue>
+              </customOperator>
+            </setOutcomeValue>
+            <responseCondition>
+              <responseIf>
+                <lt>
+                  <variable identifier="foDVal1"/>
+                  <baseValue baseType="float">0.0</baseValue>
+                </lt>
+                <setOutcomeValue identifier="FEEDBACK">
+                  <multiple>
+                    <baseValue baseType="identifier">CORRECT1</baseValue>
+                  </multiple>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="SCORE1">
+                  <baseValue baseType="float">1</baseValue>
+                </setOutcomeValue>
+              </responseIf>
+              <responseElse>
+                <setOutcomeValue identifier="FEEDBACK">
+                  <multiple>
+                    <baseValue baseType="identifier">INCORRECT1</baseValue>
+                  </multiple>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="SCORE1">
+                  <baseValue baseType="float">0</baseValue>
+                </setOutcomeValue>
+              </responseElse>
+            </responseCondition>
+          </responseElse>
+        </responseCondition>
+        <responseCondition>
+          <responseIf>
+            <isNull>
+              <variable identifier="RESPONSE2"/>
+            </isNull>
+            <setOutcomeValue identifier="SCORE2">
+              <baseValue baseType="float">0</baseValue>
+            </setOutcomeValue>
+          </responseIf>
+          <responseElse>
+            <setOutcomeValue identifier="foVal2">
+              <variable identifier="RESPONSE2"/>
+            </setOutcomeValue>
+            <setOutcomeValue identifier="foDVal2">
+              <customOperator class="org.qtitools.mathassess.CasProcess" ma:returnType="float" ma:syntax="text/x-maxima">
+                <baseValue baseType="string"><![CDATA[ev(subst(foVal2,x,mDeriv),numer,simp);]]></baseValue>
+              </customOperator>
+            </setOutcomeValue>
+            <responseCondition>
+              <responseIf>
+                <gt>
+                  <variable identifier="foDVal2"/>
+                  <baseValue baseType="float">0.0</baseValue>
+                </gt>
+                <setOutcomeValue identifier="FEEDBACK">
+                  <multiple>
+                    <variable identifier="FEEDBACK"/>
+                    <baseValue baseType="identifier">CORRECT2</baseValue>
+                  </multiple>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="SCORE2">
+                  <baseValue baseType="float">1</baseValue>
+                </setOutcomeValue>
+              </responseIf>
+              <responseElse>
+                <setOutcomeValue identifier="FEEDBACK">
+                  <multiple>
+                    <variable identifier="FEEDBACK"/>
+                    <baseValue baseType="identifier">INCORRECT2</baseValue>
+                  </multiple>
+                </setOutcomeValue>
+                <setOutcomeValue identifier="SCORE2">
+                  <baseValue baseType="float">0</baseValue>
+                </setOutcomeValue>
+              </responseElse>
+            </responseCondition>
+          </responseElse>
+        </responseCondition>
+        <setOutcomeValue identifier="SCORE">
+          <sum>
+            <variable identifier="SCORE1"/>
+            <variable identifier="SCORE2"/>
+          </sum>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="completionStatus">
+          <baseValue baseType="identifier">completed</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ASKHINT">
+          <baseValue baseType="identifier">null</baseValue>
+        </setOutcomeValue>
+        <setOutcomeValue identifier="ASKSOLUTION">
+          <baseValue baseType="identifier">null</baseValue>
         </setOutcomeValue>
         <responseCondition>
-            <responseIf>
-                <variable identifier="HINTREQUEST"/>
-                <setOutcomeValue identifier="FEEDBACK">
-                    <multiple>
-                        <baseValue baseType="identifier">HINT</baseValue>
-                    </multiple>
-                </setOutcomeValue>
-                <setOutcomeValue identifier="seenHint">
-                    <baseValue baseType="boolean">true</baseValue>
-                </setOutcomeValue>
-            </responseIf>
-            <responseElseIf>
-                <variable identifier="SOLREQUEST"/>
-            	<setOutcomeValue identifier="FEEDBACK">
-            		<multiple>
-            			<baseValue baseType="identifier">SOLUTION</baseValue>
-            			<baseValue baseType="identifier">SOLUTION1</baseValue>
-            			<baseValue baseType="identifier">SOLUTION2</baseValue>
-            		</multiple>
-            	</setOutcomeValue>
-            	<setOutcomeValue identifier="seenSolution">
-                    <baseValue baseType="boolean">true</baseValue>
-                </setOutcomeValue>
-                <setOutcomeValue identifier="completionStatus">
-                    <baseValue baseType="identifier">completed</baseValue>
-                </setOutcomeValue>
-                <setOutcomeValue identifier="ASKHINT">
-                    <baseValue baseType="identifier">null</baseValue>
-                </setOutcomeValue>
-                <setOutcomeValue identifier="ASKSOLUTION">
-                    <baseValue baseType="identifier">null</baseValue>
-                </setOutcomeValue>
-            </responseElseIf>
-            <responseElse>
-                <responseCondition>
-                    <responseIf>
-                        <isNull>
-                            <variable identifier="RESPONSE1"/>
-                        </isNull>
-                        <setOutcomeValue identifier="SCORE1">
-                            <baseValue baseType="float">0</baseValue>
-                        </setOutcomeValue>
-                    </responseIf>
-                    <responseElse>
-                        <setOutcomeValue identifier="foVal1">
-                            <variable identifier="RESPONSE1"/>
-                        </setOutcomeValue>
-                        <setOutcomeValue identifier="foDVal1">
-                            <customOperator class="org.qtitools.mathassess.CasProcess" ma:returnType="float" ma:syntax="text/x-maxima">
-                                <baseValue baseType="string"><![CDATA[ev(subst(foVal1,x,mDeriv),numer,simp);]]></baseValue>
-                            </customOperator>
-                        </setOutcomeValue>
-                        <responseCondition>
-                            <responseIf>
-                                <lt>
-                                    <variable identifier="foDVal1"/>
-                                    <baseValue baseType="float">0.0</baseValue>
-                                </lt>
-                                <setOutcomeValue identifier="FEEDBACK">
-                                    <multiple>
-                                        <baseValue baseType="identifier">CORRECT1</baseValue>
-                                    </multiple>
-                                </setOutcomeValue>
-                                <setOutcomeValue identifier="SCORE1">
-                                    <baseValue baseType="float">1</baseValue>
-                                </setOutcomeValue>
-                            </responseIf>
-                            <responseElse>
-                                <setOutcomeValue identifier="FEEDBACK">
-                                    <multiple>
-                                        <baseValue baseType="identifier">INCORRECT1</baseValue>
-                                    </multiple>
-                                </setOutcomeValue>
-                                <setOutcomeValue identifier="SCORE1">
-                                    <baseValue baseType="float">0</baseValue>
-                                </setOutcomeValue>
-                            </responseElse>
-                        </responseCondition>
-                    </responseElse>
-                </responseCondition>
-                <responseCondition>
-                    <responseIf>
-                        <isNull>
-                            <variable identifier="RESPONSE2"/>
-                        </isNull>
-                        <setOutcomeValue identifier="SCORE2">
-                            <baseValue baseType="float">0</baseValue>
-                        </setOutcomeValue>
-                    </responseIf>
-                    <responseElse>
-                        <setOutcomeValue identifier="foVal2">
-                            <variable identifier="RESPONSE2"/>
-                        </setOutcomeValue>
-                        <setOutcomeValue identifier="foDVal2">
-                            <customOperator class="org.qtitools.mathassess.CasProcess" ma:returnType="float" ma:syntax="text/x-maxima">
-                                <baseValue baseType="string"><![CDATA[ev(subst(foVal2,x,mDeriv),numer,simp);]]></baseValue>
-                            </customOperator>
-                        </setOutcomeValue>
-                        <responseCondition>
-                            <responseIf>
-                                <gt>
-                                    <variable identifier="foDVal2"/>
-                                    <baseValue baseType="float">0.0</baseValue>
-                                </gt>
-                                <setOutcomeValue identifier="FEEDBACK">
-                                    <multiple>
-                                        <variable identifier="FEEDBACK"/>
-                                        <baseValue baseType="identifier">CORRECT2</baseValue>
-                                    </multiple>
-                                </setOutcomeValue>
-                                <setOutcomeValue identifier="SCORE2">
-                                    <baseValue baseType="float">1</baseValue>
-                                </setOutcomeValue>
-                            </responseIf>
-                            <responseElse>
-                                <setOutcomeValue identifier="FEEDBACK">
-                                    <multiple>
-                                        <variable identifier="FEEDBACK"/>
-                                        <baseValue baseType="identifier">INCORRECT2</baseValue>
-                                    </multiple>
-                                </setOutcomeValue>
-                                <setOutcomeValue identifier="SCORE2">
-                                    <baseValue baseType="float">0</baseValue>
-                                </setOutcomeValue>
-                            </responseElse>
-                        </responseCondition>
-                    </responseElse>
-                </responseCondition>
-                <setOutcomeValue identifier="SCORE">
-                    <sum>
-                        <variable identifier="SCORE1"/>
-                        <variable identifier="SCORE2"/>
-                    </sum>
-                </setOutcomeValue>
-                <setOutcomeValue identifier="completionStatus">
-                    <baseValue baseType="identifier">completed</baseValue>
-                </setOutcomeValue>
-                <setOutcomeValue identifier="ASKHINT">
-                    <baseValue baseType="identifier">null</baseValue>
-                </setOutcomeValue>
-                <setOutcomeValue identifier="ASKSOLUTION">
-                    <baseValue baseType="identifier">null</baseValue>
-                </setOutcomeValue>
-                <responseCondition>
-            		<responseIf>
-            			<variable identifier="seenSolution"/>
-            			<setOutcomeValue identifier="FEEDBACK">
-            				<multiple>
-            					<variable identifier="FEEDBACK"/>
-            					<baseValue baseType="identifier">SEEN-SOLUTION</baseValue>
-            				</multiple>
-            			</setOutcomeValue>
-            			<setOutcomeValue identifier="SCORE">
-            				<baseValue baseType="float">0.0</baseValue>
-            			</setOutcomeValue>
-            		</responseIf>
-            		<responseElseIf>
-            			<variable identifier="seenHint"/>
-            			<setOutcomeValue identifier="FEEDBACK">
-            				<multiple>
-            					<variable identifier="FEEDBACK"/>
-            					<baseValue baseType="identifier">SEEN-HINT</baseValue>
-            				</multiple>
-            			</setOutcomeValue>
-            			<setOutcomeValue identifier="SCORE">
-            				<divide>
-            					<variable identifier="SCORE"/>
-            					<baseValue baseType="float">2.0</baseValue>
-            				</divide>
-            			</setOutcomeValue>
-            		</responseElseIf>
-            	</responseCondition>
-            </responseElse>
+        <responseIf>
+          <variable identifier="seenSolution"/>
+          <setOutcomeValue identifier="FEEDBACK">
+          <multiple>
+            <variable identifier="FEEDBACK"/>
+            <baseValue baseType="identifier">SEEN-SOLUTION</baseValue>
+          </multiple>
+          </setOutcomeValue>
+          <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">0.0</baseValue>
+          </setOutcomeValue>
+        </responseIf>
+        <responseElseIf>
+          <variable identifier="seenHint"/>
+          <setOutcomeValue identifier="FEEDBACK">
+          <multiple>
+            <variable identifier="FEEDBACK"/>
+            <baseValue baseType="identifier">SEEN-HINT</baseValue>
+          </multiple>
+          </setOutcomeValue>
+          <setOutcomeValue identifier="SCORE">
+          <divide>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">2.0</baseValue>
+          </divide>
+          </setOutcomeValue>
+        </responseElseIf>
         </responseCondition>
-    </responseProcessing>
+      </responseElse>
+    </responseCondition>
+  </responseProcessing>
 </assessmentItem>

@@ -55,6 +55,9 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
+import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
+import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -74,9 +77,12 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -92,24 +98,21 @@ import org.xml.sax.XMLReader;
  * <h2>Usage</h2>
  * <ul>
  *   <li>An instance of this class is safe to use concurrently by multiple threads.</li>
- *   <li>If using outside QTIWorks engine, rememeber to set the necessary properties then call {@link #init()}</li>
+ *   <li>If using outside QTIWorks engine, remember to set the necessary properties then call {@link #init()}</li>
  * </ul>
- *
- * TODO: Need to add support for coping with Content MathML, and possibly annotated MathML
- * containing a mixture of C & P. The idea would be that we use the PMathML, if available,
- * or convert the CMathML to PMathML once all substitutions have been made. Potential
- * complexity exists if we add support for substituting both CMathML and PMathML in a
- * MathML expression containing both PMathML and CMathML annotations. What guarantee is there
- * that we get the same result? I think the spec needs more thought wrt MathML.
  *
  * @author David McKain
  */
 @Service
 public class AssessmentRenderer {
 
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentRenderer.class);
+
     private static final URI serializeXsltUri = URI.create("classpath:/rendering-xslt/serialize.xsl");
+    private static final URI ctopXsltUri = URI.create("classpath:/rendering-xslt/ctop.xsl");
     private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
+    private static final URI itemAuthorDebugXsltUri = URI.create("classpath:/rendering-xslt/item-author-debug.xsl");
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
     private static final URI testEntryXsltUri = URI.create("classpath:/rendering-xslt/test-entry.xsl");
     private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
@@ -131,9 +134,7 @@ public class AssessmentRenderer {
     @Resource
     private String webappContextPath;
 
-    /**
-     * Manager for the XSLT stylesheets, created during init.
-     */
+    /** Manager for the XSLT stylesheets, created during init. */
     private XsltStylesheetManager stylesheetManager;
 
     //----------------------------------------------------
@@ -261,6 +262,53 @@ public class AssessmentRenderer {
     }
 
     /**
+     * Renders the {@link ItemRenderingRequest}, sending the result to the provided JAXP {@link Result}.
+     * <p>
+     * The rendering shows the current state of the item, unless {@link ItemRenderingRequest#isSolutionMode()}
+     * returns true, in which case the model solution is rendered.
+     * <p>
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
+     * The caller is responsible for closing this stream afterwards.
+     */
+    public void renderItemAuthorView(final ItemAuthorViewRenderingRequest request,
+            final List<CandidateEventNotification> notifications, final Result result) {
+        Assert.notNull(request, "request");
+        Assert.notNull(result, "result");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "itemAuthorViewRenderingRequest");
+        jsr303Validator.validate(request, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        /* Pass request info to XSLT as parameters */
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, request, notifications);
+
+        /* Pass ItemSessionState (as DOM Document and XML text) */
+        final ItemSessionState itemSessionState = request.getItemSessionState();
+        final Document itemSessionStateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
+        xsltParameters.put("itemSessionState", itemSessionStateDocument.getDocumentElement());
+        xsltParameters.put("itemSessionStateXml",  serializeDocument(itemSessionStateDocument));
+
+        /* Set control parameters */
+        xsltParameters.put("solutionMode", Boolean.valueOf(request.isSolutionMode()));
+
+        /* Perform transform */
+        doTransform(request, itemAuthorDebugXsltUri, xsltParameters, result);
+    }
+
+    private static String serializeDocument(final Document document) {
+        final XMLStringOutputOptions outputOptions = new XMLStringOutputOptions();
+        outputOptions.setIndenting(true);
+        return XMLUtilities.serializeNode(document, outputOptions);
+    }
+
+    /**
      * Renders the given {@link TestItemRenderingDetails}, sending the result to the provided JAXP {@link Result}.
      * <p>
      * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
@@ -295,7 +343,7 @@ public class AssessmentRenderer {
         final TestRenderingOptions renderingOptions = request.getRenderingOptions();
         xsltParameters.put("testPartNavigationUrl", renderingOptions.getTestPartNavigationUrl());
         xsltParameters.put("selectTestItemUrl", renderingOptions.getSelectTestItemUrl());
-        xsltParameters.put("finishTestItemUrl", renderingOptions.getFinishTestItemUrl());
+        xsltParameters.put("advanceTestItemUrl", renderingOptions.getAdvanceTestItemUrl());
         xsltParameters.put("endTestPartUrl", renderingOptions.getEndTestPartUrl());
         xsltParameters.put("reviewTestPartUrl", renderingOptions.getReviewTestPartUrl());
         xsltParameters.put("reviewTestItemUrl", renderingOptions.getReviewTestItemUrl());
@@ -382,9 +430,9 @@ public class AssessmentRenderer {
         final NavigationMode navigationMode = currentTestPart.getNavigationMode();
         xsltParameters.put("reviewMode", Boolean.FALSE);
         xsltParameters.put("solutionMode", Boolean.FALSE);
+        xsltParameters.put("advanceTestItemAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayAdvanceItemLinear()));
         xsltParameters.put("testPartNavigationAllowed", Boolean.valueOf(navigationMode==NavigationMode.NONLINEAR));
-        xsltParameters.put("finishItemAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndItemLinear()));
-        xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
+        xsltParameters.put("endTestPartAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndCurrentTestPart()));
 
         /* We finally do the transform on the _item_ (NB!) */
         doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
@@ -402,7 +450,7 @@ public class AssessmentRenderer {
         xsltParameters.put("reviewMode", Boolean.TRUE);
         xsltParameters.put("solutionMode", Boolean.FALSE);
         xsltParameters.put("testPartNavigationAllowed", Boolean.FALSE);
-        xsltParameters.put("finishItemAllowed", Boolean.FALSE);
+        xsltParameters.put("advanceTestItemAllowed", Boolean.FALSE);
         xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
         /* We finally do the transform on the _item_ (NB!) */
@@ -421,7 +469,7 @@ public class AssessmentRenderer {
         xsltParameters.put("reviewMode", Boolean.TRUE);
         xsltParameters.put("solutionMode", Boolean.TRUE);
         xsltParameters.put("testPartNavigationAllowed", Boolean.FALSE);
-        xsltParameters.put("finishItemAllowed", Boolean.FALSE);
+        xsltParameters.put("advanceTestItemAllowed", Boolean.FALSE);
         xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
         /* We finally do the transform on the _item_ (NB!) */
@@ -458,7 +506,7 @@ public class AssessmentRenderer {
         xsltParameters.put("reviewMode", Boolean.FALSE);
         xsltParameters.put("solutionMode", Boolean.FALSE);
         xsltParameters.put("testPartNavigationAllowed", Boolean.FALSE);
-        xsltParameters.put("finishItemAllowed", Boolean.FALSE);
+        xsltParameters.put("advanceTestItemAllowed", Boolean.FALSE);
         xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
         return itemRefNode.getItemSystemId();
@@ -503,25 +551,25 @@ public class AssessmentRenderer {
             final URI inputUri, final Map<String, Object> xsltParameters, final Result result) {
         /* We do this as an XML pipeline:
          *
-         * Input -> Rendering XSLT -> Serialization XSLT -> Result
+         * Input --> Rendering XSLT --> MathML C-to-P --> Serialization XSLT --> Result
          *
          * NB: I'm not bothering to set up LexicalHandlers, so comments and things like that won't
          * be passed through the pipeline. If that becomes important, change the code below to
          * support that.
          */
-         /* First obtain the required compiled stylesheets */
-        final TransformerHandler rendererTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(rendererStylesheetUri);
-        final TransformerHandler serializerTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(serializeXsltUri);
+         /* First obtain the required compiled stylesheets. */
+        final TransformerHandler rendererTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(rendererStylesheetUri, renderingRequest.getAssessmentResourceLocator());
+        final TransformerHandler mathmlTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(ctopXsltUri, null);
+        final TransformerHandler serializerTransformerHandler = stylesheetManager.getCompiledStylesheetHandler(serializeXsltUri, null);
 
         /* Pass necessary parameters to renderer */
         final Transformer rendererTransformer = rendererTransformerHandler.getTransformer();
+        rendererTransformer.setParameter("systemId", inputUri);
         if (xsltParameters!=null) {
             for (final Entry<String, Object> paramEntry : xsltParameters.entrySet()) {
                 rendererTransformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
             }
         }
-        /* Pass system ID of the input document */
-        rendererTransformer.setParameter("systemId", inputUri);
 
         /* Configure the serializer */
         final Transformer serializerTransformer = serializerTransformerHandler.getTransformer();
@@ -568,24 +616,26 @@ public class AssessmentRenderer {
         final InputSource assessmentSaxSource = new InputSource(assessmentStream);
         assessmentSaxSource.setSystemId(inputUri.toString());
 
-        /* Now join the pipeline together.
+        /* Now join the pipeline together (it's clearest to work backwards here)
          *
          * NB: I'm not bothering to set up LexicalHandlers, so comments and things like that won't
          * be passed through the pipeline. If that becomes important, change the code below to
          * support that.
          */
+        serializerTransformerHandler.setResult(result);
+        final SAXResult mathmlResult = new SAXResult(serializerTransformerHandler);
+        mathmlTransformerHandler.setResult(mathmlResult);
+        final SAXResult rendererResult = new SAXResult(mathmlTransformerHandler);
+        rendererTransformerHandler.setResult(rendererResult);
         final XMLReader xmlReader = XmlUtilities.createNsAwareSaxReader(false);
         xmlReader.setContentHandler(rendererTransformerHandler);
-        final SAXResult rendererResult = new SAXResult(serializerTransformerHandler);
-        rendererTransformerHandler.setResult(rendererResult);
-        rendererResult.setHandler(serializerTransformerHandler);
-        serializerTransformerHandler.setResult(result);
 
         /* Finally we run the pipeline */
         try {
             xmlReader.parse(assessmentSaxSource);
         }
         catch (final Exception e) {
+            logger.error("Rendering XSLT pipeline failed for request {}", renderingRequest, e);
             throw new QtiWorksRenderingException("Unexpected Exception running rendering XML pipeline", e);
         }
     }

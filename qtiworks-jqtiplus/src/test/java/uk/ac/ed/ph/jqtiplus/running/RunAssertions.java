@@ -121,8 +121,9 @@ public final class RunAssertions {
     public static void assertFailedPreconditionAndExited(final AbstractPartSessionState state, final Date exitTimestamp) {
         assertFalse(state.isEntered());
         assertFalse(state.isEnded());
-        assertTrue(state.isExited());
         assertTrue(state.isPreConditionFailed());
+        assertTrue(state.isExited());
+        assertEquals(exitTimestamp, state.getExitTime());
     }
 
     //----------------------------------------

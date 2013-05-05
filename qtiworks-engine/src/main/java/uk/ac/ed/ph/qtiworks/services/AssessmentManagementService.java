@@ -903,7 +903,7 @@ public class AssessmentManagementService {
         template.setAllowHardResetWhenOpen(true);
         template.setAllowSoftResetWhenEnded(true);
         template.setAllowSoftResetWhenOpen(true);
-        template.setAllowResult(true);
+        template.setAllowResult(false);
         template.setAllowSolutionWhenEnded(true);
         template.setAllowSolutionWhenOpen(true);
         template.setAllowSource(false);

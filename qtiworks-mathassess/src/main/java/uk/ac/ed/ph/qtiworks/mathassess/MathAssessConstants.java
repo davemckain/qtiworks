@@ -41,7 +41,7 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
  *
  * @author Jonathon Hare
  */
-public interface MathAssessConstants {
+public final class MathAssessConstants {
 
     public static final String MATHASSESS_DEFAULT_NAMESPACE_PREFIX = "ma";
 
@@ -69,7 +69,7 @@ public interface MathAssessConstants {
 
     public static final Identifier FIELD_CANDIDATE_INPUT_IDENTIFIER = Identifier.assumedLegal("CandidateInput");
 
-    public static final Identifier MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER = Identifier.parseString("MathsContentClass");
+    public static final Identifier MATHS_CONTENT_RECORD_VARIABLE_IDENTIFIER = Identifier.assumedLegal("MathsContentClass");
 
     public static final String MATHS_CONTENT_RECORD_VARIABLE_VALUE = "org.qtitools.mathassess";
 
@@ -86,7 +86,5 @@ public interface MathAssessConstants {
     public static final String ATTR_PRINT_IDENTIFIER_NAME = "printIdentifier";
 
     public static final String ATTR_RETURN_TYPE_NAME = "returnType";
-
-
 
 }

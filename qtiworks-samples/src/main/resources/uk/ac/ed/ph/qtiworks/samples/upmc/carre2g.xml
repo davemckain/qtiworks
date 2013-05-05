@@ -31,7 +31,7 @@ xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title
 <em> 
  
 </em> 
-<m:math></m:math><textEntryInteraction responseIdentifier="REPONSE1" expectedLength="5" /><m:math><m:msup><m:mn></m:mn><m:ci>2</m:ci></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
+<m:math></m:math><textEntryInteraction responseIdentifier="REPONSE1" expectedLength="5" /><m:math><m:msup><m:mn></m:mn><m:mi>2</m:mi></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
  
 </div>
 </itemBody> 
@@ -54,9 +54,9 @@ xmlns:m="http://www.w3.org/1998/Math/MathML" identifier="Template_FIB_001" title
 </responseProcessing> 
  
 <modalFeedback outcomeIdentifier="FEEDBACK" identifier="_1V" showHide="show"> 
-Congratulations!<m:math><m:mi>SOLUTION1</m:mi><m:msup><m:mn></m:mn><m:ci>2</m:ci></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
+Congratulations!<m:math><m:mi>SOLUTION1</m:mi><m:msup><m:mn></m:mn><m:mi>2</m:mi></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
 </modalFeedback> 
 <modalFeedback outcomeIdentifier="FEEDBACK" identifier="_1F" showHide="show"> 
-No correct answer <m:math><m:mi>SOLUTION1</m:mi><m:msup><m:mn></m:mn><m:ci>2</m:ci></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
+No correct answer <m:math><m:mi>SOLUTION1</m:mi><m:msup><m:mn></m:mn><m:mi>2</m:mi></m:msup><m:mo>=</m:mo><m:mi>a</m:mi></m:math> 
 </modalFeedback> 
 </assessmentItem> 

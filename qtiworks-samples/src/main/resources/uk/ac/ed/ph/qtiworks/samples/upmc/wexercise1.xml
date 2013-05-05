@@ -19,7 +19,7 @@
  
 </em> 
 With a word processor, I want to obtain the expression 
-<m:math><m:msup><m:mn>x</m:mn><m:ci>2</m:ci></m:msup></m:math> 
+<m:math><m:msup><m:mn>x</m:mn><m:mi>2</m:mi></m:msup></m:math> 
 (x*x).<br/> 
  
 <choiceInteraction responseIdentifier="REPONSE0" shuffle="true" maxChoices="1"> 

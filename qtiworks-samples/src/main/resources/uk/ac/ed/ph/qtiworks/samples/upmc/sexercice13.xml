@@ -37,10 +37,10 @@ What is the content of cell A5?<br/>
 <m:math><m:mi>Choix1</m:mi></m:math> 
 </simpleChoice> 
 <simpleChoice identifier="Item2" fixed="false"> 
-<m:math><m:ci>1000</m:ci></m:math> 
+<m:math><m:mi>1000</m:mi></m:math> 
 </simpleChoice> 
 <simpleChoice identifier="Item3" fixed="false"> 
-<m:math><m:ci>750</m:ci></m:math> 
+<m:math><m:mi>750</m:mi></m:math> 
 </simpleChoice> 
 </choiceInteraction> 
 </div></itemBody> 

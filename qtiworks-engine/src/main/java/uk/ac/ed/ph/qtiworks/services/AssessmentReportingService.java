@@ -52,6 +52,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.io.File;
@@ -129,7 +130,8 @@ public class AssessmentReportingService {
         for (final CandidateSessionOutcome candidateSessionOutcome : candidateSessionOutcomes) {
             final String outcomeIdentifier = candidateSessionOutcome.getOutcomeIdentifier();
             final String outcomeValue = candidateSessionOutcome.getStringValue();
-            if (candidateSessionOutcome.getBaseType().isNumeric() && candidateSessionOutcome.getCardinality()==Cardinality.SINGLE) {
+            final BaseType baseType = candidateSessionOutcome.getBaseType();
+            if (baseType!=null && baseType.isNumeric() && candidateSessionOutcome.getCardinality()==Cardinality.SINGLE) {
                 numericOutcomeIdentifiers.add(outcomeIdentifier);
                 numericOutcomeValues.add(outcomeValue);
             }
@@ -181,7 +183,8 @@ public class AssessmentReportingService {
             final CandidateSession candidateSession = candidateSessionOutcome.getCandidateSession();
             final String outcomeIdentifier = candidateSessionOutcome.getOutcomeIdentifier();
             final String outcomeValue = candidateSessionOutcome.getStringValue();
-            if (candidateSessionOutcome.getBaseType().isNumeric() && candidateSessionOutcome.getCardinality()==Cardinality.SINGLE) {
+            final BaseType baseType = candidateSessionOutcome.getBaseType();
+            if (baseType!=null && baseType.isNumeric() && candidateSessionOutcome.getCardinality()==Cardinality.SINGLE) {
                 numericOutcomeIdentifiers.add(candidateSessionOutcome.getOutcomeIdentifier());
                 Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
                 if (numericOutcomesForSession==null) {
