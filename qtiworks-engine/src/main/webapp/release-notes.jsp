@@ -12,6 +12,22 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV28 [Development] (05/05/2013)</h3>
+  <p>
+    This release consolidates on DEV27, fixing some bugs and refining features added in DEV27. This includes some
+    changes to the rendering of items and tests, including some improvements to the rendering of <code>mathEntryInteraction</code>s.
+  </p>
+  <p>
+    The bundled set of MathAssess examples have been tidied up slightly, with the addition of some basic CSS to make
+    their feedback stand out a bit more clearly. One of the items (MAB01) has been deprecated.
+  </p>
+  <p>
+    There is a small schema fix required here. See <code>qtiworks-engine/support/schema-migrations/dev27-to-dev28.sql</code>.
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV27 [Development] (30/04/2013)</h3>
   <p>
     This snapshot fills in the remaining parts of the test specification that we plan to implement, namely
@@ -31,6 +47,10 @@ All Rights Reserved
   <p>
     Finally, the snapshot includes a couple of bits of very basic "proctoring" functionality, allowing instructors to forcibly
     terminate candidate sessions if required.
+  </p>
+  <p>
+    This snapshot requires a fairly large set of fixes to the database schema. See <code>qtiworks-engine/support/schema-migrations/dev26-to-dev27.sql</code>.
+    You must also wipe all candiate session data as the internal XML state files have changed significantly.
   </p>
   <p>
     See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
