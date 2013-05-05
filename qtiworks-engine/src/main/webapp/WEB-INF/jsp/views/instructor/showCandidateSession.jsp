@@ -66,7 +66,7 @@ instructorAssessmentRouting (action -> URL)
     <thead>
       <tr>
         <th>Outcome Identifier</th>
-        <th>value</th>
+        <th>Value</th>
       </tr>
     </thead>
     <tbody>
@@ -99,8 +99,9 @@ instructorAssessmentRouting (action -> URL)
     </li>
   </ul>
 
-  <h4>QTI Result XML</h4>
+  <h4>QTI assessmentResult XML</h4>
 
-  <pre class="xmlSource">${fn:escapeXml(assessmentResultXml)}</pre>
+  <script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+  <pre class="xmlSource prettyprint">${fn:escapeXml(assessmentResultXml)}</pre>
 
 </page:page>

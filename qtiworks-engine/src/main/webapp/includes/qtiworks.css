@@ -444,3 +444,13 @@ table.assessmentList td h4 {
   font-weight: bold;
   font-size: 1.3em;
 }
+
+/* ========== Random ========== */
+
+pre.xmlSource {
+  border: 1px solid #ccbdf0;
+  font-size: smaller;
+  overflow-x: auto;
+  background: #f7f7ff;
+}
+
