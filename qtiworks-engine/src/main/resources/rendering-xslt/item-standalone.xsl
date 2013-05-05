@@ -209,6 +209,11 @@ Renders a standalone assessmentItem
             </form>
           </li>
         </xsl:if>
+        <li>
+          <form action="{$webappContextPath}{$exitUrl}" method="post">
+            <input type="submit" value="Exit"/>
+          </form>
+        </li>
       </ul>
     </div>
   </xsl:template>
@@ -236,11 +241,6 @@ Renders a standalone assessmentItem
             </form>
           </li>
         </xsl:if>
-        <li>
-          <form action="{$webappContextPath}{$exitUrl}" method="post">
-            <input type="submit" value="Exit"/>
-          </form>
-        </li>
       </ul>
     </div>
   </xsl:template>
