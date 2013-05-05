@@ -46,21 +46,21 @@ public final class MathAssessSampleSet {
             "These are the 'MathAssess' examples, some of which demonstrate the MathAssess QTI extensions "
             + "that allow you to use the Maxima Computer Algebra system for some very sophisticated "
             + "assessment.",
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAA01a.xml"),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml"),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAC02-SR.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinCO-demo.xml", Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAA01a.xml", new String[] { "mathassess.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_STANDARD, "mathassess/MAB01a.xml", new String[] { "mathassess.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAC02-SR.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-SRinCO-demo.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
             new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD01-newSRinRP.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD03a.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD04-ltgt-tVars.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD05-Factors-CC.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD05-Factors-SR.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD06-Diff.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MANum01CP.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MANum01SR.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/Diff-001.xml", Feature.REQUIRES_MATHASSES),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/GU-Formulae-006-BMI.xml"),
-            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/diag00001.xml", Feature.REQUIRES_MATHASSES)
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD03a.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD04-ltgt-tVars.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD05-Factors-CC.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD05-Factors-SR.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MAD06-Diff.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MANum01CP.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/MANum01SR.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/Diff-001.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/GU-Formulae-006-BMI.xml", new String[] { "mathassess.css" }),
+            new QtiSampleAssessment(DeliveryStyle.MATHASSESS_TEMPLATED, "mathassess/diag00001.xml", new String[] { "mathassess.css" }, Feature.REQUIRES_MATHASSES)
     );
 
     private MathAssessSampleSet() {

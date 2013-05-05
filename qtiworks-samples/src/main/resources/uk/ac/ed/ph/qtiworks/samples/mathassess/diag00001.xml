@@ -209,24 +209,30 @@
       <simpleChoice identifier="NeverKnew" fixed="true">I never knew how to do
         this.</simpleChoice>
     </choiceInteraction>
-    <div class="questionFeedback">
-      <feedbackInline class="PART_OK" identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
+    <feedbackBlock identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback PART_OK">
+      <p>
         That's right! If you like, you can check up on this topic
-        <a href="http://www.mathcentre.ac.uk/topics/algebra/linearequations/">here</a>
-      </feedbackInline>
-      <feedbackInline class="PART_NO" identifier="WRONG" outcomeIdentifier="FEEDBACK" showHide="show">
+        <a href="http://www.mathcentre.ac.uk/topics/algebra/linearequations/">here</a>.
+      </p>
+    </feedbackBlock>
+    <feedbackBlock identifier="WRONG" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback PART_NO">
+      <p>
         No, that's not correct. Here is a link to
-        <a href="http://www.slideshare.net/andrewhickson/equations-revision-3044879">some revision material</a>
-      </feedbackInline>
-      <feedbackInline class="PART_OK" identifier="FORGOT" outcomeIdentifier="FEEDBACK" showHide="show">
+        <a href="http://www.slideshare.net/andrewhickson/equations-revision-3044879">some revision material</a>.
+      </p>
+    </feedbackBlock>
+    <feedbackBlock identifier="FORGOT" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback PART_OK">
+      <p>
         Since you have forgotten how to do this, take a look at this
-        <a href="http://www.slideshare.net/keithpeter/linear-equations-slide-share-version-exploded1">revision material</a>
-      </feedbackInline>
-      <feedbackInline class="PART_NO" identifier="NEVERKNEW" outcomeIdentifier="FEEDBACK" showHide="show">
+        <a href="http://www.slideshare.net/keithpeter/linear-equations-slide-share-version-exploded1">revision material</a>.
+      </p>
+    </feedbackBlock>
+    <feedbackBlock identifier="NEVERKNEW" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback PART_NO">
+      <p>
         Since this is new to you, start by looking at
-        <a href="http://www.mathcentre.ac.uk/topics/algebra/linearequations/">these resources</a>
-      </feedbackInline>
-    </div>
+        <a href="http://www.mathcentre.ac.uk/topics/algebra/linearequations/">these resources</a>.
+      </p>
+    </feedbackBlock>
   </itemBody>
   <responseProcessing>
     <responseCondition>

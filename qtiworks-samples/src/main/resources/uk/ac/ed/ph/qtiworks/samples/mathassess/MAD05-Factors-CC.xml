@@ -87,7 +87,7 @@
           <td class="interactionColumn">
             <customInteraction
               class="org.qtitools.mathassess.MathEntryInteraction"
-              id="customInteraction0" ma:expectedLength="20"
+              id="customInteraction0" ma:expectedLength="30"
               ma:printIdentifier="printMath" ma:syntax="text/x-maxima"
               responseIdentifier="RESPONSE"/>
           </td>

@@ -144,23 +144,19 @@
     <p>
       a. decreasing:<textEntryInteraction expectedLength="20" id="textEntryInteraction0" label="mathInput" responseIdentifier="RESPONSE1"/>
     </p>
-    <p>
-      <feedbackInline id="feedbackInline0" identifier="CORRECT1" outcomeIdentifier="FEEDBACK" showHide="show">
-        Yes, the function is decreasing at x = <printedVariable id="printedVariable1" identifier="foVal1"/>
-      </feedbackInline>
-      <feedbackInline id="feedbackInline1" identifier="INCORRECT1" outcomeIdentifier="FEEDBACK" showHide="show">
-        No, the function is not decreasing at x = <printedVariable id="printedVariable2" identifier="foVal1"/>
-      </feedbackInline>
-    </p>
+    <feedbackBlock id="feedbackBlock0" identifier="CORRECT1" outcomeIdentifier="FEEDBACK" showHide="show">
+      <p>Yes, the function is decreasing at x = <printedVariable id="printedVariable1" identifier="foVal1"/></p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock1" identifier="INCORRECT1" outcomeIdentifier="FEEDBACK" showHide="show">
+      <p>No, the function is not decreasing at x = <printedVariable id="printedVariable2" identifier="foVal1"/></p>
+    </feedbackBlock>
     <p>b. increasing:<textEntryInteraction expectedLength="20" id="textEntryInteraction1" label="mathInput" responseIdentifier="RESPONSE2"/>     </p>
-    <p>
-      <feedbackInline id="feedbackInline2" identifier="CORRECT2" outcomeIdentifier="FEEDBACK" showHide="show">
-        Yes, the function is increasing at x = <printedVariable id="printedVariable3" identifier="foVal2"/>
-      </feedbackInline>
-      <feedbackInline id="feedbackInline3" identifier="INCORRECT2" outcomeIdentifier="FEEDBACK" showHide="show">
-        No, the function is not increasing at x = <printedVariable id="printedVariable4" identifier="foVal2"/>
-      </feedbackInline>
-    </p>
+    <feedbackBlock id="feedbackBlock2" identifier="CORRECT2" outcomeIdentifier="FEEDBACK" showHide="show">
+      <p>Yes, the function is increasing at x = <printedVariable id="printedVariable3" identifier="foVal2"/></p>
+    </feedbackBlock>
+    <feedbackBlock id="feedbackBlock3" identifier="INCORRECT2" outcomeIdentifier="FEEDBACK" showHide="show">
+      <p>No, the function is not increasing at x = <printedVariable id="printedVariable4" identifier="foVal2"/></p>
+    </feedbackBlock>
     <feedbackBlock id="feedbackBlock4" identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
       <m:math display="block" id="mathML0">
         <m:semantics>

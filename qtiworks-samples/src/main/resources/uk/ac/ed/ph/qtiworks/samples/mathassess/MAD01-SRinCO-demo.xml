@@ -152,7 +152,8 @@
   </templateProcessing>
   <stylesheet type="text/css" href="mathassess.css"/>
   <itemBody>
-    <p>Expand the brackets in <m:math id="mathML0">
+    <p>
+      Expand the brackets in <m:math id="mathML0">
         <m:semantics>
           <m:mrow>
             <m:mi>iA</m:mi>
@@ -165,10 +166,11 @@
             <m:mi>iAbsC</m:mi>
             <m:mi>mX</m:mi>
           </m:mrow>
-          <m:annotation encoding="LaTeX"
-            >\[\qv{iA}(\qv{mX}+\qv{iAbsB})+\qv{iAbsC}\qv{mX}\]</m:annotation>
+          <m:annotation encoding="LaTeX">\[\qv{iA}(\qv{mX}+\qv{iAbsB})+\qv{iAbsC}\qv{mX}\]</m:annotation>
         </m:semantics>
-      </m:math>and simplify the result.</p>
+      </m:math>
+      and simplify the result.i
+    </p>
     <table class="horizontalInteraction">
       <tbody>
         <tr>

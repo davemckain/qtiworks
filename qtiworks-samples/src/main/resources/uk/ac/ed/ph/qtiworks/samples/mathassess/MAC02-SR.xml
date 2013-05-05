@@ -1,4 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?><assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:lip="http://www.imsglobal.org/xsd/imslip_v1p0" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" adaptive="true" identifier="MAC02-SR" timeDependent="false" title="Expand brackets in a(x+b)+cx and simplify " toolName="Mathqurate" toolVersion="0.9.7b" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem
+  adaptive="true"
+  identifier="MAC02-SR"
+  timeDependent="false"
+  title="Expand brackets in a(x+b)+cx and simplify - templated choice"
+  toolName="Mathqurate" toolVersion="0.9.7b"
+  xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+  xmlns:m="http://www.w3.org/1998/Math/MathML"
+  xmlns:ma="http://mathassess.qtitools.org/xsd/mathassess"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd http://mathassess.qtitools.org/xsd/mathassess mathassess.xsd">
   <responseDeclaration baseType="identifier" cardinality="single" identifier="RESPONSE">
     <correctResponse>
       <value>ChoiceA</value>
@@ -148,7 +160,9 @@
   </templateProcessing>
   <stylesheet type="text/css" href="mathassess.css"/>
   <itemBody>
-    <p>Expand the brackets in <m:math id="mathML0">
+    <p>
+      Expand the brackets in
+      <m:math id="mathML0">
         <m:semantics>
           <m:mrow>
             <m:mi>iA</m:mi>
@@ -179,7 +193,10 @@
             <m:annotation encoding="LaTeX">\[\qv{iApC} \qv{mX} \qv{sSignAB}        \qv{iAbsAB}\]</m:annotation>
           </m:semantics>
         </m:math>
-        <feedbackInline id="feedbackInline0" identifier="ChoiceA" outcomeIdentifier="FEEDBACK" showHide="show">Well done - you got the correct answer. Two marks.</feedbackInline>    </simpleChoice>
+        <feedbackInline id="feedbackInline0" identifier="ChoiceA" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          Well done - you got the correct answer. Two marks.
+        </feedbackInline>
+      </simpleChoice>
       <simpleChoice id="simpleChoice1" identifier="ChoiceB">
         <m:math display="block" id="mathML2">
           <m:semantics>
@@ -192,7 +209,11 @@
             <m:annotation encoding="LaTeX">\[\qv{iApC} \qv{mX} \qv{sSignB}        \qv{iAbsB}\]</m:annotation>
           </m:semantics>
         </m:math>
-        <feedbackInline id="feedbackInline1" identifier="ChoiceB" outcomeIdentifier="FEEDBACK" showHide="show">Remember that, when expanding brackets, all terms inside must be multiplied by      whatever is outside. However, you got one term in the answer correct, so 1      mark.</feedbackInline>    </simpleChoice>
+        <feedbackInline id="feedbackInline1" identifier="ChoiceB" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          Remember that, when expanding brackets, all terms inside must be multiplied by
+          whatever is outside. However, you got one term in the answer correct, so 1 mark.
+        </feedbackInline>
+      </simpleChoice>
       <simpleChoice id="simpleChoice2" identifier="ChoiceC">
         <m:math display="block" id="mathML3">
           <m:semantics>
@@ -205,7 +226,14 @@
             <m:annotation encoding="LaTeX">\[\qv{iApC} \qv{mX} \qv{sBadSignAB}        \qv{iAbsAB}\]</m:annotation>
           </m:semantics>
         </m:math>
-        <feedbackInline id="feedbackInline2" identifier="ChoiceC" outcomeIdentifier="FEEDBACK" showHide="show">      When expanding the bracket the product of <printedVariable id="printedVariable0" identifier="iA"/> and      <printedVariable id="printedVariable1" identifier="iB"/> is <printedVariable id="printedVariable2" identifier="iAB"/> .      However, you got one term in the answer correct. </feedbackInline>    </simpleChoice>
+        <feedbackInline id="feedbackInline2" identifier="ChoiceC" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          When expanding the bracket the product of <printedVariable id="printedVariable0" identifier="iA"/>
+          and
+          <printedVariable id="printedVariable1" identifier="iB"/>
+          is <printedVariable id="printedVariable2" identifier="iAB"/> .
+          However, you got one term in the answer correct.
+        </feedbackInline>
+      </simpleChoice>
       <simpleChoice id="simpleChoice3" identifier="ChoiceD">
         <m:math display="block" id="mathML4">
           <m:semantics>
@@ -218,14 +246,19 @@
             <m:annotation encoding="LaTeX">\[\qv{iA} \qv{mX} \qv{sSignAB}        \qv{iAbsAB}\]</m:annotation>
           </m:semantics>
         </m:math>
-        <feedbackInline id="feedbackInline3" identifier="ChoiceD" outcomeIdentifier="FEEDBACK" showHide="show">      Remember to include both of the terms in <m:math id="mathML5">
+        <feedbackInline id="feedbackInline3" identifier="ChoiceD" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          Remember to include both of the terms in
+          <m:math id="mathML5">
             <m:semantics>
               <m:mrow>
                 <m:mi>mX</m:mi>
               </m:mrow>
               <m:annotation encoding="LaTeX">\[mX\]</m:annotation>
             </m:semantics>
-          </m:math> . However, you got one term in the answer correct. </feedbackInline>    </simpleChoice>
+          </m:math>.
+          However, you got one term in the answer correct.
+        </feedbackInline>
+      </simpleChoice>
       <simpleChoice id="simpleChoice4" identifier="ChoiceE">
         <m:math display="block" id="mathML6">
           <m:semantics>
@@ -238,7 +271,10 @@
             <m:annotation encoding="LaTeX">\[\qv{iA} \qv{mX} \qv{sSignB}        \qv{iAbsB}\]</m:annotation>
           </m:semantics>
         </m:math>
-        <feedbackInline id="feedbackInline4" identifier="ChoiceE" outcomeIdentifier="FEEDBACK" showHide="show">You should ask for tutor help on this question.</feedbackInline>    </simpleChoice>
+        <feedbackInline id="feedbackInline4" identifier="ChoiceE" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          You should ask for tutor help on this question.
+        </feedbackInline>
+      </simpleChoice>
     </choiceInteraction>
     <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
       <m:math display="block" id="mathML7">

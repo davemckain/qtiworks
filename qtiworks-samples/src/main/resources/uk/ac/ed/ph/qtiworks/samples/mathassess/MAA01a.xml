@@ -59,115 +59,105 @@
           <m:annotation encoding="LaTeX">\[ 2(x-5)+4x\]</m:annotation>
         </m:semantics>
       </m:math>
-      and simplify the result.</p>
-    <div>
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <choiceInteraction id="choiceInteraction0" maxChoices="1"
-                responseIdentifier="RESPONSE" shuffle="true">
-                <simpleChoice id="simpleChoice0" identifier="ChoiceA">
-                  <m:math display="block" id="mathML1">
-                    <m:semantics>
-                      <m:mrow>
-                        <m:mn>6</m:mn>
-                        <m:mi>x</m:mi>
-                        <m:mo>-</m:mo>
-                        <m:mn>10</m:mn>
-                      </m:mrow>
-                      <m:annotation encoding="LaTeX"
-                        >\[6x-10\]</m:annotation>
-                    </m:semantics>
-                  </m:math>
-                  <feedbackInline id="feedbackInline0" identifier="ChoiceA"
-                    outcomeIdentifier="FEEDBACK" showHide="show">    Well
-                    done - you got the correct answer.</feedbackInline>
-                </simpleChoice>
-                <simpleChoice id="simpleChoice1" identifier="ChoiceB">
-                  <m:math display="block" id="mathML2">
-                    <m:semantics>
-                      <m:mrow>
-                        <m:mn>6</m:mn>
-                        <m:mi>x</m:mi>
-                        <m:mo>-</m:mo>
-                        <m:mn>5</m:mn>
-                      </m:mrow>
-                      <m:annotation encoding="LaTeX"
-                        >\[6x-5\]</m:annotation>
-                    </m:semantics>
-                  </m:math>
-                  <feedbackInline id="feedbackInline1" identifier="ChoiceB"
-                    outcomeIdentifier="FEEDBACK" showHide="show"
-                    >    Remember that, when expanding brackets, all terms
-                    inside must be multiplied by whatever is outside.
-                    However, you got one term in the answer
-                    correct.</feedbackInline>
-                </simpleChoice>
-                <simpleChoice id="simpleChoice2" identifier="ChoiceC">
-                  <m:math display="block" id="mathML3">
-                    <m:semantics>
-                      <m:mrow>
-                        <m:mn>6</m:mn>
-                        <m:mi>x</m:mi>
-                        <m:mo>+</m:mo>
-                        <m:mn>10</m:mn>
-                      </m:mrow>
-                      <m:annotation encoding="LaTeX"
-                        >\[6x+10\]</m:annotation>
-                    </m:semantics>
-                  </m:math>
-                  <feedbackInline id="feedbackInline2" identifier="ChoiceC"
-                    outcomeIdentifier="FEEDBACK" showHide="show">    When
-                    expanding the bracket the product of 2 and -5 is -10.
-                    However, you got one term in the answer
-                    correct.</feedbackInline>
-                </simpleChoice>
-                <simpleChoice id="simpleChoice3" identifier="ChoiceD">
-                  <m:math display="block" id="mathML4">
-                    <m:semantics>
-                      <m:mrow>
-                        <m:mn>2</m:mn>
-                        <m:mi>x</m:mi>
-                        <m:mo>-</m:mo>
-                        <m:mn>10</m:mn>
-                      </m:mrow>
-                      <m:annotation encoding="LaTeX"
-                        >\[2x-10\]</m:annotation>
-                    </m:semantics>
-                  </m:math>
-                  <feedbackInline id="feedbackInline3" identifier="ChoiceD"
-                    outcomeIdentifier="FEEDBACK" showHide="show"
-                    >    Remember to include both of the terms in <m:math
-                      id="mathML5">
-                      <m:mi>x</m:mi>
-                    </m:math>. However, you got one term in the answer
-                    correct.</feedbackInline>
-                </simpleChoice>
-                <simpleChoice id="simpleChoice4" identifier="ChoiceE">
-                  <m:math display="block" id="mathML6">
-                    <m:semantics>
-                      <m:mrow>
-                        <m:mn>2</m:mn>
-                        <m:mi>x</m:mi>
-                        <m:mo>-</m:mo>
-                        <m:mn>5</m:mn>
-                      </m:mrow>
-                      <m:annotation encoding="LaTeX"
-                        >\[2x-5\]</m:annotation>
-                    </m:semantics>
-                  </m:math>
-                  <feedbackInline id="feedbackInline4" identifier="ChoiceE"
-                    outcomeIdentifier="FEEDBACK" showHide="show">    You
-                    should ask for tutor help on this
-                    question.</feedbackInline>
-                </simpleChoice>
-              </choiceInteraction>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      and simplify the result.
+    </p>
+    <choiceInteraction id="choiceInteraction0" maxChoices="1" responseIdentifier="RESPONSE" shuffle="true">
+      <simpleChoice id="simpleChoice0" identifier="ChoiceA">
+        <m:math display="block" id="mathML1">
+          <m:semantics>
+            <m:mrow>
+              <m:mn>6</m:mn>
+              <m:mi>x</m:mi>
+              <m:mo>-</m:mo>
+              <m:mn>10</m:mn>
+            </m:mrow>
+            <m:annotation encoding="LaTeX"
+              >\[6x-10\]</m:annotation>
+          </m:semantics>
+        </m:math>
+        <feedbackInline id="feedbackInline0" identifier="ChoiceA" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          Well done - you got the correct answer.
+        </feedbackInline>
+      </simpleChoice>
+      <simpleChoice id="simpleChoice1" identifier="ChoiceB">
+        <m:math display="block" id="mathML2">
+          <m:semantics>
+            <m:mrow>
+              <m:mn>6</m:mn>
+              <m:mi>x</m:mi>
+              <m:mo>-</m:mo>
+              <m:mn>5</m:mn>
+            </m:mrow>
+            <m:annotation encoding="LaTeX"
+              >\[6x-5\]</m:annotation>
+          </m:semantics>
+        </m:math>
+        <feedbackInline id="feedbackInline1" identifier="ChoiceB" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          Remember that, when expanding brackets, all terms
+          inside must be multiplied by whatever is outside.
+          However, you got one term in the answer
+          correct.
+        </feedbackInline>
+      </simpleChoice>
+      <simpleChoice id="simpleChoice2" identifier="ChoiceC">
+        <m:math display="block" id="mathML3">
+          <m:semantics>
+            <m:mrow>
+              <m:mn>6</m:mn>
+              <m:mi>x</m:mi>
+              <m:mo>+</m:mo>
+              <m:mn>10</m:mn>
+            </m:mrow>
+            <m:annotation encoding="LaTeX"
+              >\[6x+10\]</m:annotation>
+          </m:semantics>
+        </m:math>
+        <feedbackInline id="feedbackInline2" identifier="ChoiceC" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          When expanding the bracket the product of 2 and -5 is -10.
+          However, you got one term in the answer
+          correct.
+        </feedbackInline>
+      </simpleChoice>
+      <simpleChoice id="simpleChoice3" identifier="ChoiceD">
+        <m:math display="block" id="mathML4">
+          <m:semantics>
+            <m:mrow>
+              <m:mn>2</m:mn>
+              <m:mi>x</m:mi>
+              <m:mo>-</m:mo>
+              <m:mn>10</m:mn>
+            </m:mrow>
+            <m:annotation encoding="LaTeX"
+              >\[2x-10\]</m:annotation>
+          </m:semantics>
+        </m:math>
+        <feedbackInline id="feedbackInline3" identifier="ChoiceD" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          Remember to include both of the terms in
+          <m:math id="mathML5">
+            <m:mi>x</m:mi>
+          </m:math>.
+          However, you got one term in the answer
+          correct.
+        </feedbackInline>
+      </simpleChoice>
+      <simpleChoice id="simpleChoice4" identifier="ChoiceE">
+        <m:math display="block" id="mathML6">
+          <m:semantics>
+            <m:mrow>
+              <m:mn>2</m:mn>
+              <m:mi>x</m:mi>
+              <m:mo>-</m:mo>
+              <m:mn>5</m:mn>
+            </m:mrow>
+            <m:annotation encoding="LaTeX"
+              >\[2x-5\]</m:annotation>
+          </m:semantics>
+        </m:math>
+        <feedbackInline id="feedbackInline4" identifier="ChoiceE" outcomeIdentifier="FEEDBACK" showHide="show" class="questionFeedback">
+          You should ask for tutor help on this question.
+        </feedbackInline>
+      </simpleChoice>
+    </choiceInteraction>
     <feedbackBlock identifier="SOLUTION" outcomeIdentifier="FEEDBACK" showHide="show" class="solution">
       <m:math display="block" id="mathML7">
         <m:semantics>

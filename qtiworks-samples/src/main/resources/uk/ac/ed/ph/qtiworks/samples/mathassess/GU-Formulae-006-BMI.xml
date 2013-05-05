@@ -109,7 +109,7 @@
   <itemBody>
     <p>Calculate the Body Mass Index (BMI) of an individual who is<printedVariable id="printedVariable0" identifier="fHeight"/>m tall and weighs<printedVariable id="printedVariable1" identifier="iWeight"/>kg.</p>
     <p>Give your answer correct to 1 decimal place.</p>
-    <table>
+    <table class="horizontalInteraction">
       <tbody>
         <tr>
           <td>BMI =</td>
@@ -129,12 +129,12 @@
               </m:semantics>
             </m:math>
           </td>
-          <td>
+          <td class="feedbackColumn">
             <feedbackInline id="feedbackInline0" identifier="CORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
               Correct
             </feedbackInline>
             <feedbackInline id="feedbackInline1" identifier="INCORRECT" outcomeIdentifier="FEEDBACK" showHide="show">
-              Incorrecti
+              Incorrect
             </feedbackInline>
           </td>
         </tr>

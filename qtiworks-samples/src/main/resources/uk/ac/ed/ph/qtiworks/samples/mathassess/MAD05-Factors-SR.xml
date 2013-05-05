@@ -101,7 +101,7 @@
         <tr>
           <td class="interactionColumn">
             <customInteraction class="org.qtitools.mathassess.MathEntryInteraction"
-              responseIdentifier="RESPONSE" ma:expectedLength="20"
+              responseIdentifier="RESPONSE" ma:expectedLength="30"
               ma:printIdentifier="printMath" ma:syntax="text/x-maxima"/>
           </td>
           <td class="feedbackColumn">

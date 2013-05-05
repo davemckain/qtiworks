@@ -483,42 +483,24 @@
                 <customOperator class="org.qtitools.mathassess.ScriptRule"
                   ma:simplify="false" ma:syntax="text/x-maxima">
                   <baseValue baseType="string"><![CDATA[
-  
-  termsOK : true;
+   termsOK : true;
    polyOK: block([simp:true], if polynomialp(RESPONSE,listofvars(mAns))then true else false );
-  
    equalp(p,q):= block([simp:false], if p=q then return(true) else return(false) )$ isEqual: equalp(RESPONSE,mAns);
-  
    equivp(p,q):= block([simp:true], if is(equal(p,q))=true then return(true) else return(false) )$ isEquiv: equivp(RESPONSE,mAns);
-  
    expandp(q):= block([simp:true],
-  
    if q=expand(q) then true else false)$ isExpanded: expandp(RESPONSE);
-   
    includesp(sub, term) :=
       if some(lambda([e],is(equal(ev(e - sub,simp),0))),makelist(part(term,i),i,1,length(term)))=true then true else false;
-   
    termsOK:is(is(nterms(RESPONSE)=nterms(mAns))=true);
-  
    t1OK:includesp(first(RESPONSE),mAns);
-  
    t2OK:includesp(second(RESPONSE),mAns);
-  
    t1BadSign:includesp(-first(RESPONSE),mAns);
-  
    t2BadSign:includesp(-second(RESPONSE),mAns);
-  
    t1Zero:is(is(equal(first(RESPONSE),0))=true);
-  
    t2Zero:is((equal(second(RESPONSE),0))=true);
-  
    t1One:includesp(mX11,RESPONSE);
-  
    t2One:includesp(mX12,RESPONSE);
-  
    constOne:includesp(mConst,RESPONSE);
-  
-   
   ]]></baseValue>
                 </customOperator>
               </setOutcomeValue>
