@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.state;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
@@ -53,6 +54,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 /**
  * Represents the shape of an {@link AssessmentTest} once {@link Ordering} and
@@ -85,8 +87,8 @@ public final class TestPlan implements Serializable {
     /** Root of the {@link TestPlanNode} tree */
     private final TestPlanNode testPlanRootNode;
 
-    /** Map of all {@link TestPlanNode}s, in the correct order */
-    private final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMap;
+    /** List of all {@link TestPlanNode}s, ordered by {@link TestPlanNodeKey#getGlobalIndex()} */
+    private final List<TestPlanNode> testPlanNodeList;
 
     /**
      * Map of the {@link TestPlanNode}s corresponding to the {@link Identifier}s of each
@@ -109,7 +111,8 @@ public final class TestPlan implements Serializable {
         this.testPlanRootNode = testPlanRootNode;
         this.testPlanNodesByIdentifierMap = testPlanNodesByIdentifierMap;
 
-        final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new LinkedHashMap<TestPlanNodeKey, TestPlanNode>();
+        final List<TestPlanNode> testPlanNodeListBuilder = new ArrayList<TestPlanNode>();
+        final TreeMap<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new TreeMap<TestPlanNodeKey, TestPlanNode>();
         for (final Entry<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMapEntry : testPlanNodesByIdentifierMap.entrySet()) {
             final Identifier identifier = testPlanNodesByIdentifierMapEntry.getKey();
             final List<TestPlanNode> testPlanNodeList = testPlanNodesByIdentifierMapEntry.getValue();
@@ -117,22 +120,24 @@ public final class TestPlan implements Serializable {
                 throw new IllegalArgumentException("Value for entry " + identifier + " must not be null");
             }
             for (final TestPlanNode testPlanNode : testPlanNodeList) {
+                testPlanNodeListBuilder.add(testPlanNode);
                 testPlanNodeMapBuilder.put(testPlanNode.getKey(), testPlanNode);
             }
         }
-        this.testPlanNodeMap = Collections.unmodifiableMap(testPlanNodeMapBuilder);
+        Collections.sort(testPlanNodeListBuilder);
+        this.testPlanNodeList = Collections.unmodifiableList(testPlanNodeListBuilder);
     }
 
     /** (Convenience constructor used only during XML unmarshalling. Do not use normally) */
     public TestPlan(final TestPlanNode testPlanRootNode) {
         final Map<Identifier, List<TestPlanNode>> testPlanNodesByIdentifierMapBuilder = new LinkedHashMap<Identifier, List<TestPlanNode>>();
-        final Map<TestPlanNodeKey, TestPlanNode> testPlanNodeMapBuilder = new LinkedHashMap<TestPlanNodeKey, TestPlanNode>();
+        final List<TestPlanNode> testPlanNodeListBuilder = new ArrayList<TestPlanNode>();
         for (final TestPlanNode testPlanNode : testPlanRootNode.searchDescendants()) {
             final TestPlanNodeKey key = testPlanNode.getKey();
             if (key==null) {
                 throw new IllegalArgumentException("Did not expect to find a Node " + testPlanNode + " with null key");
             }
-            testPlanNodeMapBuilder.put(key, testPlanNode);
+            testPlanNodeListBuilder.add(testPlanNode);
             List<TestPlanNode> nodesByIdentifier = testPlanNodesByIdentifierMapBuilder.get(key.getIdentifier());
             if (nodesByIdentifier==null) {
                 nodesByIdentifier = new ArrayList<TestPlanNode>();
@@ -140,13 +145,10 @@ public final class TestPlan implements Serializable {
             }
             nodesByIdentifier.add(testPlanNode);
         }
+        Collections.sort(testPlanNodeListBuilder);
         this.testPlanRootNode = testPlanRootNode;
         this.testPlanNodesByIdentifierMap = Collections.unmodifiableMap(testPlanNodesByIdentifierMapBuilder);
-        this.testPlanNodeMap = Collections.unmodifiableMap(testPlanNodeMapBuilder);
-    }
-
-    public Map<TestPlanNodeKey, TestPlanNode> getTestPlanNodeMap() {
-        return testPlanNodeMap;
+        this.testPlanNodeList = Collections.unmodifiableList(testPlanNodeListBuilder);
     }
 
     public TestPlanNode getTestPlanRootNode() {
@@ -164,6 +166,45 @@ public final class TestPlan implements Serializable {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a flat {@link List} of all {@link TestPlanNode}s in global index order.
+     */
+    public List<TestPlanNode> getNodeList() {
+        return testPlanNodeList;
+    }
+
+    /**
+     * Returns the {@link TestPlanNode} corresponding to the given {@link TestPlanNodeKey}
+     *
+     * @throws IllegalArgumentException if key is null or does not correspond to a node in this
+     * {@link TestPlan}
+     */
+    public TestPlanNode getNode(final TestPlanNodeKey key) {
+        Assert.notNull(key, "key");
+        final int globalIndex = key.getGlobalIndex();
+        if (globalIndex < 0 || globalIndex >= testPlanNodeList.size()) {
+            throw new IllegalArgumentException("Key has globalIndex " + key.getGlobalIndex() + " which is out of range of this TestPlan");
+        }
+        final TestPlanNode result = testPlanNodeList.get(key.getGlobalIndex());
+        if (!result.getKey().equals(key)) {
+            throw new IllegalArgumentException("Key at globalIndex " + key.getGlobalIndex() + " is " + key
+                    + " which does not match requested key " + key);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the {@link TestPlanNode} at the required global index.
+     *
+     * @throws IllegalArgumentException if global index is out of range.
+     */
+    public TestPlanNode getNodeAtGlobalIndex(final int globalIndex) {
+        if (globalIndex < 0 || globalIndex >= testPlanNodeList.size()) {
+            throw new IllegalArgumentException("GlobalIndex " + globalIndex + " is out of range of this TestPlan");
+        }
+        return testPlanNodeList.get(globalIndex);
     }
 
     /**
@@ -231,6 +272,7 @@ public final class TestPlan implements Serializable {
         return nodesForIdentifier.get(instanceNumber);
     }
 
+
     public List<TestPlanNode> searchNodes(final TestNodeType testNodeType) {
         return testPlanRootNode.searchDescendants(testNodeType);
     }
@@ -251,7 +293,7 @@ public final class TestPlan implements Serializable {
         }
         final TestPlan other = (TestPlan) obj;
         return testPlanRootNode.equals(other.testPlanRootNode)
-                && testPlanNodeMap.equals(other.testPlanNodeMap);
+                && testPlanNodeList.equals(other.testPlanNodeList);
     }
 
     @Override

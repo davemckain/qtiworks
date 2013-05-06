@@ -59,7 +59,7 @@ import java.util.List;
  *
  * @author David McKain
  */
-public final class TestPlanNode implements Serializable {
+public final class TestPlanNode implements Serializable, Comparable<TestPlanNode> {
 
     private static final long serialVersionUID = -1618684181224400175L;
 
@@ -344,5 +344,23 @@ public final class TestPlanNode implements Serializable {
     @Override
     public int hashCode() {
         return key!=null ? key.hashCode() : super.hashCode();
+    }
+
+    @Override
+    public int compareTo(final TestPlanNode o) {
+        int result;
+        if (key!=null && o.key!=null) {
+            /* Both "proper" nodes */
+            result = key.compareTo(o.key);
+        }
+        else if (key==null && o.key==null) {
+            /* Both special root nodes */
+            result = 0;
+        }
+        else {
+            /* One root, one other */
+            result = key!=null ? 1 : -1;
+        }
+        return result;
     }
 }

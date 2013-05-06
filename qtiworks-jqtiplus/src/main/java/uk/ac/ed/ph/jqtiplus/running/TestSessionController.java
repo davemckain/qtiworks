@@ -181,7 +181,7 @@ public final class TestSessionController extends TestProcessingController {
         resetOutcomeVariables();
 
         /* Initialise each testPart, assessmentSection and item instance */
-        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
+        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getNodeList()) {
             final TestPlanNodeKey key = testPlanNode.getKey();
             switch (testPlanNode.getTestNodeType()) {
                 case TEST_PART:
@@ -390,21 +390,6 @@ public final class TestSessionController extends TestProcessingController {
     }
 
     /**
-     * Evaluates each {@link BranchRule} declared on the given {@link AbstractPart} in order,
-     * until a {@link BranchRule} evaluates to true. If this happens, we return the target of
-     * the {@link BranchRule}. If all rules evaluate to false (or there are no rules) then we
-     * return null.
-     */
-    private Identifier evaluateBranchRules(final AbstractPart abstractPart) {
-        for (final BranchRule branchRule : abstractPart.getBranchRules()) {
-            if (branchRule.evaluatesTrue(this)) {
-                return branchRule.getTarget();
-            }
-        }
-        return null;
-    }
-
-    /**
      * Exits the current {@link TestPart} (if selected), then advances to the next
      * available {@link TestPart} in the {@link TestPlan}, taking into account any {@link PreCondition}s.
      * If there are no further available {@link TestPart}s, then the test will be exited.
@@ -468,6 +453,7 @@ public final class TestSessionController extends TestProcessingController {
                 if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
                     logger.debug("branchRule has requested end of test");
                     currentTestPartSessionState.setBranchRuleTarget(BranchRule.EXIT_TEST.toString());
+                    markRemainingTestPartNodesAsJumped(currentTestPartNode);
                     testSessionState.setEndTime(timestamp);
                     return null;
                 }
@@ -481,6 +467,7 @@ public final class TestSessionController extends TestProcessingController {
                     if (branchTargetNode!=null) {
                         nextTestPartIndex = branchTargetNode.getSiblingIndex();
                         currentTestPartSessionState.setBranchRuleTarget(branchTargetNode.getKey().toString());
+                        markIntermediateTestPartNodesAsJumped(currentTestPartNode, branchTargetNode);
                     }
                     else {
                         nextTestPartIndex = currentTestPartNode.getSiblingIndex();
@@ -537,6 +524,37 @@ public final class TestSessionController extends TestProcessingController {
         }
 
         return nextAvailableTestPartNode;
+    }
+
+    /**
+     * {@link BranchRule} helper to mark all {@link TestPart} nodes between the given start node
+     * and the given target {@link TestPart} as having been jumped.
+     */
+    private void markIntermediateTestPartNodesAsJumped(final TestPlanNode startTestPlanNode, final TestPlanNode branchTargetNode) {
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
+        for (int testPartIndex = startTestPlanNode.getSiblingIndex(); testPartIndex < branchTargetNode.getSiblingIndex(); testPartIndex++) {
+            final TestPlanNode testPartNode = testPartNodes.get(testPartIndex);
+            markTestPartNodeAsJumped(testPartNode);
+        }
+    }
+
+    /**
+     * {@link BranchRule} helper to mark all {@link TestPart} nodes after the given start Node
+     * as having been jumped.
+     */
+    private void markRemainingTestPartNodesAsJumped(final TestPlanNode startTestPlanNode) {
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
+        for (int testPartIndex=startTestPlanNode.getSiblingIndex(); testPartIndex<testPartNodes.size(); testPartIndex++) {
+            final TestPlanNode testPartNode = testPartNodes.get(testPartIndex);
+            markTestPartNodeAsJumped(testPartNode);
+        }
+    }
+
+    private void markTestPartNodeAsJumped(final TestPlanNode testPartNode) {
+        final TestPartSessionState testPartSessionState = expectTestPartSessionState(testPartNode);
+        testPartSessionState.setJumpedByBranchRule(true);
     }
 
     /**
@@ -639,7 +657,7 @@ public final class TestSessionController extends TestProcessingController {
 	    /* End all items (if not done so already due to RP ending the item or during LINEAR navigation) */
 	    for (final TestPlanNode itemRefNode : itemRefNodes) {
             final ItemSessionState itemSessionState = testSessionState.getItemSessionStates().get(itemRefNode.getKey());
-            if (!itemSessionState.isEnded() && !itemSessionState.isPreConditionFailed()) {
+            if (!itemSessionState.isEnded() && !(itemSessionState.isPreConditionFailed() || itemSessionState.isJumpedByBranchRule())) {
                 getItemSessionController(itemRefNode).endItem(timestamp);
             }
 	    }
@@ -647,7 +665,7 @@ public final class TestSessionController extends TestProcessingController {
 	    /* End all assessmentSections (if not done so already during LINEAR navigation) */
 	    for (final TestPlanNode testPlanNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_SECTION)) {
             final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
-            if (!assessmentSectionSessionState.isEnded() && !assessmentSectionSessionState.isPreConditionFailed()) {
+            if (!assessmentSectionSessionState.isEnded() && !(assessmentSectionSessionState.isPreConditionFailed() || assessmentSectionSessionState.isJumpedByBranchRule())) {
             	assessmentSectionSessionState.setEndTime(timestamp);
             	if (assessmentSectionSessionState.getDurationIntervalStartTime()!=null) {
             	    endControlObjectTimer(assessmentSectionSessionState, timestamp);
@@ -953,8 +971,15 @@ public final class TestSessionController extends TestProcessingController {
                     /* Branch to end of testPart */
                     logger.debug("branchRule requested end of testPart");
                     currentItemState.setBranchRuleTarget(BranchRule.EXIT_TESTPART.toString());
+
+                    /* Mark all nodes until end of testPart as having been skipped */
+                    markRemainingNodesInTestPartAsJumped(currentItemNode);
+
+                    /* End current testPart */
                     testSessionState.setCurrentItemKey(null);
                     endCurrentTestPart(timestamp);
+
+                    /* End of testPart, so no more nodes */
                     branchSucceeded = true;
                     return null;
                 }
@@ -971,13 +996,16 @@ public final class TestSessionController extends TestProcessingController {
 
                     /* Then walk to next node */
                     startSearchNode = walkToNextSiblingOrAncestorNode(parentSectionNode, timestamp);
+
+                    /* Mark intermediate nodes as having been skipped */
+                    markIntermediateNodesAsJumped(currentItemNode, startSearchNode);
                     branchSucceeded = true;
                 }
                 else if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
                     fireValidationError(expectItemRef(currentItemNode), "Ignoring illegal EXIT_TEST branchRule");
                 }
                 else {
-                    /* BRANCH TO REQUESTED ITEM/SECTION */
+                    /* Branch to requested item/section */
                     logger.debug("branchRule requested target {}", branchTargetIdentifier);
                     startSearchNode = walkToBranchTarget(currentItemNode, branchTargetIdentifier, timestamp);
                     if (startSearchNode!=null) {
@@ -1064,7 +1092,8 @@ public final class TestSessionController extends TestProcessingController {
         /* Find and check the target */
         final AbstractPart startPart = testProcessingMap.resolveAbstractPart(startNode);
         final int currentGlobalIndex = startNode.getKey().getGlobalIndex();
-        final List<TestPlanNode> branchTargetNodes = testSessionState.getTestPlan().getNodes(branchTargetIdentifier);
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        final List<TestPlanNode> branchTargetNodes = testPlan.getNodes(branchTargetIdentifier);
         if (branchTargetNodes==null) {
             fireRuntimeError(startPart, "Failed to find branchRule target with identifier " + branchTargetIdentifier
                     + ", so ignoring this branchRule. Check test validity.");
@@ -1121,8 +1150,60 @@ public final class TestSessionController extends TestProcessingController {
             }
             goingDownNode = goingDownNode.getParent();
         }
+
+        /* Mark all intermediate nodes (in document order) as having been skipped if they haven't yet been entered */
+        markIntermediateNodesAsJumped(startNode, branchTargetNode);
+
         /* That's us done now */
         return branchTargetNode;
+    }
+
+    /**
+     * This {@link BranchRule} helper marks all {@link AssessmentSection} and
+     * {@link AssessmentItemRef} between the given start and target nodes as having been jumped over
+     * by the effect of the {@link BranchRule}.
+     */
+    private void markIntermediateNodesAsJumped(final TestPlanNode branchStartNode, final TestPlanNode branchTargetNode) {
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        for (int globalIndex = branchStartNode.getAbstractPartGlobalIndex()+1; globalIndex < branchTargetNode.getAbstractPartGlobalIndex(); globalIndex++) {
+            final TestPlanNode testPlanNode = testPlan.getNodeAtGlobalIndex(globalIndex);
+            markSectionPartNodeAsJumped(testPlanNode);
+        }
+    }
+
+    /**
+     * This {@link BranchRule} helper marks all {@link AssessmentSection} and
+     * {@link AssessmentItemRef} from the given starting Node until the end of the current
+     * {@link TestPart} as having been jumped.
+     */
+    private void markRemainingNodesInTestPartAsJumped(final TestPlanNode branchStartNode) {
+        final TestPlan testPlan = testSessionState.getTestPlan();
+        for (int globalIndex = branchStartNode.getAbstractPartGlobalIndex()+1; globalIndex < testPlan.getNodeList().size(); globalIndex++) {
+            final TestPlanNode testPlanNode = testPlan.getNodeAtGlobalIndex(globalIndex);
+            if (testPlanNode.getTestNodeType()==TestNodeType.TEST_PART) {
+                break;
+            }
+            markSectionPartNodeAsJumped(testPlanNode);
+        }
+    }
+
+    private void markSectionPartNodeAsJumped(final TestPlanNode testPlanNode) {
+        switch (testPlanNode.getTestNodeType()) {
+            case ASSESSMENT_SECTION:
+                final AssessmentSectionSessionState assessmentSectionSessionState = expectAssessmentSectionSessionState(testPlanNode);
+                if (!assessmentSectionSessionState.isEntered()) {
+                    assessmentSectionSessionState.setJumpedByBranchRule(true);
+                }
+                break;
+
+            case ASSESSMENT_ITEM_REF:
+                final ItemSessionState itemSessionState = expectItemRefState(testPlanNode);
+                itemSessionState.setJumpedByBranchRule(true);
+                break;
+
+            default:
+                throw new QtiLogicException("Unexpected switch case " + testPlanNode.getTestNodeType());
+        }
     }
 
     private TestPlanNode walkToNextEnterableItemDepthFirst(final TestPlanNode currentTestPartNode, final TestPlanNode startNode, final Date timestamp) {
@@ -1171,6 +1252,21 @@ public final class TestSessionController extends TestProcessingController {
              * Continue until we reach the end of the testPart
              */
             currentNode = walkToNextSiblingOrAncestorNode(currentNode, timestamp);
+        }
+        return null;
+    }
+
+    /**
+     * Evaluates each {@link BranchRule} declared on the given {@link AbstractPart} in order,
+     * until a {@link BranchRule} evaluates to true. If this happens, we return the target of
+     * the {@link BranchRule}. If all rules evaluate to false (or there are no rules) then we
+     * return null.
+     */
+    private Identifier evaluateBranchRules(final AbstractPart abstractPart) {
+        for (final BranchRule branchRule : abstractPart.getBranchRules()) {
+            if (branchRule.evaluatesTrue(this)) {
+                return branchRule.getTarget();
+            }
         }
         return null;
     }
@@ -1406,7 +1502,7 @@ public final class TestSessionController extends TestProcessingController {
 
         /* Record item results */
         final List<ItemResult> itemResults = result.getItemResults();
-        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getTestPlanNodeMap().values()) {
+        for (final TestPlanNode testPlanNode : testSessionState.getTestPlan().getNodeList()) {
             if (testPlanNode.getTestNodeType()==TestNodeType.ASSESSMENT_ITEM_REF) {
                 final ItemSessionController itemSessionController = getItemSessionController(testPlanNode);
                 final ItemResult itemResult = itemSessionController.computeItemResult(result, timestamp);
@@ -1532,7 +1628,7 @@ public final class TestSessionController extends TestProcessingController {
     }
 
     private TestPlanNode expectTestPartNode(final TestPlanNodeKey key) {
-        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(key);
+        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getNode(key);
         if (testPlanNode==null) {
             throw new QtiLogicException("Failed to locate entry for testPart with key " + key + " in TestPlan");
         }
@@ -1581,7 +1677,7 @@ public final class TestSessionController extends TestProcessingController {
         if (currentItemKey==null) {
             return null;
         }
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(currentItemKey);
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getNode(currentItemKey);
         if (itemRefNode==null) {
             throw new QtiLogicException("Failed to locate node in TestPlan for item with key " + currentItemKey);
         }
@@ -1589,7 +1685,7 @@ public final class TestSessionController extends TestProcessingController {
     }
 
     private TestPlanNode assertItemRefNode(final TestPlanNodeKey key) {
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(key);
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getNode(key);
         if (itemRefNode==null) {
             throw new IllegalArgumentException("Failed to locate entry for assessmentItemRef with key " + key + " in TestPlan");
         }
@@ -1602,7 +1698,7 @@ public final class TestSessionController extends TestProcessingController {
     }
 
     private TestPlanNode expectItemRefNode(final TestPlanNodeKey key) {
-        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(key);
+        final TestPlanNode testPlanNode = testSessionState.getTestPlan().getNode(key);
         if (testPlanNode==null) {
             throw new QtiLogicException("Failed to locate entry for assessmentItemRef with key " + key + " in TestPlan");
         }

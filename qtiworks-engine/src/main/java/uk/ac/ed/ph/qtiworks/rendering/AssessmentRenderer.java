@@ -482,7 +482,7 @@ public class AssessmentRenderer {
             final Map<String, Object> xsltParameters) {
         final TestSessionController testSessionController = request.getTestSessionController();
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getNode(itemKey);
         if (itemRefNode==null) {
             throw new QtiWorksRenderingException("Failed to locate item with key " + itemKey + " in TestPlan");
         }

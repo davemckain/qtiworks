@@ -58,7 +58,7 @@ import org.w3c.dom.Document;
 
 /**
  * Base class for tests of running {@link AssessmentTest}s.
- * 
+ *
  * NB: Subclasses should start their time deltas at 1000L and multiply by 2 each time.
  *
  * @author David McKain
@@ -347,6 +347,18 @@ public abstract class TestTestBase {
     protected ItemSessionState assertItemFailedPreconditionAndExited(final String identifier, final Date exitTimestamp) {
         final ItemSessionState result = assertItemSessionState(identifier);
         RunAssertions.assertFailedPreconditionAndExited(result, exitTimestamp);
+        return result;
+    }
+
+    protected ItemSessionState assertItemJumpedByBranchRuleAndNotExited(final String identifier) {
+        final ItemSessionState result = assertItemSessionState(identifier);
+        RunAssertions.assertJumpedByBranchRuleAndNotExited(result);
+        return result;
+    }
+
+    protected ItemSessionState assertItemJumpedByBranchRuleAndExited(final String identifier, final Date exitTimestamp) {
+        final ItemSessionState result = assertItemSessionState(identifier);
+        RunAssertions.assertJumpedByBranchRuleAndExited(result, exitTimestamp);
         return result;
     }
 

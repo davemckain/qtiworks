@@ -37,8 +37,10 @@ import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.test.AbstractPart;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentSection;
 import uk.ac.ed.ph.jqtiplus.node.test.BranchRule;
 import uk.ac.ed.ph.jqtiplus.node.test.PreCondition;
+import uk.ac.ed.ph.jqtiplus.node.test.TestPart;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -58,6 +60,15 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
      * has failed.
      */
 	protected boolean preConditionFailed;
+
+	/**
+	 * Indicates whether this {@link AbstractPart} was skipped because a {@link BranchRule}
+	 * caused a jump to a later node.
+	 * <p>
+	 * NB: This will be set as appropriate for descendants of {@link AssessmentSection} nodes,
+	 * but not for descendants of {@link TestPart} nodes.
+	 */
+	protected boolean jumpedByBranchRule;
 
     /**
      * If not null, then a {@link BranchRule} on the corresponding {@link AbstractPart} evaluated to
@@ -85,7 +96,16 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
 	}
 
 
-	public String getBranchRuleTarget() {
+    public boolean isJumpedByBranchRule() {
+        return jumpedByBranchRule;
+    }
+
+    public void setJumpedByBranchRule(final boolean jumpedByBranchRule) {
+        this.jumpedByBranchRule = jumpedByBranchRule;
+    }
+
+
+    public String getBranchRuleTarget() {
         return branchRuleTarget;
     }
 
@@ -103,6 +123,7 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
         final AbstractPartSessionState other = (AbstractPartSessionState) obj;
         return super.equals(other)
                 && preConditionFailed==other.preConditionFailed
+                && jumpedByBranchRule==other.jumpedByBranchRule
                 && ObjectUtilities.nullSafeEquals(branchRuleTarget, other.branchRuleTarget);
     }
 
@@ -111,6 +132,7 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
         return Arrays.hashCode(new Object[] {
                 super.hashCode(),
         		preConditionFailed,
+        		jumpedByBranchRule,
         		branchRuleTarget
         });
     }
@@ -119,6 +141,7 @@ public abstract class AbstractPartSessionState extends ControlObjectSessionState
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(preConditionFailed=" + preConditionFailed
+                + ",skippedByBranchRule=" + jumpedByBranchRule
                 + ",branchRuleTarget=" + branchRuleTarget
                 + ",entryTime=" + getEntryTime()
                 + ",endTime=" + getEndTime()

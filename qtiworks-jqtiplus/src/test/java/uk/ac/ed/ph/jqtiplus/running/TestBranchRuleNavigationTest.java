@@ -61,16 +61,16 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
         "p1",
             "s11",
                 "s111",
-                    "i1111", /* = 1st entered item */
+                    "i1111", /* = 1st entered item, should then branch to i1113 */
                     "i1112", /* Skipped by branchRule */
-                    "i1113", /* = 2nd entered item */
+                    "i1113", /* = 2nd entered item, should then branch to s112 */
                     "i1114", /* Skipped by branchRule */
                 "s112",
                     "i1121", /* Skipped due to failed preCondition */
-                    "i1122", /* = 3rd entered item */
+                    "i1122", /* = 3rd entered item, should then branch to exit section */
                     "i1123", /* Skipped by branchRule */
                 "s113",
-                    "i1131", /* = 4th entered item, ends testPart afterwards */
+                    "i1131", /* = 4th entered item, should then branch to end of testPart */
                     "i1132", /* Skipped by branchRule */
         "p2",
             "s21",
@@ -210,7 +210,7 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
 
         /* Check state of everything else */
         assertItemNowEnded("i1111", item1EndTimestamp);
-        assertItemNotEntered("i1112");
+        assertItemJumpedByBranchRuleAndNotExited("i1112");
         assertItemsNotEntered(allItemsAfter("i1113"));
         assertAssessmentSectionOpen("s11", testPart1EntryTimestamp);
         assertAssessmentSectionOpen("s111", testPart1EntryTimestamp);
@@ -246,7 +246,7 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
 
         /* Check state of everything else */
         assertItemNowEnded("i1111", item1EndTimestamp);
-        assertItemNotEntered("i1112");
+        assertItemJumpedByBranchRuleAndNotExited("i1112");
         assertItemNowEnded("i1113", item2EndTimestamp);
         assertItemNotEntered("i1114");
         assertItemFailedPreconditionAndNotExited("i1121");
@@ -287,7 +287,7 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
 
         /* Check state of everything else */
         assertItemNowEnded("i1111", item1EndTimestamp);
-        assertItemNotEntered("i1112");
+        assertItemJumpedByBranchRuleAndNotExited("i1112");
         assertItemNowEnded("i1113", item2EndTimestamp);
         assertItemNotEntered("i1114");
         assertItemFailedPreconditionAndNotExited("i1121");
@@ -326,14 +326,14 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
 
         /* Check state of everything else */
         assertItemNowEnded("i1111", item1EndTimestamp);
-        assertItemEndedButNotEntered("i1112", item4EndTimestamp);
+        assertItemJumpedByBranchRuleAndNotExited("i1112");
         assertItemNowEnded("i1113", item2EndTimestamp);
-        assertItemEndedButNotEntered("i1114", item4EndTimestamp);
+        assertItemJumpedByBranchRuleAndNotExited("i1114");
         assertItemFailedPreconditionAndNotExited("i1121");
         assertItemNowEnded("i1122", item3EndTimestamp);
-        assertItemEndedButNotEntered("i1123", item4EndTimestamp);
+        assertItemJumpedByBranchRuleAndNotExited("i1123");
         assertItemNowEnded("i1131", item4EndTimestamp);
-        assertItemEndedButNotEntered("i1132", item4EndTimestamp);
+        assertItemJumpedByBranchRuleAndNotExited("i1132");
         assertItemsNotEntered("i211", "i311");
         assertAssessmentSectionNowEnded("s11", item4EndTimestamp);
         assertAssessmentSectionNowEnded("s111", item2EndTimestamp);
@@ -500,14 +500,14 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
 
     protected void assertTestPart1AllExited() {
         assertItemNowExited("i1111", testPart1ExitTimestamp);
-        assertItemExitedButNotEntered("i1112", testPart1ExitTimestamp);
+        assertItemJumpedByBranchRuleAndExited("i1112", testPart1ExitTimestamp);
         assertItemNowExited("i1113", testPart1ExitTimestamp);
-        assertItemExitedButNotEntered("i1114", testPart1ExitTimestamp);
+        assertItemJumpedByBranchRuleAndExited("i1114", testPart1ExitTimestamp);
         assertItemFailedPreconditionAndExited("i1121", testPart1ExitTimestamp);
         assertItemNowExited("i1122", testPart1ExitTimestamp);
-        assertItemExitedButNotEntered("i1123", testPart1ExitTimestamp);
+        assertItemJumpedByBranchRuleAndExited("i1123", testPart1ExitTimestamp);
         assertItemNowExited("i1131", testPart1ExitTimestamp);
-        assertItemExitedButNotEntered("i1132", testPart1ExitTimestamp);
+        assertItemJumpedByBranchRuleAndExited("i1132", testPart1ExitTimestamp);
         assertAssessmentSectionNowExited("s11", testPart1ExitTimestamp);
         assertAssessmentSectionNowExited("s111", testPart1ExitTimestamp);
         assertAssessmentSectionNowExited("s112", testPart1ExitTimestamp);
@@ -524,7 +524,7 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
     protected void assertTestPart3Missed() {
         assertItemNotEntered("i311");
         assertAssessmentSectionNotEntered("s31");
-        assertTestPart3NotYetEntered();
+        assertTestPart3Jumped();
     }
 
     protected void assertTestPart2NotYetEntered() {
@@ -533,6 +533,10 @@ public final class TestBranchRuleNavigationTest extends TestTestBase {
 
     protected void assertTestPart3NotYetEntered() {
         RunAssertions.assertNotYetEntered(testPart3SessionState);
+    }
+
+    protected void assertTestPart3Jumped() {
+        RunAssertions.assertJumpedByBranchRuleAndNotExited(testPart3SessionState);
     }
 
     protected TestPlanNode getTestPart2Node() {
