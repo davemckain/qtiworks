@@ -401,8 +401,10 @@ public final class TestSessionController extends TestProcessingController {
      * (if appropriate) must have been ended.
      * <p>
      * Postcondition: The current testPart will be exited, as will all assessmentSections and
-     * item instances therein. The next available {@link TestPart} will be entered, if one is available.
-     * Otherwise the test itself will be ended.
+     * item instances therein. The next available {@link TestPart} will be entered, if one is available,
+     * taking into account {@link BranchRule}s and {@link PreCondition}s. If there are no more
+     * available {@link TestPart}s, or if there was a successful {@link BranchRule#EXIT_TEST} on the
+     * current {@link TestPart} then the test itself will be ended.
      *
      * @param timestamp timestamp for this operation, which must not be null
      *
@@ -421,49 +423,35 @@ public final class TestSessionController extends TestProcessingController {
         final List<TestPlanNode> testPartNodes = testPlan.getTestPartNodes();
         final TestPlanNode currentTestPartNode = getCurrentTestPartNode();
 
-        /* Clear current part/item */
-        testSessionState.setCurrentTestPartKey(null);
-        testSessionState.setCurrentItemKey(null);
-
         /* Exit current testPart (if appropriate) and locate next testPart */
         int nextTestPartIndex = 0;
         if (currentTestPartNode!=null) {
-            /* Check pre-condition on testPart */
+            final TestPart currentTestPart = expectTestPart(currentTestPartNode);
             final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
             assertTestPartEnded(currentTestPartSessionState);
 
-    	    /* Exit all items */
-    	    for (final TestPlanNode itemRefNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF)) {
-                getItemSessionController(itemRefNode).exitItem(timestamp);
-    	    }
-
-    	    /* Exit all assessmentSections */
-    	    for (final TestPlanNode testPlanNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_SECTION)) {
-                final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
-                assessmentSectionSessionState.setExitTime(timestamp);
-    	    }
-
-    	    /* Exit the testPart itself */
-            currentTestPartSessionState.setExitTime(timestamp);
+            /* Exit current testPart */
+            exitCurrentTestPart(timestamp);
 
             /* Check any BranchRules declared on this testPart */
-            final TestPart currentTestPart = expectTestPart(currentTestPartNode);
             final Identifier branchTargetIdentifier = evaluateBranchRules(currentTestPart);
             if (branchTargetIdentifier!=null) {
                 if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
-                    logger.debug("branchRule has requested end of test");
+                    logger.debug("branchRule has requested EXIT_TEST");
                     currentTestPartSessionState.setBranchRuleTarget(BranchRule.EXIT_TEST.toString());
                     markRemainingTestPartNodesAsJumped(currentTestPartNode);
                     testSessionState.setEndTime(timestamp);
                     return null;
                 }
                 else if (BranchRule.EXIT_TESTPART.equals(branchTargetIdentifier)) {
+                    logger.debug("branchRule has requested EXIT_TESTPART - ignoring as we are already on a testPart");
                     fireRuntimeWarning(currentTestPart, "Ignoring invalid EXIT_TESTPART branchRule on a testPart");
                     nextTestPartIndex = currentTestPartNode.getSiblingIndex();
                 }
                 else {
                     /* Must be a branch to an explicit testPart */
                     final TestPlanNode branchTargetNode = findBranchRuleTestPartTarget(currentTestPartNode, currentTestPart, branchTargetIdentifier);
+                    logger.debug("branchRule has resolved to target {}", branchTargetNode);
                     if (branchTargetNode!=null) {
                         nextTestPartIndex = branchTargetNode.getSiblingIndex();
                         currentTestPartSessionState.setBranchRuleTarget(branchTargetNode.getKey().toString());
@@ -524,6 +512,30 @@ public final class TestSessionController extends TestProcessingController {
         }
 
         return nextAvailableTestPartNode;
+    }
+
+    private void exitCurrentTestPart(final Date timestamp) {
+        final TestPlanNode currentTestPartNode = assertCurrentTestPartNode();
+        /* Check pre-condition on testPart */
+        final TestPartSessionState currentTestPartSessionState = expectTestPartSessionState(currentTestPartNode);
+        assertTestPartEnded(currentTestPartSessionState);
+
+        /* Exit all items */
+        for (final TestPlanNode itemRefNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_ITEM_REF)) {
+            getItemSessionController(itemRefNode).exitItem(timestamp);
+        }
+
+        /* Exit all assessmentSections */
+        for (final TestPlanNode testPlanNode : currentTestPartNode.searchDescendants(TestNodeType.ASSESSMENT_SECTION)) {
+            final AssessmentSectionSessionState assessmentSectionSessionState = testSessionState.getAssessmentSectionSessionStates().get(testPlanNode.getKey());
+            assessmentSectionSessionState.setExitTime(timestamp);
+        }
+
+        /* Exit the testPart itself */
+        currentTestPartSessionState.setExitTime(timestamp);
+
+        /* Update state */
+        testSessionState.setCurrentTestPartKey(null);
     }
 
     /**
@@ -878,7 +890,10 @@ public final class TestSessionController extends TestProcessingController {
     /**
      * Advances the currently-selected item within a {@link TestPart} with
      * {@link NavigationMode#LINEAR}, if possible. The test will then advance
-     * to the next available item, or will end the {@link TestPart}.
+     * to the next available item, or will end the {@link TestPart}. (If there is a
+     * successful {@link BranchRule#EXIT_TEST} on the currently-selected item then the
+     * current {@link TestPart} will also be ended, remaining {@link TestPart}s will be jumped,
+     * and the test itself will be neded.)
      * <p>
      * If the {@link TestPart} has {@link SubmissionMode#INDIVIDUAL} then the current item session
      * will be ended first. Otherwise, the current item session will be suspended.
@@ -887,8 +902,13 @@ public final class TestSessionController extends TestProcessingController {
      * navigation mode. An item must be selected. If we are in {@link SubmissionMode#INDIVIDUAL} then
      * the effective {@link ItemSessionControl} for the selected item must allow it to be ended.
      * <p>
-     * Postcondition: Item session will be ended (if in {@link SubmissionMode#INDIVIDUAL)} or
-     * suspended (if in {@link SubmissionMode#SIMULTANEOUS}).
+     * Postcondition: Current item session will be ended (if in {@link SubmissionMode#INDIVIDUAL)} or
+     * suspended (if in {@link SubmissionMode#SIMULTANEOUS}). The next available item will be
+     * selected, if such a thing exists, taking into account {@link BranchRule}s and {@link PreCondition}s.
+     * If there are no more items available then the {@link TestPart}
+     * will be ended. If there was a successful {@link BranchRule#EXIT_TESTPART} on the current
+     * item then the {@link TestPart} will then be exited, future {@link TestPart}s will be skipped
+     * and the test itself will be ended.
      *
      * @param timestamp timestamp for this operation, which must not be null
      *
@@ -967,10 +987,11 @@ public final class TestSessionController extends TestProcessingController {
             final Identifier branchTargetIdentifier = evaluateBranchRules(currentItemRef);
             if (branchTargetIdentifier!=null) {
                 final ItemSessionState currentItemState = expectItemRefState(currentItemNode);
-                if (BranchRule.EXIT_TESTPART.equals(branchTargetIdentifier)) {
-                    /* Branch to end of testPart */
-                    logger.debug("branchRule requested end of testPart");
-                    currentItemState.setBranchRuleTarget(BranchRule.EXIT_TESTPART.toString());
+                if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier) || BranchRule.EXIT_TESTPART.equals(branchTargetIdentifier)) {
+                    logger.debug("branchRule requested {}", branchTargetIdentifier);
+
+                    /* First branch to end of testPart */
+                    currentItemState.setBranchRuleTarget(branchTargetIdentifier.toString());
 
                     /* Mark all nodes until end of testPart as having been skipped */
                     markRemainingNodesInTestPartAsJumped(currentItemNode);
@@ -979,13 +1000,23 @@ public final class TestSessionController extends TestProcessingController {
                     testSessionState.setCurrentItemKey(null);
                     endCurrentTestPart(timestamp);
 
+                    /* If we're actually doing EXIT_TEST, then also exit current testPart, jump remaining testParts and end the test itself */
+                    if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                        exitCurrentTestPart(timestamp);
+                        markRemainingTestPartNodesAsJumped(currentTestPartNode);
+                        testSessionState.setEndTime(timestamp);
+                        if (testSessionState.getDurationIntervalStartTime()!=null) {
+                            endControlObjectTimer(testSessionState, timestamp);
+                        }
+                    }
+
                     /* End of testPart, so no more nodes */
                     branchSucceeded = true;
                     return null;
                 }
                 else if (BranchRule.EXIT_SECTION.equals(branchTargetIdentifier)) {
                     /* Branch to end of section */
-                    logger.debug("branchRule requested end of section");
+                    logger.debug("branchRule requested EXIT_SECTION");
                     currentItemState.setBranchRuleTarget(BranchRule.EXIT_SECTION.toString());
 
                     /* End section */
@@ -1000,9 +1031,6 @@ public final class TestSessionController extends TestProcessingController {
                     /* Mark intermediate nodes as having been skipped */
                     markIntermediateNodesAsJumped(currentItemNode, startSearchNode);
                     branchSucceeded = true;
-                }
-                else if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
-                    fireValidationError(expectItemRef(currentItemNode), "Ignoring illegal EXIT_TEST branchRule");
                 }
                 else {
                     /* Branch to requested item/section */

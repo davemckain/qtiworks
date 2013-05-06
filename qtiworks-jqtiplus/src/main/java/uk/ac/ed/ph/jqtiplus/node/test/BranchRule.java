@@ -111,10 +111,7 @@ public final class BranchRule extends AbstractJump {
             if (!testPart.areJumpsEnabled()) {
                 context.fireValidationError(this, "branchRules on assessmentSections or assessmentItemRefs only apply within testParts with linear navigationMode and individual submissionMode");
             }
-            if (EXIT_TEST.equals(targetIdentifier)) {
-                context.fireValidationError(this, "EXIT_TEST is not allowed as the target of a branchRule on an assessmentSection or assessmentItemRef");
-            }
-            else if (!(EXIT_TESTPART.equals(targetIdentifier) || EXIT_SECTION.equals(targetIdentifier))) {
+            else if (!isSpecial(targetIdentifier)) {
                 /* Target must be an assessmentItemRef or assessmentSection within the current testPart,
                  * and coming after the current Node. We also check to make sure it is not within a selection or
                  * ordering.
