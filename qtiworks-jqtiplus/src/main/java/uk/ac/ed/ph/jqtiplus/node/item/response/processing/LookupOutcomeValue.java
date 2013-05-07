@@ -44,7 +44,6 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 import uk.ac.ed.ph.jqtiplus.value.DurationValue;
-import uk.ac.ed.ph.jqtiplus.value.FloatValue;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.NumberValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -105,22 +104,29 @@ public final class LookupOutcomeValue extends ProcessResponseValue {
 
     @Override
     public void evaluate(final ItemProcessingContext context) {
-        Value value = getExpression().evaluate(context);
+        final Value value = getExpression().evaluate(context);
         if (isThisRuleValid(context)) {
-            NumberValue numberValue = null;
-            if (!value.isNull()) {
-                if (value.getBaseType().isDuration()) {
-                    value = new FloatValue(((DurationValue) value).doubleValue());
-                }
-                numberValue = (NumberValue) value;
-            }
-
             final OutcomeDeclaration outcomeDeclaration = (OutcomeDeclaration) context.ensureVariableDeclaration(getIdentifier(), VariableType.OUTCOME);
-            Value targetValue = outcomeDeclaration.getLookupTable().getTargetValue(numberValue.doubleValue());
-            if (targetValue == null) {
-                targetValue = NullValue.INSTANCE;
+            final LookupTable<?, ?> lookupTable = outcomeDeclaration.getLookupTable();
+            final Value targetValue;
+            if (value.isNull()) {
+                /* Spec is not completely clear as to what to do here, but I assume it means we should
+                 * take the default value?
+                 */
+                targetValue = lookupTable.getDefaultValue();
             }
-            context.setVariableValue(outcomeDeclaration, targetValue);
+            else {
+                double valueAsDouble;
+                if (value.getBaseType().isDuration()) {
+                    valueAsDouble = ((DurationValue) value).doubleValue();
+                }
+                else {
+                    /* (If it's not duration, then it should be numeric) */
+                    valueAsDouble = ((NumberValue) value).doubleValue();
+                }
+                targetValue = lookupTable.getTargetValue(valueAsDouble);
+            }
+            context.setVariableValue(outcomeDeclaration, targetValue!=null ? targetValue : NullValue.INSTANCE);
         }
         else {
             context.fireRuntimeWarning(this, "Rule is not valid, so discarding computed value " + value.toQtiString());

@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.jqtiplus.types;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,6 +53,7 @@ public final class StringResponseData implements ResponseData {
     private final List<String> responseData;
 
     public StringResponseData(final List<String> responseData) {
+        Assert.notNull(responseData, "responseData");
         this.responseData = new ArrayList<String>(responseData);
     }
 

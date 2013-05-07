@@ -311,14 +311,14 @@ public final class ExtendedTextInteraction extends BlockInteraction implements S
         try {
             if (responseCardinality.isRecord()) {
                 String responseString;
-                if (stringResponseData != null) {
-                    if (stringResponseData.size() > 1) {
-                        throw new ResponseBindingException(responseDeclaration, responseData, "Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
-                    }
+                if (stringResponseData.isEmpty()) {
+                    responseString = "";
+                }
+                else if (stringResponseData.size()==1) {
                     responseString = stringResponseData.get(0);
                 }
                 else {
-                    responseString = "";
+                    throw new ResponseBindingException(responseDeclaration, responseData, "Response to extendedTextEntryInteraction bound to a record variable should contain at most 1 element");
                 }
                 result = TextEntryInteraction.parseRecordValueResponse(responseString, getBase());
             }

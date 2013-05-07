@@ -69,9 +69,9 @@ public final class Weight extends AbstractNode implements IdentifiableNode<Ident
 
     @Override
     public final String computeXPathComponent() {
-        final String identifier = getIdentifier().toString();
+        final Identifier identifier = getIdentifier();
         if (identifier != null) {
-            return getQtiClassName() + "[@identifier=\"" + identifier + "\"]";
+            return getQtiClassName() + "[@identifier=\"" + identifier.toString() + "\"]";
         }
         return super.computeXPathComponent();
     }
