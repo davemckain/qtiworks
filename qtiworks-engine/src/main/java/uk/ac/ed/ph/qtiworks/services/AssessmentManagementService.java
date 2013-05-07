@@ -563,7 +563,7 @@ public class AssessmentManagementService {
         target.setAllowSource(template.isAllowSource());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
         target.setAuthorMode(template.isAuthorMode());
-        target.setMaxAttempts(template.getMaxAttempts().intValue());
+        target.setMaxAttempts(template.getMaxAttempts());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
         target.setTitle(template.getTitle().trim());
     }
@@ -580,7 +580,7 @@ public class AssessmentManagementService {
         target.setAllowSource(template.isAllowSource());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
         target.setAuthorMode(template.isAuthorMode());
-        target.setMaxAttempts(Integer.valueOf(template.getMaxAttempts()));
+        target.setMaxAttempts(template.getMaxAttempts());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
         target.setTitle(template.getTitle());
     }

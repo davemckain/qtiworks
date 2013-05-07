@@ -209,18 +209,16 @@ public class AssessmentReportingService {
         final List<CandidateSessionSummaryData> rows = new ArrayList<CandidateSessionSummaryData>();
         for (int i=0; i<candidateSessions.size(); i++) {
             final CandidateSession candidateSession = candidateSessions.get(i);
-            List<String> numericOutcomeValues = null;
+            final List<String> numericOutcomeValues = new ArrayList<String>();
             final Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
             if (numericOutcomesForSession!=null) {
-                numericOutcomeValues = new ArrayList<String>(numericOutcomeIdentifiers.size());
                 for (final String outcomeIdentifier : numericOutcomeIdentifiers) {
                     numericOutcomeValues.add(numericOutcomesForSession.get(outcomeIdentifier));
                 }
             }
+            final List<String> otherOutcomeValues = new ArrayList<String>();
             final Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(candidateSession.getId());
-            List<String> otherOutcomeValues = null;
             if (otherOutcomesForSession!=null) {
-                otherOutcomeValues = new ArrayList<String>(otherOutcomeIdentifiers.size());
                 for (final String outcomeIdentifier : otherOutcomeIdentifiers) {
                     otherOutcomeValues.add(otherOutcomesForSession.get(outcomeIdentifier));
                 }
