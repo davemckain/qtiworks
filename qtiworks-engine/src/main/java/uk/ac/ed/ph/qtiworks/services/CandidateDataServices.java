@@ -107,8 +107,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 
-import com.google.common.io.Closeables;
-
 /**
  * Low level services for manipulating candidate data, such as recording
  * {@link CandidateEvent}s.
@@ -507,10 +505,15 @@ public class CandidateDataServices {
             qtiSerializer.serializeJqtiObject(resultNode, new FileOutputStream(resultFile));
         }
         catch (final Exception e) {
-            throw new QtiWorksRuntimeException("Unexpected Exception", e);
+            throw QtiWorksRuntimeException.unexpectedException(e);
         }
         finally {
-            Closeables.closeQuietly(resultStream);
+            try {
+                IoUtilities.ensureClose(resultStream);
+            }
+            catch (final IOException e) {
+                throw QtiWorksRuntimeException.unexpectedException(e);
+            }
         }
     }
 
@@ -529,7 +532,7 @@ public class CandidateDataServices {
             return IoUtilities.readUnicodeFile(getResultFile(candidateSession));
         }
         catch (final IOException e) {
-            throw new QtiWorksRuntimeException("Unexpected Exception", e);
+            throw QtiWorksRuntimeException.unexpectedException(e);
         }
     }
 

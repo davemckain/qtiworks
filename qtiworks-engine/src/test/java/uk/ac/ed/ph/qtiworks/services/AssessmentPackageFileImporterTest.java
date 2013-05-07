@@ -51,7 +51,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 
 /**
@@ -77,7 +76,7 @@ public class AssessmentPackageFileImporterTest {
             IoUtilities.recursivelyDelete(importSandboxDirectory);
         }
         if (importStream!=null) {
-            Closeables.closeQuietly(importStream);
+            IoUtilities.ensureClose(importStream);
         }
     }
 
