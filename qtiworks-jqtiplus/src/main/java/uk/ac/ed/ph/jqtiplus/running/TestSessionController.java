@@ -889,14 +889,19 @@ public final class TestSessionController extends TestProcessingController {
 
     /**
      * Advances the currently-selected item within a {@link TestPart} with
-     * {@link NavigationMode#LINEAR}, if possible. The test will then advance
-     * to the next available item, or will end the {@link TestPart}. (If there is a
-     * successful {@link BranchRule#EXIT_TEST} on the currently-selected item then the
-     * current {@link TestPart} will also be ended, remaining {@link TestPart}s will be jumped,
-     * and the test itself will be neded.)
+     * {@link NavigationMode#LINEAR}, if possible.
      * <p>
      * If the {@link TestPart} has {@link SubmissionMode#INDIVIDUAL} then the current item session
      * will be ended first. Otherwise, the current item session will be suspended.
+     * <p>
+     * The test will then advance to the next available item, or will end the {@link TestPart},
+     * either because there are no more available items or because we successfully evaluated a
+     * {@link BranchRule#EXIT_TESTPART}.
+     * <p>
+     * A {@link BranchRule#EXIT_TEST} is treated the same as {@link BranchRule#EXIT_TESTPART} on
+     * tests with a single {@link TestPart}, as this will make more feedback available. In a
+     * multi-part test, a successful {@link BranchRule#EXIT_TEST} will end the current
+     * {@link TestPart}, then jump remaining {@link TestPart}s, then end the test itself.
      * <p>
      * Precondition: We must be inside a {@link TestPart} having {@link NavigationMode#LINEAR}
      * navigation mode. An item must be selected. If we are in {@link SubmissionMode#INDIVIDUAL} then
@@ -905,10 +910,10 @@ public final class TestSessionController extends TestProcessingController {
      * Postcondition: Current item session will be ended (if in {@link SubmissionMode#INDIVIDUAL)} or
      * suspended (if in {@link SubmissionMode#SIMULTANEOUS}). The next available item will be
      * selected, if such a thing exists, taking into account {@link BranchRule}s and {@link PreCondition}s.
-     * If there are no more items available then the {@link TestPart}
-     * will be ended. If there was a successful {@link BranchRule#EXIT_TESTPART} on the current
-     * item then the {@link TestPart} will then be exited, future {@link TestPart}s will be skipped
-     * and the test itself will be ended.
+     * If there are no more items available then the {@link TestPart} will be ended.
+     * If there was a successful {@link BranchRule#EXIT_TESTPART} on the current
+     * item and the test contains multiple {@link TestPart}s, then the {@link TestPart} will then
+     * be exited, future {@link TestPart}s will be skipped and the test itself will be ended.
      *
      * @param timestamp timestamp for this operation, which must not be null
      *
@@ -1000,8 +1005,8 @@ public final class TestSessionController extends TestProcessingController {
                     testSessionState.setCurrentItemKey(null);
                     endCurrentTestPart(timestamp);
 
-                    /* If we're actually doing EXIT_TEST, then also exit current testPart, jump remaining testParts and end the test itself */
-                    if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier)) {
+                    /* If we're actually doing EXIT_TEST on a multi-part test, then also exit current testPart, jump remaining testParts and end the test itself */
+                    if (BranchRule.EXIT_TEST.equals(branchTargetIdentifier) && testSessionState.getTestPlan().getTestPartNodes().size() > 1) {
                         exitCurrentTestPart(timestamp);
                         markRemainingTestPartNodesAsJumped(currentTestPartNode);
                         testSessionState.setEndTime(timestamp);
