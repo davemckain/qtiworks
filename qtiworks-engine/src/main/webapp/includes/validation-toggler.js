@@ -16,7 +16,7 @@ $(document).ready(function() {
             $(this).children('.toggler').toggle();
         });
     }
-    setupTogglers($('.validationResult > .resultPanel > .details > .resultPanel > .details > .resultPanel > .details > .resultPanel h4'));
-    setupTogglers($('.validationResult > .resultPanel > .details > .resultPanel > .details > .resultPanel > h4'));
-    setupTogglers($('.validationResult > .resultPanel > .details > .resultPanel > h4'));
+    setupTogglers($('.resultPanel > .details > .resultPanel > .details > .resultPanel > .details > .resultPanel h4'));
+    setupTogglers($('.resultPanel > .details > .resultPanel > .details > .resultPanel > h4'));
+    setupTogglers($('.resultPanel > .details > .resultPanel > h4'));
 });
