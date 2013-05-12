@@ -60,9 +60,7 @@ Renders a standalone assessmentItem
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"/>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"/>
         <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}"/>
-        <xsl:if test="$authorMode">
-          <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}"/>
-        </xsl:if>
+
         <!--
         Import ASCIIMathML stuff if there are any MathEntryInteractions in the question.
         (It would be quite nice if we could allow each interaction to hook into this
@@ -90,20 +88,8 @@ Renders a standalone assessmentItem
         <!-- Author mode link -->
         <xsl:if test="$authorMode">
           <div class="authorModePanel">
-            <a href="{$webappContextPath}{$authorViewUrl}" target="_blank">Show Authoring Help</a>
+            <a href="{$webappContextPath}{$authorViewUrl}" target="_blank">Show Authoring Console</a>
           </div>
-        </xsl:if>
-        <!-- Author mode note (maybe) -->
-        <xsl:if test="$authorMode">
-          <div class="authorModeNote authorMode">
-            <p>
-              You are currently running this item in "author" mode, which shows extra information
-              that would not normally be shown to candidates.
-            </p>
-          </div>
-          <script><![CDATA[
-            AuthorMode.setupAuthorModeToggler();
-          ]]></script>
         </xsl:if>
 
         <!-- Item title -->
@@ -167,12 +153,6 @@ Renders a standalone assessmentItem
 
   <xsl:template name="qw:item-controls">
     <div class="sessionControl">
-      <xsl:if test="$authorMode">
-        <div class="authorMode">
-          The candidate currently has the following options for this item.
-          You can choose exactly which options are available via the "item delivery".
-        </div>
-      </xsl:if>
       <ul class="controls">
         <xsl:if test="$softSoftResetAllowed">
           <li>
