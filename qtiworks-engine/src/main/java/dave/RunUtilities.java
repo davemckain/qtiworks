@@ -80,8 +80,9 @@ public final class RunUtilities {
 
     private static void setBaseOptions(final AbstractRenderingOptions result) {
         result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        result.setServeFileUrl("/serveFile");
+        result.setServeFileUrl("/file");
         result.setResponseUrl("/response");
+        result.setAuthorViewUrl("/author-view");
         result.setResultUrl("/result");
         result.setSourceUrl("/source");
     }

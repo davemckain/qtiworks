@@ -72,6 +72,10 @@ public class CandidateAuditLogger {
         logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_ITEM");
     }
 
+    public void logItemAuthorViewRendering(final CandidateEvent candidateEvent) {
+        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_ITEM_AUTHOR_VIEW");
+    }
+
     public void logTestRendering(final CandidateEvent candidateEvent) {
         logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST");
     }

@@ -528,8 +528,9 @@ public class AssessmentRenderer {
 
         /* Pass common action URLs */
         final P renderingOptions = request.getRenderingOptions();
-        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("responseUrl", renderingOptions.getResponseUrl());
+        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
+        xsltParameters.put("authorViewUrl", renderingOptions.getAuthorViewUrl());
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
     }

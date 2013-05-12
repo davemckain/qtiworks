@@ -3,6 +3,8 @@
 
 Renders the author/debug view of a standalone assessmentItem
 
+Input document: assessmentItem (slightly inappropriate here, but never mind!)
+
 -->
 <xsl:stylesheet version="2.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -21,6 +23,8 @@ Renders the author/debug view of a standalone assessmentItem
   <xsl:import href="utils.xsl"/>
 
   <xsl:param name="itemSessionStateXml" as="xs:string" required="yes"/>
+
+  <!-- ************************************************************ -->
 
   <xsl:function name="qw:format-optional-date" as="xs:string?">
     <xsl:param name="date" as="xs:string?"/>
@@ -44,6 +48,7 @@ Renders the author/debug view of a standalone assessmentItem
         <script src="/includes/qtiworks.js?{$qtiWorksVersion}"/>
         <script src="/includes/validation-toggler.js?{$qtiWorksVersion}"/>
         <link rel="stylesheet" href="/includes/qtiworks.css?{$qtiWorksVersion}"/>
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
 
         <!-- Styling for JQuery -->
         <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/redmond/jquery-ui.css"/>
@@ -87,90 +92,23 @@ Renders the author/debug view of a standalone assessmentItem
       <div class="resultPanel">
         <h4>Variable state</h4>
         <div class="details">
-          <xsl:call-template name="invalidResponsesPanel"/>
+          <xsl:call-template name="variableValuesPanel"/>
         </div>
       </div>
-      <div class="resultPanel">
-        <h4>Processing notifications</h4>
-        <div class="details">
-        </div>
-      </div>
-      <div class="resultPanel">
-        <h4>Interaction shuffle state</h4>
-        <div class="details">
-        </div>
-      </div>
+      <xsl:call-template name="notificationsPanel"/>
+      <xsl:call-template name="shuffleStatePanel"/>
       <div class="resultPanel">
         <h4>Internal state XML</h4>
         <div class="details">
           <pre class="prettyprint xmlSource"><xsl:value-of select="$itemSessionStateXml"/></pre>
         </div>
       </div>
-
-      <!-- TODO: Stuff below needs moved -->
-      <!-- Show current state -->
-      <h2>Item Variables</h2>
-      <p>
-        The current values of all item variables are shown below:
-      </p>
-      <div class="sessionState">
-        <xsl:if test="exists($shuffledChoiceOrders)">
-          <h3>Shuffled choice orders</h3>
-          <ul>
-            <xsl:for-each select="$shuffledChoiceOrders">
-              <li>
-                <span class="variableName">
-                  <xsl:value-of select="@responseIdentifier"/>
-                </span>
-                <xsl:text> = [</xsl:text>
-                <xsl:value-of select="tokenize(@choiceSequence, ' ')" separator=", "/>
-                <xsl:text>]</xsl:text>
-              </li>
-            </xsl:for-each>
-          </ul>
-        </xsl:if>
-      </div>
-
-      <!-- Notifications -->
-      <xsl:if test="exists($notifications)">
-        <h2>Processing notifications</h2>
-        <p>
-          The following notifications were recorded during the most recent processing run on this item.
-          These may indicate issues with your item that need fixed.
-        </p>
-        <table class="notificationsTable">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Severity</th>
-              <th>QTI Class</th>
-              <th>Attribute</th>
-              <th>Line Number</th>
-              <th>Column Number</th>
-              <th>Message</th>
-            </tr>
-          </thead>
-          <tbody>
-            <xsl:for-each select="$notifications">
-              <tr>
-                <td><xsl:value-of select="@type"/></td>
-                <td><xsl:value-of select="@level"/></td>
-                <td><xsl:value-of select="if (exists(@nodeQtiClassName)) then @nodeQtiClassName else 'N/A'"/></td>
-                <td><xsl:value-of select="if (exists(@attrLocalName)) then @attrLocalName else 'N/A'"/></td>
-                <td><xsl:value-of select="if (exists(@lineNumber)) then @lineNumber else 'Unknown'"/></td>
-                <td><xsl:value-of select="if (exists(@columnNumber)) then @columnNumber else 'Unknown'"/></td>
-                <td><xsl:value-of select="."/></td>
-              </tr>
-            </xsl:for-each>
-          </tbody>
-        </table>
-      </xsl:if>
     </div>
   </xsl:template>
 
   <xsl:template name="unboundResponsesPanel" as="element(div)">
     <div class="resultPanel {if (exists($unboundResponseIdentifiers)) then 'success' else 'failure'}">
-      <h4>Unbound responses (<xsl:value-of select="count($unboundResponseIdentifiers)"/></h4>
+      <h4>Unbound responses (<xsl:value-of select="count($unboundResponseIdentifiers)"/>)</h4>
       <div class="details">
         <xsl:choose>
           <xsl:when test="exists($unboundResponseIdentifiers)">
@@ -201,7 +139,7 @@ Renders the author/debug view of a standalone assessmentItem
 
   <xsl:template name="invalidResponsesPanel" as="element(div)">
     <div class="resultPanel {if (exists($invalidResponseIdentifiers)) then 'success' else 'failure'}">
-      <h4>Invalid responses (<xsl:value-of select="count($invalidResponseIdentifiers)"/></h4>
+      <h4>Invalid responses (<xsl:value-of select="count($invalidResponseIdentifiers)"/>)</h4>
       <div class="details">
         <xsl:choose>
           <xsl:when test="exists($invalidResponseIdentifiers)">
@@ -229,7 +167,7 @@ Renders the author/debug view of a standalone assessmentItem
     </div>
   </xsl:template>
 
-  <xsl:template name="variableValuesPanel" as="element(div)">
+  <xsl:template name="variableValuesPanel" as="element(div)*">
     <xsl:if test="exists($outcomeValues)">
       <div class="resultPanel">
         <h4>Outcome values</h4>
@@ -261,6 +199,75 @@ Renders the author/debug view of a standalone assessmentItem
       </div>
     </xsl:if>
   </xsl:template>
+
+  <xsl:template name="notificationsPanel" as="element(div)">
+    <div class="resultPanel">
+      <h4>Processing notifications (<xsl:value-of select="count($notifications)"/>)</h4>
+      <div class="details">
+        <xsl:choose>
+          <xsl:when test="count($notifications) > 0">
+            <p>
+              The following notifications were recorded during this processing run on this item.
+              These may indicate issues with your item that need fixed.
+            </p>
+            <table class="notificationsTable">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Severity</th>
+                  <th>QTI Class</th>
+                  <th>Attribute</th>
+                  <th>Line Number</th>
+                  <th>Column Number</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                <xsl:for-each select="$notifications">
+                  <tr>
+                    <td><xsl:value-of select="@type"/></td>
+                    <td><xsl:value-of select="@level"/></td>
+                    <td><xsl:value-of select="if (exists(@nodeQtiClassName)) then @nodeQtiClassName else 'N/A'"/></td>
+                    <td><xsl:value-of select="if (exists(@attrLocalName)) then @attrLocalName else 'N/A'"/></td>
+                    <td><xsl:value-of select="if (exists(@lineNumber)) then @lineNumber else 'Unknown'"/></td>
+                    <td><xsl:value-of select="if (exists(@columnNumber)) then @columnNumber else 'Unknown'"/></td>
+                    <td><xsl:value-of select="."/></td>
+                  </tr>
+                </xsl:for-each>
+              </tbody>
+            </table>
+          </xsl:when>
+          <xsl:otherwise>
+            <p>
+              No notifications were recorded during this processing run on this item.
+            </p>
+          </xsl:otherwise>
+        </xsl:choose>
+      </div>
+    </div>
+  </xsl:template>
+
+  <xsl:template name="shuffleStatePanel" as="element(div)">
+    <div class="resultPanel">
+      <h4>Interaction shuffle state</h4>
+      <div class="details">
+        <ul>
+          <xsl:for-each select="$shuffledChoiceOrders">
+            <li>
+              <span class="variableName">
+                <xsl:value-of select="@responseIdentifier"/>
+              </span>
+              <xsl:text> = [</xsl:text>
+              <xsl:value-of select="tokenize(@choiceSequence, ' ')" separator=", "/>
+              <xsl:text>]</xsl:text>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </div>
+    </div>
+  </xsl:template>
+
+  <!-- ************************************************************ -->
 
   <xsl:template name="dump-values" as="element(ul)">
     <xsl:param name="valueHolders" as="element()*"/>

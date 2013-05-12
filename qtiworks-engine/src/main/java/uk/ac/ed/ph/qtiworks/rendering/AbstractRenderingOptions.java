@@ -62,6 +62,9 @@ public abstract class AbstractRenderingOptions implements Serializable {
     private String serveFileUrl;
 
     @NotNull
+    private String authorViewUrl;
+
+    @NotNull
     private String resultUrl;
 
     @NotNull
@@ -102,6 +105,15 @@ public abstract class AbstractRenderingOptions implements Serializable {
 
     public void setServeFileUrl(final String serveFileUrl) {
         this.serveFileUrl = serveFileUrl;
+    }
+
+
+    public String getAuthorViewUrl() {
+        return authorViewUrl;
+    }
+
+    public void setAuthorViewUrl(final String authorViewUrl) {
+        this.authorViewUrl = authorViewUrl;
     }
 
 

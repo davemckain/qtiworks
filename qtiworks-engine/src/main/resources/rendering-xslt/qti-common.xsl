@@ -30,6 +30,7 @@ rendering.
 
   <!-- Global action URLs -->
   <xsl:param name="responseUrl" as="xs:string" required="yes"/>
+  <xsl:param name="authorViewUrl" as="xs:string" required="yes"/>
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>

@@ -47,7 +47,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
+import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingMode;
@@ -135,6 +138,9 @@ public class CandidateRenderingService {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
+
+
+
     //----------------------------------------------------
     // Item rendering
 
@@ -187,24 +193,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            final String contentType = renderingOptions.getSerializationMethod().getContentType();
-            final long contentLength = resultFile.length();
-            FileInputStream resultInputStream = null;
-            try {
-                resultInputStream = new FileInputStream(resultFile);
-                outputStreamer.stream(contentType, contentLength, requestTimestampContext.getCurrentRequestTimestamp(),
-                        resultInputStream);
-            }
-            catch (final FileNotFoundException e) {
-                throw new QtiWorksRuntimeException("Unexpected IOException", e);
-            }
-            catch (final IOException e) {
-                /* Streamer threw Exception */
-                throw e;
-            }
-            finally {
-                IOUtils.closeQuietly(resultInputStream);
-            }
+            streamResultFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -277,6 +266,75 @@ public class CandidateRenderingService {
     }
 
     //----------------------------------------------------
+    // Item Author View rendering
+
+    public void renderCurrentCandidateItemSessionStateAuthorView(final long xid, final String sessionToken,
+            final ItemAuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+        Assert.notNull(sessionToken, "sessionToken");
+        final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
+        renderCurrentCandidateItemSessionStateAuthorView(candidateSession, renderingOptions, outputStreamer);
+    }
+
+    public void renderCurrentCandidateItemSessionStateAuthorView(final CandidateSession candidateSession,
+            final ItemAuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            throws IOException {
+        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(renderingOptions, "renderingOptions");
+        Assert.notNull(outputStreamer, "outputStreamer");
+
+        /* Look up most recent event */
+        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+
+        /* Load the ItemSessionState */
+        final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(latestEvent);
+
+        /* Create temporary file to hold the output before it gets streamed */
+        final File resultFile = filespaceManager.createTempFile();
+        try {
+            /* Render to temp file */
+            FileOutputStream resultOutputStream = null;
+            try {
+                resultOutputStream = new FileOutputStream(resultFile);
+                renderItemEventAuthorView(latestEvent, itemSessionState, renderingOptions, new StreamResult(resultOutputStream));
+            }
+            catch (final IOException e) {
+                throw new QtiWorksRuntimeException("Unexpected IOException", e);
+            }
+            finally {
+                IOUtils.closeQuietly(resultOutputStream);
+            }
+
+            /* Finally stream to caller */
+            streamResultFile(resultFile, outputStreamer, renderingOptions);
+        }
+        finally {
+            if (!resultFile.delete()) {
+                throw new QtiWorksRuntimeException("Could not delete result file " + resultFile.getPath());
+            }
+        }
+    }
+
+    private void renderItemEventAuthorView(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState,
+            final ItemAuthorViewRenderingOptions renderingOptions, final StreamResult result) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        /* Create and partially configure rendering request */
+        final ItemAuthorViewRenderingRequest renderingRequest = new ItemAuthorViewRenderingRequest();
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setItemSessionState(itemSessionState);
+        renderingRequest.setRenderingOptions(renderingOptions);
+
+        candidateAuditLogger.logItemAuthorViewRendering(candidateEvent);
+        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
+        assessmentRenderer.renderItemAuthorView(renderingRequest, notifications, result);
+    }
+
+    //----------------------------------------------------
     // Test rendering
 
     /**
@@ -327,24 +385,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            final String contentType = renderingOptions.getSerializationMethod().getContentType();
-            final long contentLength = resultFile.length();
-            FileInputStream resultInputStream = null;
-            try {
-                resultInputStream = new FileInputStream(resultFile);
-                outputStreamer.stream(contentType, contentLength, requestTimestampContext.getCurrentRequestTimestamp(),
-                        resultInputStream);
-            }
-            catch (final FileNotFoundException e) {
-                throw new QtiWorksRuntimeException("Unexpected IOException", e);
-            }
-            catch (final IOException e) {
-                /* Streamer threw Exception */
-                throw e;
-            }
-            finally {
-                IOUtils.closeQuietly(resultInputStream);
-            }
+            streamResultFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -520,6 +561,30 @@ public class CandidateRenderingService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_CANDIDATE_SESSION);
         }
         return candidateSession;
+    }
+
+    private void streamResultFile(final File resultFile, final OutputStreamer outputStreamer, final AbstractRenderingOptions renderingOptions)
+            throws IOException {
+        /* Finally stream to caller */
+        final String contentType = renderingOptions.getSerializationMethod().getContentType();
+        final long contentLength = resultFile.length();
+        FileInputStream resultInputStream = null;
+        try {
+            resultInputStream = new FileInputStream(resultFile);
+            outputStreamer.stream(contentType, contentLength, requestTimestampContext.getCurrentRequestTimestamp(),
+                    resultInputStream);
+        }
+        catch (final FileNotFoundException e) {
+            throw new QtiWorksRuntimeException("Unexpected IOException", e);
+        }
+        catch (final IOException e) {
+            /* Streamer threw Exception */
+            throw e;
+        }
+        finally {
+            IOUtils.closeQuietly(resultInputStream);
+        }
+
     }
 
     private void ensureSessionNotTerminated(final CandidateSession candidateSession) throws CandidateForbiddenException {

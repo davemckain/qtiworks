@@ -36,6 +36,8 @@ package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
@@ -102,11 +104,7 @@ public class CandidateItemController {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
         final ItemRenderingOptions renderingOptions = new ItemRenderingOptions();
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
-        renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
-        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
-        renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
+        configureBaseRenderingOptions(sessionBaseUrl, renderingOptions);
         renderingOptions.setEndUrl(sessionBaseUrl + "/close");
         renderingOptions.setSolutionUrl(sessionBaseUrl + "/solution");
         renderingOptions.setSoftResetUrl(sessionBaseUrl + "/reset-soft");
@@ -115,6 +113,34 @@ public class CandidateItemController {
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateRenderingService.renderCurrentCandidateItemSessionState(xid, sessionToken, renderingOptions, outputStreamer);
+    }
+
+    /**
+     * Renders the current state of the given session
+     *
+     * @throws IOException
+     * @throws CandidateForbiddenException
+     */
+    @RequestMapping(value="/session/{xid}/{sessionToken}/author-view", method=RequestMethod.GET)
+    public void renderCurrentItemAuthoringView(@PathVariable final long xid, @PathVariable final String sessionToken,
+            final HttpServletResponse response)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        /* Create appropriate options that link back to this controller */
+        final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
+        final ItemAuthorViewRenderingOptions renderingOptions = new ItemAuthorViewRenderingOptions();
+        configureBaseRenderingOptions(sessionBaseUrl, renderingOptions);
+
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateRenderingService.renderCurrentCandidateItemSessionStateAuthorView(xid, sessionToken, renderingOptions, outputStreamer);
+    }
+
+    private void configureBaseRenderingOptions(final String sessionBaseUrl, final AbstractRenderingOptions renderingOptions) {
+        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
+        renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
+        renderingOptions.setAuthorViewUrl(sessionBaseUrl + "/author-view");
+        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
+        renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
     }
 
     //----------------------------------------------------
