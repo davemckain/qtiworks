@@ -22,8 +22,6 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
   <xsl:import href="item-common.xsl"/>
   <xsl:import href="utils.xsl"/>
 
-  <xsl:param name="itemSessionStateXml" as="xs:string" required="yes"/>
-
   <!-- ************************************************************ -->
 
   <xsl:function name="qw:format-optional-date" as="xs:string?">
@@ -40,7 +38,6 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
         <title>Author Debug View</title>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"/>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"/>
-        <script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"/>
         <script src="{$webappContextPath}/rendering/javascript/QtiWorksRendering.js?{$qtiWorksVersion}"/>
         <script src="{$webappContextPath}/rendering/javascript/AuthorMode.js?{$qtiWorksVersion}"/>
 
@@ -57,10 +54,33 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
         <div class="authorInfo authorMode">
           <h1>QTI author's feedback</h1>
 
+          <xsl:call-template name="qw:session-controls"/>
           <xsl:apply-templates select="$itemSessionState"/>
         </div>
       </body>
     </html>
+  </xsl:template>
+
+  <xsl:template name="qw:session-controls">
+    <div class="sessionControl">
+      <ul class="controls">
+        <li>
+          <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">
+            <input type="submit" value="View Item source XML"/>
+          </form>
+        </li>
+        <li>
+          <form action="{$webappContextPath}{$stateUrl}" method="get" class="showXmlInDialog" title="Item State XML">
+            <input type="submit" value="View Item state XML"/>
+          </form>
+        </li>
+        <li>
+          <form action="{$webappContextPath}{$resultUrl}" method="get" class="showXmlInDialog" title="Item Result XML">
+            <input type="submit" value="View Item &lt;assessmentResult&gt; XML"/>
+          </form>
+        </li>
+      </ul>
+    </div>
   </xsl:template>
 
   <xsl:template match="qw:itemSessionState">
@@ -72,7 +92,7 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
           <ul>
             <li>Entry time: <xsl:value-of select="qw:format-optional-date($itemSessionState/@entryTime, '(Not Yet Entered)')"/></li>
             <li>End time: <xsl:value-of select="qw:format-optional-date($itemSessionState/@endTime, '(Not Yet Ended)')"/></li>
-            <li>Duration accumulated: <xsl:value-of select="$itemSessionState/@durationAccumulated"/> ms</li>
+            <li>Duration accumulated: <xsl:value-of select="$itemSessionState/@durationAccumulated div 1000.0"/> s</li>
             <li>Initialized: <xsl:value-of select="$itemSessionState/@initialized"/></li>
             <li>Responded: <xsl:value-of select="$itemSessionState/@responded"/></li>
             <li><code>sessionStatus</code>: <xsl:value-of select="$sessionStatus"/></li>
@@ -97,12 +117,6 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
       </div>
       <xsl:call-template name="notificationsPanel"/>
       <xsl:call-template name="shuffleStatePanel"/>
-      <div class="resultPanel">
-        <h4>Internal state XML</h4>
-        <div class="details">
-          <pre class="prettyprint xmlSource"><xsl:value-of select="$itemSessionStateXml"/></pre>
-        </div>
-      </div>
     </div>
   </xsl:template>
 

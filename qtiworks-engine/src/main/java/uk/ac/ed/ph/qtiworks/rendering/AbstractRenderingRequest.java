@@ -62,8 +62,6 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
     private URI assessmentResourceUri;
 
     private boolean authorMode;
-    private boolean sourceAllowed;
-    private boolean resultAllowed;
 
     //----------------------------------------------------
 
@@ -100,24 +98,6 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
 
     public void setAuthorMode(final boolean authorMode) {
         this.authorMode = authorMode;
-    }
-
-
-    public boolean isSourceAllowed() {
-        return sourceAllowed;
-    }
-
-    public void setSourceAllowed(final boolean sourceAllowed) {
-        this.sourceAllowed = sourceAllowed;
-    }
-
-
-    public boolean isResultAllowed() {
-        return resultAllowed;
-    }
-
-    public void setResultAllowed(final boolean resultAllowed) {
-        this.resultAllowed = resultAllowed;
     }
 
     //----------------------------------------------------

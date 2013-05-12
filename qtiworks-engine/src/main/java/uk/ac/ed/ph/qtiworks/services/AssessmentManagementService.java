@@ -557,10 +557,8 @@ public class AssessmentManagementService {
         target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
         target.setAllowSoftResetWhenEnded(template.isAllowSoftResetWhenEnded());
         target.setAllowSoftResetWhenOpen(template.isAllowSoftResetWhenOpen());
-        target.setAllowResult(template.isAllowResult());
         target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
         target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
-        target.setAllowSource(template.isAllowSource());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
         target.setAuthorMode(template.isAuthorMode());
         target.setMaxAttempts(template.getMaxAttempts().intValue());
@@ -574,10 +572,8 @@ public class AssessmentManagementService {
         target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
         target.setAllowSoftResetWhenEnded(template.isAllowSoftResetWhenEnded());
         target.setAllowSoftResetWhenOpen(template.isAllowSoftResetWhenOpen());
-        target.setAllowResult(template.isAllowResult());
         target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
         target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
-        target.setAllowSource(template.isAllowSource());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
         target.setAuthorMode(template.isAuthorMode());
         target.setMaxAttempts(Integer.valueOf(template.getMaxAttempts()));
@@ -645,15 +641,11 @@ public class AssessmentManagementService {
     private void mergeTestDeliverySettings(final TestDeliverySettingsTemplate template, final TestDeliverySettings target) {
         target.setAuthorMode(template.isAuthorMode());
         target.setTitle(template.getTitle().trim());
-        target.setAllowResult(template.isAllowResult());
-        target.setAllowSource(template.isAllowSource());
     }
 
     public void mergeTestDeliverySettings(final TestDeliverySettings template, final TestDeliverySettingsTemplate target) {
         target.setAuthorMode(template.isAuthorMode());
         target.setTitle(template.getTitle());
-        target.setAllowResult(template.isAllowResult());
-        target.setAllowSource(template.isAllowSource());
     }
 
     //-------------------------------------------------
@@ -898,18 +890,16 @@ public class AssessmentManagementService {
 
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
+        template.setAuthorMode(true);
+        template.setTitle("Item Delivery Settings");
         template.setAllowEnd(true);
         template.setAllowHardResetWhenEnded(true);
         template.setAllowHardResetWhenOpen(true);
         template.setAllowSoftResetWhenEnded(true);
         template.setAllowSoftResetWhenOpen(true);
-        template.setAllowResult(false);
         template.setAllowSolutionWhenEnded(true);
         template.setAllowSolutionWhenOpen(true);
-        template.setAllowSource(false);
-        template.setAuthorMode(false);
         template.setMaxAttempts(0);
-        template.setTitle("Item Delivery Settings");
         template.setPrompt(null);
         return template;
     }
@@ -918,8 +908,6 @@ public class AssessmentManagementService {
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
         template.setAuthorMode(true);
         template.setTitle("Test Delivery Settings");
-        template.setAllowSource(false);
-        template.setAllowResult(false);
         return template;
     }
 

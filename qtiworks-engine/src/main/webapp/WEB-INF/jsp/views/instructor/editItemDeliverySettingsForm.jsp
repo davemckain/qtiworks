@@ -98,6 +98,8 @@ itemDeliverySettingsTemplate - form backing template
           <aside>
             If 'Yes', additional debugging information will be shown while
             the item is being delivered, assisting question authors.
+            It will also be possible to access the assessment source, result
+            and state XML.
           </aside>
         </div>
       </div>
@@ -253,45 +255,6 @@ itemDeliverySettingsTemplate - form backing template
         <div class="grid_5">
           <aside>
             If 'Yes', the candidate will be allowed to request a model solution
-          </aside>
-        </div>
-      </div>
-      <div class="clear"></div>
-    </fieldset>
-    <fieldset>
-      <legend>Permitted geek / debugging actions</legend>
-      <div class="stdFormRow">
-        <div class="grid_4">
-          <label for="allowSource">View the assessmentItem XML</label>
-        </div>
-        <div class="grid_3">
-          <div class="booleanButtons">
-            <form:radiobutton path="allowSource" value="true" /> Yes
-            <form:radiobutton path="allowSource" value="false" /> No
-          </div>
-        </div>
-        <div class="grid_5">
-          <aside>
-            If 'Yes', a button will be made available to show the source XML.
-            This only really makes sense during authoring and debugging.
-          </aside>
-        </div>
-      </div>
-      <div class="clear"></div>
-      <div class="stdFormRow">
-        <div class="grid_4">
-          <label for="allowResult">Generate an &lt;assessmentResult&gt; XML</label>
-        </div>
-        <div class="grid_3">
-          <div class="booleanButtons">
-            <form:radiobutton path="allowResult" value="true" /> Yes
-            <form:radiobutton path="allowResult" value="false" /> No
-          </div>
-        </div>
-        <div class="grid_5">
-          <aside>
-            If 'Yes', a button will be provided to generate an &lt;assessmentResult&gt;
-            XML file corresponding to the current state of the item session.
           </aside>
         </div>
       </div>

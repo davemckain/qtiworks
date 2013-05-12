@@ -55,6 +55,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Date;
 
 import javax.activation.FileTypeMap;
 import javax.annotation.Resource;
@@ -280,11 +281,16 @@ public class AssessmentPackageFileService {
     private void streamPackageFile(final AssessmentPackage assessmentPackage, final File file,
             final String contentType, final OutputStreamer outputStreamer)
             throws IOException {
+        streamFile(file, contentType, assessmentPackage.getCreationTime(), outputStreamer);
+    }
+
+    public void streamFile(final File file, final String contentType, final Date lastModifiedTime, final OutputStreamer outputStreamer)
+            throws IOException {
         final long contentLength = file.length();
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = new FileInputStream(file);
-            outputStreamer.stream(contentType, contentLength, assessmentPackage.getCreationTime(), fileInputStream);
+            outputStreamer.stream(contentType, contentLength, lastModifiedTime, fileInputStream);
         }
         finally {
             IOUtils.closeQuietly(fileInputStream);

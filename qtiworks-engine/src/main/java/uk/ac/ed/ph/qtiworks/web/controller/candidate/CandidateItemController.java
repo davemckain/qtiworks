@@ -51,6 +51,7 @@ import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
@@ -137,9 +138,10 @@ public class CandidateItemController {
     private void configureBaseRenderingOptions(final String sessionBaseUrl, final AbstractRenderingOptions renderingOptions) {
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
+        renderingOptions.setStateUrl(sessionBaseUrl + "/state");
+        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setAuthorViewUrl(sessionBaseUrl + "/author-view");
-        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
     }
 
@@ -303,17 +305,6 @@ public class CandidateItemController {
     // Informational actions
 
     /**
-     * Streams an {@link AssessmentResult} representing the current state of the given
-     * {@link CandidateSession}
-     */
-    @RequestMapping(value="/session/{xid}/{sessionToken}/result", method=RequestMethod.GET)
-    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        response.setContentType("application/xml");
-        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
-    }
-
-    /**
      * Serves the source of the given {@link AssessmentPackage}
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
@@ -332,6 +323,28 @@ public class CandidateItemController {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
             candidateRenderingService.streamAssessmentSource(xid, sessionToken, outputStreamer);
         }
+    }
+
+    /**
+     * Streams an {@link ItemSessionState} representing the current state of the given
+     * {@link CandidateSession}
+     */
+    @RequestMapping(value="/session/{xid}/{sessionToken}/state", method=RequestMethod.GET)
+    public void streamState(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateRenderingService.streamAssessmentState(xid, sessionToken, outputStreamer);
+    }
+
+    /**
+     * Streams an {@link AssessmentResult} representing the current state of the given
+     * {@link CandidateSession}
+     */
+    @RequestMapping(value="/session/{xid}/{sessionToken}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        response.setContentType("application/xml");
+        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
     }
 
     /**

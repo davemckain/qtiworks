@@ -101,6 +101,7 @@ public class CandidateTestController {
         renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
         renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
+        renderingOptions.setStateUrl(sessionBaseUrl + "/state");
         renderingOptions.setResultUrl(sessionBaseUrl + "/result");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setTestPartNavigationUrl(sessionBaseUrl + "/test-part-navigation");

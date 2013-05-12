@@ -107,8 +107,6 @@ public class ItemRenderingTest {
             renderingRequest.setSolutionAllowed(true);
             renderingRequest.setSoftResetAllowed(true);
             renderingRequest.setHardResetAllowed(true);
-            renderingRequest.setResultAllowed(true);
-            renderingRequest.setSourceAllowed(true);
             renderingRequest.setCandidateCommentAllowed(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();

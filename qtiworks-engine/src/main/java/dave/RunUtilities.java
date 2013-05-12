@@ -83,8 +83,9 @@ public final class RunUtilities {
         result.setServeFileUrl("/file");
         result.setResponseUrl("/response");
         result.setAuthorViewUrl("/author-view");
-        result.setResultUrl("/result");
         result.setSourceUrl("/source");
+        result.setStateUrl("/state");
+        result.setResultUrl("/result");
     }
 
 }

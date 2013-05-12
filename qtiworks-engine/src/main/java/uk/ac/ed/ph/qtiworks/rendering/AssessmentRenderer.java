@@ -55,9 +55,6 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
-import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
-import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -293,19 +290,12 @@ public class AssessmentRenderer {
         final ItemSessionState itemSessionState = request.getItemSessionState();
         final Document itemSessionStateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
         xsltParameters.put("itemSessionState", itemSessionStateDocument.getDocumentElement());
-        xsltParameters.put("itemSessionStateXml",  serializeDocument(itemSessionStateDocument));
 
         /* Set control parameters */
         xsltParameters.put("solutionMode", Boolean.valueOf(request.isSolutionMode()));
 
         /* Perform transform */
         doTransform(request, itemAuthorDebugXsltUri, xsltParameters, result);
-    }
-
-    private static String serializeDocument(final Document document) {
-        final XMLStringOutputOptions outputOptions = new XMLStringOutputOptions();
-        outputOptions.setIndenting(true);
-        return XMLUtilities.serializeNode(document, outputOptions);
     }
 
     /**
@@ -522,9 +512,7 @@ public class AssessmentRenderer {
         }
 
         /* Pass common control parameters */
-        xsltParameters.put("authorMode", request.isAuthorMode());
-        xsltParameters.put("sourceAllowed", Boolean.valueOf(request.isSourceAllowed()));
-        xsltParameters.put("resultAllowed", Boolean.valueOf(request.isResultAllowed()));
+        xsltParameters.put("authorMode", Boolean.valueOf(request.isAuthorMode()));
 
         /* Pass common action URLs */
         final P renderingOptions = request.getRenderingOptions();
@@ -532,6 +520,7 @@ public class AssessmentRenderer {
         xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("authorViewUrl", renderingOptions.getAuthorViewUrl());
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
+        xsltParameters.put("stateUrl", renderingOptions.getStateUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
     }
 

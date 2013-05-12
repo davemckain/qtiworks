@@ -346,9 +346,7 @@ public class SampleResourceImporter {
 
                 case TEST_WORK_IN_PROGRESS: {
                     final TestDeliverySettings testDeliverySettings = createBaseTestDeliverySettings();
-                    testDeliverySettings.setTitle("Tests (work in progress)");
-                    testDeliverySettings.setAllowResult(true);
-                    testDeliverySettings.setAllowSource(true);
+                    testDeliverySettings.setTitle("Test standard");
                     deliverySettings = testDeliverySettings;
                     break;
                 }
@@ -365,16 +363,12 @@ public class SampleResourceImporter {
         final ItemDeliverySettings settings = new ItemDeliverySettings();
         settings.setMaxAttempts(Integer.valueOf(0));
         settings.setAuthorMode(true);
-        settings.setAllowResult(true);
-        settings.setAllowSource(true);
         return settings;
     }
 
     private TestDeliverySettings createBaseTestDeliverySettings() {
         final TestDeliverySettings settings = new TestDeliverySettings();
         settings.setAuthorMode(true);
-        settings.setAllowResult(true);
-        settings.setAllowSource(true);
         return settings;
     }
 

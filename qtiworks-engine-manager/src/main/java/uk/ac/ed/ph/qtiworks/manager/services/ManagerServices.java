@@ -159,10 +159,8 @@ public class ManagerServices {
         fullSettings.setAllowHardResetWhenOpen(true);
         fullSettings.setAllowSoftResetWhenEnded(true);
         fullSettings.setAllowSoftResetWhenOpen(true);
-        fullSettings.setAllowResult(true);
         fullSettings.setAllowSolutionWhenEnded(true);
         fullSettings.setAllowSolutionWhenOpen(true);
-        fullSettings.setAllowSource(true);
         fullSettings.setAuthorMode(true);
         fullSettings.setMaxAttempts(0);
         fullSettings.setPublic(true);

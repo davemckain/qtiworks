@@ -193,7 +193,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            streamResultFile(resultFile, outputStreamer, renderingOptions);
+            streamFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -240,8 +240,6 @@ public class CandidateRenderingService {
             renderingRequest.setHardResetAllowed(itemDeliverySettings.isAllowHardResetWhenEnded());
             renderingRequest.setSoftResetAllowed(itemDeliverySettings.isAllowSoftResetWhenEnded());
             renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenEnded());
-            renderingRequest.setResultAllowed(itemDeliverySettings.isAllowResult());
-            renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
             renderingRequest.setCandidateCommentAllowed(false);
         }
         else if (itemSessionState.isOpen()) {
@@ -250,8 +248,6 @@ public class CandidateRenderingService {
             renderingRequest.setHardResetAllowed(itemDeliverySettings.isAllowHardResetWhenOpen());
             renderingRequest.setSoftResetAllowed(itemDeliverySettings.isAllowSoftResetWhenOpen());
             renderingRequest.setSolutionAllowed(itemDeliverySettings.isAllowSolutionWhenOpen());
-            renderingRequest.setResultAllowed(false);
-            renderingRequest.setSourceAllowed(itemDeliverySettings.isAllowSource());
             renderingRequest.setCandidateCommentAllowed(itemDeliverySettings.isAllowCandidateComment());
         }
 
@@ -306,7 +302,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            streamResultFile(resultFile, outputStreamer, renderingOptions);
+            streamFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -385,7 +381,7 @@ public class CandidateRenderingService {
             }
 
             /* Finally stream to caller */
-            streamResultFile(resultFile, outputStreamer, renderingOptions);
+            streamFile(resultFile, outputStreamer, renderingOptions);
         }
         finally {
             if (!resultFile.delete()) {
@@ -410,8 +406,6 @@ public class CandidateRenderingService {
         renderingRequest.setAuthorMode(testDeliverySettings.isAuthorMode());
         renderingRequest.setTestSessionController(testSessionController);
         renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setResultAllowed(testDeliverySettings.isAllowResult());
-        renderingRequest.setSourceAllowed(testDeliverySettings.isAllowSource());
 
         /* If session has terminated, render appropriate state and exit */
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
@@ -501,6 +495,38 @@ public class CandidateRenderingService {
         candidateAuditLogger.logAction(candidateSession, "ACCESS_SOURCE");
     }
 
+    //----------------------------------------------------
+    // Candidate state access
+
+    public void streamAssessmentState(final long xid, final String sessionToken, final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+        Assert.notNull(outputStreamer, "outputStreamer");
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        streamAssessmentState(candidateSession, outputStreamer);
+    }
+
+    public void streamAssessmentState(final CandidateSession candidateSession, final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, IOException {
+        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(outputStreamer, "outputStreamer");
+
+        /* Forbid results if the candidate session is closed */
+        ensureSessionNotTerminated(candidateSession);
+
+        /* Make sure candidate is actually allowed to get results for this delivery */
+        ensureCallerMayViewResult(candidateSession);
+
+        /* Get most recent event */
+        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+
+        /* Generate result Object from current state */
+        final File sessionStateFile = candidateDataServices.ensureSessionStateFile(mostRecentEvent);
+
+        /* Send result */
+        assessmentPackageFileService.streamFile(sessionStateFile, "application/xml",
+                requestTimestampContext.getCurrentRequestTimestamp(), outputStreamer);
+        candidateAuditLogger.logAction(candidateSession, "ACCESS_STATE");
+    }
 
     //----------------------------------------------------
     // Candidate Result access
@@ -563,7 +589,7 @@ public class CandidateRenderingService {
         return candidateSession;
     }
 
-    private void streamResultFile(final File resultFile, final OutputStreamer outputStreamer, final AbstractRenderingOptions renderingOptions)
+    private void streamFile(final File resultFile, final OutputStreamer outputStreamer, final AbstractRenderingOptions renderingOptions)
             throws IOException {
         /* Finally stream to caller */
         final String contentType = renderingOptions.getSerializationMethod().getContentType();
@@ -584,7 +610,6 @@ public class CandidateRenderingService {
         finally {
             IOUtils.closeQuietly(resultInputStream);
         }
-
     }
 
     private void ensureSessionNotTerminated(final CandidateSession candidateSession) throws CandidateForbiddenException {
@@ -596,7 +621,7 @@ public class CandidateRenderingService {
     private void ensureCallerMayViewSource(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         final DeliverySettings deliverySettings = candidateSession.getDelivery().getDeliverySettings();
-        if (!deliverySettings.isAllowSource()) {
+        if (!deliverySettings.isAuthorMode()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.VIEW_ASSESSMENT_SOURCE);
         }
     }
@@ -604,7 +629,7 @@ public class CandidateRenderingService {
     private void ensureCallerMayViewResult(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         final DeliverySettings deliverySettings = candidateSession.getDelivery().getDeliverySettings();
-        if (!deliverySettings.isAllowResult()) {
+        if (!deliverySettings.isAuthorMode()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.VIEW_ASSESSMENT_RESULT);
         }
     }

@@ -65,10 +65,13 @@ public abstract class AbstractRenderingOptions implements Serializable {
     private String authorViewUrl;
 
     @NotNull
-    private String resultUrl;
+    private String sourceUrl;
 
     @NotNull
-    private String sourceUrl;
+    private String stateUrl;
+
+    @NotNull
+    private String resultUrl;
 
     //----------------------------------------------------
 
@@ -117,21 +120,30 @@ public abstract class AbstractRenderingOptions implements Serializable {
     }
 
 
-    public String getResultUrl() {
-        return resultUrl;
-    }
-
-    public void setResultUrl(final String resultUrl) {
-        this.resultUrl = resultUrl;
-    }
-
-
     public String getSourceUrl() {
         return sourceUrl;
     }
 
     public void setSourceUrl(final String sourceUrl) {
         this.sourceUrl = sourceUrl;
+    }
+
+
+    public String getStateUrl() {
+        return stateUrl;
+    }
+
+    public void setStateUrl(final String stateUrl) {
+        this.stateUrl = stateUrl;
+    }
+
+
+    public String getResultUrl() {
+        return resultUrl;
+    }
+
+    public void setResultUrl(final String resultUrl) {
+        this.resultUrl = resultUrl;
     }
 
     //----------------------------------------------------

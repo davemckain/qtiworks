@@ -53,7 +53,6 @@ public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate
     private boolean allowHardResetWhenEnded;
     private boolean allowSolutionWhenOpen;
     private boolean allowSolutionWhenEnded;
-
     private boolean allowCandidateComment;
 
     //------------------------------------------------------------

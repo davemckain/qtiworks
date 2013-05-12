@@ -205,11 +205,11 @@ public class CandidateDataServices {
 
     public void storeItemSessionState(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState) {
         final Document stateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
-        storeStateDocument(candidateEvent, "itemSessionState", stateDocument);
+        storeStateDocument(candidateEvent, stateDocument);
     }
 
     public ItemSessionState loadItemSessionState(final CandidateEvent candidateEvent) {
-        final Document document = loadStateDocument(candidateEvent, "itemSessionState");
+        final Document document = loadStateDocument(candidateEvent);
         return ItemSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
@@ -320,11 +320,11 @@ public class CandidateDataServices {
 
     public void storeTestSessionState(final CandidateEvent candidateEvent, final TestSessionState testSessionState) {
         final Document stateDocument = TestSessionStateXmlMarshaller.marshal(testSessionState);
-        storeStateDocument(candidateEvent, "testSessionState", stateDocument);
+        storeStateDocument(candidateEvent, stateDocument);
     }
 
     public TestSessionState loadTestSessionState(final CandidateEvent candidateEvent) {
-        final Document document = loadStateDocument(candidateEvent, "testSessionState");
+        final Document document = loadStateDocument(candidateEvent);
         return TestSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
@@ -485,8 +485,8 @@ public class CandidateDataServices {
         return mostRecentEvent;
     }
 
-    private void storeStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName, final Document stateXml) {
-        final File sessionFile = getStateFile(candidateEvent, stateFileBaseName);
+    private void storeStateDocument(final CandidateEvent candidateEvent, final Document stateXml) {
+        final File sessionFile = getSessionStateFile(candidateEvent);
         final XsltSerializationOptions xsltSerializationOptions = new XsltSerializationOptions();
         xsltSerializationOptions.setIndenting(true);
         xsltSerializationOptions.setIncludingXMLDeclaration(false);
@@ -568,11 +568,8 @@ public class CandidateDataServices {
         return value.toQtiString();
     }
 
-    private Document loadStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName) {
-        final File sessionFile = getStateFile(candidateEvent, stateFileBaseName);
-        if (!sessionFile.exists()) {
-            throw new QtiWorksLogicException("State file " + sessionFile + " does not exist");
-        }
+    private Document loadStateDocument(final CandidateEvent candidateEvent) {
+        final File sessionFile = ensureSessionStateFile(candidateEvent);
         final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
         try {
             return documentBuilder.parse(sessionFile);
@@ -582,10 +579,20 @@ public class CandidateDataServices {
         }
     }
 
-    private File getStateFile(final CandidateEvent candidateEvent, final String stateFileBaseName) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
-        return new File(sessionFolder, stateFileBaseName + candidateEvent.getId() + ".xml");
+    public File ensureSessionStateFile(final CandidateEvent candidateEvent) {
+        final File sessionStateFile = getSessionStateFile(candidateEvent);
+        if (!sessionStateFile.exists()) {
+            throw new QtiWorksLogicException("State file " + sessionStateFile + " does not exist");
+        }
+        return sessionStateFile;
     }
 
+    private File getSessionStateFile(final CandidateEvent candidateEvent) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final AssessmentObjectType assessmentType = candidateSession.getDelivery().getAssessment().getAssessmentType();
+        final String stateFileBaseName = assessmentType==AssessmentObjectType.ASSESSMENT_ITEM ? "itemSessionState" : "testSessionState";
+        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
+        final String stateFileName = stateFileBaseName + candidateEvent.getId() + ".xml";
+        return new File(sessionFolder, stateFileName);
+    }
 }

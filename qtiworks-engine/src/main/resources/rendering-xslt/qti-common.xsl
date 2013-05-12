@@ -24,14 +24,11 @@ rendering.
   <!-- QTIWorks version number -->
   <xsl:param name="qtiWorksVersion" as="xs:string" required="yes"/>
 
-  <!-- Global action permissions -->
-  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
-
   <!-- Global action URLs -->
   <xsl:param name="responseUrl" as="xs:string" required="yes"/>
   <xsl:param name="authorViewUrl" as="xs:string" required="yes"/>
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
+  <xsl:param name="stateUrl" as="xs:string" required="yes"/>
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
 

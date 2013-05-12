@@ -124,8 +124,6 @@ public class TestRenderingTest {
             renderingRequest.setTestSessionController(testSessionController);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAuthorMode(true);
-            renderingRequest.setResultAllowed(true);
-            renderingRequest.setSourceAllowed(true);
             renderingRequest.setTestRenderingMode(null);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
