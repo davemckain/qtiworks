@@ -8,8 +8,8 @@ All Rights Reserved
 <page:page title="Login">
 
   <form action="${utils:internalLink(pageContext, '/instructorFormAuthenticator')}" method="post">
-    <input type="hidden" id="protectedRequestUrl" name="protectedRequestUrl"
-        value="${fn:escapeXml(requestScope['qtiworks.web.authn.protectedRequestUrl'])}" />
+    <input type="hidden" id="protectedRequestUri" name="protectedRequestUri"
+        value="${fn:escapeXml(requestScope['qtiworks.web.authn.protectedRequestUri'])}" />
 
     <h2>Instructor Login</h2>
 

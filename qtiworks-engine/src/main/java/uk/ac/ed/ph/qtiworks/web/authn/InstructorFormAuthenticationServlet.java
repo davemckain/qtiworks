@@ -39,6 +39,8 @@ import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,10 +76,8 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
     public static final String FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME = "formLoginErrorJspPath";
 
     public static final String USER_ID_PARAM = "userId";
-
     public static final String PASSWORD_PARAM = "password";
-
-    public static final String PROTECTED_REQUEST_URL_PARAM = "protectedRequestUrl";
+    public static final String PROTECTED_REQUEST_URI_PARAM = "protectedRequestUri";
 
     /**
      * Location of form login error JSP page, passed via context <init-param/>.
@@ -116,17 +116,16 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
         }
     }
 
+
     @Override
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
         /* Make sure beans are set up. (These are not serializable, so have to be declared transient.) */
         requireBeans();
 
-        /* Recover the URL of the original protected resource. We'll redirect to this on success */
-        final String protectedRequestUrl = request.getParameter(PROTECTED_REQUEST_URL_PARAM);
-        if (protectedRequestUrl == null) {
-            /* Hmmm.... not supplied. Let's fail appropriately */
-            logger.warn("Parameter {} not found", PROTECTED_REQUEST_URL_PARAM);
+        /* Recover and validate the URI of the original protected resource. We'll redirect to this on success */
+        final URI protectedResourceUri = extractRedirectUri(request);
+        if (protectedResourceUri==null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -136,14 +135,14 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
         final String password = request.getParameter(PASSWORD_PARAM);
         final List<String> errors = new ArrayList<String>();
         final InstructorUser authenticatedUser = tryAuthentication(userId, password, errors);
-        if (authenticatedUser != null) {
+        if (authenticatedUser!=null) {
             /* Store user details in session and redirect to the page we were supposed to be
              * going originally, and remove referral details from session
              */
             auditLogger.recordEvent("Instructor authentication succeeded for " + userId);
-            logger.debug("Authentication succeeded - redirecting to {}", protectedRequestUrl);
+            logger.debug("Authentication succeeded - redirecting to {}", protectedResourceUri);
             request.getSession().setAttribute(InstructorAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
-            response.sendRedirect(protectedRequestUrl);
+            response.sendRedirect(protectedResourceUri.toString()); /* (This is safe as we have sanitised this URI) */
         }
         else {
             /* Forward to login error page, keeping the referral details in session */
@@ -181,4 +180,34 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
         }
         return user;
     }
+
+    /**
+     * Extracts and checks the return URI specified in the {@link #PROTECTED_REQUEST_URI_PARAM}
+     * parameter. Basic validation is done to ensure that it is a relative URI.
+     *
+     * @param request
+     * @return extracted and validated return URI, or null if no valid URI was specified.
+     */
+    private URI extractRedirectUri(final HttpServletRequest request) {
+        final String protectedRequestUriString = request.getParameter(PROTECTED_REQUEST_URI_PARAM);
+        if (protectedRequestUriString==null) {
+            /* Hmmm.... not supplied. Let's fail appropriately */
+            logger.warn("Parameter {} not found", PROTECTED_REQUEST_URI_PARAM);
+            return null;
+        }
+        final URI protectedRequestUri;
+        try {
+            protectedRequestUri = new URI(protectedRequestUriString);
+        }
+        catch (final URISyntaxException e) {
+            logger.warn("Value {} for Parameter {} is not a valid URI", protectedRequestUriString, PROTECTED_REQUEST_URI_PARAM);
+            return null;
+        }
+        if (protectedRequestUri.isAbsolute()) {
+            logger.warn("Value {} for Parameter {} must not be an absolute URI", protectedRequestUriString, PROTECTED_REQUEST_URI_PARAM);
+            return null;
+        }
+        return protectedRequestUri;
+    }
+
 }

@@ -60,7 +60,7 @@ import org.springframework.web.context.WebApplicationContext;
  * <ul>
  *   <li>{@link InstructorFormAuthenticationServlet#USER_ID_PARAM}: user ID</li>
  *   <li>{@link InstructorFormAuthenticationServlet#PASSWORD_PARAM}: password</li>
- *   <li>{@link InstructorFormAuthenticationServlet#PROTECTED_REQUEST_URL_PARAM}: the URL of "this" Resource</li>
+ *   <li>{@link InstructorFormAuthenticationServlet#PROTECTED_REQUEST_URI_PARAM}: the URL of "this" Resource</li>
  * </ul>
  *
  * The JSP should submit to the {@link InstructorFormAuthenticationServlet} to check the provided user ID
@@ -76,11 +76,11 @@ public final class InstructorFormAuthenticator extends AbstractInstructorAuthent
     private static final Logger logger = LoggerFactory.getLogger(InstructorFormAuthenticator.class);
 
     /**
-     * Name of attribute used to store request URL if we need to go to login form so that
+     * Name of attribute used to store request URI if we need to go to login form so that
      * user can be redirected back once authentication and authorisation has been completed
      * successfully.
      */
-    public static final String PROTECTED_REQUEST_URL_NAME = "qtiworks.web.authn.protectedRequestUrl";
+    public static final String PROTECTED_REQUEST_URI_NAME = "qtiworks.web.authn.protectedRequestUri";
 
     /** Name of parameter providing the path of the form login page */
     public static final String FORM_LOGIN_JSP_PATH_PARAMETER_NAME = "formLoginJspPath";
@@ -107,13 +107,13 @@ public final class InstructorFormAuthenticator extends AbstractInstructorAuthent
             return null;
         }
         /* Retrieve URL of protected Resource, including query String */
-        String requestUrl = request.getRequestURI();
+        String requestUri = request.getRequestURI();
         final String queryString = request.getQueryString();
         if (queryString!=null) {
-            requestUrl += "?" + queryString;
+            requestUri += "?" + queryString;
         }
         logger.debug("Forwarding to login page at " + loginFormJspPath);
-        request.setAttribute(PROTECTED_REQUEST_URL_NAME, requestUrl);
+        request.setAttribute(PROTECTED_REQUEST_URI_NAME, requestUri);
         request.getRequestDispatcher(loginFormJspPath).forward(request, response);
         return null;
     }
