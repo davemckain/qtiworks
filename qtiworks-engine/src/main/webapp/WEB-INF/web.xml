@@ -104,7 +104,7 @@ QTIWorks Delivery Engine web deployment descriptor
   </filter>
   <filter-mapping>
     <filter-name>LtiAuthenticationFilter</filter-name>
-    <url-pattern>/lti/*</url-pattern>
+    <url-pattern>/lti/launch/*</url-pattern>
   </filter-mapping>
 
   <!-- Dispatcher for LTI web functionality -->

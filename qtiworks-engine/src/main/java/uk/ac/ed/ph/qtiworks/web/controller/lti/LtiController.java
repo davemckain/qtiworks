@@ -40,11 +40,18 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiOauthMessageUtilities;
+
+import java.io.IOException;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import net.oauth.OAuthMessage;
+import net.oauth.server.OAuthServlet;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -70,5 +77,19 @@ public class LtiController {
 
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
+    }
+
+    @RequestMapping(value="/test", method=RequestMethod.POST)
+    public String ltiTest(final HttpServletRequest httpRequest, final Model model) throws IOException {
+        final OAuthMessage oauthMessage = OAuthServlet.getMessage(httpRequest, null);
+        final LtiLaunchData ltiLaunchData = LtiOauthMessageUtilities.extractLtiLaunchData(oauthMessage);
+        final boolean isBasicLtiLaunch = LtiAuthenticationFilter.isBasicLtiLaunchRequest(httpRequest);
+
+        model.addAttribute("ltiLaunchData", ltiLaunchData);
+        model.addAttribute("isBasicLtiLaunch", Boolean.valueOf(isBasicLtiLaunch));
+
+        /* FIXME: Add validation checks as well */
+
+        return "ltiTest";
     }
 }

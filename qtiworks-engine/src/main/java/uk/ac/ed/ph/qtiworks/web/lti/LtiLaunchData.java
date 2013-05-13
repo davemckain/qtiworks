@@ -36,11 +36,19 @@ package uk.ac.ed.ph.qtiworks.web.lti;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * Encapsulates the subset of the LTI launch data that we might be interested in.
+ * Encapsulates the subset of the LTI launch data that are interested in.
  * <p>
- * We can add more fields here if and when we need them.
+ * NB: Not all LTI data is included here.
  *
  * @author David McKain
  */
@@ -48,17 +56,103 @@ public final class LtiLaunchData implements Serializable {
 
     private static final long serialVersionUID = -6570791171231780956L;
 
+    /** Corresponds to <code>lti_message_type</code>. Required */
+    @NotNull
+    @NotEmpty
+    private String ltiMessageType;
+
+    /** Corresponds to <code>lti_version</code>. Required */
+    @NotNull
+    @NotEmpty
+    private String ltiVersion;
+
+    /** Corresponds to <code>resource_link_id</code>. Required */
+    @NotNull
+    @NotEmpty
     private String resourceLinkId;
-    private String contextId;
-    private String launchPresentationReturnUrl;
-    private String toolConsumerInfoProductFamilyCode;
-    private String toolConsumerInfoVersion;
-    private String toolConsumerInstanceGuid;
+
+    /** Corresponds to <code>resource_link_title</code>. Recommended */
+    private String resourceLinkTitle;
+
+    /** Corresponds to <code>resource_link_description</code>. Recommended */
+    private String resourceLinkDescription;
+
+    /** Corresponds to <code>user_id</code>. Recommended */
     private String userId;
+
+    /** Corresponds to <code>roles</code>. Recommended, will be empty if nothing is provided */
+    private final Set<String> roles;
+
+    /** Corresponds to <code>lis_person_name_full</code>. Recommended, but possibly suppressed */
     private String lisPersonNameFull;
+
+    /** Corresponds to <code>lis_person_name_given</code>. Recommended, but possibly suppressed */
     private String lisPersonNameGiven;
+
+    /** Corresponds to <code>lis_person_name_family</code>. Recommended, but possibly suppressed */
     private String lisPersonNameFamily;
+
+    /** Corresponds to <code>lis_person_contact_email_primary</code>. Recommended, but possibly suppressed */
     private String lisPersonContactEmailPrimary;
+
+    /** Corresponds to <code>context_id</code>. Recommended */
+    private String contextId;
+
+    /** Corresponds to <code>launch_presentation_return_url</code>. Recommended. */
+    private String launchPresentationReturnUrl;
+
+    /** Corresponds to <code>tool_consumer_info_product_family_code</code>. Recommended. */
+    private String toolConsumerInfoProductFamilyCode;
+
+    /** Corresponds to <code>tool_consumer_info_version</code>. Recommended. */
+    private String toolConsumerInfoVersion;
+
+    /** Corresponds to <code>tool_consumer_instance_guid</code>. Recommended. */
+    private String toolConsumerInstanceGuid;
+
+    //-------------------------------------------------------------
+    // Results
+
+    /** Corresponds to <code>lis_result_source_did</code>. Optional. */
+    private String lisResultSourceDid;
+
+    /** Corresponds to <code>lis_outcome_servicee_url</code>. Optional, required to enable outcome reporting. */
+    private String lisOutcomeServiceUrl;
+
+    /** Corresponds to <code>lis_person_source_did</code>. Optional. */
+    private String lisPersonSourceDid;
+
+    /** Corresponds to <code>lis_course_offering_source_did</code>. Optional. */
+    private String lisCourseOfferingSourceDid;
+
+    /** Corresponds to <code>lis_course_section_source_did</code>. Optional. */
+    private String lisCourseSectionSourceDid;
+
+    //-------------------------------------------------------------
+
+    public LtiLaunchData() {
+        this.roles = new HashSet<String>();
+    }
+
+    //-------------------------------------------------------------
+
+    public String getLtiMessageType() {
+        return ltiMessageType;
+    }
+
+    public void setLtiMessageType(final String ltiMessageType) {
+        this.ltiMessageType = ltiMessageType;
+    }
+
+
+    public String getLtiVersion() {
+        return ltiVersion;
+    }
+
+    public void setLtiVersion(final String ltiVersion) {
+        this.ltiVersion = ltiVersion;
+    }
+
 
     public String getResourceLinkId() {
         return resourceLinkId;
@@ -66,6 +160,81 @@ public final class LtiLaunchData implements Serializable {
 
     public void setResourceLinkId(final String resourceLinkId) {
         this.resourceLinkId = resourceLinkId;
+    }
+
+
+    public String getResourceLinkTitle() {
+        return resourceLinkTitle;
+    }
+
+    public void setResourceLinkTitle(final String resourceLinkTitle) {
+        this.resourceLinkTitle = resourceLinkTitle;
+    }
+
+
+    public String getResourceLinkDescription() {
+        return resourceLinkDescription;
+    }
+
+    public void setResourceLinkDescription(final String resourceLinkDescription) {
+        this.resourceLinkDescription = resourceLinkDescription;
+    }
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(final String userId) {
+        this.userId = userId;
+    }
+
+
+    public Set<String> getRoles() {
+        return Collections.unmodifiableSet(roles);
+    }
+
+    public void setRoles(final Collection<String> newRoles) {
+        roles.clear();
+        if (newRoles!=null) {
+            roles.addAll(newRoles);
+        }
+    }
+
+
+    public String getLisPersonNameFull() {
+        return lisPersonNameFull;
+    }
+
+    public void setLisPersonNameFull(final String lisPersonNameFull) {
+        this.lisPersonNameFull = lisPersonNameFull;
+    }
+
+
+    public String getLisPersonNameGiven() {
+        return lisPersonNameGiven;
+    }
+
+    public void setLisPersonNameGiven(final String lisPersonNameGiven) {
+        this.lisPersonNameGiven = lisPersonNameGiven;
+    }
+
+
+    public String getLisPersonNameFamily() {
+        return lisPersonNameFamily;
+    }
+
+    public void setLisPersonNameFamily(final String lisPersonNameFamily) {
+        this.lisPersonNameFamily = lisPersonNameFamily;
+    }
+
+
+    public String getLisPersonContactEmailPrimary() {
+        return lisPersonContactEmailPrimary;
+    }
+
+    public void setLisPersonContactEmailPrimary(final String lisPersonContactEmailPrimary) {
+        this.lisPersonContactEmailPrimary = lisPersonContactEmailPrimary;
     }
 
 
@@ -114,48 +283,48 @@ public final class LtiLaunchData implements Serializable {
     }
 
 
-    public String getUserId() {
-        return userId;
+    public String getLisResultSourceDid() {
+        return lisResultSourceDid;
     }
 
-    public void setUserId(final String userId) {
-        this.userId = userId;
-    }
-
-
-    public String getLisPersonNameFull() {
-        return lisPersonNameFull;
-    }
-
-    public void setLisPersonNameFull(final String lisPersonNameFull) {
-        this.lisPersonNameFull = lisPersonNameFull;
+    public void setLisResultSourceDid(final String lisResultSourceDid) {
+        this.lisResultSourceDid = lisResultSourceDid;
     }
 
 
-    public String getLisPersonNameGiven() {
-        return lisPersonNameGiven;
+    public String getLisOutcomeServiceUrl() {
+        return lisOutcomeServiceUrl;
     }
 
-    public void setLisPersonNameGiven(final String lisPersonNameGiven) {
-        this.lisPersonNameGiven = lisPersonNameGiven;
-    }
-
-
-    public String getLisPersonNameFamily() {
-        return lisPersonNameFamily;
-    }
-
-    public void setLisPersonNameFamily(final String lisPersonNameFamily) {
-        this.lisPersonNameFamily = lisPersonNameFamily;
+    public void setLisOutcomeServiceUrl(final String lisOutcomeServiceUrl) {
+        this.lisOutcomeServiceUrl = lisOutcomeServiceUrl;
     }
 
 
-    public String getLisPersonContactEmailPrimary() {
-        return lisPersonContactEmailPrimary;
+    public String getLisPersonSourceDid() {
+        return lisPersonSourceDid;
     }
 
-    public void setLisPersonContactEmailPrimary(final String lisPersonContactEmailPrimary) {
-        this.lisPersonContactEmailPrimary = lisPersonContactEmailPrimary;
+    public void setLisPersonSourceDid(final String lisPersonSourceDid) {
+        this.lisPersonSourceDid = lisPersonSourceDid;
+    }
+
+
+    public String getLisCourseOfferingSourceDid() {
+        return lisCourseOfferingSourceDid;
+    }
+
+    public void setLisCourseOfferingSourceDid(final String lisCourseOfferingSourceDid) {
+        this.lisCourseOfferingSourceDid = lisCourseOfferingSourceDid;
+    }
+
+
+    public String getLisCourseSectionSourceDid() {
+        return lisCourseSectionSourceDid;
+    }
+
+    public void setLisCourseSectionSourceDid(final String lisCourseSectionSourceDid) {
+        this.lisCourseSectionSourceDid = lisCourseSectionSourceDid;
     }
 
     //--------------------------------------------------------------------

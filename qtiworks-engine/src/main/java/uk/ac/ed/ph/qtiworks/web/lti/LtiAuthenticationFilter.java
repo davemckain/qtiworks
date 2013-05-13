@@ -113,7 +113,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         }
     }
 
-    private boolean isBasicLtiLaunchRequest(final HttpServletRequest request) {
+    public static boolean isBasicLtiLaunchRequest(final HttpServletRequest request) {
         return "basic-lti-launch-request".equals(request.getParameter("lti_message_type"));
     }
 
@@ -168,7 +168,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         }
 
         /* Extract launch data */
-        final LtiLaunchData ltiLaunchData = extractLtiLaunchData(message);
+        final LtiLaunchData ltiLaunchData = LtiOauthMessageUtilities.extractLtiLaunchData(message);
         final LtiUser ltiUser = obtainLtiUser(delivery, ltiLaunchData);
 
         /* Continue... */
@@ -206,22 +206,6 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
 
         /* Successful verification */
         return delivery;
-    }
-
-    private LtiLaunchData extractLtiLaunchData(final OAuthMessage requestMessage) throws IOException {
-        final LtiLaunchData data = new LtiLaunchData();
-        data.setResourceLinkId(requestMessage.getParameter("resource_link_id")); /* Required */
-        data.setContextId(requestMessage.getParameter("context_id")); /* Recommended */
-        data.setLaunchPresentationReturnUrl(requestMessage.getParameter("launch_presentation_return_url")); /* Recommended */
-        data.setToolConsumerInfoProductFamilyCode(requestMessage.getParameter("tool_consumer_info_product_family_code")); /* Optional but recommended */
-        data.setToolConsumerInfoVersion(requestMessage.getParameter("tool_consumer_info_version")); /* Optional but recommended */
-        data.setToolConsumerInstanceGuid(requestMessage.getParameter("tool_consumer_instance_guid")); /* Optional but recommended */
-        data.setUserId(requestMessage.getParameter("user_id")); /* Recommended */
-        data.setLisPersonNameFamily(requestMessage.getParameter("lis_person_name_family")); /* Recommended but possibly suppressed */
-        data.setLisPersonNameFull(requestMessage.getParameter("lis_person_name_full")); /* Recommended but possibly suppressed */
-        data.setLisPersonNameGiven(requestMessage.getParameter("lis_person_name_given")); /* Recommended but possibly suppressed */
-        data.setLisPersonContactEmailPrimary(requestMessage.getParameter("lis_person_contact_email_primary")); /* Recommended but possibly suppressed */
-        return data;
     }
 
     private LtiUser obtainLtiUser(final Delivery delivery, final LtiLaunchData ltiLaunchData) {
