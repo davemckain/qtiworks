@@ -86,34 +86,42 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
      */
     private String loginErrorJspPath;
 
-    private InstructorUserDao instructorUserDao;
-
-    private AuditLogger auditLogger;
+    private transient InstructorUserDao instructorUserDao;
+    private transient AuditLogger auditLogger;
 
     @Override
     public void init(final ServletConfig config) throws ServletException {
+        super.init(config);
+
         /* Check required <init-param>s */
         loginErrorJspPath = config.getInitParameter(FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME);
         if (loginErrorJspPath==null) {
             logger.error("Required <init-param/> {} has not been passed to {}", FORM_LOGIN_ERROR_JSP_PATH_PARAMETER_NAME, getClass().getName());
             throw new ServletException("Required <init-param/> was not set for servlet");
         }
+    }
 
-        /* Extract relevant business Objects */
-        try {
-            final ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
-            auditLogger = appContext.getBean(AuditLogger.class);
-            instructorUserDao = appContext.getBean(InstructorUserDao.class);
-        }
-        catch (final Exception e) {
-            logger.error("init() failed on " + this.getClass().getSimpleName(), e);
-            throw new ServletException(e);
+    /** Ensures that the non-serializable properties of this servlet are created. */
+    private void requireBeans() throws ServletException {
+        if (auditLogger==null || instructorUserDao==null) {
+            try {
+                final ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletConfig().getServletContext());
+                auditLogger = appContext.getBean(AuditLogger.class);
+                instructorUserDao = appContext.getBean(InstructorUserDao.class);
+            }
+            catch (final Exception e) {
+                logger.error("Bean access failed on " + this.getClass().getSimpleName(), e);
+                throw new ServletException(e);
+            }
         }
     }
 
     @Override
     protected void doPost(final HttpServletRequest request, final HttpServletResponse response)
             throws ServletException, IOException {
+        /* Make sure beans are set up. (These are not serializable, so have to be declared transient.) */
+        requireBeans();
+
         /* Recover the URL of the original protected resource. We'll redirect to this on success */
         final String protectedRequestUrl = request.getParameter(PROTECTED_REQUEST_URL_PARAM);
         if (protectedRequestUrl == null) {
