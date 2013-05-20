@@ -14,7 +14,7 @@ isBasicLtiLaunch (boolean)
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="LTI Diagnostics">
 
-  <h2>LTI Diangostic information</h2>
+  <h2>LTI Diagnostic information</h2>
 
   <pre>${utils:dumpObject(ltiLaunchData)}</pre>
 

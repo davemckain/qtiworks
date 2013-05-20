@@ -49,6 +49,7 @@ All Rights Reserved
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
     <oauth.version>20100601</oauth.version>
+    <httpclient.version>4.2.5</httpclient.version>
     <guava.version>14.0.1</guava.version>
     <junit.version>4.11</junit.version>
     <xmlunit.version>1.3</xmlunit.version>
