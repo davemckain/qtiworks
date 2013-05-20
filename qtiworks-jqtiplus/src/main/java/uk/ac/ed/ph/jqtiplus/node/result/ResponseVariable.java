@@ -39,6 +39,7 @@ import uk.ac.ed.ph.jqtiplus.group.result.CandidateResponseGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.CorrectResponse;
 import uk.ac.ed.ph.jqtiplus.node.item.response.declaration.ResponseDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.value.NullValue;
 import uk.ac.ed.ph.jqtiplus.value.Value;
@@ -93,6 +94,11 @@ public final class ResponseVariable extends ItemVariable implements ResultNode {
         final CandidateResponse response = new CandidateResponse(this);
         response.getFieldValues().addAll(FieldValue.computeValues(response, value));
         setCandidateResponse(response);
+    }
+
+    @Override
+    public VariableType getVariableType() {
+        return VariableType.RESPONSE;
     }
 
     public List<Identifier> getChoiceSequence() {

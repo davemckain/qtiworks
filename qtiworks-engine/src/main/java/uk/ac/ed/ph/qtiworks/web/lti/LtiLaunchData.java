@@ -114,19 +114,19 @@ public final class LtiLaunchData implements Serializable {
     // Results
 
     /** Corresponds to <code>lis_result_source_did</code>. Optional. */
-    private String lisResultSourceDid;
+    private String lisResultSourcedid;
 
     /** Corresponds to <code>lis_outcome_servicee_url</code>. Optional, required to enable outcome reporting. */
     private String lisOutcomeServiceUrl;
 
     /** Corresponds to <code>lis_person_source_did</code>. Optional. */
-    private String lisPersonSourceDid;
+    private String lisPersonSourcedid;
 
     /** Corresponds to <code>lis_course_offering_source_did</code>. Optional. */
-    private String lisCourseOfferingSourceDid;
+    private String lisCourseOfferingSourcedid;
 
     /** Corresponds to <code>lis_course_section_source_did</code>. Optional. */
-    private String lisCourseSectionSourceDid;
+    private String lisCourseSectionSourcedid;
 
     //-------------------------------------------------------------
 
@@ -283,12 +283,12 @@ public final class LtiLaunchData implements Serializable {
     }
 
 
-    public String getLisResultSourceDid() {
-        return lisResultSourceDid;
+    public String getLisResultSourcedid() {
+        return lisResultSourcedid;
     }
 
-    public void setLisResultSourceDid(final String lisResultSourceDid) {
-        this.lisResultSourceDid = lisResultSourceDid;
+    public void setLisResultSourcedid(final String lisResultSourcedid) {
+        this.lisResultSourcedid = lisResultSourcedid;
     }
 
 
@@ -301,30 +301,30 @@ public final class LtiLaunchData implements Serializable {
     }
 
 
-    public String getLisPersonSourceDid() {
-        return lisPersonSourceDid;
+    public String getLisPersonSourcedid() {
+        return lisPersonSourcedid;
     }
 
-    public void setLisPersonSourceDid(final String lisPersonSourceDid) {
-        this.lisPersonSourceDid = lisPersonSourceDid;
-    }
-
-
-    public String getLisCourseOfferingSourceDid() {
-        return lisCourseOfferingSourceDid;
-    }
-
-    public void setLisCourseOfferingSourceDid(final String lisCourseOfferingSourceDid) {
-        this.lisCourseOfferingSourceDid = lisCourseOfferingSourceDid;
+    public void setLisPersonSourcedid(final String lisPersonSourcedid) {
+        this.lisPersonSourcedid = lisPersonSourcedid;
     }
 
 
-    public String getLisCourseSectionSourceDid() {
-        return lisCourseSectionSourceDid;
+    public String getLisCourseOfferingSourcedid() {
+        return lisCourseOfferingSourcedid;
     }
 
-    public void setLisCourseSectionSourceDid(final String lisCourseSectionSourceDid) {
-        this.lisCourseSectionSourceDid = lisCourseSectionSourceDid;
+    public void setLisCourseOfferingSourcedid(final String lisCourseOfferingSourcedid) {
+        this.lisCourseOfferingSourcedid = lisCourseOfferingSourcedid;
+    }
+
+
+    public String getLisCourseSectionSourcedid() {
+        return lisCourseSectionSourcedid;
+    }
+
+    public void setLisCourseSectionSourcedid(final String lisCourseSectionSourcedid) {
+        this.lisCourseSectionSourcedid = lisCourseSectionSourcedid;
     }
 
     //--------------------------------------------------------------------

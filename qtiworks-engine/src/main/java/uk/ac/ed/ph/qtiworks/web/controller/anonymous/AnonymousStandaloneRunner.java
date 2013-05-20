@@ -144,7 +144,7 @@ public class AnonymousStandaloneRunner {
             /* If still here, start new delivery and get going */
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
             final String exitUrl = "/web/anonymous/standalonerunner";
-            final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
+            final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl, null, null);
 
             /* Redirect to candidate dispatcher */
             return GlobalRouter.buildSessionStartRedirect(candidateSession);

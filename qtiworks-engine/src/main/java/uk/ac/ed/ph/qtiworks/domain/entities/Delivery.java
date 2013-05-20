@@ -179,6 +179,20 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="lti_consumer_secret", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
     private String ltiConsumerSecret;
 
+    @Basic(optional=true)
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Column(name="lti_result_outcome_identifier")
+    private String ltiResultOutcomeIdentifier;
+
+    @Basic(optional=true)
+    @Column(name="lti_result_minimum")
+    private Double ltiResultMinimum;
+
+    @Basic(optional=true)
+    @Column(name="lti_result_maximum")
+    private Double ltiResultMaximum;
+
     /** (Currently used for cascading deletion only - upgrade if required) */
     @SuppressWarnings("unused")
     @OneToMany(mappedBy="delivery", cascade=CascadeType.REMOVE)
@@ -281,12 +295,47 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
         this.ltiConsumerSecret = ltiConsumerSecret;
     }
 
+
+    public String getLtiResultOutcomeIdentifier() {
+        return ltiResultOutcomeIdentifier;
+    }
+
+    public void setLtiResultOutcomeIdentifier(final String ltiResultOutcomeIdentifier) {
+        this.ltiResultOutcomeIdentifier = ltiResultOutcomeIdentifier;
+    }
+
+
+    public Double getLtiResultMinimum() {
+        return ltiResultMinimum;
+    }
+
+    public void setLtiResultMinimum(final Double ltiResultMinimum) {
+        this.ltiResultMinimum = ltiResultMinimum;
+    }
+
+
+    public Double getLtiResultMaximum() {
+        return ltiResultMaximum;
+    }
+
+    public void setLtiResultMaximum(final Double ltiResultMaximum) {
+        this.ltiResultMaximum = ltiResultMaximum;
+    }
+
     //------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(did=" + did
+                + ",title=" + title
+                + ",open=" + open
+                + ",ltiEnabled=" + ltiEnabled
+                + ",ltiConsumerKeyToken=" + ltiConsumerKeyToken
+                + ",ltiConsumerSecret=" + ltiConsumerSecret
+                + ",ltiResultOutcomeIdentifier=" + ltiResultOutcomeIdentifier
+                + ",ltiResultMinimum=" + ltiResultMinimum
+                + ",ltiResultMaximum=" + ltiResultMaximum
                 + ")";
     }
 }

@@ -49,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
@@ -110,6 +111,12 @@ public class CandidateTestDeliveryService {
     private CandidateAuditLogger candidateAuditLogger;
 
     @Resource
+    private CandidateSessionCloser candidateSessionCloser;
+
+    @Resource
+    private CandidateDataServices candidateDataServices;
+
+    @Resource
     private EntityGraphService entityGraphService;
 
     @Resource
@@ -117,9 +124,6 @@ public class CandidateTestDeliveryService {
 
     @Resource
     private CandidateUploadService candidateUploadService;
-
-    @Resource
-    private CandidateDataServices candidateDataServices;
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
@@ -463,20 +467,17 @@ public class CandidateTestDeliveryService {
             return null;
         }
 
-
         /* Update state */
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         testSessionController.endCurrentTestPart(requestTimestamp);
 
-        /* See if this action has ended the test */
+        /* Close session (if test has ended) or record partial result */
         if (testSessionState.isEnded()) {
-            /* Update CandidateSession */
-            candidateSession.setClosed(true);
-            candidateSessionDao.update(candidateSession);
+            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
         }
-
-        /* Record current result state */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        else {
+            candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,

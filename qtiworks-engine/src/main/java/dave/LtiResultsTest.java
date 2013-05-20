@@ -35,8 +35,15 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 
+import java.io.StringReader;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
@@ -47,6 +54,7 @@ import net.oauth.client.OAuthClient;
 import net.oauth.client.httpclient4.HttpClient4;
 
 import org.apache.commons.io.input.CharSequenceInputStream;
+import org.xml.sax.InputSource;
 
 /**
  * Temporary for trying out sending results to BlackBoard CourseSites.
@@ -80,12 +88,40 @@ public class LtiResultsTest {
         final OAuthMessage result = client.invoke(message, ParameterStyle.AUTHORIZATION_HEADER);
 
         System.out.println("Result: " + result);
-        System.out.println("Result body: " + result.readBodyAsString());
+        final String resultBody = result.readBodyAsString();
+        System.out.println("Result body: " + resultBody);
+
+        final XPathFactory xPathFactory = XPathFactory.newInstance();
+        final XPath xPath = xPathFactory.newXPath();
+        xPath.setNamespaceContext(new PoxNamespaceContext());
+        final String resultStatus = xPath.evaluate("/x:imsx_POXEnvelopeResponse/x:imsx_POXHeader/x:imsx_POXResponseHeaderInfo/x:imsx_statusInfo/x:imsx_codeMajor",  new InputSource(new StringReader(resultBody)));
+        System.out.println("Result status: " + resultStatus);
+    }
+
+    static class PoxNamespaceContext implements NamespaceContext {
+
+        public static final String POX_NAMESPACE_URI = "http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0";
+
+        @Override
+        public String getNamespaceURI(final String prefix) {
+            return POX_NAMESPACE_URI;
+        }
+
+        @Override
+        public String getPrefix(final String namespaceURI) {
+            return "";
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Override
+        public Iterator getPrefixes(final String namespaceURI) {
+            return Arrays.asList("").iterator();
+        }
     }
 
     public static String buildPoxMessage(final String sourceDid, final String normalizedScore) {
         final String messageIdentifier = ServiceUtilities.createRandomAlphanumericToken(32);
-        return "<?final xml version = '1.0' encoding = 'UTF-8'?>\n"
+        return "<?xml version='1.0' encoding='UTF-8'?>\n"
                 + "<imsx_POXEnvelopeRequest xmlns = 'http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0'>\n"
                 + "  <imsx_POXHeader>\n"
                 + "    <imsx_POXRequestHeaderInfo>\n"

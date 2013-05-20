@@ -67,11 +67,11 @@ public final class LtiOauthMessageUtilities {
         result.setToolConsumerInfoVersion(oauthMessage.getParameter("tool_consumer_info_version")); /* Optional but recommended */
         result.setToolConsumerInstanceGuid(oauthMessage.getParameter("tool_consumer_instance_guid")); /* Optional but recommended */
         /* Result reporting parameters */
-        result.setLisResultSourceDid(oauthMessage.getParameter("lis_result_sourcedid"));
+        result.setLisResultSourcedid(oauthMessage.getParameter("lis_result_sourcedid"));
         result.setLisOutcomeServiceUrl(oauthMessage.getParameter("lis_outcome_service_url"));
-        result.setLisPersonSourceDid(oauthMessage.getParameter("lis_person_sourcedid"));
-        result.setLisCourseOfferingSourceDid(oauthMessage.getParameter("lis_course_offering_sourcedid"));
-        result.setLisCourseSectionSourceDid(oauthMessage.getParameter("lis_course_section_sourcedid"));
+        result.setLisPersonSourcedid(oauthMessage.getParameter("lis_person_sourcedid"));
+        result.setLisCourseOfferingSourcedid(oauthMessage.getParameter("lis_course_offering_sourcedid"));
+        result.setLisCourseSectionSourcedid(oauthMessage.getParameter("lis_course_section_sourcedid"));
         return result;
     }
 

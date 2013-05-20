@@ -88,10 +88,12 @@ public class LtiController {
             throws  PrivilegeException, DomainEntityNotFoundException {
         final LtiLaunchData ltiLaunchData = LtiAuthenticationFilter.getLaunchData(httpRequest);
 
-        /* FIXME: Decide what to do if this data is not passed */
         final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
+        final String lisOutcomeServiceUrl = ltiLaunchData.getLisOutcomeServiceUrl();
+        final String lisResultSourcedid = ltiLaunchData.getLisResultSourcedid();
 
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did, exitUrl);
+        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did,
+                exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 

@@ -41,6 +41,7 @@ import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.node.test.View;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
@@ -106,6 +107,12 @@ public final class OutcomeVariable extends ItemVariable implements FieldValuePar
         }
         getFieldValues().addAll(FieldValue.computeValues(this, value));
     }
+
+    @Override
+    public VariableType getVariableType() {
+        return VariableType.OUTCOME;
+    }
+
 
     public List<View> getViews() {
         return getAttributes().getViewMultipleAttribute(ATTR_VIEWS_NAME).getComputedValue();

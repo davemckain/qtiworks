@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
@@ -53,6 +54,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
@@ -77,10 +79,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Helper service for launching new candidate sessions on an
+ * Helper service for launching new candidate sessions on a {@link Delivery} of an
  * {@link AssessmentItem} or {@link AssessmentTest}
  *
  * @see CandidateItemDeliveryService
+ * @see CandidateTestDeliveryService
  *
  * @author David McKain
  */
@@ -99,6 +102,9 @@ public class CandidateSessionStarter {
 
     @Resource
     private CandidateAuditLogger candidateAuditLogger;
+
+    @Resource
+    private CandidateSessionCloser candidateSessionCloser;
 
     @Resource
     private CandidateDataServices candidateDataServices;
@@ -174,23 +180,25 @@ public class CandidateSessionStarter {
     public CandidateSession createSystemSampleSession(final long aid, final String exitUrl)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
-        return createCandidateSession(sampleDelivery, exitUrl);
+        return createCandidateSession(sampleDelivery, exitUrl, null, null);
     }
 
     /**
      * Starts a new {@link CandidateSession} for the {@link Delivery}
      * having the given ID (did).
      */
-    public CandidateSession createCandidateSession(final long did, final String exitUrl)
+    public CandidateSession createCandidateSession(final long did, final String exitUrl,
+            final String lisOutcomeServiceUrl, final String lisResultSourceDid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = lookupDelivery(did);
-        return createCandidateSession(delivery, exitUrl);
+        return createCandidateSession(delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
     }
 
     /**
      * Starts new {@link CandidateSession} for the given {@link Delivery}
      */
-    public CandidateSession createCandidateSession(final Delivery delivery, final String exitUrl)
+    public CandidateSession createCandidateSession(final Delivery delivery, final String exitUrl,
+            final String lisOutcomeServiceUrl, final String lisResultSourceDid)
             throws PrivilegeException {
         Assert.notNull(delivery, "delivery");
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
@@ -221,10 +229,10 @@ public class CandidateSessionStarter {
         /* Now branch depending on whether this is an item or test */
         switch (assessment.getAssessmentType()) {
             case ASSESSMENT_ITEM:
-                return createCandidateItemSession(delivery, exitUrl);
+                return createCandidateItemSession(delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
 
             case ASSESSMENT_TEST:
-                return createCandidateTestSession(delivery, exitUrl);
+                return createCandidateTestSession(delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
 
             default:
                 throw new QtiWorksLogicException("Unexpected switch case " + assessment.getAssessmentType());
@@ -234,7 +242,8 @@ public class CandidateSessionStarter {
     //----------------------------------------------------
     // Item session creation
 
-    private CandidateSession createCandidateItemSession(final Delivery delivery, final String exitUrl) {
+    private CandidateSession createCandidateItemSession(final Delivery delivery, final String exitUrl,
+            final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
 
         /* Set up listener to record any notifications */
@@ -255,10 +264,18 @@ public class CandidateSessionStarter {
         final CandidateSession candidateSession = new CandidateSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
+        candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.SESSION_NOT_ENDED);
+        candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
+        candidateSession.setLisResultSourceDid(lisResultSourceDid);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
-        candidateSession.setClosed(itemSessionState.isEnded());
+        candidateSession.setClosed(false);
         candidateSessionDao.persist(candidateSession);
+
+        /* Handle immediate end of session */
+        if (itemSessionState.isEnded()) {
+            candidateSessionCloser.closeCandidateItemSession(candidateSession, itemSessionController);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.ENTER, itemSessionState, notificationRecorder);
@@ -275,7 +292,8 @@ public class CandidateSessionStarter {
     //----------------------------------------------------
     // Test session creation
 
-    public CandidateSession createCandidateTestSession(final Delivery delivery, final String exitUrl) {
+    private CandidateSession createCandidateTestSession(final Delivery delivery, final String exitUrl,
+            final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
         final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
 
         /* Set up listener to record any notifications */
@@ -306,10 +324,18 @@ public class CandidateSessionStarter {
         final CandidateSession candidateSession = new CandidateSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
+        candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.SESSION_NOT_ENDED);
+        candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
+        candidateSession.setLisResultSourceDid(lisResultSourceDid);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
-        candidateSession.setClosed(testSessionState.isEnded());
+        candidateSession.setClosed(false);
         candidateSessionDao.persist(candidateSession);
+
+        /* Handle immediate end of session */
+        if (testSessionState.isEnded()) {
+            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,

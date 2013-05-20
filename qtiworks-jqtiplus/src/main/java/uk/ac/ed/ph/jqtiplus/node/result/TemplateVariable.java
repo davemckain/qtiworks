@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.group.shared.FieldValueGroup;
 import uk.ac.ed.ph.jqtiplus.node.item.template.declaration.TemplateDeclaration;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValue;
 import uk.ac.ed.ph.jqtiplus.node.shared.FieldValueParent;
+import uk.ac.ed.ph.jqtiplus.node.shared.VariableType;
 import uk.ac.ed.ph.jqtiplus.value.Value;
 
 import java.util.List;
@@ -66,6 +67,11 @@ public final class TemplateVariable extends ItemVariable implements FieldValuePa
         setBaseType(declaration.getBaseType());
 
         getFieldValues().addAll(FieldValue.computeValues(this, value));
+    }
+
+    @Override
+    public VariableType getVariableType() {
+        return VariableType.TEMPLATE;
     }
 
     public List<FieldValue> getFieldValues() {

@@ -31,15 +31,26 @@
  * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.jqtiplus.node.result;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Marker interface for nodes in the <tt>assessmentResult</tt> information model.
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public interface ResultNode {
+public enum CandidateOutcomeReportingStatus {
 
-    /* (Marker interface only) */
+  //1234567890123456789012
+
+    SESSION_NOT_ENDED,
+    LTI_DISABLED,
+    LTI_OUTCOMES_DISABLED,
+    USER_NOT_REPORTABLE,
+    BAD_OUTCOME_IDENTIFIER,
+    SCORE_NOT_SINGLE_FLOAT,
+    NO_NORMALIZATION,
+    REPORTING_SCHEDULED,
+    REPORTED_SUCCESSFULLY,
+    REPORT_FAILURE,
 
 }

@@ -46,6 +46,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -154,6 +156,32 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Column(name="is_terminated") /* NB: MySQL reserves the keyword 'terminated'! */
     private boolean terminated;
 
+    /**
+     * If this session was started by an LTI launch supporting the return of outcomes, then
+     * this will be the URL of the outcome service endpoint to call, specified by the
+     * <code>lis_outcome_service_url</code> launch parameter.
+     * <p>
+     * This will be null if returning of outcomes is not supported for this session.
+     */
+    @Basic(optional=true)
+    @Column(name="lis_outcome_service_url")
+    private String lisOutcomeServiceUrl;
+
+    @Basic(optional=false)
+    @Column(name="reporting_status", length=22)
+    @Enumerated(EnumType.STRING)
+    private CandidateOutcomeReportingStatus candidateOutcomeReportingStatus;
+
+    /**
+     * If this session was started by an LTI launch supporting the return of outcomes, then
+     * the will be the <code>lis_result_sourcedid</code> to be sent when returning outcomes.
+     * <p>
+     * This will be null if returning of outcomes is not supported for this session.
+     */
+    @Basic(optional=true)
+    @Column(name="lis_result_sourcedid")
+    private String lisResultSourceDid;
+
     /** (Currently used for cascading deletion only - upgrade if required) */
     @SuppressWarnings("unused")
     @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
@@ -247,14 +275,46 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
         this.terminated = terminated;
     }
 
+
+    public CandidateOutcomeReportingStatus getCandidateOutcomeReportingStatus() {
+        return candidateOutcomeReportingStatus;
+    }
+
+    public void setCandidateOutcomeReportingStatus(final CandidateOutcomeReportingStatus candidateOutcomeReportingStatus) {
+        this.candidateOutcomeReportingStatus = candidateOutcomeReportingStatus;
+    }
+
+
+    public String getLisOutcomeServiceUrl() {
+        return lisOutcomeServiceUrl;
+    }
+
+    public void setLisOutcomeServiceUrl(final String lisOutcomeServiceUrl) {
+        this.lisOutcomeServiceUrl = lisOutcomeServiceUrl;
+    }
+
+
+    public String getLisResultSourceDid() {
+        return lisResultSourceDid;
+    }
+
+    public void setLisResultSourceDid(final String lisResultSourceDid) {
+        this.lisResultSourceDid = lisResultSourceDid;
+    }
+
     //------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(xid=" + xid
+                + ",sessionToken=" + sessionToken
+                + ",exitUrl=" + exitUrl
                 + ",closed=" + closed
                 + ",terminated=" + terminated
+                + ",candidateOutcomeReportingStatus=" + candidateOutcomeReportingStatus
+                + ",lisOutcomeServiceUrl=" + lisOutcomeServiceUrl
+                + ",lisReultSourcedid=" + lisResultSourceDid
                 + ")";
     }
 }

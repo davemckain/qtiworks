@@ -287,9 +287,10 @@ public class CandidateDataServices {
         return loadItemSessionState(mostRecentItemEvent);
     }
 
-    public void computeAndRecordItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
+    public AssessmentResult computeAndRecordItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
         final AssessmentResult assessmentResult = computeItemAssessmentResult(candidateSession, itemSessionController);
         recordItemAssessmentResult(candidateSession, assessmentResult);
+        return assessmentResult;
     }
 
     public AssessmentResult computeItemAssessmentResult(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
@@ -452,9 +453,10 @@ public class CandidateDataServices {
         return testSessionController.computeAssessmentResult(requestTimestampContext.getCurrentRequestTimestamp(), sessionIdentifier, sessionIdentifierSourceId);
     }
 
-    public void computeAndRecordTestAssessmentResult(final CandidateSession candidateSession, final TestSessionController testSessionController) {
+    public AssessmentResult computeAndRecordTestAssessmentResult(final CandidateSession candidateSession, final TestSessionController testSessionController) {
         final AssessmentResult assessmentResult = computeTestAssessmentResult(candidateSession, testSessionController);
         recordTestAssessmentResult(candidateSession, assessmentResult);
+        return assessmentResult;
     }
 
     public void recordTestAssessmentResult(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
