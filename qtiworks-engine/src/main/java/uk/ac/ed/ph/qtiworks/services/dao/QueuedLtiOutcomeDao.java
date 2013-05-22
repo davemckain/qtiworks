@@ -27,33 +27,42 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTITools and MathAssessEngine.
- * QTITools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTItools and MathAssessEngine.
+ * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.services.dao;
+
+import uk.ac.ed.ph.qtiworks.domain.entities.QueuedLtiOutcome;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * FIXME: Document this type
+ * DAO implementation for the {@link QueuedLtiOutcome} entity.
  *
  * @author David McKain
  */
-public enum CandidateOutcomeReportingStatus {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class QueuedLtiOutcomeDao extends GenericDao<QueuedLtiOutcome> {
 
-  //1234567890123456789012
+    @PersistenceContext
+    private EntityManager em;
 
-    SESSION_NOT_ENDED,
-    LTI_DISABLED,
-    LTI_OUTCOMES_DISABLED,
-    USER_NOT_REPORTABLE,
-    NO_OUTCOME_IDENTIFIER,
-    BAD_OUTCOME_IDENTIFIER,
-    SCORE_NOT_SINGLE_FLOAT,
-    NO_NORMALIZATION,
-    BAD_NORMALIZED_SCORE,
-    TC_RETURN_SCHEDULED,
-    TC_RETURN_SUCCESS,
-    TC_RETURN_FAIL_ATTEMPT,
-    TC_RETURN_FAIL_TERMINAL,
+    public QueuedLtiOutcomeDao() {
+        super(QueuedLtiOutcome.class);
+    }
 
+    public List<QueuedLtiOutcome> getPendingOutcomes() {
+        final TypedQuery<QueuedLtiOutcome> query = em.createNamedQuery("QueuedLtiOutcome.getPendingOutcomes", QueuedLtiOutcome.class);
+        return query.getResultList();
+    }
 }

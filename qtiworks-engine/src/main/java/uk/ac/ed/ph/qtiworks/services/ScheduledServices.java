@@ -39,6 +39,8 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -56,16 +58,38 @@ public class ScheduledServices {
 
     public static final int ANONYMOUS_USER_KEEP_HOURS = 24;
 
+    /** One minute (in milliseconds) */
+    private static final long ONE_MINUTE = 1000L * 60;
+
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledServices.class);
+
     @Resource
     private DataDeletionService dataDeletionService;
+
+    @Resource
+    private LtiOutcomeService ltiOutcomeService;
 
     /**
      * Purges all anonymous users and transient deliveries that were created more than
      * {@link #ANONYMOUS_USER_KEEP_HOURS} hours ago. All associated data is removed.
      */
-    @Scheduled(fixedRate=1000L * 60 * 60)
+    @Scheduled(fixedRate=60*ONE_MINUTE, initialDelay=ONE_MINUTE)
     public void purgeAnonymousData() {
-        final Date creationTimeThreshold = new Date(System.currentTimeMillis() - ANONYMOUS_USER_KEEP_HOURS * 60 * 60 * 1000);
+        logger.trace("purgeAnonymousData() invoked");
+        final long currentTimestamp = System.currentTimeMillis();
+        final Date creationTimeThreshold = new Date(currentTimestamp - ANONYMOUS_USER_KEEP_HOURS * 60 * 60 * 1000);
         dataDeletionService.purgeAnonymousData(creationTimeThreshold);
+        logger.debug("pureAnonymousData() completed in {}ms", System.currentTimeMillis() - currentTimestamp);
+    }
+
+    /**
+     * Attempts to send any queued LTI outcomes back to the relevant Tool Consumers.
+     */
+    @Scheduled(fixedDelay=ONE_MINUTE, initialDelay=ONE_MINUTE)
+    public void sendQueuedLtiOutcomes() {
+        logger.trace("sendQueuedLtiOutcomes() invoked");
+        final long currentTimestamp = System.currentTimeMillis();
+        ltiOutcomeService.sendQueuedLtiOutcomes();
+        logger.debug("sendQueuedLtiOutcomes() completed in {}ms", System.currentTimeMillis() - currentTimestamp);
     }
 }
