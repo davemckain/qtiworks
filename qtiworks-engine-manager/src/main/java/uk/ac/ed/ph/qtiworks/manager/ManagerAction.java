@@ -69,6 +69,8 @@ public abstract class ManagerAction {
 	/**
 	 * Perform any action-specific validation on the user-provided parameters.
 	 * Return null on success, otherwise an error message.
+	 *
+	 * @param parameters list of parameters for this action
 	 */
 	public String validateParameters(final List<String> parameters) {
 		return null;

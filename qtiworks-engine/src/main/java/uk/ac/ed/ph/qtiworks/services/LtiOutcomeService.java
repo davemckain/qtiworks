@@ -39,7 +39,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.QueuedLtiOutcome;
-import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
@@ -92,9 +91,6 @@ public class LtiOutcomeService {
     private static final Logger logger = LoggerFactory.getLogger(LtiOutcomeService.class);
 
     @Resource
-    private AuditLogger auditLogger;
-
-    @Resource
     private CandidateSessionDao candidateSessionDao;
 
     @Resource
@@ -131,51 +127,74 @@ public class LtiOutcomeService {
         queuedLtiOutcomeDao.persist(outcome);
 
         /* (Data will be sent to TC next time the service wakes up) */
-        auditLogger.recordEvent("Queued new LTI outcome #" + outcome.getId() + " to be returned to for CandidateSession #" + candidateSession.getId());
+        logger.info("Queued new LTI outcome #{} to be returned to for CandidateSession #{}" + candidateSession.getId(),
+                outcome.getId(), candidateSession.getId());
     }
 
     //-------------------------------------------------
 
     /**
-     * Called by {@link ScheduledServices} to attempt to send all pending outcomes
+     * Called by {@link ScheduledServices} to attempt to send all queued outcomes deemed OK
+     * to send next, taking into account retry/failure logic.
      */
-    public void sendQueuedLtiOutcomes() {
-        final List<QueuedLtiOutcome> pendingOutcomes = queuedLtiOutcomeDao.getPendingOutcomes();
+    public int sendNextQueuedLtiOutcomes() {
+        int failureCount = 0;
+        final List<QueuedLtiOutcome> pendingOutcomes = queuedLtiOutcomeDao.getNextQueuedOutcomes();
         for (final QueuedLtiOutcome queuedLtiOutcome : pendingOutcomes) {
-            final CandidateSession candidateSession = queuedLtiOutcome.getCandidateSession();
-            final boolean successful = trySendQueuedLtiOutcome(queuedLtiOutcome);
-            if (successful) {
-                /* Outcome sent successfully, so remove from queue */
-                candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_SUCCESS);
-                queuedLtiOutcomeDao.remove(queuedLtiOutcome);
-                candidateSessionDao.update(candidateSession);
-                auditLogger.recordEvent("Successfully sent LTI outcome #" + queuedLtiOutcome.getId() + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl());
-            }
-            else {
-                /* Outcome failed. Retry up to limit of retries */
-                final int failureCount = queuedLtiOutcome.getFailureCount();
-                if (failureCount < retryDelays.length) {
-                    queuedLtiOutcome.setFailureCount(failureCount + 1);
-                    queuedLtiOutcome.setRetryTime(new Date(System.currentTimeMillis() + (1000L * 60 * retryDelays[failureCount])));
-                    candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
-                    queuedLtiOutcomeDao.update(queuedLtiOutcome);
-                    candidateSessionDao.update(candidateSession);
-                    auditLogger.recordEvent("Failure #" + (failureCount+1)
-                            + " to send LTI outcome #" + queuedLtiOutcome.getId()
-                            + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl()
-                            + ". Will try again at " + queuedLtiOutcome.getRetryTime());
-                }
-                else {
-                    candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
-                    queuedLtiOutcomeDao.remove(queuedLtiOutcome);
-                    candidateSessionDao.update(candidateSession);
-                    auditLogger.recordEvent("Final failure #" + (failureCount+1)
-                            + " to send LTI outcome #" + queuedLtiOutcome.getId()
-                            + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl()
-                            + ". Outcome has been removed from queue");
-                }
+            final boolean successful = sendQueuedLtiOutcome(queuedLtiOutcome);
+            if (!successful) {
+                failureCount++;
             }
         }
+        return failureCount;
+    }
+
+    /** Attempts to send ALL queued outcomes, regardless of their existing failure status
+     * @return */
+    public int sendAllQueuedLtiOutcomes() {
+        int failureCount = 0;
+        final List<QueuedLtiOutcome> pendingOutcomes = queuedLtiOutcomeDao.getAllQueuedOutcomes();
+        for (final QueuedLtiOutcome queuedLtiOutcome : pendingOutcomes) {
+            final boolean successful = sendQueuedLtiOutcome(queuedLtiOutcome);
+            if (!successful) {
+                failureCount++;
+            }
+        }
+        return failureCount;
+    }
+
+    private boolean sendQueuedLtiOutcome(final QueuedLtiOutcome queuedLtiOutcome) {
+        final CandidateSession candidateSession = queuedLtiOutcome.getCandidateSession();
+        final boolean successful = trySendQueuedLtiOutcome(queuedLtiOutcome);
+        if (successful) {
+            /* Outcome sent successfully, so remove from queue */
+            candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_SUCCESS);
+            queuedLtiOutcomeDao.remove(queuedLtiOutcome);
+            candidateSessionDao.update(candidateSession);
+            logger.info("Successfully sent LTI outcome #{} to LIS outcome service at {}",
+                    queuedLtiOutcome.getId(), candidateSession.getLisOutcomeServiceUrl());
+        }
+        else {
+            /* Outcome failed. Retry up to limit of retries */
+            final int failureCount = queuedLtiOutcome.getFailureCount();
+            if (failureCount < retryDelays.length) {
+                queuedLtiOutcome.setFailureCount(failureCount + 1);
+                queuedLtiOutcome.setRetryTime(new Date(System.currentTimeMillis() + (1000L * 60 * retryDelays[failureCount])));
+                candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
+                queuedLtiOutcomeDao.update(queuedLtiOutcome);
+                candidateSessionDao.update(candidateSession);
+                logger.warn("Failure #{} to send LTI outcome #{} to LIS outcome service at {}. Will try again at {}",
+                        new Object[] { failureCount+1, queuedLtiOutcome.getId(), candidateSession.getLisOutcomeServiceUrl(), queuedLtiOutcome.getRetryTime() });
+            }
+            else {
+                candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
+                queuedLtiOutcomeDao.remove(queuedLtiOutcome);
+                candidateSessionDao.update(candidateSession);
+                logger.error("Final failure #{} to send LTI outcome #{} to LIS outcome service at {}. Outcome has been removed from queue",
+                        new Object[] { failureCount+1, queuedLtiOutcome.getId(), candidateSession.getLisOutcomeServiceUrl() });
+            }
+        }
+        return successful;
     }
 
     private boolean trySendQueuedLtiOutcome(final QueuedLtiOutcome queuedLtiOutcome) {
@@ -209,7 +228,7 @@ public class LtiOutcomeService {
         /* Send message to TC result service endpoint */
         String resultBody;
         try {
-            logger.info("Attempting to send OAuth message {}", oauthMessage);
+            logger.debug("Attempting to send OAuth message {}", oauthMessage);
             final HttpClient4 httpClient4 = new HttpClient4();
             final OAuthClient client = new OAuthClient(httpClient4);
             final OAuthMessage result = client.invoke(oauthMessage, ParameterStyle.AUTHORIZATION_HEADER);
@@ -221,7 +240,7 @@ public class LtiOutcomeService {
         }
 
         /* Extract status */
-        logger.info("Received following result body from TP outcome service:\n{}", resultBody);
+        logger.debug("Received following result body from TP outcome service:\n{}", resultBody);
         final XPathFactory xPathFactory = XPathFactory.newInstance();
         final XPath xPath = xPathFactory.newXPath();
         xPath.setNamespaceContext(new PoxNamespaceContext());

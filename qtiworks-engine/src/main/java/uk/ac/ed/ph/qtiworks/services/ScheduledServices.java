@@ -86,10 +86,10 @@ public class ScheduledServices {
      * Attempts to send any queued LTI outcomes back to the relevant Tool Consumers.
      */
     @Scheduled(fixedDelay=ONE_MINUTE, initialDelay=ONE_MINUTE)
-    public void sendQueuedLtiOutcomes() {
-        logger.trace("sendQueuedLtiOutcomes() invoked");
+    public void sendNextQueuedLtiOutcomes() {
+        logger.trace("sendNextQueuedLtiOutcomes() invoked");
         final long currentTimestamp = System.currentTimeMillis();
-        ltiOutcomeService.sendQueuedLtiOutcomes();
-        logger.debug("sendQueuedLtiOutcomes() completed in {}ms", System.currentTimeMillis() - currentTimestamp);
+        final int failureCount = ltiOutcomeService.sendNextQueuedLtiOutcomes();
+        logger.debug("sendNextQueuedLtiOutcomes() completed in {}ms with {} failure(s)", System.currentTimeMillis() - currentTimestamp, failureCount);
     }
 }
