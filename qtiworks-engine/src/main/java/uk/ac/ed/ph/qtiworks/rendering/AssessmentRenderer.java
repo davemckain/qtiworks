@@ -259,10 +259,7 @@ public class AssessmentRenderer {
     }
 
     /**
-     * Renders the {@link ItemRenderingRequest}, sending the result to the provided JAXP {@link Result}.
-     * <p>
-     * The rendering shows the current state of the item, unless {@link ItemRenderingRequest#isSolutionMode()}
-     * returns true, in which case the model solution is rendered.
+     * Renders the given {@link ItemAuthorViewRenderingRequest}, sending the result to the provided JAXP {@link Result}.
      * <p>
      * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
      * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for

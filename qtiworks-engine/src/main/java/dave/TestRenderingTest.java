@@ -51,14 +51,13 @@ import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
 import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
-import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
+import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
-import java.io.File;
 import java.net.URI;
 import java.util.Date;
 
@@ -75,10 +74,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class TestRenderingTest {
 
     public static void main(final String[] args) {
-//        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-testFeedback.xml");
-        final CustomUriScheme cpUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
-        final URI testUri = URI.create("this-content-package:/assessment.xml");
-        final FileSandboxResourceLocator assessmentResourceLocator = new FileSandboxResourceLocator(cpUriScheme, new File("/scratch/dmckain/EclipseWorkspace/QTIWorks/bcm"));
+        final ClassPathResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
+        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-testFeedback.xml");
 
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
@@ -110,10 +107,10 @@ public class TestRenderingTest {
             testSessionController.enterNextAvailableTestPart(timestamp2);
             System.out.println("Test session state after entry: " + ObjectDumper.dumpObject(testSessionState, DumpMode.DEEP));
 
-//            /* Select first item */
-//            final Date timestamp3 = ObjectUtilities.addToTime(timestamp1, 5000L);
-//            final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
-//            testSessionController.selectItemNonlinear(timestamp3, firstItemRef.getKey());
+            /* Select first item */
+            final Date timestamp3 = ObjectUtilities.addToTime(timestamp1, 5000L);
+            final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
+            testSessionController.selectItemNonlinear(timestamp3, firstItemRef.getKey());
 
             System.out.println("\nRendering state after selection of first item");
             final TestRenderingOptions renderingOptions = RunUtilities.createTestRenderingOptions();
