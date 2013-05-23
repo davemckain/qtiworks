@@ -109,12 +109,13 @@ public class AssessmentRenderer {
     private static final URI ctopXsltUri = URI.create("classpath:/rendering-xslt/ctop.xsl");
     private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
-    private static final URI itemAuthorDebugXsltUri = URI.create("classpath:/rendering-xslt/item-author-debug.xsl");
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
     private static final URI testEntryXsltUri = URI.create("classpath:/rendering-xslt/test-entry.xsl");
     private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
     private static final URI testPartFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-feedback.xsl");
     private static final URI testFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-feedback.xsl");
+    private static final URI itemAuthorViewXsltUri = URI.create("classpath:/rendering-xslt/item-author-view.xsl");
+    private static final URI testAuthorViewXsltUri = URI.create("classpath:/rendering-xslt/test-author-view.xsl");
 
     @Resource
     private QtiWorksProperties qtiWorksProperties;
@@ -256,43 +257,6 @@ public class AssessmentRenderer {
 
         /* Perform transform */
         doTransform(request, itemStandaloneXsltUri, xsltParameters, result);
-    }
-
-    /**
-     * Renders the given {@link ItemAuthorViewRenderingRequest}, sending the result to the provided JAXP {@link Result}.
-     * <p>
-     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
-     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
-     * closing the {@link OutputStream} or {@link Writer} afterwards!
-     * The caller is responsible for closing this stream afterwards.
-     */
-    public void renderItemAuthorView(final ItemAuthorViewRenderingRequest request,
-            final List<CandidateEventNotification> notifications, final Result result) {
-        Assert.notNull(request, "request");
-        Assert.notNull(result, "result");
-
-        /* Check request is valid */
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "itemAuthorViewRenderingRequest");
-        jsr303Validator.validate(request, errors);
-        if (errors.hasErrors()) {
-            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
-                    + " Object: " + errors);
-        }
-
-        /* Pass request info to XSLT as parameters */
-        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        setBaseRenderingParameters(xsltParameters, request, notifications);
-
-        /* Pass ItemSessionState (as DOM Document and XML text) */
-        final ItemSessionState itemSessionState = request.getItemSessionState();
-        final Document itemSessionStateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
-        xsltParameters.put("itemSessionState", itemSessionStateDocument.getDocumentElement());
-
-        /* Set control parameters */
-        xsltParameters.put("solutionMode", Boolean.valueOf(request.isSolutionMode()));
-
-        /* Perform transform */
-        doTransform(request, itemAuthorDebugXsltUri, xsltParameters, result);
     }
 
     /**
@@ -461,6 +425,78 @@ public class AssessmentRenderer {
 
         /* We finally do the transform on the _item_ (NB!) */
         doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
+    }
+
+    /**
+     * Renders the given {@link ItemAuthorViewRenderingRequest}, sending the result to the
+     * provided JAXP {@link Result}.
+     * <p>
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
+     * The caller is responsible for closing this stream afterwards.
+     */
+    public void renderItemAuthorView(final ItemAuthorViewRenderingRequest request,
+            final List<CandidateEventNotification> notifications, final Result result) {
+        Assert.notNull(request, "request");
+        Assert.notNull(result, "result");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "itemAuthorViewRenderingRequest");
+        jsr303Validator.validate(request, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        /* Pass request info to XSLT as parameters */
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, request, notifications);
+
+        /* Pass ItemSessionState (as DOM Document and XML text) */
+        final ItemSessionState itemSessionState = request.getItemSessionState();
+        final Document itemSessionStateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
+        xsltParameters.put("itemSessionState", itemSessionStateDocument.getDocumentElement());
+
+        /* Set control parameters */
+        xsltParameters.put("solutionMode", Boolean.valueOf(request.isSolutionMode()));
+
+        /* Perform transform */
+        doTransform(request, itemAuthorViewXsltUri, xsltParameters, result);
+    }
+
+    /**
+     * Renders the given {@link TestAuthorViewRenderingRequest}, sending the result to the
+     * provided JAXP {@link Result}.
+     * <p>
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
+     * The caller is responsible for closing this stream afterwards.
+     */
+    public void renderTestAuthorView(final TestAuthorViewRenderingRequest request,
+            final List<CandidateEventNotification> notifications, final Result result) {
+        Assert.notNull(request, "renderingRequest");
+        Assert.notNull(result, "result");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "testAuthorViewRenderingRequest");
+        jsr303Validator.validate(request, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        /* Set up general XSLT parameters */
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, request, notifications);
+
+        final TestSessionController testSessionController = request.getTestSessionController();
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+        xsltParameters.put("testSystemId", request.getAssessmentResourceUri().toString());
+
+        doTransform(request, testAuthorViewXsltUri, xsltParameters, result);
     }
 
     //----------------------------------------------------

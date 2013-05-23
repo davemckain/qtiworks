@@ -80,6 +80,10 @@ public class CandidateAuditLogger {
         logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST");
     }
 
+    public void logTestAuthorViewRendering(final CandidateEvent candidateEvent) {
+        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST_AUTHOR_VIEW");
+    }
+
     public void logCandidateEvent(final CandidateEvent candidateEvent) {
         final StringBuilder messageBuilder = new StringBuilder("action=CANDIDATE_EVENT xeid=")
             .append(candidateEvent.getId());

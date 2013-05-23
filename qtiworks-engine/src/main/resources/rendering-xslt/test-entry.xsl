@@ -44,6 +44,8 @@ Test Entry page (shown when there are multiple testParts)
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks assessmentTest testEntry">
+        <xsl:call-template name="maybeAddAuthoringLink"/>
+
         <h2>Test Entry Page</h2>
 
         <p>

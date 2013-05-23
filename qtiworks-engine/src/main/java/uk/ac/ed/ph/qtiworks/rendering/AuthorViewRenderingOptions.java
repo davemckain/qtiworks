@@ -33,53 +33,21 @@
  */
 package uk.ac.ed.ph.qtiworks.rendering;
 
-import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
-import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
-import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
-
-import javax.validation.constraints.NotNull;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 /**
- * Request for rendering a particular test navigation screen.
- * <p>
- * The {@link TestRenderingMode} is used to determine what should be generated.
+ * Rendering options used when rendering the author view of items
  *
  * @author David McKain
  */
-public final class TestRenderingRequest extends AbstractRenderingRequest<TestRenderingOptions> {
+public final class AuthorViewRenderingOptions extends AbstractRenderingOptions {
 
-    /** {@link TestSessionController} wrapped around the {@link TestSessionState} being rendered. */
-    @NotNull
-    private TestSessionController testSessionController;
-
-    private TestRenderingMode testRenderingMode;
-    private TestPlanNodeKey modalItemKey;
+    private static final long serialVersionUID = -4080054157370465199L;
 
     //----------------------------------------------------
 
-    public TestSessionController getTestSessionController() {
-        return testSessionController;
-    }
-
-    public void setTestSessionController(final TestSessionController testSessionController) {
-        this.testSessionController = testSessionController;
-    }
-
-
-    public TestRenderingMode getTestRenderingMode() {
-        return testRenderingMode;
-    }
-
-    public void setTestRenderingMode(final TestRenderingMode testRenderingMode) {
-        this.testRenderingMode = testRenderingMode;
-    }
-
-
-    public TestPlanNodeKey getModalItemKey() {
-        return modalItemKey;
-    }
-
-    public void setModalItemKey(final TestPlanNodeKey modalItemKey) {
-        this.modalItemKey = modalItemKey;
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

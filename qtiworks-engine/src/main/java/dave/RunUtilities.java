@@ -34,7 +34,7 @@
 package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
@@ -72,8 +72,8 @@ public final class RunUtilities {
         return result;
     }
 
-    public static ItemAuthorViewRenderingOptions createItemAuthorViewRenderingOptions() {
-        final ItemAuthorViewRenderingOptions result = new ItemAuthorViewRenderingOptions();
+    public static AuthorViewRenderingOptions createAuthorViewRenderingOptions() {
+        final AuthorViewRenderingOptions result = new AuthorViewRenderingOptions();
         setBaseOptions(result);
         return result;
     }

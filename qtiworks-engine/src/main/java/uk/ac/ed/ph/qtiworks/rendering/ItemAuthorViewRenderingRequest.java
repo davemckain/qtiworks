@@ -43,7 +43,7 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class ItemAuthorViewRenderingRequest extends AbstractRenderingRequest<ItemAuthorViewRenderingOptions> {
+public final class ItemAuthorViewRenderingRequest extends AbstractRenderingRequest<AuthorViewRenderingOptions> {
 
     /** Required {@link ItemSessionState} to be rendered */
     @NotNull

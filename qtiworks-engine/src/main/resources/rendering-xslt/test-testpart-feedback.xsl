@@ -48,6 +48,8 @@ Renders the test(Part) feedback
 
       </head>
       <body class="qtiworks assessmentTest testFeedback">
+        <xsl:call-template name="maybeAddAuthoringLink"/>
+
         <h1><xsl:value-of select="$testOrTestPart"/> Complete</h1>
 
         <!-- Show 'atEnd' testPart feedback -->

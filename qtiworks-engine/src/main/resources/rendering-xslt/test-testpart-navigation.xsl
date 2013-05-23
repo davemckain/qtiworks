@@ -48,6 +48,8 @@ Renders the navigation for the current testPart
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks assessmentTest testPartNavigation">
+        <xsl:call-template name="maybeAddAuthoringLink"/>
+
         <h2>Test Question Menu</h2>
         <xsl:apply-templates select="$currentTestPartNode" mode="testPart-navigation"/>
 

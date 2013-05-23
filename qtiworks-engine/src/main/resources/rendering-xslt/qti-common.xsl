@@ -70,6 +70,12 @@ rendering.
 
   <!-- ************************************************************ -->
 
+  <xsl:function name="qw:format-optional-date" as="xs:string?">
+    <xsl:param name="date" as="xs:string?"/>
+    <xsl:param name="default" as="xs:string?"/>
+    <xsl:sequence select="if ($date!='') then $date else $default"/>
+  </xsl:function>
+
   <xsl:function name="qw:format-number" as="xs:string">
     <xsl:param name="format" as="xs:string"/>
     <xsl:param name="number" as="xs:double"/>
@@ -228,6 +234,14 @@ rendering.
     </xsl:choose>
   </xsl:function>
 
+  <xsl:template name="maybeAddAuthoringLink">
+    <!-- Authoring console link (maybe) -->
+    <xsl:if test="$authorMode">
+      <div class="authorModePanel">
+        <a href="{$webappContextPath}{$authorViewUrl}" target="_blank">Show Authoring Console</a>
+      </div>
+    </xsl:if>
+  </xsl:template>
 
   <!-- ************************************************************ -->
   <!-- Variable substitution -->

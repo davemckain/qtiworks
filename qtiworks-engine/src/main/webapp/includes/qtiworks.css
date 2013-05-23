@@ -290,21 +290,21 @@ div.sampleList .launch {
   padding: 0 0.5em 0.5em 0.5em;
 }
 
-.validationResult table {
+.resultPanel table {
   border-collapse: collapse;
   margin: 1em;
 }
 
-.validationResult table th, .validationResult table td {
+.resultPanel table th, .resultPanel table td {
   padding: 0.5em;
   border: 1px solid #ccdbf0;
 }
 
-.validationResult table td.center, .validationResult table th.center {
+.resultPanel table td.center, .resultPanel table th.center {
   text-align: center;
 }
 
-.validationResult table th {
+.resultPanel table th {
   background-color: #ccdbf0;
 }
 

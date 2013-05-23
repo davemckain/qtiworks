@@ -36,18 +36,23 @@ package dave;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestAuthorViewRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
-import uk.ac.ed.ph.jqtiplus.running.ItemSessionControllerSettings;
-import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
-import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
+import uk.ac.ed.ph.jqtiplus.running.TestPlanner;
+import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
+import uk.ac.ed.ph.jqtiplus.running.TestSessionControllerSettings;
+import uk.ac.ed.ph.jqtiplus.state.TestPlan;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode;
+import uk.ac.ed.ph.jqtiplus.state.TestPlanNode.TestNodeType;
+import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.SimpleXsltStylesheetCache;
 
@@ -60,15 +65,15 @@ import org.apache.commons.io.output.StringBuilderWriter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * Developer class for debugging standalone item rendering author view
+ * Developer class for debugging test rendering author view
  *
  * @author David McKain
  */
-public class ItemAuthorViewRenderingTest {
+public class TestAuthorViewRenderingTest {
 
     public static void main(final String[] args) {
         final ClassPathResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
-        final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
+        final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-testFeedback.xml");
 
         System.out.println("Reading");
         final JqtiExtensionManager jqtiExtensionManager = new JqtiExtensionManager();
@@ -78,27 +83,39 @@ public class ItemAuthorViewRenderingTest {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
             final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, assessmentResourceLocator);
 
-            final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectXmlLoader.loadAndResolveAssessmentItem(itemUri);
-            final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
-            final ItemProcessingMap itemProcessingMap = new ItemProcessingInitializer(resolvedAssessmentItem, true).initialize();
-            final ItemSessionState itemSessionState = new ItemSessionState();
-            final ItemSessionController itemSessionController = new ItemSessionController(jqtiExtensionManager,
-                    itemSessionControllerSettings, itemProcessingMap, itemSessionState);
-            itemSessionController.addNotificationListener(notificationLogListener);
+            final ResolvedAssessmentTest resolvedAssessmentTest = assessmentObjectXmlLoader.loadAndResolveAssessmentTest(testUri);
+            final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, true).initialize();
 
-            final Date timestamp = new Date();
-            itemSessionController.initialize(timestamp);
-            itemSessionController.performTemplateProcessing(timestamp);
-            itemSessionController.enterItem(timestamp);
+            final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
+            testPlanner.addNotificationListener(notificationLogListener);
+            final TestPlan testPlan = testPlanner.generateTestPlan();
+
+            final TestSessionState testSessionState = new TestSessionState(testPlan);
+            final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
+            final TestSessionController testSessionController = new TestSessionController(jqtiExtensionManager, testSessionControllerSettings, testProcessingMap, testSessionState);
+            testSessionController.addNotificationListener(notificationLogListener);
+
+            final Date timestamp1 = new Date();
+            testSessionController.initialize(timestamp1);
+            testSessionController.enterTest(timestamp1);
+
+            final Date timestamp2 = ObjectUtilities.addToTime(timestamp1, 1000L);
+            testSessionController.enterNextAvailableTestPart(timestamp2);
+
+            /* Select first item */
+            final Date timestamp3 = ObjectUtilities.addToTime(timestamp1, 5000L);
+            final TestPlanNode firstItemRef = testSessionState.getTestPlan().searchNodes(TestNodeType.ASSESSMENT_ITEM_REF).get(0);
+            testSessionController.selectItemNonlinear(timestamp3, firstItemRef.getKey());
 
             final AuthorViewRenderingOptions renderingOptions = RunUtilities.createAuthorViewRenderingOptions();
-            final ItemAuthorViewRenderingRequest renderingRequest = new ItemAuthorViewRenderingRequest();
-            renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
-            renderingRequest.setAssessmentResourceUri(itemUri);
+            final TestAuthorViewRenderingRequest renderingRequest = new TestAuthorViewRenderingRequest();
+            renderingRequest.setTestSessionController(testSessionController);
+            renderingRequest.setAssessmentResourceLocator(assessmentResourceLocator);
+            renderingRequest.setAssessmentResourceUri(testUri);
+            renderingRequest.setTestSessionController(testSessionController);
             renderingRequest.setRenderingOptions(renderingOptions);
-            renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setSolutionMode(false);
             renderingRequest.setAuthorMode(true);
+            renderingRequest.setTestRenderingMode(null);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();
@@ -117,7 +134,7 @@ public class ItemAuthorViewRenderingTest {
             final StringBuilderWriter stringBuilderWriter = new StringBuilderWriter();
             final StreamResult result = new StreamResult(stringBuilderWriter);
 
-            renderer.renderItemAuthorView(renderingRequest, null, result);
+            renderer.renderTestAuthorView(renderingRequest, null, result);
             final String rendered = stringBuilderWriter.toString();
             System.out.println("Rendered page: " + rendered);
         }

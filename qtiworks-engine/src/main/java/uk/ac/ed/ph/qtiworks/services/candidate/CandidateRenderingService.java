@@ -49,10 +49,11 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TestAuthorViewRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingRequest;
@@ -265,7 +266,7 @@ public class CandidateRenderingService {
     // Item Author View rendering
 
     public void renderCurrentCandidateItemSessionStateAuthorView(final long xid, final String sessionToken,
-            final ItemAuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
         Assert.notNull(sessionToken, "sessionToken");
         final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
@@ -273,7 +274,7 @@ public class CandidateRenderingService {
     }
 
     public void renderCurrentCandidateItemSessionStateAuthorView(final CandidateSession candidateSession,
-            final ItemAuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
             throws IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(renderingOptions, "renderingOptions");
@@ -312,7 +313,7 @@ public class CandidateRenderingService {
     }
 
     private void renderItemEventAuthorView(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState,
-            final ItemAuthorViewRenderingOptions renderingOptions, final StreamResult result) {
+            final AuthorViewRenderingOptions renderingOptions, final StreamResult result) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
@@ -442,6 +443,76 @@ public class CandidateRenderingService {
         catch (final Exception e) {
             throw new QtiWorksLogicException("Unexpected Exception parsing TestPlanNodeKey " + keyString);
         }
+    }
+
+    //----------------------------------------------------
+    // Test Author View rendering
+
+    public void renderCurrentCandidateTestSessionStateAuthorView(final long xid, final String sessionToken,
+            final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, DomainEntityNotFoundException, IOException {
+        Assert.notNull(sessionToken, "sessionToken");
+        final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateTestSession(xid, sessionToken);
+        renderCurrentCandidateTestSessionStateAuthorView(candidateSession, renderingOptions, outputStreamer);
+    }
+
+    public void renderCurrentCandidateTestSessionStateAuthorView(final CandidateSession candidateSession,
+            final AuthorViewRenderingOptions renderingOptions, final OutputStreamer outputStreamer)
+            throws IOException {
+        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(renderingOptions, "renderingOptions");
+        Assert.notNull(outputStreamer, "outputStreamer");
+
+        /* Look up most recent event */
+        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+
+        /* Load the TestSessionState and create a TestSessionController */
+        final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(latestEvent);
+        final TestSessionController testSessionController = createTestSessionController(candidateSession, testSessionState);
+
+        /* Create temporary file to hold the output before it gets streamed */
+        final File resultFile = filespaceManager.createTempFile();
+        try {
+            /* Render to temp file */
+            FileOutputStream resultOutputStream = null;
+            try {
+                resultOutputStream = new FileOutputStream(resultFile);
+                renderTestEventAuthorView(latestEvent, testSessionController, renderingOptions, new StreamResult(resultOutputStream));
+            }
+            catch (final IOException e) {
+                throw new QtiWorksRuntimeException("Unexpected IOException", e);
+            }
+            finally {
+                IOUtils.closeQuietly(resultOutputStream);
+            }
+
+            /* Finally stream to caller */
+            streamFile(resultFile, outputStreamer, renderingOptions);
+        }
+        finally {
+            if (!resultFile.delete()) {
+                throw new QtiWorksRuntimeException("Could not delete result file " + resultFile.getPath());
+            }
+        }
+    }
+
+    private void renderTestEventAuthorView(final CandidateEvent candidateEvent, final TestSessionController testSessionController,
+            final AuthorViewRenderingOptions renderingOptions, final StreamResult result) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final Delivery delivery = candidateSession.getDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+
+        /* Create and partially configure rendering request */
+        final TestAuthorViewRenderingRequest renderingRequest = new TestAuthorViewRenderingRequest();
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setTestSessionController(testSessionController);
+        renderingRequest.setRenderingOptions(renderingOptions);
+
+        candidateAuditLogger.logTestAuthorViewRendering(candidateEvent);
+        final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
+        assessmentRenderer.renderTestAuthorView(renderingRequest, notifications, result);
     }
 
     //----------------------------------------------------
