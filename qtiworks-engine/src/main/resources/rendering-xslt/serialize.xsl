@@ -145,37 +145,25 @@ hence slightly easier to debug.
     <xsl:copy-of select="."/>
   </xsl:template>
 
-  <!-- FIXME: This template does not work correctly and I am not sure whether it is needed now.
-       It is causing stuff like '<math>...</math>and more' to trim the character 'a' from the
-       following text. -->
-  <xsl:template match="text()[false()]">
-    <xsl:variable name="trimmed" as="xs:string">
-      <xsl:choose>
-        <xsl:when test="normalize-space(.)='' and (qw:is-xhtml-block-element(following-sibling::node()[1]) or qw:is-xhtml-block-element(preceding-sibling::node()[1]))">
-          <!-- Whitespace Nodes before/after block elements are ignorable -->
-          <xsl:sequence select="''"/>
-        </xsl:when>
-        <xsl:when test="not(preceding-sibling::node()[1])">
-          <!-- Strip leading whitespace on first child node, collapse trailing whitespace down -->
-          <xsl:sequence select="replace(replace(., '^\s+', ''), '\s+$', ' ')"/>
-        </xsl:when>
-        <xsl:when test="not(following-sibling::node()[1])">
-          <!-- Strip trailing whitespace on last child node, collapse leading whitespace down -->
-          <xsl:sequence select="replace(replace(., '\s+$', ''), '^\s+', ' ')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <!-- Collapse leading and trailing whitespace down -->
-          <xsl:sequence select="replace(replace(., '^\s+', ' '), '\s+$', ' ')"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <!-- Replace whitespace before and after inline MathML with a non-breaking space, as IE
-    sometimes ignores the whitespace otherwise -->
-    <xsl:variable name="temp" as="xs:string"
-      select="if ($trimmed and preceding-sibling::node()[1][self::m:math and not(@display='block')])
-      then concat('&#xa0;', substring($trimmed, 2)) else $trimmed"/>
-    <xsl:value-of select="if ($trimmed and following-sibling::node()[1][self::m:math and not(@display='block')])
-      then concat(substring($temp, 1, string-length($temp)-1), '&#xa0;') else $temp"/>
+  <xsl:template match="text()">
+    <xsl:choose>
+      <xsl:when test="normalize-space(.)='' and (qw:is-xhtml-block-element(following-sibling::node()[1]) or qw:is-xhtml-block-element(preceding-sibling::node()[1]))">
+        <!-- Whitespace Nodes before/after block elements are ignorable -->
+        <xsl:sequence select="''"/>
+      </xsl:when>
+      <xsl:when test="not(preceding-sibling::node()[1])">
+        <!-- Strip leading whitespace on first child node, collapse trailing whitespace down -->
+        <xsl:sequence select="replace(replace(., '^\s+', ''), '\s+$', ' ')"/>
+      </xsl:when>
+      <xsl:when test="not(following-sibling::node()[1])">
+        <!-- Strip trailing whitespace on last child node, collapse leading whitespace down -->
+        <xsl:sequence select="replace(replace(., '\s+$', ''), '^\s+', ' ')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- Collapse leading and trailing whitespace down -->
+        <xsl:sequence select="replace(replace(., '^\s+', ' '), '\s+$', ' ')"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <!-- ************************************************************ -->
