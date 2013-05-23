@@ -1,5 +1,8 @@
 -- Schema migration script for upgrading from 1.0-M4 to 1.0-M5.
 --
+-- CURRENT STATUS: This has merged the DEV26->27->28 scripts. Still need to
+-- merge later scripts...
+--
 -- NB: This has been written to work with PostgreSQL and will probably need
 -- tweaked slightly to work with other databases.
 BEGIN WORK;

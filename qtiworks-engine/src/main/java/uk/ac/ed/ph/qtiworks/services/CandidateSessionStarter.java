@@ -266,7 +266,7 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.SESSION_NOT_ENDED);
         candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
-        candidateSession.setLisResultSourceDid(lisResultSourceDid);
+        candidateSession.setLisResultSourcedid(lisResultSourceDid);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
         candidateSession.setClosed(false);
@@ -326,7 +326,7 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.SESSION_NOT_ENDED);
         candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
-        candidateSession.setLisResultSourceDid(lisResultSourceDid);
+        candidateSession.setLisResultSourcedid(lisResultSourceDid);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
         candidateSession.setClosed(false);

@@ -124,7 +124,7 @@ public class CandidateSessionCloser {
                     + candidateSession.getId());
             return;
         }
-        final String lisResultSourceDid = candidateSession.getLisResultSourceDid();
+        final String lisResultSourceDid = candidateSession.getLisResultSourcedid();
         if (StringUtilities.isNullOrEmpty(lisResultSourceDid)) {
             recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.USER_NOT_REPORTABLE,
                     "Tool consumer did not specify a lis_resource_sourcedid for CandidateSession #"

@@ -258,7 +258,7 @@ public class LtiOutcomeService {
 
     private String buildPoxMessage(final CandidateSession candidateSession, final double normalizedScore) {
         final String messageIdentifier = "QTIWORKS_RESULT_" + ServiceUtilities.createRandomAlphanumericToken(32);
-        final String lisResultSourceDid = candidateSession.getLisResultSourceDid();
+        final String lisResultSourceDid = candidateSession.getLisResultSourcedid();
         return "<?xml version='1.0' encoding='UTF-8'?>\n"
                 + "<imsx_POXEnvelopeRequest xmlns='http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0'>\n"
                 + "  <imsx_POXHeader>\n"

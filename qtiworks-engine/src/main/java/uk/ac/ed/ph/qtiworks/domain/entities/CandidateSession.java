@@ -52,6 +52,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -61,6 +62,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Represents the "session" for a particular candidate {@link User} against a
@@ -164,6 +167,8 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
      * <p>
      * This will be null if returning of outcomes is not supported for this session.
      */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
     @Column(name="lis_outcome_service_url")
     private String lisOutcomeServiceUrl;
@@ -179,9 +184,11 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
      * <p>
      * This will be null if returning of outcomes is not supported for this session.
      */
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
     @Column(name="lis_result_sourcedid")
-    private String lisResultSourceDid;
+    private String lisResultSourcedid;
 
     /** (Currently used for cascading deletion only - upgrade if required) */
     @SuppressWarnings("unused")
@@ -300,12 +307,12 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public String getLisResultSourceDid() {
-        return lisResultSourceDid;
+    public String getLisResultSourcedid() {
+        return lisResultSourcedid;
     }
 
-    public void setLisResultSourceDid(final String lisResultSourceDid) {
-        this.lisResultSourceDid = lisResultSourceDid;
+    public void setLisResultSourcedid(final String lisResultSourcerid) {
+        this.lisResultSourcedid = lisResultSourcerid;
     }
 
     //------------------------------------------------------------
@@ -320,7 +327,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
                 + ",terminated=" + terminated
                 + ",candidateOutcomeReportingStatus=" + candidateOutcomeReportingStatus
                 + ",lisOutcomeServiceUrl=" + lisOutcomeServiceUrl
-                + ",lisReultSourcedid=" + lisResultSourceDid
+                + ",lisReultSourcedid=" + lisResultSourcedid
                 + ")";
     }
 }
