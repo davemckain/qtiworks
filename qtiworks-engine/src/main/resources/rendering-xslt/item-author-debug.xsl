@@ -55,15 +55,15 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
           </header>
           <h2>QTI author's feedback</h2>
 
-          <xsl:call-template name="qw:session-controls"/>
+          <xsl:call-template name="qw:buttonBar"/>
           <xsl:apply-templates select="$itemSessionState"/>
         </div>
       </body>
     </html>
   </xsl:template>
 
-  <xsl:template name="qw:session-controls">
-    <div class="sessionControl">
+  <xsl:template name="qw:buttonBar">
+    <div class="buttonBar">
       <ul class="controls">
         <li>
           <form action="{$webappContextPath}{$sourceUrl}" method="get" class="showXmlInDialog" title="Item Source XML">

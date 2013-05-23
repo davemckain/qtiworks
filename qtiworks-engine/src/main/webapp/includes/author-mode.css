@@ -5,95 +5,27 @@ All Rights Reserved
 
 ************************************************************/
 
-body {
-  font-family: 'Open Sans', sans-serif;
-  x-background: white url(images/headergradient.png) repeat-x top center;
+/* ========== Button Bar ========== */
+
+.buttonBar {
 }
 
-a, a:link, a:visited {
-  color: #66455e;
+.buttonBar ul {
+  list-style: none;
+  margin: 1em;
+  text-align: center;
 }
 
-h3 {
-  border-bottom: 1px solid #ccdbf0;
+.buttonBar li {
+  display: inline;
+  padding: 0.2em;
 }
 
-/* ========== Header ========== */
-
-header {
-  margin: 0.7em 0;
+.buttonBar li form {
+  display: inline;
 }
 
-header h1 {
-  margin: 0;
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 40px;
-  line-height: 60px;
-  letter-spacing: -0.05em;
-  background: url(images/smallcog.png) left center no-repeat;
-  padding-left: 50px;
-}
-
-header h1 a:link, header h1 a:visited {
-  color: black;
-  text-decoration: none;
-  vertical-align: middle;
-}
-
-header h1 a:hover {
-  color: #66455e;
-}
-
-.flashMessage {
-  background-color: #ffffcc;
-  margin: 0.5em 0;
-  padding: 0.5em;
-  border: 1px solid #999999;
-  border-radius: 0.5em;
-}
-
-/* ========== Footer ========== */
-
-footer {
-  margin-top: 4em;
-  border-top: 1px solid #ccdbf0;
-  padding: 2em 0;
-}
-
-footer .logos {
-  float: right;
-}
-
-footer .logos img {
-  margin-left: 0.5em;
-}
-
-footer .copyright {
-  color: #666666;
-  font-size: smaller;
-}
-
-footer .copyright p {
-  margin: 0;
-}
-
-footer .copyright a, footer .copyright a:hover {
-  color: #666666;
-}
-
-/* ========== Breadcrumbs & page title ========== */
-
-nav.breadcrumbs a {
-  color: black;
-  text-decoration: none;
-}
-
-nav.breadcrumbs a:hover {
-  color: black;
-  text-decoration: underline;
-}
-
-/* ========== QTI Validator ========== */
+/* ========== Expandable result panels ========== */
 
 .resultPanel {
   border-top-left-radius: 2em;
@@ -118,30 +50,12 @@ nav.breadcrumbs a:hover {
 }
 
 .resultPanel.failure > h4 {
-  background: url(images/error.png) 5px center no-repeat;
+  background: url(images/cancel.png) 5px center no-repeat;
   color: #cd1753;
 }
 
 .resultPanel .details {
   padding: 0 0.5em 0.5em 0.5em;
-}
-
-.authorInfo table {
-  border-collapse: collapse;
-  margin: 1em;
-}
-
-.authorInfo table th, .authorInfo table td {
-  padding: 0.5em;
-  border: 1px solid #ccdbf0;
-}
-
-.authorInfo table td.center, .authorInfo table th.center {
-  text-align: center;
-}
-
-.authorInfo table th {
-  background-color: #ccdbf0;
 }
 
 .toggler {

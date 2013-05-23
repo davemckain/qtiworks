@@ -85,7 +85,7 @@ Renders a standalone assessmentItem
         <xsl:apply-templates select="qti:stylesheet"/>
       </head>
       <body class="qtiworks assessmentItem">
-        <!-- Author mode link -->
+        <!-- Authoring console link (maybe) -->
         <xsl:if test="$authorMode">
           <div class="authorModePanel">
             <a href="{$webappContextPath}{$authorViewUrl}" target="_blank">Show Authoring Console</a>
