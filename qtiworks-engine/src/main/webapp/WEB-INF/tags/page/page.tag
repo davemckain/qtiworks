@@ -37,7 +37,6 @@ All Rights Reserved
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
     <%-- TODO: Move the next script into a single library --%>
     <script src="${utils:internalLink(pageContext, '/includes/qtiworks.js')}?${qtiWorksVersion}"></script>
-    <script src="${utils:internalLink(pageContext, '/includes/validation-toggler.js')}?${qtiWorksVersion}"></script>
   </head>
   <body class="<c:out value='${cssClass}' default='page'/>">
     <div class="container_12">
