@@ -821,15 +821,7 @@ public class AssessmentManagementService {
         ensureCompatible(deliverySettings, assessment);
 
         /* Make sure caller is allowed to run this Assessment */
-        final User caller = ensureCallerMayAccess(assessment);
-
-        /* Get most recent package */
-        final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
-
-        /* Make sure package is valid */
-        if (!currentAssessmentPackage.isValid()) {
-            throw new PrivilegeException(caller, assessment, Privilege.LAUNCH_INVALID_ASSESSMENT);
-        }
+        ensureCallerMayAccess(assessment);
 
         /* Create demo Delivery */
         final Delivery delivery = new Delivery();

@@ -92,27 +92,20 @@ instructorAssessmentRouting (action -> URL)
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
     <li>
       <c:choose>
-        <c:when test="${assessmentPackage.valid}">
-        <c:choose>
-          <c:when test="${!empty deliverySettingsList}">
-            Try out using:
-            <ul>
-              <c:forEach var="deliverySettings" items="${deliverySettingsList}">
-                <li>
-                  <page:postLink path="${assessmentRouting['try']}/${deliverySettings.id}" title="${fn:escapeXml(deliverySettings.title)}"/>
-                </li>
-              </c:forEach>
-            </ul>
-          </c:when>
-          <c:otherwise>
-            <%-- No options exist yet, so allow try out with a default set, which will be created automatically --%>
-            <page:postLink path="${assessmentRouting['try']}" title="Try Out"/>
-            (You probably want to create some delivery settings to get more control over this!)
-          </c:otherwise>
-        </c:choose>
+        <c:when test="${!empty deliverySettingsList}">
+          Try out using:
+          <ul>
+            <c:forEach var="deliverySettings" items="${deliverySettingsList}">
+              <li>
+                <page:postLink path="${assessmentRouting['try']}/${deliverySettings.id}" title="${fn:escapeXml(deliverySettings.title)}"/>
+              </li>
+            </c:forEach>
+          </ul>
         </c:when>
         <c:otherwise>
-          (A button allowing you to try this assessment out will appear here once you fix its validation issues)
+          <%-- No options exist yet, so allow try out with a default set, which will be created automatically --%>
+          <page:postLink path="${assessmentRouting['try']}" title="Try Out"/>
+          (You probably want to create some delivery settings to get more control over this!)
         </c:otherwise>
       </c:choose>
     </li>

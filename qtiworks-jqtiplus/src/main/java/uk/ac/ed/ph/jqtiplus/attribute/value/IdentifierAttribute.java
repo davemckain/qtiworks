@@ -33,15 +33,17 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.SingleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 
 /**
- * Attribute with {@link Identifier} value.
+ * Attribute with single {@link Identifier} value.
  *
  * @author Jiri Kajaba
+ * @author David McKain
  */
 public final class IdentifierAttribute extends SingleAttribute<Identifier> {
 
@@ -68,11 +70,13 @@ public final class IdentifierAttribute extends SingleAttribute<Identifier> {
     public void validateBasic(final ValidationContext context) {
         super.validateBasic(context);
 
-// FIXME: Re-enable this once we relax constraints on running invalid assessments
-//        /* Spec recommends identifiers are not more than 32 characters */
-//        if (value!=null && value.toString().length() > 32) {
-//            context.fireAttributeValidationWarning(this, "Identifiers are recommended to be no more than 32 characters long");
-//        }
+        /* Spec suggests a maximum length for identnfiers. We don't enforce this, but will issue a validation warning */
+        if (value!=null && value.toString().length() > QtiConstants.IDENTIFIER_MAX_LENGTH_RECOMMENDATION) {
+            context.fireAttributeValidationWarning(this,
+                    "Identifiers are recommended to be no more than "
+                    + QtiConstants.IDENTIFIER_MAX_LENGTH_RECOMMENDATION
+                    + " characters long");
+        }
     }
 
     @Override

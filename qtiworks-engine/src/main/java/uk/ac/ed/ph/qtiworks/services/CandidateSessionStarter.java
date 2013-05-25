@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
@@ -102,9 +101,6 @@ public class CandidateSessionStarter {
 
     @Resource
     private CandidateDataServices candidateDataServices;
-
-    @Resource
-    private EntityGraphService entityGraphService;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -210,12 +206,6 @@ public class CandidateSessionStarter {
             auditLogger.recordEvent("Reconnected to CandidateSession #" + mostRecent.getId()
                     + " on Delivery #" + delivery.getId());
             return mostRecent;
-        }
-
-        /* Make sure underlying Assessment is valid */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
-        if (!assessmentPackage.isValid()) {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_INVALID_ASSESSMENT, delivery);
         }
 
         /* Now branch depending on whether this is an item or test */
