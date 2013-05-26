@@ -69,7 +69,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
@@ -96,8 +95,6 @@ import org.w3c.dom.Document;
 
 /**
  * Top layer services for *managing* {@link Assessment}s and related entities.
- *
- * FIXME: The permission controls here are now a bit odd. These need rethought and refactored!
  *
  * @author David McKain
  */
@@ -368,7 +365,7 @@ public class AssessmentManagementService {
         final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
 
         /* Run the validation process */
-        final AssessmentObjectValidationResult<?> validationResult = loadAndValidateAssessment(currentAssessmentPackage);
+        final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(currentAssessmentPackage);
 
         /* Persist results */
         currentAssessmentPackage.setValidated(true);
@@ -376,32 +373,6 @@ public class AssessmentManagementService {
         assessmentPackageDao.update(currentAssessmentPackage);
 
         return validationResult;
-    }
-
-    /**
-     * (This is not private as it is also called by the anonymous upload/validate action featured
-     * in the first iteration of QTI Works.
-     *
-     * TODO: Decide whether we'll keep this kind of functionality.)
-     */
-    @SuppressWarnings("unchecked")
-    <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
-    loadAndValidateAssessment(final AssessmentPackage assessmentPackage) {
-        final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
-        final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
-        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
-        E result;
-        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateItem(assessmentObjectSystemId);
-        }
-        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateTest(assessmentObjectSystemId);
-        }
-        else {
-            throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
-        }
-        return result;
     }
 
     //-------------------------------------------------
@@ -950,6 +921,9 @@ public class AssessmentManagementService {
         catch (final AssessmentPackageFileImportException e) {
             filespaceManager.deleteSandbox(packageSandbox);
             throw e;
+        }
+        finally {
+            assessmentPackageFileImporter.ensureClose(inputStream);
         }
     }
 

@@ -61,16 +61,17 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
           <header>
             <h1>QTIWorks</h1>
           </header>
-          <h2>QTI author's feedback</h2>
+          <h2>QTI test author's feedback</h2>
 
-          <xsl:call-template name="qw:buttonBar"/>
+          <xsl:call-template name="summaryPanel"/>
+          <xsl:call-template name="buttonBar"/>
           <xsl:apply-templates select="$testSessionState"/>
         </div>
       </body>
     </html>
   </xsl:template>
 
-  <xsl:template name="qw:buttonBar">
+  <xsl:template name="buttonBar">
     <div class="buttonBar">
       <ul class="controls">
         <li>
@@ -93,32 +94,29 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
   </xsl:template>
 
   <xsl:template match="qw:testSessionState">
-    <div class="resultPanel">
-      <h4>Test session state</h4>
-      <div class="resultPanel">
-        <h4>Key status information</h4>
-        <div class="details">
-          <ul>
-            <li>Entry time: <xsl:value-of select="qw:format-optional-date(@entryTime, '(Not Yet Entered)')"/></li>
-            <li>End time: <xsl:value-of select="qw:format-optional-date(@endTime, '(Not Yet Ended)')"/></li>
-            <li>Duration accumulated: <xsl:value-of select="@durationAccumulated div 1000.0"/> s</li>
-            <li>Initialized: <xsl:value-of select="@initialized"/></li>
-            <li>Current testPart key: <xsl:value-of select="if (exists(@currentTestPartKey)) then @currentTestPartKey else '(Not in a testPart)'"/></li>
-            <li>Current item key: <xsl:value-of select="if (exists(@currentItemKey)) then @currentItemKey else '(No item selected)'"/></li>
-          </ul>
-        </div>
+    <div class="resultPanel info">
+      <h4>Key status information</h4>
+      <div class="details">
+        <ul>
+          <li>Entry time: <xsl:value-of select="qw:format-optional-date(@entryTime, '(Not Yet Entered)')"/></li>
+          <li>End time: <xsl:value-of select="qw:format-optional-date(@endTime, '(Not Yet Ended)')"/></li>
+          <li>Duration accumulated: <xsl:value-of select="@durationAccumulated div 1000.0"/> s</li>
+          <li>Initialized: <xsl:value-of select="@initialized"/></li>
+          <li>Current testPart key: <xsl:value-of select="if (exists(@currentTestPartKey)) then @currentTestPartKey else '(Not in a testPart)'"/></li>
+          <li>Current item key: <xsl:value-of select="if (exists(@currentItemKey)) then @currentItemKey else '(No item selected)'"/></li>
+        </ul>
       </div>
-      <xsl:apply-templates select="." mode="variableValuesPanel"/>
-      <xsl:apply-templates select="qw:testPlan" mode="testPlan"/>
-      <xsl:apply-templates select="qw:testPlan" mode="drillDown"/>
-      <xsl:call-template name="notificationsPanel"/>
     </div>
+    <xsl:apply-templates select="." mode="variableValuesPanel"/>
+    <xsl:apply-templates select="qw:testPlan" mode="testPlan"/>
+    <xsl:apply-templates select="qw:testPlan" mode="drillDown"/>
+    <xsl:call-template name="notificationsPanel"/>
   </xsl:template>
 
   <!-- ************************************************************ -->
 
   <xsl:template match="qw:testSessionState" mode="variableValuesPanel" as="element(div)*">
-    <div class="resultPanel">
+    <div class="resultPanel info">
       <h4>Outcome values (<xsl:value-of select="count(qw:outcomeVariable)"/>)</h4>
       <div class="details">
         <xsl:choose>
@@ -138,7 +136,7 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
   <!-- ************************************************************ -->
 
   <xsl:template match="qw:testPlan" mode="testPlan">
-    <div class="resultPanel">
+    <div class="resultPanel info">
       <h4>Test plan</h4>
       <div class="details">
         <p>
@@ -189,7 +187,7 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
   <!-- ************************************************************ -->
 
   <xsl:template match="qw:testPlan" mode="drillDown">
-    <div class="resultPanel">
+    <div class="resultPanel info">
       <h4>Node state drilldown</h4>
       <div class="details">
         <p>
@@ -201,7 +199,7 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
   </xsl:template>
 
   <xsl:template match="qw:testPlan//qw:node" mode="drillDown">
-    <div class="resultPanel">
+    <div class="resultPanel expandable">
       <h4>
         <xsl:sequence select="qw:formatNodeType(.)"/>
         <xsl:sequence select="qw:formatNodeKey(.)"/>

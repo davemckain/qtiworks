@@ -51,7 +51,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.io.Closeables;
 import com.google.common.io.Files;
 
 /**
@@ -77,7 +76,7 @@ public class AssessmentPackageFileImporterTest {
             IoUtilities.recursivelyDelete(importSandboxDirectory);
         }
         if (importStream!=null) {
-            Closeables.closeQuietly(importStream);
+            IoUtilities.ensureClose(importStream);
         }
     }
 
@@ -85,7 +84,7 @@ public class AssessmentPackageFileImporterTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void nullDirectory() throws Exception {
-        importer.importAssessmentPackageData(null, getThisUnitTestResource("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml"), "text/xml");
+        importer.importAssessmentPackageData(null, loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml"), "text/xml");
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -95,16 +94,16 @@ public class AssessmentPackageFileImporterTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void nullType() throws Exception {
-        importer.importAssessmentPackageData(importSandboxDirectory, getThisUnitTestResource("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml"), null);
+        importer.importAssessmentPackageData(importSandboxDirectory, loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml"), null);
     }
 
     //----------------------------------------------------------
 
     @Test
     public void importStandaloneItem() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
 
-        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importResource, "text/xml");
+        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importStream, "text/xml");
         Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_ITEM, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.STANDALONE_ITEM_XML, result.getImportType());
@@ -112,9 +111,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void importPackagedItem() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/Aardvark-cannon.zip");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/Aardvark-cannon.zip");
 
-        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
+        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/zip");
         Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_ITEM, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.CONTENT_PACKAGE, result.getImportType());
@@ -122,9 +121,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void importPackagedTest() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/WebDeveloperTest1.zip");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/WebDeveloperTest1.zip");
 
-        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
+        final AssessmentPackage result = importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/zip");
         Assert.assertEquals(importSandboxDirectory.getPath(), result.getSandboxPath());
         Assert.assertEquals(AssessmentObjectType.ASSESSMENT_TEST, result.getAssessmentType());
         Assert.assertEquals(AssessmentPackageImportType.CONTENT_PACKAGE, result.getImportType());
@@ -134,9 +133,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void notXmlOrZip() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/QtiWorksRuntimeException.class");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/QtiWorksRuntimeException.class");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/x-java-class");
+            importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/x-java-class");
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -146,9 +145,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void badZipIncomplete() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/WebDeveloperTest1-incomplete.zip");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/WebDeveloperTest1-incomplete.zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
+            importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/zip");
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -158,9 +157,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void notContentPackage() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/NotContentPackage.zip");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/NotContentPackage.zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
+            importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/zip");
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -170,9 +169,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void badManifest() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/BadManifest.zip");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/BadManifest.zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
+            importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/zip");
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -182,9 +181,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void badMix() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/BadMix.zip");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/BadMix.zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
+            importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/zip");
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -198,9 +197,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void externalHref() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/ExternalHref.zip");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/ExternalHref.zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
+            importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/zip");
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -213,9 +212,9 @@ public class AssessmentPackageFileImporterTest {
 
     @Test
     public void missingFile() throws Exception {
-        final InputStream importResource = getThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/MissingFile.zip");
+        loadThisUnitTestResource("uk/ac/ed/ph/qtiworks/services/MissingFile.zip");
         try {
-            importer.importAssessmentPackageData(importSandboxDirectory, importResource, "application/zip");
+            importer.importAssessmentPackageData(importSandboxDirectory, importStream, "application/zip");
             Assert.fail("Should have failed");
         }
         catch (final AssessmentPackageFileImportException e) {
@@ -228,7 +227,7 @@ public class AssessmentPackageFileImporterTest {
 
     //----------------------------------------------------------
 
-    private InputStream getThisUnitTestResource(final String path) {
+    private InputStream loadThisUnitTestResource(final String path) {
         importStream = getClass().getClassLoader().getResourceAsStream(path);
         Assert.assertNotNull(importStream);
         return importStream;

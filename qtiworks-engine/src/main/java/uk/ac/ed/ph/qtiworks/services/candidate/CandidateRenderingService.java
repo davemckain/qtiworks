@@ -75,6 +75,7 @@ import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -219,7 +220,6 @@ public class CandidateRenderingService {
         renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
         renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
-        renderingRequest.setRenderingOptions(renderingOptions);
 
         /* If session has terminated, render appropriate state and exit */
         if (candidateSession.isTerminated() || itemSessionState.isExited()) {
@@ -324,7 +324,7 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setItemSessionState(itemSessionState);
-        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setValid(assessmentPackage.isValid());
 
         candidateAuditLogger.logItemAuthorViewRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
@@ -406,7 +406,6 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(testDeliverySettings.isAuthorMode());
         renderingRequest.setTestSessionController(testSessionController);
-        renderingRequest.setRenderingOptions(renderingOptions);
 
         /* If session has terminated, render appropriate state and exit */
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
@@ -508,7 +507,7 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setTestSessionController(testSessionController);
-        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setValid(assessmentPackage.isValid());
 
         candidateAuditLogger.logTestAuthorViewRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
@@ -558,9 +557,15 @@ public class CandidateRenderingService {
             throws CandidateForbiddenException, IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(outputStreamer, "outputStreamer");
-        ensureCallerMayViewSource(candidateSession);
+        ensureCallerMayAccessAuthorInfo(candidateSession);
         final Delivery itemDelivery = candidateSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+
+        /* Forbid results if the candidate session is closed */
+        ensureSessionNotTerminated(candidateSession);
+
+        /* Make sure candidate can access authoring info */
+        ensureCallerMayAccessAuthorInfo(candidateSession);
 
         assessmentPackageFileService.streamAssessmentPackageSource(assessmentPackage, outputStreamer);
         candidateAuditLogger.logAction(candidateSession, "ACCESS_SOURCE");
@@ -584,8 +589,8 @@ public class CandidateRenderingService {
         /* Forbid results if the candidate session is closed */
         ensureSessionNotTerminated(candidateSession);
 
-        /* Make sure candidate is actually allowed to get results for this delivery */
-        ensureCallerMayViewResult(candidateSession);
+        /* Make sure candidate can access authoring info */
+        ensureCallerMayAccessAuthorInfo(candidateSession);
 
         /* Get most recent event */
         final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
@@ -617,8 +622,8 @@ public class CandidateRenderingService {
         /* Forbid results if the candidate session is closed */
         ensureSessionNotTerminated(candidateSession);
 
-        /* Make sure candidate is actually allowed to get results for this delivery */
-        ensureCallerMayViewResult(candidateSession);
+        /* Make sure candidate can access authoring info */
+        ensureCallerMayAccessAuthorInfo(candidateSession);
 
         /* Get most recent event */
         final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
@@ -629,6 +634,24 @@ public class CandidateRenderingService {
         /* Send result */
         qtiSerializer.serializeJqtiObject(assessmentResult, outputStream);
         candidateAuditLogger.logAction(candidateSession, "ACCESS_RESULT");
+    }
+
+    //----------------------------------------------------
+
+    public <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
+    accessValidationResult(final CandidateSession candidateSession)
+            throws CandidateForbiddenException {
+        Assert.notNull(candidateSession, "candidateSession");
+
+        /* Forbid results if the candidate session is closed */
+        ensureSessionNotTerminated(candidateSession);
+
+        /* Make sure candidate can access authoring info */
+        ensureCallerMayAccessAuthorInfo(candidateSession);
+
+        /* Validate package */
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(candidateSession.getDelivery());
+        return assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
     }
 
     //----------------------------------------------------
@@ -689,20 +712,11 @@ public class CandidateRenderingService {
         }
     }
 
-    private void ensureCallerMayViewSource(final CandidateSession candidateSession)
+    private void ensureCallerMayAccessAuthorInfo(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         final DeliverySettings deliverySettings = candidateSession.getDelivery().getDeliverySettings();
         if (!deliverySettings.isAuthorMode()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.VIEW_ASSESSMENT_SOURCE);
+            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_AUTHOR_INFO);
         }
     }
-
-    private void ensureCallerMayViewResult(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
-        final DeliverySettings deliverySettings = candidateSession.getDelivery().getDeliverySettings();
-        if (!deliverySettings.isAuthorMode()) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.VIEW_ASSESSMENT_RESULT);
-        }
-    }
-
 }

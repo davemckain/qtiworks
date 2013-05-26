@@ -70,9 +70,6 @@ import org.springframework.stereotype.Service;
 /**
  * Helper service for importing assessment package data into the filesystem
  *
- * @see AssessmentManagementService
- * @see FilespaceManager
- *
  * @author David McKain
  */
 @Service
@@ -129,6 +126,15 @@ public class AssessmentPackageFileImporter {
         }
         logger.debug("Successfully imported files for new {}", result);
         return result;
+    }
+
+    public void ensureClose(final InputStream inputStream) {
+        try {
+            IoUtilities.ensureClose(inputStream);
+        }
+        catch (final IOException e) {
+            throw new QtiWorksRuntimeException("Unexpected Exception closing " + inputStream, e);
+        }
     }
 
     private AssessmentPackage importXml(final File importSandboxDirectory, final InputStream inputStream) {

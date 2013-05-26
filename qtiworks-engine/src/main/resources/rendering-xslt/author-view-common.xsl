@@ -18,6 +18,9 @@ Common templates for item & test author views
 
   <xsl:import href="qti-common.xsl"/>
 
+  <!-- Was this assessment valid? -->
+  <xsl:param name="valid" as="xs:boolean"/>
+
   <!-- ************************************************************ -->
 
   <xsl:template name="htmlHeadStuff">
@@ -26,7 +29,6 @@ Common templates for item & test author views
     <link rel="stylesheet" href="{$webappContextPath}/lib/960/text.css"/>
     <link rel="stylesheet" href="{$webappContextPath}/lib/960/960.css"/>
     <link rel="stylesheet" href="{$webappContextPath}/includes/qtiworks.css?{$qtiWorksVersion}"/>
-    <link rel="stylesheet" href="{$webappContextPath}/includes/author-mode.css?{$qtiWorksVersion}"/>
     <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/smoothness/jquery-ui.css"/>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"/>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"/>
@@ -35,9 +37,39 @@ Common templates for item & test author views
 
   <!-- ************************************************************ -->
 
+  <xsl:template name="summaryPanel" as="element(ul)?">
+    <xsl:if test="exists($notifications) or not($valid)">
+      <xsl:variable name="errors" select="$notifications[@level='ERROR']" as="element(qw:notification)*"/>
+      <xsl:variable name="warnings" select="$notifications[@level='WARNING']" as="element(qw:notification)*"/>
+      <xsl:variable name="infos" select="$notifications[@level='INFO']" as="element(qw:notification)*"/>
+      <ul class="summary">
+        <xsl:if test="exists($errors)">
+          <li class="errorSummary">
+            <a href="#notifications"><xsl:value-of select="count($errors)"/> Runtime Errors</a>
+          </li>
+        </xsl:if>
+        <xsl:if test="exists($warnings)">
+          <li class="warnSummary">
+            <a href="#notifications"><xsl:value-of select="count($warnings)"/> Runtime Warnings</a>
+          </li>
+        </xsl:if>
+        <xsl:if test="exists($infos)">
+          <li class="infoSummary">
+            <a href="#notifications"><xsl:value-of select="count($infos)"/> Runtime Information Notifications</a>
+          </li>
+        </xsl:if>
+        <xsl:if test="not($valid)">
+          <a href="#">This assessment is not valid</a>
+        </xsl:if>
+      </ul>
+    </xsl:if>
+  </xsl:template>
+
+  <!-- ************************************************************ -->
+
   <xsl:template match="qw:itemSessionState" as="element(div)+">
     <xsl:param name="includeNotifications" as="xs:boolean" select="false()"/>
-    <div class="resultPanel info expandable">
+    <div class="resultPanel info">
       <h4>Key item session status information</h4>
       <div class="details">
         <ul>
@@ -52,20 +84,22 @@ Common templates for item & test author views
         </ul>
       </div>
     </div>
-    <div class="resultPanel info expandable">
+    <div class="resultPanel info">
       <h4>Variable state</h4>
       <div class="details">
         <p>The values of all variables are shown below.</p>
         <xsl:apply-templates select="." mode="variableValuesPanel"/>
       </div>
     </div>
-    <div class="resultPanel info">
-      <h4>Response state</h4>
-      <div class="details">
-        <xsl:apply-templates select="." mode="unboundResponsesPanel"/>
-        <xsl:apply-templates select="." mode="invalidResponsesPanel"/>
+    <xsl:if test="@responded='true'">
+      <div class="resultPanel info">
+        <h4>Response state</h4>
+        <div class="details">
+          <xsl:apply-templates select="." mode="unboundResponsesPanel"/>
+          <xsl:apply-templates select="." mode="invalidResponsesPanel"/>
+        </div>
       </div>
-    </div>
+    </xsl:if>
     <xsl:apply-templates select="." mode="shuffleStatePanel"/>
     <xsl:if test="$includeNotifications">
       <xsl:call-template name="notificationsPanel"/>
@@ -145,7 +179,7 @@ Common templates for item & test author views
       </div>
     </xsl:if>
     <xsl:if test="exists(qw:responseVariable)">
-      <div class="resultPanel expandable">
+      <div class="resultPanel">
         <h4>Response values (<xsl:value-of select="count(qw:responseVariable)"/>)</h4>
         <div class="details">
           <xsl:call-template name="dumpValues">
@@ -168,7 +202,7 @@ Common templates for item & test author views
 
   <xsl:template name="notificationsPanel" as="element(div)">
     <div class="resultPanel {if ($notifications[not(@level='INFO')]) then 'failure' else 'success'}">
-      <h4>Processing notifications (<xsl:value-of select="count($notifications)"/>)</h4>
+      <h4><a name="notifications">Processing notifications (<xsl:value-of select="count($notifications)"/>)</a></h4>
       <div class="details">
         <xsl:choose>
           <xsl:when test="count($notifications) > 0">
@@ -237,7 +271,7 @@ Common templates for item & test author views
   </xsl:template>
 
   <xsl:template match="qw:itemSessionState" mode="shuffleStatePanel" as="element(div)">
-    <div class="resultPanel">
+    <div class="resultPanel info">
       <h4>Interaction shuffle state</h4>
       <div class="details">
         <xsl:choose>

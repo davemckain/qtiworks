@@ -49,8 +49,7 @@ public final class ItemAuthorViewRenderingRequest extends AbstractRenderingReque
     @NotNull
     private ItemSessionState itemSessionState;
 
-    /** Set to enable the modal solution mode */
-    private boolean solutionMode;
+    private boolean valid;
 
     //----------------------------------------------------
 
@@ -63,12 +62,11 @@ public final class ItemAuthorViewRenderingRequest extends AbstractRenderingReque
     }
 
 
-    public boolean isSolutionMode() {
-        return solutionMode;
+    public boolean isValid() {
+        return valid;
     }
 
-    public void setSolutionMode(final boolean solutionMode) {
-        this.solutionMode = solutionMode;
+    public void setValid(final boolean valid) {
+        this.valid = valid;
     }
-
 }

@@ -33,24 +33,17 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.utils.LruHashMap;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
-import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.running.ItemProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.running.TestProcessingInitializer;
 import uk.ac.ed.ph.jqtiplus.state.ItemProcessingMap;
 import uk.ac.ed.ph.jqtiplus.state.TestProcessingMap;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
-import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
@@ -77,9 +70,6 @@ public class AssessmentObjectManagementService {
     private int cacheHitCount;
 
     @Resource
-    private QtiXmlReader qtiXmlReader;
-
-    @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
 
     private final LruHashMap<Long, Object> cache;
@@ -102,7 +92,7 @@ public class AssessmentObjectManagementService {
             else {
                 logger.debug("Cache MISS for package {}. Reading and resolving XML", assessmentPackage);
                 cacheMissCount++;
-                final ResolvedAssessmentItem resolvedAssessmentItem = loadAndResolveAssessmentObject(assessmentPackage);
+                final ResolvedAssessmentItem resolvedAssessmentItem = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
                 result = new ItemProcessingInitializer(resolvedAssessmentItem, assessmentPackage.isValid()).initialize();
                 cache.put(assessmentPackageId, result);
             }
@@ -122,30 +112,10 @@ public class AssessmentObjectManagementService {
             else {
                 logger.debug("Cache MISS for package {}. Reading and resolving XML", assessmentPackage);
                 cacheMissCount++;
-                final ResolvedAssessmentTest resolvedAssessmentTest = loadAndResolveAssessmentObject(assessmentPackage);
+                final ResolvedAssessmentTest resolvedAssessmentTest = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
                 result = new TestProcessingInitializer(resolvedAssessmentTest, assessmentPackage.isValid()).initialize();
                 cache.put(assessmentPackageId, result);
             }
-        }
-        return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <E extends ResolvedAssessmentObject<?>>
-    E loadAndResolveAssessmentObject(final AssessmentPackage assessmentPackage) {
-        final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
-        final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
-        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
-        E result;
-        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) assessmentObjectXmlLoader.loadAndResolveAssessmentItem(assessmentObjectSystemId);
-        }
-        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) assessmentObjectXmlLoader.loadAndResolveAssessmentTest(assessmentObjectSystemId);
-        }
-        else {
-            throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
         }
         return result;
     }

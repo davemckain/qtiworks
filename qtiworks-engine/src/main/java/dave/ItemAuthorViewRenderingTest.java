@@ -97,7 +97,7 @@ public class ItemAuthorViewRenderingTest {
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setSolutionMode(false);
+            renderingRequest.setValid(true);
             renderingRequest.setAuthorMode(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();

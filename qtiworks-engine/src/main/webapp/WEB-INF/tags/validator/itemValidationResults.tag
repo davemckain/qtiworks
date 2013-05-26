@@ -38,7 +38,9 @@ All Rights Reserved
           referenced by this test
           ${validationResult.valid ? 'passed' : 'did not pass'}
           all of our validation checks. Further details are provided below.
-          (This prevents the test itself from being valid.)
+          <c:if test="${!validationResult.valid}">
+            (This prevents the test itself from being valid.)
+          </c:if>
         </c:when>
         <c:otherwise>
           Your item

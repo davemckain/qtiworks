@@ -10,7 +10,7 @@ body {
   x-background: white url(images/headergradient.png) repeat-x top center;
 }
 
-a, a:link, a:visited {
+a:link, a:visited {
   color: #66455e;
 }
 
@@ -250,19 +250,71 @@ div.sampleList .launch {
   font-weight: bold;
 }
 
-/* ========== Tree result panels ========== */
+/* ========== Author debug view ========== */
+
+.debugMathsContent {
+  display: none;
+}
+
+ul.summary {
+  background: white url(images/bluegradient.png) left top repeat-x;
+  border: 1px solid #ccdbf0;
+  border-radius: 0.5em;
+  list-style: none;
+  margin: 0;
+  padding: 1em;
+}
+
+ul.summary li {
+  margin: 0;
+  padding: 0.3em 0 0.3em 32px;
+}
+
+li.errorSummary {
+  background: url(images/exclamation.png) 5px center no-repeat;
+  padding-left: 25px;
+}
+
+li.warnSummary {
+  background: url(images/error.png) 5px center no-repeat;
+  padding-left: 25px;
+}
+
+li.infoSummary {
+  background: url(images/information.png) 5px center no-repeat;
+  padding-left: 25px;
+}
+
+.buttonBar {
+}
+
+.buttonBar ul {
+  list-style: none;
+  margin: 1em;
+  text-align: center;
+}
+
+.buttonBar li {
+  display: inline;
+  padding: 0.2em;
+}
+
+.buttonBar li form {
+  display: inline;
+}
+
+
+/* ========== Expandable Tree result panels ========== */
 
 .resultPanel {
   border-top-left-radius: 2em;
-}
-
-.resultPanel .resultPanel {
-  margin: 1em 0 1em 2em;
+  background: white url(images/bluegradient.png) left top repeat-x;
+  margin: 1em 0;
   padding-right: 0.5em;
 }
 
-.resultPanel {
-  background: white url(images/bluegradient.png) left top repeat-x;
+.resultPanel .resultPanel {
+  margin-left: 2em;
 }
 
 .resultPanel > h4 {
@@ -282,16 +334,23 @@ div.sampleList .launch {
   color: black;
 }
 
-.resultPanel.failure > h4 {
+.resultPanel.warning > h4 {
   background: url(images/error.png) 5px center no-repeat;
   color: #cd1753;
 }
 
+.resultPanel.failure > h4 {
+  background: url(images/exclamation.png) 5px center no-repeat;
+  color: #cd1753;
+}
+
 .resultPanel .details {
-  padding: 0 0.5em 0.5em 0.5em;
+  padding: 0 0.5em 0em 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .resultPanel table {
+  width: 100%;
   border-collapse: collapse;
   margin: 1em;
 }
@@ -323,9 +382,9 @@ div.sampleList .launch {
   display: none;
 }
 
-.toggler:hover {
-  color: #66455e;
+.resultPanel.expandable h4:hover {
   cursor: hand;
+  cursor: pointer;
 }
 
 /* ========== General Stylings ========== */

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
@@ -40,9 +41,13 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
@@ -65,6 +70,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * Provides read-only access (and related services) to {@link AssessmentPackage} files
@@ -81,6 +87,9 @@ public class AssessmentPackageFileService {
 
     /** Content type used when streaming QTI sources */
     private static final String QTI_CONTENT_TYPE = "application/xml";
+
+    @Resource
+    private QtiXmlReader qtiXmlReader;
 
     @Resource
     private FilespaceManager filespaceManager;
@@ -197,6 +206,59 @@ public class AssessmentPackageFileService {
         else {
             final CustomUriScheme packageUriScheme = QtiContentPackageExtractor.PACKAGE_URI_SCHEME;
             result = packageUriScheme.decodedPathToUri(fileHref);
+        }
+        return result;
+    }
+
+    //-------------------------------------------------
+
+    /**
+     * Invokes the JQTI+ load & resolution process on the given {@link AssessmentPackage}.
+     *
+     * @param assessmentPackage package to validate, which must not be null.
+     */
+    @SuppressWarnings("unchecked")
+    public <E extends ResolvedAssessmentObject<?>>
+    E loadAndResolveAssessmentObject(final AssessmentPackage assessmentPackage) {
+        final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentObjectSystemId = createAssessmentObjectUri(assessmentPackage);
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
+        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
+        E result;
+        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
+            result = (E) assessmentObjectXmlLoader.loadAndResolveAssessmentItem(assessmentObjectSystemId);
+        }
+        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
+            result = (E) assessmentObjectXmlLoader.loadAndResolveAssessmentTest(assessmentObjectSystemId);
+        }
+        else {
+            throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
+        }
+        return result;
+    }
+
+    /**
+     * Invokes the JQTI+ validator on the given {@link AssessmentPackage}.
+     *
+     * @param assessmentPackage package to validate, which must not be null.
+     */
+    @SuppressWarnings("unchecked")
+    public <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
+    loadAndValidateAssessment(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentObjectSystemId = createAssessmentObjectUri(assessmentPackage);
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
+        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
+        E result;
+        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
+            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateItem(assessmentObjectSystemId);
+        }
+        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
+            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateTest(assessmentObjectSystemId);
+        }
+        else {
+            throw new QtiWorksLogicException("Unexpected logic branch " + assessmentObjectType);
         }
         return result;
     }

@@ -459,7 +459,7 @@ public class AssessmentRenderer {
         xsltParameters.put("itemSessionState", itemSessionStateDocument.getDocumentElement());
 
         /* Set control parameters */
-        xsltParameters.put("solutionMode", Boolean.valueOf(request.isSolutionMode()));
+        xsltParameters.put("valid", Boolean.valueOf(request.isValid()));
 
         /* Perform transform */
         doTransform(request, itemAuthorViewXsltUri, xsltParameters, result);
@@ -495,6 +495,9 @@ public class AssessmentRenderer {
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
         xsltParameters.put("testSystemId", request.getAssessmentResourceUri().toString());
+
+        /* Set control parameters */
+        xsltParameters.put("valid", Boolean.valueOf(request.isValid()));
 
         doTransform(request, testAuthorViewXsltUri, xsltParameters, result);
     }

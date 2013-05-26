@@ -18,9 +18,8 @@ $(document).ready(function() {
         form.hide();
     });
 
-    /* Add expand/collapse functionality to each div.resultPanel */
+    /* Add expand/collapse functionality to each div.resultPanel.expandable */
     function setupToggler(resultPanelQuery) {
-        //alert("DOING " + resultPanelQuery.html());
         var headerQuery = resultPanelQuery.children('h4');
         var detailsPanelQuery = resultPanelQuery.children('div');
         detailsPanelQuery.hide();

@@ -115,7 +115,7 @@ public class TestAuthorViewRenderingTest {
             renderingRequest.setTestSessionController(testSessionController);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAuthorMode(true);
-            renderingRequest.setTestRenderingMode(null);
+            renderingRequest.setValid(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

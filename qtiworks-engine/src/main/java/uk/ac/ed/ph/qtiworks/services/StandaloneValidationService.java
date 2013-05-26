@@ -69,7 +69,7 @@ public class StandaloneValidationService {
     private FilespaceManager filespaceManager;
 
     @Resource
-    private AssessmentManagementService assessmentManagementService;
+    private AssessmentPackageFileService assessmentPackageFileService;
 
     public AssessmentObjectValidationResult<?> importAndValidate(final MultipartFile multipartFile)
             throws AssessmentPackageFileImportException {
@@ -81,10 +81,11 @@ public class StandaloneValidationService {
         final String contentType = multipartFile.getContentType();
         try {
             importedPackage = assessmentPackageImporter.importAssessmentPackageData(sandboxDirectory, inputStream, contentType);
-            return assessmentManagementService.loadAndValidateAssessment(importedPackage);
+            return assessmentPackageFileService.loadAndValidateAssessment(importedPackage);
         }
         finally {
             filespaceManager.deleteSandbox(sandboxDirectory);
+            assessmentPackageImporter.ensureClose(inputStream);
         }
     }
 }
