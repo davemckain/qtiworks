@@ -225,7 +225,7 @@ div.sampleList .launch {
 }
 
 .boxButton.assessments h3:after {
-  content: '\2615'; /* Pencil */
+  content: '\2615'; /* Hot beverage */
 }
 
 .boxButton.deliveries h3:after {
@@ -250,7 +250,7 @@ div.sampleList .launch {
   font-weight: bold;
 }
 
-/* ========== QTI Validator ========== */
+/* ========== Tree result panels ========== */
 
 .resultPanel {
   border-top-left-radius: 2em;
@@ -261,11 +261,7 @@ div.sampleList .launch {
   padding-right: 0.5em;
 }
 
-.resultPanel.success {
-  background: white url(images/bluegradient.png) left top repeat-x;
-}
-
-.resultPanel.failure {
+.resultPanel {
   background: white url(images/bluegradient.png) left top repeat-x;
 }
 
@@ -274,6 +270,11 @@ div.sampleList .launch {
   padding: 0.4em 0 0.4em 28px;
   color: black;
   font-size: 1.25em;
+}
+
+.resultPanel.info > h4 {
+  background: url(images/information.png) 5px center no-repeat;
+  color: black;
 }
 
 .resultPanel.success > h4 {

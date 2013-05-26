@@ -36,10 +36,12 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
           <header>
             <h1>QTIWorks</h1>
           </header>
-          <h2>QTI author's feedback</h2>
+          <h2>QTI standalone item author's feedback</h2>
 
           <xsl:call-template name="buttonBar"/>
-          <xsl:apply-templates select="$itemSessionState"/>
+          <xsl:apply-templates select="$itemSessionState">
+            <xsl:with-param name="includeNotifications" select="true()"/>
+          </xsl:apply-templates>
         </div>
       </body>
     </html>

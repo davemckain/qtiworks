@@ -35,44 +35,41 @@ Common templates for item & test author views
 
   <!-- ************************************************************ -->
 
-  <xsl:template match="qw:itemSessionState">
+  <xsl:template match="qw:itemSessionState" as="element(div)+">
     <xsl:param name="includeNotifications" as="xs:boolean" select="false()"/>
-    <div class="resultPanel">
-      <h4>Item session state</h4>
-      <div class="resultPanel">
-        <h4>Key status information</h4>
-        <div class="details">
-          <ul>
-            <li>Entry time: <xsl:value-of select="qw:format-optional-date(@entryTime, '(Not Yet Entered)')"/></li>
-            <li>End time: <xsl:value-of select="qw:format-optional-date(@endTime, '(Not Yet Ended)')"/></li>
-            <li>Duration accumulated: <xsl:value-of select="@durationAccumulated div 1000.0"/> s</li>
-            <li>Initialized: <xsl:value-of select="@initialized"/></li>
-            <li>Responded: <xsl:value-of select="@responded"/></li>
-            <li><code>sessionStatus</code>: <xsl:value-of select="@sessionStatus"/></li>
-            <li><code>numAttempts</code>: <xsl:value-of select="@numAttempts"/></li>
-            <li><code>completionStatus</code>: <xsl:value-of select="@completionStatus"/></li>
-          </ul>
-        </div>
+    <div class="resultPanel info expandable">
+      <h4>Key item session status information</h4>
+      <div class="details">
+        <ul>
+          <li>Entry time: <xsl:value-of select="qw:format-optional-date(@entryTime, '(Not Yet Entered)')"/></li>
+          <li>End time: <xsl:value-of select="qw:format-optional-date(@endTime, '(Not Yet Ended)')"/></li>
+          <li>Duration accumulated: <xsl:value-of select="@durationAccumulated div 1000.0"/> s</li>
+          <li>Initialized: <xsl:value-of select="@initialized"/></li>
+          <li>Responded: <xsl:value-of select="@responded"/></li>
+          <li><code>sessionStatus</code>: <xsl:value-of select="@sessionStatus"/></li>
+          <li><code>numAttempts</code>: <xsl:value-of select="@numAttempts"/></li>
+          <li><code>completionStatus</code>: <xsl:value-of select="@completionStatus"/></li>
+        </ul>
       </div>
-      <div class="resultPanel">
-        <h4>Response state</h4>
-        <div class="details">
-          <xsl:apply-templates select="." mode="unboundResponsesPanel"/>
-          <xsl:apply-templates select="." mode="invalidResponsesPanel"/>
-        </div>
-      </div>
-      <div class="resultPanel">
-        <h4>Variable state</h4>
-        <div class="details">
-          <p>The values of all variables are shown below.</p>
-          <xsl:apply-templates select="." mode="variableValuesPanel"/>
-        </div>
-      </div>
-      <xsl:if test="$includeNotifications">
-        <xsl:call-template name="notificationsPanel"/>
-      </xsl:if>
-      <xsl:apply-templates select="." mode="shuffleStatePanel"/>
     </div>
+    <div class="resultPanel info expandable">
+      <h4>Variable state</h4>
+      <div class="details">
+        <p>The values of all variables are shown below.</p>
+        <xsl:apply-templates select="." mode="variableValuesPanel"/>
+      </div>
+    </div>
+    <div class="resultPanel info">
+      <h4>Response state</h4>
+      <div class="details">
+        <xsl:apply-templates select="." mode="unboundResponsesPanel"/>
+        <xsl:apply-templates select="." mode="invalidResponsesPanel"/>
+      </div>
+    </div>
+    <xsl:apply-templates select="." mode="shuffleStatePanel"/>
+    <xsl:if test="$includeNotifications">
+      <xsl:call-template name="notificationsPanel"/>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="qw:itemSessionState" mode="unboundResponsesPanel" as="element(div)">
@@ -148,7 +145,7 @@ Common templates for item & test author views
       </div>
     </xsl:if>
     <xsl:if test="exists(qw:responseVariable)">
-      <div class="resultPanel">
+      <div class="resultPanel expandable">
         <h4>Response values (<xsl:value-of select="count(qw:responseVariable)"/>)</h4>
         <div class="details">
           <xsl:call-template name="dumpValues">

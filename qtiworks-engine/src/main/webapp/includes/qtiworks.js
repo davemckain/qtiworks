@@ -19,17 +19,20 @@ $(document).ready(function() {
     });
 
     /* Add expand/collapse functionality to each div.resultPanel */
-    function setupTogglers(h4Query) {
-        h4Query.next('div').toggle();
-        h4Query.append("<span class='toggler plus'>\u25ba</span><span class='toggler minus'>\u25bc</span>");
-        h4Query.click(function() {
-            $(this).next().toggle();
-            $(this).children('.toggler').toggle();
+    function setupToggler(resultPanelQuery) {
+        //alert("DOING " + resultPanelQuery.html());
+        var headerQuery = resultPanelQuery.children('h4');
+        var detailsPanelQuery = resultPanelQuery.children('div');
+        detailsPanelQuery.hide();
+        headerQuery.append("<span class='toggler plus'>\u25ba</span><span class='toggler minus'>\u25bc</span>");
+        headerQuery.click(function() {
+            detailsPanelQuery.toggle();
+            headerQuery.children('.toggler').toggle();
         });
     }
-    setupTogglers($('.resultPanel > .details > .resultPanel > .details > .resultPanel > .details > .resultPanel h4'));
-    setupTogglers($('.resultPanel > .details > .resultPanel > .details > .resultPanel > h4'));
-    setupTogglers($('.resultPanel > .details > .resultPanel > h4'));
+    $('.resultPanel.expandable').each(function() {
+        setupToggler($(this));
+    });
 
     /* Form progressive enhancement - show target page (which should be XML) in a dialog box */
     $('.showXmlInDialog').submit(function() {
