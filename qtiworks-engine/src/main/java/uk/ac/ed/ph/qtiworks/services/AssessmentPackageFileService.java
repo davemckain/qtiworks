@@ -243,8 +243,8 @@ public class AssessmentPackageFileService {
      * @param assessmentPackage package to validate, which must not be null.
      */
     @SuppressWarnings("unchecked")
-    public <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
-    loadAndValidateAssessment(final AssessmentPackage assessmentPackage) {
+    public <E extends AssessmentObjectValidationResult<?>>
+    E loadAndValidateAssessment(final AssessmentPackage assessmentPackage) {
         Assert.notNull(assessmentPackage, "assessmentPackage");
         final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
         final URI assessmentObjectSystemId = createAssessmentObjectUri(assessmentPackage);

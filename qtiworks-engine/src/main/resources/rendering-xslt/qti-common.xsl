@@ -26,11 +26,12 @@ rendering.
 
   <!-- Global action URLs -->
   <xsl:param name="responseUrl" as="xs:string" required="yes"/>
+  <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
   <xsl:param name="authorViewUrl" as="xs:string" required="yes"/>
   <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
   <xsl:param name="stateUrl" as="xs:string" required="yes"/>
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
-  <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
+  <xsl:param name="validationUrl" as="xs:string" required="yes"/>
 
   <!-- URI of the Item or Test being rendered -->
   <xsl:param name="systemId" as="xs:string" required="yes"/>

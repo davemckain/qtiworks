@@ -57,7 +57,7 @@ Common templates for item & test author views
         </xsl:if>
         <xsl:if test="not($valid)">
           <li class="errorSummary">
-            <a href="#">This assessment has validation errors or warnings</a>
+            <a href="{$webappContextPath}{$validationUrl}">This assessment has validation errors or warnings</a>
           </li>
         </xsl:if>
       </ul>

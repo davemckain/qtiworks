@@ -86,6 +86,7 @@ public final class RunUtilities {
         result.setSourceUrl("/source");
         result.setStateUrl("/state");
         result.setResultUrl("/result");
+        result.setValidationUrl("/validation");
     }
 
 }

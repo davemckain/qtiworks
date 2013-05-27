@@ -65,6 +65,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -140,6 +141,7 @@ public class CandidateItemController {
         renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
         renderingOptions.setStateUrl(sessionBaseUrl + "/state");
         renderingOptions.setResultUrl(sessionBaseUrl + "/result");
+        renderingOptions.setValidationUrl(sessionBaseUrl + "/validation");
         renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
         renderingOptions.setAuthorViewUrl(sessionBaseUrl + "/author-view");
         renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
@@ -369,6 +371,14 @@ public class CandidateItemController {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
             candidateRenderingService.streamAssessmentFile(candidateSession, href, outputStreamer);
         }
+    }
+
+    @RequestMapping(value="/session/{xid}/{sessionToken}/validation", method=RequestMethod.GET)
+    public String showPackageValidationResult(@PathVariable final long xid, @PathVariable final String sessionToken,
+            final Model model)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        model.addAttribute("validationResult", candidateRenderingService.generateValidationResult(xid, sessionToken));
+        return "validationResult";
     }
 
     //----------------------------------------------------

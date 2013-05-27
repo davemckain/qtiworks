@@ -553,6 +553,7 @@ public class AssessmentRenderer {
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
         xsltParameters.put("stateUrl", renderingOptions.getStateUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
+        xsltParameters.put("validationUrl", renderingOptions.getValidationUrl());
     }
 
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters) {

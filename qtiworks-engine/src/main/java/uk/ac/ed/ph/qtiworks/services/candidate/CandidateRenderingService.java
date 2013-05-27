@@ -640,8 +640,15 @@ public class CandidateRenderingService {
 
     //----------------------------------------------------
 
-    public <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
-    accessValidationResult(final CandidateSession candidateSession)
+    public <E extends AssessmentObjectValidationResult<?>> E
+    generateValidationResult(final long xid, final String sessionToken)
+            throws CandidateForbiddenException, DomainEntityNotFoundException {
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        return generateValidationResult(candidateSession);
+    }
+
+    public <E extends AssessmentObjectValidationResult<?>> E
+    generateValidationResult(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
 
