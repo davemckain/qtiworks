@@ -13,9 +13,16 @@ All Rights Reserved
 <%@ attribute name="validationResult" required="true" type="uk.ac.ed.ph.jqtiplus.validation.TestValidationResult" %>
 
 <c:set var="resolvedAssessmentTest" value="${validationResult.resolvedAssessmentTest}"/>
+<c:set var="errorWord">
+  <c:choose>
+    <c:when test="${validationResult.valid}">success</c:when>
+    <c:when test="${validationResult.validationWarningsOnly}">warnings</c:when>
+    <c:otherwise>failure</c:otherwise>
+  </c:choose>
+</c:set>
 
-<div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}">
-  <h4>Test validation ${validationResult.valid ? 'success' : 'failure'}</h4>
+<div class="resultPanel ${errorWord}">
+  <h4>Test validation ${errorWord}</h4>
   <div class="details">
     <p>
       Your test

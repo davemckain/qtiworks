@@ -334,9 +334,10 @@ li.infoSummary {
   color: black;
 }
 
-.resultPanel.warning > h4 {
+.resultPanel.warning > h4,
+.resultPanel.warnings > h4 {
   background: url(images/error.png) 5px center no-repeat;
-  color: #cd1753;
+  color: #cd6800;
 }
 
 .resultPanel.failure > h4 {

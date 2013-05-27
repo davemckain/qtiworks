@@ -17,16 +17,22 @@ All Rights Reserved
 <c:set var="resolvedAssessmentItem" value="${validationResult.resolvedAssessmentItem}"/>
 <c:set var="itemLookup" value="${resolvedAssessmentItem.rootNodeLookup}"/>
 <c:set var="itemSystemId" value="${itemLookup.systemId}"/>
-<div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}${test ? ' expandable' : ''}">
+<c:set var="errorWord">
+  <c:choose>
+    <c:when test="${validationResult.valid}">success</c:when>
+    <c:when test="${validationResult.validationWarningsOnly}">warnings</c:when>
+    <c:otherwise>failure</c:otherwise>
+  </c:choose>
+</c:set>
+
+<div class="resultPanel ${errorWord}${test ? ' expandable' : ''}">
   <h4>
     <c:choose>
       <c:when test="${test}">
-        Test Item at ${utils:extractContentPackagePath(itemSystemId)} validation
-        ${validationResult.valid ? 'success' : 'failure'}
+        Test Item at ${utils:extractContentPackagePath(itemSystemId)} validation ${errorWord}
       </c:when>
       <c:otherwise>
-        Item validation
-        ${validationResult.valid ? 'success' : 'failure'}
+        Item validation ${errorWord}
       </c:otherwise>
     </c:choose>
   </h4>

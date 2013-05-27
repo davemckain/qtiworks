@@ -59,8 +59,8 @@ All Rights Reserved
     </div>
   </c:when>
   <c:otherwise>
-    <div class="resultPanel failure">
-      <h4>JQTI+ validation failure</h4>
+    <div class="resultPanel ${validationResult.validationWarningsOnly ? 'warnings' : 'failure'}">
+      <h4>JQTI+ validation ${validationResult.validationWarningsOnly ? 'warnings' : 'failure'}</h4>
       <div class="details">
         <p>
           Additional validation of the resulting JQTI+ model detected some
