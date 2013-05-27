@@ -78,8 +78,8 @@ public class InstructorRouter {
         return "redirect:" + buildWithinContextUrl(actionUrl);
     }
 
-    public void addFlashMessage(final RedirectAttributes model, final String message) {
-        model.addFlashAttribute(InstructorRouter.FLASH, message);
+    public void addFlashMessage(final RedirectAttributes redirectAttributes, final String message) {
+        redirectAttributes.addFlashAttribute(InstructorRouter.FLASH, message);
     }
 
     public Map<String, String> buildPrimaryRouting() {

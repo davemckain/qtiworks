@@ -134,7 +134,7 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/assessments/upload", method=RequestMethod.POST)
-    public String handleUploadAssessmentForm(final RedirectAttributes model,
+    public String handleUploadAssessmentForm(final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command,
             final BindingResult result)
             throws PrivilegeException {
@@ -160,7 +160,7 @@ public class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        instructorRouter.addFlashMessage(model, "Assessment successfully created");
+        instructorRouter.addFlashMessage(redirectAttributes, "Assessment successfully created");
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
@@ -168,7 +168,7 @@ public class InstructorAssessmentManagementController {
      * Shows the Assessment having the given ID (aid)
      */
     @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
-    public String showAssessment(final Model model, @PathVariable final long aid)
+    public String showAssessment(@PathVariable final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
         setupModelForAssessment(assessment, model);
@@ -178,7 +178,7 @@ public class InstructorAssessmentManagementController {
     //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
-    public String showEditAssessmentForm(final Model model, @PathVariable final long aid)
+    public String showEditAssessmentForm(@PathVariable final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
 
@@ -192,7 +192,8 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.POST)
-    public String handleEditAssessmentForm(@PathVariable final long aid, final RedirectAttributes model,
+    public String handleEditAssessmentForm(@PathVariable final long aid, final Model model,
+            final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute UpdateAssessmentCommand command, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
@@ -206,7 +207,7 @@ public class InstructorAssessmentManagementController {
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
         }
-        instructorRouter.addFlashMessage(model, "Assessment successfully edited");
+        instructorRouter.addFlashMessage(redirectAttributes, "Assessment successfully edited");
         return instructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
 
@@ -221,12 +222,9 @@ public class InstructorAssessmentManagementController {
         return "updateAssessmentPackageForm";
     }
 
-    /**
-     * TODO: I'm doing upload + validation together. It would make sense later to split
-     * these into 2 steps and find some way of showing progress.
-     */
     @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.POST)
-    public String handleUploadAssessmentPackageForm(final @PathVariable long aid, final RedirectAttributes model,
+    public String handleUploadAssessmentPackageForm(final @PathVariable long aid,
+            final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Make sure something was submitted */
@@ -260,17 +258,17 @@ public class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        instructorRouter.addFlashMessage(model, "Assessment package content successfully replaced");
+        instructorRouter.addFlashMessage(redirectAttributes, "Assessment package content successfully replaced");
         return instructorRouter.buildInstructorRedirect("/assessment/{aid}");
     }
 
     //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/delete", method=RequestMethod.POST)
-    public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes model)
+    public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentManagementService.deleteAssessment(aid);
-        instructorRouter.addFlashMessage(model, "Assessment successfully deleted");
+        instructorRouter.addFlashMessage(redirectAttributes, "Assessment successfully deleted");
         return instructorRouter.buildInstructorRedirect("/assessments");
     }
 
@@ -348,10 +346,10 @@ public class InstructorAssessmentManagementController {
 
     /** (Deliveries are currently very simple so created using a sensible default) */
     @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.POST)
-    public String createDelivery(final @PathVariable long aid, final RedirectAttributes model)
+    public String createDelivery(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.createDelivery(aid);
-        instructorRouter.addFlashMessage(model, "Delivery successfully created");
+        instructorRouter.addFlashMessage(redirectAttributes, "Delivery successfully created");
         return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId().longValue());
     }
 
@@ -380,7 +378,7 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.POST)
-    public String handleEditDeliveryForm(final RedirectAttributes model, @PathVariable final long did,
+    public String handleEditDeliveryForm(@PathVariable final long did, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute DeliveryTemplate template, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
@@ -398,7 +396,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show */
-        instructorRouter.addFlashMessage(model, "Delivery successfully edited");
+        instructorRouter.addFlashMessage(redirectAttributes, "Delivery successfully edited");
         return instructorRouter.buildInstructorRedirect("/delivery/" + did);
     }
 
@@ -438,7 +436,7 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/itemdeliverysettings/create", method=RequestMethod.POST)
-    public String handleCreateItemDeliverySettingsForm(final RedirectAttributes model,
+    public String handleCreateItemDeliverySettingsForm(final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute ItemDeliverySettingsTemplate template,
             final BindingResult result)
             throws PrivilegeException {
@@ -456,12 +454,12 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Go back to list */
-        instructorRouter.addFlashMessage(model, "Item Delivery Settings successfully created");
+        instructorRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully created");
         return instructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
     @RequestMapping(value="/itemdeliverysettings/{dsid}", method=RequestMethod.GET)
-    public String showEditItemDeliverySettingsForm(final Model model, @PathVariable final long dsid)
+    public String showEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
@@ -473,7 +471,7 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/itemdeliverysettings/{dsid}", method=RequestMethod.POST)
-    public String handleEditItemDeliverySettingsForm(final RedirectAttributes model, @PathVariable final long dsid,
+    public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute ItemDeliverySettingsTemplate template, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
@@ -491,7 +489,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show/edit with a flash message */
-        model.addFlashAttribute(InstructorRouter.FLASH, "Item Delivery Settings successfully changed");
+        instructorRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully changed");
         return instructorRouter.buildInstructorRedirect("/itemdeliverysettings/" + dsid);
     }
 
@@ -506,7 +504,7 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/testdeliverysettings/create", method=RequestMethod.POST)
-    public String handleCreateTestDeliverySettingsForm(final RedirectAttributes model,
+    public String handleCreateTestDeliverySettingsForm(final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute TestDeliverySettingsTemplate template,
             final BindingResult result)
             throws PrivilegeException {
@@ -524,12 +522,12 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Go back to list */
-        instructorRouter.addFlashMessage(model, "Test Delivery Settings successfully created");
+        instructorRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully created");
         return instructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
     @RequestMapping(value="/testdeliverysettings/{dsid}", method=RequestMethod.GET)
-    public String showEditTestDeliverySettingsForm(final Model model, @PathVariable final long dsid)
+    public String showEditTestDeliverySettingsForm(@PathVariable final long dsid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final TestDeliverySettings testDeliverySettings = assessmentManagementService.lookupTestDeliverySettings(dsid);
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
@@ -541,7 +539,8 @@ public class InstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/testdeliverysettings/{dsid}", method=RequestMethod.POST)
-    public String handleEditTestDeliverySettingsForm(final RedirectAttributes model, @PathVariable final long dsid,
+    public String handleEditTestDeliverySettingsForm(@PathVariable final long dsid,
+            final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute TestDeliverySettingsTemplate template, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
@@ -559,7 +558,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show/edit with a flash message */
-        instructorRouter.addFlashMessage(model, "Test Delivery Settings successfully changed");
+        instructorRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
         return instructorRouter.buildInstructorRedirect("/testdeliverysettings/" + dsid);
     }
 
