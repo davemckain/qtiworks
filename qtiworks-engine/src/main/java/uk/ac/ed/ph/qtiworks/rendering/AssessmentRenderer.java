@@ -542,6 +542,7 @@ public class AssessmentRenderer {
         }
 
         /* Pass common control parameters */
+        xsltParameters.put("validated", Boolean.valueOf(request.isValidated()));
         xsltParameters.put("valid", Boolean.valueOf(request.isValid()));
         xsltParameters.put("authorMode", Boolean.valueOf(request.isAuthorMode()));
 

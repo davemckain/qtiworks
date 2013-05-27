@@ -35,7 +35,7 @@ Common templates for item & test author views
   <!-- ************************************************************ -->
 
   <xsl:template name="errorStatusPanel" as="element(ul)?">
-    <xsl:if test="exists($notifications) or not($valid)">
+    <xsl:if test="exists($notifications) or ($validated and not($valid))">
       <xsl:variable name="errors" select="$notifications[@level='ERROR']" as="element(qw:notification)*"/>
       <xsl:variable name="warnings" select="$notifications[@level='WARNING']" as="element(qw:notification)*"/>
       <xsl:variable name="infos" select="$notifications[@level='INFO']" as="element(qw:notification)*"/>
@@ -55,7 +55,7 @@ Common templates for item & test author views
             <a href="#notifications"><xsl:value-of select="count($infos)"/> Runtime Information Notifications</a>
           </li>
         </xsl:if>
-        <xsl:if test="not($valid)">
+        <xsl:if test="$validated and not($valid)">
           <li class="errorSummary">
             <a href="{$webappContextPath}{$validationUrl}">This assessment has validation errors or warnings</a>
           </li>

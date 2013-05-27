@@ -97,6 +97,7 @@ public class ItemAuthorViewRenderingTest {
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setItemSessionState(itemSessionState);
+            renderingRequest.setValidated(true);
             renderingRequest.setValid(true);
             renderingRequest.setAuthorMode(true);
 

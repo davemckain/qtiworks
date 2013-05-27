@@ -43,6 +43,7 @@ rendering.
   <xsl:param name="notifications" as="element(qw:notification)*"/>
 
   <!-- Is this assessment valid? -->
+  <xsl:param name="validated" as="xs:boolean"/>
   <xsl:param name="valid" as="xs:boolean"/>
 
   <!-- FIXME: This is not used at the moment -->
@@ -499,7 +500,7 @@ rendering.
   <!-- ************************************************************ -->
 
   <xsl:template name="errorStatusPanel" as="element(ul)?">
-    <xsl:if test="exists($notifications) or not($valid)">
+    <xsl:if test="exists($notifications) or ($validated and not($valid))">
       <xsl:variable name="errors" select="$notifications[@level='ERROR']" as="element(qw:notification)*"/>
       <xsl:variable name="warnings" select="$notifications[@level='WARNING']" as="element(qw:notification)*"/>
       <xsl:variable name="infos" select="$notifications[@level='INFO']" as="element(qw:notification)*"/>
@@ -513,7 +514,7 @@ rendering.
         <xsl:if test="exists($infos)">
           <li class="infoSummary"><xsl:value-of select="count($infos)"/> Runtime Information Notifications</li>
         </xsl:if>
-        <xsl:if test="not($valid)">
+        <xsl:if test="$validated and not($valid)">
           <li class="errorSummary">This assessment has validation errors or warnings</li>
         </xsl:if>
       </ul>

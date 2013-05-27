@@ -218,6 +218,7 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
+        renderingRequest.setValidated(assessmentPackage.isValidated());
         renderingRequest.setValid(assessmentPackage.isValid());
         renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
@@ -325,6 +326,7 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setItemSessionState(itemSessionState);
+        renderingRequest.setValidated(assessmentPackage.isValidated());
         renderingRequest.setValid(assessmentPackage.isValid());
 
         candidateAuditLogger.logItemAuthorViewRendering(candidateEvent);
@@ -406,6 +408,7 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(testDeliverySettings.isAuthorMode());
+        renderingRequest.setValidated(assessmentPackage.isValidated());
         renderingRequest.setValid(assessmentPackage.isValid());
         renderingRequest.setTestSessionController(testSessionController);
 
@@ -509,6 +512,7 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setTestSessionController(testSessionController);
+        renderingRequest.setValidated(assessmentPackage.isValidated());
         renderingRequest.setValid(assessmentPackage.isValid());
 
         candidateAuditLogger.logTestAuthorViewRendering(candidateEvent);
