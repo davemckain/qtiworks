@@ -17,7 +17,7 @@ All Rights Reserved
 <c:set var="resolvedAssessmentItem" value="${validationResult.resolvedAssessmentItem}"/>
 <c:set var="itemLookup" value="${resolvedAssessmentItem.rootNodeLookup}"/>
 <c:set var="itemSystemId" value="${itemLookup.systemId}"/>
-<div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}">
+<div class="resultPanel ${validationResult.valid ? 'success' : 'failure'}${test ? ' expandable' : ''}">
   <h4>
     <c:choose>
       <c:when test="${test}">
