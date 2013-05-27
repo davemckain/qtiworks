@@ -136,9 +136,8 @@ public class ManagerServices {
         return result;
     }
 
-
     public void setupSystemDefaults() {
-        /* Create system defalt user */
+        /* Create system default user */
         final InstructorUser systemDefaultUser = ensureInternalSystemUser(DomainConstants.QTI_DEFAULT_OWNER_LOGIN_NAME,
                 DomainConstants.QTI_DEFAULT_OWNER_FIRST_NAME, DomainConstants.QTI_DEFAULT_OWNER_LAST_NAME);
 
@@ -152,7 +151,7 @@ public class ManagerServices {
     }
 
     private void importDefaultItemDeliverySettings(final InstructorUser systemDefaultUser) {
-        /* Full-featured settings */
+        /* Full-featured settings for items */
         final ItemDeliverySettings fullSettings = new ItemDeliverySettings();
         fullSettings.setAllowEnd(true);
         fullSettings.setAllowHardResetWhenEnded(true);
@@ -165,34 +164,21 @@ public class ManagerServices {
         fullSettings.setMaxAttempts(0);
         fullSettings.setPublic(true);
         fullSettings.setOwner(systemDefaultUser);
-        fullSettings.setTitle("Example QTI debugging settings");
+        fullSettings.setTitle("Default Delivery Settings for Items");
         fullSettings.setPrompt("These delivery settings let the candidate do pretty much anything, "
                 + "so might be very useful for debugging QTI items. "
                 + "Just remember that some features will only make sense if the item has been authored to support it, "
                 + "such as model solutions and re-initialisation.");
         deliverySettingsDao.persist(fullSettings);
-
-        /* Summative example settings */
-        final ItemDeliverySettings summativeSettings = new ItemDeliverySettings();
-        summativeSettings.setAllowEnd(true);
-        summativeSettings.setMaxAttempts(1);
-        summativeSettings.setPublic(true);
-        summativeSettings.setOwner(systemDefaultUser);
-        summativeSettings.setTitle("Example summative settings");
-        summativeSettings.setPrompt("These delivery settings allow the candidate to make only 1 attempt "
-                + "at the item, and lock down many of the optional features. You might use something like "
-                + "this for summative assessment.");
-        deliverySettingsDao.persist(summativeSettings);
     }
 
-    /** FIXME: Add in some more examples later */
     private void importDefaultTestDeliverySettings(final InstructorUser systemDefaultUser) {
-        /* Full-featured settings */
+        /* Full-featured settings for tests */
         final TestDeliverySettings fullSettings = new TestDeliverySettings();
         fullSettings.setAuthorMode(true);
         fullSettings.setPublic(true);
         fullSettings.setOwner(systemDefaultUser);
-        fullSettings.setTitle("Example QTI debugging settings for tests");
+        fullSettings.setTitle("Default Delivery Settings for Tests");
         deliverySettingsDao.persist(fullSettings);
     }
 
