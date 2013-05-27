@@ -1,6 +1,4 @@
-/* QTIworks item and test rendering */
-
-/* NB: This needs a bit of a tidy tidy... */
+/* QTIworks assessment rendering */
 
 body {
   background-color: white;
@@ -478,61 +476,46 @@ ul.testPartDrilldown li.currentItem {
 /************************************************************/
 /* Author tools */
 
-.xmlSource {
-  font-size: smaller;
-  overflow: scroll;
-}
-
-.clicky {
-  text-decoration: underline;
-  color: blue;
-}
-
-.clicky:hover {
-  background-color: red;
-}
-
-.hide {
-  display: none;
-}
-
-.authorInfo {
+.authorModePanel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  z-index: 127;
+  background: white url(../../includes/images/bluegradient.png) left top repeat-x;
+  border: 1px solid #ccdbf0;
+  border-top-right-radius: 1em;
   padding: 1em;
   color: #666666;
   font-size: smaller;
 }
 
-.authorInfo a:hover {
-  text-decoration: underline;
+.authorModePanel div {
+  text-align: center;
 }
 
-.authorInfo table.notificationsTable {
-  width: 100%;
-  border-collapse: collapse
+.authorModePanel ul.summary {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.authorInfo table.notificationsTable th,
-.authorInfo table.notificationsTable td {
-  border: 1px solid #666666;
-  padding: 0.3em;
+.authorModePanel ul.summary li {
+  margin: 0;
+  padding: 0.3em 0 0.3em 24px;
 }
 
-.sessionState .variableName {
-  font-weight: bold;
+.authorModePanel li.errorSummary {
+  background: url(../../includes/images/exclamation.png) 5px center no-repeat;
 }
 
-.sessionState li li .variableName {
-  font-weight: normal
+.authorModePanel li.warnSummary {
+  background: url(../../includes/images/error.png) 5px center no-repeat;
 }
 
-.sessionState .type {
-  font-style: italic;
+.authorModePanel li.infoSummary {
+  background: url(../../includes/images/information.png) 5px center no-repeat;
 }
 
-.sessionState .debugButton {
-  font-size: smaller;
-}
 
-.sessionState .debugMathsContent {
-  display: none;
-}
+

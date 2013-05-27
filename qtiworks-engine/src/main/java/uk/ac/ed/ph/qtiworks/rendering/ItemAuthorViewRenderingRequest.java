@@ -49,7 +49,6 @@ public final class ItemAuthorViewRenderingRequest extends AbstractRenderingReque
     @NotNull
     private ItemSessionState itemSessionState;
 
-    private boolean valid;
 
     //----------------------------------------------------
 
@@ -59,14 +58,5 @@ public final class ItemAuthorViewRenderingRequest extends AbstractRenderingReque
 
     public void setItemSessionState(final ItemSessionState itemSessionState) {
         this.itemSessionState = itemSessionState;
-    }
-
-
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(final boolean valid) {
-        this.valid = valid;
     }
 }

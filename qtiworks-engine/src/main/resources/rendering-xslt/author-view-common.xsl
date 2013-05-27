@@ -18,9 +18,6 @@ Common templates for item & test author views
 
   <xsl:import href="qti-common.xsl"/>
 
-  <!-- Was this assessment valid? -->
-  <xsl:param name="valid" as="xs:boolean"/>
-
   <!-- ************************************************************ -->
 
   <xsl:template name="htmlHeadStuff">
@@ -37,7 +34,7 @@ Common templates for item & test author views
 
   <!-- ************************************************************ -->
 
-  <xsl:template name="summaryPanel" as="element(ul)?">
+  <xsl:template name="errorStatusPanel" as="element(ul)?">
     <xsl:if test="exists($notifications) or not($valid)">
       <xsl:variable name="errors" select="$notifications[@level='ERROR']" as="element(qw:notification)*"/>
       <xsl:variable name="warnings" select="$notifications[@level='WARNING']" as="element(qw:notification)*"/>
@@ -59,11 +56,14 @@ Common templates for item & test author views
           </li>
         </xsl:if>
         <xsl:if test="not($valid)">
-          <a href="#">This assessment is not valid</a>
+          <li class="errorSummary">
+            <a href="#">This assessment has validation errors or warnings</a>
+          </li>
         </xsl:if>
       </ul>
     </xsl:if>
   </xsl:template>
+
 
   <!-- ************************************************************ -->
 

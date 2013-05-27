@@ -218,6 +218,7 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
+        renderingRequest.setValid(assessmentPackage.isValid());
         renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
 
@@ -405,6 +406,7 @@ public class CandidateRenderingService {
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
         renderingRequest.setAuthorMode(testDeliverySettings.isAuthorMode());
+        renderingRequest.setValid(assessmentPackage.isValid());
         renderingRequest.setTestSessionController(testSessionController);
 
         /* If session has terminated, render appropriate state and exit */

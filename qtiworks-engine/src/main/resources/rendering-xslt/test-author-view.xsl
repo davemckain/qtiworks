@@ -63,7 +63,7 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
           </header>
           <h2>QTI test author's feedback</h2>
 
-          <xsl:call-template name="summaryPanel"/>
+          <xsl:call-template name="errorStatusPanel"/>
           <xsl:call-template name="buttonBar"/>
           <xsl:apply-templates select="$testSessionState"/>
         </div>
@@ -149,13 +149,13 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
             <tr>
               <th>Node</th>
               <th>Type</th>
-              <th>maxAttempts</th>
-              <th>validateResponses</th>
-              <th>allowComment</th>
-              <th>allowSkipping</th>
-              <th>showSolution</th>
-              <th>showFeedback</th>
-              <th>allowReview</th>
+              <th>max<br/>Attempts</th>
+              <th>validate<br/>Responses</th>
+              <th>allow<br/>Comment</th>
+              <th>allow<br/>Skipping</th>
+              <th>show<br/>Solution</th>
+              <th>show<br/>Feedback</th>
+              <th>allow<br/>Review</th>
             </tr>
           </thead>
           <tbody>
@@ -172,14 +172,14 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
         <xsl:for-each select="ancestor::qw:node">&#x21b3;</xsl:for-each>
         <xsl:value-of select="qw:formatNodeKey(.)"/>
       </td>
-      <td><xsl:value-of select="qw:formatNodeType(.)"/></td>
-      <td><xsl:value-of select="@maxAttempts"/></td>
-      <td><xsl:value-of select="@validateResponses"/></td>
-      <td><xsl:value-of select="@allowComment"/></td>
-      <td><xsl:value-of select="@allowSkipping"/></td>
-      <td><xsl:value-of select="@showSolution"/></td>
-      <td><xsl:value-of select="@showFeedback"/></td>
-      <td><xsl:value-of select="@allowReview"/></td>
+      <td align="center"><xsl:value-of select="qw:formatNodeType(.)"/></td>
+      <td align="center"><xsl:value-of select="@maxAttempts"/></td>
+      <td align="center"><xsl:value-of select="@validateResponses"/></td>
+      <td align="center"><xsl:value-of select="@allowComment"/></td>
+      <td align="center"><xsl:value-of select="@allowSkipping"/></td>
+      <td align="center"><xsl:value-of select="@showSolution"/></td>
+      <td align="center"><xsl:value-of select="@showFeedback"/></td>
+      <td align="center"><xsl:value-of select="@allowReview"/></td>
     </tr>
     <xsl:apply-templates select="qw:node" mode="testPlan"/>
   </xsl:template>

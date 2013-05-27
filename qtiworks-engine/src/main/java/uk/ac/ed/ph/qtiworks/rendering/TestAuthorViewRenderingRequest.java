@@ -49,8 +49,6 @@ public final class TestAuthorViewRenderingRequest extends AbstractRenderingReque
     @NotNull
     private TestSessionController testSessionController;
 
-    private boolean valid;
-
     //----------------------------------------------------
 
     public TestSessionController getTestSessionController() {
@@ -59,14 +57,5 @@ public final class TestAuthorViewRenderingRequest extends AbstractRenderingReque
 
     public void setTestSessionController(final TestSessionController testSessionController) {
         this.testSessionController = testSessionController;
-    }
-
-
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(final boolean valid) {
-        this.valid = valid;
     }
 }

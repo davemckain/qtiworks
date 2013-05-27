@@ -61,6 +61,9 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
     @NotNull
     private URI assessmentResourceUri;
 
+    /** Is this assessment valid? */
+    private boolean valid;
+
     private boolean authorMode;
 
     //----------------------------------------------------
@@ -89,6 +92,15 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
 
     public void setAssessmentResourceUri(final URI assessmentResourceUri) {
         this.assessmentResourceUri = assessmentResourceUri;
+    }
+
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(final boolean valid) {
+        this.valid = valid;
     }
 
 

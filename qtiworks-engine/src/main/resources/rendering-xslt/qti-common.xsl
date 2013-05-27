@@ -38,8 +38,11 @@ rendering.
   <!-- Set to true to include author debug information -->
   <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
 
-  <!-- Notificates produced during the event being rendered -->
+  <!-- Notifications produced during the event being rendered -->
   <xsl:param name="notifications" as="element(qw:notification)*"/>
+
+  <!-- Is this assessment valid? -->
+  <xsl:param name="valid" as="xs:boolean"/>
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>
@@ -238,7 +241,8 @@ rendering.
     <!-- Authoring console link (maybe) -->
     <xsl:if test="$authorMode">
       <div class="authorModePanel">
-        <a href="{$webappContextPath}{$authorViewUrl}" target="_blank">Show Authoring Console</a>
+        <div class="authoringInvoker"><a href="{$webappContextPath}{$authorViewUrl}" target="_blank">Open Author's Feedback</a></div>
+        <xsl:call-template name="errorStatusPanel"/>
       </div>
     </xsl:if>
   </xsl:template>
@@ -490,5 +494,30 @@ rendering.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <!-- ************************************************************ -->
+
+  <xsl:template name="errorStatusPanel" as="element(ul)?">
+    <xsl:if test="exists($notifications) or not($valid)">
+      <xsl:variable name="errors" select="$notifications[@level='ERROR']" as="element(qw:notification)*"/>
+      <xsl:variable name="warnings" select="$notifications[@level='WARNING']" as="element(qw:notification)*"/>
+      <xsl:variable name="infos" select="$notifications[@level='INFO']" as="element(qw:notification)*"/>
+      <ul class="summary">
+        <xsl:if test="exists($errors)">
+          <li class="errorSummary"><xsl:value-of select="count($errors)"/> Runtime Errors</li>
+        </xsl:if>
+        <xsl:if test="exists($warnings)">
+          <li class="warnSummary"><xsl:value-of select="count($warnings)"/> Runtime Warnings</li>
+        </xsl:if>
+        <xsl:if test="exists($infos)">
+          <li class="infoSummary"><xsl:value-of select="count($infos)"/> Runtime Information Notifications</li>
+        </xsl:if>
+        <xsl:if test="not($valid)">
+          <li class="errorSummary">This assessment has validation errors or warnings</li>
+        </xsl:if>
+      </ul>
+    </xsl:if>
+  </xsl:template>
+
 
 </xsl:stylesheet>

@@ -38,7 +38,7 @@ Input document: assessmentItem (slightly inappropriate here, but never mind!)
           </header>
           <h2>QTI standalone item author's feedback</h2>
 
-          <xsl:call-template name="summaryPanel"/>
+          <xsl:call-template name="errorStatusPanel"/>
           <xsl:call-template name="buttonBar"/>
 
           <xsl:apply-templates select="$itemSessionState">
