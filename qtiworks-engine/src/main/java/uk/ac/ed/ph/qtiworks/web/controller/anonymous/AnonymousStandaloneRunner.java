@@ -34,14 +34,11 @@
 package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
@@ -54,7 +51,6 @@ import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
 
@@ -69,14 +65,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller allowing the public to upload, (validate, ) then run an
- * {@link AssessmentItem} or {@link AssessmentTest}.
+ * Controller allowing the public to upload and run an {@link AssessmentItem}
+ * or {@link AssessmentTest}.
  * <p>
  * This provides a subset of functionality provided for instructor users, but
  * might be useful.
- *
- * FIXME: This currently doesn't support {@link TestDeliverySettings} and we'll need
- * to rethink the GUI a bit to cater for both these and {@link ItemDeliverySettings}.
  *
  * @author David McKain
  */
@@ -104,44 +97,21 @@ public class AnonymousStandaloneRunner {
     public String showUploadAndRunForm(final Model model) {
         final StandaloneRunCommand command = new StandaloneRunCommand();
 
-        @SuppressWarnings("unchecked")
-        final List<DeliverySettings> itemDeliverySettingsList = (List<DeliverySettings>) model.asMap().get("itemDeliverySettingsList");
-        command.setDsid(itemDeliverySettingsList.get(0).getId());
-
         model.addAttribute(command);
         return "standalonerunner/uploadForm";
     }
 
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
-    public String handleUploadAndRunForm(final Model model, @Valid @ModelAttribute final StandaloneRunCommand command,
+    public String handleUploadAndRunForm(@Valid @ModelAttribute final StandaloneRunCommand command,
             final BindingResult errors) {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
             return "standalonerunner/uploadForm";
         }
-
-        /* FIXME: Delete the uploaded data if there is an Exception here! */
         try {
-            /* Make sure the required DeliverySettings exists */
-            DeliverySettings deliverySettings = assessmentManagementService.lookupDeliverySettings(command.getDsid());
-
-            /* Upload the Assessment and validate it */
-            final Assessment assessment;
-            assessment = assessmentManagementService.importAssessment(command.getFile());
-            final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessment.getId().longValue());
-            if (!validationResult.isValid()) {
-                model.addAttribute("validationResult", validationResult);
-                return "standalonerunner/invalidUpload";
-            }
-
-            /* If we uploaded an item then we'll use the specified delivery settings.
-             * For tests, we'll use some default settings.
-             */
-            if (assessment.getAssessmentType()==AssessmentObjectType.ASSESSMENT_TEST) {
-                deliverySettings = deliverySettingsDao.getAllPublicSettingsForType(AssessmentObjectType.ASSESSMENT_TEST).get(0);
-            }
-
-            /* If still here, start new delivery and get going */
+            final Assessment assessment = assessmentManagementService.importAssessment(command.getFile());
+            assessmentManagementService.validateAssessment(assessment); /* Do this to work out and store the validation result */
+            final DeliverySettings deliverySettings = assessmentManagementService.requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
             final String exitUrl = "/web/anonymous/standalonerunner";
             final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl);
@@ -156,9 +126,6 @@ public class AnonymousStandaloneRunner {
         }
         catch (final PrivilegeException e) {
             /* This should not happen if access control logic has been done correctly */
-            throw QtiWorksRuntimeException.unexpectedException(e);
-        }
-        catch (final DomainEntityNotFoundException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
     }

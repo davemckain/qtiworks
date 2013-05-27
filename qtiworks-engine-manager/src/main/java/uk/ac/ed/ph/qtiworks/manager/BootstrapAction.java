@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.config.QtiWorksProfiles;
-import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 import uk.ac.ed.ph.qtiworks.manager.services.SampleResourceImporter;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 
@@ -75,10 +74,6 @@ public final class BootstrapAction extends ManagerAction {
 		logger.info("Deleting any existing user data from filesystem");
 		final FilespaceManager filespaceManager = applicationContext.getBean(FilespaceManager.class);
 		filespaceManager.deleteAllUserData();
-
-		logger.info("Setting up system default data");
-		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
-		managerServices.setupSystemDefaults();
 
     	logger.info("Importing QTI samples");
         final SampleResourceImporter sampleResourceImporter = applicationContext.getBean(SampleResourceImporter.class);

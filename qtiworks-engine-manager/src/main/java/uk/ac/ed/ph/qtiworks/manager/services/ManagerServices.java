@@ -34,18 +34,12 @@
 package uk.ac.ed.ph.qtiworks.manager.services;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
-
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import javax.annotation.Resource;
 
@@ -77,9 +71,6 @@ public class ManagerServices {
 
     @Resource
     private UserDao userDao;
-
-    @Resource
-    private DeliverySettingsDao deliverySettingsDao;
 
     public InstructorUser ensureInternalSystemUser(final String loginName, final String firstName,
             final String lastName) {
@@ -136,51 +127,7 @@ public class ManagerServices {
         return result;
     }
 
-    public void setupSystemDefaults() {
-        /* Create system default user */
-        final InstructorUser systemDefaultUser = ensureInternalSystemUser(DomainConstants.QTI_DEFAULT_OWNER_LOGIN_NAME,
-                DomainConstants.QTI_DEFAULT_OWNER_FIRST_NAME, DomainConstants.QTI_DEFAULT_OWNER_LAST_NAME);
 
-        /* Add some default delivery settings (if they don't already exist) */
-        if (deliverySettingsDao.getFirstForOwner(systemDefaultUser, AssessmentObjectType.ASSESSMENT_ITEM)==null) {
-            importDefaultItemDeliverySettings(systemDefaultUser);
-        }
-        if (deliverySettingsDao.getFirstForOwner(systemDefaultUser, AssessmentObjectType.ASSESSMENT_TEST)==null) {
-            importDefaultTestDeliverySettings(systemDefaultUser);
-        }
-    }
-
-    private void importDefaultItemDeliverySettings(final InstructorUser systemDefaultUser) {
-        /* Full-featured settings for items */
-        final ItemDeliverySettings fullSettings = new ItemDeliverySettings();
-        fullSettings.setAllowEnd(true);
-        fullSettings.setAllowHardResetWhenEnded(true);
-        fullSettings.setAllowHardResetWhenOpen(true);
-        fullSettings.setAllowSoftResetWhenEnded(true);
-        fullSettings.setAllowSoftResetWhenOpen(true);
-        fullSettings.setAllowSolutionWhenEnded(true);
-        fullSettings.setAllowSolutionWhenOpen(true);
-        fullSettings.setAuthorMode(true);
-        fullSettings.setMaxAttempts(0);
-        fullSettings.setPublic(true);
-        fullSettings.setOwner(systemDefaultUser);
-        fullSettings.setTitle("Default Delivery Settings for Items");
-        fullSettings.setPrompt("These delivery settings let the candidate do pretty much anything, "
-                + "so might be very useful for debugging QTI items. "
-                + "Just remember that some features will only make sense if the item has been authored to support it, "
-                + "such as model solutions and re-initialisation.");
-        deliverySettingsDao.persist(fullSettings);
-    }
-
-    private void importDefaultTestDeliverySettings(final InstructorUser systemDefaultUser) {
-        /* Full-featured settings for tests */
-        final TestDeliverySettings fullSettings = new TestDeliverySettings();
-        fullSettings.setAuthorMode(true);
-        fullSettings.setPublic(true);
-        fullSettings.setOwner(systemDefaultUser);
-        fullSettings.setTitle("Default Delivery Settings for Tests");
-        deliverySettingsDao.persist(fullSettings);
-    }
 
     //-------------------------------------------------
 

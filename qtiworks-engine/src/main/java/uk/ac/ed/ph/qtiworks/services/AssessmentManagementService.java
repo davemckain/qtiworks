@@ -358,10 +358,13 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // Validation
 
-    @Transactional(propagation=Propagation.REQUIRED)
     public AssessmentObjectValidationResult<?> validateAssessment(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = lookupAssessment(aid);
+        return validateAssessment(assessment);
+    }
+
+    public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
         final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
 
         /* Run the validation process */
@@ -663,10 +666,10 @@ public class AssessmentManagementService {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Look up Assessment and check caller and change it */
         final Assessment assessment = lookupAssessment(aid);
-        final User caller = ensureCallerMayChange(assessment);
+        ensureCallerMayChange(assessment);
 
         /* Get first DeliverySettings (creating if required) */
-        final DeliverySettings deliverySettings = requireFirstDeliverySettings(caller, assessment.getAssessmentType());
+        final DeliverySettings deliverySettings = requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
 
         /* Create Delivery template with reasonable defaults */
         final DeliveryTemplate template = new DeliveryTemplate();
@@ -775,10 +778,9 @@ public class AssessmentManagementService {
         Assert.notNull(assessment, "assessment");
 
         /* Select suitable delivery settings */
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         DeliverySettings deliverySettings = assessment.getDefaultDeliverySettings();
         if (deliverySettings==null) {
-            deliverySettings = requireFirstDeliverySettings(caller, assessment.getAssessmentType());
+            deliverySettings = requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
         }
 
         /* Now create demo delivery using these options */
@@ -808,9 +810,10 @@ public class AssessmentManagementService {
         return delivery;
     }
 
-    public DeliverySettings requireFirstDeliverySettings(final User owner, final AssessmentObjectType assessmentType) {
+    public DeliverySettings requireFirstDeliverySettingsForCaller(final AssessmentObjectType assessmentType) {
         /* See if there are already suitable settings created */
-        final DeliverySettings firstDeliverySettings = deliverySettingsDao.getFirstForOwner(owner, assessmentType);
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final DeliverySettings firstDeliverySettings = deliverySettingsDao.getFirstForOwner(caller, assessmentType);
         if (firstDeliverySettings!=null) {
             return firstDeliverySettings;
         }
@@ -821,13 +824,18 @@ public class AssessmentManagementService {
                 final ItemDeliverySettingsTemplate template = createItemDeliverySettingsTemplate();
                 final ItemDeliverySettings itemDeliverySettings = new ItemDeliverySettings();
                 mergeItemDeliverySettings(template, itemDeliverySettings);
-                itemDeliverySettings.setOwner(owner);
+                itemDeliverySettings.setOwner(caller);
                 itemDeliverySettings.setTitle("Default item delivery settings");
-                itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
-                        + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
-                        + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
-                        + " which you can edit or remove to suit.");
-
+                if (caller.getUserType()==UserType.INSTRUCTOR) {
+                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
+                            + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
+                            + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
+                            + " which you can edit or remove to suit.");
+                }
+                else {
+                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
+                            + " we have created for you. You will be able to change and edit these settings to suit if you have a QTIWorks account.");
+                }
                 deliverySettingsDao.persist(itemDeliverySettings);
                 auditLogger.recordEvent("Created default ItemDeliverySettings for this user");
                 return itemDeliverySettings;
@@ -837,7 +845,7 @@ public class AssessmentManagementService {
                 final TestDeliverySettingsTemplate template = createTestDeliverySettingsTemplate();
                 final TestDeliverySettings testDeliverySettings = new TestDeliverySettings();
                 mergeTestDeliverySettings(template, testDeliverySettings);
-                testDeliverySettings.setOwner(owner);
+                testDeliverySettings.setOwner(caller);
                 testDeliverySettings.setTitle("Default test delivery settings");
 
                 deliverySettingsDao.persist(testDeliverySettings);

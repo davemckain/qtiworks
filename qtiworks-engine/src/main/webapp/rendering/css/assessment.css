@@ -4,7 +4,7 @@ body {
   background-color: white;
   color: black;
   font-family: Sans-Serif;
-  margin: 1em;
+  margin: 1em 0 5em 1em;
   padding: 0;
 }
 
@@ -477,7 +477,7 @@ ul.testPartDrilldown li.currentItem {
 /* Author tools */
 
 .authorModePanel {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   width: auto;
