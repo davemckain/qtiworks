@@ -39,7 +39,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -63,6 +62,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -129,7 +130,7 @@ public class AssessmentPackageFileImporter {
         InputStream inputStream = null;
         try {
             inputStream = ServiceUtilities.ensureInputSream(multipartFile);
-            IoUtilities.transfer(inputStream, new FileOutputStream(resultFile), false, true);
+            FileUtils.copyInputStreamToFile(inputStream, resultFile);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -161,8 +162,8 @@ public class AssessmentPackageFileImporter {
                 foundEntry = true;
                 final File destFile = new File(importSandboxDirectory, zipEntry.getName());
                 if (!zipEntry.isDirectory()) {
-                    IoUtilities.ensureFileCreated(destFile);
-                    IoUtilities.transfer(zipInputStream, new FileOutputStream(destFile), false, true);
+                    ServiceUtilities.ensureFileCreated(destFile);
+                    IOUtils.copy(zipInputStream, new FileOutputStream(destFile));
                     zipInputStream.closeEntry();
                 }
             }

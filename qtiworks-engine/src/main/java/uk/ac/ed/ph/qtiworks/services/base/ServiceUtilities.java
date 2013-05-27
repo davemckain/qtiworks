@@ -35,17 +35,19 @@ package uk.ac.ed.ph.qtiworks.services.base;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.hash.Hashing;
@@ -56,6 +58,8 @@ import com.google.common.hash.Hashing;
  * @author David McKain
  */
 public final class ServiceUtilities {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServiceUtilities.class);
 
     public static final String ellipses = "...";
 
@@ -148,11 +152,99 @@ public final class ServiceUtilities {
     }
 
     public static void ensureClose(final Closeable... streams) {
-        try {
-            IoUtilities.ensureClose(streams);
+        IOException firstException = null;
+        for (final Closeable stream : streams) {
+            if (stream!=null) {
+                try {
+                    stream.close();
+                }
+                catch (final IOException e) {
+                    firstException = e;
+                }
+            }
         }
-        catch (final IOException e) {
-            throw new QtiWorksRuntimeException("Unexpected failure to close stream", e);
+        if (firstException!=null) {
+            throw new QtiWorksRuntimeException("Unexpected failure to close stream", firstException);
         }
+    }
+
+    /**
+     * Simple method to ensure that a given File exists. If the File
+     * does not exist then it is created, along with all required parent
+     * directories.
+     *
+     * @throws QtiWorksRuntimeException if creation could not succeed for some reason.
+     */
+    public static File ensureFileCreated(final File file) {
+        /* Make sure parent exists */
+        final File parentDirectory = file.getParentFile();
+        if (parentDirectory!=null) {
+            ensureDirectoryCreated(parentDirectory);
+        }
+        /* Now create file */
+        if (!file.isFile()) {
+            try {
+                if (!file.createNewFile()) {
+                    throw new QtiWorksRuntimeException("Could not create file " + file);
+                }
+            }
+            catch (final IOException e) {
+                throw new QtiWorksRuntimeException("Unexpected Exception trying to create file " + file, e);
+            }
+        }
+        return file;
+    }
+
+    /**
+     * Simple method to ensure that a given directory exists. If the directory
+     * does not exist then it is created, along with all required parents.
+     *
+     * @throws QtiWorksRuntimeException if creation could not succeed for some reason.
+     */
+    public static File ensureDirectoryCreated(final File directory) {
+        if (!directory.isDirectory()) {
+            if (!directory.mkdirs()) {
+                throw new QtiWorksRuntimeException("Could not create directory " + directory);
+            }
+        }
+        return directory;
+    }
+
+    /**
+     * Recursively deletes the contents of the given directory (and
+     * possibly the directory itself).
+     * <p>
+     * An error is logged if this fails to complete successfully, rather than
+     * throwing an Exception. Note that failure will not be atomic, so some directories
+     * may be left over.
+     *
+     * @param root directory (or file) whose contents will be deleted
+     * @param deleteRoot true deletes root directory, false deletes only
+     *  its contents.
+     */
+    public static void recursivelyDelete(final File root, final boolean deleteRoot) {
+        if (root.isDirectory()) {
+            final File [] contents = root.listFiles();
+            for (final File child : contents) {
+                recursivelyDelete(child, true);
+            }
+        }
+        if (deleteRoot) {
+            if (!root.delete()) {
+                logger.error("Could not delete directory " + root);
+            }
+        }
+    }
+
+    /**
+     * Convenience version of {@link #recursivelyDelete(File, boolean)} that
+     * deletes the given root directory as well.
+     * <p>
+     * An error is logged if this fails to complete successfully, rather than
+     * throwing an Exception. Note that failure will not be atomic, so some directories
+     * may be left over.
+     */
+    public static void recursivelyDelete(final File root) {
+        recursivelyDelete(root, true);
     }
 }

@@ -34,15 +34,15 @@
 package uk.ac.ed.ph.qtiworks.testutils;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -90,11 +90,15 @@ public final class ClassPathMultipartFile implements MultipartFile {
 
     @Override
     public byte[] getBytes() {
+        final InputStream inputStream = getInputStream();
         try {
-            return IoUtilities.readBinaryStream(getInputStream());
+            return IOUtils.toByteArray(getInputStream());
         }
         catch (final IOException e) {
             throw new QtiWorksRuntimeException("Failed to read data from " + path);
+        }
+        finally {
+            IOUtils.closeQuietly(inputStream);
         }
     }
 
@@ -110,11 +114,15 @@ public final class ClassPathMultipartFile implements MultipartFile {
 
     @Override
     public void transferTo(final File dest) {
+        final InputStream inputStream = getInputStream();
         try {
-            IoUtilities.transfer(getInputStream(), new FileOutputStream(dest));
+            FileUtils.copyInputStreamToFile(inputStream, dest);
         }
         catch (final IOException e) {
             throw new QtiWorksRuntimeException("Failed to transfer file " + path + " to " + dest, e);
+        }
+        finally {
+            IOUtils.closeQuietly(inputStream);
         }
     }
 

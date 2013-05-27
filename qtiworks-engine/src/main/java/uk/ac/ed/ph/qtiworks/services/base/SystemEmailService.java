@@ -37,7 +37,6 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.SystemMailMessage;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.web.view.ElFunctions;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
@@ -50,6 +49,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailSender;
@@ -117,10 +117,13 @@ public final class SystemEmailService {
         }
         String template;
         try {
-            template = IoUtilities.readUnicodeStream(templateStream);
+            template = IOUtils.toString(templateStream, "UTF-8");
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        finally {
+            IOUtils.closeQuietly(templateStream);
         }
 
         /* Register "global" pattern for admin email address that can be used within any

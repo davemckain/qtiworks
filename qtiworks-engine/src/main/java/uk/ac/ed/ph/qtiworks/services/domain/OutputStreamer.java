@@ -47,6 +47,15 @@ import java.util.Date;
  */
 public interface OutputStreamer {
 
+    /**
+     * Callback should do whatever is required with the data coming from the given {@link InputStream}.
+     * The stream will be closed afterwards, so the caller does not have to worry about this.
+     * @param contentType
+     * @param contentLength
+     * @param lastModifiedTime
+     * @param resultStream
+     * @throws IOException
+     */
     void stream(String contentType, long contentLength, Date lastModifiedTime,
             InputStream resultStream)
         throws IOException;

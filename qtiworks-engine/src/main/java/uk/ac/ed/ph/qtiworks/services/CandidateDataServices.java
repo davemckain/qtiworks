@@ -50,10 +50,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.mathassess.GlueValueBinder;
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -102,6 +102,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -508,12 +509,7 @@ public class CandidateDataServices {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
         finally {
-            try {
-                IoUtilities.ensureClose(resultStream);
-            }
-            catch (final IOException e) {
-                throw QtiWorksRuntimeException.unexpectedException(e);
-            }
+            ServiceUtilities.ensureClose(resultStream);
         }
     }
 
@@ -529,7 +525,7 @@ public class CandidateDataServices {
         }
         try {
             /* NB: We're using the fact that we're writing out as UTF-8 when storing these files */
-            return IoUtilities.readUnicodeFile(getResultFile(candidateSession));
+            return FileUtils.readFileToString(getResultFile(candidateSession), "UTF-8");
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);

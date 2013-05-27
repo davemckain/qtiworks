@@ -35,16 +35,14 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.testutils.ClassPathMultipartFile;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.junit.After;
@@ -64,7 +62,6 @@ public class AssessmentPackageFileImporterTest {
 
     private AssessmentPackageFileImporter importer;
     private File importSandboxDirectory;
-    private InputStream importStream;
 
     @Before
     public void setup() {
@@ -73,12 +70,9 @@ public class AssessmentPackageFileImporterTest {
     }
 
     @After
-    public void tearDown() throws IOException {
+    public void tearDown() {
         if (importSandboxDirectory!=null) {
-            IoUtilities.recursivelyDelete(importSandboxDirectory);
-        }
-        if (importStream!=null) {
-            IoUtilities.ensureClose(importStream);
+            ServiceUtilities.recursivelyDelete(importSandboxDirectory);
         }
     }
 
