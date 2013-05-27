@@ -42,12 +42,11 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -247,13 +246,10 @@ public final class FilespaceManager {
         final File directory;
         try {
             directory = new File(URI.create(fileUri));
-            return IoUtilities.ensureDirectoryCreated(directory);
+            return ServiceUtilities.ensureDirectoryCreated(directory);
         }
         catch (final RuntimeException e) {
             throw new QtiWorksLogicException("Unexpected failure parsing File URI " + fileUri);
-        }
-        catch (final IOException e) {
-            throw new QtiWorksLogicException("Unexpected IO failure creating directory at URI " + fileUri);
         }
     }
 
@@ -267,13 +263,7 @@ public final class FilespaceManager {
             if (!directory.isDirectory()) {
                 throw new QtiWorksLogicException("Expected " + directory.getAbsolutePath() + " to be a directory");
             }
-            try {
-                IoUtilities.recursivelyDelete(directory);
-            }
-            catch (final IOException e) {
-                logger.warn("Failed to recursively delete directory at {}", directory.getAbsolutePath(), e);
-                return false;
-            }
+            ServiceUtilities.recursivelyDelete(directory);
         }
         return true;
     }

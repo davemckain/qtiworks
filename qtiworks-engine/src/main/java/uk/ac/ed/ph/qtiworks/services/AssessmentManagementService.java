@@ -532,7 +532,7 @@ public class AssessmentManagementService {
         target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
         target.setAuthorMode(template.isAuthorMode());
-        target.setMaxAttempts(template.getMaxAttempts().intValue());
+        target.setMaxAttempts(template.getMaxAttempts());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
         target.setTitle(template.getTitle().trim());
     }
@@ -547,7 +547,7 @@ public class AssessmentManagementService {
         target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
         target.setAuthorMode(template.isAuthorMode());
-        target.setMaxAttempts(Integer.valueOf(template.getMaxAttempts()));
+        target.setMaxAttempts(template.getMaxAttempts());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
         target.setTitle(template.getTitle());
     }
@@ -911,19 +911,14 @@ public class AssessmentManagementService {
             throws PrivilegeException, AssessmentPackageFileImportException {
         final User owner = identityContext.getCurrentThreadEffectiveIdentity();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
-        final InputStream inputStream = ServiceUtilities.ensureInputSream(multipartFile);
-        final String contentType = multipartFile.getContentType();
         try {
-            final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, inputStream, contentType);
+            final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, multipartFile);
             assessmentPackage.setImporter(owner);
             return assessmentPackage;
         }
         catch (final AssessmentPackageFileImportException e) {
             filespaceManager.deleteSandbox(packageSandbox);
             throw e;
-        }
-        finally {
-            assessmentPackageFileImporter.ensureClose(inputStream);
         }
     }
 

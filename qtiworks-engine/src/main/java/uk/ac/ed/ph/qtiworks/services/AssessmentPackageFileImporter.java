@@ -36,10 +36,9 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
-import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -63,9 +62,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Helper service for importing assessment package data into the filesystem
@@ -80,24 +82,9 @@ public class AssessmentPackageFileImporter {
     /** File name that will be used when uploading standalone XML */
     private static final String STANDALONE_XML_IMPORT_FILE_NAME = "qti.xml";
 
-    /** Allowed MIME types for ZIP files */
-    private static String[] ZIP_MIME_TYPES = new String[] {
-            "application/zip",
-            "application/x-zip",
-            "application/x-zip-compressed",
-            "application/x-compress",
-            "application/x-compressed",
-            "multipart/x-zip"
-    };
-    static {
-        Arrays.sort(ZIP_MIME_TYPES);
-    }
-
     /**
-     * Imports the assessment data from the given {@link InputStream} into the given
-     * sandbox directory.
-     * <p>
-     * It is up to the caller to close the {@link InputStream}
+     * Imports the assessment data from the given {@link MultipartFile} into the given
+     * sandbox directory, which the caller must have created.
      *
      * @throws AssessmentPackageFileImportException
      * @throws IllegalArgumentException if any of the provided arguments are null
@@ -105,46 +92,48 @@ public class AssessmentPackageFileImporter {
      *   an {@link IOException}
      */
     public AssessmentPackage importAssessmentPackageData(final File importSandboxDirectory,
-            final InputStream inputStream,
-            final String contentType)
+            final MultipartFile multipartFile)
             throws AssessmentPackageFileImportException {
         Assert.notNull(importSandboxDirectory, "importSandboxDirectory");
-        Assert.notNull(inputStream, "inputStream");
-        Assert.notNull(contentType, "contentType");
+        Assert.notNull(multipartFile, "multipartFile");
         AssessmentPackage result = null;
-        if (Arrays.binarySearch(ZIP_MIME_TYPES, contentType) >= 0) {
-            logger.debug("Import is ZIP. Attempting to unpack into {}", importSandboxDirectory);
-            result = unpackZipFile(importSandboxDirectory, inputStream);
-        }
-        else if ("application/xml".equals(contentType) || "text/xml".equals(contentType) || contentType.endsWith("+xml")) {
-            logger.debug("Import uses a known XML MIME type {} so saving to {} and treating as XML", contentType, importSandboxDirectory);
-            result = importXml(importSandboxDirectory, inputStream);
+
+        final String contentType = multipartFile.getContentType();
+        if ("application/xml".equals(contentType) || "text/xml".equals(contentType) || contentType.endsWith("+xml")) {
+            /* Looks like an XML content type */
+            logger.debug("Import data uses a known XML MIME type {} so saving to {} and treating as XML", contentType, importSandboxDirectory);
+            result = importStandaloneXml(importSandboxDirectory, multipartFile);
         }
         else {
-            logger.warn("User uploaded content with unsupported MIME type {}", contentType);
-            throw new AssessmentPackageFileImportException(new EnumerableClientFailure<APFIFailureReason>(APFIFailureReason.NOT_XML_OR_ZIP));
+            /* Try to treat as a ZIP */
+            final boolean zipSuccess = tryUnpackZipFile(importSandboxDirectory, multipartFile);
+            if (zipSuccess) {
+                logger.debug("Import data was successfully expanded as a ZIP file");
+                result = processUnpackedZip(importSandboxDirectory);
+            }
+            else {
+                logger.warn("Import data with MIME type {} was not a supported XML MIME type and no ZIP entries were found within", contentType);
+                throw new AssessmentPackageFileImportException(APFIFailureReason.NOT_XML_OR_ZIP);
+            }
         }
-        logger.debug("Successfully imported files for new {}", result);
+
+        logger.info("Successfully imported new {}", result);
         return result;
     }
 
-    public void ensureClose(final InputStream inputStream) {
-        try {
-            IoUtilities.ensureClose(inputStream);
-        }
-        catch (final IOException e) {
-            throw new QtiWorksRuntimeException("Unexpected Exception closing " + inputStream, e);
-        }
-    }
-
-    private AssessmentPackage importXml(final File importSandboxDirectory, final InputStream inputStream) {
+    private AssessmentPackage importStandaloneXml(final File importSandboxDirectory, final MultipartFile multipartFile) {
         /* Save XML */
         final File resultFile = new File(importSandboxDirectory, STANDALONE_XML_IMPORT_FILE_NAME);
+        InputStream inputStream = null;
         try {
-            IoUtilities.transfer(inputStream, new FileOutputStream(resultFile), false, true);
+            inputStream = ServiceUtilities.ensureInputSream(multipartFile);
+            FileUtils.copyInputStreamToFile(inputStream, resultFile);
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        finally {
+            ServiceUtilities.ensureClose(inputStream);
         }
 
         /* Create AssessmentPackage representing this */
@@ -157,32 +146,43 @@ public class AssessmentPackageFileImporter {
         return assessmentPackage;
     }
 
-    private AssessmentPackage unpackZipFile(final File importSandboxDirectory, final InputStream inputStream)
-            throws AssessmentPackageFileImportException {
+    private boolean tryUnpackZipFile(final File importSandboxDirectory, final MultipartFile multipartFile) {
         /* Extract ZIP contents */
-        ZipEntry zipEntry;
-        final ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+        ZipEntry zipEntry = null;
+        InputStream inputStream = null;
+        ZipInputStream zipInputStream = null;
+        boolean foundEntry = false;
         try {
+            inputStream = ServiceUtilities.ensureInputSream(multipartFile);
+            zipInputStream = new ZipInputStream(inputStream);
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                foundEntry = true;
                 final File destFile = new File(importSandboxDirectory, zipEntry.getName());
                 if (!zipEntry.isDirectory()) {
-                    IoUtilities.ensureFileCreated(destFile);
-                    IoUtilities.transfer(zipInputStream, new FileOutputStream(destFile), false, true);
+                    ServiceUtilities.ensureFileCreated(destFile);
+                    IOUtils.copy(zipInputStream, new FileOutputStream(destFile));
                     zipInputStream.closeEntry();
                 }
             }
         }
         catch (final EOFException e) {
             /* (Might get this if the ZIP file is truncated for some reason) */
-            throw new AssessmentPackageFileImportException(APFIFailureReason.BAD_ZIP, e);
+            return false;
         }
         catch (final ZipException e) {
-            throw new AssessmentPackageFileImportException(APFIFailureReason.BAD_ZIP, e);
+            return false;
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
+        finally {
+            ServiceUtilities.ensureClose(zipInputStream, inputStream);
+        }
+        return foundEntry;
+    }
 
+    private AssessmentPackage processUnpackedZip(final File importSandboxDirectory)
+            throws AssessmentPackageFileImportException {
         /* Expand content package */
         final QtiContentPackageExtractor contentPackageExtractor = new QtiContentPackageExtractor(importSandboxDirectory);
         QtiContentPackageSummary contentPackageSummary;
@@ -195,7 +195,7 @@ public class AssessmentPackageFileImporter {
         catch (final ImsManifestException e) {
             throw new AssessmentPackageFileImportException(APFIFailureReason.BAD_IMS_MANIFEST, e);
         }
-        logger.trace("Submitted content package was successfully expanded as {}", contentPackageSummary);
+        logger.trace("Submitted content package was successfully parsed as {}", contentPackageSummary);
 
         /* Build appropriate result based on number of item & test resources found */
         final int testCount = contentPackageSummary.getTestResources().size();

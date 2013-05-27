@@ -35,7 +35,7 @@ All Rights Reserved
     <servlet-api.version>2.5</servlet-api.version>
     <jsp-api.version>2.1</jsp-api.version>
     <jstl.version>1.2</jstl.version>
-    <spring.version>3.2.1.RELEASE</spring.version>
+    <spring.version>3.2.2.RELEASE</spring.version>
     <hibernate.version>4.1.9.Final</hibernate.version>
     <hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
     <mysql-connector.version>5.1.23</mysql-connector.version>
@@ -49,7 +49,7 @@ All Rights Reserved
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
     <oauth.version>20100601</oauth.version>
-    <guava.version>12.0</guava.version>
+    <guava.version>14.0.1</guava.version>
     <junit.version>4.11</junit.version>
     <xmlunit.version>1.3</xmlunit.version>
   </properties>
@@ -123,7 +123,7 @@ All Rights Reserved
       <plugins>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.0</version>
+          <version>3.1</version>
           <configuration>
             <source>1.6</source>
             <target>1.6</target>

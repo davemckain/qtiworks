@@ -33,10 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
-import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import java.io.IOException;
 
@@ -55,13 +53,9 @@ import org.springframework.web.context.WebApplicationContext;
  */
 public abstract class AbstractInstructorAuthenticator {
 
-    protected IdentityContext identityContext;
-    protected UserDao userDao;
     protected InstructorUserDao instructorUserDao;
 
     public AbstractInstructorAuthenticator(final WebApplicationContext webApplicationContext) {
-        identityContext = webApplicationContext.getBean(IdentityContext.class);
-        userDao = webApplicationContext.getBean(UserDao.class);
         instructorUserDao = webApplicationContext.getBean(InstructorUserDao.class);
     }
 

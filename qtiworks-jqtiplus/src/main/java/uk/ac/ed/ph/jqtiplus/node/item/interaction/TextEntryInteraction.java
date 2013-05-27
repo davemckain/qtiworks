@@ -253,36 +253,35 @@ public final class TextEntryInteraction extends InlineInteraction implements Str
             exponentIndicator = "E";
         }
 
-        final String exponentPart = exponentIndicator != null ? responseString.substring(responseString.indexOf(exponentIndicator) + 1) : null;
-        final String responseStringAfterExp = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator));
-        final String rightPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(responseStringAfterExp.indexOf(".") + 1) : null;
-        final String leftPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(0, responseStringAfterExp.indexOf(".")) : responseStringAfterExp;
+        final String exponentPart = exponentIndicator != null ? responseString.substring(responseString.indexOf(exponentIndicator) + 1) : ""; /* (Not null) */
+        final String responseStringAfterExp = exponentIndicator == null ? responseString : responseString.substring(0, responseString.indexOf(exponentIndicator)); /* (Not null) */
+        final String rightPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(responseStringAfterExp.indexOf(".") + 1) : ""; /* (Not null) */
+        final String leftPart = responseStringAfterExp.contains(".") ? responseStringAfterExp.substring(0, responseStringAfterExp.indexOf(".")) : responseStringAfterExp; /* (Not null) */
 
         if (exponentIndicator == null && !responseStringAfterExp.contains(".")) {
             recordBuilder.put(KEY_INTEGER_VALUE_NAME, IntegerValue.parseString(responseStringAfterExp, base));
         }
 
-        recordBuilder.put(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart == null ? 0 : leftPart.length()));
-        recordBuilder.put(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart == null ? 0 : rightPart.length()));
+        recordBuilder.put(KEY_LEFT_DIGITS_NAME, new IntegerValue(leftPart.length()));
+        recordBuilder.put(KEY_RIGHT_DIGITS_NAME, new IntegerValue(rightPart.length()));
 
         if (exponentIndicator != null) {
-            int frac = rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
-            if (exponentPart != null && exponentPart.length() > 0) {
+            int frac = rightPart.length();
+            if (exponentPart.length() > 0) {
                 frac -= Integer.parseInt(exponentPart);
             }
-
             recordBuilder.put(KEY_NDP_NAME, new IntegerValue(frac));
         }
         else {
-            recordBuilder.put(KEY_NDP_NAME, IntegerValue.parseString(rightPart == null || rightPart.length() == 0 ? "0" : rightPart));
+            recordBuilder.put(KEY_NDP_NAME, IntegerValue.parseString(rightPart.isEmpty() ? "0" : rightPart));
         }
 
-        int nsf = leftPart == null || leftPart.length() == 0 ? 0 : new Integer(leftPart).toString().length();
-        nsf += rightPart == null || rightPart.length() == 0 ? 0 : rightPart.length();
+        int nsf = (leftPart.isEmpty()) ? 0 : new Integer(leftPart).toString().length();
+        nsf += rightPart.length();
         recordBuilder.put(KEY_NSF_NAME, new IntegerValue(nsf));
 
         if (exponentIndicator != null) {
-            recordBuilder.put(KEY_EXPONENT_NAME, IntegerValue.parseString(exponentPart!=null && exponentPart.length() == 0 ? "0" : exponentPart));
+            recordBuilder.put(KEY_EXPONENT_NAME, IntegerValue.parseString(exponentPart.isEmpty() ? "0" : exponentPart));
         }
         return RecordValue.createRecordValue(recordBuilder);
     }

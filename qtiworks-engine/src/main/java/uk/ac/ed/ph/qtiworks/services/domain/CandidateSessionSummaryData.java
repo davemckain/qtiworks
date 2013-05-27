@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.io.Serializable;
@@ -71,8 +72,10 @@ public final class CandidateSessionSummaryData implements Serializable {
             final String lastName, final String emailAddress,
             final boolean sessionClosed, final boolean sessionTerminated,
             final Collection<String> numericOutcomeValues, final Collection<String> otherOutcomeValues) {
-        this.launchTime = launchTime;
+        Assert.notNull(numericOutcomeValues, "numericOutcomeValues");
+        Assert.notNull(otherOutcomeValues, "otherOutcomesValues");
         this.sessionId = sessionId;
+        this.launchTime = ObjectUtilities.safeClone(launchTime);
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
@@ -87,7 +90,7 @@ public final class CandidateSessionSummaryData implements Serializable {
     }
 
     public Date getLaunchTime() {
-        return launchTime;
+        return ObjectUtilities.safeClone(launchTime);
     }
 
     public String getFirstName() {

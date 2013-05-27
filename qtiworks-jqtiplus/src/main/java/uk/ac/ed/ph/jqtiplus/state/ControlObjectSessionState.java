@@ -113,7 +113,7 @@ public abstract class ControlObjectSessionState implements Serializable {
 
 
     public final Date getDurationIntervalStartTime() {
-        return durationIntervalStartTime;
+        return ObjectUtilities.safeClone(durationIntervalStartTime);
     }
 
     public final void setDurationIntervalStartTime(final Date outTime) {

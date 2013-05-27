@@ -19,13 +19,6 @@
 		<p>
 			<img src="images/sign.png" alt="NEVER LEAVE LUGGAGE UNATTENDED"/>
 		</p>
-                <math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
-                  <apply>
-                    <plus/>
-                    <cn>3</cn>
-                    <cn>5</cn>
-                  </apply>
-                </math>
 		<choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1">
 			<prompt>What does it say?</prompt>
 			<simpleChoice identifier="ChoiceA">You must stay with your luggage at all times.</simpleChoice>
