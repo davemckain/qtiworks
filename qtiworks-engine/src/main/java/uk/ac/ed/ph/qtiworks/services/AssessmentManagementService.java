@@ -955,10 +955,8 @@ public class AssessmentManagementService {
             throws PrivilegeException, AssessmentPackageFileImportException {
         final User owner = identityContext.getCurrentThreadEffectiveIdentity();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
-        final InputStream inputStream = ServiceUtilities.ensureInputSream(multipartFile);
-        final String contentType = multipartFile.getContentType();
         try {
-            final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, inputStream, contentType);
+            final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, multipartFile);
             assessmentPackage.setImporter(owner);
             return assessmentPackage;
         }

@@ -34,16 +34,14 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
-import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.io.File;
-import java.io.InputStream;
 
 import javax.annotation.Resource;
 
@@ -74,13 +72,11 @@ public class StandaloneValidationService {
     public AssessmentObjectValidationResult<?> importAndValidate(final MultipartFile multipartFile)
             throws AssessmentPackageFileImportException {
         Assert.notNull(multipartFile, "multipartFile");
-        final AnonymousUser caller = (AnonymousUser) identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         final File sandboxDirectory = filespaceManager.createAssessmentPackageSandbox(caller);
         final AssessmentPackage importedPackage;
-        final InputStream inputStream = ServiceUtilities.ensureInputSream(multipartFile);
-        final String contentType = multipartFile.getContentType();
         try {
-            importedPackage = assessmentPackageImporter.importAssessmentPackageData(sandboxDirectory, inputStream, contentType);
+            importedPackage = assessmentPackageImporter.importAssessmentPackageData(sandboxDirectory, multipartFile);
             return assessmentManagementService.loadAndValidateAssessment(importedPackage);
         }
         finally {

@@ -51,7 +51,9 @@ import java.nio.channels.FileChannel;
 import org.apache.commons.io.FileUtils;
 
 /**
- * NOTE: Consider using Google Guava instead of this where possible.
+ * Generic reusable IO utilities. These all throw {@link IOException} when things go wrong.
+ *
+ * NOTE: Consider using Apache commons IO instead of this where possible!
  *
  * @author David McKain
  */
@@ -227,7 +229,6 @@ public final class IoUtilities {
     /**
      * @see FileUtils#readFileToByteArray(File)
      */
-    @Deprecated
     public static byte[] readBinaryStream(final InputStream stream) throws IOException {
         final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         transfer(stream, outStream);

@@ -35,9 +35,11 @@ package uk.ac.ed.ph.qtiworks.services.base;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -142,6 +144,15 @@ public final class ServiceUtilities {
         }
         catch (final IOException e) {
             throw new QtiWorksRuntimeException("Unexpected Exception getting InputStream from MultipartFile", e);
+        }
+    }
+
+    public static void ensureClose(final Closeable... streams) {
+        try {
+            IoUtilities.ensureClose(streams);
+        }
+        catch (final IOException e) {
+            throw new QtiWorksRuntimeException("Unexpected failure to close stream", e);
         }
     }
 }
