@@ -46,11 +46,8 @@ public final class AssessmentPackageFileImportException extends Exception {
     private static final long serialVersionUID = -699513250898841731L;
 
     public static enum APFIFailureReason {
-        /** We expect a standalone XML file, or a ZIP Content Package */
+        /** We expect a standalone XML file or a ZIP stream containing at least one entry */
         NOT_XML_OR_ZIP,
-
-        /** Problem processing ZIP file */
-        BAD_ZIP,
 
         /** ZIP is not an IMS Content Package */
         NOT_CONTENT_PACKAGE,
@@ -64,7 +61,7 @@ public final class AssessmentPackageFileImportException extends Exception {
         /** URI of a referenced File {0} resolved outside the package */
         HREF_OUTSIDE_PACKAGE,
 
-        /** Refernece File with href {0} is missing */
+        /** Reference File with href {0} is missing */
         FILE_MISSING,
 
         ;

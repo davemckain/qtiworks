@@ -133,10 +133,6 @@ public class InstructorAssessmentManagementController {
         return "uploadAssessmentForm";
     }
 
-    /**
-     * TODO: I'm doing upload + validation together. It would make sense later to split
-     * these into 2 steps and find some way of showing progress.
-     */
     @RequestMapping(value="/assessments/upload", method=RequestMethod.POST)
     public String handleUploadAssessmentForm(final RedirectAttributes model,
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command,
@@ -154,7 +150,7 @@ public class InstructorAssessmentManagementController {
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(result, "uploadAssessmentPackageCommand");
+            failure.registerErrors(result, "assessmentPackageUpload");
             return "uploadAssessmentForm";
         }
         try {
