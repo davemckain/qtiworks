@@ -47,7 +47,9 @@ import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import java.util.List;
 
 /**
- * FIXME: Document this type
+ * Controls the validation of {@link AssessmentTest}s
+ *
+ * @see AssessmentObjectValidator
  *
  * @author David McKain
  */

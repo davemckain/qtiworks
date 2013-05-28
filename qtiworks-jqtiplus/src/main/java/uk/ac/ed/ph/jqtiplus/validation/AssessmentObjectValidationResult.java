@@ -36,27 +36,98 @@ package uk.ac.ed.ph.jqtiplus.validation;
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.notification.Notification;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationListener;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
+import uk.ac.ed.ph.jqtiplus.notification.NotificationType;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
- * Encapsulates the result of doing validation on an {@link AssessmentItem}
+ * Encapsulates the result of doing validation on a {@link ResolvedAssessmentObject}
  *
  * @author David McKain
  */
-public abstract class AssessmentObjectValidationResult<E extends AssessmentObject> extends AbstractValidationResult {
+public abstract class AssessmentObjectValidationResult<E extends AssessmentObject>
+        implements NotificationListener, Serializable  {
 
     private static final long serialVersionUID = -6570165277334622467L;
 
     private final ResolvedAssessmentObject<E> resolvedAssessmentObject;
+    private final NotificationRecorder notificationRecorder;
+    private boolean hasErrors;
+    private boolean hasWarnings;
 
     public AssessmentObjectValidationResult(final ResolvedAssessmentObject<E> resolvedAssessmentObject) {
         this.resolvedAssessmentObject = resolvedAssessmentObject;
+        this.notificationRecorder = new NotificationRecorder(NotificationLevel.WARNING);
+        this.hasErrors = false;
+        this.hasWarnings = false;
     }
 
     @ObjectDumperOptions(DumpMode.IGNORE)
     public ResolvedAssessmentObject<E> getResolvedAssessmentObject() {
         return resolvedAssessmentObject;
+    }
+
+    public boolean hasErrors() {
+        return hasErrors;
+    }
+
+    public boolean hasWarnings() {
+        return hasWarnings;
+    }
+
+    public List<Notification> getNotifications() {
+        return notificationRecorder.getNotifications();
+    }
+
+    public List<Notification> getNotificationsAtLevel(final NotificationLevel requiredLevel) {
+        return notificationRecorder.getNotificationsAtLevel(requiredLevel);
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public List<Notification> getErrors() {
+        return getNotificationsAtLevel(NotificationLevel.ERROR);
+    }
+
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    public List<Notification> getWarnings() {
+        return getNotificationsAtLevel(NotificationLevel.WARNING);
+    }
+
+    @Override
+    public void onNotification(final Notification notification) {
+        add(notification);
+    }
+
+    public void add(final Notification notification) {
+        final NotificationType notificationType = notification.getNotificationType();
+        final NotificationLevel notificationLevel = notification.getNotificationLevel();
+        if (notificationType==NotificationType.MODEL_VALIDATION) {
+            if (notificationLevel.compareTo(NotificationLevel.WARNING) >= 0) {
+                notificationRecorder.onNotification(notification);
+                if (!hasErrors && notificationLevel==NotificationLevel.ERROR) {
+                    hasErrors = true;
+                }
+                else if (!hasWarnings && notificationLevel==NotificationLevel.WARNING) {
+                    hasWarnings = true;
+                }
+            }
+            else {
+                throw new IllegalArgumentException("Validation notifications (of type "
+                        + NotificationType.MODEL_VALIDATION
+                        + ") are currently only supported at level "
+                        + NotificationLevel.WARNING
+                        + " or higher");
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Validation notifications are expected to have type " + NotificationType.MODEL_VALIDATION);
+        }
     }
 
     public boolean isValid() {

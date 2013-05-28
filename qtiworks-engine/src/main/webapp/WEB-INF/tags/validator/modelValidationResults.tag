@@ -1,7 +1,7 @@
 <%--
 
 This fragment formats the model validation items recorded within an
-AbstractValidationResult
+AssessmentObjectValidationResult
 
 Copyright (c) 2012-2013, The University of Edinburgh.
 All Rights Reserved
@@ -11,7 +11,7 @@ All Rights Reserved
 <%@ taglib prefix="utils" uri="http://www.ph.ed.ac.uk/utils" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
-<%@ attribute name="validationResult" required="true" type="uk.ac.ed.ph.jqtiplus.validation.AbstractValidationResult" %>
+<%@ attribute name="validationResult" required="true" type="uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult" %>
 
 <c:set var="resolvedAssessmentObject" value="${validationResult.resolvedAssessmentObject}"/>
 <c:set var="rootNodeLookup" value="${resolvedAssessmentObject.rootNodeLookup}"/>
