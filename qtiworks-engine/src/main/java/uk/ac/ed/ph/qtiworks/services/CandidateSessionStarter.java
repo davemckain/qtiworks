@@ -231,14 +231,13 @@ public class CandidateSessionStarter {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Create fresh JQTI+ state Object and try to create controller */
-        final ItemSessionState itemSessionState = new ItemSessionState();
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
-                itemSessionState, notificationRecorder);
+        final ItemSessionController itemSessionController = candidateDataServices.createNewItemSessionStateAndController(delivery, notificationRecorder);
         if (itemSessionController==null) {
             return handleStartupExplosion(delivery, candidate, exitUrl);
         }
 
         /* Try to Initialise JQTI+ state */
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
         try {
             final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
             itemSessionController.initialize(timestamp);

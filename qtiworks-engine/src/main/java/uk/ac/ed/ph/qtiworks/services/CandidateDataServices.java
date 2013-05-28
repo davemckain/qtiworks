@@ -242,6 +242,54 @@ public class CandidateDataServices {
         return event;
     }
 
+    /**
+     * Attempts to create a fresh {@link ItemSessionState} wrapped into a {@link ItemSessionController}
+     * for the given {@link Delivery}.
+     * <p>
+     * This will return null if the item can't be started because its {@link ItemProcessingMap}
+     * can't be created, e.g. if its XML can't be parsed.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     * @return
+     */
+    public ItemSessionController createNewItemSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
+        ensureItemDelivery(delivery);
+
+        /* Resolve the underlying JQTI+ object */
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
+        if (itemProcessingMap==null) {
+            return null;
+        }
+
+        /* Create fresh state for session */
+        final ItemSessionState itemSessionState = new ItemSessionState();
+
+        /* Create config for ItemSessionController */
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        itemSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(itemDeliverySettings));
+        itemSessionControllerSettings.setMaxAttempts(itemDeliverySettings.getMaxAttempts());
+
+        /* Create controller and wire up notification recorder */
+        final ItemSessionController result = new ItemSessionController(jqtiExtensionManager,
+                itemSessionControllerSettings, itemProcessingMap, itemSessionState);
+        if (notificationRecorder!=null) {
+            result.addNotificationListener(notificationRecorder);
+        }
+        return result;
+    }
+
+    /**
+     * Extracts the {@link ItemSessionState} corresponding to the given {@link CandidateEvent}
+     * and wraps it in a {@link ItemSessionController}.
+     * <p>
+     * It is assumed that the item was runnable, so this will never return null.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     */
     public ItemSessionController createItemSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
         final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
@@ -249,6 +297,14 @@ public class CandidateDataServices {
         return createItemSessionController(delivery, itemSessionState, notificationRecorder);
     }
 
+    /**
+     * Wraps the given {@link ItemSessionState} in a {@link ItemSessionController}.
+     * <p>
+     * It is assumed that the item was runnable, so this will never return null.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     */
     public ItemSessionController createItemSessionController(final Delivery delivery,
             final ItemSessionState itemSessionState,  final NotificationRecorder notificationRecorder) {
         ensureItemDelivery(delivery);
@@ -258,7 +314,7 @@ public class CandidateDataServices {
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
         if (itemProcessingMap==null) {
-            return null;
+            throw new QtiWorksLogicException("Expected this item to be runnable");
         }
 
         /* Create config for ItemSessionController */
@@ -330,6 +386,18 @@ public class CandidateDataServices {
         return TestSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
+
+    /**
+     * Attempts to create a fresh {@link TestSessionState} wrapped into a {@link TestSessionController}
+     * for the given {@link Delivery}.
+     * <p>
+     * This will return null if the test can't be started because its {@link TestProcessingMap}
+     * can't be created, e.g. if its XML can't be parsed.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     * @return
+     */
     public TestSessionController createNewTestSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
         ensureTestDelivery(delivery);
 
@@ -364,6 +432,15 @@ public class CandidateDataServices {
         return result;
     }
 
+    /**
+     * Extracts the {@link TestSessionState} corresponding to the given {@link CandidateEvent}
+     * and wraps it in a {@link TestSessionController}.
+     * <p>
+     * It is assumed that the test was runnable, so this will never return null.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     */
     public TestSessionController createTestSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
         final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
@@ -371,6 +448,14 @@ public class CandidateDataServices {
         return createTestSessionController(delivery, testSessionState, notificationRecorder);
     }
 
+    /**
+     * Wraps the given {@link TestSessionState} in a {@link TestSessionController}.
+     * <p>
+     * It is assumed that the test was runnable, so this will never return null.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     */
     public TestSessionController createTestSessionController(final Delivery delivery,
             final TestSessionState testSessionState,  final NotificationRecorder notificationRecorder) {
         ensureTestDelivery(delivery);
