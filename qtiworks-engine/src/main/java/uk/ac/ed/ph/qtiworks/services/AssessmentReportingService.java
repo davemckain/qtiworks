@@ -272,7 +272,7 @@ public class AssessmentReportingService {
         final ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
         boolean hasIncludedSomething = false;
         for (final CandidateSession candidateSession : candidateSessions) {
-            if (candidateSession.isClosed() || candidateSession.isTerminated()) {
+            if (!candidateSession.isExploded() && (candidateSession.isClosed() || candidateSession.isTerminated())) {
                 addAssessmentReport(zipOutputStream, candidateSession);
                 hasIncludedSomething = true;
             }
