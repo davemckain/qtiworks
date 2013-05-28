@@ -3,7 +3,7 @@
 
 Renders the author/debug view of a standalone assessmentItem
 
-Input document: assessmentItem (slightly inappropriate here, but never mind!)
+Input document: doesn't matter
 
 -->
 <xsl:stylesheet version="2.0"

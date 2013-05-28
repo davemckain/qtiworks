@@ -445,7 +445,7 @@ public class AssessmentRenderer {
         xsltParameters.put("itemSessionState", itemSessionStateDocument.getDocumentElement());
 
         /* Perform transform */
-        doTransform(request, itemAuthorViewXsltUri, xsltParameters, result);
+        doTransform(request, null, itemAuthorViewXsltUri, xsltParameters, result);
     }
 
     /**
@@ -479,7 +479,7 @@ public class AssessmentRenderer {
         xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
         xsltParameters.put("testSystemId", request.getAssessmentResourceUri().toString());
 
-        doTransform(request, testAuthorViewXsltUri, xsltParameters, result);
+        doTransform(request, null, testAuthorViewXsltUri, xsltParameters, result);
     }
 
     //----------------------------------------------------
