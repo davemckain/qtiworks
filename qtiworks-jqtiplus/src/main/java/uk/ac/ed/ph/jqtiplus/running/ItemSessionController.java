@@ -320,7 +320,7 @@ public final class ItemSessionController extends ItemProcessingController implem
                 templateProcessingCompleted = doTemplateProcessingRun(++templateProcessingAttemptNumber);
             }
             if (templateProcessingAttemptNumber>1) {
-                fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
+                fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times in order to satisfy templateConstraint");
             }
 
             /* Reset OVs and RVs session */
