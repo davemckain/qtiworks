@@ -35,9 +35,11 @@ Input document: doesn't matter
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"/>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"/>
         <script src="{$webappContextPath}/includes/qtiworks.js?{$qtiWorksVersion}"/>
+
+        <!-- QTIWorks assessment styling -->
+        <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks exploded">
-        <xsl:call-template name="maybeAddAuthoringLink"/>
         <div class="container_12">
           <header>
             <h1>QTIWorks</h1>
@@ -50,12 +52,12 @@ Input document: doesn't matter
               <ul>
                 <li>
                   The most likely reasons for failure is bad or invalid assessment XML.
-                  Please validate your assessment to find and diagnose problems.
+                  Please <a href="{$webappContextPath}{$validationUrl}">validate this assessment</a> to find and diagnose problems.
                 </li>
                 <li>
                   If your assessment is valid but is not working correctly, then there
                   may be a logic problem within QTIWorks. Please contact your QTIWorks
-                  support for guidance, sending them this assessment for diagnosis.
+                  support contact for guidance, sending them this assessment for diagnosis.
                 </li>
               </ul>
             </xsl:when>
