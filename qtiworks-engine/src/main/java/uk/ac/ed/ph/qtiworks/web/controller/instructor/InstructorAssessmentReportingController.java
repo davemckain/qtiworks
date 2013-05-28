@@ -105,8 +105,8 @@ public class InstructorAssessmentReportingController {
     public String terminateAllCandidateSessions(final RedirectAttributes redirectAttributes, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final int terminated = assessmentProctoringService.terminateCandidateSessionsForDelivery(did);
-        instructorRouter.addFlashMessage(redirectAttributes, "Terminated " + terminated + " candidate session" + (terminated>1 ? "s" : ""));
-        return instructorRouter.buildDeliveryRouting(did).get("candidateSessions");
+        instructorRouter.addFlashMessage(redirectAttributes, "Terminated " + terminated + " candidate session" + (terminated!=1 ? "s" : ""));
+        return instructorRouter.buildInstructorRedirect("/delivery/" + did + "/candidate-sessions");
     }
 
     @RequestMapping(value="/delivery/candidate-summary-report-{did}.csv", method=RequestMethod.GET)
