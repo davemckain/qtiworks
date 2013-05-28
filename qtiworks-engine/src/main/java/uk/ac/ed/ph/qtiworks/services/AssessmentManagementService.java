@@ -74,7 +74,6 @@ import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.InputStream;
@@ -333,26 +332,6 @@ public class AssessmentManagementService {
         logger.debug("Updated Assessment #{} to have package #{}", assessment.getId(), newAssessmentPackage.getId());
         auditLogger.recordEvent("Updated Assessment #" + assessment.getId() + " with AssessmentPackage #" + newAssessmentPackage.getId());
         return assessment;
-    }
-
-    //-------------------------------------------------
-    // Not implemented yet
-
-    /**
-     * DEV NOTES:
-     *
-     * - Forbid deletion of the only remaining package, as that ensures there's always a most
-     *   recent package
-     */
-    @Transactional(propagation=Propagation.REQUIRED)
-    @SuppressWarnings("unused")
-    @ToRefactor
-    public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage)
-            throws AssessmentStateException, PrivilegeException {
-        /* In order to do this correctly, we need to delete all state that might have
-         * been associated with this package as well, so we'll come back to this...
-         */
-        throw new QtiLogicException("Not yet implemented!");
     }
 
     //-------------------------------------------------
