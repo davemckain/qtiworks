@@ -92,7 +92,7 @@ instructorAssessmentRouting (action -> URL)
 
   <ul>
     <li><a href="${utils:escapeLink(deliveryRouting['edit'])}">Edit Delivery Properties</a></li>
-    <c:if test="${assessmentPackage.launchable}">
+    <c:if test="${true or assessmentPackage.launchable}">
       <li><page:postLink path="${utils:escapeLink(deliveryRouting['try'])}" title="Try Out"/></li>
     </c:if>
     <li><page:postLink path="${deliveryRouting['delete']}"

@@ -148,6 +148,7 @@ public class AssessmentReportingService {
                 candidate.getEmailAddress(),
                 candidateSession.isClosed(),
                 candidateSession.isTerminated(),
+                candidateSession.isExploded(),
                 numericOutcomeValues,
                 otherOutcomeValues);
 
@@ -230,6 +231,7 @@ public class AssessmentReportingService {
                     candidate.getEmailAddress(),
                     candidateSession.isClosed(),
                     candidateSession.isTerminated(),
+                    candidateSession.isExploded(),
                     numericOutcomeValues,
                     otherOutcomeValues);
             rows.add(row);
