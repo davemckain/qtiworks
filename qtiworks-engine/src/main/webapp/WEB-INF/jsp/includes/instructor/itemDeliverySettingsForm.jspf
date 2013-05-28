@@ -244,6 +244,25 @@ itemDeliverySettingsTemplate - form backing template
     </div>
     <div class="clear"></div>
   </fieldset>
+  <fieldset>
+    <legend>Advanced Controls</legend>
+    <div class="stdFormRow">
+      <div class="grid_4">
+        <label for="templateProcessingLimit">Template Processing Limit:</label>
+      </div>
+      <div class="grid_3">
+        <form:input path="templateProcessingLimit" type="xnumber" />
+      </div>
+      <div class="grid_5">
+        <aside>
+          Enter a positive integer here to override QTIWorks' default
+          value for the number of template processing runs that will be
+          executed before giving up while trying to satisfy templateConstraints.
+        </aside>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </fieldset>
   <div class="stdFormRow">
     <div class="grid_4">
       <label for="submit">Hit "Save" to save these settings</label>

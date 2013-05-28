@@ -510,6 +510,9 @@ public class AssessmentManagementService {
     }
 
     private void mergeItemDeliverySettings(final ItemDeliverySettingsTemplate template, final ItemDeliverySettings target) {
+        target.setAuthorMode(template.isAuthorMode());
+        target.setTitle(template.getTitle().trim());
+        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setAllowEnd(template.isAllowEnd());
         target.setAllowHardResetWhenEnded(template.isAllowHardResetWhenEnded());
         target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
@@ -518,13 +521,14 @@ public class AssessmentManagementService {
         target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
         target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
-        target.setAuthorMode(template.isAuthorMode());
         target.setMaxAttempts(template.getMaxAttempts());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
-        target.setTitle(template.getTitle().trim());
     }
 
     public void mergeItemDeliverySettings(final ItemDeliverySettings template, final ItemDeliverySettingsTemplate target) {
+        target.setAuthorMode(template.isAuthorMode());
+        target.setTitle(template.getTitle());
+        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setAllowEnd(template.isAllowEnd());
         target.setAllowHardResetWhenEnded(template.isAllowHardResetWhenEnded());
         target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
@@ -533,14 +537,12 @@ public class AssessmentManagementService {
         target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
         target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
-        target.setAuthorMode(template.isAuthorMode());
         target.setMaxAttempts(template.getMaxAttempts());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
-        target.setTitle(template.getTitle());
     }
 
     //-------------------------------------------------
-    // CRUD for TEstDeliverySettings
+    // CRUD for TestDeliverySettings
 
     public TestDeliverySettings lookupTestDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -598,11 +600,13 @@ public class AssessmentManagementService {
 
     private void mergeTestDeliverySettings(final TestDeliverySettingsTemplate template, final TestDeliverySettings target) {
         target.setAuthorMode(template.isAuthorMode());
+        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setTitle(template.getTitle().trim());
     }
 
     public void mergeTestDeliverySettings(final TestDeliverySettings template, final TestDeliverySettingsTemplate target) {
         target.setAuthorMode(template.isAuthorMode());
+        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setTitle(template.getTitle());
     }
 

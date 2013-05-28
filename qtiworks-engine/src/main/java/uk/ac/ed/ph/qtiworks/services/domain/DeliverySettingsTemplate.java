@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -56,6 +57,9 @@ public abstract class DeliverySettingsTemplate {
     private String title;
 
     private boolean authorMode;
+
+    @Min(0)
+    private int templateProcessingLimit;
 
     //------------------------------------------------------------
 
@@ -86,6 +90,15 @@ public abstract class DeliverySettingsTemplate {
 
     public final void setAuthorMode(final boolean authorMode) {
         this.authorMode = authorMode;
+    }
+
+
+    public int getTemplateProcessingLimit() {
+        return templateProcessingLimit;
+    }
+
+    public void setTemplateProcessingLimit(final int templateProcessingLimit) {
+        this.templateProcessingLimit = templateProcessingLimit;
     }
 
     //------------------------------------------------------------

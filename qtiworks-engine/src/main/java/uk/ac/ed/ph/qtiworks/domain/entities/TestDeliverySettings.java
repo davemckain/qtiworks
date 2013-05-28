@@ -61,7 +61,7 @@ public class TestDeliverySettings extends DeliverySettings implements BaseEntity
 
     //------------------------------------------------------------
 
-    /* Stuff will go here soon */
+    /* Additional stuff can be added here if required */
 
     //------------------------------------------------------------
 
