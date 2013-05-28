@@ -360,7 +360,6 @@ public class CandidateItemController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
-        final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -369,7 +368,7 @@ public class CandidateItemController {
         }
         else {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            candidateRenderingService.streamAssessmentFile(candidateSession, href, outputStreamer);
+            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
         }
     }
 

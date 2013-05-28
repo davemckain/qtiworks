@@ -219,10 +219,13 @@ public class CandidateRenderingService {
     private TerminatedRenderingRequest createTerminatedRenderingRequest(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions) {
         final Delivery delivery = candidateSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final DeliverySettings deliverySettings = delivery.getDeliverySettings();
+
         final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
         renderingRequest.setValidated(assessmentPackage.isValidated());
         renderingRequest.setValid(assessmentPackage.isValid());
         return renderingRequest;
@@ -561,12 +564,25 @@ public class CandidateRenderingService {
     //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
 
+    public void streamAssessmentFile(final long xid, final String sessionToken, final String fileSystemIdString,
+            final OutputStreamer outputStreamer)
+            throws CandidateForbiddenException, IOException, DomainEntityNotFoundException {
+        Assert.notNull(sessionToken, "sessionToken");
+        Assert.notNull(fileSystemIdString, "fileSystemIdString");
+        Assert.notNull(outputStreamer, "outputStreamer");
+        final CandidateSession candidateSession = lookupCandidateSession(xid, sessionToken);
+        streamAssessmentFile(candidateSession, fileSystemIdString, outputStreamer);
+    }
+
     public void streamAssessmentFile(final CandidateSession candidateSession, final String fileSystemIdString,
             final OutputStreamer outputStreamer)
             throws CandidateForbiddenException, IOException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(fileSystemIdString, "fileSystemIdString");
         Assert.notNull(outputStreamer, "outputStreamer");
+
+        /* We shall revoke candidate access to resources after the session has been terminated */
+        ensureSessionNotTerminated(candidateSession);
 
         /* Make sure requested file is whitelisted for access */
         final Delivery delivery = candidateSession.getDelivery();
@@ -630,9 +646,6 @@ public class CandidateRenderingService {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(outputStreamer, "outputStreamer");
 
-        /* Forbid results if the candidate session is closed */
-        ensureSessionNotTerminated(candidateSession);
-
         /* Make sure candidate can access authoring info */
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
@@ -663,9 +676,6 @@ public class CandidateRenderingService {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(outputStream, "outputStream");
 
-        /* Forbid results if the candidate session is closed */
-        ensureSessionNotTerminated(candidateSession);
-
         /* Make sure candidate can access authoring info */
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
@@ -693,9 +703,6 @@ public class CandidateRenderingService {
     generateValidationResult(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
         Assert.notNull(candidateSession, "candidateSession");
-
-        /* Forbid results if the candidate session is closed */
-        ensureSessionNotTerminated(candidateSession);
 
         /* Make sure candidate can access authoring info */
         ensureCallerMayAccessAuthorInfo(candidateSession);

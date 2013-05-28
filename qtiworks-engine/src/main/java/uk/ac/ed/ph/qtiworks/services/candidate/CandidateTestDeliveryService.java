@@ -37,23 +37,18 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateResponse;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
-import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
-import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.exception.QtiCandidateStateException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -73,8 +68,6 @@ import uk.ac.ed.ph.jqtiplus.types.ResponseData;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,12 +101,6 @@ public class CandidateTestDeliveryService {
 
     @Resource
     private CandidateAuditLogger candidateAuditLogger;
-
-    @Resource
-    private EntityGraphService entityGraphService;
-
-    @Resource
-    private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
     private CandidateUploadService candidateUploadService;
@@ -711,35 +698,5 @@ public class CandidateTestDeliveryService {
         candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
-    }
-
-    //----------------------------------------------------
-    // Access to additional package resources (e.g. images/CSS)
-
-    public void streamAssessmentFile(final CandidateSession candidateSession, final String fileSystemIdString,
-            final OutputStreamer outputStreamer)
-            throws CandidateForbiddenException, IOException {
-        Assert.notNull(candidateSession, "candidateSession");
-        Assert.notNull(fileSystemIdString, "fileSystemIdString");
-        Assert.notNull(outputStreamer, "outputStreamer");
-
-        /* Make sure requested file is whitelisted for access */
-        final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-        String resultingFileHref = null;
-        for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
-            final URI fileUri = assessmentPackageFileService.createAssessmentFileUri(assessmentPackage, safeFileHref);
-            if (fileUri.toString().equals(fileSystemIdString)) {
-                resultingFileHref = safeFileHref;
-                break;
-            }
-        }
-        if (resultingFileHref==null) {
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_BLACKLISTED_ASSESSMENT_FILE);
-            return;
-        }
-
-        /* Finally stream the required resource */
-        assessmentPackageFileService.streamAssessmentPackageFile(assessmentPackage, resultingFileHref, outputStreamer);
     }
 }

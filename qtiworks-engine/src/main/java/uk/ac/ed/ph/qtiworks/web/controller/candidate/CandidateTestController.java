@@ -411,7 +411,6 @@ public class CandidateTestController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
-        final CandidateSession candidateSession = candidateTestDeliveryService.lookupCandidateTestSession(xid, sessionToken);
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -420,7 +419,7 @@ public class CandidateTestController {
         }
         else {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CandidateItemController.CACHEABLE_MAX_AGE);
-            candidateTestDeliveryService.streamAssessmentFile(candidateSession, href, outputStreamer);
+            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
         }
     }
 
