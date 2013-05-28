@@ -42,17 +42,17 @@ Common templates for item & test author views
       <ul class="summary">
         <xsl:if test="exists($errors)">
           <li class="errorSummary">
-            <a href="#notifications"><xsl:value-of select="count($errors)"/> Runtime Errors</a>
+            <a href="#notifications"><xsl:value-of select="count($errors)"/> Runtime Error<xsl:if test="count($errors)!=1">s</xsl:if></a>
           </li>
         </xsl:if>
         <xsl:if test="exists($warnings)">
           <li class="warnSummary">
-            <a href="#notifications"><xsl:value-of select="count($warnings)"/> Runtime Warnings</a>
+            <a href="#notifications"><xsl:value-of select="count($warnings)"/> Runtime Warning<xsl:if test="count($warnings)!=1">s</xsl:if></a>
           </li>
         </xsl:if>
         <xsl:if test="exists($infos)">
           <li class="infoSummary">
-            <a href="#notifications"><xsl:value-of select="count($infos)"/> Runtime Information Notifications</a>
+            <a href="#notifications"><xsl:value-of select="count($infos)"/> Runtime Information Notification<xsl:if test="count($notifications)!=1">s</xsl:if></a>
           </li>
         </xsl:if>
         <xsl:if test="$validated and not($valid)">
@@ -213,14 +213,17 @@ Common templates for item & test author views
             <xsl:call-template name="notificationsLevelPanel">
               <xsl:with-param name="level" select="'ERROR'"/>
               <xsl:with-param name="title" select="'Errors'"/>
+              <xsl:with-param name="class" select="'failure'"/>
             </xsl:call-template>
             <xsl:call-template name="notificationsLevelPanel">
               <xsl:with-param name="level" select="'WARNING'"/>
               <xsl:with-param name="title" select="'Warnings'"/>
+              <xsl:with-param name="class" select="'warnings'"/>
             </xsl:call-template>
             <xsl:call-template name="notificationsLevelPanel">
               <xsl:with-param name="level" select="'INFO'"/>
               <xsl:with-param name="title" select="'Informational'"/>
+              <xsl:with-param name="class" select="'success'"/>
             </xsl:call-template>
           </xsl:when>
           <xsl:otherwise>
@@ -236,9 +239,10 @@ Common templates for item & test author views
   <xsl:template name="notificationsLevelPanel" as="element(div)?">
     <xsl:param name="level" as="xs:string"/>
     <xsl:param name="title" as="xs:string"/>
+    <xsl:param name="class" as="xs:string"/>
     <xsl:variable name="notificationsAtLevel" select="$notifications[@level=$level]" as="element(qw:notification)*"/>
     <xsl:if test="exists($notificationsAtLevel)">
-      <div class="resultPanel">
+      <div class="resultPanel{if (exists($notificationsAtLevel)) then concat(' ', $class) else ''}">
         <h4><xsl:value-of select="concat($title, ' (', count($notificationsAtLevel), ')')"/></h4>
         <div class="details">
           <table class="notificationsTable">

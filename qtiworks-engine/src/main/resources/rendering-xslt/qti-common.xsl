@@ -510,13 +510,13 @@ rendering.
       <xsl:variable name="infos" select="$notifications[@level='INFO']" as="element(qw:notification)*"/>
       <ul class="summary">
         <xsl:if test="exists($errors)">
-          <li class="errorSummary"><xsl:value-of select="count($errors)"/> Runtime Errors</li>
+          <li class="errorSummary"><xsl:value-of select="count($errors)"/> Runtime Error<xsl:if test="count($errors)!=1">s</xsl:if></li>
         </xsl:if>
         <xsl:if test="exists($warnings)">
-          <li class="warnSummary"><xsl:value-of select="count($warnings)"/> Runtime Warnings</li>
+          <li class="warnSummary"><xsl:value-of select="count($warnings)"/> Runtime Warning<xsl:if test="count($warnings)!=1">s</xsl:if></li>
         </xsl:if>
         <xsl:if test="exists($infos)">
-          <li class="infoSummary"><xsl:value-of select="count($infos)"/> Runtime Information Notifications</li>
+          <li class="infoSummary"><xsl:value-of select="count($infos)"/> Runtime Information Notification<xsl:if test="count($notifications)!=1">s</xsl:if></li>
         </xsl:if>
         <xsl:if test="$validated and not($valid)">
           <li class="errorSummary">This assessment has validation errors or warnings</li>
