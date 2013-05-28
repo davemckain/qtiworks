@@ -27,34 +27,6 @@ All Rights Reserved
         <p>
           Additional validation of the resulting JQTI+ model of your XML was successful.
         </p>
-        <c:if test="${!empty validationResult.infos}">
-          <p>
-            The validation process generated some information messages, which are shown below.
-          </p>
-          <table>
-            <thead>
-              <tr>
-                <th class="center">Severity</th>
-                <th class="center">Node</th>
-                <th class="center">Line number</th>
-                <th class="center">Column number</th>
-                <th>Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              <c:forEach var="i" items="${validationResult.infos}">
-                <c:set var="node" value="${i.qtiNode}"/>
-                <tr>
-                 <td class="center">Information</td>
-                 <td class="center">${node!=null ? node.qtiClassName : 'Not available'}</td>
-                 <td class="center">${node!=null ? node.sourceLocation.lineNumber : '-'}</td>
-                 <td class="center">${node!=null ? node.sourceLocation.columnNumber : '-'}</td>
-                 <td><c:out value="${i.message}"/></td>
-                </tr>
-              </c:forEach>
-            </tbody>
-          </table>
-        </c:if>
       </div>
     </div>
   </c:when>
@@ -91,16 +63,6 @@ All Rights Reserved
               <c:set var="node" value="${i.qtiNode}"/>
               <tr>
                <td class="center">Warning</td>
-               <td class="center">${node!=null ? node.qtiClassName : 'Not available'}</td>
-               <td class="center">${node!=null ? node.sourceLocation.lineNumber : '-'}</td>
-               <td class="center">${node!=null ? node.sourceLocation.columnNumber : '-'}</td>
-               <td><c:out value="${i.message}"/></td>
-              </tr>
-            </c:forEach>
-            <c:forEach var="i" items="${validationResult.infos}">
-              <c:set var="node" value="${i.qtiNode}"/>
-              <tr>
-               <td class="center">Information</td>
                <td class="center">${node!=null ? node.qtiClassName : 'Not available'}</td>
                <td class="center">${node!=null ? node.sourceLocation.lineNumber : '-'}</td>
                <td class="center">${node!=null ? node.sourceLocation.columnNumber : '-'}</td>
