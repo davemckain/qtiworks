@@ -37,6 +37,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 
 import java.util.Date;
 import java.util.Set;
@@ -157,6 +158,24 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Column(name="valid")
     private boolean valid;
 
+    /**
+     * If validated, this flag determines whether the assessment can be launched.
+     * (This is determined by {@link RootNodeLookup#wasSuccessful()})
+     */
+    @Basic(optional=false)
+    @Column(name="launchable")
+    private boolean launchable;
+
+    /** Number of validation errors, used when <code>validated</code> is true */
+    @Basic(optional=false)
+    @Column(name="error_count")
+    private int errorCount;
+
+    /** Number of validation warnings, used when <code>validated</code> is true */
+    @Basic(optional=false)
+    @Column(name="warning_count")
+    private int warningCount;
+
     /** Hrefs of all QTI XML file resources declared within this package */
     @Lob
     @Type(type="org.hibernate.type.TextType")
@@ -268,6 +287,32 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
         this.validated = validated;
     }
 
+
+    public boolean isLaunchable() {
+        return launchable;
+    }
+
+    public void setLaunchable(final boolean launchable) {
+        this.launchable = launchable;
+    }
+
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(final int errorCount) {
+        this.errorCount = errorCount;
+    }
+
+
+    public int getWarningCount() {
+        return warningCount;
+    }
+
+    public void setWarningCount(final int warningCount) {
+        this.warningCount = warningCount;
+    }
 
     public boolean isValid() {
         return valid;

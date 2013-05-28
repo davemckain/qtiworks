@@ -36,11 +36,13 @@ package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -51,6 +53,7 @@ import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
 
@@ -83,6 +86,9 @@ public class AnonymousStandaloneRunner {
     private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
+    private EntityGraphService entityGraphService;
+
+    @Resource
     private DeliverySettingsDao deliverySettingsDao;
 
     @ModelAttribute
@@ -102,7 +108,8 @@ public class AnonymousStandaloneRunner {
     }
 
     @RequestMapping(value="/standalonerunner", method=RequestMethod.POST)
-    public String handleUploadAndRunForm(@Valid @ModelAttribute final StandaloneRunCommand command,
+    public String handleUploadAndRunForm(final Model model,
+            @Valid @ModelAttribute final StandaloneRunCommand command,
             final BindingResult errors) {
         /* Catch any binding errors */
         if (errors.hasErrors()) {
@@ -110,7 +117,13 @@ public class AnonymousStandaloneRunner {
         }
         try {
             final Assessment assessment = assessmentManagementService.importAssessment(command.getFile());
-            assessmentManagementService.validateAssessment(assessment); /* Do this to work out and store the validation result */
+            final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessment);
+            final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
+            if (!assessmentPackage.isLaunchable()) {
+                /* Assessment isn't launchable */
+                model.addAttribute("validationResult", validationResult);
+                return "standalonerunner/invalidUpload";
+            }
             final DeliverySettings deliverySettings = assessmentManagementService.requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
             final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
             final String exitUrl = "/web/anonymous/standalonerunner";

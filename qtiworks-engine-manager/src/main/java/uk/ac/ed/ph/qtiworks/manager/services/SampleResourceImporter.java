@@ -432,7 +432,11 @@ public class SampleResourceImporter {
         assessmentPackage.setSandboxPath(null);
         assessmentPackage.setImporter(owner);
         assessmentPackage.setValidated(true);
-        assessmentPackage.setValid(true); /* (We're only picking valid samples!) */
+        /* (We're only picking valid samples!) */
+        assessmentPackage.setValid(true);
+        assessmentPackage.setLaunchable(true);
+        assessmentPackage.setErrorCount(0);
+        assessmentPackage.setWarningCount(0);
 
         /* Create owning Assessment entity */
         final Assessment assessment = new Assessment();

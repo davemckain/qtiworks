@@ -185,14 +185,13 @@ public class AssessmentManagementService {
      * Creates and persists a new {@link Assessment} and initial {@link AssessmentPackage}
      * from the data provided by the given {@link InputStream} and having the given content type.
      * <p>
+     * Callers will want to call {@link #validateAssessment(Assessment)} before trying to run
+     * this new {@link Assessment}.
+     * <p>
      * Success post-conditions:
-     * - the {@link InputStream} is left open
      * - a new {@link AssessmentPackage} is persisted, and its data is safely stored in a sandbox
      *
-     * @param multipartFile
-     * @param contentType
-     * @param name for the resulting package. A default will be chosen if one is not provided.
-     *   The name will be silently truncated if it is too large for the underlying DB field.
+     * @param multipartFile data to be imported
      *
      * @throws PrivilegeException if the caller is not allowed to perform this action
      * @throws AssessmentPackageFileImportException
@@ -345,14 +344,20 @@ public class AssessmentManagementService {
 
     public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
         final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
+        return validateAssessmentPackage(currentAssessmentPackage);
+    }
 
+    public AssessmentObjectValidationResult<?> validateAssessmentPackage(final AssessmentPackage assessmentPackage) {
         /* Run the validation process */
-        final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(currentAssessmentPackage);
+        final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
 
         /* Persist results */
-        currentAssessmentPackage.setValidated(true);
-        currentAssessmentPackage.setValid(validationResult.isValid());
-        assessmentPackageDao.update(currentAssessmentPackage);
+        assessmentPackage.setValidated(true);
+        assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
+        assessmentPackage.setErrorCount(validationResult.getErrors().size());
+        assessmentPackage.setWarningCount(validationResult.getWarnings().size());
+        assessmentPackage.setValid(validationResult.isValid());
+        assessmentPackageDao.update(assessmentPackage);
 
         return validationResult;
     }
