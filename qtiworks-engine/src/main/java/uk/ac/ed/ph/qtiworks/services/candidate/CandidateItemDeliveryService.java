@@ -254,6 +254,9 @@ public class CandidateItemDeliveryService {
                 candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SUBMIT_COMMENT);
                 return null;
             }
+            catch (final RuntimeException e) {
+                return handleExplosion(candidateSession);
+            }
         }
 
         /* Attempt to bind responses */
@@ -291,6 +294,9 @@ public class CandidateItemDeliveryService {
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
             return null;
+        }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
         }
 
         /* Record resulting attempt and event */
@@ -362,6 +368,9 @@ public class CandidateItemDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, itemSessionState.isEnded() ? CandidatePrivilege.END_SESSION_WHEN_ENDED : CandidatePrivilege.END_SESSION_WHEN_INTERACTING);
             return null;
         }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession,
@@ -421,6 +430,9 @@ public class CandidateItemDeliveryService {
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, itemSessionState.isEnded() ? CandidatePrivilege.HARD_RESET_SESSION_WHEN_ENDED : CandidatePrivilege.HARD_RESET_SESSION_WHEN_INTERACTING);
             return null;
+        }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
         }
 
         /* Record and log event */
@@ -485,6 +497,9 @@ public class CandidateItemDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, itemSessionState.isEnded() ? CandidatePrivilege.SOFT_RESET_SESSION_WHEN_ENDED : CandidatePrivilege.SOFT_RESET_SESSION_WHEN_INTERACTING);
             return null;
         }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.RESET, itemSessionState);
@@ -548,6 +563,9 @@ public class CandidateItemDeliveryService {
                 candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_ENDED);
                 return null;
             }
+            catch (final RuntimeException e) {
+                return handleExplosion(candidateSession);
+            }
         }
 
         /* Record and log event */
@@ -601,6 +619,9 @@ public class CandidateItemDeliveryService {
             catch (final QtiCandidateStateException e) {
                 throw new QtiWorksLogicException("Unexpected exception", e);
             }
+            catch (final RuntimeException e) {
+                return handleExplosion(candidateSession);
+            }
             candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
             candidateSession.setClosed(true);
         }
@@ -614,6 +635,16 @@ public class CandidateItemDeliveryService {
         candidateSession.setTerminated(true);
         candidateSessionDao.update(candidateSession);
 
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+
+    private CandidateSession handleExplosion(final CandidateSession candidateSession) {
+        candidateSession.setExploded(true);
+        candidateSession.setTerminated(true);
+        candidateAuditLogger.logExplosion(candidateSession);
+        candidateSessionDao.update(candidateSession);
         return candidateSession;
     }
 }

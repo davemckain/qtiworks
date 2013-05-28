@@ -112,4 +112,8 @@ public class CandidateAuditLogger {
         logSessionAction(candidateSession, "forbid=" + privilege);
         throw new CandidateForbiddenException(candidateSession, privilege);
     }
+
+    public void logExplosion(final CandidateSession candidateSession) {
+        logSessionAction(candidateSession, "explosion");
+    }
 }

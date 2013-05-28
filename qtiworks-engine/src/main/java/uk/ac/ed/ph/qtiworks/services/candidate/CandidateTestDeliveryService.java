@@ -245,6 +245,9 @@ public class CandidateTestDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.MAKE_RESPONSES);
             return null;
         }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
+        }
 
         /* Note any responses that failed to bind */
         final ItemSessionState itemSessionState = testSessionState.getCurrentItemSessionState();
@@ -326,6 +329,9 @@ public class CandidateTestDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NONLINEAR_MENU);
             return null;
         }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -364,6 +370,9 @@ public class CandidateTestDeliveryService {
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SELECT_NONLINEAR_TEST_ITEM);
             return null;
+        }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
         }
 
         /* Record and log event */
@@ -404,6 +413,9 @@ public class CandidateTestDeliveryService {
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.FINISH_LINEAR_TEST_ITEM);
             return null;
+        }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
         }
 
         /* Update state */
@@ -448,6 +460,9 @@ public class CandidateTestDeliveryService {
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_TEST_PART);
             return null;
+        }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
         }
 
 
@@ -536,6 +551,9 @@ public class CandidateTestDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.REVIEW_TEST_ITEM);
             return null;
         }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -580,6 +598,9 @@ public class CandidateTestDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_TEST_ITEM);
             return null;
         }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
+        }
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
@@ -621,6 +642,9 @@ public class CandidateTestDeliveryService {
         catch (final QtiCandidateStateException e) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ADVANCE_TEST_PART);
             return null;
+        }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
         }
 
         CandidateTestEventType eventType;
@@ -684,6 +708,9 @@ public class CandidateTestDeliveryService {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.EXIT_TEST);
             return null;
         }
+        catch (final RuntimeException e) {
+            return handleExplosion(candidateSession);
+        }
 
         /* Update CandidateSession as appropriate */
         candidateSession.setTerminated(true);
@@ -697,6 +724,16 @@ public class CandidateTestDeliveryService {
         /* Record current result state (final) */
         candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
+        return candidateSession;
+    }
+
+    //----------------------------------------------------
+
+    private CandidateSession handleExplosion(final CandidateSession candidateSession) {
+        candidateSession.setExploded(true);
+        candidateSession.setTerminated(true);
+        candidateAuditLogger.logExplosion(candidateSession);
+        candidateSessionDao.update(candidateSession);
         return candidateSession;
     }
 }

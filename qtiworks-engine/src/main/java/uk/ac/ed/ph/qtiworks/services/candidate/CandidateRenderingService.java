@@ -192,10 +192,10 @@ public class CandidateRenderingService {
     private void renderCurrentCandidateItemSessionState(final CandidateSession candidateSession,
             final ItemRenderingOptions renderingOptions, final StreamResult result) {
         if (candidateSession.isExploded()) {
-            assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+            renderExploded(candidateSession, renderingOptions, result);
         }
         else if (candidateSession.isTerminated()) {
-            assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+            renderTerminated(candidateSession, renderingOptions, result);
         }
         else {
             /* Look up most recent event */
@@ -411,10 +411,10 @@ public class CandidateRenderingService {
     private void renderCurrentCandidateTestSessionState(final CandidateSession candidateSession,
             final TestRenderingOptions renderingOptions, final StreamResult result) {
         if (candidateSession.isExploded()) {
-            assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+            renderExploded(candidateSession, renderingOptions, result);
         }
         else if (candidateSession.isTerminated()) {
-            assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+            renderTerminated(candidateSession, renderingOptions, result);
         }
         else {
             /* Look up most recent event */
@@ -559,6 +559,16 @@ public class CandidateRenderingService {
         candidateAuditLogger.logTestAuthorViewRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderTestAuthorView(renderingRequest, notifications, result);
+    }
+
+    //----------------------------------------------------
+
+    private void renderExploded(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions, final StreamResult result) {
+        assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+    }
+
+    private void renderTerminated(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions, final StreamResult result) {
+        assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
     }
 
     //----------------------------------------------------
