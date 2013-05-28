@@ -156,14 +156,14 @@ Renders a standalone assessmentItem
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$hardResetAllowed">
+        <xsl:if test="$hardResetAllowed and $hasTemplateProcessing">
           <li>
             <form action="{$webappContextPath}{$hardResetUrl}" method="post">
               <input type="submit" value="Reinitialise{if ($isItemSessionEnded) then ' and play again' else ''}"/>
             </form>
           </li>
         </xsl:if>
-        <xsl:if test="$endAllowed">
+        <xsl:if test="$endAllowed and $hasResponseProcessing">
           <li>
             <form action="{$webappContextPath}{$endUrl}" method="post">
               <input type="submit" value="Finish and review"/>
