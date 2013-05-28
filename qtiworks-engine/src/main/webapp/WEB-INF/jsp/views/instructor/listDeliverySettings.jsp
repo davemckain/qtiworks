@@ -52,7 +52,7 @@ instructorAssessmentRouting
                     <c:out value="${deliverySettings.title}"/>
                   </a>
                 </h4>
-                <c:if test="${deliverySettings.prompt && !empty deliverySettings.prompt}">
+                <c:if test="${deliverySettings.class.simpleName=='ItemDeliverySettings' && !empty deliverySettings.prompt}">
                   <span class="title">"${fn:escapeXml(utils:trimSentence(deliverySettings.prompt, 200))}"</span>
                 </c:if>
               </td>
