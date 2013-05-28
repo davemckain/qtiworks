@@ -563,6 +563,9 @@ public class AssessmentRenderer {
 
         /* Pass common control parameters */
         xsltParameters.put("validated", Boolean.valueOf(request.isValidated()));
+        xsltParameters.put("launchable", Boolean.valueOf(request.isLaunchable()));
+        xsltParameters.put("errorCount", Integer.valueOf(request.getErrorCount()));
+        xsltParameters.put("warningCount", Integer.valueOf(request.getWarningCount()));
         xsltParameters.put("valid", Boolean.valueOf(request.isValid()));
         xsltParameters.put("authorMode", Boolean.valueOf(request.isAuthorMode()));
 

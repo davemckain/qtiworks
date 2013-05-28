@@ -61,8 +61,12 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
     @NotNull
     private URI assessmentResourceUri;
 
-    /** Is this assessment valid? */
+    /* Validation information copied from AssessmentPackage */
+
     private boolean validated;
+    private boolean launchable;
+    private int errorCount;
+    private int warningCount;
     private boolean valid;
 
     private boolean authorMode;
@@ -102,6 +106,33 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
 
     public void setValidated(final boolean validated) {
         this.validated = validated;
+    }
+
+
+    public boolean isLaunchable() {
+        return launchable;
+    }
+
+    public void setLaunchable(final boolean launchable) {
+        this.launchable = launchable;
+    }
+
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(final int errorCount) {
+        this.errorCount = errorCount;
+    }
+
+
+    public int getWarningCount() {
+        return warningCount;
+    }
+
+    public void setWarningCount(final int warningCount) {
+        this.warningCount = warningCount;
     }
 
 

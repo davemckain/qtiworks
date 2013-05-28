@@ -46,8 +46,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
 import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingRequest;
@@ -216,20 +216,6 @@ public class CandidateRenderingService {
         }
     }
 
-    private TerminatedRenderingRequest createTerminatedRenderingRequest(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions) {
-        final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-        final DeliverySettings deliverySettings = delivery.getDeliverySettings();
-
-        final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
-        renderingRequest.setValidated(assessmentPackage.isValidated());
-        renderingRequest.setValid(assessmentPackage.isValid());
-        return renderingRequest;
-    }
 
     private void renderItemEvent(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState,
             final ItemRenderingOptions renderingOptions, final StreamResult result) {
@@ -237,16 +223,10 @@ public class CandidateRenderingService {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
         final Delivery delivery = candidateSession.getDelivery();
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
         /* Create and partially configure rendering request */
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(itemDeliverySettings.isAuthorMode());
-        renderingRequest.setValidated(assessmentPackage.isValidated());
-        renderingRequest.setValid(assessmentPackage.isValid());
+        initRenderingRequest(candidateSession, renderingRequest, renderingOptions);
         renderingRequest.setItemSessionState(itemSessionState);
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
 
@@ -344,17 +324,9 @@ public class CandidateRenderingService {
     private void renderItemEventAuthorView(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState,
             final AuthorViewRenderingOptions renderingOptions, final StreamResult result) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-
-        /* Create and partially configure rendering request */
         final ItemAuthorViewRenderingRequest renderingRequest = new ItemAuthorViewRenderingRequest();
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        initRenderingRequest(candidateSession, renderingRequest, renderingOptions);
         renderingRequest.setItemSessionState(itemSessionState);
-        renderingRequest.setValidated(assessmentPackage.isValidated());
-        renderingRequest.setValid(assessmentPackage.isValid());
 
         candidateAuditLogger.logItemAuthorViewRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
@@ -439,18 +411,10 @@ public class CandidateRenderingService {
             final TestRenderingOptions renderingOptions, final StreamResult result) {
         final CandidateTestEventType testEventType = candidateEvent.getTestEventType();
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final Delivery delivery = candidateSession.getDelivery();
-        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
 
         /* Create and partially configure rendering request */
         final TestRenderingRequest renderingRequest = new TestRenderingRequest();
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(testDeliverySettings.isAuthorMode());
-        renderingRequest.setValidated(assessmentPackage.isValidated());
-        renderingRequest.setValid(assessmentPackage.isValid());
+        initRenderingRequest(candidateSession, renderingRequest, renderingOptions);
         renderingRequest.setTestSessionController(testSessionController);
 
         /* If session has terminated, render appropriate state and exit */
@@ -544,17 +508,9 @@ public class CandidateRenderingService {
     private void renderTestEventAuthorView(final CandidateEvent candidateEvent, final TestSessionController testSessionController,
             final AuthorViewRenderingOptions renderingOptions, final StreamResult result) {
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-
-        /* Create and partially configure rendering request */
         final TestAuthorViewRenderingRequest renderingRequest = new TestAuthorViewRenderingRequest();
-        renderingRequest.setRenderingOptions(renderingOptions);
-        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
-        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        initRenderingRequest(candidateSession, renderingRequest, renderingOptions);
         renderingRequest.setTestSessionController(testSessionController);
-        renderingRequest.setValidated(assessmentPackage.isValidated());
-        renderingRequest.setValid(assessmentPackage.isValid());
 
         candidateAuditLogger.logTestAuthorViewRendering(candidateEvent);
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
@@ -563,13 +519,6 @@ public class CandidateRenderingService {
 
     //----------------------------------------------------
 
-    private void renderExploded(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions, final StreamResult result) {
-        assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
-    }
-
-    private void renderTerminated(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions, final StreamResult result) {
-        assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
-    }
 
     //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
@@ -736,6 +685,39 @@ public class CandidateRenderingService {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
         return candidateDataServices.createTestSessionController(delivery,
                 testSessionState, notificationRecorder);
+    }
+
+    private void renderExploded(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions, final StreamResult result) {
+        assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+    }
+
+    private void renderTerminated(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions, final StreamResult result) {
+        assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+    }
+
+    //----------------------------------------------------
+
+    private TerminatedRenderingRequest createTerminatedRenderingRequest(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions) {
+        final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
+        initRenderingRequest(candidateSession, renderingRequest, renderingOptions);
+        return renderingRequest;
+    }
+
+    private <P extends AbstractRenderingOptions> void initRenderingRequest(final CandidateSession candidateSession,
+            final AbstractRenderingRequest<P> renderingRequest, final P renderingOptions) {
+        final Delivery delivery = candidateSession.getDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final DeliverySettings deliverySettings = delivery.getDeliverySettings();
+
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
+        renderingRequest.setValidated(assessmentPackage.isValidated());
+        renderingRequest.setLaunchable(assessmentPackage.isLaunchable());
+        renderingRequest.setErrorCount(assessmentPackage.getErrorCount());
+        renderingRequest.setWarningCount(assessmentPackage.getWarningCount());
+        renderingRequest.setValid(assessmentPackage.isValid());
     }
 
     //----------------------------------------------------

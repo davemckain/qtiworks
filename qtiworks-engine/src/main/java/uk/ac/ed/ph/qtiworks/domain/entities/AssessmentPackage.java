@@ -153,11 +153,6 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Column(name="validated")
     private boolean validated;
 
-    /** If validated, was this item/test found to be valid? */
-    @Basic(optional=false)
-    @Column(name="valid")
-    private boolean valid;
-
     /**
      * If validated, this flag determines whether the assessment can be launched.
      * (This is determined by {@link RootNodeLookup#wasSuccessful()})
@@ -175,6 +170,11 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="warning_count")
     private int warningCount;
+
+    /** If validated, was this item/test found to be valid? */
+    @Basic(optional=false)
+    @Column(name="valid")
+    private boolean valid;
 
     /** Hrefs of all QTI XML file resources declared within this package */
     @Lob

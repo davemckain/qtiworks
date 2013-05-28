@@ -46,8 +46,11 @@ rendering.
   <!-- Notifications produced during the event being rendered -->
   <xsl:param name="notifications" as="element(qw:notification)*"/>
 
-  <!-- Is this assessment valid? -->
+  <!-- Validation information -->
   <xsl:param name="validated" as="xs:boolean"/>
+  <xsl:param name="launchable" as="xs:boolean"/>
+  <xsl:param name="errorCount" as="xs:integer"/>
+  <xsl:param name="warningCount" as="xs:integer"/>
   <xsl:param name="valid" as="xs:boolean"/>
 
   <!-- FIXME: This is not used at the moment -->
