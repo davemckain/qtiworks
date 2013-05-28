@@ -52,6 +52,20 @@ header h1 a:hover {
   border-radius: 0.5em;
 }
 
+.errorMessage {
+  color: red;
+  font-weight: bold;
+  background: url(images/exclamation.png) 5px center no-repeat;
+  padding-left: 24px;
+}
+
+.warningMessage {
+  background: url(images/error.png) 5px center no-repeat;
+  font-weight: bold;
+  padding-left: 24px;
+}
+
+
 /* ========== Footer ========== */
 
 footer {

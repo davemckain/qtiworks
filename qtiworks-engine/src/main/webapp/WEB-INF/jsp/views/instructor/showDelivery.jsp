@@ -9,6 +9,7 @@ Model:
 
 delivery
 assessment
+assessmentPackage (most recent)
 assessmentRouting (action -> URL)
 deliveryRouting (action -> URL)
 instructorAssessmentRouting (action -> URL)
@@ -24,6 +25,15 @@ instructorAssessmentRouting (action -> URL)
     <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a>
   </nav>
   <h2>Delivery '${fn:escapeXml(delivery.title)}'</h2>
+
+  <c:choose>
+    <c:when test="${!assessmentPackage.launchable}">
+      <p class="errorMessage">The assessment corresponding to this Delivery is not launchable! You must fix this before you let candidates run it!</p>
+    </c:when>
+    <c:when test="${!assessmentPackage.valid}">
+      <p class="warningMessage">The assessment corresponding to this Delivery is not valid! You should fix this before you let candidates run it!</p>
+    </c:when>
+  </c:choose>
 
   <div class="grid_4">
     <div class="infoBox">
@@ -74,7 +84,7 @@ instructorAssessmentRouting (action -> URL)
       </ul>
     </c:when>
     <c:otherwise>
-      Details will appear here once you enable LTI for this Delivery.
+      <p>Details will appear here once you enable LTI for this Delivery.</p>
     </c:otherwise>
   </c:choose>
 
@@ -82,7 +92,9 @@ instructorAssessmentRouting (action -> URL)
 
   <ul>
     <li><a href="${utils:escapeLink(deliveryRouting['edit'])}">Edit Delivery Properties</a></li>
-    <li><page:postLink path="${utils:escapeLink(deliveryRouting['try'])}" title="Try Out"/></li>
+    <c:if test="${assessmentPackage.launchable}">
+      <li><page:postLink path="${utils:escapeLink(deliveryRouting['try'])}" title="Try Out"/></li>
+    </c:if>
     <li><page:postLink path="${deliveryRouting['delete']}"
       confirm="Are you sure? This will delete the Delivery and all candidate data collected for it."
       title="Delete Delivery"/></li>

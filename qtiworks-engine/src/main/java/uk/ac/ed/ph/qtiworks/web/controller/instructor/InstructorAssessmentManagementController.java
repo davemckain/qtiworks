@@ -409,6 +409,7 @@ public class InstructorAssessmentManagementController {
         final Assessment assessment = delivery.getAssessment();
         model.addAttribute(delivery);
         model.addAttribute(assessment);
+        model.addAttribute("assessmentPackage", entityGraphService.getCurrentAssessmentPackage(assessment));
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
         model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));
