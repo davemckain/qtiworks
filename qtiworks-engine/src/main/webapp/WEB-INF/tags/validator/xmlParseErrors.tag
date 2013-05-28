@@ -15,38 +15,37 @@ All Rights Reserved
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ attribute name="xmlParseResult" required="true" type="uk.ac.ed.ph.jqtiplus.xmlutils.XmlParseResult" %>
 
-<h4>Error summary</h4>
 <table>
   <thead>
     <tr>
-      <td>Severity</td>
-      <td>Line number</td>
-      <td>Column number</td>
-      <td>Error message</td>
+      <th>Severity</th>
+      <th>Line number</th>
+      <th>Column number</th>
+      <th>Error message</th>
     </tr>
   </thead>
   <tbody>
     <c:forEach var="i" items="${xmlParseResult.fatalErrors}">
       <tr>
-        <td>Fatal Error</td>
-        <td>${i.lineNumber}</td>
-        <td>${i.columnNumber}</td>
+        <td class="center">Fatal Error</td>
+        <td class="center">${i.lineNumber}</td>
+        <td class="center">${i.columnNumber}</td>
         <td><c:out value="${i.message}"/></td>
       </tr>
     </c:forEach>
     <c:forEach var="i" items="${xmlParseResult.errors}">
       <tr>
-        <td>Error</td>
-        <td>${i.lineNumber}</td>
-        <td>${i.columnNumber}</td>
+        <td class="center">Error</td>
+        <td class="center">${i.lineNumber}</td>
+        <td class="center">${i.columnNumber}</td>
         <td><c:out value="${i.message}"/></td>
       </tr>
     </c:forEach>
     <c:forEach var="i" items="${xmlParseResult.warnings}">
       <tr>
-        <td>Warning</td>
-        <td>${i.lineNumber}</td>
-        <td>${i.columnNumber}</td>
+        <td class="center">Warning</td>
+        <td class="center">${i.lineNumber}</td>
+        <td class="center">${i.columnNumber}</td>
         <td><c:out value="${i.message}"/></td>
       </tr>
     </c:forEach>

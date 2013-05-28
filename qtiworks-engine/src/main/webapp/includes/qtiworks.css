@@ -356,12 +356,14 @@ li.infoSummary {
   margin: 1em;
 }
 
-.resultPanel table th, .resultPanel table td {
+.resultPanel table th,
+.resultPanel table td {
   padding: 0.5em;
   border: 1px solid #ccdbf0;
 }
 
-.resultPanel table td.center, .resultPanel table th.center {
+.resultPanel table td.center,
+.resultPanel table th.center {
   text-align: center;
 }
 
