@@ -154,6 +154,14 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Column(name="is_terminated") /* NB: MySQL reserves the keyword 'terminated'! */
     private boolean terminated;
 
+    /**
+     * Flag to indicate if this session blew up while running, either because
+     * the assessment was not runnable, or because of a logic error.
+     */
+    @Basic(optional=false)
+    @Column(name="exploded")
+    private boolean exploded;
+
     /** (Currently used for cascading deletion only - upgrade if required) */
     @SuppressWarnings("unused")
     @OneToMany(mappedBy="candidateSession", cascade=CascadeType.REMOVE)
@@ -247,6 +255,15 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
         this.terminated = terminated;
     }
 
+
+    public boolean isExploded() {
+        return exploded;
+    }
+
+    public void setExploded(final boolean exploded) {
+        this.exploded = exploded;
+    }
+
     //------------------------------------------------------------
 
     @Override
@@ -254,6 +271,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(xid=" + xid
                 + ",closed=" + closed
+                + ",exploded=" + exploded
                 + ",terminated=" + terminated
                 + ")";
     }

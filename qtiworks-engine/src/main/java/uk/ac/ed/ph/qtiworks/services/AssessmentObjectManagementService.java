@@ -80,40 +80,58 @@ public class AssessmentObjectManagementService {
         this.cacheHitCount = 0;
     }
 
+    /**
+     * Returns a possibly cached {@link ItemProcessingMap} for the given {@link AssessmentPackage}.
+     * Returns null if the {@link AssessmentPackage} wasn't valid enough to generate an {@link ItemProcessingMap}
+     */
     public ItemProcessingMap getItemProcessingMap(final AssessmentPackage assessmentPackage) {
         final Long assessmentPackageId = assessmentPackage.getId();
-        ItemProcessingMap result;
+        ItemProcessingMap result = null;
         synchronized (cache) {
-            result = (ItemProcessingMap) cache.get(assessmentPackageId);
-            if (result!=null) {
-                logger.debug("Cache HIT for package {}", assessmentPackage);
+            if (cache.containsKey(assessmentPackageId)) {
+                logger.debug("Cache HIT for package #{}", assessmentPackage);
+                result = (ItemProcessingMap) cache.get(assessmentPackageId);
                 cacheHitCount++;
             }
             else {
-                logger.debug("Cache MISS for package {}. Reading and resolving XML", assessmentPackage);
+                logger.debug("Cache MISS for package #{}. Reading and resolving XML", assessmentPackage);
                 cacheMissCount++;
-                final ResolvedAssessmentItem resolvedAssessmentItem = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
-                result = new ItemProcessingInitializer(resolvedAssessmentItem, assessmentPackage.isValid()).initialize();
+                try {
+                    final ResolvedAssessmentItem resolvedAssessmentItem = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
+                    result = new ItemProcessingInitializer(resolvedAssessmentItem, assessmentPackage.isValid()).initialize();
+                }
+                catch (final RuntimeException e) {
+                    logger.info("Failed to create ItemProcessingMap for package #{}", assessmentPackageId);
+                }
                 cache.put(assessmentPackageId, result);
             }
         }
         return result;
     }
 
+    /**
+     * Returns a possibly cached {@link TestProcessingMap} for the given {@link AssessmentPackage}.
+     * Returns null if the {@link AssessmentPackage} wasn't valid enough to generate an {@link TestProcessingMap}
+     */
     public TestProcessingMap getTestProcessingMap(final AssessmentPackage assessmentPackage) {
         final Long assessmentPackageId = assessmentPackage.getId();
-        TestProcessingMap result;
+        TestProcessingMap result = null;
         synchronized (cache) {
-            result = (TestProcessingMap) cache.get(assessmentPackageId);
-            if (result!=null) {
-                logger.debug("Cache HIT for package {}", assessmentPackage);
+            if (cache.containsKey(assessmentPackageId)) {
+                logger.debug("Cache HIT for package #{}", assessmentPackage);
+                result = (TestProcessingMap) cache.get(assessmentPackageId);
                 cacheHitCount++;
             }
             else {
-                logger.debug("Cache MISS for package {}. Reading and resolving XML", assessmentPackage);
+                logger.debug("Cache MISS for package #{}. Reading and resolving XML", assessmentPackage);
                 cacheMissCount++;
-                final ResolvedAssessmentTest resolvedAssessmentTest = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
-                result = new TestProcessingInitializer(resolvedAssessmentTest, assessmentPackage.isValid()).initialize();
+                try {
+                    final ResolvedAssessmentTest resolvedAssessmentTest = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
+                    result = new TestProcessingInitializer(resolvedAssessmentTest, assessmentPackage.isValid()).initialize();
+                }
+                catch (final RuntimeException e) {
+                    logger.info("Failed to create TestProcessingMap for package #{}", assessmentPackageId);
+                }
                 cache.put(assessmentPackageId, result);
             }
         }

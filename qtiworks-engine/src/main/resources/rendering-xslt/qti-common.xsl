@@ -33,8 +33,12 @@ rendering.
   <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="validationUrl" as="xs:string" required="yes"/>
 
-  <!-- URI of the Item or Test being rendered -->
-  <xsl:param name="systemId" as="xs:string" required="yes"/>
+  <!--
+  URI of the Item or Test being rendered.
+  Will be passed during 'proper' rendering only; will not be passed when
+  rendering exploded & terminated states.
+  -->
+  <xsl:param name="systemId" as="xs:string?"/>
 
   <!-- Set to true to include author debug information -->
   <xsl:param name="authorMode" as="xs:boolean" required="yes"/>

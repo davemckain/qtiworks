@@ -254,9 +254,12 @@ public class CandidateDataServices {
         ensureItemDelivery(delivery);
         Assert.notNull(itemSessionState, "itemSessionState");
 
-        /* Resolve the underlying JQTI+ object */
+        /* Try to resolve the underlying JQTI+ object */
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
+        if (itemProcessingMap==null) {
+            return null;
+        }
 
         /* Create config for ItemSessionController */
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
@@ -333,6 +336,9 @@ public class CandidateDataServices {
         /* Resolve the underlying JQTI+ object */
         final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
         final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
+        if (testProcessingMap==null) {
+            return null;
+        }
 
         /* Generate a test plan for this session */
         final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
@@ -355,6 +361,40 @@ public class CandidateDataServices {
         if (notificationRecorder!=null) {
             result.addNotificationListener(notificationRecorder);
         }
+        return result;
+    }
+
+    public TestSessionController createTestSessionController(final CandidateEvent candidateEvent,
+            final NotificationRecorder notificationRecorder) {
+        final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
+        final TestSessionState testSessionState = loadTestSessionState(candidateEvent);
+        return createTestSessionController(delivery, testSessionState, notificationRecorder);
+    }
+
+    public TestSessionController createTestSessionController(final Delivery delivery,
+            final TestSessionState testSessionState,  final NotificationRecorder notificationRecorder) {
+        ensureTestDelivery(delivery);
+        Assert.notNull(testSessionState, "testSessionState");
+
+        /* Try to resolve the underlying JQTI+ object */
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
+        if (testProcessingMap==null) {
+            return null;
+        }
+
+        /* Create config for TestSessionController */
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
+        testSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(testDeliverySettings));
+
+        /* Create controller and wire up notification recorder (if passed) */
+        final TestSessionController result = new TestSessionController(jqtiExtensionManager,
+                testSessionControllerSettings, testProcessingMap, testSessionState);
+        if (notificationRecorder!=null) {
+            result.addNotificationListener(notificationRecorder);
+        }
+
         return result;
     }
 
@@ -409,37 +449,6 @@ public class CandidateDataServices {
         }
 
         return event;
-    }
-
-    public TestSessionController createTestSessionController(final CandidateEvent candidateEvent,
-            final NotificationRecorder notificationRecorder) {
-        final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
-        final TestSessionState testSessionState = loadTestSessionState(candidateEvent);
-        return createTestSessionController(delivery, testSessionState, notificationRecorder);
-    }
-
-    public TestSessionController createTestSessionController(final Delivery delivery,
-            final TestSessionState testSessionState,  final NotificationRecorder notificationRecorder) {
-        ensureTestDelivery(delivery);
-        Assert.notNull(testSessionState, "testSessionState");
-
-        /* Resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-        final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
-
-        /* Create config for TestSessionController */
-        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
-        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
-        testSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(testDeliverySettings));
-
-        /* Create controller and wire up notification recorder (if passed) */
-        final TestSessionController result = new TestSessionController(jqtiExtensionManager,
-                testSessionControllerSettings, testProcessingMap, testSessionState);
-        if (notificationRecorder!=null) {
-            result.addNotificationListener(notificationRecorder);
-        }
-
-        return result;
     }
 
     public TestSessionState computeCurrentTestSessionState(final CandidateSession candidateSession)  {

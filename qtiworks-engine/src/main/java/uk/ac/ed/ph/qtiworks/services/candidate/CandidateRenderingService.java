@@ -53,6 +53,7 @@ import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingRequest;
+import uk.ac.ed.ph.qtiworks.rendering.TerminatedRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestAuthorViewRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
@@ -140,9 +141,6 @@ public class CandidateRenderingService {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
-
-
-
     //----------------------------------------------------
     // Item rendering
 
@@ -165,19 +163,6 @@ public class CandidateRenderingService {
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
 
-        /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-
-        /* Load the ItemSessionState */
-        final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(latestEvent);
-
-        /* Touch the session's duration state if appropriate */
-        if (itemSessionState.isEntered() && !itemSessionState.isEnded() && !itemSessionState.isSuspended()) {
-            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-            final ItemSessionController itemSessionController = createItemSessionController(candidateSession, itemSessionState);
-            itemSessionController.touchDuration(timestamp);
-        }
-
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
         try {
@@ -185,7 +170,7 @@ public class CandidateRenderingService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderItemEvent(latestEvent, itemSessionState, renderingOptions, new StreamResult(resultOutputStream));
+                renderCurrentCandidateItemSessionState(candidateSession, renderingOptions, new StreamResult(resultOutputStream));
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -202,6 +187,45 @@ public class CandidateRenderingService {
                 throw new QtiWorksRuntimeException("Could not delete result file " + resultFile.getPath());
             }
         }
+    }
+
+    private void renderCurrentCandidateItemSessionState(final CandidateSession candidateSession,
+            final ItemRenderingOptions renderingOptions, final StreamResult result) {
+        if (candidateSession.isExploded()) {
+            assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+        }
+        else if (candidateSession.isTerminated()) {
+            assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+        }
+        else {
+            /* Look up most recent event */
+            final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+
+            /* Load the ItemSessionState */
+            final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(latestEvent);
+
+            /* Touch the session's duration state if appropriate */
+            if (itemSessionState.isEntered() && !itemSessionState.isEnded() && !itemSessionState.isSuspended()) {
+                final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+                final ItemSessionController itemSessionController = createItemSessionController(candidateSession, itemSessionState);
+                itemSessionController.touchDuration(timestamp);
+            }
+
+            /* Render event */
+            renderItemEvent(latestEvent, itemSessionState, renderingOptions, result);
+        }
+    }
+
+    private TerminatedRenderingRequest createTerminatedRenderingRequest(final CandidateSession candidateSession, final AbstractRenderingOptions renderingOptions) {
+        final Delivery delivery = candidateSession.getDelivery();
+        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final TerminatedRenderingRequest renderingRequest = new TerminatedRenderingRequest();
+        renderingRequest.setRenderingOptions(renderingOptions);
+        renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
+        renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
+        renderingRequest.setValidated(assessmentPackage.isValidated());
+        renderingRequest.setValid(assessmentPackage.isValid());
+        return renderingRequest;
     }
 
     private void renderItemEvent(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState,
@@ -224,7 +248,7 @@ public class CandidateRenderingService {
         renderingRequest.setPrompt(itemDeliverySettings.getPrompt());
 
         /* If session has terminated, render appropriate state and exit */
-        if (candidateSession.isTerminated() || itemSessionState.isExited()) {
+        if (itemSessionState.isExited()) {
             assessmentRenderer.renderTeminated(renderingRequest, result);
             return;
         }
@@ -355,19 +379,6 @@ public class CandidateRenderingService {
         Assert.notNull(renderingOptions, "renderingOptions");
         Assert.notNull(outputStreamer, "outputStreamer");
 
-        /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-
-        /* Load the TestSessionState and create a TestSessionController */
-        final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(latestEvent);
-        final TestSessionController testSessionController = createTestSessionController(candidateSession, testSessionState);
-
-        /* Touch the session's duration state if appropriate */
-        if (testSessionState.isEntered() && !testSessionState.isEnded()) {
-            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-            testSessionController.touchDurations(timestamp);
-        }
-
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
         try {
@@ -375,7 +386,7 @@ public class CandidateRenderingService {
             FileOutputStream resultOutputStream = null;
             try {
                 resultOutputStream = new FileOutputStream(resultFile);
-                renderTestEvent(latestEvent, testSessionController, renderingOptions, new StreamResult(resultOutputStream));
+                renderCurrentCandidateTestSessionState(candidateSession, renderingOptions, new StreamResult(resultOutputStream));
             }
             catch (final IOException e) {
                 throw new QtiWorksRuntimeException("Unexpected IOException", e);
@@ -391,6 +402,33 @@ public class CandidateRenderingService {
             if (!resultFile.delete()) {
                 throw new QtiWorksRuntimeException("Could not delete result file " + resultFile.getPath());
             }
+        }
+    }
+
+    private void renderCurrentCandidateTestSessionState(final CandidateSession candidateSession,
+            final TestRenderingOptions renderingOptions, final StreamResult result) {
+        if (candidateSession.isExploded()) {
+            assessmentRenderer.renderExploded(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+        }
+        else if (candidateSession.isTerminated()) {
+            assessmentRenderer.renderTeminated(createTerminatedRenderingRequest(candidateSession, renderingOptions), result);
+        }
+        else {
+            /* Look up most recent event */
+            final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+
+            /* Load the TestSessionState and create a TestSessionController */
+            final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(latestEvent);
+            final TestSessionController testSessionController = createTestSessionController(candidateSession, testSessionState);
+
+            /* Touch the session's duration state if appropriate */
+            if (testSessionState.isEntered() && !testSessionState.isEnded()) {
+                final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+                testSessionController.touchDurations(timestamp);
+            }
+
+            /* Render event */
+            renderTestEvent(latestEvent, testSessionController, renderingOptions, result);
         }
     }
 
