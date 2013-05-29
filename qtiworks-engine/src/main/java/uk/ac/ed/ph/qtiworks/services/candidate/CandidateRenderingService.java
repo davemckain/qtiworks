@@ -216,7 +216,6 @@ public class CandidateRenderingService {
         }
     }
 
-
     private void renderItemEvent(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState,
             final ItemRenderingOptions renderingOptions, final StreamResult result) {
         final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
@@ -516,9 +515,6 @@ public class CandidateRenderingService {
         final List<CandidateEventNotification> notifications = candidateEvent.getNotifications();
         assessmentRenderer.renderTestAuthorView(renderingRequest, notifications, result);
     }
-
-    //----------------------------------------------------
-
 
     //----------------------------------------------------
     // Access to additional package resources (e.g. images/CSS)
