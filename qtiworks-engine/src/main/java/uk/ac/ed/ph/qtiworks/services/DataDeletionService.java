@@ -48,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
@@ -197,8 +198,8 @@ public class DataDeletionService {
     public void resetUser(final User user) {
         Assert.notNull(user, "user");
 
-        for (final Assessment assessment : assessmentDao.getForOwner(user)) {
-            deleteAssessment(assessment);
+        for (final AssessmentAndPackage item : assessmentDao.getForOwner(user)) {
+            deleteAssessment(item.getAssessment());
         }
         for (final CandidateSession candidateSession : candidateSessionDao.getForCandidate(user)) {
             deleteCandidateSession(candidateSession);

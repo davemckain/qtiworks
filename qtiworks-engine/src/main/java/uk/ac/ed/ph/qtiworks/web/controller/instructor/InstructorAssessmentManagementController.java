@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
@@ -102,7 +103,7 @@ public class InstructorAssessmentManagementController {
     /** Lists all Assignments owned by the caller */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listOwnAssessments(final Model model) {
-        final List<Assessment> assessments = entityGraphService.getCallerAssessments();
+        final List<AssessmentAndPackage> assessments = entityGraphService.getCallerAssessments();
         model.addAttribute(assessments);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentListRouting(assessments));
         return "listAssessments";
@@ -121,7 +122,7 @@ public class InstructorAssessmentManagementController {
     private void setupModelForAssessment(final Assessment assessment, final Model model) {
         model.addAttribute("assessment", assessment);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
-        model.addAttribute("assessmentPackage", entityGraphService.getCurrentAssessmentPackage(assessment));
+        model.addAttribute("assessmentPackage", entityGraphService.ensureSelectedAssessmentPackage(assessment));
         model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(assessment.getAssessmentType()));
     }
 
@@ -409,7 +410,7 @@ public class InstructorAssessmentManagementController {
         final Assessment assessment = delivery.getAssessment();
         model.addAttribute(delivery);
         model.addAttribute(assessment);
-        model.addAttribute("assessmentPackage", entityGraphService.getCurrentAssessmentPackage(assessment));
+        model.addAttribute("assessmentPackage", entityGraphService.ensureSelectedAssessmentPackage(assessment));
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
         model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));

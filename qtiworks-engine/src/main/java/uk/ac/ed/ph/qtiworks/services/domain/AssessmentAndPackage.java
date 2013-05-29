@@ -27,43 +27,45 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.dao;
+package uk.ac.ed.ph.qtiworks.services.domain;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 /**
- * DAO implementation for the {@link AssessmentPackage} entity.
+ * Composite of an {@link Assessment} and its selected {@link AssessmentPackage}
+ *
+ * @see AssessmentDao
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
+public final class AssessmentAndPackage {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final Assessment assessment;
+    private final AssessmentPackage assessmentPackage;
 
-    public AssessmentPackageDao() {
-        super(AssessmentPackage.class);
+    public AssessmentAndPackage(final Assessment assessment, final AssessmentPackage assessmentPackage) {
+        this.assessment = assessment;
+        this.assessmentPackage = assessmentPackage;
     }
 
-    @Deprecated
-    public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
-        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getCurrentForAssessment", AssessmentPackage.class);
-        query.setParameter("assessment", assessment);
-        return extractNullableFindResult(query);
+    public Assessment getAssessment() {
+        return assessment;
+    }
+
+    public AssessmentPackage getAssessmentPackage() {
+        return assessmentPackage;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
     }
 }

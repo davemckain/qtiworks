@@ -80,8 +80,10 @@ instructorAssessmentRouting (action -> URL)
       <div class="cat">Valid?</div>
       <div class="value">
         <a href="${utils:escapeLink(assessmentRouting['validate'])}">
-          ${assessmentPackage.valid ? 'Yes' : 'No - '}
           <c:choose>
+            <c:when test="${assessmentPackage.valid}">
+              Yes
+            </c:when>
             <c:when test="${assessmentPackage.errorCount > 0}">
               ${assessmentPackage.errorCount}&#xa0;
               ${assessmentPackage.errorCount > 1 ? 'errors' : 'error'}

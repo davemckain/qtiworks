@@ -257,7 +257,7 @@ public class CandidateDataServices {
         ensureItemDelivery(delivery);
 
         /* Resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
         final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
         if (itemProcessingMap==null) {
             return null;
@@ -311,7 +311,7 @@ public class CandidateDataServices {
         Assert.notNull(itemSessionState, "itemSessionState");
 
         /* Try to resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
         final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
         if (itemProcessingMap==null) {
             throw new QtiWorksLogicException("Expected this item to be runnable");
@@ -402,7 +402,7 @@ public class CandidateDataServices {
         ensureTestDelivery(delivery);
 
         /* Resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
         final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
         if (testProcessingMap==null) {
             return null;
@@ -462,7 +462,7 @@ public class CandidateDataServices {
         Assert.notNull(testSessionState, "testSessionState");
 
         /* Try to resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
         final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
         if (testProcessingMap==null) {
             return null;

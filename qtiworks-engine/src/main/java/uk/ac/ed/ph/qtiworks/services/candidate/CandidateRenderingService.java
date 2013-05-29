@@ -541,7 +541,7 @@ public class CandidateRenderingService {
 
         /* Make sure requested file is whitelisted for access */
         final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
         String resultingFileHref = null;
         for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
             final URI fileUri = assessmentPackageFileService.createAssessmentFileUri(assessmentPackage, safeFileHref);
@@ -574,7 +574,7 @@ public class CandidateRenderingService {
         Assert.notNull(outputStreamer, "outputStreamer");
         ensureCallerMayAccessAuthorInfo(candidateSession);
         final Delivery itemDelivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(itemDelivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(itemDelivery);
 
         /* Forbid results if the candidate session is closed */
         ensureSessionNotTerminated(candidateSession);
@@ -663,7 +663,7 @@ public class CandidateRenderingService {
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
         /* Validate package */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(candidateSession.getDelivery());
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(candidateSession.getDelivery());
         return assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
     }
 
@@ -702,7 +702,7 @@ public class CandidateRenderingService {
     private <P extends AbstractRenderingOptions> void initRenderingRequest(final CandidateSession candidateSession,
             final AbstractRenderingRequest<P> renderingRequest, final P renderingOptions) {
         final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
         final DeliverySettings deliverySettings = delivery.getDeliverySettings();
 
         renderingRequest.setRenderingOptions(renderingOptions);

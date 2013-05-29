@@ -10,7 +10,7 @@ Lists samples to try out
 
 Model attributes:
 
-sampleAssessmentMap (SampleCategory -> List<Assessment>)
+sampleAssessmentMap (SampleCategory -> List<AssessmentAndPackage>)
 
 --%>
 <page:page title="Public QTI Samples">
@@ -29,14 +29,16 @@ sampleAssessmentMap (SampleCategory -> List<Assessment>)
 
   <c:forEach var="entry" items="${sampleAssessmentMap}">
     <c:set var="sampleCategory" value="${entry.key}"/>
-    <c:set var="assessmentList" value="${entry.value}"/>
+    <c:set var="assessmentAndPackageList" value="${entry.value}"/>
     <div class="sampleList">
       <h3><c:out value="${sampleCategory.title}"/></h3>
       <div class="hints">
         ${fn:escapeXml(sampleCategory.description)}
       </div>
       <ul class="sampleList">
-        <c:forEach var="assessment" items="${assessmentList}" varStatus="loopStatus">
+        <c:forEach var="assessmentAndPackage" items="${assessmentAndPackageList}" varStatus="loopStatus">
+          <c:set var="assessment" value="${assessmentAndPackage.assessment}"/>
+          <c:set var="assessmentPackage" value="${assessmentAndPackage.assessmentPackage}"/>
           <li>
             <c:if test="${loopStatus.index%2 == 0}">
               <div class="clear"></div>

@@ -34,14 +34,17 @@
 package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -63,15 +66,25 @@ public class AssessmentDao extends GenericDao<Assessment> {
         super(Assessment.class);
     }
 
-    public List<Assessment> getForOwner(final User user) {
-        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForOwner", Assessment.class);
+    public List<AssessmentAndPackage> getForOwner(final User user) {
+        final Query query = em.createNamedQuery("Assessment.getForOwner");
         query.setParameter("owner", user);
-        return query.getResultList();
+        return wrapResult(query.getResultList());
     }
 
-    public List<Assessment> getForSampleCategory(final SampleCategory sampleCategory) {
-        final TypedQuery<Assessment> query = em.createNamedQuery("Assessment.getForSampleCategory", Assessment.class);
+    public List<AssessmentAndPackage> getForSampleCategory(final SampleCategory sampleCategory) {
+        final Query query = em.createNamedQuery("Assessment.getForSampleCategory");
         query.setParameter("sampleCategory", sampleCategory);
-        return query.getResultList();
+        return wrapResult(query.getResultList());
+    }
+
+    private List<AssessmentAndPackage> wrapResult(final List<?> queryResult) {
+        final List<AssessmentAndPackage> result = new ArrayList<AssessmentAndPackage>();
+        for (final Object item : queryResult) {
+            result.add(new AssessmentAndPackage(
+                    (Assessment) ((Object[]) item)[0],
+                    (AssessmentPackage) ((Object[]) item)[1]));
+        }
+        return result;
     }
 }

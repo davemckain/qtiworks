@@ -229,6 +229,7 @@ public class AssessmentManagementService {
         /* Relate Assessment & AssessmentPackage */
         assessmentPackage.setAssessment(assessment);
         assessmentPackage.setImportVersion(Long.valueOf(1L));
+        assessment.setSelectedAssessmentPackage(assessmentPackage);
         assessment.setPackageImportVersion(Long.valueOf(1L));
 
         /* Persist entities */
@@ -314,9 +315,10 @@ public class AssessmentManagementService {
 
         /* Join together */
         final long newPackageVersion = assessment.getPackageImportVersion().longValue() + 1;
-        newAssessmentPackage.setImportVersion(newPackageVersion);
-        newAssessmentPackage.setAssessment(assessment);
         assessment.setPackageImportVersion(newPackageVersion);
+        assessment.setSelectedAssessmentPackage(newAssessmentPackage);
+        newAssessmentPackage.setAssessment(assessment);
+        newAssessmentPackage.setImportVersion(newPackageVersion);
 
         /* Finally update DB */
         try {
@@ -343,7 +345,7 @@ public class AssessmentManagementService {
     }
 
     public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
-        final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
+        final AssessmentPackage currentAssessmentPackage = entityGraphService.ensureSelectedAssessmentPackage(assessment);
         return validateAssessmentPackage(currentAssessmentPackage);
     }
 

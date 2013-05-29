@@ -64,6 +64,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SampleCategoryDao;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
@@ -373,14 +374,14 @@ public class SampleResourceImporter {
     }
 
     private Map<String, Assessment> getImportedSampleAssessments(final InstructorUser sampleOwner) {
-        final List<Assessment> sampleAssessments = assessmentDao.getForOwner(sampleOwner);
+        final List<AssessmentAndPackage> samples = assessmentDao.getForOwner(sampleOwner);
         final Map<String, Assessment> result = new HashMap<String, Assessment>();
-        for (final Assessment sampleAssessment : sampleAssessments) {
-            final AssessmentPackage assessmentPackage = assessmentPackageDao.getCurrentAssessmentPackage(sampleAssessment);
+        for (final AssessmentAndPackage sample : samples) {
+            final AssessmentPackage assessmentPackage = sample.getAssessmentPackage();
             if (assessmentPackage==null) {
-                throw new QtiWorksLogicException("Sample assessment " + sampleAssessment + " has no current AssessmentPackage");
+                throw new QtiWorksLogicException("Sample assessment " + sample + " has no current AssessmentPackage");
             }
-            result.put(assessmentPackage.getAssessmentHref(), sampleAssessment);
+            result.put(assessmentPackage.getAssessmentHref(), sample.getAssessment());
         }
         return result;
     }
@@ -424,6 +425,7 @@ public class SampleResourceImporter {
 
         /* Create AssessmentPackage entity */
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
+        assessmentPackage.setImportVersion(Long.valueOf(1L));
         assessmentPackage.setAssessmentType(qtiSampleAssessment.getType());
         assessmentPackage.setAssessmentHref(qtiSampleAssessment.getAssessmentHref());
         assessmentPackage.setQtiFileHrefs(new HashSet<String>(Arrays.asList(qtiSampleAssessment.getAssessmentHref())));
@@ -443,6 +445,8 @@ public class SampleResourceImporter {
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
         assessment.setOwner(owner);
         assessment.setPublic(true);
+        assessment.setSelectedAssessmentPackage(assessmentPackage);
+        assessment.setPackageImportVersion(Long.valueOf(1L));
         assessment.setSampleCategory(sampleCategory);
 
         /* We'll use last part of href as assessment name.
@@ -459,7 +463,6 @@ public class SampleResourceImporter {
         /* Relate Assessment & AssessmentPackage */
         assessmentPackage.setAssessment(assessment);
         assessmentPackage.setImportVersion(Long.valueOf(1L));
-        assessment.setPackageImportVersion(Long.valueOf(1L));
 
         /* Persist entities */
         assessmentDao.persist(assessment);

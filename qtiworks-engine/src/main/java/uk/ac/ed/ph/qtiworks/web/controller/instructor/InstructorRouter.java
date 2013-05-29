@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 
@@ -92,9 +93,10 @@ public class InstructorRouter {
         return primaryRouting;
     }
 
-    public Map<Long, Map<String, String>> buildAssessmentListRouting(final List<Assessment> assessments) {
+    public Map<Long, Map<String, String>> buildAssessmentListRouting(final List<AssessmentAndPackage> assessmentAndPackageList) {
         final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
-        for (final Assessment assessment : assessments) {
+        for (final AssessmentAndPackage assessmentAndPackage : assessmentAndPackageList) {
+            final Assessment assessment = assessmentAndPackage.getAssessment();
             result.put(assessment.getId(), buildAssessmentRouting(assessment));
         }
         return result;

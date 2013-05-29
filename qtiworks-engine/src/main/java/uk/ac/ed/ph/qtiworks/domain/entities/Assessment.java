@@ -59,6 +59,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -81,15 +82,17 @@ import javax.persistence.Version;
 @SequenceGenerator(name="assessmentSequence", sequenceName="assessment_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
     @NamedQuery(name="Assessment.getForOwner",
-            query="SELECT a"
+            query="SELECT a, ap"
                 + "  FROM Assessment a"
+                + "  LEFT JOIN a.selectedAssessmentPackage ap"
                 + "  WHERE a.owner = :owner"
-                + "  ORDER BY creationTime"),
+                + "  ORDER BY a.creationTime"),
     @NamedQuery(name="Assessment.getForSampleCategory",
-            query="SELECT a"
+            query="SELECT a, ap"
                 + "  FROM Assessment a"
+                + "  LEFT JOIN a.selectedAssessmentPackage ap"
                 + "  WHERE a.sampleCategory = :sampleCategory"
-                + "  ORDER BY creationTime")
+                + "  ORDER BY a.creationTime"),
 })
 public class Assessment implements BaseEntity, TimestampedOnCreation {
 
@@ -104,7 +107,10 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Column(name="lock_version")
     private Long version;
 
-    /** Total number of {@link AssessmentPackage}s uploaded for this Assessment. */
+    /**
+     * Total number of {@link AssessmentPackage}s uploaded for this Assessment.
+     * (This may be larger than the size of {@link #assessmentPackages})
+     */
     @Basic(optional=false)
     @Column(name="package_import_version")
     private Long packageImportVersion;
@@ -161,6 +167,17 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="sample_category_id", updatable=false)
     private SampleCategory sampleCategory;
 
+    /**
+     * Currently-selected {@link AssessmentPackage} for this {@link Assessment}.
+     */
+    @OneToOne(optional=true, fetch=FetchType.EAGER)
+    @JoinColumn(name="selected_apid")
+    private AssessmentPackage selectedAssessmentPackage;
+
+    /**
+     * All {@link AssessmentPackage}s uploaded for this {@link Assessment}, ordered by ID (apid),
+     * which will be chronological.
+     */
     @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @OrderBy("apid")
     private List<AssessmentPackage> assessmentPackages;
@@ -272,6 +289,15 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
 
     public void setSampleCategory(final SampleCategory sampleCategory) {
         this.sampleCategory = sampleCategory;
+    }
+
+
+    public AssessmentPackage getSelectedAssessmentPackage() {
+        return selectedAssessmentPackage;
+    }
+
+    public void setSelectedAssessmentPackage(final AssessmentPackage selectedAssessmentPackage) {
+        this.selectedAssessmentPackage = selectedAssessmentPackage;
     }
 
 

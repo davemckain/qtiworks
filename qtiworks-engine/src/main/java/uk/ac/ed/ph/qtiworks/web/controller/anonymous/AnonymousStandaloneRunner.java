@@ -118,7 +118,7 @@ public class AnonymousStandaloneRunner {
         try {
             final Assessment assessment = assessmentManagementService.importAssessment(command.getFile());
             final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessment);
-            final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
+            final AssessmentPackage assessmentPackage = entityGraphService.ensureSelectedAssessmentPackage(assessment);
             if (!assessmentPackage.isLaunchable()) {
                 /* Assessment isn't launchable */
                 model.addAttribute("validationResult", validationResult);

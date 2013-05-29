@@ -35,13 +35,13 @@ package uk.ac.ed.ph.qtiworks.web.controller.anonymous;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SampleCategoryDao;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 
 import java.util.LinkedHashMap;
@@ -78,12 +78,10 @@ public class AnonymousSamplesController {
 
     @RequestMapping(value="/samples/list", method=RequestMethod.GET)
     public String listSamples(final Model model) {
-        /* Look up all Assessments, grouped by SampleCategory.
-         * TODO: We're exposing the DAO layer here, which smells a bit but is OK here.
-         */
-        final Map<SampleCategory, List<Assessment>> sampleAssessmentMap = new LinkedHashMap<SampleCategory, List<Assessment>>();
+        /* Look up all Assessments, grouped by SampleCategory. */
+        final Map<SampleCategory, List<AssessmentAndPackage>> sampleAssessmentMap = new LinkedHashMap<SampleCategory, List<AssessmentAndPackage>>();
         for (final SampleCategory sampleCategory : sampleCategoryDao.getAll()) {
-            final List<Assessment> assessmentsForCategory = assessmentDao.getForSampleCategory(sampleCategory);
+            final List<AssessmentAndPackage> assessmentsForCategory = assessmentDao.getForSampleCategory(sampleCategory);
             sampleAssessmentMap.put(sampleCategory, assessmentsForCategory);
         }
 

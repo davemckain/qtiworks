@@ -40,6 +40,8 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
  */
 public enum AssessmentPackageImportType {
 
+  //12345678901234567890
+
     /** Uploaded as an IMS Content Package */
     CONTENT_PACKAGE,
 
