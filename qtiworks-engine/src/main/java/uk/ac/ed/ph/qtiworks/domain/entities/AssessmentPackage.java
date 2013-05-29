@@ -81,12 +81,7 @@ import org.hibernate.annotations.Type;
                 + "    AND ap.importVersion = ("
                 + "      SELECT MAX(importVersion) FROM AssessmentPackage apInner"
                 + "        WHERE apInner.assessment = :assessment"
-                + "  )"),
-    @NamedQuery(name="AssessmentPackage.getForSampleCategory",
-            query="SELECT ap"
-                + "  FROM AssessmentPackage ap"
-                + "  WHERE ap.assessment.sampleCategory = :sampleCategory"
-                + "  ORDER BY ap.assessment.creationTime")
+                + "  )")
 })
 public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
