@@ -67,17 +67,10 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 
 import javax.annotation.Resource;
 
@@ -90,7 +83,6 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.Document;
 
 /**
  * Top layer services for *managing* {@link Assessment}s and related entities.
@@ -140,9 +132,6 @@ public class AssessmentManagementService {
 
     @Resource
     private DeliverySettingsDao deliverySettingsDao;
-
-    @Resource
-    private QtiXmlReader qtiXmlReader;
 
     //-------------------------------------------------
     // Assessment access
@@ -222,7 +211,7 @@ public class AssessmentManagementService {
         assessment.setName(assessmentName);
 
         /* Guess a title */
-        final String guessedTitle = guessAssessmentTitle(assessmentPackage);
+        final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
         final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
         assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
@@ -910,33 +899,5 @@ public class AssessmentManagementService {
             filespaceManager.deleteSandbox(packageSandbox);
             throw e;
         }
-    }
-
-    /**
-     * Attempts to extract the title from an {@link AssessmentItem} or {@link AssessmentTest} for
-     * bootstrapping the initial state of the resulting {@link AssessmentPackage}.
-     * <p>
-     * This performs a low level XML parse to save time; proper read/validation using JQTI+
-     * is expected to happen later on.
-     *
-     * @param assessmentPackage
-     * @return guessed title, or an empty String if nothing could be guessed.
-     */
-    public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
-        Assert.notNull(assessmentPackage, "assessmentPackage");
-        final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
-        final URI assessmentSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        XmlReadResult xmlReadResult;
-        try {
-            xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
-        }
-        catch (final XmlResourceNotFoundException e) {
-            throw new QtiWorksLogicException("Assessment resource for package " + assessmentPackage, e);
-        }
-        /* Let's simply extract the title attribute from the document element, and not worry about
-         * anything else at this point.
-         */
-        final Document document = xmlReadResult.getDocument();
-        return document!=null ? document.getDocumentElement().getAttribute("title") : "";
     }
 }

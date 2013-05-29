@@ -42,6 +42,8 @@ import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -49,6 +51,8 @@ import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
@@ -71,6 +75,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.w3c.dom.Document;
 
 /**
  * Provides read-only access (and related services) to {@link AssessmentPackage} files
@@ -261,6 +266,36 @@ public class AssessmentPackageFileService {
             throw new QtiWorksLogicException("Unexpected logic branch " + assessmentObjectType);
         }
         return result;
+    }
+
+    //-------------------------------------------------
+
+    /**
+     * Attempts to extract the title from an {@link AssessmentItem} or {@link AssessmentTest} for
+     * bootstrapping the initial state of the resulting {@link AssessmentPackage}.
+     * <p>
+     * This performs a low level XML parse to save time; proper read/validation using JQTI+
+     * is expected to happen later on.
+     *
+     * @param assessmentPackage
+     * @return guessed title, or an empty String if nothing could be guessed.
+     */
+    public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentSystemId = createAssessmentObjectUri(assessmentPackage);
+        XmlReadResult xmlReadResult;
+        try {
+            xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
+        }
+        catch (final XmlResourceNotFoundException e) {
+            throw new QtiWorksLogicException("Assessment resource for package " + assessmentPackage, e);
+        }
+        /* Let's simply extract the title attribute from the document element, and not worry about
+         * anything else at this point.
+         */
+        final Document document = xmlReadResult.getDocument();
+        return document!=null ? document.getDocumentElement().getAttribute("title") : "";
     }
 
     //-------------------------------------------------

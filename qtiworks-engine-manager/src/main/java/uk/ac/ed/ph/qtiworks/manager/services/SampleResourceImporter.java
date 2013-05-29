@@ -56,7 +56,7 @@ import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.TestImplementationSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
-import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
@@ -101,7 +101,7 @@ public class SampleResourceImporter {
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
-    private AssessmentManagementService assessmentManagementService;
+    private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
     private ManagerServices managerServices;
@@ -456,7 +456,7 @@ public class SampleResourceImporter {
         assessment.setName(ServiceUtilities.trimString(assessmentName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));
 
         /* Guess a title */
-        final String guessedTitle = assessmentManagementService.guessAssessmentTitle(assessmentPackage);
+        final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
         final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
         assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
