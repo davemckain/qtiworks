@@ -74,14 +74,17 @@ import org.hibernate.annotations.Type;
 @Table(name="assessment_packages")
 @SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
-    @NamedQuery(name="AssessmentPackage.getCurrentForAssessment",
+    @NamedQuery(name="AssessmentPackage.getUnusedForAssessment",
             query="SELECT ap"
                 + "  FROM AssessmentPackage ap"
+                + "  LEFT JOIN ap.assessment a"
                 + "  WHERE ap.assessment = :assessment"
-                + "    AND ap.importVersion = ("
-                + "      SELECT MAX(importVersion) FROM AssessmentPackage apInner"
-                + "        WHERE apInner.assessment = :assessment"
-                + "  )")
+                + "    AND ap <> a.selectedAssessmentPackage"),
+    @NamedQuery(name="AssessmentPackage.getAllUnused",
+            query="SELECT ap"
+                + "  FROM AssessmentPackage ap"
+                + "  LEFT JOIN ap.assessment a"
+                + "  WHERE ap <> a.selectedAssessmentPackage")
 })
 public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 

@@ -888,9 +888,6 @@ public class AssessmentManagementService {
         }
     }
 
-    /**
-     * @throws QtiWorksLogicException if sandboxPath is already null
-     */
     private void deleteAssessmentPackageSandbox(final AssessmentPackage assessmentPackage) {
         final String sandboxPath = assessmentPackage.getSandboxPath();
         if (sandboxPath==null) {
@@ -900,13 +897,8 @@ public class AssessmentManagementService {
         assessmentPackage.setSandboxPath(null);
     }
 
-    /**
-     * @throws PrivilegeException
-     * @throws AssessmentPackageFileImportException
-     * @throws QtiWorksRuntimeException
-     */
     private AssessmentPackage importPackageFiles(final MultipartFile multipartFile)
-            throws PrivilegeException, AssessmentPackageFileImportException {
+            throws AssessmentPackageFileImportException {
         final User owner = identityContext.getCurrentThreadEffectiveIdentity();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
         try {

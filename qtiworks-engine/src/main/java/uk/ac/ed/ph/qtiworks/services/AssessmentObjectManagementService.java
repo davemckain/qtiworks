@@ -36,6 +36,7 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.utils.LruHashMap;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
@@ -85,25 +86,26 @@ public class AssessmentObjectManagementService {
      * Returns null if the {@link AssessmentPackage} wasn't valid enough to generate an {@link ItemProcessingMap}
      */
     public ItemProcessingMap getItemProcessingMap(final AssessmentPackage assessmentPackage) {
-        final Long assessmentPackageId = assessmentPackage.getId();
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        final Long apid = assessmentPackage.getId();
         ItemProcessingMap result = null;
         synchronized (cache) {
-            if (cache.containsKey(assessmentPackageId)) {
-                logger.debug("Cache HIT for package #{}", assessmentPackage);
-                result = (ItemProcessingMap) cache.get(assessmentPackageId);
+            if (cache.containsKey(apid)) {
+                logger.debug("Cache HIT for package #{}", apid);
+                result = (ItemProcessingMap) cache.get(apid);
                 cacheHitCount++;
             }
             else {
-                logger.debug("Cache MISS for package #{}. Reading and resolving XML", assessmentPackage);
+                logger.debug("Cache MISS for package #{}. Reading and resolving XML", apid);
                 cacheMissCount++;
                 try {
                     final ResolvedAssessmentItem resolvedAssessmentItem = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
                     result = new ItemProcessingInitializer(resolvedAssessmentItem, assessmentPackage.isValid()).initialize();
                 }
                 catch (final RuntimeException e) {
-                    logger.info("Failed to create ItemProcessingMap for package #{}", assessmentPackageId);
+                    logger.info("Failed to create ItemProcessingMap for package #{}", apid);
                 }
-                cache.put(assessmentPackageId, result);
+                cache.put(apid, result);
             }
         }
         return result;
@@ -114,28 +116,40 @@ public class AssessmentObjectManagementService {
      * Returns null if the {@link AssessmentPackage} wasn't valid enough to generate an {@link TestProcessingMap}
      */
     public TestProcessingMap getTestProcessingMap(final AssessmentPackage assessmentPackage) {
-        final Long assessmentPackageId = assessmentPackage.getId();
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        final Long apid = assessmentPackage.getId();
         TestProcessingMap result = null;
         synchronized (cache) {
-            if (cache.containsKey(assessmentPackageId)) {
-                logger.debug("Cache HIT for package #{}", assessmentPackage);
-                result = (TestProcessingMap) cache.get(assessmentPackageId);
+            if (cache.containsKey(apid)) {
+                logger.debug("Cache HIT for package #{}", apid);
+                result = (TestProcessingMap) cache.get(apid);
                 cacheHitCount++;
             }
             else {
-                logger.debug("Cache MISS for package #{}. Reading and resolving XML", assessmentPackage);
+                logger.debug("Cache MISS for package #{}. Reading and resolving XML", apid);
                 cacheMissCount++;
                 try {
                     final ResolvedAssessmentTest resolvedAssessmentTest = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
                     result = new TestProcessingInitializer(resolvedAssessmentTest, assessmentPackage.isValid()).initialize();
                 }
                 catch (final RuntimeException e) {
-                    logger.info("Failed to create TestProcessingMap for package #{}", assessmentPackageId);
+                    logger.info("Failed to create TestProcessingMap for package #{}", apid);
                 }
-                cache.put(assessmentPackageId, result);
+                cache.put(apid, result);
             }
         }
         return result;
+    }
+
+    public void purge(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        final Long apid = assessmentPackage.getId();
+        synchronized (cache) {
+            if (cache.containsKey(apid)) {
+                cache.remove(apid);
+                logger.debug("Actively purged package #{}", assessmentPackage);
+            }
+        }
     }
 
     //--------------------------------------------------------------------------

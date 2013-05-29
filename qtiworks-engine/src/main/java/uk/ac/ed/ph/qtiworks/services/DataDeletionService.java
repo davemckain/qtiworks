@@ -53,6 +53,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -87,6 +88,9 @@ public class DataDeletionService {
 
     @Resource
     private FilespaceManager filespaceManager;
+
+    @Resource
+    private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
@@ -143,6 +147,24 @@ public class DataDeletionService {
         deliveryDao.remove(delivery); /* (This will cascade) */
     }
 
+    public int deleteUnusedAssessmentPackages() {
+        final List<AssessmentPackage> toDelete = assessmentPackageDao.getAllUnused();
+        for (final AssessmentPackage assessmentPackage : toDelete) {
+            deleteAssessmentPackage(assessmentPackage);
+        }
+        return toDelete.size();
+    }
+
+    public int deleteUnusedAssessmentPackages(final Assessment assessment) {
+        Assert.notNull(assessment, "assessment");
+
+        final List<AssessmentPackage> toDelete = assessmentPackageDao.getUnusedForAssessment(assessment);
+        for (final AssessmentPackage assessmentPackage : toDelete) {
+            deleteAssessmentPackage(assessmentPackage);
+        }
+        return toDelete.size();
+    }
+
     public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage) {
         Assert.notNull(assessmentPackage, "assessmentPackage");
 
@@ -153,6 +175,9 @@ public class DataDeletionService {
             }
         }
 
+        /* Purge any cached data from this package */
+        assessmentObjectManagementService.purge(assessmentPackage);
+
         /* Delete entities, taking advantage of cascading */
         assessmentPackageDao.remove(assessmentPackage); /* (This will cascade) */
     }
@@ -162,11 +187,7 @@ public class DataDeletionService {
 
         /* Delete sandboxes for all packages */
         for (final AssessmentPackage assessmentPackage : assessment.getAssessmentPackages()) {
-            if (assessmentPackage.getSandboxPath()!=null) {
-                if (!filespaceManager.deleteAssessmentPackageSandbox(assessmentPackage)) {
-                    logger.error("Failed to delete sandbox for AssessmentPackage {}", assessmentPackage.getId());
-                }
-            }
+            deleteAssessmentPackage(assessmentPackage);
         }
 
         /* Delete entities, taking advantage of cascading */
