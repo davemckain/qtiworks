@@ -35,8 +35,6 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 
 import java.util.Date;
@@ -65,8 +63,11 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 
 /**
- * Represents an {@link AssessmentItem} or {@link AssessmentTest} stored
- * the system. All such objects are treated as IMS Content Packages.
+ * Encapsulates the data for a single assessment "package" within the system.
+ * <p>
+ * Each assessment uploaded into the system by a user will create one of these
+ * entities, which records where the files live, and information about the validation
+ * status of the assessment.
  *
  * @author David McKain
  */

@@ -37,8 +37,6 @@ import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,10 +66,13 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 /**
- * Represents an {@link AssessmentItem} or {@link AssessmentTest} and their
- * associated metadata.
+ * Represents an assessment within the system. This entity contains the basic data about
+ * an assessment. Information about the assessment's files is encapsulated by an {@link AssessmentPackage}.
  * <p>
- * The actual _content_ of these is represented by an {@link AssessmentPackage}
+ * The data model here provides a 1->N relationship between an {@link Assessment} and {@link AssessmentPackage}s,
+ * as I had originally planned to include basic revisioning of resources. However, I've decided to simplify this for
+ * now with a 1->1 relationship, but have left the 1->N mapping between the entities in case someone else wants to
+ * add this revisioning functionality.
  *
  * @see AssessmentPackage
  *
@@ -177,6 +178,9 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     /**
      * All {@link AssessmentPackage}s uploaded for this {@link Assessment}, ordered by ID (apid),
      * which will be chronological.
+     * <p>
+     * NB: As of version 1.0-M5, this should generally return a single entity, which should
+     * be the same as {@link #selectedAssessmentPackage}.
      */
     @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
     @OrderBy("apid")

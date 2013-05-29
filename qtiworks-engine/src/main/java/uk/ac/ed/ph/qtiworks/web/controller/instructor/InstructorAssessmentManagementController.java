@@ -238,7 +238,7 @@ public class InstructorAssessmentManagementController {
         /* Attempt to import the package */
         final MultipartFile uploadFile = command.getFile();
         try {
-            assessmentManagementService.updateAssessmentPackageFiles(aid, uploadFile);
+            assessmentManagementService.replaceAssessmentPackage(aid, uploadFile);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();

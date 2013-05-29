@@ -159,16 +159,6 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-    // AssessmentPackage access
-
-    public AssessmentPackage lookupAssessmentPackage(final long apid)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final AssessmentPackage result = assessmentPackageDao.requireFindById(apid);
-        ensureCallerMayAccess(result.getAssessment());
-        return result;
-    }
-
-    //-------------------------------------------------
 
     /**
      * Creates and persists a new {@link Assessment} and initial {@link AssessmentPackage}
@@ -277,21 +267,23 @@ public class AssessmentManagementService {
     }
 
     /**
-     * NOTE: Not allowed to go item->test or test->item.
-     *
-     * @throws AssessmentStateException
-     * @throws PrivilegeException
-     * @throws AssessmentPackageFileImportException
-     * @throws DomainEntityNotFoundException
+     * Imports a new {@link AssessmentPackage}, making it the selected one for
+     * the given {@link Assessment}. Any existing {@link AssessmentPackage}s
+     * will be deleted.
+     * <p>
+     * The new {@link AssessmentPackage} must be of the same type as the
+     * {@link Assessment}. I.e. it is not possible to replace an itme with
+     * a test, or a test with an item.
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public Assessment updateAssessmentPackageFiles(final long aid,
+    public Assessment replaceAssessmentPackage(final long aid,
             final MultipartFile multipartFile)
             throws AssessmentStateException, PrivilegeException,
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
         Assert.notNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayChange(assessment);
+        final AssessmentPackage oldPackage = assessment.getSelectedAssessmentPackage();
 
         /* Upload data into a new sandbox */
         final AssessmentPackage newAssessmentPackage = importPackageFiles(multipartFile);
@@ -302,14 +294,14 @@ public class AssessmentManagementService {
                     assessment.getAssessmentType(), newAssessmentPackage.getAssessmentType());
         }
 
-        /* Join together */
+        /* Join Assessment to new package */
         final long newPackageVersion = assessment.getPackageImportVersion().longValue() + 1;
         assessment.setPackageImportVersion(newPackageVersion);
         assessment.setSelectedAssessmentPackage(newAssessmentPackage);
         newAssessmentPackage.setAssessment(assessment);
         newAssessmentPackage.setImportVersion(newPackageVersion);
 
-        /* Finally update DB */
+        /* Now update DB */
         try {
             assessmentDao.update(assessment);
             assessmentPackageDao.persist(newAssessmentPackage);
@@ -319,6 +311,12 @@ public class AssessmentManagementService {
             deleteAssessmentPackageSandbox(newAssessmentPackage);
             throw new QtiWorksRuntimeException("Failed to update AssessmentPackage entity " + assessment, e);
         }
+
+        /* Finally delete the old package (if applicable) */
+        if (oldPackage!=null) {
+            dataDeletionService.deleteAssessmentPackage(oldPackage);
+        }
+
         logger.debug("Updated Assessment #{} to have package #{}", assessment.getId(), newAssessmentPackage.getId());
         auditLogger.recordEvent("Updated Assessment #" + assessment.getId() + " with AssessmentPackage #" + newAssessmentPackage.getId());
         return assessment;
