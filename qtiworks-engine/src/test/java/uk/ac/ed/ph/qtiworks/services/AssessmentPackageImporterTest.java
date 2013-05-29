@@ -54,18 +54,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.io.Files;
 
 /**
- * Tests the {@link AssessmentPackageFileImporter} helper/service
+ * Tests the {@link AssessmentPackageImporter} helper/service
  *
  * @author David McKain
  */
-public class AssessmentPackageFileImporterTest {
+public class AssessmentPackageImporterTest {
 
-    private AssessmentPackageFileImporter importer;
+    private AssessmentPackageImporter importer;
     private File importSandboxDirectory;
 
     @Before
     public void setup() {
-        importer = new AssessmentPackageFileImporter();
+        importer = new AssessmentPackageImporter();
         importSandboxDirectory = Files.createTempDir();
     }
 

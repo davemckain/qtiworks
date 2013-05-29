@@ -61,7 +61,7 @@ public class StandaloneValidationService {
     private IdentityContext identityContext;
 
     @Resource
-    private AssessmentPackageFileImporter assessmentPackageImporter;
+    private AssessmentPackageImporter assessmentPackageImporter;
 
     @Resource
     private FilespaceManager filespaceManager;

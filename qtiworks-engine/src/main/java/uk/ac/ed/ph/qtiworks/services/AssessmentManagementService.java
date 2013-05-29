@@ -119,7 +119,7 @@ public class AssessmentManagementService {
     private DataDeletionService dataDeletionService;
 
     @Resource
-    private AssessmentPackageFileImporter assessmentPackageFileImporter;
+    private AssessmentPackageImporter assessmentPackageFileImporter;
 
     @Resource
     private AssessmentDao assessmentDao;

@@ -75,9 +75,9 @@ import org.springframework.web.multipart.MultipartFile;
  * @author David McKain
  */
 @Service
-public class AssessmentPackageFileImporter {
+public class AssessmentPackageImporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageFileImporter.class);
+    private static final Logger logger = LoggerFactory.getLogger(AssessmentPackageImporter.class);
 
     /** File name that will be used when uploading standalone XML */
     private static final String STANDALONE_XML_IMPORT_FILE_NAME = "qti.xml";
