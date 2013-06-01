@@ -4,27 +4,56 @@ body {
   background-color: white;
   color: black;
   font-family: Sans-Serif;
-  margin: 1em 0 5em 1em;
+  margin: 1em 1em 5em 1em;
   padding: 0;
 }
 
-.authorMode {
-  margin: 1em 0;
-  padding: 0.5em;
-  border: 2px solid #eeeeee;
-  border-radius: 0.5em;
-  background-color: #f7f7f7;
-  font-size: smaller;
-  color: #333333;
+/************************************************************/
+/* Assessment Item */
+/************************************************************/
+
+.assessmentItem {
 }
 
-.candidateStatus {
-  margin: 1em 0;
-  padding: 0.5em;
-  border: 2px solid #eeeeee;
-  border-radius: 0.5em;
-  background-color: #f7f7ff;
-  display: none; /* EXPERIMENTAL... DO WE REALLY NEED TO SEE THIS? */
+.assessmentItem .itemStatus {
+  float: right;
+  display: block;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  color: white;
+  font-size: 0.7em;
+}
+
+.itemStatus.ended {
+  background-color: #999999;
+}
+
+.itemStatus.invalid {
+  background-color: red;
+}
+
+.itemStatus.answered {
+  background-color: blue;
+}
+
+.itemStatus.notAnswered {
+  background-color: #ff9900;
+}
+
+.itemStatus.notPresented {
+  background-color: green;
+}
+
+.itemStatus.review {
+  background-color: #f52887;
+}
+
+.itemStatus.reviewNotAllowed,
+.itemStatus.reviewInvalid,
+.itemStatus.reviewNotAnswered,
+.itemStatus.reviewNotSeen {
+  background-color: #f52887;
+  opacity: 0.5;
 }
 
 .itemPrompt {
@@ -35,7 +64,6 @@ body {
 
 #itemBody {
   margin: 2em 0;
-  border-radius: 1em;
 }
 
 .sessionControl ul {
@@ -75,8 +103,6 @@ body {
   display: none;
 }
 
-/************************************************************/
-
 .assessmentItem .sliderInteraction {
   margin: 1em;
 }
@@ -95,8 +121,6 @@ body {
 .assessmentItem .sliderInteraction .sliderHorizontal .sliderValue {
   text-align: center;
 }
-
-/************************************************************/
 
 .assessmentItem div.orderInteraction div.highlight {
   border: 1px solid red;
@@ -172,8 +196,6 @@ body {
   clear: both;
 }
 
-/************************************************************/
-
 .assessmentItem .hottext {
   font-weight: bold;
 }
@@ -182,8 +204,6 @@ body {
   font-weight: bold;
   border: 1px dashed #000;
 }
-
-/************************************************************/
 
 /* MathEntryInteraction styling for MathAssess */
 .assessmentItem .mathEntryInteraction {
@@ -288,7 +308,6 @@ body {
   font-size: 110%;
 }
 
-/************************************************************/
 /* Help for Math Input */
 
 .assessmentItem table.inputHelp {
@@ -332,41 +351,6 @@ body {
 
 .candidateComment textarea {
   display: block;
-  width: 100%;
-}
-
-/* Item status colours */
-
-.itemStatus.ended {
-  background-color: #999999;
-}
-
-.itemStatus.invalid {
-  background-color: red;
-}
-
-.itemStatus.answered {
-  background-color: blue;
-}
-
-.itemStatus.notAnswered {
-  background-color: #ff9900;
-}
-
-.itemStatus.notPresented {
-  background-color: green;
-}
-
-.itemStatus.review {
-  background-color: #f52887;
-}
-
-.itemStatus.reviewNotAllowed,
-.itemStatus.reviewInvalid,
-.itemStatus.reviewNotAnswered,
-.itemStatus.reviewNotSeen {
-  background-color: #f52887;
-  opacity: 0.5;
 }
 
 /************************************************************/
@@ -426,15 +410,6 @@ ul.testPartNavigation li.assessmentItem .assessmentItemStatus {
   font-size: 0.7em;
 }
 
-.assessmentItem .itemStatus {
-  float: right;
-  display: block;
-  padding: 0.3em;
-  border-radius: 0.3em;
-  color: white;
-  font-size: 0.7em;
-}
-
 /* Test Item Presentation */
 
 ul.testPartDrilldown {
@@ -474,7 +449,7 @@ ul.testPartDrilldown li.currentItem {
 }
 
 /************************************************************/
-/* Author tools */
+/* Author invoker */
 
 .authorModePanel {
   position: fixed;
