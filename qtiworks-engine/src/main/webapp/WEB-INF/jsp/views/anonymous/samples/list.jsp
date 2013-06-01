@@ -30,8 +30,9 @@ sampleAssessmentMap (SampleCategory -> List<AssessmentAndPackage>)
   <c:forEach var="entry" items="${sampleAssessmentMap}">
     <c:set var="sampleCategory" value="${entry.key}"/>
     <c:set var="assessmentAndPackageList" value="${entry.value}"/>
+    <c:set var="sampleCategoryAnchor" value="cat${sampleCategory.id}"/>
     <div class="sampleList">
-      <h3><c:out value="${sampleCategory.title}"/></h3>
+      <h3><a name="${sampleCategoryAnchor}"><c:out value="${sampleCategory.title}"/></a></h3>
       <div class="hints">
         ${fn:escapeXml(sampleCategory.description)}
       </div>
@@ -48,7 +49,7 @@ sampleAssessmentMap (SampleCategory -> List<AssessmentAndPackage>)
             </div>
             <div class="grid_1 launch">
               <%-- Play option TODO: Create template for this --%>
-              <c:url var="playUrl" value="/web/anonymous/samples/${assessment.id}"/>
+              <c:url var="playUrl" value="/web/anonymous/samples/${sampleCategoryAnchor}/${assessment.id}"/>
               <form action="${playUrl}" method="post">
                 <button type="submit" class="playButton">Try</button>
               </form>

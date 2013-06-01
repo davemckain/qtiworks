@@ -93,10 +93,10 @@ public class AnonymousSamplesController {
      * Starts a new {@link CandidateSession} on the given sample, using the special
      * {@link Delivery} created when bootstrapping the samples.
      */
-    @RequestMapping(value="/samples/{aid}", method=RequestMethod.POST)
-    public String startItemSession(@PathVariable final long aid)
+    @RequestMapping(value="/samples/{sampleCategoryAnchor}/{aid}", method=RequestMethod.POST)
+    public String startItemSession(@PathVariable final String sampleCategoryAnchor, @PathVariable final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/list");
+        final String exitUrl = anonymousRouter.buildWithinContextUrl("/samples/list") + "#" + sampleCategoryAnchor;
 
         final CandidateSession candidateSession = candidateSessionStarter.createSystemSampleSession(aid, exitUrl);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
