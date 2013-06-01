@@ -35,7 +35,7 @@ package uk.ac.ed.ph.qtiworks.manager;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
+import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
 import java.util.List;
 
@@ -52,19 +52,21 @@ import org.springframework.context.ApplicationContext;
  *
  * @author David McKain
  */
-public final class PurgeUnusedPackagesActions extends ManagerAction {
+public final class M4M5UpdateAction extends ManagerAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(PurgeUnusedPackagesActions.class);
+	private static final Logger logger = LoggerFactory.getLogger(M4M5UpdateAction.class);
 
 	@Override
 	public String getActionSummary() {
-		return "Deletes all unused AssessmentPackage data";
+		return "Fixes existing data after schema update for M4->M5 upgrade";
 	}
 
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
-		final DataDeletionService dataDeletionService = applicationContext.getBean(DataDeletionService.class);
-		final int deletedCount = dataDeletionService.deleteUnusedAssessmentPackages();
+		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
+		final int deletedCount = managerServices.deleteUnusedAssessmentPackages();
 		logger.info("Deleted {} AssessmentPackage(s) from the system", deletedCount);
+		managerServices.validateAllAssessmentPackages();
+		logger.info("Validated all remaining AssessmentPackages");
     }
 }

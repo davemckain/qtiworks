@@ -85,7 +85,11 @@ import org.hibernate.annotations.Type;
             query="SELECT ap"
                 + "  FROM AssessmentPackage ap"
                 + "  LEFT JOIN ap.assessment a"
-                + "  WHERE ap <> a.selectedAssessmentPackage")
+                + "  WHERE ap <> a.selectedAssessmentPackage"),
+    @NamedQuery(name="AssessmentPackage.getAll",
+            query="SELECT ap"
+                + "  FROM AssessmentPackage ap"
+                + "  LEFT JOIN FETCH ap.assessment a")
 })
 public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 

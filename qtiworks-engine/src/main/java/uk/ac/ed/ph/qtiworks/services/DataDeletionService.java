@@ -53,7 +53,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -145,24 +144,6 @@ public class DataDeletionService {
 
         /* Delete entities, taking advantage of cascading */
         deliveryDao.remove(delivery); /* (This will cascade) */
-    }
-
-    public int deleteUnusedAssessmentPackages() {
-        final List<AssessmentPackage> toDelete = assessmentPackageDao.getAllUnused();
-        for (final AssessmentPackage assessmentPackage : toDelete) {
-            deleteAssessmentPackage(assessmentPackage);
-        }
-        return toDelete.size();
-    }
-
-    public int deleteUnusedAssessmentPackages(final Assessment assessment) {
-        Assert.notNull(assessment, "assessment");
-
-        final List<AssessmentPackage> toDelete = assessmentPackageDao.getUnusedForAssessment(assessment);
-        for (final AssessmentPackage assessmentPackage : toDelete) {
-            deleteAssessmentPackage(assessmentPackage);
-        }
-        return toDelete.size();
     }
 
     public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage) {

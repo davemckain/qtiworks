@@ -324,6 +324,7 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
     // Validation
+    // (These methods arguably belong somewhere as, we're not doing any permission checking here)
 
     public AssessmentObjectValidationResult<?> validateAssessment(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {

@@ -34,12 +34,17 @@
 package uk.ac.ed.ph.qtiworks.manager.services;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
+
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -67,10 +72,16 @@ public class ManagerServices {
     private DataDeletionService dataDeletionService;
 
     @Resource
+    private AssessmentManagementService assessmentManagementService;
+
+    @Resource
     private InstructorUserDao instructorUserDao;
 
     @Resource
     private UserDao userDao;
+
+    @Resource
+    private AssessmentPackageDao assessmentPackageDao;
 
     public InstructorUser ensureInternalSystemUser(final String loginName, final String firstName,
             final String lastName) {
@@ -127,8 +138,6 @@ public class ManagerServices {
         return result;
     }
 
-
-
     //-------------------------------------------------
 
     public boolean findAndDeleteUser(final String loginNameOrUid) {
@@ -168,5 +177,23 @@ public class ManagerServices {
 			}
 		}
 		return user;
+    }
+
+    //-------------------------------------------------
+    // Helpers for M4->M5 update
+
+    public int deleteUnusedAssessmentPackages() {
+        final List<AssessmentPackage> toDelete = assessmentPackageDao.getAllUnused();
+        for (final AssessmentPackage assessmentPackage : toDelete) {
+            dataDeletionService.deleteAssessmentPackage(assessmentPackage);
+        }
+        return toDelete.size();
+    }
+
+    public void validateAllAssessmentPackages() {
+    	final List<AssessmentPackage> toValidate = assessmentPackageDao.getAll();
+    	for (final AssessmentPackage assessmentPackage : toValidate) {
+    		assessmentManagementService.validateAssessmentPackage(assessmentPackage);
+    	}
     }
 }

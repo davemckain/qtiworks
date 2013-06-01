@@ -77,7 +77,7 @@ public final class QtiWorksEngineManager {
     	actionMap.put("deleteUsers", new DeleteUsersAction());
     	actionMap.put("resetUsers", new ResetUsersAction());
     	actionMap.put("purgeAnonymousData", new PurgeAnonymousDataAction());
-    	actionMap.put("purgeUnusedPackages", new PurgeUnusedPackagesActions());
+    	actionMap.put("update", new M4M5UpdateAction());
     	actionMap.put("adhoc", new AdhocAction());
     }
 

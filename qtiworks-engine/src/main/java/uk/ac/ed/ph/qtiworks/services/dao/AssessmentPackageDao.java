@@ -72,4 +72,9 @@ public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
         final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getAllUnused", AssessmentPackage.class);
         return query.getResultList();
     }
+
+    public List<AssessmentPackage> getAll() {
+        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getAll", AssessmentPackage.class);
+        return query.getResultList();
+    }
 }
