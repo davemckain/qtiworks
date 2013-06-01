@@ -53,6 +53,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -166,13 +167,25 @@ public class DataDeletionService {
     public void deleteAssessment(final Assessment assessment) {
         Assert.notNull(assessment, "assessment");
 
-        /* Delete sandboxes for all packages */
-        for (final AssessmentPackage assessmentPackage : assessment.getAssessmentPackages()) {
-            deleteAssessmentPackage(assessmentPackage);
+        /* NB: The ordering is important here due to the bi-directional relationship
+         * between Assessment and AssessmentPackage. Don't try to optimise this away
+         * without testing!
+         */
+
+        /* Unlink Assessment from each AssessmentPackage */
+        final List<AssessmentPackage> assessmentPackages = assessment.getAssessmentPackages();
+        for (final AssessmentPackage assessmentPackage : assessmentPackages) {
+            assessmentPackage.setAssessment(null);
+            assessmentPackageDao.update(assessmentPackage);
         }
 
-        /* Delete entities, taking advantage of cascading */
-        assessmentDao.remove(assessment); /* (This will cascade) */
+        /* Delete Assessment, taking advantage of cascading into Deliveries etc. */
+        assessmentDao.remove(assessment); /* (This will cascade into Deliveries) */
+
+        /* Finally delete each AssessmentPackage */
+        for (final AssessmentPackage assessmentPackage : assessmentPackages) {
+            deleteAssessmentPackage(assessmentPackage);
+        }
     }
 
     /**

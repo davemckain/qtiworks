@@ -182,7 +182,7 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
      * NB: As of version 1.0-M5, this should generally return a single entity, which should
      * be the same as {@link #selectedAssessmentPackage}.
      */
-    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY)
     @OrderBy("apid")
     private List<AssessmentPackage> assessmentPackages;
 
