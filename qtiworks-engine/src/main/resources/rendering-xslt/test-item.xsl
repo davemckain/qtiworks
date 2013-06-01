@@ -132,7 +132,6 @@ NB: This is used both while being presented, and during review.
 
         <!-- Session control -->
         <xsl:call-template name="qw:test-controls"/>
-        <xsl:call-template name="qw:session-controls"/>
       </body>
     </html>
   </xsl:template>
