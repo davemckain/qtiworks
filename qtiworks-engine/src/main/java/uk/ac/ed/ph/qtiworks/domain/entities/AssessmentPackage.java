@@ -100,8 +100,13 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Column(name="apid")
     private Long apid;
 
-    @ManyToOne(optional=false, fetch=FetchType.EAGER)
-    @JoinColumn(name="aid", updatable=false)
+    /**
+     * (Owning {@link Assessment}. There's a bi-directional link between these, so this is
+     * marked optional=true to allow the relationship to be established, but you can assume
+     * a non-null result usually.)
+     */
+    @ManyToOne(optional=true, fetch=FetchType.EAGER)
+    @JoinColumn(name="aid", updatable=true)
     private Assessment assessment;
 
     @Basic(optional=false)

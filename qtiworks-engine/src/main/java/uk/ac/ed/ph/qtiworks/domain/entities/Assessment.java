@@ -171,7 +171,7 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     /**
      * Currently-selected {@link AssessmentPackage} for this {@link Assessment}.
      */
-    @OneToOne(optional=true, fetch=FetchType.EAGER)
+    @OneToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="selected_apid")
     private AssessmentPackage selectedAssessmentPackage;
 

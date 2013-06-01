@@ -439,6 +439,8 @@ public class SampleResourceImporter {
         assessmentPackage.setLaunchable(true);
         assessmentPackage.setErrorCount(0);
         assessmentPackage.setWarningCount(0);
+        assessmentPackage.setImportVersion(Long.valueOf(1L));
+        assessmentPackageDao.persist(assessmentPackage);
 
         /* Create owning Assessment entity */
         final Assessment assessment = new Assessment();
@@ -460,13 +462,10 @@ public class SampleResourceImporter {
         final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
         assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
-        /* Relate Assessment & AssessmentPackage */
+        /* Persist/relate entities */
         assessmentPackage.setAssessment(assessment);
-        assessmentPackage.setImportVersion(Long.valueOf(1L));
-
-        /* Persist entities */
         assessmentDao.persist(assessment);
-        assessmentPackageDao.persist(assessmentPackage);
+        assessmentPackageDao.update(assessmentPackage);
 
         /* Create default delivery settings */
         final DeliverySettings deliverySettings = deliverySettingsMap.get(qtiSampleAssessment.getDeliveryStyle());

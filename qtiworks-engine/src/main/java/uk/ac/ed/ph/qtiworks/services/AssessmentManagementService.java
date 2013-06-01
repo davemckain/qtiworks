@@ -184,43 +184,47 @@ public class AssessmentManagementService {
 
         /* First, upload the data into a sandbox */
         final AssessmentPackage assessmentPackage = importPackageFiles(multipartFile);
-
-        /* Create resulting Assessment entity */
-        final Assessment assessment = new Assessment();
-        assessment.setAssessmentType(assessmentPackage.getAssessmentType());
-        assessment.setOwner(caller);
-
-        final String fileName = multipartFile.getOriginalFilename();
-        String assessmentName;
-        if (StringUtilities.isNullOrBlank(fileName)) {
-            assessmentName = assessmentPackage.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "Item" : "Test";
-        }
-        else {
-            assessmentName = ServiceUtilities.trimString(fileName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH);
-        }
-        assessment.setName(assessmentName);
-
-        /* Guess a title */
-        final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
-        final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
-        assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
-
-        /* Relate Assessment & AssessmentPackage */
-        assessmentPackage.setAssessment(assessment);
-        assessmentPackage.setImportVersion(Long.valueOf(1L));
-        assessment.setSelectedAssessmentPackage(assessmentPackage);
-        assessment.setPackageImportVersion(Long.valueOf(1L));
-
-        /* Persist entities */
+        final Assessment assessment;
         try {
-            assessmentDao.persist(assessment);
+            /* Persist new package (before linking to Assessment) */
+            assessmentPackage.setImportVersion(Long.valueOf(1L));
             assessmentPackageDao.persist(assessmentPackage);
+
+            /* Create resulting Assessment entity */
+            assessment = new Assessment();
+            assessment.setAssessmentType(assessmentPackage.getAssessmentType());
+            assessment.setOwner(caller);
+
+            final String fileName = multipartFile.getOriginalFilename();
+            String assessmentName;
+            if (StringUtilities.isNullOrBlank(fileName)) {
+                assessmentName = assessmentPackage.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "Item" : "Test";
+            }
+            else {
+                assessmentName = ServiceUtilities.trimString(fileName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH);
+            }
+            assessment.setName(assessmentName);
+
+            /* Guess a title */
+            final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
+            final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
+            assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
+
+            /* Relate Assessment & AssessmentPackage */
+            assessment.setSelectedAssessmentPackage(assessmentPackage);
+            assessment.setPackageImportVersion(Long.valueOf(1L));
+            assessmentPackage.setAssessment(assessment);
+
+            /* Persist/relate entities */
+            assessmentDao.persist(assessment);
+            assessmentPackageDao.update(assessmentPackage);
         }
         catch (final Exception e) {
-            logger.warn("Persistence of AssessmentPackage failed - deleting its sandbox", assessmentPackage);
+            logger.warn("Failed to save new Assessment or AssessmentPackage - deleting sandbox");
             deleteAssessmentPackageSandbox(assessmentPackage);
-            throw new QtiWorksRuntimeException("Failed to persist AssessmentPackage " + assessmentPackage, e);
+            throw new QtiWorksRuntimeException("Failed to persist Assessment/AssessmentPackage {}", e);
         }
+
         logger.debug("Created new Assessment #{} with package #{}", assessment.getId(), assessmentPackage.getId());
         auditLogger.recordEvent("Created Assessment #" + assessment.getId() + " and AssessmentPackage #" + assessmentPackage.getId());
         return assessment;
