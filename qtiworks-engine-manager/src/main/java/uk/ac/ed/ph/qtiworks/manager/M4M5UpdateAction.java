@@ -64,9 +64,13 @@ public final class M4M5UpdateAction extends ManagerAction {
 	@Override
 	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
 		final ManagerServices managerServices = applicationContext.getBean(ManagerServices.class);
-		final int deletedCount = managerServices.deleteUnusedAssessmentPackages();
+		int deletedCount = managerServices.deleteUnusedAssessmentPackages();
 		logger.info("Deleted {} AssessmentPackage(s) from the system", deletedCount);
+
 		managerServices.validateAllAssessmentPackages();
 		logger.info("Validated all remaining AssessmentPackages");
+
+		deletedCount = managerServices.deleteAllCandidateSessions();
+		logger.info("Deleted {} CandidateSessions", deletedCount);
     }
 }

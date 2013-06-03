@@ -35,12 +35,14 @@ package uk.ac.ed.ph.qtiworks.manager.services;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
@@ -82,6 +84,9 @@ public class ManagerServices {
 
     @Resource
     private AssessmentPackageDao assessmentPackageDao;
+
+    @Resource
+    private CandidateSessionDao candidateSessionDao;
 
     public InstructorUser ensureInternalSystemUser(final String loginName, final String firstName,
             final String lastName) {
@@ -183,17 +188,24 @@ public class ManagerServices {
     // Helpers for M4->M5 update
 
     public int deleteUnusedAssessmentPackages() {
-        final List<AssessmentPackage> toDelete = assessmentPackageDao.getAllUnused();
-        for (final AssessmentPackage assessmentPackage : toDelete) {
+        final List<AssessmentPackage> unusedPackages = assessmentPackageDao.getAllUnused();
+        for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAllUnused()) {
             dataDeletionService.deleteAssessmentPackage(assessmentPackage);
         }
-        return toDelete.size();
+        return unusedPackages.size();
     }
 
     public void validateAllAssessmentPackages() {
-    	final List<AssessmentPackage> toValidate = assessmentPackageDao.getAll();
-    	for (final AssessmentPackage assessmentPackage : toValidate) {
+    	for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAll()) {
     		assessmentManagementService.validateAssessmentPackage(assessmentPackage);
     	}
+    }
+
+    public int deleteAllCandidateSessions() {
+        final List<CandidateSession> candidateSessions = candidateSessionDao.getAll();
+        for (final CandidateSession candidatSession : candidateSessions) {
+            dataDeletionService.deleteCandidateSession(candidatSession);
+        }
+        return candidateSessions.size();
     }
 }
