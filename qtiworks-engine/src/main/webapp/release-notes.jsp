@@ -12,6 +12,44 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV29 [Development] (03/06/2013)</h3>
+  <p>
+    This continues the work of the last 2 snapshots, adding in a new author
+    view which finally covers tests as well as items. It is now also possible
+    to launch assessment containing validation errors or warnings.
+  </p>
+  <p>
+    The rendering process now also records whether an assessment "explodes"
+    while being delivered to candidates, and this information can be seen by
+    instructors. Candidates experiencing an exploding assessment will be
+    provided with a non-scary error page. (Explosions are generally unlikely,
+    but the relaxation on when assessments can be run may cause some unplanned
+    explosions to happen now.)
+  </p>
+  <p>
+    Test handling now allows EXIT_TEST to be used anywhere. This will be
+    treated the same way as EXIT_TESTPART in tests containing a single
+    testPart, so that the candidate can still access feedback for individual
+    items. In tests with multiple testParts, this will end the test and show
+    only the test feedback. Support for branchRule has improved in that any
+    sectionParts jumped by a branchRule are now recorded as such. The rendering
+    process now excludes any jumped sectionParts.
+  </p>
+  <p>
+    The handling of ZIP Content Packages has been relaxed so that silly MIME types sent by browsers no longer
+    cause the import process to refuse to proceed. (See bug #28.)
+  </p>
+  <p>
+    <strong>Note:</strong>  If you are following these development releases, then you will need to run the schema migration script
+    <code>qtiworks-engine/support/schema-migrations/dev28-to-dev29.sql</code>
+    after compiling this version of the webapp. Then you must run the
+    <code>update</code> action in the QTIWorks Engine Manager. (Note that all
+    candidate session data needs to be deleted here.)
+  </p>
+  <p>
+    See development snapshots at <a href="https://www2.ph.ed.ac.uk/qtiworks-dev">https://www2.ph.ed.ac.uk/qtiworks-dev</a>.
+  </p>
+
   <h3>1.0-DEV28 [Development] (05/05/2013)</h3>
   <p>
     This release consolidates on DEV27, fixing some bugs and refining features added in DEV27. This includes some
