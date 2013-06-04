@@ -98,7 +98,7 @@ Renders the test(Part) feedback
   <xsl:template match="qw:node[@type='ASSESSMENT_SECTION']" mode="testPart-review">
     <xsl:variable name="assessmentSessionSessionState" select="$testSessionState/qw:assessmentSection[@key=current()/@key]/qw:assessmentSectionSessionState"
       as="element(qw:assessmentSectionSessionState)"/>
-    <xsl:if test="not($assessmentSessionSessionState/@jumpedByBranchRule='true') and not($assessmentSessionSessionState/@preConditionFailed='true')">
+    <xsl:if test="$currentTestPart/@navigationMode='nonlinear' or exists($assessmentSessionSessionState/@entryTime)">
       <li class="assessmentSection">
         <header>
           <!-- Section title -->
@@ -119,7 +119,7 @@ Renders the test(Part) feedback
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-review">
     <xsl:variable name="reviewable" select="@allowReview='true' or @showFeedback='true'" as="xs:boolean"/>
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
-    <xsl:if test="not($itemSessionState/@jumpedByBranchRule='true') and not($itemSessionState/@preConditionFailed='true')">
+    <xsl:if test="$currentTestPart/@navigationMode='nonlinear' or exists($itemSessionState/@entryTime)">
       <li class="assessmentItem">
         <form action="{$webappContextPath}{$reviewTestItemUrl}/{@key}" method="post">
           <button type="submit">
