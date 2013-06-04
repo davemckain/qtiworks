@@ -100,20 +100,6 @@ Renders a standalone assessmentItem
           </div>
         </xsl:if>
 
-        <!-- Candidate status -->
-        <xsl:if test="$isItemSessionEnded">
-          <div class="candidateStatus">
-            <xsl:choose>
-              <xsl:when test="$solutionMode">
-                A model solution to this assessment is shown below.
-              </xsl:when>
-              <xsl:otherwise>
-                This assessment is now finished.
-              </xsl:otherwise>
-            </xsl:choose>
-          </div>
-        </xsl:if>
-
         <!-- Item body -->
         <xsl:apply-templates select="qti:itemBody"/>
 
