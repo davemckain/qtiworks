@@ -24,24 +24,34 @@ rendering.
   <!-- QTIWorks version number -->
   <xsl:param name="qtiWorksVersion" as="xs:string" required="yes"/>
 
-  <!-- Global action permissions -->
-  <xsl:param name="sourceAllowed" as="xs:boolean" required="yes"/>
-  <xsl:param name="resultAllowed" as="xs:boolean" required="yes"/>
-
   <!-- Global action URLs -->
   <xsl:param name="responseUrl" as="xs:string" required="yes"/>
-  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
-  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
   <xsl:param name="serveFileUrl" as="xs:string" required="yes"/>
+  <xsl:param name="authorViewUrl" as="xs:string" required="yes"/>
+  <xsl:param name="sourceUrl" as="xs:string" required="yes"/>
+  <xsl:param name="stateUrl" as="xs:string" required="yes"/>
+  <xsl:param name="resultUrl" as="xs:string" required="yes"/>
+  <xsl:param name="validationUrl" as="xs:string" required="yes"/>
 
-  <!-- URI of the Item or Test being rendered -->
-  <xsl:param name="systemId" as="xs:string" required="yes"/>
+  <!--
+  URI of the Item or Test being rendered.
+  Will be passed during 'proper' rendering only; will not be passed when
+  rendering exploded & terminated states.
+  -->
+  <xsl:param name="systemId" as="xs:string?"/>
 
   <!-- Set to true to include author debug information -->
   <xsl:param name="authorMode" as="xs:boolean" required="yes"/>
 
-  <!-- Notificates produced during the event being rendered -->
+  <!-- Notifications produced during the event being rendered -->
   <xsl:param name="notifications" as="element(qw:notification)*"/>
+
+  <!-- Validation information -->
+  <xsl:param name="validated" as="xs:boolean"/>
+  <xsl:param name="launchable" as="xs:boolean"/>
+  <xsl:param name="errorCount" as="xs:integer"/>
+  <xsl:param name="warningCount" as="xs:integer"/>
+  <xsl:param name="valid" as="xs:boolean"/>
 
   <!-- FIXME: This is not used at the moment -->
   <xsl:param name="view" select="false()" as="xs:boolean"/>
@@ -71,6 +81,12 @@ rendering.
   </xsl:function>
 
   <!-- ************************************************************ -->
+
+  <xsl:function name="qw:format-optional-date" as="xs:string?">
+    <xsl:param name="date" as="xs:string?"/>
+    <xsl:param name="default" as="xs:string?"/>
+    <xsl:sequence select="if ($date!='') then $date else $default"/>
+  </xsl:function>
 
   <xsl:function name="qw:format-number" as="xs:string">
     <xsl:param name="format" as="xs:string"/>
@@ -230,6 +246,15 @@ rendering.
     </xsl:choose>
   </xsl:function>
 
+  <xsl:template name="maybeAddAuthoringLink">
+    <!-- Authoring console link (maybe) -->
+    <xsl:if test="$authorMode">
+      <div class="authorModePanel">
+        <div class="authoringInvoker"><a href="{$webappContextPath}{$authorViewUrl}" target="_blank">Open Author's Feedback</a></div>
+        <xsl:call-template name="errorStatusPanel"/>
+      </div>
+    </xsl:if>
+  </xsl:template>
 
   <!-- ************************************************************ -->
   <!-- Variable substitution -->
@@ -478,5 +503,30 @@ rendering.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
+  <!-- ************************************************************ -->
+
+  <xsl:template name="errorStatusPanel" as="element(ul)?">
+    <xsl:if test="exists($notifications) or ($validated and not($valid))">
+      <xsl:variable name="errors" select="$notifications[@level='ERROR']" as="element(qw:notification)*"/>
+      <xsl:variable name="warnings" select="$notifications[@level='WARNING']" as="element(qw:notification)*"/>
+      <xsl:variable name="infos" select="$notifications[@level='INFO']" as="element(qw:notification)*"/>
+      <ul class="summary">
+        <xsl:if test="exists($errors)">
+          <li class="errorSummary"><xsl:value-of select="count($errors)"/> Runtime Error<xsl:if test="count($errors)!=1">s</xsl:if></li>
+        </xsl:if>
+        <xsl:if test="exists($warnings)">
+          <li class="warnSummary"><xsl:value-of select="count($warnings)"/> Runtime Warning<xsl:if test="count($warnings)!=1">s</xsl:if></li>
+        </xsl:if>
+        <xsl:if test="exists($infos)">
+          <li class="infoSummary"><xsl:value-of select="count($infos)"/> Runtime Information Notification<xsl:if test="count($notifications)!=1">s</xsl:if></li>
+        </xsl:if>
+        <xsl:if test="$validated and not($valid)">
+          <li class="errorSummary">This assessment has validation errors or warnings</li>
+        </xsl:if>
+      </ul>
+    </xsl:if>
+  </xsl:template>
+
 
 </xsl:stylesheet>

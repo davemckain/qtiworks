@@ -41,7 +41,6 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
@@ -108,9 +107,6 @@ public class CandidateSessionStarter {
 
     @Resource
     private CandidateDataServices candidateDataServices;
-
-    @Resource
-    private EntityGraphService entityGraphService;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -220,12 +216,6 @@ public class CandidateSessionStarter {
             return mostRecent;
         }
 
-        /* Make sure underlying Assessment is valid */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
-        if (!assessmentPackage.isValid()) {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_INVALID_ASSESSMENT, delivery);
-        }
-
         /* Now branch depending on whether this is an item or test */
         switch (assessment.getAssessmentType()) {
             case ASSESSMENT_ITEM:
@@ -249,16 +239,23 @@ public class CandidateSessionStarter {
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
-        /* Create fresh JQTI+ state Object */
-        final ItemSessionState itemSessionState = new ItemSessionState();
+        /* Create fresh JQTI+ state Object and try to create controller */
+        final ItemSessionController itemSessionController = candidateDataServices.createNewItemSessionStateAndController(delivery, notificationRecorder);
+        if (itemSessionController==null) {
+            return handleStartupExplosion(delivery, candidate, exitUrl);
+        }
 
-        /* Initialise state */
-        final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(delivery,
-                itemSessionState, notificationRecorder);
-        itemSessionController.initialize(timestamp);
-        itemSessionController.performTemplateProcessing(timestamp);
-        itemSessionController.enterItem(timestamp);
+        /* Try to Initialise JQTI+ state */
+        final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
+        try {
+            final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
+            itemSessionController.initialize(timestamp);
+            itemSessionController.performTemplateProcessing(timestamp);
+            itemSessionController.enterItem(timestamp);
+        }
+        catch (final RuntimeException e) {
+            return handleStartupExplosion(delivery, candidate, exitUrl);
+        }
 
         /* Create new session entity and put into appropriate initial state */
         final CandidateSession candidateSession = new CandidateSession();
@@ -299,25 +296,33 @@ public class CandidateSessionStarter {
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
-        /* Create fresh state & controller for it */
+        /* Create fresh JQTI+ state & controller for it */
         final TestSessionController testSessionController = candidateDataServices.createNewTestSessionStateAndController(delivery, notificationRecorder);
-        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+        if (testSessionController==null) {
+            return handleStartupExplosion(delivery, candidate, exitUrl);
+        }
 
         /* Initialise test state and enter test */
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
         final Date timestamp = requestTimestampContext.getCurrentRequestTimestamp();
-        testSessionController.initialize(timestamp);
-        final int testPartCount = testSessionController.enterTest(timestamp);
-        if (testPartCount==1) {
-            /* If there is only testPart, then enter this (if possible).
-             * (Note that this may cause the test to exit immediately if there is a failed
-             * preCondition on this part.)
-             */
-            testSessionController.enterNextAvailableTestPart(timestamp);
+        try {
+            testSessionController.initialize(timestamp);
+            final int testPartCount = testSessionController.enterTest(timestamp);
+            if (testPartCount==1) {
+                /* If there is only testPart, then enter this (if possible).
+                 * (Note that this may cause the test to exit immediately if there is a failed
+                 * preCondition on this part.)
+                 */
+                testSessionController.enterNextAvailableTestPart(timestamp);
+            }
+            else {
+                /* Don't enter first testPart yet - we shall tell candidate that
+                 * there are multiple parts and let them enter manually.
+                 */
+            }
         }
-        else {
-            /* Don't enter first testPart yet - we shall tell candidate that
-             * there are multiple parts and let them enter manually.
-             */
+        catch (final RuntimeException e) {
+            return handleStartupExplosion(delivery, candidate, exitUrl);
         }
 
         /* Create new session entity and put into appropriate initial state */
@@ -347,6 +352,21 @@ public class CandidateSessionStarter {
 
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());
+        return candidateSession;
+    }
+
+    /**
+     * Helper to deal with what happens when the JQTI+ init logic throws a {@link RuntimeException}.
+     */
+    private CandidateSession handleStartupExplosion(final Delivery delivery, final User candidate, final String exitUrl) {
+        final CandidateSession candidateSession = new CandidateSession();
+        candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
+        candidateSession.setExitUrl(exitUrl);
+        candidateSession.setCandidate(candidate);
+        candidateSession.setDelivery(delivery);
+        candidateSession.setExploded(true);
+        candidateSession.setTerminated(true);
+        candidateSessionDao.persist(candidateSession);
         return candidateSession;
     }
 }

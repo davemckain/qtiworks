@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
@@ -40,10 +41,18 @@ import uk.ac.ed.ph.qtiworks.samples.QtiSampleAssessment;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObject;
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiObjectReader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentObject;
 import uk.ac.ed.ph.jqtiplus.utils.contentpackaging.QtiContentPackageExtractor;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xmlutils.CustomUriScheme;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
+import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ChainedResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ClassPathResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.locators.FileSandboxResourceLocator;
@@ -55,6 +64,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Date;
 
 import javax.activation.FileTypeMap;
 import javax.annotation.Resource;
@@ -64,6 +74,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.w3c.dom.Document;
 
 /**
  * Provides read-only access (and related services) to {@link AssessmentPackage} files
@@ -80,6 +92,9 @@ public class AssessmentPackageFileService {
 
     /** Content type used when streaming QTI sources */
     private static final String QTI_CONTENT_TYPE = "application/xml";
+
+    @Resource
+    private QtiXmlReader qtiXmlReader;
 
     @Resource
     private FilespaceManager filespaceManager;
@@ -203,6 +218,89 @@ public class AssessmentPackageFileService {
     //-------------------------------------------------
 
     /**
+     * Invokes the JQTI+ load & resolution process on the given {@link AssessmentPackage}.
+     *
+     * @param assessmentPackage package to validate, which must not be null.
+     */
+    @SuppressWarnings("unchecked")
+    public <E extends ResolvedAssessmentObject<?>>
+    E loadAndResolveAssessmentObject(final AssessmentPackage assessmentPackage) {
+        final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentObjectSystemId = createAssessmentObjectUri(assessmentPackage);
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
+        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
+        E result;
+        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
+            result = (E) assessmentObjectXmlLoader.loadAndResolveAssessmentItem(assessmentObjectSystemId);
+        }
+        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
+            result = (E) assessmentObjectXmlLoader.loadAndResolveAssessmentTest(assessmentObjectSystemId);
+        }
+        else {
+            throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
+        }
+        return result;
+    }
+
+    /**
+     * Invokes the JQTI+ validator on the given {@link AssessmentPackage}.
+     *
+     * @param assessmentPackage package to validate, which must not be null.
+     */
+    @SuppressWarnings("unchecked")
+    public <E extends AssessmentObjectValidationResult<?>>
+    E loadAndValidateAssessment(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentObjectSystemId = createAssessmentObjectUri(assessmentPackage);
+        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
+        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
+        E result;
+        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
+            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateItem(assessmentObjectSystemId);
+        }
+        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
+            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateTest(assessmentObjectSystemId);
+        }
+        else {
+            throw new QtiWorksLogicException("Unexpected logic branch " + assessmentObjectType);
+        }
+        return result;
+    }
+
+    //-------------------------------------------------
+
+    /**
+     * Attempts to extract the title from an {@link AssessmentItem} or {@link AssessmentTest} for
+     * bootstrapping the initial state of the resulting {@link AssessmentPackage}.
+     * <p>
+     * This performs a low level XML parse to save time; proper read/validation using JQTI+
+     * is expected to happen later on.
+     *
+     * @param assessmentPackage
+     * @return guessed title, or an empty String if nothing could be guessed.
+     */
+    public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        final ResourceLocator inputResourceLocator = createResolvingResourceLocator(assessmentPackage);
+        final URI assessmentSystemId = createAssessmentObjectUri(assessmentPackage);
+        XmlReadResult xmlReadResult;
+        try {
+            xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
+        }
+        catch (final XmlResourceNotFoundException e) {
+            throw new QtiWorksLogicException("Assessment resource for package " + assessmentPackage, e);
+        }
+        /* Let's simply extract the title attribute from the document element, and not worry about
+         * anything else at this point.
+         */
+        final Document document = xmlReadResult.getDocument();
+        return document!=null ? document.getDocumentElement().getAttribute("title") : "";
+    }
+
+    //-------------------------------------------------
+
+    /**
      * Streams the source of the given {@link AssessmentPackage} to the required {@link OutputStreamer}
      *
      * @param assessmentPackage
@@ -280,11 +378,16 @@ public class AssessmentPackageFileService {
     private void streamPackageFile(final AssessmentPackage assessmentPackage, final File file,
             final String contentType, final OutputStreamer outputStreamer)
             throws IOException {
+        streamFile(file, contentType, assessmentPackage.getCreationTime(), outputStreamer);
+    }
+
+    public void streamFile(final File file, final String contentType, final Date lastModifiedTime, final OutputStreamer outputStreamer)
+            throws IOException {
         final long contentLength = file.length();
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = new FileInputStream(file);
-            outputStreamer.stream(contentType, contentLength, assessmentPackage.getCreationTime(), fileInputStream);
+            outputStreamer.stream(contentType, contentLength, lastModifiedTime, fileInputStream);
         }
         finally {
             IOUtils.closeQuietly(fileInputStream);

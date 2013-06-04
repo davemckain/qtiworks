@@ -340,30 +340,28 @@ public abstract class AbstractExpression extends AbstractNode implements Express
      * @see #evaluate(ProcessingContext)
      */
     protected Value evaluate(final ProcessingContext context, final int depth) {
-        if (getChildren().size() > 0) {
-            logger.debug("{}{}", formatIndent(depth), getQtiClassName());
-        }
-
-        /* Work out whether this expression is valid */
-        final boolean thisIsValid = context.isSubjectValid() || isThisExpressionValid(context);
-
         Value result;
+        final boolean thisIsValid = context.isSubjectValid() || isThisExpressionValid(context);
         if (thisIsValid) {
+            /* Expression is vaid, so evaluate it */
             result =  evaluateValidSelfAndChildren(context, depth);
         }
         else {
+            /* Expression is not valid, so log an warning and return NULL */
             context.fireRuntimeWarning(this, "Expression is not valid and will not be evaluated. Returning NULL instead");
             result = NullValue.INSTANCE;
         }
 
         /* Log result of evaluation. */
-        final String format = "{}{} -> {}({})";
-        final Object[] arguments = new Object[] { formatIndent(depth), getClass().getSimpleName(), result.getBaseType(), result };
-        if (!(getParent() instanceof Expression)) {
-            logger.debug(format, arguments);
-        }
-        else {
-            logger.trace(format, arguments);
+        if (logger.isTraceEnabled() || logger.isDebugEnabled()) {
+            final String format = "{}{} -> {}({})";
+            final Object[] arguments = new Object[] { formatIndent(depth), getClass().getSimpleName(), result.getBaseType(), result };
+            if (!(getParent() instanceof Expression)) {
+                logger.debug(format, arguments);
+            }
+            else {
+                logger.trace(format, arguments);
+            }
         }
         return result;
     }

@@ -35,8 +35,7 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.RootNodeLookup;
 
 import java.util.Date;
 import java.util.Set;
@@ -64,8 +63,11 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 
 /**
- * Represents an {@link AssessmentItem} or {@link AssessmentTest} stored
- * the system. All such objects are treated as IMS Content Packages.
+ * Encapsulates the data for a single assessment "package" within the system.
+ * <p>
+ * Each assessment uploaded into the system by a user will create one of these
+ * entities, which records where the files live, and information about the validation
+ * status of the assessment.
  *
  * @author David McKain
  */
@@ -73,19 +75,21 @@ import org.hibernate.annotations.Type;
 @Table(name="assessment_packages")
 @SequenceGenerator(name="assessmentPackageSequence", sequenceName="assessment_package_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
-    @NamedQuery(name="AssessmentPackage.getCurrentForAssessment",
+    @NamedQuery(name="AssessmentPackage.getUnusedForAssessment",
             query="SELECT ap"
                 + "  FROM AssessmentPackage ap"
+                + "  LEFT JOIN ap.assessment a"
                 + "  WHERE ap.assessment = :assessment"
-                + "    AND ap.importVersion = ("
-                + "      SELECT MAX(importVersion) FROM AssessmentPackage apInner"
-                + "        WHERE apInner.assessment = :assessment"
-                + "  )"),
-    @NamedQuery(name="AssessmentPackage.getForSampleCategory",
+                + "    AND ap <> a.selectedAssessmentPackage"),
+    @NamedQuery(name="AssessmentPackage.getAllUnused",
             query="SELECT ap"
                 + "  FROM AssessmentPackage ap"
-                + "  WHERE ap.assessment.sampleCategory = :sampleCategory"
-                + "  ORDER BY ap.assessment.creationTime")
+                + "  LEFT JOIN ap.assessment a"
+                + "  WHERE ap <> a.selectedAssessmentPackage"),
+    @NamedQuery(name="AssessmentPackage.getAll",
+            query="SELECT ap"
+                + "  FROM AssessmentPackage ap"
+                + "  LEFT JOIN FETCH ap.assessment a")
 })
 public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
 
@@ -96,8 +100,13 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Column(name="apid")
     private Long apid;
 
-    @ManyToOne(optional=false, fetch=FetchType.EAGER)
-    @JoinColumn(name="aid", updatable=false)
+    /**
+     * (Owning {@link Assessment}. There's a bi-directional link between these, so this is
+     * marked optional=true to allow the relationship to be established, but you can assume
+     * a non-null result usually.)
+     */
+    @ManyToOne(optional=true, fetch=FetchType.EAGER)
+    @JoinColumn(name="aid", updatable=true)
     private Assessment assessment;
 
     @Basic(optional=false)
@@ -151,6 +160,24 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="validated")
     private boolean validated;
+
+    /**
+     * If validated, this flag determines whether the assessment can be launched.
+     * (This is determined by {@link RootNodeLookup#wasSuccessful()})
+     */
+    @Basic(optional=false)
+    @Column(name="launchable")
+    private boolean launchable;
+
+    /** Number of validation errors, used when <code>validated</code> is true */
+    @Basic(optional=false)
+    @Column(name="error_count")
+    private int errorCount;
+
+    /** Number of validation warnings, used when <code>validated</code> is true */
+    @Basic(optional=false)
+    @Column(name="warning_count")
+    private int warningCount;
 
     /** If validated, was this item/test found to be valid? */
     @Basic(optional=false)
@@ -268,6 +295,32 @@ public class AssessmentPackage implements BaseEntity, TimestampedOnCreation {
         this.validated = validated;
     }
 
+
+    public boolean isLaunchable() {
+        return launchable;
+    }
+
+    public void setLaunchable(final boolean launchable) {
+        this.launchable = launchable;
+    }
+
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(final int errorCount) {
+        this.errorCount = errorCount;
+    }
+
+
+    public int getWarningCount() {
+        return warningCount;
+    }
+
+    public void setWarningCount(final int warningCount) {
+        this.warningCount = warningCount;
+    }
 
     public boolean isValid() {
         return valid;

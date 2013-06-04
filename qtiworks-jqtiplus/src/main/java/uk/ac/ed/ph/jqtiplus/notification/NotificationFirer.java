@@ -53,12 +53,6 @@ public interface NotificationFirer {
 
     void fireNotification(Notification notification);
 
-    void fireRuntimeInfo(QtiNode owner, String message);
-
-    void fireRuntimeWarning(QtiNode owner, String message);
-
-    void fireRuntimeError(QtiNode owner, String message);
-
     void fireValidationError(QtiNode owner, String message);
 
     void fireValidationWarning(QtiNode owner, String message);
@@ -70,6 +64,12 @@ public interface NotificationFirer {
     void fireBaseTypeValidationError(QtiNode owner, BaseType[] requiredBaseTypes, BaseType[] actualBaseTypes);
 
     void fireCardinalityValidationError(QtiNode owner, Cardinality[] requiredCardinalities, Cardinality[] actualCardinalities);
+
+    void fireRuntimeInfo(QtiNode owner, String message);
+
+    void fireRuntimeWarning(QtiNode owner, String message);
+
+    void fireRuntimeError(QtiNode owner, String message);
 
     /**
      * Sets a "checkpoint" for counting notifications. Notifications fired from

@@ -55,55 +55,9 @@ itemDeliverySettingsList
       </div>
     </fieldset>
     <div class="clear"></div>
-
     <fieldset>
       <div class="grid_1">
         <div class="workflowStep">2</div>
-      </div>
-      <div class="grid_5">
-        Select delivery settings (if uploading an item):
-        <ul class="dsSelector">
-          <c:forEach var="ds" items="${itemDeliverySettingsList}">
-            <c:set var="checked" value="${standaloneRunCommand.dsid==ds.id}"/>
-            <li>
-              <input type="radio" id="dsid${ds.id}" name="dsid" value="${ds.id}"${checked ? ' checked="checked"' : ''} />
-              <label for="dsid${ds.id}" class="dsTitle">
-                ${ds.title}
-              </label>
-              <div class="dsPrompt">
-                ${ds.prompt}
-              </div>
-            </li>
-          </c:forEach>
-        </ul>
-      </div>
-      <div class="grid_6">
-        <aside>
-          <p>
-            These "delivery settings" control how your assessment should be delivered.
-            We have picked a few basic examples for you to choose from. You can create
-            and manage your own delivery settings if you log in.
-          </p>
-          <p id="deliverySettingsHoverInfo"></p>
-          <script type="text/javascript">
-            $(document).ready(function() {
-                $('.dsTitle').hover(function() {
-                  var text = $(this).next().text();
-                  $('#deliverySettingsHoverInfo').text(text);
-                });
-                $('.dsSelector').hover(function() {}, function() {
-                  $('#deliverySettingsHoverInfo').text('');
-                });
-            });
-          </script>
-        </aside>
-      </div>
-    </fieldset>
-
-    <div class="clear"></div>
-    <fieldset>
-      <div class="grid_1">
-        <div class="workflowStep">3</div>
       </div>
       <div class="grid_11">
         <label for="submit">Hit "Upload and Run"</label>

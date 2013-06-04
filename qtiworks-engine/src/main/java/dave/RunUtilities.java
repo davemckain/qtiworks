@@ -34,7 +34,7 @@
 package dave;
 
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
-import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
@@ -72,18 +72,21 @@ public final class RunUtilities {
         return result;
     }
 
-    public static ItemAuthorViewRenderingOptions createItemAuthorViewRenderingOptions() {
-        final ItemAuthorViewRenderingOptions result = new ItemAuthorViewRenderingOptions();
+    public static AuthorViewRenderingOptions createAuthorViewRenderingOptions() {
+        final AuthorViewRenderingOptions result = new AuthorViewRenderingOptions();
         setBaseOptions(result);
         return result;
     }
 
     private static void setBaseOptions(final AbstractRenderingOptions result) {
         result.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        result.setServeFileUrl("/serveFile");
+        result.setServeFileUrl("/file");
         result.setResponseUrl("/response");
-        result.setResultUrl("/result");
+        result.setAuthorViewUrl("/author-view");
         result.setSourceUrl("/source");
+        result.setStateUrl("/state");
+        result.setResultUrl("/result");
+        result.setValidationUrl("/validation");
     }
 
 }

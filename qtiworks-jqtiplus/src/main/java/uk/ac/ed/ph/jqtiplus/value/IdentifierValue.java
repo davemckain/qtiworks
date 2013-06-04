@@ -36,17 +36,10 @@ package uk.ac.ed.ph.jqtiplus.value;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 
 /**
- * Implementation of <code>BaseType</code> identifier value.
- * <p>
- * This corresponds to the {@link Identifier} type, since these values only ever *refer* to identifiers, rather than defining them.
- * <p>
- * This class is not mutable and cannot contain NULL value.
- * <p>
- * <code>Cardinality</code> of this class is always single and <code>BaseType</code> is always identifier.
+ * Represents a QTI {@link Identifier} value.
  *
- * @see uk.ac.ed.ph.jqtiplus.value.Cardinality
- * @see uk.ac.ed.ph.jqtiplus.value.BaseType
  * @author Jiri Kajaba
+ * @author David McKain
  */
 public final class IdentifierValue extends SingleValue {
 

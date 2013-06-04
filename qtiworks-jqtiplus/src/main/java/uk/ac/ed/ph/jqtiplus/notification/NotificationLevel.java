@@ -42,9 +42,13 @@ package uk.ac.ed.ph.jqtiplus.notification;
  */
 public enum NotificationLevel {
 
+    /** NB: Do not use INFO for MODEL_VALIDATION notifications */
     INFO,
+
     WARNING,
+
     ERROR,
+
     ;
 
 }

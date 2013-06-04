@@ -49,14 +49,12 @@ import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryMetadata;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -70,6 +68,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -149,6 +148,7 @@ public class AssessmentReportingService {
                 candidate.getEmailAddress(),
                 candidateSession.isClosed(),
                 candidateSession.isTerminated(),
+                candidateSession.isExploded(),
                 numericOutcomeValues,
                 otherOutcomeValues);
 
@@ -231,6 +231,7 @@ public class AssessmentReportingService {
                     candidate.getEmailAddress(),
                     candidateSession.isClosed(),
                     candidateSession.isTerminated(),
+                    candidateSession.isExploded(),
                     numericOutcomeValues,
                     otherOutcomeValues);
             rows.add(row);
@@ -271,7 +272,7 @@ public class AssessmentReportingService {
         final ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream);
         boolean hasIncludedSomething = false;
         for (final CandidateSession candidateSession : candidateSessions) {
-            if (candidateSession.isClosed() || candidateSession.isTerminated()) {
+            if (!candidateSession.isExploded() && (candidateSession.isClosed() || candidateSession.isTerminated())) {
                 addAssessmentReport(zipOutputStream, candidateSession);
                 hasIncludedSomething = true;
             }
@@ -282,9 +283,9 @@ public class AssessmentReportingService {
 
     private void addAssessmentReport(final ZipOutputStream zipOutputStream, final CandidateSession candidateSession)
             throws IOException {
-        final File resultFile = candidateDataServices.getResultFile(candidateSession);
-        if (!resultFile.exists()) {
-            throw new QtiWorksLogicException("Expected result file " + resultFile + " to exist after session is closed");
+        final File assessmentResultFile = candidateDataServices.getResultFile(candidateSession);
+        if (!assessmentResultFile.exists()) {
+            throw new QtiWorksLogicException("Expected result file " + assessmentResultFile + " to exist after session is closed");
         }
 
         /* Work out what to call the ZIP entry */
@@ -292,7 +293,7 @@ public class AssessmentReportingService {
 
         /* Add result to ZIP */
         zipOutputStream.putNextEntry(new ZipEntry(zipEntryName));
-        IoUtilities.transfer(new FileInputStream(resultFile), zipOutputStream, true, false);
+        FileUtils.copyFile(assessmentResultFile, zipOutputStream);
         zipOutputStream.closeEntry();
     }
 

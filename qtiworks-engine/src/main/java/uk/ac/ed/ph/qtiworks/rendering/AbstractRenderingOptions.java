@@ -62,10 +62,19 @@ public abstract class AbstractRenderingOptions implements Serializable {
     private String serveFileUrl;
 
     @NotNull
-    private String resultUrl;
+    private String authorViewUrl;
 
     @NotNull
     private String sourceUrl;
+
+    @NotNull
+    private String stateUrl;
+
+    @NotNull
+    private String resultUrl;
+
+    @NotNull
+    private String validationUrl;
 
     //----------------------------------------------------
 
@@ -105,12 +114,12 @@ public abstract class AbstractRenderingOptions implements Serializable {
     }
 
 
-    public String getResultUrl() {
-        return resultUrl;
+    public String getAuthorViewUrl() {
+        return authorViewUrl;
     }
 
-    public void setResultUrl(final String resultUrl) {
-        this.resultUrl = resultUrl;
+    public void setAuthorViewUrl(final String authorViewUrl) {
+        this.authorViewUrl = authorViewUrl;
     }
 
 
@@ -120,6 +129,33 @@ public abstract class AbstractRenderingOptions implements Serializable {
 
     public void setSourceUrl(final String sourceUrl) {
         this.sourceUrl = sourceUrl;
+    }
+
+
+    public String getStateUrl() {
+        return stateUrl;
+    }
+
+    public void setStateUrl(final String stateUrl) {
+        this.stateUrl = stateUrl;
+    }
+
+
+    public String getResultUrl() {
+        return resultUrl;
+    }
+
+    public void setResultUrl(final String resultUrl) {
+        this.resultUrl = resultUrl;
+    }
+
+
+    public String getValidationUrl() {
+        return validationUrl;
+    }
+
+    public void setValidationUrl(final String validationUrl) {
+        this.validationUrl = validationUrl;
     }
 
     //----------------------------------------------------

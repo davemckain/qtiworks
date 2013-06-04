@@ -60,6 +60,7 @@ public final class RunAssertions {
     public static void assertOpen(final AbstractPartSessionState state, final Date entryTimestamp) {
         assertOpen((ControlObjectSessionState) state, entryTimestamp);
         assertFalse(state.isPreConditionFailed());
+        assertFalse(state.isJumpedByBranchRule());
     }
 
     public static void assertNotYetEntered(final ControlObjectSessionState state) {
@@ -122,6 +123,21 @@ public final class RunAssertions {
         assertFalse(state.isEntered());
         assertFalse(state.isEnded());
         assertTrue(state.isPreConditionFailed());
+        assertTrue(state.isExited());
+        assertEquals(exitTimestamp, state.getExitTime());
+    }
+
+    public static void assertJumpedByBranchRuleAndNotExited(final AbstractPartSessionState state) {
+        assertFalse(state.isEntered());
+        assertFalse(state.isEnded());
+        assertFalse(state.isExited());
+        assertTrue(state.isJumpedByBranchRule());
+    }
+
+    public static void assertJumpedByBranchRuleAndExited(final AbstractPartSessionState state, final Date exitTimestamp) {
+        assertFalse(state.isEntered());
+        assertFalse(state.isEnded());
+        assertTrue(state.isJumpedByBranchRule());
         assertTrue(state.isExited());
         assertEquals(exitTimestamp, state.getExitTime());
     }

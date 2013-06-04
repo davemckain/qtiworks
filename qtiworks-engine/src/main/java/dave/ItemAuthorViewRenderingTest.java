@@ -35,12 +35,10 @@ package dave;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksProperties;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
-import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemAuthorViewRenderingRequest;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
-import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumper;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLogListener;
 import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
 import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
@@ -62,13 +60,14 @@ import org.apache.commons.io.output.StringBuilderWriter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * Developer class for debugging standalone item rendering
+ * Developer class for debugging standalone item rendering author view
  *
  * @author David McKain
  */
 public class ItemAuthorViewRenderingTest {
 
     public static void main(final String[] args) {
+        final ClassPathResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
         final URI itemUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/ims/choice.xml");
 
         System.out.println("Reading");
@@ -77,7 +76,7 @@ public class ItemAuthorViewRenderingTest {
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
+            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, assessmentResourceLocator);
 
             final ResolvedAssessmentItem resolvedAssessmentItem = assessmentObjectXmlLoader.loadAndResolveAssessmentItem(itemUri);
             final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
@@ -87,24 +86,20 @@ public class ItemAuthorViewRenderingTest {
                     itemSessionControllerSettings, itemProcessingMap, itemSessionState);
             itemSessionController.addNotificationListener(notificationLogListener);
 
-            System.out.println("\nInitialising");
             final Date timestamp = new Date();
             itemSessionController.initialize(timestamp);
             itemSessionController.performTemplateProcessing(timestamp);
             itemSessionController.enterItem(timestamp);
-            System.out.println("Item session state after entry: " + ObjectDumper.dumpObject(itemSessionState, DumpMode.DEEP));
 
-            System.out.println("\nRendering");
-            final ItemAuthorViewRenderingOptions renderingOptions = RunUtilities.createItemAuthorViewRenderingOptions();
+            final AuthorViewRenderingOptions renderingOptions = RunUtilities.createAuthorViewRenderingOptions();
             final ItemAuthorViewRenderingRequest renderingRequest = new ItemAuthorViewRenderingRequest();
             renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
             renderingRequest.setAssessmentResourceUri(itemUri);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setItemSessionState(itemSessionState);
-            renderingRequest.setSolutionMode(false);
+            renderingRequest.setValidated(true);
+            renderingRequest.setValid(true);
             renderingRequest.setAuthorMode(true);
-            renderingRequest.setResultAllowed(true);
-            renderingRequest.setSourceAllowed(true);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
             validator.afterPropertiesSet();

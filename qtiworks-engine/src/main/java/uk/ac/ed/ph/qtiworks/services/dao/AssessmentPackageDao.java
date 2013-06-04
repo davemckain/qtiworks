@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
-import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 
 import java.util.List;
 
@@ -63,21 +62,19 @@ public class AssessmentPackageDao extends GenericDao<AssessmentPackage> {
         super(AssessmentPackage.class);
     }
 
-    public long getNewestImportVersion(final Assessment assessment) {
-        final TypedQuery<Long> query = em.createNamedQuery("AssessmentPackage.getNewestImportVersion", Long.class);
+    public List<AssessmentPackage> getUnusedForAssessment(final Assessment assessment) {
+        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getUnusedForAssessment", AssessmentPackage.class);
         query.setParameter("assessment", assessment);
-        return extractCountResult(query);
+        return query.getResultList();
     }
 
-    public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
-        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getCurrentForAssessment", AssessmentPackage.class);
-        query.setParameter("assessment", assessment);
-        return extractNullableFindResult(query);
+    public List<AssessmentPackage> getAllUnused() {
+        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getAllUnused", AssessmentPackage.class);
+        return query.getResultList();
     }
 
-    public List<AssessmentPackage> getForSampleCategory(final SampleCategory sampleCategory) {
-        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getForSampleCategory", AssessmentPackage.class);
-        query.setParameter("sampleCategory", sampleCategory);
+    public List<AssessmentPackage> getAll() {
+        final TypedQuery<AssessmentPackage> query = em.createNamedQuery("AssessmentPackage.getAll", AssessmentPackage.class);
         return query.getResultList();
     }
 }

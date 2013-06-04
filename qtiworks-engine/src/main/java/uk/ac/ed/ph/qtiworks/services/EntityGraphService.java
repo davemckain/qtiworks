@@ -43,9 +43,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
-import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -76,9 +76,6 @@ public class EntityGraphService {
     private IdentityContext identityContext;
 
     @Resource
-    private AssessmentPackageDao assessmentPackageDao;
-
-    @Resource
     private DeliveryDao deliveryDao;
 
     @Resource
@@ -89,19 +86,22 @@ public class EntityGraphService {
 
     //-------------------------------------------------
 
-    public List<Assessment> getCallerAssessments() {
+    public List<AssessmentAndPackage> getCallerAssessments() {
         final User currentUser = identityContext.getCurrentThreadEffectiveIdentity();
         return assessmentDao.getForOwner(currentUser);
     }
 
     /**
-     * Retrieves the current (=most recent) {@link AssessmentPackage} for the given {@link Assessment}.
+     * Retrieves the selected {@link AssessmentPackage} for the given {@link Assessment}, making
+     * sure that something is set.
      * <p>
      * This will return a non-null result.
+     *
+     * @throws QtiWorksLogicException if no selected {@link AssessmentPackage}
      */
-    public AssessmentPackage getCurrentAssessmentPackage(final Assessment assessment) {
+    public AssessmentPackage ensureSelectedAssessmentPackage(final Assessment assessment) {
         Assert.notNull(assessment, "assessment");
-        final AssessmentPackage result = assessmentPackageDao.getCurrentAssessmentPackage(assessment);
+        final AssessmentPackage result = assessment.getSelectedAssessmentPackage();
         if (result==null) {
             throw new QtiWorksLogicException("Expected to always find at least 1 AssessmentPackage associated with an Assessment. Check the JPA-QL query and the logic in this class");
         }
@@ -109,13 +109,16 @@ public class EntityGraphService {
     }
 
     /**
-     * Retrieves the current (=most recent) {@link AssessmentPackage} for the given {@link Delivery}.
+     * Retrieves the selected {@link AssessmentPackage} for the given {@link Delivery},
+     * making sure that something is set.
      * <p>
      * This will return a non-null result.
+     *
+     * @throws QtiWorksLogicException if no selected {@link AssessmentPackage}
      */
-    public AssessmentPackage getCurrentAssessmentPackage(final Delivery delivery) {
+    public AssessmentPackage ensureCurrentAssessmentPackage(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
-        return getCurrentAssessmentPackage(delivery.getAssessment());
+        return ensureSelectedAssessmentPackage(delivery.getAssessment());
     }
 
     //-------------------------------------------------

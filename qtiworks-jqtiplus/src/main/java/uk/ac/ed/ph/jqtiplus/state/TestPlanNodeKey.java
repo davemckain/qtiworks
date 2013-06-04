@@ -50,13 +50,15 @@ import java.util.regex.Pattern;
  * This is a composite of the {@link Identifier} and global position of the corresponding
  * {@link AbstractPart} in the original test, plus the instance number for this {@link AbstractPart}
  * (taking into account selection with replacement).
+ * <p>
+ * This implements {@link Comparable}; ordering is via the {@link #globalIndex} property.
  *
  * @see AbstractPart
  * @see TestPlan
  *
  * @author David McKain
  */
-public final class TestPlanNodeKey implements Serializable {
+public final class TestPlanNodeKey implements Serializable, Comparable<TestPlanNodeKey> {
 
     private static final long serialVersionUID = 1928489721725826864L;
 
@@ -141,5 +143,10 @@ public final class TestPlanNodeKey implements Serializable {
         }
         final TestPlanNodeKey other = (TestPlanNodeKey) obj;
         return stringRepresentation.equals(other.stringRepresentation);
+    }
+
+    @Override
+    public int compareTo(final TestPlanNodeKey o) {
+        return globalIndex - o.globalIndex;
     }
 }

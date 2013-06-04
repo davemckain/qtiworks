@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.jqtiplus.attribute.value;
 
+import uk.ac.ed.ph.jqtiplus.QtiConstants;
 import uk.ac.ed.ph.jqtiplus.attribute.MultipleAttribute;
 import uk.ac.ed.ph.jqtiplus.node.QtiNode;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
@@ -41,9 +42,10 @@ import uk.ac.ed.ph.jqtiplus.validation.ValidationContext;
 import java.util.List;
 
 /**
- * Attribute with identifier values.
+ * Attribute with multiple {@link Identifier} values.
  *
  * @author Jiri Kajaba
+ * @author David McKain
  */
 public final class IdentifierMultipleAttribute extends MultipleAttribute<Identifier> {
 
@@ -61,15 +63,18 @@ public final class IdentifierMultipleAttribute extends MultipleAttribute<Identif
     public void validateBasic(final ValidationContext context) {
         super.validateBasic(context);
 
-// FIXME: Re-enable this once we relax constraints on running invalid assessments
-//        /* Spec recommends identifiers are not more than 32 characters */
-//        if (value!=null) {
-//            for (final Identifier item : value) {
-//                if (item.toString().length() > 32) {
-//                    context.fireAttributeValidationWarning(this, "The identifiers " + item + " is recommended to be no more than 32 characters long");
-//                }
-//            }
-//        }
+        /* Spec suggests a maximum length for identnfiers. We don't enforce this, but will issue a validation warning */
+        if (value!=null) {
+            for (final Identifier item : value) {
+                if (item.toString().length() > 32) {
+                    context.fireAttributeValidationWarning(this,
+                            "The identifier " + item
+                            + " are recommended to be no more than "
+                            + QtiConstants.IDENTIFIER_MAX_LENGTH_RECOMMENDATION
+                            + " characters long");
+                }
+            }
+        }
     }
 
     @Override

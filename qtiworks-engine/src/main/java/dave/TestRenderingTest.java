@@ -74,6 +74,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 public class TestRenderingTest {
 
     public static void main(final String[] args) {
+        final ClassPathResourceLocator assessmentResourceLocator = new ClassPathResourceLocator();
         final URI testUri = URI.create("classpath:/uk/ac/ed/ph/qtiworks/samples/testimplementation/dave/test-testFeedback.xml");
 
         System.out.println("Reading");
@@ -82,7 +83,7 @@ public class TestRenderingTest {
         jqtiExtensionManager.init();
         try {
             final QtiXmlReader qtiXmlReader = new QtiXmlReader(jqtiExtensionManager);
-            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, new ClassPathResourceLocator());
+            final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, assessmentResourceLocator);
 
             final ResolvedAssessmentTest resolvedAssessmentTest = assessmentObjectXmlLoader.loadAndResolveAssessmentTest(testUri);
             final TestProcessingMap testProcessingMap = new TestProcessingInitializer(resolvedAssessmentTest, true).initialize();
@@ -115,13 +116,11 @@ public class TestRenderingTest {
             final TestRenderingOptions renderingOptions = RunUtilities.createTestRenderingOptions();
             final TestRenderingRequest renderingRequest = new TestRenderingRequest();
             renderingRequest.setTestSessionController(testSessionController);
-            renderingRequest.setAssessmentResourceLocator(assessmentObjectXmlLoader.getInputResourceLocator());
+            renderingRequest.setAssessmentResourceLocator(assessmentResourceLocator);
             renderingRequest.setAssessmentResourceUri(testUri);
             renderingRequest.setTestSessionController(testSessionController);
             renderingRequest.setRenderingOptions(renderingOptions);
             renderingRequest.setAuthorMode(true);
-            renderingRequest.setResultAllowed(true);
-            renderingRequest.setSourceAllowed(true);
             renderingRequest.setTestRenderingMode(null);
 
             final LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();

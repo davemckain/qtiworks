@@ -51,6 +51,10 @@ rendering.
   <!-- Is a model solution provided? -->
   <xsl:variable name="hasModelSolution" as="xs:boolean" select="exists(/qti:assessmentItem/qti:responseDeclaration/qti:correctResponse) or exists($overriddenCorrectResponses)"/>
 
+  <!-- Is there templateProcessing or responseProcessing? -->
+  <xsl:variable name="hasTemplateProcessing" as="xs:boolean" select="exists(/qti:assessmentItem/qti:templateProcessing)"/>
+  <xsl:variable name="hasResponseProcessing" as="xs:boolean" select="exists(/qti:assessmentItem/qti:responseProcessing)"/>
+
   <!-- Include stylesheets handling each type of interaction -->
   <xsl:include href="interactions/associateInteraction.xsl"/>
   <xsl:include href="interactions/choiceInteraction.xsl"/>

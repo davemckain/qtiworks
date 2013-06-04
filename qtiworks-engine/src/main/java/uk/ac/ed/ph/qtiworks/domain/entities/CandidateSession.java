@@ -91,7 +91,10 @@ import org.hibernate.annotations.Type;
                 + "  WHERE x.delivery = :delivery"
                 + "  AND x.candidate = :candidate"
                 + "  AND x.terminated IS FALSE"
-                + "  ORDER BY x.id")
+                + "  ORDER BY x.id"),
+    @NamedQuery(name="CandidateSession.getAll",
+            query="SELECT x"
+                + "  FROM CandidateSession x")
 })
 public class CandidateSession implements BaseEntity, TimestampedOnCreation {
 
@@ -159,6 +162,14 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="is_terminated") /* NB: MySQL reserves the keyword 'terminated'! */
     private boolean terminated;
+
+    /**
+     * Flag to indicate if this session blew up while running, either because
+     * the assessment was not runnable, or because of a logic error.
+     */
+    @Basic(optional=false)
+    @Column(name="exploded")
+    private boolean exploded;
 
     /**
      * If this session was started by an LTI launch supporting the return of outcomes, then
@@ -289,6 +300,15 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public boolean isExploded() {
+        return exploded;
+    }
+
+    public void setExploded(final boolean exploded) {
+        this.exploded = exploded;
+    }
+
+
     public CandidateOutcomeReportingStatus getCandidateOutcomeReportingStatus() {
         return candidateOutcomeReportingStatus;
     }
@@ -324,6 +344,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
                 + ",sessionToken=" + sessionToken
                 + ",exitUrl=" + exitUrl
                 + ",closed=" + closed
+                + ",exploded=" + exploded
                 + ",terminated=" + terminated
                 + ",candidateOutcomeReportingStatus=" + candidateOutcomeReportingStatus
                 + ",lisOutcomeServiceUrl=" + lisOutcomeServiceUrl

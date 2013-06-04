@@ -67,19 +67,10 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
-import uk.ac.ed.ph.jqtiplus.reading.AssessmentObjectXmlLoader;
-import uk.ac.ed.ph.jqtiplus.reading.QtiXmlReader;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlReadResult;
-import uk.ac.ed.ph.jqtiplus.xmlutils.XmlResourceNotFoundException;
-import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
 
 import javax.annotation.Resource;
 
@@ -92,12 +83,9 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.Document;
 
 /**
  * Top layer services for *managing* {@link Assessment}s and related entities.
- *
- * FIXME: The permission controls here are now a bit odd. These need rethought and refactored!
  *
  * @author David McKain
  */
@@ -131,7 +119,7 @@ public class AssessmentManagementService {
     private DataDeletionService dataDeletionService;
 
     @Resource
-    private AssessmentPackageFileImporter assessmentPackageFileImporter;
+    private AssessmentPackageImporter assessmentPackageFileImporter;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -144,9 +132,6 @@ public class AssessmentManagementService {
 
     @Resource
     private DeliverySettingsDao deliverySettingsDao;
-
-    @Resource
-    private QtiXmlReader qtiXmlReader;
 
     //-------------------------------------------------
     // Assessment access
@@ -174,29 +159,18 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-    // AssessmentPackage access
-
-    public AssessmentPackage lookupAssessmentPackage(final long apid)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final AssessmentPackage result = assessmentPackageDao.requireFindById(apid);
-        ensureCallerMayAccess(result.getAssessment());
-        return result;
-    }
-
-    //-------------------------------------------------
 
     /**
      * Creates and persists a new {@link Assessment} and initial {@link AssessmentPackage}
      * from the data provided by the given {@link InputStream} and having the given content type.
      * <p>
+     * Callers will want to call {@link #validateAssessment(Assessment)} before trying to run
+     * this new {@link Assessment}.
+     * <p>
      * Success post-conditions:
-     * - the {@link InputStream} is left open
      * - a new {@link AssessmentPackage} is persisted, and its data is safely stored in a sandbox
      *
-     * @param multipartFile
-     * @param contentType
-     * @param name for the resulting package. A default will be chosen if one is not provided.
-     *   The name will be silently truncated if it is too large for the underlying DB field.
+     * @param multipartFile data to be imported
      *
      * @throws PrivilegeException if the caller is not allowed to perform this action
      * @throws AssessmentPackageFileImportException
@@ -210,42 +184,47 @@ public class AssessmentManagementService {
 
         /* First, upload the data into a sandbox */
         final AssessmentPackage assessmentPackage = importPackageFiles(multipartFile);
-
-        /* Create resulting Assessment entity */
-        final Assessment assessment = new Assessment();
-        assessment.setAssessmentType(assessmentPackage.getAssessmentType());
-        assessment.setOwner(caller);
-
-        final String fileName = multipartFile.getOriginalFilename();
-        String assessmentName;
-        if (StringUtilities.isNullOrBlank(fileName)) {
-            assessmentName = assessmentPackage.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "Item" : "Test";
-        }
-        else {
-            assessmentName = ServiceUtilities.trimString(fileName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH);
-        }
-        assessment.setName(assessmentName);
-
-        /* Guess a title */
-        final String guessedTitle = guessAssessmentTitle(assessmentPackage);
-        final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
-        assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
-
-        /* Relate Assessment & AssessmentPackage */
-        assessmentPackage.setAssessment(assessment);
-        assessmentPackage.setImportVersion(Long.valueOf(1L));
-        assessment.setPackageImportVersion(Long.valueOf(1L));
-
-        /* Persist entities */
+        final Assessment assessment;
         try {
-            assessmentDao.persist(assessment);
+            /* Persist new package (before linking to Assessment) */
+            assessmentPackage.setImportVersion(Long.valueOf(1L));
             assessmentPackageDao.persist(assessmentPackage);
+
+            /* Create resulting Assessment entity */
+            assessment = new Assessment();
+            assessment.setAssessmentType(assessmentPackage.getAssessmentType());
+            assessment.setOwner(caller);
+
+            final String fileName = multipartFile.getOriginalFilename();
+            String assessmentName;
+            if (StringUtilities.isNullOrBlank(fileName)) {
+                assessmentName = assessmentPackage.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "Item" : "Test";
+            }
+            else {
+                assessmentName = ServiceUtilities.trimString(fileName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH);
+            }
+            assessment.setName(assessmentName);
+
+            /* Guess a title */
+            final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
+            final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
+            assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
+
+            /* Relate Assessment & AssessmentPackage */
+            assessment.setSelectedAssessmentPackage(assessmentPackage);
+            assessment.setPackageImportVersion(Long.valueOf(1L));
+            assessmentPackage.setAssessment(assessment);
+
+            /* Persist/relate entities */
+            assessmentDao.persist(assessment);
+            assessmentPackageDao.update(assessmentPackage);
         }
         catch (final Exception e) {
-            logger.warn("Persistence of AssessmentPackage failed - deleting its sandbox", assessmentPackage);
+            logger.warn("Failed to save new Assessment or AssessmentPackage - deleting sandbox");
             deleteAssessmentPackageSandbox(assessmentPackage);
-            throw new QtiWorksRuntimeException("Failed to persist AssessmentPackage " + assessmentPackage, e);
+            throw new QtiWorksRuntimeException("Failed to persist Assessment/AssessmentPackage {}", e);
         }
+
         logger.debug("Created new Assessment #{} with package #{}", assessment.getId(), assessmentPackage.getId());
         auditLogger.recordEvent("Created Assessment #" + assessment.getId() + " and AssessmentPackage #" + assessmentPackage.getId());
         return assessment;
@@ -292,21 +271,23 @@ public class AssessmentManagementService {
     }
 
     /**
-     * NOTE: Not allowed to go item->test or test->item.
-     *
-     * @throws AssessmentStateException
-     * @throws PrivilegeException
-     * @throws AssessmentPackageFileImportException
-     * @throws DomainEntityNotFoundException
+     * Imports a new {@link AssessmentPackage}, making it the selected one for
+     * the given {@link Assessment}. Any existing {@link AssessmentPackage}s
+     * will be deleted.
+     * <p>
+     * The new {@link AssessmentPackage} must be of the same type as the
+     * {@link Assessment}. I.e. it is not possible to replace an itme with
+     * a test, or a test with an item.
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public Assessment updateAssessmentPackageFiles(final long aid,
+    public Assessment replaceAssessmentPackage(final long aid,
             final MultipartFile multipartFile)
             throws AssessmentStateException, PrivilegeException,
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
         Assert.notNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
         ensureCallerMayChange(assessment);
+        final AssessmentPackage oldPackage = assessment.getSelectedAssessmentPackage();
 
         /* Upload data into a new sandbox */
         final AssessmentPackage newAssessmentPackage = importPackageFiles(multipartFile);
@@ -317,13 +298,14 @@ public class AssessmentManagementService {
                     assessment.getAssessmentType(), newAssessmentPackage.getAssessmentType());
         }
 
-        /* Join together */
+        /* Join Assessment to new package */
         final long newPackageVersion = assessment.getPackageImportVersion().longValue() + 1;
-        newAssessmentPackage.setImportVersion(newPackageVersion);
-        newAssessmentPackage.setAssessment(assessment);
         assessment.setPackageImportVersion(newPackageVersion);
+        assessment.setSelectedAssessmentPackage(newAssessmentPackage);
+        newAssessmentPackage.setAssessment(assessment);
+        newAssessmentPackage.setImportVersion(newPackageVersion);
 
-        /* Finally update DB */
+        /* Now update DB */
         try {
             assessmentDao.update(assessment);
             assessmentPackageDao.persist(newAssessmentPackage);
@@ -333,75 +315,45 @@ public class AssessmentManagementService {
             deleteAssessmentPackageSandbox(newAssessmentPackage);
             throw new QtiWorksRuntimeException("Failed to update AssessmentPackage entity " + assessment, e);
         }
+
+        /* Finally delete the old package (if applicable) */
+        if (oldPackage!=null) {
+            dataDeletionService.deleteAssessmentPackage(oldPackage);
+        }
+
         logger.debug("Updated Assessment #{} to have package #{}", assessment.getId(), newAssessmentPackage.getId());
         auditLogger.recordEvent("Updated Assessment #" + assessment.getId() + " with AssessmentPackage #" + newAssessmentPackage.getId());
         return assessment;
     }
 
     //-------------------------------------------------
-    // Not implemented yet
-
-    /**
-     * DEV NOTES:
-     *
-     * - Forbid deletion of the only remaining package, as that ensures there's always a most
-     *   recent package
-     */
-    @Transactional(propagation=Propagation.REQUIRED)
-    @SuppressWarnings("unused")
-    @ToRefactor
-    public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage)
-            throws AssessmentStateException, PrivilegeException {
-        /* In order to do this correctly, we need to delete all state that might have
-         * been associated with this package as well, so we'll come back to this...
-         */
-        throw new QtiLogicException("Not yet implemented!");
-    }
-
-    //-------------------------------------------------
     // Validation
+    // (These methods arguably belong somewhere as, we're not doing any permission checking here)
 
-    @Transactional(propagation=Propagation.REQUIRED)
     public AssessmentObjectValidationResult<?> validateAssessment(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = lookupAssessment(aid);
-        final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
-
-        /* Run the validation process */
-        final AssessmentObjectValidationResult<?> validationResult = loadAndValidateAssessment(currentAssessmentPackage);
-
-        /* Persist results */
-        currentAssessmentPackage.setValidated(true);
-        currentAssessmentPackage.setValid(validationResult.isValid());
-        assessmentPackageDao.update(currentAssessmentPackage);
-
-        return validationResult;
+        return validateAssessment(assessment);
     }
 
-    /**
-     * (This is not private as it is also called by the anonymous upload/validate action featured
-     * in the first iteration of QTI Works.
-     *
-     * TODO: Decide whether we'll keep this kind of functionality.)
-     */
-    @SuppressWarnings("unchecked")
-    <E extends AssessmentObjectValidationResult<?>> AssessmentObjectValidationResult<?>
-    loadAndValidateAssessment(final AssessmentPackage assessmentPackage) {
-        final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
-        final URI assessmentObjectSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        final AssessmentObjectXmlLoader assessmentObjectXmlLoader = new AssessmentObjectXmlLoader(qtiXmlReader, inputResourceLocator);
-        final AssessmentObjectType assessmentObjectType = assessmentPackage.getAssessmentType();
-        E result;
-        if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_ITEM) {
-            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateItem(assessmentObjectSystemId);
-        }
-        else if (assessmentObjectType==AssessmentObjectType.ASSESSMENT_TEST) {
-            result = (E) assessmentObjectXmlLoader.loadResolveAndValidateTest(assessmentObjectSystemId);
-        }
-        else {
-            throw new QtiWorksLogicException("Unexpected branch " + assessmentObjectType);
-        }
-        return result;
+    public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
+        final AssessmentPackage currentAssessmentPackage = entityGraphService.ensureSelectedAssessmentPackage(assessment);
+        return validateAssessmentPackage(currentAssessmentPackage);
+    }
+
+    public AssessmentObjectValidationResult<?> validateAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        /* Run the validation process */
+        final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
+
+        /* Persist results */
+        assessmentPackage.setValidated(true);
+        assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
+        assessmentPackage.setErrorCount(validationResult.getErrors().size());
+        assessmentPackage.setWarningCount(validationResult.getWarnings().size());
+        assessmentPackage.setValid(validationResult.isValid());
+        assessmentPackageDao.update(assessmentPackage);
+
+        return validationResult;
     }
 
     //-------------------------------------------------
@@ -552,41 +504,39 @@ public class AssessmentManagementService {
     }
 
     private void mergeItemDeliverySettings(final ItemDeliverySettingsTemplate template, final ItemDeliverySettings target) {
+        target.setAuthorMode(template.isAuthorMode());
+        target.setTitle(template.getTitle().trim());
+        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setAllowEnd(template.isAllowEnd());
         target.setAllowHardResetWhenEnded(template.isAllowHardResetWhenEnded());
         target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
         target.setAllowSoftResetWhenEnded(template.isAllowSoftResetWhenEnded());
         target.setAllowSoftResetWhenOpen(template.isAllowSoftResetWhenOpen());
-        target.setAllowResult(template.isAllowResult());
         target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
         target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
-        target.setAllowSource(template.isAllowSource());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
-        target.setAuthorMode(template.isAuthorMode());
         target.setMaxAttempts(template.getMaxAttempts());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
-        target.setTitle(template.getTitle().trim());
     }
 
     public void mergeItemDeliverySettings(final ItemDeliverySettings template, final ItemDeliverySettingsTemplate target) {
+        target.setAuthorMode(template.isAuthorMode());
+        target.setTitle(template.getTitle());
+        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setAllowEnd(template.isAllowEnd());
         target.setAllowHardResetWhenEnded(template.isAllowHardResetWhenEnded());
         target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
         target.setAllowSoftResetWhenEnded(template.isAllowSoftResetWhenEnded());
         target.setAllowSoftResetWhenOpen(template.isAllowSoftResetWhenOpen());
-        target.setAllowResult(template.isAllowResult());
         target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
         target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
-        target.setAllowSource(template.isAllowSource());
         target.setAllowCandidateComment(template.isAllowCandidateComment());
-        target.setAuthorMode(template.isAuthorMode());
         target.setMaxAttempts(template.getMaxAttempts());
         target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
-        target.setTitle(template.getTitle());
     }
 
     //-------------------------------------------------
-    // CRUD for TEstDeliverySettings
+    // CRUD for TestDeliverySettings
 
     public TestDeliverySettings lookupTestDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
@@ -644,16 +594,14 @@ public class AssessmentManagementService {
 
     private void mergeTestDeliverySettings(final TestDeliverySettingsTemplate template, final TestDeliverySettings target) {
         target.setAuthorMode(template.isAuthorMode());
+        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setTitle(template.getTitle().trim());
-        target.setAllowResult(template.isAllowResult());
-        target.setAllowSource(template.isAllowSource());
     }
 
     public void mergeTestDeliverySettings(final TestDeliverySettings template, final TestDeliverySettingsTemplate target) {
         target.setAuthorMode(template.isAuthorMode());
+        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setTitle(template.getTitle());
-        target.setAllowResult(template.isAllowResult());
-        target.setAllowSource(template.isAllowSource());
     }
 
     //-------------------------------------------------
@@ -700,10 +648,10 @@ public class AssessmentManagementService {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Look up Assessment and check caller and change it */
         final Assessment assessment = lookupAssessment(aid);
-        final User caller = ensureCallerMayChange(assessment);
+        ensureCallerMayChange(assessment);
 
         /* Get first DeliverySettings (creating if required) */
-        final DeliverySettings deliverySettings = requireFirstDeliverySettings(caller, assessment.getAssessmentType());
+        final DeliverySettings deliverySettings = requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
 
         /* Create Delivery template with reasonable defaults */
         final DeliveryTemplate template = new DeliveryTemplate();
@@ -812,10 +760,9 @@ public class AssessmentManagementService {
         Assert.notNull(assessment, "assessment");
 
         /* Select suitable delivery settings */
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
         DeliverySettings deliverySettings = assessment.getDefaultDeliverySettings();
         if (deliverySettings==null) {
-            deliverySettings = requireFirstDeliverySettings(caller, assessment.getAssessmentType());
+            deliverySettings = requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
         }
 
         /* Now create demo delivery using these options */
@@ -829,15 +776,7 @@ public class AssessmentManagementService {
         ensureCompatible(deliverySettings, assessment);
 
         /* Make sure caller is allowed to run this Assessment */
-        final User caller = ensureCallerMayAccess(assessment);
-
-        /* Get most recent package */
-        final AssessmentPackage currentAssessmentPackage = entityGraphService.getCurrentAssessmentPackage(assessment);
-
-        /* Make sure package is valid */
-        if (!currentAssessmentPackage.isValid()) {
-            throw new PrivilegeException(caller, assessment, Privilege.LAUNCH_INVALID_ASSESSMENT);
-        }
+        ensureCallerMayAccess(assessment);
 
         /* Create demo Delivery */
         final Delivery delivery = new Delivery();
@@ -853,9 +792,10 @@ public class AssessmentManagementService {
         return delivery;
     }
 
-    public DeliverySettings requireFirstDeliverySettings(final User owner, final AssessmentObjectType assessmentType) {
+    public DeliverySettings requireFirstDeliverySettingsForCaller(final AssessmentObjectType assessmentType) {
         /* See if there are already suitable settings created */
-        final DeliverySettings firstDeliverySettings = deliverySettingsDao.getFirstForOwner(owner, assessmentType);
+        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final DeliverySettings firstDeliverySettings = deliverySettingsDao.getFirstForOwner(caller, assessmentType);
         if (firstDeliverySettings!=null) {
             return firstDeliverySettings;
         }
@@ -866,13 +806,18 @@ public class AssessmentManagementService {
                 final ItemDeliverySettingsTemplate template = createItemDeliverySettingsTemplate();
                 final ItemDeliverySettings itemDeliverySettings = new ItemDeliverySettings();
                 mergeItemDeliverySettings(template, itemDeliverySettings);
-                itemDeliverySettings.setOwner(owner);
+                itemDeliverySettings.setOwner(caller);
                 itemDeliverySettings.setTitle("Default item delivery settings");
-                itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
-                        + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
-                        + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
-                        + " which you can edit or remove to suit.");
-
+                if (caller.getUserType()==UserType.INSTRUCTOR) {
+                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
+                            + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
+                            + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
+                            + " which you can edit or remove to suit.");
+                }
+                else {
+                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
+                            + " we have created for you. You will be able to change and edit these settings to suit if you have a QTIWorks account.");
+                }
                 deliverySettingsDao.persist(itemDeliverySettings);
                 auditLogger.recordEvent("Created default ItemDeliverySettings for this user");
                 return itemDeliverySettings;
@@ -882,7 +827,7 @@ public class AssessmentManagementService {
                 final TestDeliverySettingsTemplate template = createTestDeliverySettingsTemplate();
                 final TestDeliverySettings testDeliverySettings = new TestDeliverySettings();
                 mergeTestDeliverySettings(template, testDeliverySettings);
-                testDeliverySettings.setOwner(owner);
+                testDeliverySettings.setOwner(caller);
                 testDeliverySettings.setTitle("Default test delivery settings");
 
                 deliverySettingsDao.persist(testDeliverySettings);
@@ -898,18 +843,16 @@ public class AssessmentManagementService {
 
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
+        template.setAuthorMode(true);
+        template.setTitle("Item Delivery Settings");
         template.setAllowEnd(true);
         template.setAllowHardResetWhenEnded(true);
         template.setAllowHardResetWhenOpen(true);
         template.setAllowSoftResetWhenEnded(true);
         template.setAllowSoftResetWhenOpen(true);
-        template.setAllowResult(false);
         template.setAllowSolutionWhenEnded(true);
         template.setAllowSolutionWhenOpen(true);
-        template.setAllowSource(false);
-        template.setAuthorMode(false);
         template.setMaxAttempts(0);
-        template.setTitle("Item Delivery Settings");
         template.setPrompt(null);
         return template;
     }
@@ -918,8 +861,6 @@ public class AssessmentManagementService {
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
         template.setAuthorMode(true);
         template.setTitle("Test Delivery Settings");
-        template.setAllowSource(false);
-        template.setAllowResult(false);
         return template;
     }
 
@@ -939,9 +880,6 @@ public class AssessmentManagementService {
         }
     }
 
-    /**
-     * @throws QtiWorksLogicException if sandboxPath is already null
-     */
     private void deleteAssessmentPackageSandbox(final AssessmentPackage assessmentPackage) {
         final String sandboxPath = assessmentPackage.getSandboxPath();
         if (sandboxPath==null) {
@@ -951,19 +889,12 @@ public class AssessmentManagementService {
         assessmentPackage.setSandboxPath(null);
     }
 
-    /**
-     * @throws PrivilegeException
-     * @throws AssessmentPackageFileImportException
-     * @throws QtiWorksRuntimeException
-     */
     private AssessmentPackage importPackageFiles(final MultipartFile multipartFile)
-            throws PrivilegeException, AssessmentPackageFileImportException {
+            throws AssessmentPackageFileImportException {
         final User owner = identityContext.getCurrentThreadEffectiveIdentity();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
-        final InputStream inputStream = ServiceUtilities.ensureInputSream(multipartFile);
-        final String contentType = multipartFile.getContentType();
         try {
-            final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, inputStream, contentType);
+            final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, multipartFile);
             assessmentPackage.setImporter(owner);
             return assessmentPackage;
         }
@@ -971,33 +902,5 @@ public class AssessmentManagementService {
             filespaceManager.deleteSandbox(packageSandbox);
             throw e;
         }
-    }
-
-    /**
-     * Attempts to extract the title from an {@link AssessmentItem} or {@link AssessmentTest} for
-     * bootstrapping the initial state of the resulting {@link AssessmentPackage}.
-     * <p>
-     * This performs a low level XML parse to save time; proper read/validation using JQTI+
-     * is expected to happen later on.
-     *
-     * @param assessmentPackage
-     * @return guessed title, or an empty String if nothing could be guessed.
-     */
-    public String guessAssessmentTitle(final AssessmentPackage assessmentPackage) {
-        Assert.notNull(assessmentPackage, "assessmentPackage");
-        final ResourceLocator inputResourceLocator = assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage);
-        final URI assessmentSystemId = assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage);
-        XmlReadResult xmlReadResult;
-        try {
-            xmlReadResult = qtiXmlReader.read(assessmentSystemId, inputResourceLocator, false);
-        }
-        catch (final XmlResourceNotFoundException e) {
-            throw new QtiWorksLogicException("Assessment resource for package " + assessmentPackage, e);
-        }
-        /* Let's simply extract the title attribute from the document element, and not worry about
-         * anything else at this point.
-         */
-        final Document document = xmlReadResult.getDocument();
-        return document!=null ? document.getDocumentElement().getAttribute("title") : "";
     }
 }

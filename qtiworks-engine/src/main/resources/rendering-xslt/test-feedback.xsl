@@ -51,6 +51,8 @@ combine the feedback for the test and the testPart.)
 
       </head>
       <body class="qtiworks assessmentTest testFeedback">
+        <xsl:call-template name="maybeAddAuthoringLink"/>
+
         <h1>Test Complete</h1>
 
         <!-- Show 'atEnd' feedback for the test -->

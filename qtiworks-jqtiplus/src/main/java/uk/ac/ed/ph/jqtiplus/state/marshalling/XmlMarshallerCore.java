@@ -132,6 +132,7 @@ public final class XmlMarshallerCore {
     static void addAbstractPartSessionStateAttributes(final Element element, final AbstractPartSessionState abstractPartSessionState) {
     	addControlObjectSessionStateAttributes(element, abstractPartSessionState);
         element.setAttribute("preConditionFailed", StringUtilities.toTrueFalse(abstractPartSessionState.isPreConditionFailed()));
+        element.setAttribute("jumpedByBranchRule", StringUtilities.toTrueFalse(abstractPartSessionState.isJumpedByBranchRule()));
         final String branchRuleTarget = abstractPartSessionState.getBranchRuleTarget();
         if (branchRuleTarget!=null) {
             element.setAttribute("branchRuleTarget", branchRuleTarget.toString());
@@ -345,6 +346,7 @@ public final class XmlMarshallerCore {
     static void parseAbstractPartSessionStateAttributes(final AbstractPartSessionState target, final Element element) {
     	parseControlObjectSessionStateAttributes(target, element);
     	target.setPreConditionFailed(parseOptionalBooleanAttribute(element, "preConditionFailed", false));
+    	target.setJumpedByBranchRule(parseOptionalBooleanAttribute(element, "jumpedByBranchRule", false));
     	target.setBranchRuleTarget(parseOptionalStringAttribute(element, "branchRuleTarget"));
     }
 

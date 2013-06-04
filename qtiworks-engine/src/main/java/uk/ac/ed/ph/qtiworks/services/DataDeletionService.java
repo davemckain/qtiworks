@@ -48,10 +48,12 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -86,6 +88,9 @@ public class DataDeletionService {
 
     @Resource
     private FilespaceManager filespaceManager;
+
+    @Resource
+    private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
@@ -152,6 +157,9 @@ public class DataDeletionService {
             }
         }
 
+        /* Purge any cached data from this package */
+        assessmentObjectManagementService.purge(assessmentPackage);
+
         /* Delete entities, taking advantage of cascading */
         assessmentPackageDao.remove(assessmentPackage); /* (This will cascade) */
     }
@@ -159,17 +167,25 @@ public class DataDeletionService {
     public void deleteAssessment(final Assessment assessment) {
         Assert.notNull(assessment, "assessment");
 
-        /* Delete sandboxes for all packages */
-        for (final AssessmentPackage assessmentPackage : assessment.getAssessmentPackages()) {
-            if (assessmentPackage.getSandboxPath()!=null) {
-                if (!filespaceManager.deleteAssessmentPackageSandbox(assessmentPackage)) {
-                    logger.error("Failed to delete sandbox for AssessmentPackage {}", assessmentPackage.getId());
-                }
-            }
+        /* NB: The ordering is important here due to the bi-directional relationship
+         * between Assessment and AssessmentPackage. Don't try to optimise this away
+         * without testing!
+         */
+
+        /* Unlink Assessment from each AssessmentPackage */
+        final List<AssessmentPackage> assessmentPackages = assessment.getAssessmentPackages();
+        for (final AssessmentPackage assessmentPackage : assessmentPackages) {
+            assessmentPackage.setAssessment(null);
+            assessmentPackageDao.update(assessmentPackage);
         }
 
-        /* Delete entities, taking advantage of cascading */
-        assessmentDao.remove(assessment); /* (This will cascade) */
+        /* Delete Assessment, taking advantage of cascading into Deliveries etc. */
+        assessmentDao.remove(assessment); /* (This will cascade into Deliveries) */
+
+        /* Finally delete each AssessmentPackage */
+        for (final AssessmentPackage assessmentPackage : assessmentPackages) {
+            deleteAssessmentPackage(assessmentPackage);
+        }
     }
 
     /**
@@ -197,8 +213,8 @@ public class DataDeletionService {
     public void resetUser(final User user) {
         Assert.notNull(user, "user");
 
-        for (final Assessment assessment : assessmentDao.getForOwner(user)) {
-            deleteAssessment(assessment);
+        for (final AssessmentAndPackage item : assessmentDao.getForOwner(user)) {
+            deleteAssessment(item.getAssessment());
         }
         for (final CandidateSession candidateSession : candidateSessionDao.getForCandidate(user)) {
             deleteCandidateSession(candidateSession);

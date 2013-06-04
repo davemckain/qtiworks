@@ -102,11 +102,11 @@ public class InstructorAssessmentReportingController {
     }
 
     @RequestMapping(value="/delivery/{did}/terminate-all-sessions", method=RequestMethod.POST)
-    public String terminateAllCandidateSessions(final RedirectAttributes model, @PathVariable final long did)
+    public String terminateAllCandidateSessions(final RedirectAttributes redirectAttributes, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final int terminated = assessmentProctoringService.terminateCandidateSessionsForDelivery(did);
-        instructorRouter.addFlashMessage(model, "Terminated " + terminated + " candidate session" + (terminated>1 ? "s" : ""));
-        return instructorRouter.buildDeliveryRouting(did).get("candidateSessions");
+        instructorRouter.addFlashMessage(redirectAttributes, "Terminated " + terminated + " candidate session" + (terminated!=1 ? "s" : ""));
+        return instructorRouter.buildInstructorRedirect("/delivery/" + did + "/candidate-sessions");
     }
 
     @RequestMapping(value="/delivery/candidate-summary-report-{did}.csv", method=RequestMethod.GET)
@@ -180,10 +180,10 @@ public class InstructorAssessmentReportingController {
     }
 
     @RequestMapping(value="/candidate-session/{xid}/terminate", method=RequestMethod.POST)
-    public String terminateCandidateSession(@PathVariable final long xid, final RedirectAttributes model)
+    public String terminateCandidateSession(@PathVariable final long xid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentProctoringService.terminateCandidateSession(xid);
-        instructorRouter.addFlashMessage(model, "Terminated Candidate Session #" + xid);
+        instructorRouter.addFlashMessage(redirectAttributes, "Terminated Candidate Session #" + xid);
         return instructorRouter.buildCandidateSessionRouting(xid).get("show");
     }
 

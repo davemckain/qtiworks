@@ -61,9 +61,15 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
     @NotNull
     private URI assessmentResourceUri;
 
+    /* Validation information copied from AssessmentPackage */
+
+    private boolean validated;
+    private boolean launchable;
+    private int errorCount;
+    private int warningCount;
+    private boolean valid;
+
     private boolean authorMode;
-    private boolean sourceAllowed;
-    private boolean resultAllowed;
 
     //----------------------------------------------------
 
@@ -94,6 +100,51 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
     }
 
 
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(final boolean validated) {
+        this.validated = validated;
+    }
+
+
+    public boolean isLaunchable() {
+        return launchable;
+    }
+
+    public void setLaunchable(final boolean launchable) {
+        this.launchable = launchable;
+    }
+
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(final int errorCount) {
+        this.errorCount = errorCount;
+    }
+
+
+    public int getWarningCount() {
+        return warningCount;
+    }
+
+    public void setWarningCount(final int warningCount) {
+        this.warningCount = warningCount;
+    }
+
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(final boolean valid) {
+        this.valid = valid;
+    }
+
+
     public boolean isAuthorMode() {
         return authorMode;
     }
@@ -102,28 +153,10 @@ public abstract class AbstractRenderingRequest<P extends AbstractRenderingOption
         this.authorMode = authorMode;
     }
 
-
-    public boolean isSourceAllowed() {
-        return sourceAllowed;
-    }
-
-    public void setSourceAllowed(final boolean sourceAllowed) {
-        this.sourceAllowed = sourceAllowed;
-    }
-
-
-    public boolean isResultAllowed() {
-        return resultAllowed;
-    }
-
-    public void setResultAllowed(final boolean resultAllowed) {
-        this.resultAllowed = resultAllowed;
-    }
-
     //----------------------------------------------------
 
     @Override
-    public String toString() {
+    public final String toString() {
         return ObjectUtilities.beanToString(this);
     }
 }

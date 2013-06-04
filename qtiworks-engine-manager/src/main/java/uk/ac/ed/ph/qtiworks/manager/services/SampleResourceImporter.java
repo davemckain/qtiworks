@@ -56,7 +56,7 @@ import uk.ac.ed.ph.qtiworks.samples.StandardQtiSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.StompSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.TestImplementationSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.UpmcSampleSet;
-import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
@@ -64,6 +64,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SampleCategoryDao;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
@@ -100,7 +101,7 @@ public class SampleResourceImporter {
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
-    private AssessmentManagementService assessmentManagementService;
+    private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
     private ManagerServices managerServices;
@@ -346,9 +347,7 @@ public class SampleResourceImporter {
 
                 case TEST_WORK_IN_PROGRESS: {
                     final TestDeliverySettings testDeliverySettings = createBaseTestDeliverySettings();
-                    testDeliverySettings.setTitle("Tests (work in progress)");
-                    testDeliverySettings.setAllowResult(true);
-                    testDeliverySettings.setAllowSource(true);
+                    testDeliverySettings.setTitle("Test standard");
                     deliverySettings = testDeliverySettings;
                     break;
                 }
@@ -365,28 +364,24 @@ public class SampleResourceImporter {
         final ItemDeliverySettings settings = new ItemDeliverySettings();
         settings.setMaxAttempts(Integer.valueOf(0));
         settings.setAuthorMode(true);
-        settings.setAllowResult(true);
-        settings.setAllowSource(true);
         return settings;
     }
 
     private TestDeliverySettings createBaseTestDeliverySettings() {
         final TestDeliverySettings settings = new TestDeliverySettings();
         settings.setAuthorMode(true);
-        settings.setAllowResult(true);
-        settings.setAllowSource(true);
         return settings;
     }
 
     private Map<String, Assessment> getImportedSampleAssessments(final InstructorUser sampleOwner) {
-        final List<Assessment> sampleAssessments = assessmentDao.getForOwner(sampleOwner);
+        final List<AssessmentAndPackage> samples = assessmentDao.getForOwner(sampleOwner);
         final Map<String, Assessment> result = new HashMap<String, Assessment>();
-        for (final Assessment sampleAssessment : sampleAssessments) {
-            final AssessmentPackage assessmentPackage = assessmentPackageDao.getCurrentAssessmentPackage(sampleAssessment);
+        for (final AssessmentAndPackage sample : samples) {
+            final AssessmentPackage assessmentPackage = sample.getAssessmentPackage();
             if (assessmentPackage==null) {
-                throw new QtiWorksLogicException("Sample assessment " + sampleAssessment + " has no current AssessmentPackage");
+                throw new QtiWorksLogicException("Sample assessment " + sample + " has no current AssessmentPackage");
             }
-            result.put(assessmentPackage.getAssessmentHref(), sampleAssessment);
+            result.put(assessmentPackage.getAssessmentHref(), sample.getAssessment());
         }
         return result;
     }
@@ -430,6 +425,7 @@ public class SampleResourceImporter {
 
         /* Create AssessmentPackage entity */
         final AssessmentPackage assessmentPackage = new AssessmentPackage();
+        assessmentPackage.setImportVersion(Long.valueOf(1L));
         assessmentPackage.setAssessmentType(qtiSampleAssessment.getType());
         assessmentPackage.setAssessmentHref(qtiSampleAssessment.getAssessmentHref());
         assessmentPackage.setQtiFileHrefs(new HashSet<String>(Arrays.asList(qtiSampleAssessment.getAssessmentHref())));
@@ -438,13 +434,21 @@ public class SampleResourceImporter {
         assessmentPackage.setSandboxPath(null);
         assessmentPackage.setImporter(owner);
         assessmentPackage.setValidated(true);
-        assessmentPackage.setValid(true); /* (We're only picking valid samples!) */
+        /* (We're only picking valid samples!) */
+        assessmentPackage.setValid(true);
+        assessmentPackage.setLaunchable(true);
+        assessmentPackage.setErrorCount(0);
+        assessmentPackage.setWarningCount(0);
+        assessmentPackage.setImportVersion(Long.valueOf(1L));
+        assessmentPackageDao.persist(assessmentPackage);
 
         /* Create owning Assessment entity */
         final Assessment assessment = new Assessment();
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
         assessment.setOwner(owner);
         assessment.setPublic(true);
+        assessment.setSelectedAssessmentPackage(assessmentPackage);
+        assessment.setPackageImportVersion(Long.valueOf(1L));
         assessment.setSampleCategory(sampleCategory);
 
         /* We'll use last part of href as assessment name.
@@ -454,18 +458,14 @@ public class SampleResourceImporter {
         assessment.setName(ServiceUtilities.trimString(assessmentName, DomainConstants.ASSESSMENT_NAME_MAX_LENGTH));
 
         /* Guess a title */
-        final String guessedTitle = assessmentManagementService.guessAssessmentTitle(assessmentPackage);
+        final String guessedTitle = assessmentPackageFileService.guessAssessmentTitle(assessmentPackage);
         final String resultingTitle = !StringUtilities.isNullOrEmpty(guessedTitle) ? guessedTitle : DEFAULT_IMPORT_TITLE;
         assessment.setTitle(ServiceUtilities.trimSentence(resultingTitle, DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH));
 
-        /* Relate Assessment & AssessmentPackage */
+        /* Persist/relate entities */
         assessmentPackage.setAssessment(assessment);
-        assessmentPackage.setImportVersion(Long.valueOf(1L));
-        assessment.setPackageImportVersion(Long.valueOf(1L));
-
-        /* Persist entities */
         assessmentDao.persist(assessment);
-        assessmentPackageDao.persist(assessmentPackage);
+        assessmentPackageDao.update(assessmentPackage);
 
         /* Create default delivery settings */
         final DeliverySettings deliverySettings = deliverySettingsMap.get(qtiSampleAssessment.getDeliveryStyle());

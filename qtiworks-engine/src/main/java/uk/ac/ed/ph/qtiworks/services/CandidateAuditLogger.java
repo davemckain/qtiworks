@@ -72,8 +72,16 @@ public class CandidateAuditLogger {
         logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_ITEM");
     }
 
+    public void logItemAuthorViewRendering(final CandidateEvent candidateEvent) {
+        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_ITEM_AUTHOR_VIEW");
+    }
+
     public void logTestRendering(final CandidateEvent candidateEvent) {
         logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST");
+    }
+
+    public void logTestAuthorViewRendering(final CandidateEvent candidateEvent) {
+        logSessionAction(candidateEvent.getCandidateSession(), "action=RENDER_TEST_AUTHOR_VIEW");
     }
 
     public void logCandidateEvent(final CandidateEvent candidateEvent) {
@@ -103,5 +111,9 @@ public class CandidateAuditLogger {
             throws CandidateForbiddenException {
         logSessionAction(candidateSession, "forbid=" + privilege);
         throw new CandidateForbiddenException(candidateSession, privilege);
+    }
+
+    public void logExplosion(final CandidateSession candidateSession) {
+        logSessionAction(candidateSession, "explosion");
     }
 }

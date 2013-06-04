@@ -320,7 +320,7 @@ public final class ItemSessionController extends ItemProcessingController implem
                 templateProcessingCompleted = doTemplateProcessingRun(++templateProcessingAttemptNumber);
             }
             if (templateProcessingAttemptNumber>1) {
-                fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times");
+                fireRuntimeInfo(item, "Template Processing was run " + templateProcessingAttemptNumber + " times in order to satisfy templateConstraint");
             }
 
             /* Reset OVs and RVs session */
@@ -586,7 +586,7 @@ public final class ItemSessionController extends ItemProcessingController implem
      */
     public void exitItem(final Date timestamp) {
         Assert.notNull(timestamp);
-        assertItemEndedOrPreconditionFailed();
+        assertItemEndedOrJumped();
         assertItemNotExited();
         logger.debug("Exiting item {}", item.getSystemId());
 
@@ -1081,9 +1081,9 @@ public final class ItemSessionController extends ItemProcessingController implem
         }
     }
 
-    private void assertItemEndedOrPreconditionFailed() {
-        if (!itemSessionState.isEnded() && !itemSessionState.isPreConditionFailed()) {
-            throw new QtiCandidateStateException("Item session has not been ended or did not have a failed preCondition");
+    private void assertItemEndedOrJumped() {
+        if (!itemSessionState.isEnded() && !(itemSessionState.isPreConditionFailed() || itemSessionState.isJumpedByBranchRule())) {
+            throw new QtiCandidateStateException("Item session has not been ended or did not have a failed preCondition or was not jumped over by a branchRule");
         }
     }
 

@@ -10,7 +10,7 @@ body {
   x-background: white url(images/headergradient.png) repeat-x top center;
 }
 
-a, a:link, a:visited {
+a:link, a:visited {
   color: #66455e;
 }
 
@@ -51,6 +51,20 @@ header h1 a:hover {
   border: 1px solid #999999;
   border-radius: 0.5em;
 }
+
+.errorMessage {
+  color: red;
+  font-weight: bold;
+  background: url(images/exclamation.png) 5px center no-repeat;
+  padding-left: 24px;
+}
+
+.warningMessage {
+  background: url(images/error.png) 5px center no-repeat;
+  font-weight: bold;
+  padding-left: 24px;
+}
+
 
 /* ========== Footer ========== */
 
@@ -225,7 +239,7 @@ div.sampleList .launch {
 }
 
 .boxButton.assessments h3:after {
-  content: '\2615'; /* Pencil */
+  content: '\2615'; /* Hot beverage */
 }
 
 .boxButton.deliveries h3:after {
@@ -250,23 +264,71 @@ div.sampleList .launch {
   font-weight: bold;
 }
 
-/* ========== QTI Validator ========== */
+/* ========== Author debug view ========== */
+
+.debugMathsContent {
+  display: none;
+}
+
+ul.summary {
+  background: white url(images/bluegradient.png) left top repeat-x;
+  border: 1px solid #ccdbf0;
+  border-radius: 0.5em;
+  list-style: none;
+  margin: 0;
+  padding: 1em;
+}
+
+ul.summary li {
+  margin: 0;
+  padding: 0.3em 0 0.3em 32px;
+}
+
+li.errorSummary {
+  background: url(images/exclamation.png) 5px center no-repeat;
+  padding-left: 25px;
+}
+
+li.warnSummary {
+  background: url(images/error.png) 5px center no-repeat;
+  padding-left: 25px;
+}
+
+li.infoSummary {
+  background: url(images/information.png) 5px center no-repeat;
+  padding-left: 25px;
+}
+
+.buttonBar {
+}
+
+.buttonBar ul {
+  list-style: none;
+  margin: 1em;
+  text-align: center;
+}
+
+.buttonBar li {
+  display: inline;
+  padding: 0.2em;
+}
+
+.buttonBar li form {
+  display: inline;
+}
+
+
+/* ========== Expandable Tree result panels ========== */
 
 .resultPanel {
   border-top-left-radius: 2em;
-}
-
-.resultPanel .resultPanel {
-  margin: 1em 0 1em 2em;
+  background: white url(images/bluegradient.png) left top repeat-x;
+  margin: 1em 0;
   padding-right: 0.5em;
 }
 
-.resultPanel.success {
-  background: white url(images/bluegradient.png) left top repeat-x;
-}
-
-.resultPanel.failure {
-  background: white url(images/bluegradient.png) left top repeat-x;
+.resultPanel .resultPanel {
+  margin-left: 2em;
 }
 
 .resultPanel > h4 {
@@ -276,35 +338,50 @@ div.sampleList .launch {
   font-size: 1.25em;
 }
 
+.resultPanel.info > h4 {
+  background: url(images/information.png) 5px center no-repeat;
+  color: black;
+}
+
 .resultPanel.success > h4 {
   background: url(images/accept.png) 5px center no-repeat;
   color: black;
 }
 
-.resultPanel.failure > h4 {
+.resultPanel.warning > h4,
+.resultPanel.warnings > h4 {
   background: url(images/error.png) 5px center no-repeat;
+  color: #cd6800;
+}
+
+.resultPanel.failure > h4 {
+  background: url(images/exclamation.png) 5px center no-repeat;
   color: #cd1753;
 }
 
 .resultPanel .details {
-  padding: 0 0.5em 0.5em 0.5em;
+  padding: 0 0.5em 0em 0.5em;
+  margin-bottom: 0.5em;
 }
 
-.validationResult table {
+.resultPanel table {
+  width: 100%;
   border-collapse: collapse;
   margin: 1em;
 }
 
-.validationResult table th, .validationResult table td {
+.resultPanel table th,
+.resultPanel table td {
   padding: 0.5em;
   border: 1px solid #ccdbf0;
 }
 
-.validationResult table td.center, .validationResult table th.center {
+.resultPanel table td.center,
+.resultPanel table th.center {
   text-align: center;
 }
 
-.validationResult table th {
+.resultPanel table th {
   background-color: #ccdbf0;
 }
 
@@ -322,9 +399,9 @@ div.sampleList .launch {
   display: none;
 }
 
-.toggler:hover {
-  color: #66455e;
+.resultPanel.expandable h4:hover {
   cursor: hand;
+  cursor: pointer;
 }
 
 /* ========== General Stylings ========== */

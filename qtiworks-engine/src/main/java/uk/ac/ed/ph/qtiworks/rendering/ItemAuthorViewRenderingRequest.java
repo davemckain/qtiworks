@@ -43,14 +43,12 @@ import javax.validation.constraints.NotNull;
  *
  * @author David McKain
  */
-public final class ItemAuthorViewRenderingRequest extends AbstractRenderingRequest<ItemAuthorViewRenderingOptions> {
+public final class ItemAuthorViewRenderingRequest extends AbstractRenderingRequest<AuthorViewRenderingOptions> {
 
     /** Required {@link ItemSessionState} to be rendered */
     @NotNull
     private ItemSessionState itemSessionState;
 
-    /** Set to enable the modal solution mode */
-    private boolean solutionMode;
 
     //----------------------------------------------------
 
@@ -61,14 +59,4 @@ public final class ItemAuthorViewRenderingRequest extends AbstractRenderingReque
     public void setItemSessionState(final ItemSessionState itemSessionState) {
         this.itemSessionState = itemSessionState;
     }
-
-
-    public boolean isSolutionMode() {
-        return solutionMode;
-    }
-
-    public void setSolutionMode(final boolean solutionMode) {
-        this.solutionMode = solutionMode;
-    }
-
 }

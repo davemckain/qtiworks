@@ -48,6 +48,8 @@ Renders the test(Part) feedback
 
       </head>
       <body class="qtiworks assessmentTest testFeedback">
+        <xsl:call-template name="maybeAddAuthoringLink"/>
+
         <h1><xsl:value-of select="$testOrTestPart"/> Complete</h1>
 
         <!-- Show 'atEnd' testPart feedback -->
@@ -94,52 +96,58 @@ Renders the test(Part) feedback
   </xsl:template>
 
   <xsl:template match="qw:node[@type='ASSESSMENT_SECTION']" mode="testPart-review">
-    <li class="assessmentSection">
-      <header>
-        <!-- Section title -->
-        <h2><xsl:value-of select="@sectionPartTitle"/></h2>
-        <!-- Handle rubrics -->
-        <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
-        <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
-        <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
-      </header>
-      <!-- Descend -->
-      <ul class="testPartNavigationInner">
-        <xsl:apply-templates mode="testPart-review"/>
-      </ul>
-    </li>
+    <xsl:variable name="assessmentSessionSessionState" select="$testSessionState/qw:assessmentSection[@key=current()/@key]/qw:assessmentSectionSessionState"
+      as="element(qw:assessmentSectionSessionState)"/>
+    <xsl:if test="$currentTestPart/@navigationMode='nonlinear' or exists($assessmentSessionSessionState/@entryTime)">
+      <li class="assessmentSection">
+        <header>
+          <!-- Section title -->
+          <h2><xsl:value-of select="@sectionPartTitle"/></h2>
+          <!-- Handle rubrics -->
+          <xsl:variable name="sectionIdentifier" select="qw:extract-identifier(.)" as="xs:string"/>
+          <xsl:variable name="assessmentSection" select="$assessmentTest//qti:assessmentSection[@identifier=$sectionIdentifier]" as="element(qti:assessmentSection)*"/>
+          <xsl:apply-templates select="$assessmentSection/qti:rubricBlock"/>
+        </header>
+        <!-- Descend -->
+        <ul class="testPartNavigationInner">
+          <xsl:apply-templates mode="testPart-review"/>
+        </ul>
+      </li>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="qw:node[@type='ASSESSMENT_ITEM_REF']" mode="testPart-review">
     <xsl:variable name="reviewable" select="@allowReview='true' or @showFeedback='true'" as="xs:boolean"/>
     <xsl:variable name="itemSessionState" select="$testSessionState/qw:item[@key=current()/@key]/qw:itemSessionState" as="element(qw:itemSessionState)"/>
-    <li class="assessmentItem">
-      <form action="{$webappContextPath}{$reviewTestItemUrl}/{@key}" method="post">
-        <button type="submit">
-          <xsl:if test="not($reviewable)">
-            <xsl:attribute name="disabled" select="'disabled'"/>
-          </xsl:if>
-          <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
-          <xsl:choose>
-            <xsl:when test="not($reviewable)">
-              <div class="itemStatus reviewNotAllowed">Not Reviewable</div>
-            </xsl:when>
-            <xsl:when test="not(empty($itemSessionState/@unboundResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))">
-              <div class="itemStatus reviewInvalid">Review (Invalid Answer)</div>
-            </xsl:when>
-            <xsl:when test="$itemSessionState/@responded='true'">
-              <div class="itemStatus review">Review</div>
-            </xsl:when>
-            <xsl:when test="$itemSessionState/@entryTime!=''">
-              <div class="itemStatus reviewNotAnswered">Review (Not Answered)</div>
-            </xsl:when>
-            <xsl:otherwise>
-              <div class="itemStatus reviewNotSeen">Review (Not Seen)</div>
-            </xsl:otherwise>
-          </xsl:choose>
-        </button>
-      </form>
-    </li>
+    <xsl:if test="$currentTestPart/@navigationMode='nonlinear' or exists($itemSessionState/@entryTime)">
+      <li class="assessmentItem">
+        <form action="{$webappContextPath}{$reviewTestItemUrl}/{@key}" method="post">
+          <button type="submit">
+            <xsl:if test="not($reviewable)">
+              <xsl:attribute name="disabled" select="'disabled'"/>
+            </xsl:if>
+            <span class="questionTitle"><xsl:value-of select="@sectionPartTitle"/></span>
+            <xsl:choose>
+              <xsl:when test="not($reviewable)">
+                <div class="itemStatus reviewNotAllowed">Not Reviewable</div>
+              </xsl:when>
+              <xsl:when test="not(empty($itemSessionState/@unboundResponseIdentifiers) and empty($itemSessionState/@invalidResponseIdentifiers))">
+                <div class="itemStatus reviewInvalid">Review (Invalid Answer)</div>
+              </xsl:when>
+              <xsl:when test="$itemSessionState/@responded='true'">
+                <div class="itemStatus review">Review</div>
+              </xsl:when>
+              <xsl:when test="$itemSessionState/@entryTime!=''">
+                <div class="itemStatus reviewNotAnswered">Review (Not Answered)</div>
+              </xsl:when>
+              <xsl:otherwise>
+                <div class="itemStatus reviewNotSeen">Review (Not Seen)</div>
+              </xsl:otherwise>
+            </xsl:choose>
+          </button>
+        </form>
+      </li>
+    </xsl:if>
   </xsl:template>
 
 </xsl:stylesheet>

@@ -112,6 +112,7 @@ NB: This is used both while being presented, and during review.
         <xsl:apply-templates select="qti:stylesheet"/>
       </head>
       <body class="qtiworks assessmentItem assessmentTest">
+        <xsl:call-template name="maybeAddAuthoringLink"/>
 
         <!-- Drill down into current item via current testPart structure -->
         <xsl:apply-templates select="$currentTestPartNode" mode="testPart-drilldown"/>
@@ -131,7 +132,6 @@ NB: This is used both while being presented, and during review.
 
         <!-- Session control -->
         <xsl:call-template name="qw:test-controls"/>
-        <xsl:call-template name="qw:session-controls"/>
       </body>
     </html>
   </xsl:template>

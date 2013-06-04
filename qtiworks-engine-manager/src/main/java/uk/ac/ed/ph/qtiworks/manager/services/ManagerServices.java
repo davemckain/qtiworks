@@ -34,18 +34,19 @@
 package uk.ac.ed.ph.qtiworks.manager.services;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -73,13 +74,19 @@ public class ManagerServices {
     private DataDeletionService dataDeletionService;
 
     @Resource
+    private AssessmentManagementService assessmentManagementService;
+
+    @Resource
     private InstructorUserDao instructorUserDao;
 
     @Resource
     private UserDao userDao;
 
     @Resource
-    private DeliverySettingsDao deliverySettingsDao;
+    private AssessmentPackageDao assessmentPackageDao;
+
+    @Resource
+    private CandidateSessionDao candidateSessionDao;
 
     public InstructorUser ensureInternalSystemUser(final String loginName, final String firstName,
             final String lastName) {
@@ -136,68 +143,6 @@ public class ManagerServices {
         return result;
     }
 
-
-    public void setupSystemDefaults() {
-        /* Create system defalt user */
-        final InstructorUser systemDefaultUser = ensureInternalSystemUser(DomainConstants.QTI_DEFAULT_OWNER_LOGIN_NAME,
-                DomainConstants.QTI_DEFAULT_OWNER_FIRST_NAME, DomainConstants.QTI_DEFAULT_OWNER_LAST_NAME);
-
-        /* Add some default delivery settings (if they don't already exist) */
-        if (deliverySettingsDao.getFirstForOwner(systemDefaultUser, AssessmentObjectType.ASSESSMENT_ITEM)==null) {
-            importDefaultItemDeliverySettings(systemDefaultUser);
-        }
-        if (deliverySettingsDao.getFirstForOwner(systemDefaultUser, AssessmentObjectType.ASSESSMENT_TEST)==null) {
-            importDefaultTestDeliverySettings(systemDefaultUser);
-        }
-    }
-
-    private void importDefaultItemDeliverySettings(final InstructorUser systemDefaultUser) {
-        /* Full-featured settings */
-        final ItemDeliverySettings fullSettings = new ItemDeliverySettings();
-        fullSettings.setAllowEnd(true);
-        fullSettings.setAllowHardResetWhenEnded(true);
-        fullSettings.setAllowHardResetWhenOpen(true);
-        fullSettings.setAllowSoftResetWhenEnded(true);
-        fullSettings.setAllowSoftResetWhenOpen(true);
-        fullSettings.setAllowResult(true);
-        fullSettings.setAllowSolutionWhenEnded(true);
-        fullSettings.setAllowSolutionWhenOpen(true);
-        fullSettings.setAllowSource(true);
-        fullSettings.setAuthorMode(true);
-        fullSettings.setMaxAttempts(0);
-        fullSettings.setPublic(true);
-        fullSettings.setOwner(systemDefaultUser);
-        fullSettings.setTitle("Example QTI debugging settings");
-        fullSettings.setPrompt("These delivery settings let the candidate do pretty much anything, "
-                + "so might be very useful for debugging QTI items. "
-                + "Just remember that some features will only make sense if the item has been authored to support it, "
-                + "such as model solutions and re-initialisation.");
-        deliverySettingsDao.persist(fullSettings);
-
-        /* Summative example settings */
-        final ItemDeliverySettings summativeSettings = new ItemDeliverySettings();
-        summativeSettings.setAllowEnd(true);
-        summativeSettings.setMaxAttempts(1);
-        summativeSettings.setPublic(true);
-        summativeSettings.setOwner(systemDefaultUser);
-        summativeSettings.setTitle("Example summative settings");
-        summativeSettings.setPrompt("These delivery settings allow the candidate to make only 1 attempt "
-                + "at the item, and lock down many of the optional features. You might use something like "
-                + "this for summative assessment.");
-        deliverySettingsDao.persist(summativeSettings);
-    }
-
-    /** FIXME: Add in some more examples later */
-    private void importDefaultTestDeliverySettings(final InstructorUser systemDefaultUser) {
-        /* Full-featured settings */
-        final TestDeliverySettings fullSettings = new TestDeliverySettings();
-        fullSettings.setAuthorMode(true);
-        fullSettings.setPublic(true);
-        fullSettings.setOwner(systemDefaultUser);
-        fullSettings.setTitle("Example QTI debugging settings for tests");
-        deliverySettingsDao.persist(fullSettings);
-    }
-
     //-------------------------------------------------
 
     public boolean findAndDeleteUser(final String loginNameOrUid) {
@@ -237,5 +182,30 @@ public class ManagerServices {
 			}
 		}
 		return user;
+    }
+
+    //-------------------------------------------------
+    // Helpers for M4->M5 update
+
+    public int deleteUnusedAssessmentPackages() {
+        final List<AssessmentPackage> unusedPackages = assessmentPackageDao.getAllUnused();
+        for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAllUnused()) {
+            dataDeletionService.deleteAssessmentPackage(assessmentPackage);
+        }
+        return unusedPackages.size();
+    }
+
+    public void validateAllAssessmentPackages() {
+    	for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAll()) {
+    		assessmentManagementService.validateAssessmentPackage(assessmentPackage);
+    	}
+    }
+
+    public int deleteAllCandidateSessions() {
+        final List<CandidateSession> candidateSessions = candidateSessionDao.getAll();
+        for (final CandidateSession candidatSession : candidateSessions) {
+            dataDeletionService.deleteCandidateSession(candidatSession);
+        }
+        return candidateSessions.size();
     }
 }

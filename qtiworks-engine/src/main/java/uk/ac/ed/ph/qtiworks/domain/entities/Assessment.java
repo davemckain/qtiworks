@@ -37,8 +37,6 @@ import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
-import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,6 +57,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -67,10 +66,13 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 /**
- * Represents an {@link AssessmentItem} or {@link AssessmentTest} and their
- * associated metadata.
+ * Represents an assessment within the system. This entity contains the basic data about
+ * an assessment. Information about the assessment's files is encapsulated by an {@link AssessmentPackage}.
  * <p>
- * The actual _content_ of these is represented by an {@link AssessmentPackage}
+ * The data model here provides a 1->N relationship between an {@link Assessment} and {@link AssessmentPackage}s,
+ * as I had originally planned to include basic revisioning of resources. However, I've decided to simplify this for
+ * now with a 1->1 relationship, but have left the 1->N mapping between the entities in case someone else wants to
+ * add this revisioning functionality.
  *
  * @see AssessmentPackage
  *
@@ -81,15 +83,17 @@ import javax.persistence.Version;
 @SequenceGenerator(name="assessmentSequence", sequenceName="assessment_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
     @NamedQuery(name="Assessment.getForOwner",
-            query="SELECT a"
+            query="SELECT a, ap"
                 + "  FROM Assessment a"
+                + "  LEFT JOIN a.selectedAssessmentPackage ap"
                 + "  WHERE a.owner = :owner"
-                + "  ORDER BY creationTime"),
+                + "  ORDER BY a.creationTime"),
     @NamedQuery(name="Assessment.getForSampleCategory",
-            query="SELECT a"
+            query="SELECT a, ap"
                 + "  FROM Assessment a"
+                + "  LEFT JOIN a.selectedAssessmentPackage ap"
                 + "  WHERE a.sampleCategory = :sampleCategory"
-                + "  ORDER BY creationTime")
+                + "  ORDER BY a.creationTime"),
 })
 public class Assessment implements BaseEntity, TimestampedOnCreation {
 
@@ -104,7 +108,10 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Column(name="lock_version")
     private Long version;
 
-    /** Total number of {@link AssessmentPackage}s uploaded for this Assessment. */
+    /**
+     * Total number of {@link AssessmentPackage}s uploaded for this Assessment.
+     * (This may be larger than the size of {@link #assessmentPackages})
+     */
     @Basic(optional=false)
     @Column(name="package_import_version")
     private Long packageImportVersion;
@@ -161,7 +168,21 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="sample_category_id", updatable=false)
     private SampleCategory sampleCategory;
 
-    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+    /**
+     * Currently-selected {@link AssessmentPackage} for this {@link Assessment}.
+     */
+    @OneToOne(optional=false, fetch=FetchType.EAGER)
+    @JoinColumn(name="selected_apid")
+    private AssessmentPackage selectedAssessmentPackage;
+
+    /**
+     * All {@link AssessmentPackage}s uploaded for this {@link Assessment}, ordered by ID (apid),
+     * which will be chronological.
+     * <p>
+     * NB: As of version 1.0-M5, this should generally return a single entity, which should
+     * be the same as {@link #selectedAssessmentPackage}.
+     */
+    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY)
     @OrderBy("apid")
     private List<AssessmentPackage> assessmentPackages;
 
@@ -272,6 +293,15 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
 
     public void setSampleCategory(final SampleCategory sampleCategory) {
         this.sampleCategory = sampleCategory;
+    }
+
+
+    public AssessmentPackage getSelectedAssessmentPackage() {
+        return selectedAssessmentPackage;
+    }
+
+    public void setSelectedAssessmentPackage(final AssessmentPackage selectedAssessmentPackage) {
+        this.selectedAssessmentPackage = selectedAssessmentPackage;
     }
 
 

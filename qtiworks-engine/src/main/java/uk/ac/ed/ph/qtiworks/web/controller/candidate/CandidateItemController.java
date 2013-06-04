@@ -36,6 +36,8 @@ package uk.ac.ed.ph.qtiworks.web.controller.candidate;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
+import uk.ac.ed.ph.qtiworks.rendering.AuthorViewRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.ItemRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.SerializationMethod;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
@@ -49,6 +51,7 @@ import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
 import uk.ac.ed.ph.jqtiplus.exception.QtiParseException;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
+import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.types.Identifier;
 import uk.ac.ed.ph.jqtiplus.types.StringResponseData;
 
@@ -62,6 +65,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -102,11 +106,7 @@ public class CandidateItemController {
         /* Create appropriate options that link back to this controller */
         final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
         final ItemRenderingOptions renderingOptions = new ItemRenderingOptions();
-        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
-        renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
-        renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
-        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
-        renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
+        configureBaseRenderingOptions(sessionBaseUrl, renderingOptions);
         renderingOptions.setEndUrl(sessionBaseUrl + "/close");
         renderingOptions.setSolutionUrl(sessionBaseUrl + "/solution");
         renderingOptions.setSoftResetUrl(sessionBaseUrl + "/reset-soft");
@@ -115,6 +115,36 @@ public class CandidateItemController {
 
         final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
         candidateRenderingService.renderCurrentCandidateItemSessionState(xid, sessionToken, renderingOptions, outputStreamer);
+    }
+
+    /**
+     * Renders the authoring view of the given session
+     *
+     * @throws IOException
+     * @throws CandidateForbiddenException
+     */
+    @RequestMapping(value="/session/{xid}/{sessionToken}/author-view", method=RequestMethod.GET)
+    public void renderCurrentItemAuthoringView(@PathVariable final long xid, @PathVariable final String sessionToken,
+            final HttpServletResponse response)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        /* Create appropriate options that link back to this controller */
+        final String sessionBaseUrl = "/candidate/session/" + xid + "/" + sessionToken;
+        final AuthorViewRenderingOptions renderingOptions = new AuthorViewRenderingOptions();
+        configureBaseRenderingOptions(sessionBaseUrl, renderingOptions);
+
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateRenderingService.renderCurrentCandidateItemSessionStateAuthorView(xid, sessionToken, renderingOptions, outputStreamer);
+    }
+
+    private void configureBaseRenderingOptions(final String sessionBaseUrl, final AbstractRenderingOptions renderingOptions) {
+        renderingOptions.setSerializationMethod(SerializationMethod.HTML5_MATHJAX);
+        renderingOptions.setSourceUrl(sessionBaseUrl + "/source");
+        renderingOptions.setStateUrl(sessionBaseUrl + "/state");
+        renderingOptions.setResultUrl(sessionBaseUrl + "/result");
+        renderingOptions.setValidationUrl(sessionBaseUrl + "/validation");
+        renderingOptions.setServeFileUrl(sessionBaseUrl + "/file");
+        renderingOptions.setAuthorViewUrl(sessionBaseUrl + "/author-view");
+        renderingOptions.setResponseUrl(sessionBaseUrl + "/response");
     }
 
     //----------------------------------------------------
@@ -277,17 +307,6 @@ public class CandidateItemController {
     // Informational actions
 
     /**
-     * Streams an {@link AssessmentResult} representing the current state of the given
-     * {@link CandidateSession}
-     */
-    @RequestMapping(value="/session/{xid}/{sessionToken}/result", method=RequestMethod.GET)
-    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
-        response.setContentType("application/xml");
-        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
-    }
-
-    /**
      * Serves the source of the given {@link AssessmentPackage}
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
@@ -309,6 +328,28 @@ public class CandidateItemController {
     }
 
     /**
+     * Streams an {@link ItemSessionState} representing the current state of the given
+     * {@link CandidateSession}
+     */
+    @RequestMapping(value="/session/{xid}/{sessionToken}/state", method=RequestMethod.GET)
+    public void streamState(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        final NonCacheableWebOutputStreamer outputStreamer = new NonCacheableWebOutputStreamer(response);
+        candidateRenderingService.streamAssessmentState(xid, sessionToken, outputStreamer);
+    }
+
+    /**
+     * Streams an {@link AssessmentResult} representing the current state of the given
+     * {@link CandidateSession}
+     */
+    @RequestMapping(value="/session/{xid}/{sessionToken}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid, @PathVariable final String sessionToken)
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+        response.setContentType("application/xml");
+        candidateRenderingService.streamAssessmentResult(xid, sessionToken, response.getOutputStream());
+    }
+
+    /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
      * @throws CandidateForbiddenException
      *
@@ -319,7 +360,6 @@ public class CandidateItemController {
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
-        final CandidateSession candidateSession = candidateItemDeliveryService.lookupCandidateItemSession(xid, sessionToken);
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -328,8 +368,16 @@ public class CandidateItemController {
         }
         else {
             final CacheableWebOutputStreamer outputStreamer = new CacheableWebOutputStreamer(response, resourceEtag, CACHEABLE_MAX_AGE);
-            candidateRenderingService.streamAssessmentFile(candidateSession, href, outputStreamer);
+            candidateRenderingService.streamAssessmentFile(xid, sessionToken, href, outputStreamer);
         }
+    }
+
+    @RequestMapping(value="/session/{xid}/{sessionToken}/validation", method=RequestMethod.GET)
+    public String showPackageValidationResult(@PathVariable final long xid, @PathVariable final String sessionToken,
+            final Model model)
+            throws DomainEntityNotFoundException, CandidateForbiddenException {
+        model.addAttribute("validationResult", candidateRenderingService.generateValidationResult(xid, sessionToken));
+        return "validationResult";
     }
 
     //----------------------------------------------------

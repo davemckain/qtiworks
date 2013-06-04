@@ -42,6 +42,7 @@ candidateSessionListRouting (xid -> action -> URL)
     <c:when test="${!empty deliveryCandidateSummaryReport}">
       <c:set var="candidateSessionSummaryMetadata" value="${deliveryCandidateSummaryReport.candidateSessionSummaryMetadata}"/>
       <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
+      <c:set var="rowCount" value="${fn:length(deliveryCandidateSummaryReport.rows)}"/>
       <table class="assessmentList">
         <thead>
           <tr>
@@ -57,10 +58,17 @@ candidateSessionListRouting (xid -> action -> URL)
             <th>First Name</th>
             <th>Last Name</th>
             <c:choose>
-              <c:when test="${numericOutcomeCount > 0}">
-                <c:forEach var="outcomeIdentifier" items="${candidateSessionSummaryMetadata.numericOutcomeIdentifiers}">
-                  <th>${fn:escapeXml(outcomeIdentifier)}</th>
-                </c:forEach>
+              <c:when test="${rowCount > 0}">
+                <c:choose>
+                  <c:when test="${numericOutcomeCount > 0}">
+                    <c:forEach var="outcomeIdentifier" items="${candidateSessionSummaryMetadata.numericOutcomeIdentifiers}">
+                      <th>${fn:escapeXml(outcomeIdentifier)}</th>
+                    </c:forEach>
+                  </c:when>
+                  <c:otherwise>
+                    <th></th>
+                  </c:otherwise>
+                </c:choose>
               </c:when>
               <c:otherwise>
                 <th>(Will appear when first candidate session is started)</th>
@@ -81,9 +89,16 @@ candidateSessionListRouting (xid -> action -> URL)
                   <td><c:out value="${row.emailAddress}"/></td>
                   <td><c:out value="${row.firstName}"/></td>
                   <td><c:out value="${row.lastName}"/></td>
-                  <c:forEach var="outcomeValue" items="${row.numericOutcomeValues}">
-                    <td align="center"><c:out value="${outcomeValue}"/></td>
-                  </c:forEach>
+                  <c:choose>
+                    <c:when test="${numericOutcomeCount>0}">
+                      <c:forEach var="outcomeValue" items="${row.numericOutcomeValues}">
+                        <td align="center"><c:out value="${outcomeValue}"/></td>
+                      </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                      <td align="center">(Not Available)</td>
+                    </c:otherwise>
+                  </c:choose>
                 </tr>
               </c:forEach>
             </c:when>

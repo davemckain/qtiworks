@@ -47,19 +47,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class StandaloneRunCommand {
 
-    private long dsid;
-
     @MultipartFileExists
     private MultipartFile file;
-
-
-    public long getDsid() {
-        return dsid;
-    }
-
-    public void setDsid(final long dsid) {
-        this.dsid = dsid;
-    }
 
 
     public MultipartFile getFile() {

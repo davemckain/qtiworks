@@ -7,7 +7,7 @@ Lists Assessments owned by caller
 
 Model:
 
-assessmentList
+assessmentAndPackageList
 assessmentRouting (aid -> action -> URL)
 instructorAssessmentRouting (action -> URL)
 
@@ -21,7 +21,7 @@ instructorAssessmentRouting (action -> URL)
   <h2>Your Assessments</h2>
 
   <c:choose>
-    <c:when test="${!empty assessmentList}">
+    <c:when test="${!empty assessmentAndPackageList}">
       <table class="assessmentList">
         <thead>
           <tr>
@@ -33,15 +33,19 @@ instructorAssessmentRouting (action -> URL)
           </tr>
         </thead>
         <tbody>
-          <c:forEach var="assessment" items="${assessmentList}" varStatus="loopStatus">
+          <c:forEach var="assessmentAndPackage" items="${assessmentAndPackageList}" varStatus="loopStatus">
+            <c:set var="assessment" value="${assessmentAndPackage.assessment}"/>
+            <c:set var="assessmentPackage" value="${assessmentAndPackage.assessmentPackage}"/>
             <tr>
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
               <td align="center" class="launch">
-                <form action="${assessmentRouting[assessment.id]['try']}" method="post">
-                  <button type="submit" class="playButton">Quick Try</button>
-                </form>
+                <c:if test="${assessmentPackage.launchable}">
+                  <form action="${assessmentRouting[assessment.id]['try']}" method="post">
+                    <button type="submit" class="playButton">Quick Try</button>
+                  </form>
+                </c:if>
               </td>
               <td>
                 <h4><a href="${utils:escapeLink(assessmentRouting[assessment.id]['show'])}"><c:out value="${assessment.name}"/></a></h4>

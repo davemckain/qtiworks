@@ -56,7 +56,6 @@ public enum Privilege {
 
     /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
     MATCH_DELIVERY_SETTINGS,
-
     ACCESS_DELIVERY_SETTINGS,
 
     /** FIXME: Rename this! */
@@ -64,13 +63,11 @@ public enum Privilege {
 
     /** FIXME: Rename this! */
     CREATE_DELIVERY_SETTINGS,
+    DELETE_USED_DELIVERY_SETTINGS,
 
     LAUNCH_ASSESSMENT_AS_SAMPLE,
-    LAUNCH_INVALID_ASSESSMENT,
     LAUNCH_DELIVERY,
     LAUNCH_CLOSED_DELIVERY,
-
-    DELETE_USED_DELIVERY_SETTINGS,
 
     PROCTOR_SESSION,
 

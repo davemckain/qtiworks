@@ -621,28 +621,3 @@ var QtiWorksRendering = (function() {
         }
     };
 })();
-
-/* Form progressive enhancement - shows item source/result XML in a dialog box */
-$(document).ready(function() {
-    $('.showXmlInDialog').submit(function() {
-        var title =$(this).attr('title');
-        var action = $(this).attr('action');
-        $.get(action, function(data, textStatus, jqXHR) {
-            if (document.getElementById('prettifier')==null) {
-                var script = document.createElement('script');
-                script.src = 'https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js';
-                script.id = 'prettifier';
-                $('head').append(script);
-            }
-            var xmlDiv = $("<pre class='prettyprint xmlSource'></pre>");
-            xmlDiv.text(jqXHR.responseText);
-            xmlDiv.dialog({
-                modal: true,
-                width: $(window).width() * 0.8,
-                height: $(window).height() * 0.6,
-                title: title
-            });
-        });
-        return false;
-    });
-});

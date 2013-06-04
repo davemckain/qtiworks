@@ -50,10 +50,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.mathassess.GlueValueBinder;
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants;
+import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateEventNotificationDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.utils.XmlUtilities;
 
 import uk.ac.ed.ph.jqtiplus.JqtiExtensionManager;
@@ -102,6 +102,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -203,11 +204,11 @@ public class CandidateDataServices {
 
     public void storeItemSessionState(final CandidateEvent candidateEvent, final ItemSessionState itemSessionState) {
         final Document stateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
-        storeStateDocument(candidateEvent, "itemSessionState", stateDocument);
+        storeStateDocument(candidateEvent, stateDocument);
     }
 
     public ItemSessionState loadItemSessionState(final CandidateEvent candidateEvent) {
-        final Document document = loadStateDocument(candidateEvent, "itemSessionState");
+        final Document document = loadStateDocument(candidateEvent);
         return ItemSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
@@ -241,6 +242,54 @@ public class CandidateDataServices {
         return event;
     }
 
+    /**
+     * Attempts to create a fresh {@link ItemSessionState} wrapped into a {@link ItemSessionController}
+     * for the given {@link Delivery}.
+     * <p>
+     * This will return null if the item can't be started because its {@link ItemProcessingMap}
+     * can't be created, e.g. if its XML can't be parsed.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     * @return
+     */
+    public ItemSessionController createNewItemSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
+        ensureItemDelivery(delivery);
+
+        /* Resolve the underlying JQTI+ object */
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
+        final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
+        if (itemProcessingMap==null) {
+            return null;
+        }
+
+        /* Create fresh state for session */
+        final ItemSessionState itemSessionState = new ItemSessionState();
+
+        /* Create config for ItemSessionController */
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
+        itemSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(itemDeliverySettings));
+        itemSessionControllerSettings.setMaxAttempts(itemDeliverySettings.getMaxAttempts());
+
+        /* Create controller and wire up notification recorder */
+        final ItemSessionController result = new ItemSessionController(jqtiExtensionManager,
+                itemSessionControllerSettings, itemProcessingMap, itemSessionState);
+        if (notificationRecorder!=null) {
+            result.addNotificationListener(notificationRecorder);
+        }
+        return result;
+    }
+
+    /**
+     * Extracts the {@link ItemSessionState} corresponding to the given {@link CandidateEvent}
+     * and wraps it in a {@link ItemSessionController}.
+     * <p>
+     * It is assumed that the item was runnable, so this will never return null.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     */
     public ItemSessionController createItemSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
         final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
@@ -248,14 +297,25 @@ public class CandidateDataServices {
         return createItemSessionController(delivery, itemSessionState, notificationRecorder);
     }
 
+    /**
+     * Wraps the given {@link ItemSessionState} in a {@link ItemSessionController}.
+     * <p>
+     * It is assumed that the item was runnable, so this will never return null.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     */
     public ItemSessionController createItemSessionController(final Delivery delivery,
             final ItemSessionState itemSessionState,  final NotificationRecorder notificationRecorder) {
         ensureItemDelivery(delivery);
         Assert.notNull(itemSessionState, "itemSessionState");
 
-        /* Resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        /* Try to resolve the underlying JQTI+ object */
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
         final ItemProcessingMap itemProcessingMap = assessmentObjectManagementService.getItemProcessingMap(assessmentPackage);
+        if (itemProcessingMap==null) {
+            throw new QtiWorksLogicException("Expected this item to be runnable");
+        }
 
         /* Create config for ItemSessionController */
         final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
@@ -319,20 +379,35 @@ public class CandidateDataServices {
 
     public void storeTestSessionState(final CandidateEvent candidateEvent, final TestSessionState testSessionState) {
         final Document stateDocument = TestSessionStateXmlMarshaller.marshal(testSessionState);
-        storeStateDocument(candidateEvent, "testSessionState", stateDocument);
+        storeStateDocument(candidateEvent, stateDocument);
     }
 
     public TestSessionState loadTestSessionState(final CandidateEvent candidateEvent) {
-        final Document document = loadStateDocument(candidateEvent, "testSessionState");
+        final Document document = loadStateDocument(candidateEvent);
         return TestSessionStateXmlMarshaller.unmarshal(document.getDocumentElement());
     }
 
+
+    /**
+     * Attempts to create a fresh {@link TestSessionState} wrapped into a {@link TestSessionController}
+     * for the given {@link Delivery}.
+     * <p>
+     * This will return null if the test can't be started because its {@link TestProcessingMap}
+     * can't be created, e.g. if its XML can't be parsed.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     * @return
+     */
     public TestSessionController createNewTestSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
         ensureTestDelivery(delivery);
 
         /* Resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
         final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
+        if (testProcessingMap==null) {
+            return null;
+        }
 
         /* Generate a test plan for this session */
         final TestPlanner testPlanner = new TestPlanner(testProcessingMap);
@@ -355,6 +430,57 @@ public class CandidateDataServices {
         if (notificationRecorder!=null) {
             result.addNotificationListener(notificationRecorder);
         }
+        return result;
+    }
+
+    /**
+     * Extracts the {@link TestSessionState} corresponding to the given {@link CandidateEvent}
+     * and wraps it in a {@link TestSessionController}.
+     * <p>
+     * It is assumed that the test was runnable, so this will never return null.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     */
+    public TestSessionController createTestSessionController(final CandidateEvent candidateEvent,
+            final NotificationRecorder notificationRecorder) {
+        final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
+        final TestSessionState testSessionState = loadTestSessionState(candidateEvent);
+        return createTestSessionController(delivery, testSessionState, notificationRecorder);
+    }
+
+    /**
+     * Wraps the given {@link TestSessionState} in a {@link TestSessionController}.
+     * <p>
+     * It is assumed that the test was runnable, so this will never return null.
+     *
+     * @param delivery
+     * @param notificationRecorder
+     */
+    public TestSessionController createTestSessionController(final Delivery delivery,
+            final TestSessionState testSessionState,  final NotificationRecorder notificationRecorder) {
+        ensureTestDelivery(delivery);
+        Assert.notNull(testSessionState, "testSessionState");
+
+        /* Try to resolve the underlying JQTI+ object */
+        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
+        final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
+        if (testProcessingMap==null) {
+            return null;
+        }
+
+        /* Create config for TestSessionController */
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
+        testSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(testDeliverySettings));
+
+        /* Create controller and wire up notification recorder (if passed) */
+        final TestSessionController result = new TestSessionController(jqtiExtensionManager,
+                testSessionControllerSettings, testProcessingMap, testSessionState);
+        if (notificationRecorder!=null) {
+            result.addNotificationListener(notificationRecorder);
+        }
+
         return result;
     }
 
@@ -411,37 +537,6 @@ public class CandidateDataServices {
         return event;
     }
 
-    public TestSessionController createTestSessionController(final CandidateEvent candidateEvent,
-            final NotificationRecorder notificationRecorder) {
-        final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
-        final TestSessionState testSessionState = loadTestSessionState(candidateEvent);
-        return createTestSessionController(delivery, testSessionState, notificationRecorder);
-    }
-
-    public TestSessionController createTestSessionController(final Delivery delivery,
-            final TestSessionState testSessionState,  final NotificationRecorder notificationRecorder) {
-        ensureTestDelivery(delivery);
-        Assert.notNull(testSessionState, "testSessionState");
-
-        /* Resolve the underlying JQTI+ object */
-        final AssessmentPackage assessmentPackage = entityGraphService.getCurrentAssessmentPackage(delivery);
-        final TestProcessingMap testProcessingMap = assessmentObjectManagementService.getTestProcessingMap(assessmentPackage);
-
-        /* Create config for TestSessionController */
-        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
-        final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
-        testSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(testDeliverySettings));
-
-        /* Create controller and wire up notification recorder (if passed) */
-        final TestSessionController result = new TestSessionController(jqtiExtensionManager,
-                testSessionControllerSettings, testProcessingMap, testSessionState);
-        if (notificationRecorder!=null) {
-            result.addNotificationListener(notificationRecorder);
-        }
-
-        return result;
-    }
-
     public TestSessionState computeCurrentTestSessionState(final CandidateSession candidateSession)  {
         final CandidateEvent mostRecentTestEvent = getMostRecentEvent(candidateSession);
         return loadTestSessionState(mostRecentTestEvent);
@@ -485,8 +580,8 @@ public class CandidateDataServices {
         return mostRecentEvent;
     }
 
-    private void storeStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName, final Document stateXml) {
-        final File sessionFile = getStateFile(candidateEvent, stateFileBaseName);
+    private void storeStateDocument(final CandidateEvent candidateEvent, final Document stateXml) {
+        final File sessionFile = getSessionStateFile(candidateEvent);
         final XsltSerializationOptions xsltSerializationOptions = new XsltSerializationOptions();
         xsltSerializationOptions.setIndenting(true);
         xsltSerializationOptions.setIncludingXMLDeclaration(false);
@@ -510,12 +605,7 @@ public class CandidateDataServices {
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
         finally {
-            try {
-                IoUtilities.ensureClose(resultStream);
-            }
-            catch (final IOException e) {
-                throw QtiWorksRuntimeException.unexpectedException(e);
-            }
+            ServiceUtilities.ensureClose(resultStream);
         }
     }
 
@@ -531,7 +621,7 @@ public class CandidateDataServices {
         }
         try {
             /* NB: We're using the fact that we're writing out as UTF-8 when storing these files */
-            return IoUtilities.readUnicodeFile(getResultFile(candidateSession));
+            return FileUtils.readFileToString(getResultFile(candidateSession), "UTF-8");
         }
         catch (final IOException e) {
             throw QtiWorksRuntimeException.unexpectedException(e);
@@ -573,11 +663,8 @@ public class CandidateDataServices {
         return value.toQtiString();
     }
 
-    private Document loadStateDocument(final CandidateEvent candidateEvent, final String stateFileBaseName) {
-        final File sessionFile = getStateFile(candidateEvent, stateFileBaseName);
-        if (!sessionFile.exists()) {
-            throw new QtiWorksLogicException("State file " + sessionFile + " does not exist");
-        }
+    private Document loadStateDocument(final CandidateEvent candidateEvent) {
+        final File sessionFile = ensureSessionStateFile(candidateEvent);
         final DocumentBuilder documentBuilder = XmlUtilities.createNsAwareDocumentBuilder();
         try {
             return documentBuilder.parse(sessionFile);
@@ -587,10 +674,20 @@ public class CandidateDataServices {
         }
     }
 
-    private File getStateFile(final CandidateEvent candidateEvent, final String stateFileBaseName) {
-        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
-        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
-        return new File(sessionFolder, stateFileBaseName + candidateEvent.getId() + ".xml");
+    public File ensureSessionStateFile(final CandidateEvent candidateEvent) {
+        final File sessionStateFile = getSessionStateFile(candidateEvent);
+        if (!sessionStateFile.exists()) {
+            throw new QtiWorksLogicException("State file " + sessionStateFile + " does not exist");
+        }
+        return sessionStateFile;
     }
 
+    private File getSessionStateFile(final CandidateEvent candidateEvent) {
+        final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final AssessmentObjectType assessmentType = candidateSession.getDelivery().getAssessment().getAssessmentType();
+        final String stateFileBaseName = assessmentType==AssessmentObjectType.ASSESSMENT_ITEM ? "itemSessionState" : "testSessionState";
+        final File sessionFolder = filespaceManager.obtainCandidateSessionStateStore(candidateSession);
+        final String stateFileName = stateFileBaseName + candidateEvent.getId() + ".xml";
+        return new File(sessionFolder, stateFileName);
+    }
 }

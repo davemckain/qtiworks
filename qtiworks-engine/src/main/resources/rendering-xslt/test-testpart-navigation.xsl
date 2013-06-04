@@ -48,6 +48,8 @@ Renders the navigation for the current testPart
         <link rel="stylesheet" href="{$webappContextPath}/rendering/css/assessment.css?{$qtiWorksVersion}" type="text/css" media="screen"/>
       </head>
       <body class="qtiworks assessmentTest testPartNavigation">
+        <xsl:call-template name="maybeAddAuthoringLink"/>
+
         <h2>Test Question Menu</h2>
         <xsl:apply-templates select="$currentTestPartNode" mode="testPart-navigation"/>
 
@@ -59,12 +61,6 @@ Renders the navigation for the current testPart
 
   <xsl:template name="qw:test-controls">
     <div class="sessionControl">
-      <xsl:if test="$authorMode">
-        <div class="authorMode">
-          The candidate currently has the following "test session control" options. (These
-          currently depend on the navigation &amp; submission mode of the test only.)
-        </div>
-      </xsl:if>
       <ul class="controls test">
         <li>
           <form action="{$webappContextPath}{$endTestPartUrl}" method="post"

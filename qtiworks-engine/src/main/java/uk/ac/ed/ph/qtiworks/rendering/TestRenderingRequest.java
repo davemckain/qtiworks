@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.rendering;
 
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
+import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
 
 import javax.validation.constraints.NotNull;
 
@@ -47,6 +48,7 @@ import javax.validation.constraints.NotNull;
  */
 public final class TestRenderingRequest extends AbstractRenderingRequest<TestRenderingOptions> {
 
+    /** {@link TestSessionController} wrapped around the {@link TestSessionState} being rendered. */
     @NotNull
     private TestSessionController testSessionController;
 
@@ -80,7 +82,4 @@ public final class TestRenderingRequest extends AbstractRenderingRequest<TestRen
     public void setModalItemKey(final TestPlanNodeKey modalItemKey) {
         this.modalItemKey = modalItemKey;
     }
-
-
-
 }

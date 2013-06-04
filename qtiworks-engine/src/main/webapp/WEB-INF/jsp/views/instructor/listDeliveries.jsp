@@ -39,13 +39,13 @@ instructorAssessmentRouting
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
-              <td>
+              <td align="center">
                 <a href="${utils:escapeLink(deliveryListRouting[delivery.id]['show'])}"><c:out value="${delivery.title}"/></a>
               </td>
-              <td>
+              <td align="center">
                 ${delivery.open ? 'Yes' : 'No' }
               </td>
-              <td>
+              <td align="center">
                 ${fn:escapeXml(delivery.deliverySettings.title)}
               </td>
             </tr>

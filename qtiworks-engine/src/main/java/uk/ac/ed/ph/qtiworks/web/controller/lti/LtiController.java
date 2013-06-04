@@ -37,7 +37,6 @@ import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.utils.IoUtilities;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
@@ -45,7 +44,6 @@ import uk.ac.ed.ph.qtiworks.web.lti.LtiOauthMessageUtilities;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +57,7 @@ import net.oauth.OAuthValidator;
 import net.oauth.SimpleOAuthValidator;
 import net.oauth.server.OAuthServlet;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -72,6 +71,8 @@ import dave.LtiResultsTest;
 
 /**
  * Controller for browsing and trying the public samples
+ * <p>
+ * THIS IS WORK IN PROGRESS AND SUBJECT TO CHANGE!
  *
  * @author David McKain
  */
@@ -122,7 +123,7 @@ public class LtiController {
 
             /* Note hard-coded UTF-8 here, since we're sending XML */
             final InputStream messageBodyStream = message.getBodyAsStream();
-            final String messageBody = IoUtilities.readCharacterStream(new InputStreamReader(messageBodyStream, "UTF-8"));
+            final String messageBody = IOUtils.toString(messageBodyStream, "UTF-8");
             System.out.println("Message body is " + messageBody);
 
             /* Let's check but not enforce validity */

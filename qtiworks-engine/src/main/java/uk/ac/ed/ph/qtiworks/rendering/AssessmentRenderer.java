@@ -55,12 +55,10 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.locators.ResourceLocator;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetCache;
 import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 
-import uk.ac.ed.ph.snuggletex.XMLStringOutputOptions;
-import uk.ac.ed.ph.snuggletex.internal.util.XMLUtilities;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.io.Writer;
 import java.net.URI;
 import java.util.HashMap;
@@ -110,14 +108,16 @@ public class AssessmentRenderer {
 
     private static final URI serializeXsltUri = URI.create("classpath:/rendering-xslt/serialize.xsl");
     private static final URI ctopXsltUri = URI.create("classpath:/rendering-xslt/ctop.xsl");
-    private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
     private static final URI itemStandaloneXsltUri = URI.create("classpath:/rendering-xslt/item-standalone.xsl");
-    private static final URI itemAuthorDebugXsltUri = URI.create("classpath:/rendering-xslt/item-author-debug.xsl");
     private static final URI testItemXsltUri = URI.create("classpath:/rendering-xslt/test-item.xsl");
     private static final URI testEntryXsltUri = URI.create("classpath:/rendering-xslt/test-entry.xsl");
     private static final URI testPartNavigationXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-navigation.xsl");
     private static final URI testPartFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-testpart-feedback.xsl");
     private static final URI testFeedbackXsltUri = URI.create("classpath:/rendering-xslt/test-feedback.xsl");
+    private static final URI itemAuthorViewXsltUri = URI.create("classpath:/rendering-xslt/item-author-view.xsl");
+    private static final URI testAuthorViewXsltUri = URI.create("classpath:/rendering-xslt/test-author-view.xsl");
+    private static final URI terminatedXsltUri = URI.create("classpath:/rendering-xslt/terminated.xsl");
+    private static final URI explodedXsltUri = URI.create("classpath:/rendering-xslt/exploded.xsl");
 
     @Resource
     private QtiWorksProperties qtiWorksProperties;
@@ -193,22 +193,6 @@ public class AssessmentRenderer {
     //----------------------------------------------------
 
     /**
-     * Renders a terminated session, sending the result to the provided JAXP {@link Result}.
-     * <p>
-     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
-     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
-     * closing the {@link OutputStream} or {@link Writer} afterwards!
-     */
-    public void renderTeminated(final AbstractRenderingRequest<?> request, final Result result) {
-        Assert.notNull(result, "result");
-
-        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        setBaseRenderingParameters(xsltParameters);
-
-        doTransform(request, terminatedXsltUri, xsltParameters, result);
-    }
-
-    /**
      * Renders the given {@link ItemRenderingRequest}, sending the result to the provided JAXP {@link Result}.
      * <p>
      * The rendering shows the current state of the item, unless {@link ItemRenderingRequest#isSolutionMode()}
@@ -259,53 +243,6 @@ public class AssessmentRenderer {
 
         /* Perform transform */
         doTransform(request, itemStandaloneXsltUri, xsltParameters, result);
-    }
-
-    /**
-     * Renders the {@link ItemRenderingRequest}, sending the result to the provided JAXP {@link Result}.
-     * <p>
-     * The rendering shows the current state of the item, unless {@link ItemRenderingRequest#isSolutionMode()}
-     * returns true, in which case the model solution is rendered.
-     * <p>
-     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
-     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
-     * closing the {@link OutputStream} or {@link Writer} afterwards!
-     * The caller is responsible for closing this stream afterwards.
-     */
-    public void renderItemAuthorView(final ItemAuthorViewRenderingRequest request,
-            final List<CandidateEventNotification> notifications, final Result result) {
-        Assert.notNull(request, "request");
-        Assert.notNull(result, "result");
-
-        /* Check request is valid */
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "itemAuthorViewRenderingRequest");
-        jsr303Validator.validate(request, errors);
-        if (errors.hasErrors()) {
-            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
-                    + " Object: " + errors);
-        }
-
-        /* Pass request info to XSLT as parameters */
-        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
-        setBaseRenderingParameters(xsltParameters, request, notifications);
-
-        /* Pass ItemSessionState (as DOM Document and XML text) */
-        final ItemSessionState itemSessionState = request.getItemSessionState();
-        final Document itemSessionStateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
-        xsltParameters.put("itemSessionState", itemSessionStateDocument.getDocumentElement());
-        xsltParameters.put("itemSessionStateXml",  serializeDocument(itemSessionStateDocument));
-
-        /* Set control parameters */
-        xsltParameters.put("solutionMode", Boolean.valueOf(request.isSolutionMode()));
-
-        /* Perform transform */
-        doTransform(request, itemAuthorDebugXsltUri, xsltParameters, result);
-    }
-
-    private static String serializeDocument(final Document document) {
-        final XMLStringOutputOptions outputOptions = new XMLStringOutputOptions();
-        outputOptions.setIndenting(true);
-        return XMLUtilities.serializeNode(document, outputOptions);
     }
 
     /**
@@ -435,7 +372,7 @@ public class AssessmentRenderer {
         xsltParameters.put("endTestPartAllowed", Boolean.valueOf(navigationMode==NavigationMode.LINEAR && testSessionController.mayEndCurrentTestPart()));
 
         /* We finally do the transform on the _item_ (NB!) */
-        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
+        doTransform(request, itemSystemId, testItemXsltUri, xsltParameters, result);
     }
 
     private void doRenderTestItemReview(final TestRenderingRequest request,
@@ -454,7 +391,7 @@ public class AssessmentRenderer {
         xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
         /* We finally do the transform on the _item_ (NB!) */
-        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
+        doTransform(request, itemSystemId, testItemXsltUri, xsltParameters, result);
     }
 
     private void doRenderTestItemSolution(final TestRenderingRequest request,
@@ -473,7 +410,110 @@ public class AssessmentRenderer {
         xsltParameters.put("endTestPartAllowed", Boolean.FALSE);
 
         /* We finally do the transform on the _item_ (NB!) */
-        doTransform(request, testItemXsltUri, itemSystemId, xsltParameters, result);
+        doTransform(request, itemSystemId, testItemXsltUri, xsltParameters, result);
+    }
+
+    /**
+     * Renders the given {@link ItemAuthorViewRenderingRequest}, sending the result to the
+     * provided JAXP {@link Result}.
+     * <p>
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
+     * The caller is responsible for closing this stream afterwards.
+     */
+    public void renderItemAuthorView(final ItemAuthorViewRenderingRequest request,
+            final List<CandidateEventNotification> notifications, final Result result) {
+        Assert.notNull(request, "request");
+        Assert.notNull(result, "result");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "itemAuthorViewRenderingRequest");
+        jsr303Validator.validate(request, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        /* Pass request info to XSLT as parameters */
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, request, notifications);
+
+        /* Pass ItemSessionState (as DOM Document and XML text) */
+        final ItemSessionState itemSessionState = request.getItemSessionState();
+        final Document itemSessionStateDocument = ItemSessionStateXmlMarshaller.marshal(itemSessionState);
+        xsltParameters.put("itemSessionState", itemSessionStateDocument.getDocumentElement());
+
+        /* Perform transform */
+        doTransform(request, null, itemAuthorViewXsltUri, xsltParameters, result);
+    }
+
+    /**
+     * Renders the given {@link TestAuthorViewRenderingRequest}, sending the result to the
+     * provided JAXP {@link Result}.
+     * <p>
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
+     * The caller is responsible for closing this stream afterwards.
+     */
+    public void renderTestAuthorView(final TestAuthorViewRenderingRequest request,
+            final List<CandidateEventNotification> notifications, final Result result) {
+        Assert.notNull(request, "renderingRequest");
+        Assert.notNull(result, "result");
+
+        /* Check request is valid */
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(request, "testAuthorViewRenderingRequest");
+        jsr303Validator.validate(request, errors);
+        if (errors.hasErrors()) {
+            throw new IllegalArgumentException("Invalid " + request.getClass().getSimpleName()
+                    + " Object: " + errors);
+        }
+
+        /* Set up general XSLT parameters */
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, request, notifications);
+
+        final TestSessionController testSessionController = request.getTestSessionController();
+        final TestSessionState testSessionState = testSessionController.getTestSessionState();
+        xsltParameters.put("testSessionState", TestSessionStateXmlMarshaller.marshal(testSessionState).getDocumentElement());
+        xsltParameters.put("testSystemId", request.getAssessmentResourceUri().toString());
+
+        doTransform(request, null, testAuthorViewXsltUri, xsltParameters, result);
+    }
+
+    //----------------------------------------------------
+
+    /**
+     * Renders a terminated session, sending the result to the provided JAXP {@link Result}.
+     * <p>
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
+     */
+    public void renderTeminated(final AbstractRenderingRequest<?> request, final Result result) {
+        Assert.notNull(result, "result");
+
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, request, null);
+
+        doTransform(request, null, terminatedXsltUri, xsltParameters, result);
+    }
+
+    /**
+     * Renders an exploded session, sending the result to the provided JAXP {@link Result}.
+     * <p>
+     * NB: If you're using a {@link StreamResult} then you probably want to wrap it around an
+     * {@link OutputStream} rather than a {@link Writer}. Remember that you are responsible for
+     * closing the {@link OutputStream} or {@link Writer} afterwards!
+     */
+    public void renderExploded(final AbstractRenderingRequest<?> request, final Result result) {
+        Assert.notNull(result, "result");
+
+        final Map<String, Object> xsltParameters = new HashMap<String, Object>();
+        setBaseRenderingParameters(xsltParameters, request, null);
+
+        doTransform(request, null, explodedXsltUri, xsltParameters, result);
     }
 
     //----------------------------------------------------
@@ -482,7 +522,7 @@ public class AssessmentRenderer {
             final Map<String, Object> xsltParameters) {
         final TestSessionController testSessionController = request.getTestSessionController();
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
-        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getTestPlanNodeMap().get(itemKey);
+        final TestPlanNode itemRefNode = testSessionState.getTestPlan().getNode(itemKey);
         if (itemRefNode==null) {
             throw new QtiWorksRenderingException("Failed to locate item with key " + itemKey + " in TestPlan");
         }
@@ -522,16 +562,22 @@ public class AssessmentRenderer {
         }
 
         /* Pass common control parameters */
-        xsltParameters.put("authorMode", request.isAuthorMode());
-        xsltParameters.put("sourceAllowed", Boolean.valueOf(request.isSourceAllowed()));
-        xsltParameters.put("resultAllowed", Boolean.valueOf(request.isResultAllowed()));
+        xsltParameters.put("validated", Boolean.valueOf(request.isValidated()));
+        xsltParameters.put("launchable", Boolean.valueOf(request.isLaunchable()));
+        xsltParameters.put("errorCount", Integer.valueOf(request.getErrorCount()));
+        xsltParameters.put("warningCount", Integer.valueOf(request.getWarningCount()));
+        xsltParameters.put("valid", Boolean.valueOf(request.isValid()));
+        xsltParameters.put("authorMode", Boolean.valueOf(request.isAuthorMode()));
 
         /* Pass common action URLs */
         final P renderingOptions = request.getRenderingOptions();
-        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
         xsltParameters.put("responseUrl", renderingOptions.getResponseUrl());
+        xsltParameters.put("serveFileUrl", renderingOptions.getServeFileUrl());
+        xsltParameters.put("authorViewUrl", renderingOptions.getAuthorViewUrl());
         xsltParameters.put("sourceUrl", renderingOptions.getSourceUrl());
+        xsltParameters.put("stateUrl", renderingOptions.getStateUrl());
         xsltParameters.put("resultUrl", renderingOptions.getResultUrl());
+        xsltParameters.put("validationUrl", renderingOptions.getValidationUrl());
     }
 
     private void setBaseRenderingParameters(final Map<String, Object> xsltParameters) {
@@ -541,14 +587,41 @@ public class AssessmentRenderer {
 
     //----------------------------------------------------
 
+    /**
+     * Invokes the transformation pipeline on the "main" assessment XML extracted from the
+     * given renderingRequest, using the XSLT at the given URI and specified parameters. The result
+     * is sent to the given {@link Result} Object.
+     *
+     * @param renderingRequest request to be rendered, must not be null
+     * @param rendererStylesheetUri XSLT URI, must not be null
+     * @param xsltParameters optional parameters
+     * @param result {@link Result} to generate, which must not be null
+     */
     private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI rendererStylesheetUri,
             final Map<String, Object> xsltParameters, final Result result) {
-        doTransform(renderingRequest, rendererStylesheetUri, renderingRequest.getAssessmentResourceUri(),
+        doTransform(renderingRequest, renderingRequest.getAssessmentResourceUri(), rendererStylesheetUri,
                 xsltParameters, result);
     }
 
-    private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI rendererStylesheetUri,
-            final URI inputUri, final Map<String, Object> xsltParameters, final Result result) {
+    /**
+     * Invokes the transformation pipeline on the XML resource at the given inputUri, loaded using
+     * the {@link ResourceLocator} specified by the given renderingRequest, using the XSLT at the
+     * given URI and specified parameters. The result is sent to the given {@link Result} Object.
+     * <p>
+     *
+     * @param renderingRequest request to be rendered, must not be null
+     * @param inputUri URI of the XML to pass to the XSLT pipeline. If null, a well-formed empty
+     *   document will be passed, which is useful if the output doesn't depend on the input XML
+     *   at all, or when generating error pages.
+     * @param rendererStylesheetUri XSLT URI, must not be null
+     * @param xsltParameters optional parameters
+     * @param result {@link Result} to generate, which must not be null.
+     */
+    private void doTransform(final AbstractRenderingRequest<?> renderingRequest, final URI inputUri,
+            final URI rendererStylesheetUri, final Map<String, Object> xsltParameters, final Result result) {
+        Assert.notNull(renderingRequest);
+        Assert.notNull(rendererStylesheetUri);
+        Assert.notNull(result);
         /* We do this as an XML pipeline:
          *
          * Input --> Rendering XSLT --> MathML C-to-P --> Serialization XSLT --> Result
@@ -564,7 +637,9 @@ public class AssessmentRenderer {
 
         /* Pass necessary parameters to renderer */
         final Transformer rendererTransformer = rendererTransformerHandler.getTransformer();
-        rendererTransformer.setParameter("systemId", inputUri);
+        if (inputUri!=null) {
+            rendererTransformer.setParameter("systemId", inputUri);
+        }
         if (xsltParameters!=null) {
             for (final Entry<String, Object> paramEntry : xsltParameters.entrySet()) {
                 rendererTransformer.setParameter(paramEntry.getKey(), paramEntry.getValue());
@@ -611,10 +686,18 @@ public class AssessmentRenderer {
         }
 
         /* Set up the XML source */
-        final ResourceLocator assessmentResourceLocator = renderingRequest.getAssessmentResourceLocator();
-        final InputStream assessmentStream = assessmentResourceLocator.findResource(inputUri);
-        final InputSource assessmentSaxSource = new InputSource(assessmentStream);
-        assessmentSaxSource.setSystemId(inputUri.toString());
+        final InputSource assessmentSaxSource;
+        if (inputUri!=null) {
+            final ResourceLocator assessmentResourceLocator = renderingRequest.getAssessmentResourceLocator();
+            final InputStream assessmentStream = assessmentResourceLocator.findResource(inputUri);
+            assessmentSaxSource = new InputSource(assessmentStream);
+            assessmentSaxSource.setSystemId(inputUri.toString());
+        }
+        else {
+            /* (null inputUri, so we'll pass an empty well-formed XML document) */
+            assessmentSaxSource = new InputSource(new StringReader("<null/>"));
+        }
+
 
         /* Now join the pipeline together (it's clearest to work backwards here)
          *

@@ -81,4 +81,10 @@ public class CandidateSessionDao extends GenericDao<CandidateSession> {
         query.setParameter("candidate", candidate);
         return query.getResultList();
     }
+
+    public List<CandidateSession> getAll() {
+        final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getAll", CandidateSession.class);
+        return query.getResultList();
+    }
+
 }
