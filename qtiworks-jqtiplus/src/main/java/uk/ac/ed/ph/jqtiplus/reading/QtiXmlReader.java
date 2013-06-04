@@ -56,7 +56,6 @@ import java.util.Map.Entry;
  * some related IMS) XML resources.
  * <p>
  * It uses the following conventions:
- *
  * <ul>
  *   <li>
  *     Schema resources are loaded using {@link #JQTIPLUS_PARSER_RESOURCE_LOCATOR}.
@@ -126,6 +125,9 @@ public final class QtiXmlReader {
     //--------------------------------------------------
 
     /**
+     * Reads the XML resource having the given System ID using the specified {@link ResourceLocator}
+     * to locate the XML, optionally performing schema validation.
+     *
      * @throws XmlResourceNotFoundException if the XML resource with the given System ID cannot be
      *             located using the given {@link ResourceLocator}
      * @throws XmlResourceReaderException if an unexpected Exception occurred parsing and/or validating the XML, or
@@ -134,6 +136,8 @@ public final class QtiXmlReader {
     public XmlReadResult read(final URI systemIdUri, final ResourceLocator inputResourceLocator,
             final boolean performSchemaValidation)
             throws XmlResourceNotFoundException {
+        Assert.notNull(systemIdUri, "systemIdUri");
+        Assert.notNull(inputResourceLocator, "inputResourceLocator");
         final ResourceLocator entityResourceLocator = new ChainedResourceLocator(JQTIPLUS_PARSER_RESOURCE_LOCATOR, inputResourceLocator);
         return xmlResourceReader.read(systemIdUri, inputResourceLocator, entityResourceLocator, performSchemaValidation);
     }
@@ -143,6 +147,7 @@ public final class QtiXmlReader {
      * input {@link ResourceLocator}.
      */
     public QtiObjectReader createQtiObjectReader(final ResourceLocator inputResourceLocator, final boolean schemaValidating) {
+        Assert.notNull(inputResourceLocator, "inputResourceLocator");
         return new QtiObjectReader(this, inputResourceLocator, schemaValidating);
     }
 

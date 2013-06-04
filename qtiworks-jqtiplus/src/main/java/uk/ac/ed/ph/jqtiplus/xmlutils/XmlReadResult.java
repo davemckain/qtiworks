@@ -33,10 +33,14 @@
  */
 package uk.ac.ed.ph.jqtiplus.xmlutils;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+
 import org.w3c.dom.Document;
 
 /**
- * Encapsulates the result of QTI XML reading
+ * Encapsulates the result of XML reading, wrapping a DOM {@link Document} (which may
+ * be null if parsing failed) and the corresponding {@link XmlParseResult} (which will
+ * never be null).
  *
  * @author David McKain
  */
@@ -46,6 +50,7 @@ public final class XmlReadResult {
     private final XmlParseResult xmlParseResult;
 
     public XmlReadResult(final Document document, final XmlParseResult xmlParseResult) {
+        Assert.notNull(xmlParseResult, "xmlParseResult");
         this.document = document;
         this.xmlParseResult = xmlParseResult;
     }

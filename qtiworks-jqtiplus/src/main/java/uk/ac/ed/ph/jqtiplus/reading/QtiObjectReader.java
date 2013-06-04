@@ -68,6 +68,8 @@ import org.w3c.dom.Node;
 /**
  * Default implementation of {@link RootNodeProvider}, which uses a {@link QtiXmlReader} to
  * instantiate QTI {@link RootNode}s by parsing (and optionally schema-validating) XML.
+ * <p>
+ * Instantiate this via {@link QtiXmlReader#createQtiObjectReader(ResourceLocator, boolean)}
  *
  * @author David McKain
  */
