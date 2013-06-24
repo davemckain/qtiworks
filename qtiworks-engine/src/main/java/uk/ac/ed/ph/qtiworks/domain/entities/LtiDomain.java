@@ -67,7 +67,7 @@ import javax.persistence.TemporalType;
 })
 public class LtiDomain implements BaseEntity, TimestampedOnCreation {
 
-    private static final long serialVersionUID = 7693569112981982946L;
+    private static final long serialVersionUID = 2268430819509058464L;
 
     @Id
     @GeneratedValue(generator="ltiDomainSequence")

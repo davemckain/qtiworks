@@ -48,32 +48,32 @@ QTIWorks Delivery Engine web deployment descriptor
 
   <!-- Authentication filter for instructor-only resources -->
   <filter>
-    <filter-name>InstructorAuthenticationFilter</filter-name>
-    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorAuthenticationFilter</filter-class>
+    <filter-name>SystemUserAuthenticationFilter</filter-name>
+    <filter-class>uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationFilter</filter-class>
     <init-param>
       <param-name>formLoginJspPath</param-name>
-      <param-value>/WEB-INF/jsp/login/instructorLogin.jsp</param-value>
+      <param-value>/WEB-INF/jsp/login/systemUserLogin.jsp</param-value>
     </init-param>
   </filter>
   <filter-mapping>
-    <filter-name>InstructorAuthenticationFilter</filter-name>
+    <filter-name>SystemUserAuthenticationFilter</filter-name>
     <url-pattern>/web/instructor/*</url-pattern>
     <url-pattern>/instructor/*</url-pattern>
   </filter-mapping>
 
   <!-- Servlet to handle instructor authentication (only used when using form) -->
   <servlet>
-    <servlet-name>InstructorFormAuthenticator</servlet-name>
-    <servlet-class>uk.ac.ed.ph.qtiworks.web.authn.InstructorFormAuthenticationServlet</servlet-class>
+    <servlet-name>SystemUserAuthenticationServlet</servlet-name>
+    <servlet-class>uk.ac.ed.ph.qtiworks.web.authn.SystemUserAuthenticationServlet</servlet-class>
     <load-on-startup>0</load-on-startup>
     <init-param>
       <param-name>formLoginErrorJspPath</param-name>
-      <param-value>/WEB-INF/jsp/login/instructorLoginError.jsp</param-value>
+      <param-value>/WEB-INF/jsp/login/systemUserLoginError.jsp</param-value>
     </init-param>
   </servlet>
   <servlet-mapping>
-    <servlet-name>InstructorFormAuthenticator</servlet-name>
-    <url-pattern>/instructorFormAuthenticator</url-pattern>
+    <servlet-name>SystemUserAuthenticationServlet</servlet-name>
+    <url-pattern>/systemUserFormAuthenticator</url-pattern>
   </servlet-mapping>
 
   <!-- Dispatcher for instructor functionality -->

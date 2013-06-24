@@ -44,20 +44,21 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
- * Represents an "instructor" user
+ * Represents a {@link User} who logs in directly into QTIWorks via its own login
+ * mechanism.
  *
  * @author David McKain
  */
 @Entity
-@Table(name="instructor_users")
+@Table(name="system_users")
 @NamedQueries({
     /* Looks up the User having the given loginName */
-    @NamedQuery(name="InstructorUser.findByLoginName",
+    @NamedQuery(name="SystemUser.findByLoginName",
             query="SELECT u"
-                + "  FROM InstructorUser u"
+                + "  FROM SystemUser u"
                 +"   WHERE u.loginName = :loginName")
 })
-public class InstructorUser extends User implements BaseEntity, Comparable<InstructorUser> {
+public class SystemUser extends User implements BaseEntity, Comparable<SystemUser> {
 
     private static final long serialVersionUID = 7821803746245696405L;
 
@@ -80,8 +81,12 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
 
     //------------------------------------------------------------
 
-    public InstructorUser() {
-        super(UserType.INSTRUCTOR);
+    public SystemUser() {
+        super(UserType.SYSTEM, null);
+    }
+
+    public SystemUser(final UserRole userRole) {
+        super(UserType.SYSTEM, userRole);
     }
 
     //------------------------------------------------------------
@@ -89,7 +94,7 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     @Override
     public String getBusinessKey() {
         ensureLoginName(this);
-        return "instructor/" + loginName;
+        return "system/" + loginName;
     }
 
     //------------------------------------------------------------
@@ -133,13 +138,13 @@ public class InstructorUser extends User implements BaseEntity, Comparable<Instr
     //------------------------------------------------------------
 
     @Override
-    public final int compareTo(final InstructorUser o) {
+    public final int compareTo(final SystemUser o) {
         ensureLoginName(this);
         ensureLoginName(o);
         return loginName.compareTo(o.loginName);
     }
 
-    private void ensureLoginName(final InstructorUser user) {
+    private void ensureLoginName(final SystemUser user) {
         if (user.loginName==null) {
             throw new QtiWorksRuntimeException("Current logic branch requires loginName to be non-null on " + user);
         }

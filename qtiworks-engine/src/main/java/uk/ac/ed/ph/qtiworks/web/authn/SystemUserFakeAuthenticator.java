@@ -31,44 +31,49 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.dao;
+package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
- * DAO implementation for the {@link InstructorUser} entity.
+ * Implementation of {@link AbstractSystemUserAuthenticator} performing "fake" authentication
  *
  * @author David McKain
  */
-@Repository
-@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
-public class InstructorUserDao extends GenericDao<InstructorUser> {
+public final class SystemUserFakeAuthenticator extends AbstractSystemUserAuthenticator {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final Logger logger = LoggerFactory.getLogger(SystemUserFakeAuthenticator.class);
 
-    public InstructorUserDao() {
-        super(InstructorUser.class);
+    /** Login Name for the assumed User */
+    private final String fakeLoginName;
+
+    public SystemUserFakeAuthenticator(final WebApplicationContext webApplicationContext, final String fakeLoginName) {
+        super(webApplicationContext);
+        this.fakeLoginName = fakeLoginName;
     }
 
-    public InstructorUser findByLoginName(final String loginName) {
-        final TypedQuery<InstructorUser> query = em.createNamedQuery("InstructorUser.findByLoginName", InstructorUser.class);
-        query.setParameter("loginName", loginName);
-        return extractNullableFindResult(query);
+    @Override
+    protected SystemUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
+        return lookupFakeUser();
     }
 
-    public InstructorUser requireFindByLoginName(final String loginName) throws DomainEntityNotFoundException {
-        final InstructorUser result = findByLoginName(loginName);
-        ensureFindSuccess(result, loginName);
-        return result;
+    private SystemUser lookupFakeUser() {
+        final SystemUser user = systemUserDao.findByLoginName(fakeLoginName);
+        if (user==null) {
+            logger.warn("Could not find specified fake SystemUser with loginName {}" + fakeLoginName);
+            return null;
+        }
+        else if (user.isLoginDisabled()) {
+            logger.warn("Fake SystemUser {} has their account marked as disabled", fakeLoginName);
+            return null;
+        }
+        return user;
     }
 }

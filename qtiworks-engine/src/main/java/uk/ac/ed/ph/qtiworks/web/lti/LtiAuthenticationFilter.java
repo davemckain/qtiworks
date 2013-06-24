@@ -43,6 +43,7 @@ import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
@@ -79,7 +80,7 @@ import org.springframework.web.context.WebApplicationContext;
  * Filter authenticating LTI requests
  *
  * FIXME: This needs severely refactored, and also needs to integrated with the new {@link LtiDomain}
- * entity!
+ * entity! It needs to handle roles other than {@link UserRole#CANDIDATE}
  *
  * @author David McKain
  */
@@ -230,7 +231,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         /* See if user already exists */
         LtiUser ltiUser = ltiUserDao.findByLogicalKey(logicalKey);
         if (ltiUser==null) {
-            ltiUser = new LtiUser();
+            ltiUser = new LtiUser(UserRole.CANDIDATE);
             ltiUser.setLogicalKey(logicalKey);
             ltiUser.setLtiUserId(userId); /* (May be null) */
             ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull()); /* (May be null) */

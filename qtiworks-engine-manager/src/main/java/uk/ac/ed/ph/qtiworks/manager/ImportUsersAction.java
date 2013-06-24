@@ -33,7 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.manager.services.ManagerServices;
 
 import java.io.BufferedReader;
@@ -63,7 +64,7 @@ public final class ImportUsersAction extends ManagerAction {
 
 	@Override
 	public String getActionSummary() {
-		return "Imports users into the system using data from a CSV file";
+		return "Imports (instructor) users into the system using data from a CSV file";
 	}
 
 	@Override
@@ -129,7 +130,8 @@ public final class ImportUsersAction extends ManagerAction {
         final boolean sysAdmin = "t".equals(fields[4]);
         final String password = fields[5];
 
-        final InstructorUser created = managerServices.maybeCreateInstructorUser(loginName, firstName, lastName, emailAddress, sysAdmin, password);
+        final SystemUser created = managerServices.maybeCreateSystemUser(UserRole.INSTRUCTOR,
+                loginName, firstName, lastName, emailAddress, sysAdmin, password);
         return created!=null;
     }
 

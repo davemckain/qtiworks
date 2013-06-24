@@ -48,7 +48,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
@@ -163,7 +163,7 @@ public class CandidateSessionStarter {
         }
         final Assessment assessment = delivery.getAssessment();
         if (!(assessment.isPublic()
-                || (delivery.isLtiEnabled() && caller.getUserType()==UserType.LTI)
+                || (delivery.isLtiEnabled() && caller.getUserRole()==UserRole.CANDIDATE)
                 || caller.equals(assessment.getOwner()))) {
             throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
         }

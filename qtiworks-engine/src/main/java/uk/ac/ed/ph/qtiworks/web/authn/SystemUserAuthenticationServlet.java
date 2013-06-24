@@ -33,10 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
-import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 
 import java.io.IOException;
 import java.net.URI;
@@ -56,18 +56,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
- * Servlet to handle the incoming userId/password data from the form log-in
- * process and determine
- * what to do next.
+ * Servlet to handle the incoming userId/password data when authenticating {@link SystemUser}s.
  *
- * @see InstructorFormAuthenticator
+ * @see SystemUserFormAuthenticator
+ *
  * @author David McKain
  */
-public final class InstructorFormAuthenticationServlet extends HttpServlet {
+public final class SystemUserAuthenticationServlet extends HttpServlet {
 
     private static final long serialVersionUID = -4786390063305269269L;
 
-    private static final Logger logger = LoggerFactory.getLogger(InstructorFormAuthenticationServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(SystemUserAuthenticationServlet.class);
 
     /**
      * Name of parameter providing the location of the Form Login JSP (when
@@ -86,7 +85,7 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
      */
     private String loginErrorJspPath;
 
-    private transient InstructorUserDao instructorUserDao;
+    private transient SystemUserDao systemUserDao;
     private transient AuditLogger auditLogger;
 
     @Override
@@ -103,11 +102,11 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
 
     /** Ensures that the non-serializable properties of this servlet are created. */
     private void requireBeans() throws ServletException {
-        if (auditLogger==null || instructorUserDao==null) {
+        if (auditLogger==null || systemUserDao==null) {
             try {
                 final ApplicationContext appContext = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletConfig().getServletContext());
                 auditLogger = appContext.getBean(AuditLogger.class);
-                instructorUserDao = appContext.getBean(InstructorUserDao.class);
+                systemUserDao = appContext.getBean(SystemUserDao.class);
             }
             catch (final Exception e) {
                 logger.error("Bean access failed on " + this.getClass().getSimpleName(), e);
@@ -134,26 +133,26 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
         final String userId = request.getParameter(USER_ID_PARAM);
         final String password = request.getParameter(PASSWORD_PARAM);
         final List<String> errors = new ArrayList<String>();
-        final InstructorUser authenticatedUser = tryAuthentication(userId, password, errors);
+        final SystemUser authenticatedUser = tryAuthentication(userId, password, errors);
         if (authenticatedUser!=null) {
             /* Store user details in session and redirect to the page we were supposed to be
              * going originally, and remove referral details from session
              */
-            auditLogger.recordEvent("Instructor authentication succeeded for " + userId);
+            auditLogger.recordEvent("System/form authentication succeeded for " + userId);
             logger.debug("Authentication succeeded - redirecting to {}", protectedResourceUri);
-            request.getSession().setAttribute(InstructorAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
+            request.getSession().setAttribute(SystemUserAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
             response.sendRedirect(protectedResourceUri.toString()); /* (This is safe as we have sanitised this URI) */
         }
         else {
             /* Forward to login error page, keeping the referral details in session */
-            auditLogger.recordEvent("Instructor authentication failed for " + userId);
+            auditLogger.recordEvent("System/form authentication failed for " + userId);
             logger.debug("Authentication failed - redirecting to {}", loginErrorJspPath);
             request.setAttribute("errors", errors);
             request.getRequestDispatcher(loginErrorJspPath).forward(request, response);
         }
     }
 
-    protected InstructorUser tryAuthentication(final String loginName, final String password, final List<String> errors) {
+    protected SystemUser tryAuthentication(final String loginName, final String password, final List<String> errors) {
         /* Make sure details have been specified */
         if (loginName == null) {
             errors.add("No user ID specified");
@@ -162,7 +161,7 @@ public final class InstructorFormAuthenticationServlet extends HttpServlet {
             errors.add("No password specified");
         }
         /* Then look up user */
-        final InstructorUser user = instructorUserDao.findByLoginName(loginName);
+        final SystemUser user = systemUserDao.findByLoginName(loginName);
         if (user == null) {
             errors.add("User '" + loginName + " ' does not exist");
             return null;

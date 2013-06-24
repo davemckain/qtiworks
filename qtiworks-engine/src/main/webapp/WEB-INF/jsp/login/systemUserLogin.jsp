@@ -7,7 +7,7 @@ All Rights Reserved
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:page title="Login">
 
-  <form action="${utils:internalLink(pageContext, '/instructorFormAuthenticator')}" method="post">
+  <form action="${utils:internalLink(pageContext, '/systemUserFormAuthenticator')}" method="post">
     <input type="hidden" id="protectedRequestUri" name="protectedRequestUri"
         value="${fn:escapeXml(requestScope['qtiworks.web.authn.protectedRequestUri'])}" />
 

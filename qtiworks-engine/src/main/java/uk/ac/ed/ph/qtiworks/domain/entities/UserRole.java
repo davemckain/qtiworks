@@ -31,49 +31,21 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.authn;
-
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Implementation of {@link AbstractInstructorAuthenticator} performing "fake" authentication
+ * Enumeration of the different roles of {@link User}s in QTIWorks.
+ *
+ * @see User
  *
  * @author David McKain
  */
-public final class InstructorFakeAuthenticator extends AbstractInstructorAuthenticator {
+public enum UserRole {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstructorFakeAuthenticator.class);
+  //1234567890
+    INSTRUCTOR,
+    ANONYMOUS,
+    CANDIDATE
+    ;
 
-    /** Login Name for the assumed User */
-    private final String fakeLoginName;
-
-    public InstructorFakeAuthenticator(final WebApplicationContext webApplicationContext, final String fakeLoginName) {
-        super(webApplicationContext);
-        this.fakeLoginName = fakeLoginName;
-    }
-
-    @Override
-    protected InstructorUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response) {
-        return lookupFakeUser();
-    }
-
-    private InstructorUser lookupFakeUser() {
-        final InstructorUser user = instructorUserDao.findByLoginName(fakeLoginName);
-        if (user==null) {
-            logger.warn("Could not find specified fake InstructorUser with loginName {}" + fakeLoginName);
-            return null;
-        }
-        else if (user.isLoginDisabled()) {
-            logger.warn("Fake InstructorUser {} has their account marked as disabled", fakeLoginName);
-            return null;
-        }
-        return user;
-    }
 }

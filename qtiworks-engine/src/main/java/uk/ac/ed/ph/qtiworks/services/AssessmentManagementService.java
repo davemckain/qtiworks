@@ -47,7 +47,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
@@ -390,8 +390,8 @@ public class AssessmentManagementService {
      */
     private User ensureCallerMayCreateAssessment() throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
-        final UserType userType = caller.getUserType();
-        if (!(userType==UserType.ANONYMOUS || userType==UserType.INSTRUCTOR)) {
+        final UserRole userType = caller.getUserRole();
+        if (!(userType==UserRole.ANONYMOUS || userType==UserRole.INSTRUCTOR)) {
             throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
         }
         return caller;
@@ -440,7 +440,7 @@ public class AssessmentManagementService {
 
     private User ensureCallerMayCreateDeliverySettings() throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
-        if (caller.getUserType()!=UserType.INSTRUCTOR) {
+        if (caller.getUserRole()!=UserRole.INSTRUCTOR) {
             throw new PrivilegeException(caller, Privilege.CREATE_DELIVERY_SETTINGS);
         }
         return caller;
@@ -808,7 +808,7 @@ public class AssessmentManagementService {
                 mergeItemDeliverySettings(template, itemDeliverySettings);
                 itemDeliverySettings.setOwner(caller);
                 itemDeliverySettings.setTitle("Default item delivery settings");
-                if (caller.getUserType()==UserType.INSTRUCTOR) {
+                if (caller.getUserRole()==UserRole.INSTRUCTOR) {
                     itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
                             + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
                             + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"

@@ -36,14 +36,15 @@ package uk.ac.ed.ph.qtiworks.manager.services;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
-import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import java.util.List;
@@ -77,7 +78,7 @@ public class ManagerServices {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private InstructorUserDao instructorUserDao;
+    private SystemUserDao instructorUserDao;
 
     @Resource
     private UserDao userDao;
@@ -88,49 +89,50 @@ public class ManagerServices {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
-    public InstructorUser ensureInternalSystemUser(final String loginName, final String firstName,
-            final String lastName) {
-    	InstructorUser result = instructorUserDao.findByLoginName(loginName);
+    public SystemUser ensureInternalSystemUser(final UserRole userRole,
+            final String loginName, final String firstName, final String lastName) {
+    	SystemUser result = instructorUserDao.findByLoginName(loginName);
     	if (result==null) {
-            result = createUser(loginName, firstName, lastName,
-                    qtiWorksDeploymentSettings.getAdminEmailAddress(), "(Login is disabled)", false, true);
+            result = createSystemUser(userRole, loginName, firstName, lastName,
+                    qtiWorksDeploymentSettings.getAdminEmailAddress(),
+                    "(Login is disabled)", false, true);
         	logger.info("Created internal system user {}", result);
     	}
         return result;
     }
 
     /**
-     * Creates a new {@link InstructorUser} having the given details if there does not already exist an
-     * {@link InstructorUser} having the given <code>loginName</code>.
+     * Creates a new {@link SystemUser} having the given details if there does not already exist an
+     * {@link SystemUser} having the given <code>loginName</code>.
      *
-     * @return newly created {@link InstructorUser}, or null if a user already existed.
+     * @return newly created {@link SystemUser}, or null if a user already existed.
      */
-    public InstructorUser maybeCreateInstructorUser(final String loginName, final String firstName,
+    public SystemUser maybeCreateSystemUser(final UserRole userRole, final String loginName, final String firstName,
             final String lastName, final String emailAddress, final boolean sysAdmin, final String password) {
-        final InstructorUser created = createUserIfRequired(loginName, firstName, lastName,
+        final SystemUser result = createSystemUserIfRequired(userRole, loginName, firstName, lastName,
                 emailAddress, password, sysAdmin, false);
-        if (created!=null) {
-        	logger.info("Created instructor user {}", created.getLoginName());
+        if (result!=null) {
+        	logger.info("Created system user {}", result);
         }
-        return created;
+        return result;
     }
 
-    private InstructorUser createUserIfRequired(final String loginName, final String firstName,
+    private SystemUser createSystemUserIfRequired(final UserRole userRole, final String loginName, final String firstName,
             final String lastName, final String emailAddress, final String password,
             final boolean sysAdmin, final boolean loginDisabled) {
-        final InstructorUser result = instructorUserDao.findByLoginName(loginName);
+        final SystemUser result = instructorUserDao.findByLoginName(loginName);
         if (result!=null) {
         	/* User already exists */
         	return null;
         }
-        return createUser(loginName, firstName, lastName, emailAddress, password, sysAdmin, loginDisabled);
+        return createSystemUser(userRole, loginName, firstName, lastName, emailAddress, password, sysAdmin, loginDisabled);
     }
 
-    private InstructorUser createUser(final String loginName, final String firstName,
+    private SystemUser createSystemUser(final UserRole userRole, final String loginName, final String firstName,
             final String lastName, final String emailAddress, final String password,
             final boolean sysAdmin, final boolean loginDisabled) {
     	final String passwordSalt = ServiceUtilities.createSalt();
-        final InstructorUser result = new InstructorUser();
+        final SystemUser result = new SystemUser(userRole);
         result.setLoginName(loginName);
         result.setFirstName(firstName);
         result.setLastName(lastName);

@@ -90,7 +90,11 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
     //------------------------------------------------------------
 
     public LtiUser() {
-        super(UserType.LTI);
+        super(UserType.LTI, null);
+    }
+
+    public LtiUser(final UserRole userRole) {
+        super(UserType.LTI, userRole);
     }
 
     //------------------------------------------------------------

@@ -31,4 +31,15 @@ CREATE TABLE lti_domains(
   lti_consumer_secret VARCHAR(32) NOT NULL
 );
 
+-- Changes to base users table
+ALTER TABLE users ADD user_role VARCHAR(10);
+UPDATE users SET user_role=user_type;
+UPDATE users SET user_type='ANONYMOUS' where user_role='ANONYMOUS';
+UPDATE users SET user_type='SYSTEM' where user_role='INSTRUCTOR';
+UPDATE users SET user_type='LTI', user_role='CANDIDATE' where user_role='LTI';
+ALTER TABLE users ALTER user_role SET NOT NULL;
+
+-- Rename of instructor_users table
+ALTER TABLE instructor_users RENAME TO system_users;
+
 COMMIT WORK;

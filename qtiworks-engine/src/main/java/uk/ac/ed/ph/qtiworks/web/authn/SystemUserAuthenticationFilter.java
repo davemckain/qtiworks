@@ -34,10 +34,10 @@
 package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
@@ -57,7 +57,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Authentication filter for instructor users. This selects a delegating
- * {@link AbstractInstructorAuthenticator} as directed by the webapp config.
+ * {@link AbstractSystemUserAuthenticator} as directed by the webapp config.
  * It supports the {@link IdentityService} notion and the {@link User} entity.
  *
  * <h2>Tomcat Note</h2>
@@ -68,11 +68,11 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author David McKain
  */
-public final class InstructorAuthenticationFilter extends AbstractWebAuthenticationFilter {
+public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticationFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstructorAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(SystemUserAuthenticationFilter.class);
 
-    /** Name of request Attribute that will contain the underlying {@link InstructorUser} identity of the client */
+    /** Name of request Attribute that will contain the underlying {@link SystemUser} identity of the client */
     public static final String UNDERLYING_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.underlyingIdentity";
 
     /**
@@ -86,28 +86,27 @@ public final class InstructorAuthenticationFilter extends AbstractWebAuthenticat
 
     protected IdentityService identityService;
     protected UserDao userDao;
-    protected InstructorUserDao instructorUserDao;
-    protected AbstractInstructorAuthenticator abstractInstructorAuthenticator;
+    protected SystemUserDao systemUserDao;
+    protected AbstractSystemUserAuthenticator abstractInstructorAuthenticator;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
         identityService = webApplicationContext.getBean(IdentityService.class);
         userDao = webApplicationContext.getBean(UserDao.class);
-        instructorUserDao = webApplicationContext.getBean(InstructorUserDao.class);
+        systemUserDao = webApplicationContext.getBean(SystemUserDao.class);
 
         /* Decide whether to do fake or form authentication */
         final QtiWorksDeploymentSettings qtiWorksDeploymentSettings = webApplicationContext.getBean(QtiWorksDeploymentSettings.class);
         final String fakeLoginName = qtiWorksDeploymentSettings.getFakeLoginName();
         if (StringUtilities.isNullOrBlank(fakeLoginName)) {
             /* Use standard form authentication */
-            abstractInstructorAuthenticator = new InstructorFormAuthenticator(webApplicationContext, filterConfig);
-
+            abstractInstructorAuthenticator = new SystemUserFormAuthenticator(webApplicationContext, filterConfig);
         }
         else {
             /* Use fake authentication */
             logger.warn("Fake authentication is being enabled and attached to user {}. This should not be used in production deployments!", fakeLoginName);
-            abstractInstructorAuthenticator = new InstructorFakeAuthenticator(webApplicationContext, fakeLoginName);
+            abstractInstructorAuthenticator = new SystemUserFakeAuthenticator(webApplicationContext, fakeLoginName);
         }
     }
 
@@ -115,8 +114,8 @@ public final class InstructorAuthenticationFilter extends AbstractWebAuthenticat
     protected void doFilterAuthenticated(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
             final FilterChain chain, final HttpSession session) throws IOException, ServletException {
         /* Try to extract existing authenticated User Object from Session */
-        InstructorUser underlyingUser = (InstructorUser) session.getAttribute(UNDERLYING_IDENTITY_ATTRIBUTE_NAME);
-        logger.trace("Extracted InstructorUser from Session: {}", underlyingUser);
+        SystemUser underlyingUser = (SystemUser) session.getAttribute(UNDERLYING_IDENTITY_ATTRIBUTE_NAME);
+        logger.trace("Extracted SystemUser from Session: {}", underlyingUser);
         if (underlyingUser==null) {
             /* If there are no User details, we ask subclass to do whatever is required to
              * authenticate

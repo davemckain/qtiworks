@@ -36,7 +36,7 @@ package uk.ac.ed.ph.qtiworks.services.base;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.SystemMailMessage;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.web.view.ElFunctions;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
@@ -141,7 +141,7 @@ public final class SystemEmailService {
         result.setFrom(formatEmailAddress(message.getFromUser()));
         result.setSubject(message.getSubject());
 
-        final List<InstructorUser> toUsers = message.getToUsers();
+        final List<SystemUser> toUsers = message.getToUsers();
         final String[] toUsersAsStrings = new String[toUsers.size()];
         for (int i=0; i<toUsersAsStrings.length; i++) {
             toUsersAsStrings[i] = formatEmailAddress(toUsers.get(i));
@@ -164,8 +164,8 @@ public final class SystemEmailService {
 
     private String formatString(final Object object) {
         String result;
-        if (object instanceof InstructorUser) {
-            final InstructorUser user = (InstructorUser) object;
+        if (object instanceof SystemUser) {
+            final SystemUser user = (SystemUser) object;
             result = user.getFirstName() + " " + user.getLastName();
         }
         else if (object instanceof Date) {
@@ -178,7 +178,7 @@ public final class SystemEmailService {
         return result;
     }
 
-    private String formatEmailAddress(final InstructorUser user) {
+    private String formatEmailAddress(final SystemUser user) {
         return user.getFirstName() + " " + user.getLastName()
             + " <" + user.getEmailAddress() + ">";
     }

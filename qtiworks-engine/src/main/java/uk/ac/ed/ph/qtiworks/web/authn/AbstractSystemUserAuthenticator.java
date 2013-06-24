@@ -33,8 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
-import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
+import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 
 import java.io.IOException;
 
@@ -45,23 +45,23 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Base delegate class for authentication instructor users.
+ * Base delegate class for authenticating {@link SystemUser}
  *
- * @see InstructorAuthenticationFilter
+ * @see SystemUserAuthenticationFilter
  *
  * @author David McKain
  */
-public abstract class AbstractInstructorAuthenticator {
+public abstract class AbstractSystemUserAuthenticator {
 
-    protected InstructorUserDao instructorUserDao;
+    protected SystemUserDao systemUserDao;
 
-    public AbstractInstructorAuthenticator(final WebApplicationContext webApplicationContext) {
-        instructorUserDao = webApplicationContext.getBean(InstructorUserDao.class);
+    public AbstractSystemUserAuthenticator(final WebApplicationContext webApplicationContext) {
+        systemUserDao = webApplicationContext.getBean(SystemUserDao.class);
     }
 
     /**
      * Subclasses should fill in to "do" the actual authentication work. Return a non-null
-     * {@link InstructorUser} if authorisation succeeds, otherwise set up the {@link HttpServletResponse} as
+     * {@link SystemUser} if authorisation succeeds, otherwise set up the {@link HttpServletResponse} as
      * appropriate (e.g. redirect to login page) and return null.
      *
      * @param request
@@ -69,6 +69,6 @@ public abstract class AbstractInstructorAuthenticator {
      * @throws IOException
      * @throws ServletException
      */
-    protected abstract InstructorUser doAuthentication(HttpServletRequest request, HttpServletResponse response)
+    protected abstract SystemUser doAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException;
 }

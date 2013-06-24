@@ -42,10 +42,11 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackageImportType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.samples.DeliveryStyle;
 import uk.ac.ed.ph.qtiworks.samples.LanguageSampleSet;
 import uk.ac.ed.ph.qtiworks.samples.MathAssessSampleSet;
@@ -132,7 +133,7 @@ public class SampleResourceImporter {
      */
     public void reimportQtiSamples() {
         /* Get sample owner, creating if required */
-        final InstructorUser sampleOwner = ensureSampleOwner();
+        final SystemUser sampleOwner = ensureSampleOwner();
 
         /* Reset user (which will delete all existing samples) */
     	dataDeletionService.resetUser(sampleOwner);
@@ -147,7 +148,7 @@ public class SampleResourceImporter {
      */
     public void updateQtiSamples() {
         /* Get sample owner, creating if required */
-        final InstructorUser sampleOwner = ensureSampleOwner();
+        final SystemUser sampleOwner = ensureSampleOwner();
 
         /* Then update samples */
         doUpdateQtiSamples(sampleOwner);
@@ -155,7 +156,7 @@ public class SampleResourceImporter {
 
     //-------------------------------------------------
 
-    private void doUpdateQtiSamples(final InstructorUser sampleOwner) {
+    private void doUpdateQtiSamples(final SystemUser sampleOwner) {
         /* Set up sample DeliverySettings */
         final Map<DeliveryStyle, DeliverySettings> deliverySettingsMap = importDeliverySettings(sampleOwner);
 
@@ -192,8 +193,8 @@ public class SampleResourceImporter {
         }
     }
 
-    private InstructorUser ensureSampleOwner() {
-        return managerServices.ensureInternalSystemUser(DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
+    private SystemUser ensureSampleOwner() {
+        return managerServices.ensureInternalSystemUser(UserRole.INSTRUCTOR, DomainConstants.QTI_SAMPLE_OWNER_LOGIN_NAME,
                 DomainConstants.QTI_SAMPLE_OWNER_FIRST_NAME, DomainConstants.QTI_SAMPLE_OWNER_LAST_NAME);
     }
 
@@ -201,7 +202,7 @@ public class SampleResourceImporter {
         return sampleCategoryDao.getAll();
     }
 
-    private Map<DeliveryStyle, DeliverySettings> importDeliverySettings(final InstructorUser sampleOwner) {
+    private Map<DeliveryStyle, DeliverySettings> importDeliverySettings(final SystemUser sampleOwner) {
         final Map<String, DeliverySettings> deliverySettingsByTitleMap = new HashMap<String, DeliverySettings>();
         for (final DeliverySettings existingOptions : deliverySettingsDao.getForOwner(sampleOwner)) {
             deliverySettingsByTitleMap.put(existingOptions.getTitle(), existingOptions);
@@ -373,7 +374,7 @@ public class SampleResourceImporter {
         return settings;
     }
 
-    private Map<String, Assessment> getImportedSampleAssessments(final InstructorUser sampleOwner) {
+    private Map<String, Assessment> getImportedSampleAssessments(final SystemUser sampleOwner) {
         final List<AssessmentAndPackage> samples = assessmentDao.getForOwner(sampleOwner);
         final Map<String, Assessment> result = new HashMap<String, Assessment>();
         for (final AssessmentAndPackage sample : samples) {
@@ -386,7 +387,7 @@ public class SampleResourceImporter {
         return result;
     }
 
-    private int handleSampleSet(final InstructorUser sampleOwner,
+    private int handleSampleSet(final SystemUser sampleOwner,
             final QtiSampleSet qtiSampleSet, final List<SampleCategory> existingSampleCategories,
             final Map<String, Assessment> importedSampleAssessments,
             final Map<DeliveryStyle, DeliverySettings> deliverySettingsMap) {
@@ -417,7 +418,7 @@ public class SampleResourceImporter {
         return importCount;
     }
 
-    private Assessment importSampleAssessment(final InstructorUser owner,
+    private Assessment importSampleAssessment(final SystemUser owner,
             final QtiSampleAssessment qtiSampleAssessment, final SampleCategory sampleCategory,
             final Map<DeliveryStyle, DeliverySettings> deliverySettingsMap) {
         Assert.notNull(qtiSampleAssessment, "qtiSampleAssessment");

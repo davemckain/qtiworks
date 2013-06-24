@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.internal.util.Pair;
@@ -59,10 +59,10 @@ import org.springframework.mail.SimpleMailMessage;
 public final class SystemMailMessage {
 
     @NotNull
-    private InstructorUser fromUser;
+    private SystemUser fromUser;
 
     @NotNull @Size(min=1)
-    private final List<InstructorUser> toUsers;
+    private final List<SystemUser> toUsers;
 
     @NotNull @Size(min=1)
     private String subject;
@@ -73,25 +73,25 @@ public final class SystemMailMessage {
     private final List<Pair<String,?>> patterns;
 
     public SystemMailMessage() {
-        this.toUsers = new ArrayList<InstructorUser>();
+        this.toUsers = new ArrayList<SystemUser>();
         this.patterns = new ArrayList<Pair<String,?>>();
     }
 
 
-    public InstructorUser getFromUser() {
+    public SystemUser getFromUser() {
         return fromUser;
     }
 
-    public void setFromUser(final InstructorUser fromInstructorUser) {
-        this.fromUser = fromInstructorUser;
+    public void setFromUser(final SystemUser fromSystemUser) {
+        this.fromUser = fromSystemUser;
     }
 
 
-    public List<InstructorUser> getToUsers() {
+    public List<SystemUser> getToUsers() {
         return Collections.unmodifiableList(toUsers);
     }
 
-    public void setToUsers(final List<InstructorUser> toUsers) {
+    public void setToUsers(final List<SystemUser> toUsers) {
         this.toUsers.clear();
         this.toUsers.addAll(toUsers);
     }
@@ -119,8 +119,8 @@ public final class SystemMailMessage {
         patterns.add(new Pair<String, String>(pattern, replacement));
     }
 
-    public void addPattern(final String pattern, final InstructorUser replacement) {
-        patterns.add(new Pair<String, InstructorUser>(pattern, replacement));
+    public void addPattern(final String pattern, final SystemUser replacement) {
+        patterns.add(new Pair<String, SystemUser>(pattern, replacement));
     }
 
     public void addPattern(final String pattern, final Date replacement) {

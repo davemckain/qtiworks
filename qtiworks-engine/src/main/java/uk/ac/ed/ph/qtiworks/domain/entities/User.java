@@ -86,6 +86,11 @@ public class User implements BaseEntity, TimestampedOnCreation {
     private UserType userType;
 
     @Basic(optional=false)
+    @Column(name="user_role",updatable=false,length=10)
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
+    @Basic(optional=false)
     @Column(name="login_disabled",updatable=true)
     private boolean loginDisabled;
 
@@ -107,8 +112,9 @@ public class User implements BaseEntity, TimestampedOnCreation {
         /* (Don't use this in code - required when creating instances by reflection) */
     }
 
-    protected User(final UserType userType) {
-        this.userType = userType;
+    protected User(final UserType lti, final UserRole userRole) {
+        this.userType = lti;
+        this.userRole = userRole;
     }
 
     //------------------------------------------------------------
@@ -141,6 +147,15 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     protected void setUserType(final UserType userType) {
         this.userType = userType;
+    }
+
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    protected void setUserRole(final UserRole userRole) {
+        this.userRole = userRole;
     }
 
 
@@ -188,19 +203,19 @@ public class User implements BaseEntity, TimestampedOnCreation {
     //------------------------------------------------------------
 
     public boolean isInstructor() {
-        return userType==UserType.INSTRUCTOR;
+        return userRole==UserRole.INSTRUCTOR;
     }
 
     public boolean isAnonymous() {
-        return userType==UserType.ANONYMOUS;
+        return userRole==UserRole.ANONYMOUS;
     }
 
-    public boolean isLti() {
-        return userType==UserType.LTI;
+    public boolean isCandidate() {
+        return userRole==UserRole.CANDIDATE;
     }
 
     public boolean isSysAdmin() {
-        return userType==UserType.INSTRUCTOR && ((InstructorUser) this).isSysAdmin();
+        return userRole==UserRole.INSTRUCTOR && ((SystemUser) this).isSysAdmin();
     }
 
     //------------------------------------------------------------
@@ -208,7 +223,13 @@ public class User implements BaseEntity, TimestampedOnCreation {
     @Override
     public final String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(" + getBusinessKey() + ")";
+                + "(key=" + getBusinessKey()
+                + ",userType=" + userType
+                + ",userRole=" + userRole
+                + ",firstName=" + firstName
+                + ",lastName=" + lastName
+                + ",emailAddress=" + emailAddress
+                + ")";
     }
 
     @Override

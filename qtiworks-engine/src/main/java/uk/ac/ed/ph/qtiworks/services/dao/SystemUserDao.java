@@ -31,21 +31,44 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.services.dao;
+
+import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Represents the different types of {@link User} within QTIWorks.
- *
- * @see User
+ * DAO implementation for the {@link SystemUser} entity.
  *
  * @author David McKain
  */
-public enum UserType {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class SystemUserDao extends GenericDao<SystemUser> {
 
-  //1234567890
-    ANONYMOUS,
-    SYSTEM,
-    LTI
-    ;
+    @PersistenceContext
+    private EntityManager em;
 
+    public SystemUserDao() {
+        super(SystemUser.class);
+    }
+
+    public SystemUser findByLoginName(final String loginName) {
+        final TypedQuery<SystemUser> query = em.createNamedQuery("SystemUser.findByLoginName", SystemUser.class);
+        query.setParameter("loginName", loginName);
+        return extractNullableFindResult(query);
+    }
+
+    public SystemUser requireFindByLoginName(final String loginName) throws DomainEntityNotFoundException {
+        final SystemUser result = findByLoginName(loginName);
+        ensureFindSuccess(result, loginName);
+        return result;
+    }
 }

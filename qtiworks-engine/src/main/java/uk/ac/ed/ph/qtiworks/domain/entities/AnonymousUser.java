@@ -71,7 +71,7 @@ public class AnonymousUser extends User implements BaseEntity, Comparable<Anonym
     //------------------------------------------------------------
 
     public AnonymousUser() {
-        super(UserType.ANONYMOUS);
+        super(UserType.ANONYMOUS, UserRole.ANONYMOUS);
     }
 
     //------------------------------------------------------------

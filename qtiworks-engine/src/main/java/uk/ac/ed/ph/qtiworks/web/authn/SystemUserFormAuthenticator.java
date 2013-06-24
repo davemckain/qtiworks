@@ -33,7 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.web.authn;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
 import java.io.IOException;
@@ -58,22 +58,22 @@ import org.springframework.web.context.WebApplicationContext;
  * parameters to fill in:
  *
  * <ul>
- *   <li>{@link InstructorFormAuthenticationServlet#USER_ID_PARAM}: user ID</li>
- *   <li>{@link InstructorFormAuthenticationServlet#PASSWORD_PARAM}: password</li>
- *   <li>{@link InstructorFormAuthenticationServlet#PROTECTED_REQUEST_URI_PARAM}: the URL of "this" Resource</li>
+ *   <li>{@link SystemUserAuthenticationServlet#USER_ID_PARAM}: user ID</li>
+ *   <li>{@link SystemUserAuthenticationServlet#PASSWORD_PARAM}: password</li>
+ *   <li>{@link SystemUserAuthenticationServlet#PROTECTED_REQUEST_URI_PARAM}: the URL of "this" Resource</li>
  * </ul>
  *
- * The JSP should submit to the {@link InstructorFormAuthenticationServlet} to check the provided user ID
+ * The JSP should submit to the {@link SystemUserAuthenticationServlet} to check the provided user ID
  * and password. The URL of the current Resource is also passed so that the user can be redirected
  * to it once authentication and authorisation has succeeded.
  *
- * @see InstructorFormAuthenticationServlet
+ * @see SystemUserAuthenticationServlet
  *
  * @author David McKain
  */
-public final class InstructorFormAuthenticator extends AbstractInstructorAuthenticator {
+public final class SystemUserFormAuthenticator extends AbstractSystemUserAuthenticator {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstructorFormAuthenticator.class);
+    private static final Logger logger = LoggerFactory.getLogger(SystemUserFormAuthenticator.class);
 
     /**
      * Name of attribute used to store request URI if we need to go to login form so that
@@ -88,7 +88,7 @@ public final class InstructorFormAuthenticator extends AbstractInstructorAuthent
     /** Location of form login JSP page, supplied via context <init-param/> */
     private final String loginFormJspPath;
 
-    public InstructorFormAuthenticator(final WebApplicationContext webApplicationContext, final FilterConfig filterConfig)
+    public SystemUserFormAuthenticator(final WebApplicationContext webApplicationContext, final FilterConfig filterConfig)
             throws ServletException {
         super(webApplicationContext);
         this.loginFormJspPath = WebUtilities.getRequiredInitParameter(filterConfig, FORM_LOGIN_JSP_PATH_PARAMETER_NAME);
@@ -96,7 +96,7 @@ public final class InstructorFormAuthenticator extends AbstractInstructorAuthent
     }
 
     @Override
-    protected InstructorUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response)
+    protected SystemUser doAuthentication(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, ServletException {
         /* Not authenticated, so forward to login JSP */
 
