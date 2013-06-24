@@ -134,7 +134,7 @@ public class CandidateSessionStarter {
     private Assessment lookupSampleAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Assessment assessment = assessmentDao.requireFindById(aid);
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
             throw new PrivilegeException(caller, Privilege.LAUNCH_ASSESSMENT_AS_SAMPLE, assessment);
         }
@@ -157,7 +157,7 @@ public class CandidateSessionStarter {
      */
     private User ensureCandidateMayAccess(final Delivery delivery)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         if (!delivery.isOpen()) {
             throw new PrivilegeException(caller, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
         }
@@ -197,7 +197,7 @@ public class CandidateSessionStarter {
             final String lisOutcomeServiceUrl, final String lisResultSourceDid)
             throws PrivilegeException {
         Assert.notNull(delivery, "delivery");
-        final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
+        final User candidate = identityContext.getCurrentThreadUser();
 
         /* Make sure delivery is open (or candidate owns the delivery) */
         final Assessment assessment = delivery.getAssessment();
@@ -234,7 +234,7 @@ public class CandidateSessionStarter {
 
     private CandidateSession createCandidateItemSession(final Delivery delivery, final String exitUrl,
             final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
-        final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
+        final User candidate = identityContext.getCurrentThreadUser();
 
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -291,7 +291,7 @@ public class CandidateSessionStarter {
 
     private CandidateSession createCandidateTestSession(final Delivery delivery, final String exitUrl,
             final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
-        final User candidate = identityContext.getCurrentThreadEffectiveIdentity();
+        final User candidate = identityContext.getCurrentThreadUser();
 
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);

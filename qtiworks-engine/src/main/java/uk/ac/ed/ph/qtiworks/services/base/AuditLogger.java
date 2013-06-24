@@ -61,19 +61,8 @@ public final class AuditLogger {
     }
 
     private String createEventLogEntry(final String message) {
-        final User currentThreadUnderlyingIdentity = identityContext.getCurrentThreadUnderlyingIdentity();
-        final User currentThreadEffectiveIdentity = identityContext.getCurrentThreadEffectiveIdentity();
-        final String underlyingIdentity = currentThreadUnderlyingIdentity!=null ? currentThreadUnderlyingIdentity.getBusinessKey() : "<unknown>";
-        final String effectiveIdentity = currentThreadEffectiveIdentity!=null ? currentThreadEffectiveIdentity.getBusinessKey() : "<unknown>";
-        String logEntry;
-        if (underlyingIdentity.equals(effectiveIdentity)) {
-            /* Normal identity */
-            logEntry = underlyingIdentity + ": " + message;
-        }
-        else {
-            /* Split personality - show underlying and effective identities */
-            logEntry = underlyingIdentity + "/" + effectiveIdentity + ": " + message;
-        }
-        return logEntry;
+        final User currentThreadUser = identityContext.getCurrentThreadUser();
+        final String currentUserKey = currentThreadUser!=null ? currentThreadUser.getBusinessKey() : "<unknown>";
+        return currentUserKey + ": " + message;
     }
 }

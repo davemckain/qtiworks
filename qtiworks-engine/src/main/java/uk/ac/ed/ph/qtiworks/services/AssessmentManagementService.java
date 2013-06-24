@@ -364,7 +364,7 @@ public class AssessmentManagementService {
      */
     private User ensureCallerMayAccess(final Assessment assessment)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
             throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
         }
@@ -373,7 +373,7 @@ public class AssessmentManagementService {
 
     private User ensureCallerOwns(final Assessment assessment)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         if (!assessment.getOwner().equals(caller)) {
             throw new PrivilegeException(caller, Privilege.OWN_ASSESSMENT, assessment);
         }
@@ -389,7 +389,7 @@ public class AssessmentManagementService {
      * NB: Currently allowing INSTRUCTOR and ANONYMOUS (demo) users to create assignments.
      */
     private User ensureCallerMayCreateAssessment() throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         final UserType userType = caller.getUserType();
         if (!(userType==UserType.ANONYMOUS || userType==UserType.INSTRUCTOR)) {
             throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
@@ -417,7 +417,7 @@ public class AssessmentManagementService {
 
     private User ensureCallerMayAccess(final DeliverySettings deliverySettings)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         if (!deliverySettings.isPublic() && !caller.equals(deliverySettings.getOwner())) {
             throw new PrivilegeException(caller, Privilege.ACCESS_DELIVERY_SETTINGS, deliverySettings);
         }
@@ -426,7 +426,7 @@ public class AssessmentManagementService {
 
     private User ensureCallerOwns(final DeliverySettings deliverySettings)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         if (!caller.equals(deliverySettings.getOwner())) {
             throw new PrivilegeException(caller, Privilege.OWN_DELIVERY_SETTINGS, deliverySettings);
         }
@@ -439,7 +439,7 @@ public class AssessmentManagementService {
     }
 
     private User ensureCallerMayCreateDeliverySettings() throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         if (caller.getUserType()!=UserType.INSTRUCTOR) {
             throw new PrivilegeException(caller, Privilege.CREATE_DELIVERY_SETTINGS);
         }
@@ -794,7 +794,7 @@ public class AssessmentManagementService {
 
     public DeliverySettings requireFirstDeliverySettingsForCaller(final AssessmentObjectType assessmentType) {
         /* See if there are already suitable settings created */
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         final DeliverySettings firstDeliverySettings = deliverySettingsDao.getFirstForOwner(caller, assessmentType);
         if (firstDeliverySettings!=null) {
             return firstDeliverySettings;
@@ -874,7 +874,7 @@ public class AssessmentManagementService {
 
     private void ensureCompatible(final DeliverySettings deliverySettings, final AssessmentObjectType assessmentObjectType)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         if (assessmentObjectType!=deliverySettings.getAssessmentType()) {
             throw new PrivilegeException(caller, Privilege.MATCH_DELIVERY_SETTINGS, deliverySettings);
         }
@@ -891,7 +891,7 @@ public class AssessmentManagementService {
 
     private AssessmentPackage importPackageFiles(final MultipartFile multipartFile)
             throws AssessmentPackageFileImportException {
-        final User owner = identityContext.getCurrentThreadEffectiveIdentity();
+        final User owner = identityContext.getCurrentThreadUser();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
         try {
             final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, multipartFile);

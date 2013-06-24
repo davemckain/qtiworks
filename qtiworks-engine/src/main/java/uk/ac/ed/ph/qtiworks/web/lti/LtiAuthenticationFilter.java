@@ -252,16 +252,14 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             final HttpServletResponse httpResponse, final FilterChain chain,
             final LtiLaunchData ltiLaunchData, final LtiUser ltiUser)
             throws IOException, ServletException {
-        identityContext.setCurrentThreadUnderlyingIdentity(ltiUser);
-        identityContext.setCurrentThreadEffectiveIdentity(ltiUser);
+        identityContext.setCurrentThreadUser(ltiUser);
         putLaunchData(httpRequest, ltiLaunchData);
         logger.info("LTI authentication successful: launch data is {} and user is {}", ltiLaunchData, ltiUser);
         try {
             chain.doFilter(httpRequest, httpResponse);
         }
         finally {
-            identityContext.setCurrentThreadUnderlyingIdentity(null);
-            identityContext.setCurrentThreadEffectiveIdentity(null);
+            identityContext.setCurrentThreadUser(null);
         }
     }
 

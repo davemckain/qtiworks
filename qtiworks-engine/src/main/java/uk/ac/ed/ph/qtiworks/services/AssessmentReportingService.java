@@ -243,7 +243,7 @@ public class AssessmentReportingService {
 
     private User ensureCallerOwnsAssessment(final CandidateSession candidateSession)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadEffectiveIdentity();
+        final User caller = identityContext.getCurrentThreadUser();
         final User assessmentOwner = candidateSession.getDelivery().getAssessment().getOwner();
         if (!assessmentOwner.equals(caller)) {
             throw new PrivilegeException(caller, Privilege.OWN_ASSESSMENT, candidateSession);

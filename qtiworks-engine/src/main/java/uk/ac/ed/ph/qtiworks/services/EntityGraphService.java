@@ -87,7 +87,7 @@ public class EntityGraphService {
     //-------------------------------------------------
 
     public List<AssessmentAndPackage> getCallerAssessments() {
-        final User currentUser = identityContext.getCurrentThreadEffectiveIdentity();
+        final User currentUser = identityContext.getCurrentThreadUser();
         return assessmentDao.getForOwner(currentUser);
     }
 
@@ -134,15 +134,15 @@ public class EntityGraphService {
     //-------------------------------------------------
 
     public long countCallerDeliverySettings(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.countForOwnerAndType(identityContext.getCurrentThreadEffectiveIdentity(), assessmentType);
+        return deliverySettingsDao.countForOwnerAndType(identityContext.getCurrentThreadUser(), assessmentType);
     }
 
     public List<DeliverySettings> getCallerDeliverySettings() {
-        return deliverySettingsDao.getForOwner(identityContext.getCurrentThreadEffectiveIdentity());
+        return deliverySettingsDao.getForOwner(identityContext.getCurrentThreadUser());
     }
 
     public List<DeliverySettings> getCallerDeliverySettingsForType(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.getForOwnerAndType(identityContext.getCurrentThreadEffectiveIdentity(), assessmentType);
+        return deliverySettingsDao.getForOwnerAndType(identityContext.getCurrentThreadUser(), assessmentType);
     }
 
 }

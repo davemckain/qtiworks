@@ -165,14 +165,12 @@ public final class InstructorAuthenticationFilter extends AbstractWebAuthenticat
          * We'll set up the UserContext bean before doing the work and clear up afterwards
          *  */
         try {
-            identityContext.setCurrentThreadEffectiveIdentity(effectiveUser);
-            identityContext.setCurrentThreadUnderlyingIdentity(underlyingUser);
+            identityContext.setCurrentThreadUser(effectiveUser);
             chain.doFilter(httpRequest, httpResponse);
         }
         finally {
             /* Ensure we clear state afterwards for consistency */
-            identityContext.setCurrentThreadEffectiveIdentity(null);
-            identityContext.setCurrentThreadUnderlyingIdentity(null);
+            identityContext.setCurrentThreadUser(null);
         }
     }
 }
