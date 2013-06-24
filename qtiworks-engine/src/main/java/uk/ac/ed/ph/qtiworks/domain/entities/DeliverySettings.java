@@ -120,7 +120,11 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     /** {@link User} who owns these options */
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
     @JoinColumn(name="owner_uid", updatable=false)
-    private User owner;
+    private User ownerUser;
+
+    @ManyToOne(optional=true, fetch=FetchType.LAZY)
+    @JoinColumn(name="owner_lcid", updatable=false)
+    private LtiContext ownerLtiContext;
 
     @Basic(optional=false)
     @Column(name="creation_time", updatable=false)
@@ -198,12 +202,21 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public User getOwner() {
-        return owner;
+    public User getOwnerUser() {
+        return ownerUser;
     }
 
-    public void setOwner(final User owner) {
-        this.owner = owner;
+    public void setOwnerUser(final User ownerUser) {
+        this.ownerUser = ownerUser;
+    }
+
+
+    public LtiContext getOwnerLtiContext() {
+        return ownerLtiContext;
+    }
+
+    public void setOwnerLtiContext(final LtiContext ownerLtiContext) {
+        this.ownerLtiContext = ownerLtiContext;
     }
 
 

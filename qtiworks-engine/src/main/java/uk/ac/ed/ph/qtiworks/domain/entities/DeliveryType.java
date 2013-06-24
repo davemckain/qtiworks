@@ -40,6 +40,8 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
  */
 public enum DeliveryType {
 
+  //123456789012345
+
     /** Explicitly-created delivery */
     USER_CREATED,
 

@@ -68,6 +68,7 @@ import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.InputStream;
@@ -193,7 +194,7 @@ public class AssessmentManagementService {
             /* Create resulting Assessment entity */
             assessment = new Assessment();
             assessment.setAssessmentType(assessmentPackage.getAssessmentType());
-            assessment.setOwner(caller);
+            assessment.setOwnerUser(caller);
 
             final String fileName = multipartFile.getOriginalFilename();
             String assessmentName;
@@ -365,7 +366,7 @@ public class AssessmentManagementService {
     private User ensureCallerMayAccess(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
-        if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
+        if (!assessment.isPublic() && !assessment.getOwnerUser().equals(caller)) {
             throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
         }
         return caller;
@@ -374,7 +375,7 @@ public class AssessmentManagementService {
     private User ensureCallerOwns(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
-        if (!assessment.getOwner().equals(caller)) {
+        if (!assessment.getOwnerUser().equals(caller)) {
             throw new PrivilegeException(caller, Privilege.OWN_ASSESSMENT, assessment);
         }
         return caller;
@@ -418,7 +419,7 @@ public class AssessmentManagementService {
     private User ensureCallerMayAccess(final DeliverySettings deliverySettings)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
-        if (!deliverySettings.isPublic() && !caller.equals(deliverySettings.getOwner())) {
+        if (!deliverySettings.isPublic() && !caller.equals(deliverySettings.getOwnerUser())) {
             throw new PrivilegeException(caller, Privilege.ACCESS_DELIVERY_SETTINGS, deliverySettings);
         }
         return caller;
@@ -427,7 +428,7 @@ public class AssessmentManagementService {
     private User ensureCallerOwns(final DeliverySettings deliverySettings)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
-        if (!caller.equals(deliverySettings.getOwner())) {
+        if (!caller.equals(deliverySettings.getOwnerUser())) {
             throw new PrivilegeException(caller, Privilege.OWN_DELIVERY_SETTINGS, deliverySettings);
         }
         return caller;
@@ -468,7 +469,7 @@ public class AssessmentManagementService {
 
         /* Create and persist new options from template */
         final ItemDeliverySettings result = new ItemDeliverySettings();
-        result.setOwner(caller);
+        result.setOwnerUser(caller);
         mergeItemDeliverySettings(template, result);
         deliverySettingsDao.persist(result);
 
@@ -557,7 +558,7 @@ public class AssessmentManagementService {
 
         /* Create and persist new options from template */
         final TestDeliverySettings result = new TestDeliverySettings();
-        result.setOwner(caller);
+        result.setOwnerUser(caller);
         mergeTestDeliverySettings(template, result);
         deliverySettingsDao.persist(result);
 
@@ -644,6 +645,7 @@ public class AssessmentManagementService {
     }
 
     /** Creates a new {@link Delivery} for the given Assignment using reasonable default values */
+    @ToRefactor
     public Delivery createDelivery(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Look up Assessment and check caller and change it */
@@ -665,6 +667,7 @@ public class AssessmentManagementService {
         return createDelivery(assessment, deliverySettings, template);
     }
 
+    @ToRefactor
     public Delivery createDelivery(final long aid, final DeliveryTemplate template)
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Validate template */
@@ -776,10 +779,11 @@ public class AssessmentManagementService {
         ensureCompatible(deliverySettings, assessment);
 
         /* Make sure caller is allowed to run this Assessment */
-        ensureCallerMayAccess(assessment);
+        final User caller = ensureCallerMayAccess(assessment);
 
         /* Create demo Delivery */
         final Delivery delivery = new Delivery();
+        delivery.setCreatorUser(caller);
         delivery.setAssessment(assessment);
         delivery.setDeliverySettings(deliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_TRANSIENT);
@@ -806,7 +810,7 @@ public class AssessmentManagementService {
                 final ItemDeliverySettingsTemplate template = createItemDeliverySettingsTemplate();
                 final ItemDeliverySettings itemDeliverySettings = new ItemDeliverySettings();
                 mergeItemDeliverySettings(template, itemDeliverySettings);
-                itemDeliverySettings.setOwner(caller);
+                itemDeliverySettings.setOwnerUser(caller);
                 itemDeliverySettings.setTitle("Default item delivery settings");
                 if (caller.getUserRole()==UserRole.INSTRUCTOR) {
                     itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
@@ -827,7 +831,7 @@ public class AssessmentManagementService {
                 final TestDeliverySettingsTemplate template = createTestDeliverySettingsTemplate();
                 final TestDeliverySettings testDeliverySettings = new TestDeliverySettings();
                 mergeTestDeliverySettings(template, testDeliverySettings);
-                testDeliverySettings.setOwner(caller);
+                testDeliverySettings.setOwnerUser(caller);
                 testDeliverySettings.setTitle("Default test delivery settings");
 
                 deliverySettingsDao.persist(testDeliverySettings);

@@ -59,9 +59,9 @@ public class LtiDomainDao extends GenericDao<LtiDomain> {
         super(LtiDomain.class);
     }
 
-    public LtiDomain findByLtiConsumerKey(final String ltiConsumerKey) {
-        final TypedQuery<LtiDomain> query = em.createNamedQuery("LtiDomain.findByLtiConsumerKey", LtiDomain.class);
-        query.setParameter("ltiConsumerKey", ltiConsumerKey);
+    public LtiDomain findByConsumerKey(final String consumerKey) {
+        final TypedQuery<LtiDomain> query = em.createNamedQuery("LtiDomain.findByConsumerKey", LtiDomain.class);
+        query.setParameter("consumerKey", consumerKey);
         return extractNullableFindResult(query);
     }
 }

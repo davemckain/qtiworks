@@ -61,6 +61,7 @@ import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
+import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.util.List;
 
@@ -346,6 +347,7 @@ public class InstructorAssessmentManagementController {
     }
 
     /** (Deliveries are currently very simple so created using a sensible default) */
+    @Deprecated
     @RequestMapping(value="/assessment/{aid}/deliveries/create", method=RequestMethod.POST)
     public String createDelivery(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -354,6 +356,7 @@ public class InstructorAssessmentManagementController {
         return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId().longValue());
     }
 
+    @ToRefactor
     @RequestMapping(value="/delivery/{did}/delete", method=RequestMethod.POST)
     public String deleteDelivery(final @PathVariable long did, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -362,6 +365,7 @@ public class InstructorAssessmentManagementController {
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId() + "/deliveries");
     }
 
+    @ToRefactor
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.GET)
     public String showEditDeliveryForm(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -378,6 +382,7 @@ public class InstructorAssessmentManagementController {
         return "editDeliveryForm";
     }
 
+    @ToRefactor
     @RequestMapping(value="/delivery/{did}/edit", method=RequestMethod.POST)
     public String handleEditDeliveryForm(@PathVariable final long did, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute DeliveryTemplate template, final BindingResult result)

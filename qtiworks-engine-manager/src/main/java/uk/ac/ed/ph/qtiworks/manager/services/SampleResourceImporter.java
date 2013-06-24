@@ -215,7 +215,7 @@ public class SampleResourceImporter {
         for (final DeliverySettings options : deliverySettingsMap.values()) {
             if (!deliverySettingsByTitleMap.containsKey(options.getTitle())) {
                 /* New options */
-                options.setOwner(sampleOwner);
+                options.setOwnerUser(sampleOwner);
                 options.setPublic(true);
                 deliverySettingsDao.persist(options);
                 logger.debug("Created ItemDeliverySettings {}", options);
@@ -446,7 +446,7 @@ public class SampleResourceImporter {
         /* Create owning Assessment entity */
         final Assessment assessment = new Assessment();
         assessment.setAssessmentType(assessmentPackage.getAssessmentType());
-        assessment.setOwner(owner);
+        assessment.setOwnerUser(owner);
         assessment.setPublic(true);
         assessment.setSelectedAssessmentPackage(assessmentPackage);
         assessment.setPackageImportVersion(Long.valueOf(1L));
@@ -477,6 +477,8 @@ public class SampleResourceImporter {
         final List<Delivery> demoDeliveries = deliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
         if (demoDeliveries.isEmpty()) {
             final Delivery defaultDelivery = new Delivery();
+            defaultDelivery.setCreatorUser(owner);
+            defaultDelivery.setLtiContext(null);
             defaultDelivery.setAssessment(assessment);
             defaultDelivery.setDeliveryType(DeliveryType.SYSTEM_DEMO);
             defaultDelivery.setDeliverySettings(deliverySettings);

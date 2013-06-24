@@ -164,7 +164,7 @@ public class CandidateSessionStarter {
         final Assessment assessment = delivery.getAssessment();
         if (!(assessment.isPublic()
                 || (delivery.isLtiEnabled() && caller.getUserRole()==UserRole.CANDIDATE)
-                || caller.equals(assessment.getOwner()))) {
+                || caller.equals(assessment.getOwnerUser()))) {
             throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
         }
         return caller;
@@ -201,7 +201,7 @@ public class CandidateSessionStarter {
 
         /* Make sure delivery is open (or candidate owns the delivery) */
         final Assessment assessment = delivery.getAssessment();
-        if (!(delivery.isOpen() || assessment.getOwner().equals(candidate))) {
+        if (!(delivery.isOpen() || assessment.getOwnerUser().equals(candidate))) {
             throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
         }
 

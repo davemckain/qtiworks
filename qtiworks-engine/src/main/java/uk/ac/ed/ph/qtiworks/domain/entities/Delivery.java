@@ -131,10 +131,22 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    @ManyToOne(optional=false, fetch=FetchType.EAGER)
+    /** {@link User} who created this */
+    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @JoinColumn(name="creator_uid", updatable=false)
+    private User creatorUser;
+
+    /** {@link LtiContext} for this Delivery, if relevant */
+    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @JoinColumn(name="lcid", updatable=false)
+    private LtiContext ltiContext;
+
+    /** {@link Assessment} chosen for this Delivery */
+    @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="aid")
     private Assessment assessment;
 
+    /** {@link DeliverySettings} chosen for this Delivery */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="dsid")
     private DeliverySettings deliverySettings;
@@ -157,12 +169,18 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="open")
     private boolean open;
 
-    /** LTI enabled? */
+    /**
+     * (For standalone single resource link only)
+     *
+     * LTI enabled?
+     */
     @Basic(optional=false)
     @Column(name="lti_enabled")
     private boolean ltiEnabled;
 
     /**
+     * (For standalone single resource link only)
+     *
      * LTI consumer key "token" (if used)
      * The full key will be a string of the form <code>id-TOKEN</code> as this makes it easier to
      * look the keys up.
@@ -171,9 +189,13 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="lti_consumer_key_token", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
     private String ltiConsumerKeyToken;
 
-    /** LTI consumer secret (if used) */
+    /**
+     * (For standalone single resource link only)
+     *
+     * LTI consumer secret (if used)
+     */
     @Basic(optional=true)
-    @Column(name="lti_consumer_secret", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=false)
+    @Column(name="lti_consumer_secret", length=DomainConstants.LTI_SECRET_LENGTH, updatable=false, unique=false)
     private String ltiConsumerSecret;
 
     @Basic(optional=true)
@@ -216,6 +238,24 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Override
     public void setCreationTime(final Date creationTime) {
         this.creationTime = ObjectUtilities.safeClone(creationTime);
+    }
+
+
+    public User getCreatorUser() {
+        return creatorUser;
+    }
+
+    public void setCreatorUser(final User creatorUser) {
+        this.creatorUser = creatorUser;
+    }
+
+
+    public LtiContext getLtiContext() {
+        return ltiContext;
+    }
+
+    public void setLtiContext(final LtiContext ltiContext) {
+        this.ltiContext = ltiContext;
     }
 
 

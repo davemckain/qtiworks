@@ -41,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
@@ -80,7 +81,9 @@ import org.springframework.web.context.WebApplicationContext;
  * Filter authenticating LTI requests
  *
  * FIXME: This needs severely refactored, and also needs to integrated with the new {@link LtiDomain}
- * entity! It needs to handle roles other than {@link UserRole#CANDIDATE}
+ * entity! It needs to handle roles other than {@link UserRole#CANDIDATE}. It needs to handle {@link LtiContext}
+ * (when doing domain links). This is also probably better off just being a gateway servlet rather than
+ * an authenticator.
  *
  * @author David McKain
  */

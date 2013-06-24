@@ -33,8 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.util.Date;
@@ -42,8 +40,12 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
@@ -51,58 +53,73 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Type;
+
 /**
- * Encapsulates the data (e.g. credentials) for an LTI domain.
+ * Encapsulates the context information for a particular LTI (domain) launch.
+ * <p>
+ * This is used to establish shared access to resources created by different users
+ * within the same context. Instances of this entity are only constructed if context
+ * information is passed.
  *
  * @author David McKain
  */
 @Entity
-@Table(name="lti_domains")
-@SequenceGenerator(name="ltiDomainSequence", sequenceName="lti_domain_sequence", initialValue=1, allocationSize=1)
+@Table(name="lti_contexts")
+@SequenceGenerator(name="ltiContextSequence", sequenceName="lti_context_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
-    @NamedQuery(name="LtiDomain.findByConsumerKey",
-            query="SELECT ld"
-                + "  FROM LtiDomain ld"
-                + "  WHERE ld.consumerKey = :consumerKey")
+    @NamedQuery(name="LtiContext.findByConsumerKeyAndContextId",
+            query="SELECT lc"
+                + "  FROM LtiContext lc"
+                + "  WHERE lc.ltiDomain.consumerKey = :consumerKey"
+                + "    AND lc.contextId = :contextId")
 })
-public class LtiDomain implements BaseEntity, TimestampedOnCreation {
+public class LtiContext implements BaseEntity, TimestampedOnCreation {
 
-    private static final long serialVersionUID = 2268430819509058464L;
+    private static final long serialVersionUID = -967019819193536029L;
 
     @Id
-    @GeneratedValue(generator="ltiDomainSequence")
-    @Column(name="ldid")
-    private Long ldid;
+    @GeneratedValue(generator="ltiContextSequence")
+    @Column(name="lcid")
+    private Long lcid;
 
     @Basic(optional=false)
     @Column(name="creation_time", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    /** LTI consumer key (must be unique) */
-    @Basic(optional=false)
-    @Column(name="consumer_key", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false, unique=true)
-    private String consumerKey;
+    /** {@link LtiDomain} owning this context */
+    @ManyToOne(optional=true, fetch=FetchType.EAGER)
+    @JoinColumn(name="ldid", updatable=false)
+    private LtiDomain ltiDomain;
 
-    /** LTI consumer secret (if used) */
+    /** Corresponds to the (recommended) LTI <code>context_id</code> parameter */
     @Basic(optional=false)
-    @Column(name="consumer_secret", length=DomainConstants.LTI_SECRET_LENGTH, updatable=true, unique=false)
-    private String consumerSecret;
+    @Column(name="context_id", updatable=false)
+    private String contextId;
 
-    @Basic(optional=false)
-    @Column(name="disabled")
-    private boolean disabled;
+    /** Corresponds to the (recommended) LTI <code>context_label</code> parameter */
+    @Basic(optional=true)
+    @Column(name="context_label", updatable=false)
+    private String contextLabel;
+
+    /** Corresponds to the (recommended) LTI <code>context_title</code> parameter */
+    @Lob
+    @Basic(optional=true)
+    @Column(name="context_title", updatable=false)
+    @Type(type="org.hibernate.type.TextType")
+    private String contextTitle;
 
     //------------------------------------------------------------
 
     @Override
     public Long getId() {
-        return ldid;
+        return lcid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.ldid = id;
+        this.lcid = id;
     }
 
 
@@ -117,31 +134,39 @@ public class LtiDomain implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public String getConsumerKey() {
-        return consumerKey;
+    public LtiDomain getLtiDomain() {
+        return ltiDomain;
     }
 
-    public void setConsumerKey(final String consumerKey) {
-        this.consumerKey = consumerKey;
-    }
-
-
-    public String getConsumerSecret() {
-        return consumerSecret;
-    }
-
-    public void setConsumerSecret(final String consumerSecret) {
-        this.consumerSecret = consumerSecret;
+    public void setLtiDomain(final LtiDomain ltiDomain) {
+        this.ltiDomain = ltiDomain;
     }
 
 
-    public boolean isDisabled() {
-        return disabled;
+    public String getContextId() {
+        return contextId;
+    }
+
+    public void setContextId(final String contextId) {
+        this.contextId = contextId;
     }
 
 
-    public void setDisabled(final boolean disabled) {
-        this.disabled = disabled;
+    public String getContextLabel() {
+        return contextLabel;
+    }
+
+    public void setContextLabel(final String contextLabel) {
+        this.contextLabel = contextLabel;
+    }
+
+
+    public String getContextTitle() {
+        return contextTitle;
+    }
+
+    public void setContextTitle(final String contextTitle) {
+        this.contextTitle = contextTitle;
     }
 
     //------------------------------------------------------------
@@ -149,10 +174,10 @@ public class LtiDomain implements BaseEntity, TimestampedOnCreation {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(ldid=" + ldid
-                + ",consumerKey=" + consumerKey
-                + ",consumerSecret=" + consumerSecret
-                + ",disabled=" + disabled
+                + "(lcid=" + lcid
+                + ",contextId=" + contextId
+                + ",contextLabel=" + contextLabel
+                + ",contextTitle=" + contextTitle
                 + ")";
     }
 }

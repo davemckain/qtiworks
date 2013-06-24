@@ -31,44 +31,38 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.services.dao;
+
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Various constants for the domain layer
+ * DAO implementation for the {@link LtiContext} entity.
  *
  * @author David McKain
  */
-public final class DomainConstants {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class LtiContextDao extends GenericDao<LtiContext> {
 
-    public static final int USER_LOGIN_NAME_MAX_LENGTH = 32;
-    public static final int USER_EMAIL_ADDRESS_MAX_LENGTH = 128;
-    public static final int USER_NAME_COMPONENT_MAX_LENGTH = 256;
-    public static final int USER_PASSWORD_SALT_LENGTH = 16;
-    public static final int SHA1_DIGEST_LENGTH = 40;
+    @PersistenceContext
+    private EntityManager em;
 
-    public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
-    public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
+    public LtiContextDao() {
+        super(LtiContext.class);
+    }
 
-    public static final int CANDIDATE_SESSION_TOKEN_LENGTH = 32;
-    public static final int CANDIDATE_SESSION_EXIT_URL_LENGTH = 128;
-
-    public static final int LTI_TOKEN_LENGTH = 256;
-    public static final int LTI_SECRET_LENGTH = 32;
-
-    /**
-     * NB: Should be set to the maximum length of the permitted values of
-     * the QTI <code>completionStatus</code> variable.
-     */
-    public static final int QTI_COMPLETION_STATUS_MAX_LENGTH = 13;
-
-    //----------------------------------------------
-
-    public static final String QTI_DEFAULT_OWNER_LOGIN_NAME = "qtiworks";
-    public static final String QTI_DEFAULT_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_DEFAULT_OWNER_LAST_NAME = "Works";
-
-    public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
-    public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Samples";
-
+    public LtiContext findByLtiConsumerKey(final String consumerKey, final String contextId) {
+        final TypedQuery<LtiContext> query = em.createNamedQuery("LtiContext.findByConsumerKeyAndContextId", LtiContext.class);
+        query.setParameter("consumerKey", consumerKey);
+        query.setParameter("contextId", contextId);
+        return extractNullableFindResult(query);
+    }
 }
