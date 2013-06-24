@@ -140,7 +140,7 @@ public final class SystemUserAuthenticationServlet extends HttpServlet {
              */
             auditLogger.recordEvent("System/form authentication succeeded for " + userId);
             logger.debug("Authentication succeeded - redirecting to {}", protectedResourceUri);
-            request.getSession().setAttribute(SystemUserAuthenticationFilter.UNDERLYING_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
+            request.getSession().setAttribute(SystemUserAuthenticationFilter.USER_IDENTITY_ATTRIBUTE_NAME, authenticatedUser);
             response.sendRedirect(protectedResourceUri.toString()); /* (This is safe as we have sanitised this URI) */
         }
         else {

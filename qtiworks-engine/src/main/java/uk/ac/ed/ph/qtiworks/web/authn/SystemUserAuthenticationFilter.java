@@ -73,16 +73,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     private static final Logger logger = LoggerFactory.getLogger(SystemUserAuthenticationFilter.class);
 
     /** Name of request Attribute that will contain the underlying {@link SystemUser} identity of the client */
-    public static final String UNDERLYING_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.underlyingIdentity";
-
-    /**
-     * Name of session Attribute containing the user ID for the chosen identity of the client,
-     * if she has the appropriate privileges.
-     */
-    public static final String REQUESTED_EFFECTIVE_USER_ID_ATTRIBUTE_NAME = "qtiworks.web.authn.requestedIdentityId";
-
-    /** Name of request Attribute that will contain the effective identity of the client */
-    public static final String EFFECTIVE_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.effectiveIdentity";
+    public static final String USER_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.currentUser";
 
     protected IdentityService identityService;
     protected UserDao userDao;
@@ -114,18 +105,18 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     protected void doFilterAuthenticated(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
             final FilterChain chain, final HttpSession session) throws IOException, ServletException {
         /* Try to extract existing authenticated User Object from Session */
-        SystemUser underlyingUser = (SystemUser) session.getAttribute(UNDERLYING_IDENTITY_ATTRIBUTE_NAME);
-        logger.trace("Extracted SystemUser from Session: {}", underlyingUser);
-        if (underlyingUser==null) {
+        SystemUser currentUser = (SystemUser) session.getAttribute(USER_IDENTITY_ATTRIBUTE_NAME);
+        logger.trace("Extracted SystemUser from Session: {}", currentUser);
+        if (currentUser==null) {
             /* If there are no User details, we ask subclass to do whatever is required to
              * authenticate
              */
-            underlyingUser = abstractInstructorAuthenticator.doAuthentication(httpRequest, httpResponse);
-            if (underlyingUser!=null) {
+            currentUser = abstractInstructorAuthenticator.doAuthentication(httpRequest, httpResponse);
+            if (currentUser!=null) {
                 /* Store back into Session so that we can avoid later lookups, and allow things
                  * further down the chain to access
                  */
-                session.setAttribute(UNDERLYING_IDENTITY_ATTRIBUTE_NAME, underlyingUser);
+                session.setAttribute(USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
             }
             else {
                 /* Not authenticated. Subclass will have Response Object set up to ensure the right
@@ -135,36 +126,15 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
             }
         }
 
-        /* Work out the effective User ID, which is normally the same as the underlying User
-         * but can be overridden by SysAdmins */
-        User effectiveUser = underlyingUser;
-        if (underlyingUser.isSysAdmin()) {
-            final Long requestedEffectiveUserId = (Long) session.getAttribute(REQUESTED_EFFECTIVE_USER_ID_ATTRIBUTE_NAME);
-            if (requestedEffectiveUserId!=null) {
-                final User resultingUser = userDao.findById(requestedEffectiveUserId);
-                if (resultingUser!=null) {
-                    effectiveUser = resultingUser;
-                }
-                else {
-                    logger.warn("Requested effective User with ID {} was not found; clearing state", requestedEffectiveUserId);
-                    session.setAttribute(REQUESTED_EFFECTIVE_USER_ID_ATTRIBUTE_NAME, null);
-                }
-            }
-        }
-        else {
-            session.setAttribute(REQUESTED_EFFECTIVE_USER_ID_ATTRIBUTE_NAME, null);
-        }
-
         /* Store identity as request attributes for convenience */
-        httpRequest.setAttribute(EFFECTIVE_IDENTITY_ATTRIBUTE_NAME, effectiveUser);
-        httpRequest.setAttribute(UNDERLYING_IDENTITY_ATTRIBUTE_NAME, underlyingUser);
+        httpRequest.setAttribute(USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
 
         /* Then continue with the next link in the chain, passing the wrapped request so that
          * the next handler in the chain doesn't can pull out authentication details as normal.
          * We'll set up the UserContext bean before doing the work and clear up afterwards
          *  */
         try {
-            identityService.setCurrentThreadUser(effectiveUser);
+            identityService.setCurrentThreadUser(currentUser);
             chain.doFilter(httpRequest, httpResponse);
         }
         finally {
