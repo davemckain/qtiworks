@@ -35,7 +35,6 @@ package uk.ac.ed.ph.qtiworks.services.candidate;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateFileSubmission;
@@ -49,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateResponseDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 
@@ -83,7 +83,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Service for the real-time control of a standalone {@link AssessmentItem}
  * to a candidate.
  * <p>
- * NOTE: Remember there is no {@link IdentityContext} for candidates.
+ * NOTE: Remember there is no {@link IdentityService} for candidates.
  *
  * @see CandidateSessionStarter
  * @see CandidateRenderingService

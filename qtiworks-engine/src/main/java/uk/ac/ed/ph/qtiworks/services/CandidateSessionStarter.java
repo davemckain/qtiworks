@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.services;
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
@@ -51,6 +50,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateItemDeliveryService;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
@@ -94,7 +94,7 @@ public class CandidateSessionStarter {
     private AuditLogger auditLogger;
 
     @Resource
-    private IdentityContext identityContext;
+    private IdentityService identityService;
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
@@ -134,7 +134,7 @@ public class CandidateSessionStarter {
     private Assessment lookupSampleAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Assessment assessment = assessmentDao.requireFindById(aid);
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         if (!assessment.isPublic() || assessment.getSampleCategory()==null) {
             throw new PrivilegeException(caller, Privilege.LAUNCH_ASSESSMENT_AS_SAMPLE, assessment);
         }
@@ -157,7 +157,7 @@ public class CandidateSessionStarter {
      */
     private User ensureCandidateMayAccess(final Delivery delivery)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         if (!delivery.isOpen()) {
             throw new PrivilegeException(caller, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
         }
@@ -197,7 +197,7 @@ public class CandidateSessionStarter {
             final String lisOutcomeServiceUrl, final String lisResultSourceDid)
             throws PrivilegeException {
         Assert.notNull(delivery, "delivery");
-        final User candidate = identityContext.getCurrentThreadUser();
+        final User candidate = identityService.getCurrentThreadUser();
 
         /* Make sure delivery is open (or candidate owns the delivery) */
         final Assessment assessment = delivery.getAssessment();
@@ -234,7 +234,7 @@ public class CandidateSessionStarter {
 
     private CandidateSession createCandidateItemSession(final Delivery delivery, final String exitUrl,
             final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
-        final User candidate = identityContext.getCurrentThreadUser();
+        final User candidate = identityService.getCurrentThreadUser();
 
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
@@ -291,7 +291,7 @@ public class CandidateSessionStarter {
 
     private CandidateSession createCandidateTestSession(final Delivery delivery, final String exitUrl,
             final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
-        final User candidate = identityContext.getCurrentThreadUser();
+        final User candidate = identityService.getCurrentThreadUser();
 
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);

@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.config;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessExtensionPackage;
 import uk.ac.ed.ph.qtiworks.services.base.SystemEmailService;
@@ -87,11 +86,6 @@ public class ServicesConfiguration {
 
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
-
-    @Bean
-    public IdentityContext identityContext() {
-        return new IdentityContext();
-    }
 
     @Bean
     RequestTimestampContext requestTimestampContext() {

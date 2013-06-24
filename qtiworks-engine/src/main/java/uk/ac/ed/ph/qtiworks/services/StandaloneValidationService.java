@@ -33,9 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -58,7 +58,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class StandaloneValidationService {
 
     @Resource
-    private IdentityContext identityContext;
+    private IdentityService identityService;
 
     @Resource
     private AssessmentPackageImporter assessmentPackageImporter;
@@ -72,7 +72,7 @@ public class StandaloneValidationService {
     public AssessmentObjectValidationResult<?> importAndValidate(final MultipartFile multipartFile)
             throws AssessmentPackageFileImportException {
         Assert.notNull(multipartFile, "multipartFile");
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         final File sandboxDirectory = filespaceManager.createAssessmentPackageSandbox(caller);
         final AssessmentPackage importedPackage;
         try {

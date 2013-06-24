@@ -39,11 +39,11 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiUserDao;
@@ -90,7 +90,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
     public static final String LTI_LAUNCH_DATA_REQUEST_PARAMETER = "qtiworks.web.lti.launch.data";
 
     private RequestTimestampContext requestTimestampContext;
-    private IdentityContext identityContext;
+    private IdentityService identityService;
     private DeliveryDao deliveryDao;
     private LtiUserDao ltiUserDao;
 
@@ -98,7 +98,7 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
         requestTimestampContext = webApplicationContext.getBean(RequestTimestampContext.class);
-        identityContext = webApplicationContext.getBean(IdentityContext.class);
+        identityService = webApplicationContext.getBean(IdentityService.class);
         deliveryDao = webApplicationContext.getBean(DeliveryDao.class);
         ltiUserDao = webApplicationContext.getBean(LtiUserDao.class);
     }
@@ -252,14 +252,14 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
             final HttpServletResponse httpResponse, final FilterChain chain,
             final LtiLaunchData ltiLaunchData, final LtiUser ltiUser)
             throws IOException, ServletException {
-        identityContext.setCurrentThreadUser(ltiUser);
+        identityService.setCurrentThreadUser(ltiUser);
         putLaunchData(httpRequest, ltiLaunchData);
         logger.info("LTI authentication successful: launch data is {} and user is {}", ltiLaunchData, ltiUser);
         try {
             chain.doFilter(httpRequest, httpResponse);
         }
         finally {
-            identityContext.setCurrentThreadUser(null);
+            identityService.setCurrentThreadUser(null);
         }
     }
 

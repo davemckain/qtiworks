@@ -34,8 +34,8 @@
 package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
 
 import java.io.IOException;
@@ -64,13 +64,13 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
     /** Name of session Attribute that will contain the resulting {@link AnonymousUser} for the caller */
     private static final String ANONYMOUS_USER_ATTRIBUTE_NAME = "qtiworks.web.authn.anonymousUser";
 
-    private IdentityContext identityContext;
+    private IdentityService identityService;
     private AnonymousUserDao anonymousUserDao;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
-        identityContext = webApplicationContext.getBean(IdentityContext.class);
+        identityService = webApplicationContext.getBean(IdentityService.class);
         anonymousUserDao = webApplicationContext.getBean(AnonymousUserDao.class);
     }
 
@@ -87,12 +87,12 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
             logger.debug("Created AnonymousUser {} for his/her session", anonymousUser);
         }
 
-        identityContext.setCurrentThreadUser(anonymousUser);
+        identityService.setCurrentThreadUser(anonymousUser);
         try {
             chain.doFilter(httpRequest, httpResponse);
         }
         finally {
-            identityContext.setCurrentThreadUser(null);
+            identityService.setCurrentThreadUser(null);
         }
     }
 

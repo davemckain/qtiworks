@@ -34,9 +34,9 @@
 package uk.ac.ed.ph.qtiworks.web.authn;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.InstructorUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.InstructorUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 
@@ -58,7 +58,7 @@ import org.springframework.web.context.WebApplicationContext;
 /**
  * Authentication filter for instructor users. This selects a delegating
  * {@link AbstractInstructorAuthenticator} as directed by the webapp config.
- * It supports the {@link IdentityContext} notion and the {@link User} entity.
+ * It supports the {@link IdentityService} notion and the {@link User} entity.
  *
  * <h2>Tomcat Note</h2>
  *
@@ -84,7 +84,7 @@ public final class InstructorAuthenticationFilter extends AbstractWebAuthenticat
     /** Name of request Attribute that will contain the effective identity of the client */
     public static final String EFFECTIVE_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.effectiveIdentity";
 
-    protected IdentityContext identityContext;
+    protected IdentityService identityService;
     protected UserDao userDao;
     protected InstructorUserDao instructorUserDao;
     protected AbstractInstructorAuthenticator abstractInstructorAuthenticator;
@@ -92,7 +92,7 @@ public final class InstructorAuthenticationFilter extends AbstractWebAuthenticat
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
-        identityContext = webApplicationContext.getBean(IdentityContext.class);
+        identityService = webApplicationContext.getBean(IdentityService.class);
         userDao = webApplicationContext.getBean(UserDao.class);
         instructorUserDao = webApplicationContext.getBean(InstructorUserDao.class);
 
@@ -165,12 +165,12 @@ public final class InstructorAuthenticationFilter extends AbstractWebAuthenticat
          * We'll set up the UserContext bean before doing the work and clear up afterwards
          *  */
         try {
-            identityContext.setCurrentThreadUser(effectiveUser);
+            identityService.setCurrentThreadUser(effectiveUser);
             chain.doFilter(httpRequest, httpResponse);
         }
         finally {
             /* Ensure we clear state afterwards for consistency */
-            identityContext.setCurrentThreadUser(null);
+            identityService.setCurrentThreadUser(null);
         }
     }
 }

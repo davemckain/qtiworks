@@ -37,7 +37,6 @@ import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
@@ -50,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
@@ -101,7 +101,7 @@ public class AssessmentManagementService {
     private AuditLogger auditLogger;
 
     @Resource
-    private IdentityContext identityContext;
+    private IdentityService identityService;
 
     @Resource
     private FilespaceManager filespaceManager;
@@ -364,7 +364,7 @@ public class AssessmentManagementService {
      */
     private User ensureCallerMayAccess(final Assessment assessment)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         if (!assessment.isPublic() && !assessment.getOwner().equals(caller)) {
             throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
         }
@@ -373,7 +373,7 @@ public class AssessmentManagementService {
 
     private User ensureCallerOwns(final Assessment assessment)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         if (!assessment.getOwner().equals(caller)) {
             throw new PrivilegeException(caller, Privilege.OWN_ASSESSMENT, assessment);
         }
@@ -389,7 +389,7 @@ public class AssessmentManagementService {
      * NB: Currently allowing INSTRUCTOR and ANONYMOUS (demo) users to create assignments.
      */
     private User ensureCallerMayCreateAssessment() throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         final UserType userType = caller.getUserType();
         if (!(userType==UserType.ANONYMOUS || userType==UserType.INSTRUCTOR)) {
             throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
@@ -417,7 +417,7 @@ public class AssessmentManagementService {
 
     private User ensureCallerMayAccess(final DeliverySettings deliverySettings)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         if (!deliverySettings.isPublic() && !caller.equals(deliverySettings.getOwner())) {
             throw new PrivilegeException(caller, Privilege.ACCESS_DELIVERY_SETTINGS, deliverySettings);
         }
@@ -426,7 +426,7 @@ public class AssessmentManagementService {
 
     private User ensureCallerOwns(final DeliverySettings deliverySettings)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         if (!caller.equals(deliverySettings.getOwner())) {
             throw new PrivilegeException(caller, Privilege.OWN_DELIVERY_SETTINGS, deliverySettings);
         }
@@ -439,7 +439,7 @@ public class AssessmentManagementService {
     }
 
     private User ensureCallerMayCreateDeliverySettings() throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         if (caller.getUserType()!=UserType.INSTRUCTOR) {
             throw new PrivilegeException(caller, Privilege.CREATE_DELIVERY_SETTINGS);
         }
@@ -794,7 +794,7 @@ public class AssessmentManagementService {
 
     public DeliverySettings requireFirstDeliverySettingsForCaller(final AssessmentObjectType assessmentType) {
         /* See if there are already suitable settings created */
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         final DeliverySettings firstDeliverySettings = deliverySettingsDao.getFirstForOwner(caller, assessmentType);
         if (firstDeliverySettings!=null) {
             return firstDeliverySettings;
@@ -874,7 +874,7 @@ public class AssessmentManagementService {
 
     private void ensureCompatible(final DeliverySettings deliverySettings, final AssessmentObjectType assessmentObjectType)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         if (assessmentObjectType!=deliverySettings.getAssessmentType()) {
             throw new PrivilegeException(caller, Privilege.MATCH_DELIVERY_SETTINGS, deliverySettings);
         }
@@ -891,7 +891,7 @@ public class AssessmentManagementService {
 
     private AssessmentPackage importPackageFiles(final MultipartFile multipartFile)
             throws AssessmentPackageFileImportException {
-        final User owner = identityContext.getCurrentThreadUser();
+        final User owner = identityService.getCurrentThreadUser();
         final File packageSandbox = filespaceManager.createAssessmentPackageSandbox(owner);
         try {
             final AssessmentPackage assessmentPackage = assessmentPackageFileImporter.importAssessmentPackageData(packageSandbox, multipartFile);

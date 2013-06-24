@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
@@ -42,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
@@ -73,7 +73,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EntityGraphService {
 
     @Resource
-    private IdentityContext identityContext;
+    private IdentityService identityService;
 
     @Resource
     private DeliveryDao deliveryDao;
@@ -87,7 +87,7 @@ public class EntityGraphService {
     //-------------------------------------------------
 
     public List<AssessmentAndPackage> getCallerAssessments() {
-        final User currentUser = identityContext.getCurrentThreadUser();
+        final User currentUser = identityService.getCurrentThreadUser();
         return assessmentDao.getForOwner(currentUser);
     }
 
@@ -134,15 +134,15 @@ public class EntityGraphService {
     //-------------------------------------------------
 
     public long countCallerDeliverySettings(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.countForOwnerAndType(identityContext.getCurrentThreadUser(), assessmentType);
+        return deliverySettingsDao.countForOwnerAndType(identityService.getCurrentThreadUser(), assessmentType);
     }
 
     public List<DeliverySettings> getCallerDeliverySettings() {
-        return deliverySettingsDao.getForOwner(identityContext.getCurrentThreadUser());
+        return deliverySettingsDao.getForOwner(identityService.getCurrentThreadUser());
     }
 
     public List<DeliverySettings> getCallerDeliverySettingsForType(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.getForOwnerAndType(identityContext.getCurrentThreadUser(), assessmentType);
+        return deliverySettingsDao.getForOwnerAndType(identityService.getCurrentThreadUser(), assessmentType);
     }
 
 }

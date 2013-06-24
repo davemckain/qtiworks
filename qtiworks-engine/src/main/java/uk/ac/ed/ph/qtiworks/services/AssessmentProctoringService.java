@@ -34,13 +34,13 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 
 import javax.annotation.Resource;
@@ -63,7 +63,7 @@ public class AssessmentProctoringService {
     private AuditLogger auditLogger;
 
     @Resource
-    private IdentityContext identityContext;
+    private IdentityService identityService;
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -117,7 +117,7 @@ public class AssessmentProctoringService {
 
     private User ensureCallerMayProctor(final CandidateSession candidateSession)
             throws PrivilegeException {
-        final User caller = identityContext.getCurrentThreadUser();
+        final User caller = identityService.getCurrentThreadUser();
         final User assessmentOwner = candidateSession.getDelivery().getAssessment().getOwner();
         if (!assessmentOwner.equals(caller)) {
             throw new PrivilegeException(caller, Privilege.PROCTOR_SESSION, candidateSession);

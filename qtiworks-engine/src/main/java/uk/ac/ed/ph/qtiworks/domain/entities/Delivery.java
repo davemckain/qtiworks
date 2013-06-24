@@ -121,9 +121,6 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = 7693569112981982946L;
 
-    //------------------------------------------------------------
-    // These properties would probably apply to both items and tests
-
     @Id
     @GeneratedValue(generator="deliverySequence")
     @Column(name="did")

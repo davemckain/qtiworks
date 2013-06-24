@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.services.base;
 
-import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import javax.annotation.Resource;
@@ -54,14 +53,14 @@ public final class AuditLogger {
     private static final Logger logger = LoggerFactory.getLogger("AuditLogger");
 
     @Resource
-    private IdentityContext identityContext;
+    private IdentityService identityService;
 
     public void recordEvent(final String message) {
         logger.info(createEventLogEntry(message));
     }
 
     private String createEventLogEntry(final String message) {
-        final User currentThreadUser = identityContext.getCurrentThreadUser();
+        final User currentThreadUser = identityService.getCurrentThreadUser();
         final String currentUserKey = currentThreadUser!=null ? currentThreadUser.getBusinessKey() : "<unknown>";
         return currentUserKey + ": " + message;
     }
