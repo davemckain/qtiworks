@@ -22,4 +22,13 @@ CREATE TABLE queued_lti_outcomes(
   score DOUBLE PRECISION NOT NULL
 );
 
+-- Add lti_domains table
+CREATE TABLE lti_domains(
+  ldid BIGINT PRIMARY KEY NOT NULL,
+  creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  disabled BOOLEAN NOT NULL,
+  lti_consumer_key VARCHAR(256) UNIQUE NOT NULL,
+  lti_consumer_secret VARCHAR(32) NOT NULL
+);
+
 COMMIT WORK;

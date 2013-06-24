@@ -42,6 +42,7 @@ import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.IdentityContext;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
@@ -76,6 +77,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Filter authenticating LTI requests
+ *
+ * FIXME: This needs severely refactored, and also needs to integrated with the new {@link LtiDomain}
+ * entity!
  *
  * @author David McKain
  */
