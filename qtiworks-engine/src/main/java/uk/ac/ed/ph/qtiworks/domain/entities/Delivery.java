@@ -136,11 +136,6 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="creator_uid", updatable=false)
     private User creatorUser;
 
-    /** {@link LtiContext} for this Delivery, if relevant */
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="lcid", updatable=false)
-    private LtiContext ltiContext;
-
     /** {@link Assessment} chosen for this Delivery */
     @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="aid")
@@ -247,15 +242,6 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
 
     public void setCreatorUser(final User creatorUser) {
         this.creatorUser = creatorUser;
-    }
-
-
-    public LtiContext getLtiContext() {
-        return ltiContext;
-    }
-
-    public void setLtiContext(final LtiContext ltiContext) {
-        this.ltiContext = ltiContext;
     }
 
 

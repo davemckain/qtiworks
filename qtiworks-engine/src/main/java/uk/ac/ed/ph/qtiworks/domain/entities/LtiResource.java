@@ -33,7 +33,11 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 
 import java.util.Date;
 
@@ -46,8 +50,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -61,61 +63,72 @@ import org.hibernate.annotations.Type;
  * @author David McKain
  */
 @Entity
-@Table(name="lti_contexts")
-@SequenceGenerator(name="ltiContextSequence", sequenceName="lti_context_sequence", initialValue=1, allocationSize=1)
-@NamedQueries({
-    @NamedQuery(name="LtiContext.findByConsumerKeyAndContextId",
-            query="SELECT lc"
-                + "  FROM LtiContext lc"
-                + "  WHERE lc.ltiDomain.consumerKey = :consumerKey"
-                + "    AND lc.contextId = :contextId")
-})
-public class LtiContext implements BaseEntity, TimestampedOnCreation {
+@Table(name="lti_resources")
+@SequenceGenerator(name="ltiResourceSequence", sequenceName="lti_resource_sequence", initialValue=1, allocationSize=1)
+public class LtiResource implements BaseEntity, TimestampedOnCreation {
 
-    private static final long serialVersionUID = -967019819193536029L;
+    private static final long serialVersionUID = -5661266580944124938L;
 
     @Id
-    @GeneratedValue(generator="ltiContextSequence")
-    @Column(name="lcid")
-    private Long lcid;
+    @GeneratedValue(generator="ltiResourceSequence")
+    @Column(name="lrid")
+    private Long lrid;
 
     @Basic(optional=false)
     @Column(name="creation_time", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    /** {@link LtiDomain} owning this context */
-    @ManyToOne(optional=true, fetch=FetchType.EAGER)
+    /** {@link User} who created this */
+    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @JoinColumn(name="creator_uid", updatable=false)
+    private User creatorUser;
+
+    /** {@link LtiDomain} in which this resource exists */
+    @ManyToOne(optional=false, fetch=FetchType.LAZY)
     @JoinColumn(name="ldid", updatable=false)
     private LtiDomain ltiDomain;
 
-    /** Corresponds to the (recommended) LTI <code>context_id</code> parameter */
+    /** {@link LtiContext} for this resource, if provided */
+    @ManyToOne(optional=true, fetch=FetchType.LAZY)
+    @JoinColumn(name="lcid", updatable=false)
+    private LtiContext ltiContext;
+
     @Basic(optional=false)
-    @Column(name="context_id", updatable=false)
-    private String contextId;
+    @Column(name="resource_link_id", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false)
+    private String resourceLinkId;
 
-    /** Corresponds to the (recommended) LTI <code>context_label</code> parameter */
-    @Basic(optional=true)
-    @Column(name="context_label", updatable=false)
-    private String contextLabel;
-
-    /** Corresponds to the (recommended) LTI <code>context_title</code> parameter */
     @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="resource_link_title", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false)
+    private String resourceLinkTitle;
+
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
     @Column(name="context_title", updatable=false)
+    private String resourceLinkDescription;
+
+    @Lob
+    @Basic(optional=true)
+    @Column(name="resource_link_description", updatable=false)
     @Type(type="org.hibernate.type.TextType")
-    private String contextTitle;
+
+    @ManyToOne(optional=true, fetch=FetchType.EAGER)
+    @JoinColumn(name="did")
+    private Delivery delivery;
 
     //------------------------------------------------------------
 
     @Override
     public Long getId() {
-        return lcid;
+        return lrid;
     }
 
     @Override
     public void setId(final Long id) {
-        this.lcid = id;
+        this.lrid = id;
     }
 
 
@@ -130,6 +143,15 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public User getCreatorUser() {
+        return creatorUser;
+    }
+
+    public void setCreatorUser(final User creatorUser) {
+        this.creatorUser = creatorUser;
+    }
+
+
     public LtiDomain getLtiDomain() {
         return ltiDomain;
     }
@@ -139,30 +161,49 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public String getContextId() {
-        return contextId;
+    public LtiContext getLtiContext() {
+        return ltiContext;
     }
 
-    public void setContextId(final String contextId) {
-        this.contextId = contextId;
-    }
-
-
-    public String getContextLabel() {
-        return contextLabel;
-    }
-
-    public void setContextLabel(final String contextLabel) {
-        this.contextLabel = contextLabel;
+    public void setLtiContext(final LtiContext ltiContext) {
+        this.ltiContext = ltiContext;
     }
 
 
-    public String getContextTitle() {
-        return contextTitle;
+    public String getResourceLinkId() {
+        return resourceLinkId;
     }
 
-    public void setContextTitle(final String contextTitle) {
-        this.contextTitle = contextTitle;
+    public void setResourceLinkId(final String resourceLinkId) {
+        this.resourceLinkId = resourceLinkId;
+    }
+
+
+    public String getResourceLinkTitle() {
+        return resourceLinkTitle;
+    }
+
+    public void setResourceLinkTitle(final String resourceLinkTitle) {
+        this.resourceLinkTitle = resourceLinkTitle;
+    }
+
+
+    public String getResourceLinkDescription() {
+        return resourceLinkDescription;
+    }
+
+    public void setResourceLinkDescription(final String resourceLinkDescription) {
+        this.resourceLinkDescription = resourceLinkDescription;
+    }
+
+
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(final Delivery delivery) {
+        this.delivery = delivery;
     }
 
     //------------------------------------------------------------
@@ -170,10 +211,10 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
-                + "(lcid=" + lcid
-                + ",contextId=" + contextId
-                + ",contextLabel=" + contextLabel
-                + ",contextTitle=" + contextTitle
+                + "(lrid=" + lrid
+                + ",resourceLinkId=" + resourceLinkId
+                + ",resourceLinkTitle=" + resourceLinkTitle
+                + ",resourceLinkDescription=" + resourceLinkDescription
                 + ")";
     }
 }

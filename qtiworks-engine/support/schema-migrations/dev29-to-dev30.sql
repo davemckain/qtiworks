@@ -19,6 +19,7 @@ CREATE TABLE lti_domains (
   consumer_key VARCHAR(256) UNIQUE NOT NULL,
   consumer_secret VARCHAR(32) NOT NULL
 );
+CREATE SEQUENCE lti_domain_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
 
 -- Add lti_contexts table
 CREATE TABLE lti_contexts (
@@ -29,6 +30,19 @@ CREATE TABLE lti_contexts (
   context_label VARCHAR(256) NOT NULL,
   context_title TEXT NOT NULL
 );
+CREATE SEQUENCE lti_context_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
+
+-- Add lti_resources table
+CREATE TABLE lti_resources (
+  lrid BIGINT PRIMARY KEY NOT NULL,
+  creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  ldid BIGINT NOT NULL REFERENCES lti_domains(ldid),
+  lcid BIGINT REFERENCES lti_contexts(lcid),
+  resource_link_id VARCHAR(256) NOT NULL,
+  resource_link_title TEXT NOT NULL,
+  resource_link_description TEXT NOT NULL
+);
+CREATE SEQUENCE lti_resource_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
 
 -- TODO: Changes to deliveries table
 

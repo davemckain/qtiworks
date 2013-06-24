@@ -478,7 +478,6 @@ public class SampleResourceImporter {
         if (demoDeliveries.isEmpty()) {
             final Delivery defaultDelivery = new Delivery();
             defaultDelivery.setCreatorUser(owner);
-            defaultDelivery.setLtiContext(null);
             defaultDelivery.setAssessment(assessment);
             defaultDelivery.setDeliveryType(DeliveryType.SYSTEM_DEMO);
             defaultDelivery.setDeliverySettings(deliverySettings);
