@@ -81,6 +81,7 @@ import org.xml.sax.XMLReader;
  *   <li>Optional caching of schemas</li>
  *   <li>DOM is enriched with location information via a user Object</li>
  * </ul>
+ * This suits the way QTI works, but also has uses in other domains.
  *
  * <h2>Implementation notes</h2>
  *

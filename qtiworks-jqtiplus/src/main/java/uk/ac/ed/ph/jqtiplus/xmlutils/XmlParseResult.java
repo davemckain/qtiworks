@@ -45,6 +45,10 @@ import org.xml.sax.SAXParseException;
 
 /**
  * Encapsulates the diagnostic results of parsing (and optionally schema-validating) XML
+ * using an {@link XmlResourceReader}
+ *
+ * @see XmlResourceReader
+ * @see XmlReadResult
  *
  * @author David McKain
  */
