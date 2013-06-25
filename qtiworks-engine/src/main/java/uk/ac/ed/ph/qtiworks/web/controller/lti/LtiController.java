@@ -33,14 +33,12 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchAuthenticationFilter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchDecodingService;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchResult;
@@ -50,7 +48,7 @@ import java.io.InputStream;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
 
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
@@ -92,20 +90,26 @@ public class LtiController {
     private LtiLaunchDecodingService ltiLaunchDecodingService;
 
     @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
-    public String ltiLaunch(final HttpSession session, @PathVariable final long did)
-            throws  PrivilegeException, DomainEntityNotFoundException {
-        final LtiLaunchData ltiLaunchData = LtiLaunchAuthenticationFilter.extractLtiLaunchData(session);
-        final LtiUser ltiUser = LtiLaunchAuthenticationFilter.extractLtiUser(session);
-        if (ltiLaunchData==null || ltiUser==null) {
-            throw new QtiWorksLogicException("Expected to extract LTI identity details from the HttpSession");
+    public String ltiLaunch(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable final long did)
+            throws  PrivilegeException, DomainEntityNotFoundException, IOException {
+        /* Decode LTI launch request, and bail out on error */
+        final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request);
+        if (ltiLaunchResult.isError()) {
+            response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
+            return null;
         }
 
+        /* Extract relevant data */
+        final LtiLaunchData ltiLaunchData = ltiLaunchResult.getLtiLaunchData();
         final String exitUrl = ltiLaunchData.getLaunchPresentationReturnUrl();
         final String lisOutcomeServiceUrl = ltiLaunchData.getLisOutcomeServiceUrl();
         final String lisResultSourcedid = ltiLaunchData.getLisResultSourcedid();
 
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(did,
-                exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+        /* Start session */
+        final LtiUser ltiUser = ltiLaunchResult.getLtiUser();
+        final CandidateSession candidateSession = candidateSessionStarter.createLinkLevelLtiCandidateSession(ltiUser,
+                did, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 

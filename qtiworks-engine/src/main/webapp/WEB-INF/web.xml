@@ -98,6 +98,7 @@ QTIWorks Delivery Engine web deployment descriptor
   <!-- ========== LTI AUTHENTICATED SERVICES ========== -->
 
   <!-- LTI authentication filter for anonymous services -->
+  <!-- NOT CURRENTLY USED LIKE THIS. BRING BACK LATER IF NEEDED.
   <filter>
     <filter-name>LtiLaunchAuthenticationFilter</filter-name>
     <filter-class>uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchAuthenticationFilter</filter-class>
@@ -106,6 +107,7 @@ QTIWorks Delivery Engine web deployment descriptor
     <filter-name>LtiLaunchAuthenticationFilter</filter-name>
     <url-pattern>/lti/launch/*</url-pattern>
   </filter-mapping>
+  -->
 
   <!-- Dispatcher for LTI web functionality -->
   <servlet>

@@ -55,10 +55,15 @@ import org.springframework.web.context.WebApplicationContext;
  * sets up the HTTP Session so that forwarded requests can access the user's LTI data and identity
  * via the {@link PostLtiAuthenticationFilter}.
  *
+ * FIXME: This doesn't allow the user to have >=2 different LTI conversations to simultaneously
+ * within the same QTIWorks instance. Think about making this work more sensibly. For the time
+ * being I'm going to deprecate this class.
+ *
  * @see PostLtiAuthenticationFilter
  *
  * @author David McKain
  */
+@Deprecated
 public final class LtiLaunchAuthenticationFilter extends AbstractWebAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(LtiLaunchAuthenticationFilter.class);

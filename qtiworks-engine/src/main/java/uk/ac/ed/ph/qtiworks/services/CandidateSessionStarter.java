@@ -49,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
@@ -141,80 +142,51 @@ public class CandidateSessionStarter {
         return assessment;
     }
 
-    //----------------------------------------------------
-    // Candidate delivery access
-
-    public Delivery lookupDelivery(final long did)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final Delivery delivery = deliveryDao.requireFindById(did);
-        ensureCandidateMayStartSession(delivery);
-        return delivery;
-    }
-
-    private User ensureCandidateMayStartSession(final Delivery delivery)
-            throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
-        final Assessment assessment = delivery.getAssessment();
-
-        /* First check access to the required Delivery. */
-        switch (caller.getUserType()) {
-            case LTI:
-                /* LTI users accessing a particular Delivery MUST have been created as a Link
-                 * launch on that Delivery.
-                 */
-                final LtiUser ltiCaller = (LtiUser) caller;
-                final Delivery ltiDelivery = ltiCaller.getDelivery();
-                if (ltiDelivery==null || !delivery.getId().equals(ltiDelivery.getId())) {
-                    throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
-                }
-                break;
-
-            case SYSTEM:
-                /* System users are only allowed to access their own (or public) Assessments */
-                if (!caller.equals(assessment.getOwnerUser()) && !assessment.isPublic()) {
-                    throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
-                }
-                break;
-
-            case ANONYMOUS:
-                /* Anonymous users are only allowed to access public Assessments */
-                if (!assessment.isPublic()) {
-                    throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
-                }
-                break;
-
-            default:
-                throw new QtiWorksLogicException("Unexpected switch case " + caller.getUserType());
-
-        }
-        /* Finally make sure delivery is open */
-        if (!delivery.isOpen()) {
-            throw new PrivilegeException(caller, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
-        }
-        return caller;
-    }
-
-    //----------------------------------------------------
-    // Session creation and initialisation
-
     public CandidateSession createSystemSampleSession(final long aid, final String exitUrl)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
         return createCandidateSession(sampleDelivery, exitUrl, null, null);
     }
 
+    //----------------------------------------------------
+    // Single delivery launches (currently LTI only)
+
     /**
-     * Starts a new {@link CandidateSession} for the {@link Delivery}
-     * having the given ID (did).
+     * Starts a new {@link CandidateSession} for the (LTI) candidate {@link User} accessing a
+     * link-level launch on the {@link Delivery} having the given ID (did).
      * <p>
      * Access controls are checked on the {@link Delivery}.
      */
-    public CandidateSession createCandidateSession(final long did, final String exitUrl,
-            final String lisOutcomeServiceUrl, final String lisResultSourceDid)
+    public CandidateSession createLinkLevelLtiCandidateSession(final User candidate, final long did,
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourceDid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = lookupDelivery(did);
-        return createCandidateSession(delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
+        /* Look up delivery */
+        final Delivery delivery = deliveryDao.requireFindById(did);
+
+        /* Ensure candidate is link-level LTI, launching the correct Delivery */
+        final UserType userType = candidate.getUserType();
+        if (userType==UserType.LTI) {
+            final LtiUser ltiCaller = (LtiUser) candidate;
+            final Delivery ltiDelivery = ltiCaller.getDelivery();
+            if (ltiDelivery==null || !delivery.getId().equals(ltiDelivery.getId())) {
+                throw new PrivilegeException(candidate, Privilege.LAUNCH_LINK_LEVEL_LTI_DELIVERY, delivery);
+            }
+        }
+        else {
+            throw new PrivilegeException(candidate, Privilege.LAUNCH_LINK_LEVEL_LTI_DELIVERY, delivery);
+        }
+
+        /* Finally make sure delivery is open */
+        if (!delivery.isOpen()) {
+            throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
+        }
+
+        /* Start the session */
+        return createCandidateSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
     }
+
+    //----------------------------------------------------
+    // Low-level session creation
 
     /**
      * Starts new {@link CandidateSession} for the given {@link Delivery}
@@ -225,7 +197,17 @@ public class CandidateSessionStarter {
             final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
         Assert.notNull(delivery, "delivery");
         final User candidate = identityService.getCurrentThreadUser();
+        return createCandidateSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
+    }
 
+    /**
+     * Starts new {@link CandidateSession} for the given {@link User} on the given {@link Delivery}
+     * <p>
+     * NO ACCESS controls are checked on the {@link User} and {@link Delivery}
+     */
+    public CandidateSession createCandidateSession(final User candidate, final Delivery delivery,
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
+        Assert.notNull(delivery, "delivery");
         /* If the candidate already has any non-terminated sessions open for this Delivery,
          * then we shall reconnect to the (most recent) session instead of creating a new one.
          */
@@ -241,23 +223,18 @@ public class CandidateSessionStarter {
         final Assessment assessment = delivery.getAssessment();
         switch (assessment.getAssessmentType()) {
             case ASSESSMENT_ITEM:
-                return createCandidateItemSession(delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
+                return createCandidateItemSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
 
             case ASSESSMENT_TEST:
-                return createCandidateTestSession(delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
+                return createCandidateTestSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
 
             default:
                 throw new QtiWorksLogicException("Unexpected switch case " + assessment.getAssessmentType());
         }
     }
 
-    //----------------------------------------------------
-    // Item session creation
-
-    private CandidateSession createCandidateItemSession(final Delivery delivery, final String exitUrl,
-            final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
-        final User candidate = identityService.getCurrentThreadUser();
-
+    private CandidateSession createCandidateItemSession(final User candidate, final Delivery delivery,
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
@@ -311,10 +288,8 @@ public class CandidateSessionStarter {
     //----------------------------------------------------
     // Test session creation
 
-    private CandidateSession createCandidateTestSession(final Delivery delivery, final String exitUrl,
-            final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
-        final User candidate = identityService.getCurrentThreadUser();
-
+    private CandidateSession createCandidateTestSession(final User candidate, final Delivery delivery,
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 

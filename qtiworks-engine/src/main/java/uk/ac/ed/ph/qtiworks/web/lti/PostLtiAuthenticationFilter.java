@@ -56,10 +56,15 @@ import org.springframework.web.context.WebApplicationContext;
  * This simply checks the session for the relevant attributes, previously set by the LTI
  * launch process.
  *
+ * FIXME: This doesn't allow the user to have >=2 different LTI conversations to simultaneously
+ * within the same QTIWorks instance. Think about making this work more sensibly. For the time
+ * being I'm going to deprecate this class.
+ *
  * @see LtiLaunchAuthenticationFilter
  *
  * @author David McKain
  */
+@Deprecated
 public final class PostLtiAuthenticationFilter extends AbstractWebAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(PostLtiAuthenticationFilter.class);
