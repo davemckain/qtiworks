@@ -56,14 +56,13 @@ import org.springframework.web.context.WebApplicationContext;
  * This simply checks the session for the relevant attributes, previously set by the LTI
  * launch process.
  *
+ * @see LtiLaunchAuthenticationFilter
+ *
  * @author David McKain
  */
 public final class PostLtiAuthenticationFilter extends AbstractWebAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(PostLtiAuthenticationFilter.class);
-
-    public static final String LTI_LAUNCH_DATA_ATTRIBUTE_NAME = "qtiworks.web.authn.lti.launchData";
-    public static final String LTI_USER_ATTRIBUTE_NAME = "qtiworks.web.authn.lti.ltiUser";
 
     private IdentityService identityService;
 
@@ -74,29 +73,29 @@ public final class PostLtiAuthenticationFilter extends AbstractWebAuthentication
     }
 
     @Override
-    protected void doFilterAuthenticated(final HttpServletRequest request,
+    protected void doFilterAuthentication(final HttpServletRequest request,
             final HttpServletResponse response, final FilterChain chain,
             final HttpSession session)
             throws IOException, ServletException {
         /* Make sure the required data has already been stored in the session */
-        final LtiUser ltiUser = (LtiUser) session.getAttribute(LTI_USER_ATTRIBUTE_NAME);
+        final LtiUser ltiUser = LtiLaunchAuthenticationFilter.extractLtiUser(session);
         if (ltiUser==null) {
-            logger.warn("Failed to extract {} from Session", LTI_USER_ATTRIBUTE_NAME);
+            logger.warn("Failed to extract {} from Session", LtiLaunchAuthenticationFilter.LTI_USER_ATTRIBUTE_NAME);
             sendForbidden(response);
             return;
         }
-        final LtiLaunchData ltiLaunchData = (LtiLaunchData) session.getAttribute(LTI_LAUNCH_DATA_ATTRIBUTE_NAME);
+        final LtiLaunchData ltiLaunchData = LtiLaunchAuthenticationFilter.extractLtiLaunchData(session);
         if (ltiLaunchData==null) {
-            logger.warn("Failed to extract {} from Session", LTI_LAUNCH_DATA_ATTRIBUTE_NAME);
+            logger.warn("Failed to extract {} from Session", LtiLaunchAuthenticationFilter.LTI_LAUNCH_DATA_ATTRIBUTE_NAME);
             sendForbidden(response);
             return;
         }
 
         /* Copy data to the request */
-        request.setAttribute(LTI_USER_ATTRIBUTE_NAME, ltiUser);
-        request.setAttribute(LTI_LAUNCH_DATA_ATTRIBUTE_NAME, ltiLaunchData);
+        request.setAttribute(LtiLaunchAuthenticationFilter.LTI_USER_ATTRIBUTE_NAME, ltiUser);
+        request.setAttribute(LtiLaunchAuthenticationFilter.LTI_LAUNCH_DATA_ATTRIBUTE_NAME, ltiLaunchData);
 
-        /* Set up identity and continue */
+        /* Finally set up identity and continue with filter chain */
         identityService.setCurrentThreadUser(ltiUser);
         try {
             chain.doFilter(request, response);

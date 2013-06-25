@@ -57,7 +57,7 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
  */
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.lti", "uk.ac.ed.ph.qtiworks.web.controller.lti"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.web.controller.lti"})
 public class LtiMvcConfiguration extends WebMvcConfigurerAdapter {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");

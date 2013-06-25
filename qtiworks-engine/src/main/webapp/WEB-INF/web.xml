@@ -99,11 +99,11 @@ QTIWorks Delivery Engine web deployment descriptor
 
   <!-- LTI authentication filter for anonymous services -->
   <filter>
-    <filter-name>LtiAuthenticationFilter</filter-name>
-    <filter-class>uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter</filter-class>
+    <filter-name>LtiLaunchAuthenticationFilter</filter-name>
+    <filter-class>uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchAuthenticationFilter</filter-class>
   </filter>
   <filter-mapping>
-    <filter-name>LtiAuthenticationFilter</filter-name>
+    <filter-name>LtiLaunchAuthenticationFilter</filter-name>
     <url-pattern>/lti/launch/*</url-pattern>
   </filter-mapping>
 

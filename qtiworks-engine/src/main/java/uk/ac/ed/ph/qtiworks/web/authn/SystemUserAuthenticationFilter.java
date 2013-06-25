@@ -102,7 +102,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     }
 
     @Override
-    protected void doFilterAuthenticated(final HttpServletRequest request, final HttpServletResponse response,
+    protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response,
             final FilterChain chain, final HttpSession session) throws IOException, ServletException {
         /* Try to extract existing authenticated User Object from Session */
         SystemUser currentUser = (SystemUser) session.getAttribute(USER_IDENTITY_ATTRIBUTE_NAME);

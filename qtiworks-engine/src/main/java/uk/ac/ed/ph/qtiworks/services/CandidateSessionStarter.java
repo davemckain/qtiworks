@@ -47,8 +47,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
@@ -147,25 +147,49 @@ public class CandidateSessionStarter {
     public Delivery lookupDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Delivery delivery = deliveryDao.requireFindById(did);
-        ensureCandidateMayAccess(delivery);
+        ensureCandidateMayStartSession(delivery);
         return delivery;
     }
 
-    /**
-     * FIXME: Currently we're only allowing access to public or owned deliveries! This will need
-     * to be relaxed in order to allow "real" deliveries to be done.
-     */
-    private User ensureCandidateMayAccess(final Delivery delivery)
+    private User ensureCandidateMayStartSession(final Delivery delivery)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
+        final Assessment assessment = delivery.getAssessment();
+
+        /* First check access to the required Delivery. */
+        switch (caller.getUserType()) {
+            case LTI:
+                /* LTI users accessing a particular Delivery MUST have been created as a Link
+                 * launch on that Delivery.
+                 */
+                final LtiUser ltiCaller = (LtiUser) caller;
+                final Delivery ltiDelivery = ltiCaller.getDelivery();
+                if (ltiDelivery==null || !delivery.getId().equals(ltiDelivery.getId())) {
+                    throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
+                }
+                break;
+
+            case SYSTEM:
+                /* System users are only allowed to access their own (or public) Assessments */
+                if (!caller.equals(assessment.getOwnerUser()) && !assessment.isPublic()) {
+                    throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
+                }
+                break;
+
+            case ANONYMOUS:
+                /* Anonymous users are only allowed to access public Assessments */
+                if (!assessment.isPublic()) {
+                    throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
+                }
+                break;
+
+            default:
+                throw new QtiWorksLogicException("Unexpected switch case " + caller.getUserType());
+
+        }
+        /* Finally make sure delivery is open */
         if (!delivery.isOpen()) {
             throw new PrivilegeException(caller, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
-        }
-        final Assessment assessment = delivery.getAssessment();
-        if (!(assessment.isPublic()
-                || (delivery.isLtiEnabled() && caller.getUserRole()==UserRole.CANDIDATE)
-                || caller.equals(assessment.getOwnerUser()))) {
-            throw new PrivilegeException(caller, Privilege.LAUNCH_DELIVERY, delivery);
         }
         return caller;
     }

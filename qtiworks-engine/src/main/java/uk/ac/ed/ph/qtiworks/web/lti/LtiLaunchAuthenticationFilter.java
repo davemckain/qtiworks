@@ -31,12 +31,11 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.authn;
+package uk.ac.ed.ph.qtiworks.web.lti;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.domain.entities.AnonymousUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
+import uk.ac.ed.ph.qtiworks.web.authn.AbstractWebAuthenticationFilter;
 
 import java.io.IOException;
 
@@ -52,41 +51,55 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * This filter "authenticates" an anonymous user when accessing stateful resources,
- * by creating a DB entity that store the user's state during her visit to the system.
+ * Authentication filter for an LTI launch. This extracts and validates the LTI launch data, then
+ * sets up the HTTP Session so that forwarded requests can access the user's LTI data and identity
+ * via the {@link PostLtiAuthenticationFilter}.
+ *
+ * @see PostLtiAuthenticationFilter
  *
  * @author David McKain
  */
-public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticationFilter {
+public final class LtiLaunchAuthenticationFilter extends AbstractWebAuthenticationFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnonymousAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(LtiLaunchAuthenticationFilter.class);
 
-    /** Name of session Attribute that will contain the resulting {@link AnonymousUser} for the caller */
-    private static final String ANONYMOUS_USER_ATTRIBUTE_NAME = "qtiworks.web.authn.anonymousUser";
+    public static final String LTI_USER_ATTRIBUTE_NAME = "qtiworks.web.authn.lti.ltiUser";
+    public static final String LTI_LAUNCH_DATA_ATTRIBUTE_NAME = "qtiworks.web.authn.lti.launchData";
 
+    private LtiLaunchDecodingService ltiLaunchDecodingService;
     private IdentityService identityService;
-    private AnonymousUserDao anonymousUserDao;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
             throws Exception {
+        ltiLaunchDecodingService = webApplicationContext.getBean(LtiLaunchDecodingService.class);
         identityService = webApplicationContext.getBean(IdentityService.class);
-        anonymousUserDao = webApplicationContext.getBean(AnonymousUserDao.class);
     }
 
     @Override
-    protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-            final FilterChain chain, final HttpSession session)
+    protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain,
+            final HttpSession session)
             throws IOException, ServletException {
-        /* See if we already have something in the session */
-        AnonymousUser anonymousUser = (AnonymousUser) session.getAttribute(ANONYMOUS_USER_ATTRIBUTE_NAME);
-        if (anonymousUser==null) {
-            anonymousUser = createAnonymousUser(session);
-            session.setAttribute(ANONYMOUS_USER_ATTRIBUTE_NAME, anonymousUser);
-            logger.debug("Created AnonymousUser {} for his/her session", anonymousUser);
+        /* Extract LTI launch data and make sure there are now errors */
+        final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request);
+        logger.debug("Extract LTI launch result {}", ltiLaunchResult);
+        if (ltiLaunchResult.isError()) {
+            response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
+            return;
         }
 
-        identityService.setCurrentThreadUser(anonymousUser);
+        /* Record LTI user and launch data in the session so that the identity can be forwarded on */
+        final LtiLaunchData ltiLaunchData = ltiLaunchResult.getLtiLaunchData();
+        final LtiUser ltiUser = ltiLaunchResult.getLtiUser();
+        session.setAttribute(LtiLaunchAuthenticationFilter.LTI_LAUNCH_DATA_ATTRIBUTE_NAME, ltiLaunchData);
+        session.setAttribute(LtiLaunchAuthenticationFilter.LTI_USER_ATTRIBUTE_NAME, ltiUser);
+
+        /* Record in HTTP Request Object too */
+        request.setAttribute(LtiLaunchAuthenticationFilter.LTI_LAUNCH_DATA_ATTRIBUTE_NAME, ltiLaunchData);
+        request.setAttribute(LtiLaunchAuthenticationFilter.LTI_USER_ATTRIBUTE_NAME, ltiUser);
+
+        /* Finally set up identity and continue with filter chain */
+        identityService.setCurrentThreadUser(ltiUser);
         try {
             chain.doFilter(request, response);
         }
@@ -95,17 +108,11 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
         }
     }
 
-    protected AnonymousUser createAnonymousUser(final HttpSession session) {
-        final String sessionId = session.getId();
-        AnonymousUser anonymousUser = anonymousUserDao.findBySessionId(sessionId);
-        if (anonymousUser!=null) {
-            throw new QtiWorksLogicException("AnonymousUser with session ID " + sessionId + " already exists in DB");
-        }
-        anonymousUser = new AnonymousUser();
-        anonymousUser.setFirstName("Anonymous");
-        anonymousUser.setLastName("User " + sessionId);
-        anonymousUser.setSessionId(sessionId);
-        anonymousUserDao.persist(anonymousUser);
-        return anonymousUser;
+    public static LtiUser extractLtiUser(final HttpSession session) {
+        return (LtiUser) session.getAttribute(LtiLaunchAuthenticationFilter.LTI_USER_ATTRIBUTE_NAME);
+    }
+
+    public static LtiLaunchData extractLtiLaunchData(final HttpSession session) {
+        return (LtiLaunchData) session.getAttribute(LtiLaunchAuthenticationFilter.LTI_LAUNCH_DATA_ATTRIBUTE_NAME);
     }
 }

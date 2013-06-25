@@ -59,7 +59,7 @@ public final class LtiLaunchResult {
         this(ltiLaunchData, 0, null, ltiUser);
     }
 
-    public LtiLaunchResult(final LtiLaunchData ltiLaunchData, final int errorCode, final String errorMessage, final LtiUser ltiUser) {
+    private LtiLaunchResult(final LtiLaunchData ltiLaunchData, final int errorCode, final String errorMessage, final LtiUser ltiUser) {
         this.ltiLaunchData = ltiLaunchData;
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;
@@ -69,6 +69,10 @@ public final class LtiLaunchResult {
     @ObjectDumperOptions(DumpMode.DEEP)
     public LtiLaunchData getLtiLaunchData() {
         return ltiLaunchData;
+    }
+
+    public boolean isError() {
+        return errorCode!=0;
     }
 
     public int getErrorCode() {
