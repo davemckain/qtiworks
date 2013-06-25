@@ -102,7 +102,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     }
 
     @Override
-    protected void doFilterAuthenticated(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
+    protected void doFilterAuthenticated(final HttpServletRequest request, final HttpServletResponse response,
             final FilterChain chain, final HttpSession session) throws IOException, ServletException {
         /* Try to extract existing authenticated User Object from Session */
         SystemUser currentUser = (SystemUser) session.getAttribute(USER_IDENTITY_ATTRIBUTE_NAME);
@@ -111,7 +111,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
             /* If there are no User details, we ask subclass to do whatever is required to
              * authenticate
              */
-            currentUser = abstractInstructorAuthenticator.doAuthentication(httpRequest, httpResponse);
+            currentUser = abstractInstructorAuthenticator.doAuthentication(request, response);
             if (currentUser!=null) {
                 /* Store back into Session so that we can avoid later lookups, and allow things
                  * further down the chain to access
@@ -127,7 +127,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
         }
 
         /* Store identity as request attributes for convenience */
-        httpRequest.setAttribute(USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
+        request.setAttribute(USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
 
         /* Then continue with the next link in the chain, passing the wrapped request so that
          * the next handler in the chain doesn't can pull out authentication details as normal.
@@ -135,7 +135,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
          *  */
         try {
             identityService.setCurrentThreadUser(currentUser);
-            chain.doFilter(httpRequest, httpResponse);
+            chain.doFilter(request, response);
         }
         finally {
             /* Ensure we clear state afterwards for consistency */

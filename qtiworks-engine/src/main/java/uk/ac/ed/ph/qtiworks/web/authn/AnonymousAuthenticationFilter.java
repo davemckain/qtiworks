@@ -75,9 +75,8 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
     }
 
     @Override
-    protected void doFilterAuthenticated(final HttpServletRequest httpRequest,
-            final HttpServletResponse httpResponse, final FilterChain chain,
-            final HttpSession session)
+    protected void doFilterAuthenticated(final HttpServletRequest request, final HttpServletResponse response,
+            final FilterChain chain, final HttpSession session)
             throws IOException, ServletException {
         /* See if we already have something in the session */
         AnonymousUser anonymousUser = (AnonymousUser) session.getAttribute(ANONYMOUS_USER_ATTRIBUTE_NAME);
@@ -89,7 +88,7 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
 
         identityService.setCurrentThreadUser(anonymousUser);
         try {
-            chain.doFilter(httpRequest, httpResponse);
+            chain.doFilter(request, response);
         }
         finally {
             identityService.setCurrentThreadUser(null);
