@@ -7,8 +7,7 @@ LTI diagnostic
 
 Model:
 
-ltiLaunchData
-isBasicLtiLaunch (boolean)
+ltiLaunchResult
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -16,7 +15,7 @@ isBasicLtiLaunch (boolean)
 
   <h2>LTI Diagnostic information</h2>
 
-  <pre>${utils:dumpObject(ltiLaunchData)}</pre>
+  <pre>${utils:dumpObject(ltiLaunchResult)}</pre>
 
 </page:page>
 
