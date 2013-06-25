@@ -65,9 +65,9 @@ public class DeliverySettingsDao extends GenericDao<DeliverySettings> {
         super(DeliverySettings.class);
     }
 
-    public long countForOwnerAndType(final User user, final AssessmentObjectType assessmentType) {
+    public long countForOwnerAndType(final User ownerUser, final AssessmentObjectType assessmentType) {
         final Query query = em.createNamedQuery("DeliverySettings.countForOwnerAndType");
-        query.setParameter("user", user);
+        query.setParameter("user", ownerUser);
         query.setParameter("assessmentType", assessmentType);
         return extractCountResult(query);
     }

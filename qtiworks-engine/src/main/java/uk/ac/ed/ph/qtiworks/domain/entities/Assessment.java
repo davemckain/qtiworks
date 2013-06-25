@@ -86,7 +86,7 @@ import javax.persistence.Version;
             query="SELECT a, ap"
                 + "  FROM Assessment a"
                 + "  LEFT JOIN a.selectedAssessmentPackage ap"
-                + "  WHERE a.owner = :owner"
+                + "  WHERE a.ownerUser = :user"
                 + "  ORDER BY a.creationTime"),
     @NamedQuery(name="Assessment.getForSampleCategory",
             query="SELECT a, ap"

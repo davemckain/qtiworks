@@ -113,7 +113,7 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name="Delivery.getForOwnerAndTypeCreatedBefore",
             query="SELECT d"
                 + "  FROM Delivery d"
-                + "  WHERE d.assessment.owner = :owner"
+                + "  WHERE d.assessment.ownerUser = :user"
                 + "    AND d.deliveryType = :deliveryType"
                 + "    AND d.creationTime < :creationTime")
 })

@@ -107,13 +107,8 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
-    @Column(name="context_title", updatable=false)
-    private String resourceLinkDescription;
-
-    @Lob
-    @Basic(optional=true)
     @Column(name="resource_link_description", updatable=false)
-    @Type(type="org.hibernate.type.TextType")
+    private String resourceLinkDescription;
 
     @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="did")

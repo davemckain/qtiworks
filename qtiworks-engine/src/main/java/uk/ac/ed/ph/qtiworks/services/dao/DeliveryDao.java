@@ -108,7 +108,7 @@ public class DeliveryDao extends GenericDao<Delivery> {
 
     public List<Delivery> getForOwnerAndTypeCreatedBefore(final User user, final DeliveryType deliveryType, final Date creationTime) {
         final TypedQuery<Delivery> query = em.createNamedQuery("Delivery.getForOwnerAndTypeCreatedBefore", Delivery.class);
-        query.setParameter("owner", user);
+        query.setParameter("user", user);
         query.setParameter("deliveryType", deliveryType);
         query.setParameter("creationTime", creationTime);
         return query.getResultList();

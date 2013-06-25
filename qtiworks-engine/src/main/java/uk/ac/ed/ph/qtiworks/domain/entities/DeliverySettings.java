@@ -85,18 +85,18 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name="DeliverySettings.getForOwner",
             query="SELECT ds"
                 + "  FROM DeliverySettings ds"
-                + "  WHERE ds.owner = :user"
+                + "  WHERE ds.ownerUser = :user"
                 + "  ORDER BY creationTime, dsid"),
     @NamedQuery(name="DeliverySettings.getForOwnerAndType",
             query="SELECT ds"
                 + "  FROM DeliverySettings ds"
-                + "  WHERE ds.owner = :user"
+                + "  WHERE ds.ownerUser = :user"
                 + "  AND ds.assessmentType = :assessmentType"
                 + "  ORDER BY creationTime, dsid"),
     @NamedQuery(name="DeliverySettings.countForOwnerAndType",
             query="SELECT COUNT(ds)"
                 + "  FROM DeliverySettings ds"
-                + "  WHERE ds.owner = :user"
+                + "  WHERE ds.ownerUser = :user"
                 + "  AND ds.assessmentType = :assessmentType")
 })
 public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
