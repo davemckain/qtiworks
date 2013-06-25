@@ -206,6 +206,8 @@ public class CandidateSessionStarter {
     /**
      * Starts a new {@link CandidateSession} for the {@link Delivery}
      * having the given ID (did).
+     * <p>
+     * Access controls are checked on the {@link Delivery}.
      */
     public CandidateSession createCandidateSession(final long did, final String exitUrl,
             final String lisOutcomeServiceUrl, final String lisResultSourceDid)
@@ -216,18 +218,13 @@ public class CandidateSessionStarter {
 
     /**
      * Starts new {@link CandidateSession} for the given {@link Delivery}
+     * <p>
+     * NO ACCESS controls are checked on the {@link Delivery}
      */
     public CandidateSession createCandidateSession(final Delivery delivery, final String exitUrl,
-            final String lisOutcomeServiceUrl, final String lisResultSourceDid)
-            throws PrivilegeException {
+            final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
         Assert.notNull(delivery, "delivery");
         final User candidate = identityService.getCurrentThreadUser();
-
-        /* Make sure delivery is open (or candidate owns the delivery) */
-        final Assessment assessment = delivery.getAssessment();
-        if (!(delivery.isOpen() || assessment.getOwnerUser().equals(candidate))) {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
-        }
 
         /* If the candidate already has any non-terminated sessions open for this Delivery,
          * then we shall reconnect to the (most recent) session instead of creating a new one.
@@ -241,6 +238,7 @@ public class CandidateSessionStarter {
         }
 
         /* Now branch depending on whether this is an item or test */
+        final Assessment assessment = delivery.getAssessment();
         switch (assessment.getAssessmentType()) {
             case ASSESSMENT_ITEM:
                 return createCandidateItemSession(delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
