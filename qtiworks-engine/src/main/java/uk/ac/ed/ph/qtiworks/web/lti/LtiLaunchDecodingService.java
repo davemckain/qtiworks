@@ -310,7 +310,8 @@ public class LtiLaunchDecodingService {
         final Set<String> roles = ltiLaunchData.getRoles();
         if (roles!=null) {
             for (final String role : roles) {
-                if ("urn:lti:instrole:ims/lis/Instructor".equals(role)) {
+                /* We're just testing LIS Context roles for now. See Appendix A.2 of the LTI spec */
+                if (role.startsWith("urn:lti:role:ims/lis/Instructor")) {
                     return true;
                 }
             }

@@ -69,7 +69,7 @@ public class LtiUserDao extends GenericDao<LtiUser> {
     }
 
     public LtiUser findByLtiDomainLtiUserIdAndUserRole(final LtiDomain ltiDomain ,final String ltiUserId, final UserRole userRole) {
-        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByLtiDomainLtiUserIdAndRole", LtiUser.class);
+        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByLtiDomainLtiUserIdAndUserRole", LtiUser.class);
         query.setParameter("ltiDomain", ltiDomain);
         query.setParameter("ltiUserId", ltiUserId);
         query.setParameter("userRole", userRole);
@@ -77,7 +77,7 @@ public class LtiUserDao extends GenericDao<LtiUser> {
     }
 
     public LtiUser findByDeliveryLtiUserIdAndUserRole(final Delivery delivery ,final String ltiUserId, final UserRole userRole) {
-        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByDeliveryLtiUserIdAndRole", LtiUser.class);
+        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByDeliveryLtiUserIdAndUserRole", LtiUser.class);
         query.setParameter("delivery", delivery);
         query.setParameter("ltiUserId", ltiUserId);
         query.setParameter("userRole", userRole);

@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.web.lti;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 /**
@@ -64,7 +66,7 @@ public final class LtiLaunchResult {
         this.ltiUser = ltiUser;
     }
 
-
+    @ObjectDumperOptions(DumpMode.DEEP)
     public LtiLaunchData getLtiLaunchData() {
         return ltiLaunchData;
     }
@@ -77,6 +79,7 @@ public final class LtiLaunchResult {
         return errorMessage;
     }
 
+    @ObjectDumperOptions(DumpMode.DEEP)
     public LtiUser getLtiUser() {
         return ltiUser;
     }
@@ -85,6 +88,4 @@ public final class LtiLaunchResult {
     public String toString() {
         return ObjectUtilities.beanToString(this);
     }
-
-
 }
