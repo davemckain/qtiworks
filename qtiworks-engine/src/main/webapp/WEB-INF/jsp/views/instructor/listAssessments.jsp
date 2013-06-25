@@ -43,7 +43,7 @@ instructorAssessmentRouting (action -> URL)
               <td align="center" class="launch">
                 <c:if test="${assessmentPackage.launchable}">
                   <form action="${assessmentRouting[assessment.id]['try']}" method="post">
-                    <button type="submit" class="playButton">Quick Try</button>
+                    <button type="submit" class="playButton">Quick&#xa0;Try</button>
                   </form>
                 </c:if>
               </td>
