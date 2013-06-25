@@ -694,8 +694,8 @@ public class AssessmentManagementService {
         delivery.setOpen(template.isOpen());
         delivery.setLtiEnabled(template.isLtiEnabled());
         delivery.setTitle(template.getTitle().trim());
-        delivery.setLtiConsumerKeyToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
-        delivery.setLtiConsumerSecret(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_TOKEN_LENGTH));
+        delivery.setLtiConsumerKeyToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SECRET_LENGTH));
+        delivery.setLtiConsumerSecret(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SECRET_LENGTH));
         deliveryDao.persist(delivery);
         return delivery;
     }
@@ -779,7 +779,7 @@ public class AssessmentManagementService {
         ensureCompatible(deliverySettings, assessment);
 
         /* Make sure caller is allowed to run this Assessment */
-        final User caller = ensureCallerMayAccess(assessment);
+        ensureCallerMayAccess(assessment);
 
         /* Create demo Delivery */
         final Delivery delivery = new Delivery();
