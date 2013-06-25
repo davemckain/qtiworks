@@ -27,49 +27,64 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * This software is derived from (and contains code from) QTItools and MathAssessEngine.
- * QTItools is (c) 2008, University of Southampton.
+ * This software is derived from (and contains code from) QTITools and MathAssessEngine.
+ * QTITools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain;
+package uk.ac.ed.ph.qtiworks.web.lti;
+
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 /**
- * Various constants for the domain layer
+ * FIXME: Document this type
  *
  * @author David McKain
  */
-public final class DomainConstants {
+public final class LtiLaunchResult {
 
-    public static final int USER_LOGIN_NAME_MAX_LENGTH = 32;
-    public static final int USER_EMAIL_ADDRESS_MAX_LENGTH = 128;
-    public static final int USER_NAME_COMPONENT_MAX_LENGTH = 256;
-    public static final int USER_PASSWORD_SALT_LENGTH = 16;
-    public static final int SHA1_DIGEST_LENGTH = 40;
+    private final LtiLaunchData ltiLaunchData;
+    private final int errorCode;
+    private final String errorMessage;
+    private final LtiUser ltiUser;
 
-    public static final int ASSESSMENT_NAME_MAX_LENGTH = 64;
-    public static final int ASSESSMENT_TITLE_MAX_LENGTH = 256;
+    public LtiLaunchResult(final LtiLaunchData ltiLaunchData, final int errorCode, final String errorMessage) {
+        this(ltiLaunchData, errorCode, errorMessage, null);
+    }
 
-    public static final int CANDIDATE_SESSION_TOKEN_LENGTH = 32;
-    public static final int CANDIDATE_SESSION_EXIT_URL_LENGTH = 128;
+    public LtiLaunchResult(final LtiLaunchData ltiLaunchData, final LtiUser ltiUser) {
+        this(ltiLaunchData, 0, null, ltiUser);
+    }
 
-    public static final int LTI_TOKEN_LENGTH = 256;
-    public static final int LTI_SECRET_LENGTH = 32;
-    public static final int LTI_USER_LOGICAL_KEY_LENGTH = 300;
+    public LtiLaunchResult(final LtiLaunchData ltiLaunchData, final int errorCode, final String errorMessage, final LtiUser ltiUser) {
+        this.ltiLaunchData = ltiLaunchData;
+        this.errorMessage = errorMessage;
+        this.errorCode = errorCode;
+        this.ltiUser = ltiUser;
+    }
 
-    /**
-     * NB: Should be set to the maximum length of the permitted values of
-     * the QTI <code>completionStatus</code> variable.
-     */
-    public static final int QTI_COMPLETION_STATUS_MAX_LENGTH = 13;
 
-    //----------------------------------------------
+    public LtiLaunchData getLtiLaunchData() {
+        return ltiLaunchData;
+    }
 
-    public static final String QTI_DEFAULT_OWNER_LOGIN_NAME = "qtiworks";
-    public static final String QTI_DEFAULT_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_DEFAULT_OWNER_LAST_NAME = "Works";
+    public int getErrorCode() {
+        return errorCode;
+    }
 
-    public static final String QTI_SAMPLE_OWNER_LOGIN_NAME = "qtisamples";
-    public static final String QTI_SAMPLE_OWNER_FIRST_NAME = "QTI";
-    public static final String QTI_SAMPLE_OWNER_LAST_NAME = "Samples";
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public LtiUser getLtiUser() {
+        return ltiUser;
+    }
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
+
 
 }

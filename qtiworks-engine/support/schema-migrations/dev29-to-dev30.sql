@@ -21,7 +21,12 @@ CREATE TABLE lti_domains (
 );
 CREATE SEQUENCE lti_domain_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
 
--- Add lti_contexts table
+-- Link lti_users to lti_domains and deliveries
+ALTER TABLE lti_users ADD did BIGINT REFERENCES deliveries(did);
+ALTER TABLE lti_users ADD ldid BIGINT REFERENCES lti_domains(ldid);
+ALTER TABLE lti_users ALTER logical_key SET TYPE VARCHAR(300);
+
+-- Add lti_contexts table and sequence
 CREATE TABLE lti_contexts (
   lcid BIGINT PRIMARY KEY NOT NULL,
   creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -32,7 +37,7 @@ CREATE TABLE lti_contexts (
 );
 CREATE SEQUENCE lti_context_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
 
--- Add lti_resources table
+-- Add lti_resources table and sequence
 CREATE TABLE lti_resources (
   lrid BIGINT PRIMARY KEY NOT NULL,
   creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -43,8 +48,6 @@ CREATE TABLE lti_resources (
   resource_link_description TEXT NOT NULL
 );
 CREATE SEQUENCE lti_resource_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
-
--- TODO: Changes to deliveries table
 
 -- Add references to lti_contexts table
 ALTER TABLE assessments ADD owner_lcid BIGINT REFERENCES lti_contexts(lcid);

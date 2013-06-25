@@ -391,8 +391,8 @@ public class AssessmentManagementService {
      */
     private User ensureCallerMayCreateAssessment() throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
-        final UserRole userType = caller.getUserRole();
-        if (!(userType==UserRole.ANONYMOUS || userType==UserRole.INSTRUCTOR)) {
+        final UserRole userRole = caller.getUserRole();
+        if (!(userRole==UserRole.ANONYMOUS || userRole==UserRole.INSTRUCTOR)) {
             throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
         }
         return caller;
@@ -783,7 +783,6 @@ public class AssessmentManagementService {
 
         /* Create demo Delivery */
         final Delivery delivery = new Delivery();
-        delivery.setCreatorUser(caller);
         delivery.setAssessment(assessment);
         delivery.setDeliverySettings(deliverySettings);
         delivery.setDeliveryType(DeliveryType.USER_TRANSIENT);

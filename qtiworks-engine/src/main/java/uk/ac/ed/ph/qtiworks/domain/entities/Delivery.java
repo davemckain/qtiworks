@@ -131,11 +131,6 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationTime;
 
-    /** {@link User} who created this */
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
-    @JoinColumn(name="creator_uid", updatable=false)
-    private User creatorUser;
-
     /** {@link Assessment} chosen for this Delivery */
     @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="aid")
@@ -233,15 +228,6 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Override
     public void setCreationTime(final Date creationTime) {
         this.creationTime = ObjectUtilities.safeClone(creationTime);
-    }
-
-
-    public User getCreatorUser() {
-        return creatorUser;
-    }
-
-    public void setCreatorUser(final User creatorUser) {
-        this.creatorUser = creatorUser;
     }
 
 

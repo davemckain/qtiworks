@@ -477,7 +477,6 @@ public class SampleResourceImporter {
         final List<Delivery> demoDeliveries = deliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
         if (demoDeliveries.isEmpty()) {
             final Delivery defaultDelivery = new Delivery();
-            defaultDelivery.setCreatorUser(owner);
             defaultDelivery.setAssessment(assessment);
             defaultDelivery.setDeliveryType(DeliveryType.SYSTEM_DEMO);
             defaultDelivery.setDeliverySettings(deliverySettings);

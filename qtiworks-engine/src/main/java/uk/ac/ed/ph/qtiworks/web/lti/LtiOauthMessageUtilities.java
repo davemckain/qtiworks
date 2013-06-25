@@ -36,6 +36,8 @@ package uk.ac.ed.ph.qtiworks.web.lti;
 import java.io.IOException;
 import java.util.Arrays;
 
+import javax.servlet.http.HttpServletRequest;
+
 import net.oauth.OAuthMessage;
 
 /**
@@ -44,6 +46,14 @@ import net.oauth.OAuthMessage;
  * @author David McKain
  */
 public final class LtiOauthMessageUtilities {
+
+    public static boolean isBasicLtiLaunchRequest(final HttpServletRequest request) {
+        return "basic-lti-launch-request".equals(request.getParameter("lti_message_type"));
+    }
+
+    public static boolean isBasicLtiLaunchRequest(final LtiLaunchData ltiLaunchData) {
+        return "basic-lti-launch-request".equals(ltiLaunchData.getLtiMessageType());
+    }
 
     public static LtiLaunchData extractLtiLaunchData(final OAuthMessage oauthMessage) throws IOException {
         final LtiLaunchData result = new LtiLaunchData();

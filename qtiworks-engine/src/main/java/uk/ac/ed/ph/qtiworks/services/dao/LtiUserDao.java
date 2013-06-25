@@ -33,7 +33,10 @@
  */
 package uk.ac.ed.ph.qtiworks.services.dao;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -62,6 +65,22 @@ public class LtiUserDao extends GenericDao<LtiUser> {
     public LtiUser findByLogicalKey(final String logicalKey) {
         final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByLogicalKey", LtiUser.class);
         query.setParameter("logicalKey", logicalKey);
+        return extractNullableFindResult(query);
+    }
+
+    public LtiUser findByLtiDomainLtiUserIdAndUserRole(final LtiDomain ltiDomain ,final String ltiUserId, final UserRole userRole) {
+        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByLtiDomainLtiUserIdAndRole", LtiUser.class);
+        query.setParameter("ltiDomain", ltiDomain);
+        query.setParameter("ltiUserId", ltiUserId);
+        query.setParameter("userRole", userRole);
+        return extractNullableFindResult(query);
+    }
+
+    public LtiUser findByDeliveryLtiUserIdAndUserRole(final Delivery delivery ,final String ltiUserId, final UserRole userRole) {
+        final TypedQuery<LtiUser> query = em.createNamedQuery("LtiUser.findByDeliveryLtiUserIdAndRole", LtiUser.class);
+        query.setParameter("delivery", delivery);
+        query.setParameter("ltiUserId", ltiUserId);
+        query.setParameter("userRole", userRole);
         return extractNullableFindResult(query);
     }
 }

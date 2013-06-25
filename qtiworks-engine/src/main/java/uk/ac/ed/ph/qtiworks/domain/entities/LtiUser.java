@@ -33,12 +33,16 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.qtiworks.web.lti.LtiAuthenticationFilter;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchDecodingService;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -58,11 +62,22 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name="lti_users")
 @NamedQueries({
-    /* Looks up the LTI User having the given logicalKey */
     @NamedQuery(name="LtiUser.findByLogicalKey",
             query="SELECT u"
                 + "  FROM LtiUser u"
-                +"   WHERE u.logicalKey = :logicalKey")
+                + "  WHERE u.logicalKey = :logicalKey"),
+    @NamedQuery(name="LtiUser.findByLtiDomainLtiUserIdAndUserRole",
+            query="SELECT u"
+                + "  FROM LtiUser u"
+                + "  WHERE u.ltiDomain = :ltiDomain"
+                + "    AND u.ltiUserId = :ltiUserId"
+                + "    AND u.userRole = :userRole"),
+    @NamedQuery(name="LtiUser.findByDeliveryLtiUserIdAndUserRole",
+            query="SELECT u"
+                + "  FROM LtiUser u"
+                + "  WHERE u.delivery = :delivery"
+                + "    AND u.ltiUserId = :ltiUserId"
+                + "    AND u.userRole = :userRole")
 })
 public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
@@ -70,15 +85,16 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     /**
      * Logical key used for an LTI user.
-     * See {@link LtiAuthenticationFilter} for details
+     * <p>
+     * (See {@link LtiLaunchDecodingService} for details)
      */
     @Basic(optional=false)
-    @Column(name="logical_key", updatable=false, unique=true)
+    @Column(name="logical_key", updatable=false, unique=true, length=DomainConstants.LTI_USER_LOGICAL_KEY_LENGTH)
     private String logicalKey;
 
     /** LTI <code>user_id</code> launch parameter. (Spec says this is recommended) */
     @Basic(optional=true)
-    @Column(name="lti_user_id", updatable=false, unique=false)
+    @Column(name="lti_user_id", updatable=false, unique=false, length=DomainConstants.LTI_TOKEN_LENGTH)
     private String ltiUserId;
 
     @Lob
@@ -87,14 +103,26 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
     @Column(name="lis_full_name", updatable=false, unique=false)
     private String lisFullName;
 
+    /**
+     * For {@link LtiUser}s created by domain-level launches, this indicates which {@link LtiDomain}
+     * this user belongs to. This will be null for {@link LtiUser}s created by link-level launches.
+     */
+    @ManyToOne(optional=true)
+    @JoinColumn(name="ldid")
+    private LtiDomain ltiDomain;
+
+    /**
+     * For {@link LtiUser}s created by link-level launches, the indicates the {@link Delivery}
+     * that the user belongs to. This will be null for {@link LtiUser}s created by domain-level launches.
+     */
+    @ManyToOne(optional=true)
+    @JoinColumn(name="did")
+    private Delivery delivery;
+
     //------------------------------------------------------------
 
     public LtiUser() {
         super(UserType.LTI, null);
-    }
-
-    public LtiUser(final UserRole userRole) {
-        super(UserType.LTI, userRole);
     }
 
     //------------------------------------------------------------
@@ -125,10 +153,29 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
         this.lisFullName = lisFullName;
     }
 
+
+    public LtiDomain getLtiDomain() {
+        return ltiDomain;
+    }
+
+    public void setLtiDomain(final LtiDomain ltiDomain) {
+        this.ltiDomain = ltiDomain;
+    }
+
+
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(final Delivery delivery) {
+        this.delivery = delivery;
+    }
+
     //------------------------------------------------------------
 
     @Override
     public String getBusinessKey() {
+        ensureLogicalKey(this);
         return "lti/" + logicalKey;
     }
 
@@ -136,6 +183,14 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     @Override
     public final int compareTo(final LtiUser o) {
+        ensureLogicalKey(this);
+        ensureLogicalKey(o);
         return logicalKey.compareTo(o.logicalKey);
+    }
+
+    private void ensureLogicalKey(final LtiUser user) {
+        if (user.logicalKey==null) {
+            throw new QtiWorksRuntimeException("Current logic branch requires logicalKey to be non-null on " + user);
+        }
     }
 }

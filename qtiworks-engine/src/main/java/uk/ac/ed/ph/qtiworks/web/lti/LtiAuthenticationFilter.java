@@ -87,6 +87,7 @@ import org.springframework.web.context.WebApplicationContext;
  *
  * @author David McKain
  */
+@Deprecated
 public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(LtiAuthenticationFilter.class);
@@ -234,7 +235,8 @@ public final class LtiAuthenticationFilter extends AbstractWebAuthenticationFilt
         /* See if user already exists */
         LtiUser ltiUser = ltiUserDao.findByLogicalKey(logicalKey);
         if (ltiUser==null) {
-            ltiUser = new LtiUser(UserRole.CANDIDATE);
+            ltiUser = new LtiUser();
+            ltiUser.setUserRole(UserRole.CANDIDATE); /* FIXME */
             ltiUser.setLogicalKey(logicalKey);
             ltiUser.setLtiUserId(userId); /* (May be null) */
             ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull()); /* (May be null) */

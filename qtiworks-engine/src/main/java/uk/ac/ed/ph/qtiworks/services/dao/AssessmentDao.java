@@ -66,9 +66,9 @@ public class AssessmentDao extends GenericDao<Assessment> {
         super(Assessment.class);
     }
 
-    public List<AssessmentAndPackage> getForOwner(final User ownerUser) {
+    public List<AssessmentAndPackage> getForOwner(final User user) {
         final Query query = em.createNamedQuery("Assessment.getForOwner");
-        query.setParameter("ownerUser", ownerUser);
+        query.setParameter("user", user);
         return wrapResult(query.getResultList());
     }
 

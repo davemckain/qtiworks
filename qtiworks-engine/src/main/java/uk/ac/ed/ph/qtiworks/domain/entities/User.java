@@ -154,7 +154,7 @@ public class User implements BaseEntity, TimestampedOnCreation {
         return userRole;
     }
 
-    protected void setUserRole(final UserRole userRole) {
+    public void setUserRole(final UserRole userRole) {
         this.userRole = userRole;
     }
 

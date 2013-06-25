@@ -72,6 +72,10 @@ public final class ServiceUtilities {
         return trimmed.length() <= maxLength ? trimmed : trimmed.substring(0, maxLength);
     }
 
+    public static String safelyTrimString(final String string, final String resultIfNull, final int maxLength) {
+        return string!=null ? trimString(string, maxLength) : resultIfNull;
+    }
+
     /**
      * Trims a "sentence" down to fit the given size, using ellipses at the end if required.
      * <p>
@@ -247,4 +251,5 @@ public final class ServiceUtilities {
     public static void recursivelyDelete(final File root) {
         recursivelyDelete(root, true);
     }
+
 }
