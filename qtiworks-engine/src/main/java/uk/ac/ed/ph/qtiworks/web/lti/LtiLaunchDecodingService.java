@@ -57,6 +57,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import net.oauth.OAuth.Problems;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
 import net.oauth.OAuthException;
@@ -138,19 +139,22 @@ public class LtiLaunchDecodingService {
         }
         catch (final OAuthProblemException e) {
             logger.warn("OAuth message validation resulted in OAuthProblemException", e);
-            return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Bad request - Your LTI tool consumer sent QTIWorks a bad OAuth message");
+            final String problem = e.getProblem();
+            if (Problems.SIGNATURE_INVALID.equals(problem)) {
+                return new LtiLaunchResult(ltiLaunchData, SC_FORBIDDEN, "Your LTI tool consumer sent QTIWorks an incorrectly-signed OAuth message.");
+            }
+            return new LtiLaunchResult(ltiLaunchData, SC_FORBIDDEN, "Your LTI tool consumer sent QTIWorks an OAuth message that could not be accepted. The problem was '" + problem + "'.");
         }
         catch (final OAuthException e) {
             logger.warn("OAuth message validation resulted in OAuthException", e);
-            return new LtiLaunchResult(ltiLaunchData, SC_FORBIDDEN, "Forbidden - Your LTI tool consumer sent QTIWorks an incorrectly-signed OAuth message");
+            return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Your LTI tool consumer sent QTIWorks a bad OAuth message.");
         }
         catch (final URISyntaxException e) {
-            logger.warn("OAuth validation resulted in URISyntaxException", e);
-            return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Bad request - Your LTI tool consumer sent QTIWorks a bad OAuth message");
+            logger.warn("OAuth message validation resulted in URISyntaxException", e);
+            return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Your LTI tool consumer sent QTIWorks a bad OAuth message.");
         }
-
         if (ltiUser==null) {
-            return new LtiLaunchResult(ltiLaunchData, SC_NOT_FOUND, "The LTI launch sent by your tool consumer doesn't correspond to a resource in this instance of QTIWorks");
+            return new LtiLaunchResult(ltiLaunchData, SC_NOT_FOUND, "The LTI launch sent by your tool consumer doesn't correspond to a resource in this instance of QTIWorks.");
         }
         return new LtiLaunchResult(ltiLaunchData, ltiUser);
     }
@@ -183,7 +187,7 @@ public class LtiLaunchDecodingService {
     private Delivery lookupDelivery(final String consumerKey) {
         final int separatorPos = consumerKey.indexOf('X');
         if (separatorPos==-1) {
-            logger.info("Unsupported syntax in LTI consumer key {}", consumerKey);
+            logger.debug("Unsupported syntax in LTI consumer key {}", consumerKey);
             return null;
         }
         final String deliveryIdString = consumerKey.substring(0, separatorPos);
@@ -193,19 +197,18 @@ public class LtiLaunchDecodingService {
             deliveryId = Long.parseLong(deliveryIdString);
         }
         catch (final NumberFormatException e) {
-            logger.info("Could not parse delivery ID {} from LTI consumer key {}", deliveryIdString, consumerKey);
+            logger.debug("Could not parse delivery ID {} from LTI consumer key {}", deliveryIdString, consumerKey);
             return null;
         }
         /* Look up delivery */
         final Delivery delivery = deliveryDao.findById(deliveryId);
-        logger.info("Looked up {}", delivery);
         if (delivery==null) {
-            logger.info("Delivery with ID {} extracted from LTI consumer key {} not found", deliveryId, consumerKey);
+            logger.debug("Delivery with ID {} extracted from LTI consumer key {} not found", deliveryId, consumerKey);
             return null;
         }
         /* Check its key token */
         if (!tokenPart.equals(delivery.getLtiConsumerKeyToken())) {
-            logger.info("Token part {} of LTI consumer key {} did not match {}",
+            logger.debug("Token part {} of LTI consumer key {} did not match {}",
                     new Object[] { tokenPart, consumerKey, delivery.getLtiConsumerKeyToken() });
         }
 
@@ -268,7 +271,7 @@ public class LtiLaunchDecodingService {
         ltiUser.setLastName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameFamily(), "Not Provided", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
         ltiUser.setEmailAddress(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonContactEmailPrimary(), null, DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
         ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, null, DomainConstants.LTI_TOKEN_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
-        ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull()); /* (May be null) */
+        ltiUser.setLisFullName(trimLisPersonFullName(ltiLaunchData.getLisPersonNameFull())); /* (May be null) */
         ltiUserDao.persist(ltiUser);
         return ltiUser;
     }
@@ -297,16 +300,27 @@ public class LtiLaunchDecodingService {
         ltiUser.setLastName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameFamily(), "Not Provided", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
         ltiUser.setEmailAddress(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonContactEmailPrimary(), null, DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
         ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, null, DomainConstants.LTI_TOKEN_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
-        ltiUser.setLisFullName(ltiLaunchData.getLisPersonNameFull()); /* (May be null) */
+        ltiUser.setLisFullName(trimLisPersonFullName(ltiLaunchData.getLisPersonNameFull())); /* (May be null) */
         ltiUserDao.persist(ltiUser);
         return ltiUser;
     }
 
-    private UserRole mapLtiRole(final LtiLaunchData ltiLaunchData) {
+    /**
+     * Blackboard includes lots of redundant spaces in <code>lis_person_full_name</code>. This
+     * method tidies things up a bit.
+     */
+    private static String trimLisPersonFullName(final String lisPersonFullName) {
+        if (lisPersonFullName==null) {
+            return null;
+        }
+        return lisPersonFullName.trim().replaceAll("\\s+", " ");
+    }
+
+    private static UserRole mapLtiRole(final LtiLaunchData ltiLaunchData) {
         return hasInstructorRole(ltiLaunchData) ? UserRole.INSTRUCTOR : UserRole.CANDIDATE;
     }
 
-    private boolean hasInstructorRole(final LtiLaunchData ltiLaunchData) {
+    private static boolean hasInstructorRole(final LtiLaunchData ltiLaunchData) {
         final Set<String> roles = ltiLaunchData.getRoles();
         if (roles!=null) {
             for (final String role : roles) {
