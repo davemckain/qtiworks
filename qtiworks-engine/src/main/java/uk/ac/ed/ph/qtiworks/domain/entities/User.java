@@ -215,7 +215,7 @@ public class User implements BaseEntity, TimestampedOnCreation {
     }
 
     public boolean isSysAdmin() {
-        return userRole==UserRole.INSTRUCTOR && ((SystemUser) this).isSysAdmin();
+        return userType==UserType.SYSTEM && ((SystemUser) this).isSysAdmin();
     }
 
     //------------------------------------------------------------
