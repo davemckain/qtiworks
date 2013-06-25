@@ -95,9 +95,9 @@ primaryRouting
                 <label for="dsid${ds.id}" class="dsTitle">
                   ${ds.title}
                 </label>
-                <div class="dsPrompt">
-                  ${ds.prompt}
-                </div>
+                <c:if test="${ds.class.simpleName=='ItemDeliverySettings' && !empty ds.prompt}">
+                  <div class="dsPrompt">${fn:escapeXml(utils:trimSentence(ds.prompt, 200))}</div>
+                </c:if>
               </li>
             </c:forEach>
           </ul>
