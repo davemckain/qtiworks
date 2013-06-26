@@ -38,7 +38,11 @@ import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.QueuedLtiOutcome;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
@@ -201,18 +205,38 @@ public class LtiOutcomeService {
         /* Extract relevant bits of info */
         final double score = queuedLtiOutcome.getScore();
         final CandidateSession candidateSession = queuedLtiOutcome.getCandidateSession();
-        final String lisOutcomeServiceUrl = candidateSession.getLisOutcomeServiceUrl();
-        final Delivery delivery = candidateSession.getDelivery();
-        final String ltiConsumerKeyToken = delivery.getLtiConsumerKeyToken();
-        final String ltiConsumerSecret = delivery.getLtiConsumerSecret();
+        final User candidate = candidateSession.getCandidate();
+        if (candidate.getUserType()!=UserType.LTI) {
+            logger.warn("Candidate must be an LTI user - ignoring {}", queuedLtiOutcome);
+            return false;
+        }
+        final LtiUser ltiCandidate = (LtiUser) candidate;
+        final String ltiConsumerKey, ltiConsumerSecret;
+        switch (ltiCandidate.getLtiLaunchType()) {
+            case DOMAIN:
+                final LtiDomain ltiDomain = ltiCandidate.getLtiDomain();
+                ltiConsumerKey = ltiDomain.getConsumerKey();
+                ltiConsumerSecret = ltiDomain.getConsumerSecret();
+                break;
+
+            case LINK:
+                final Delivery delivery = ltiCandidate.getDelivery();
+                ltiConsumerKey= delivery.getLtiConsumerKeyToken();
+                ltiConsumerSecret = delivery.getLtiConsumerSecret();
+                break;
+
+            default:
+                throw new QtiWorksLogicException("Unexpected switch case " + ltiCandidate.getLtiLaunchType());
+        }
 
         /* Create POX XML envelope around message */
         final String poxMessage = buildPoxMessage(candidateSession, score);
 
         /* Wrap as OAuth message */
         final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
-        final OAuthConsumer consumer = new OAuthConsumer(null, ltiConsumerKeyToken, ltiConsumerSecret, serviceProvider);
+        final OAuthConsumer consumer = new OAuthConsumer(null, ltiConsumerKey, ltiConsumerSecret, serviceProvider);
         final OAuthAccessor accessor = new OAuthAccessor(consumer);
+        final String lisOutcomeServiceUrl = candidateSession.getLisOutcomeServiceUrl();
         final OAuthMessage oauthMessage;
         try {
             final Map<String, String> parameters = new HashMap<String, String>();
