@@ -40,6 +40,8 @@ import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchDecodingService;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -72,12 +74,11 @@ import org.hibernate.annotations.Type;
                 + "  WHERE u.ltiDomain = :ltiDomain"
                 + "    AND u.ltiUserId = :ltiUserId"
                 + "    AND u.userRole = :userRole"),
-    @NamedQuery(name="LtiUser.findByDeliveryLtiUserIdAndUserRole",
+    @NamedQuery(name="LtiUser.findByDeliveryAndLtiUserId",
             query="SELECT u"
                 + "  FROM LtiUser u"
                 + "  WHERE u.delivery = :delivery"
-                + "    AND u.ltiUserId = :ltiUserId"
-                + "    AND u.userRole = :userRole")
+                + "    AND u.ltiUserId = :ltiUserId")
 })
 public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
@@ -104,8 +105,17 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
     private String lisFullName;
 
     /**
+     * Indicates which type of LTI launch this {@link LtiUser} has been created for.
+     */
+    @Basic(optional=false)
+    @Column(name="lti_launch_type", updatable=false, length=6)
+    @Enumerated(EnumType.STRING)
+    private LtiLaunchType ltiLaunchType;
+
+    /**
      * For {@link LtiUser}s created by domain-level launches, this indicates which {@link LtiDomain}
-     * this user belongs to. This will be null for {@link LtiUser}s created by link-level launches.
+     * this user belongs to. This will be non-null for {@link LtiLaunchType#DOMAIN}
+     *  and null for {@link LtiUser}s with {@link LtiLaunchType#LINK}
      */
     @ManyToOne(optional=true)
     @JoinColumn(name="ldid")
@@ -113,7 +123,8 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     /**
      * For {@link LtiUser}s created by link-level launches, the indicates the {@link Delivery}
-     * that the user belongs to. This will be null for {@link LtiUser}s created by domain-level launches.
+     * that the user belongs to. This will be non-null for {@link LtiLaunchType#LINK}
+     * and null for {@link LtiUser}s with {@link LtiLaunchType#DOMAIN}
      */
     @ManyToOne(optional=true)
     @JoinColumn(name="did")
@@ -151,6 +162,15 @@ public class LtiUser extends User implements BaseEntity, Comparable<LtiUser> {
 
     public void setLisFullName(final String lisFullName) {
         this.lisFullName = lisFullName;
+    }
+
+
+    public LtiLaunchType getLtiLaunchType() {
+        return ltiLaunchType;
+    }
+
+    public void setLtiLaunchType(final LtiLaunchType ltiLaunchType) {
+        this.ltiLaunchType = ltiLaunchType;
     }
 
 

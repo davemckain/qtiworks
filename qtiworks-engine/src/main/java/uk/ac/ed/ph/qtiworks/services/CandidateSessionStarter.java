@@ -47,9 +47,10 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
@@ -121,7 +122,13 @@ public class CandidateSessionStarter {
     //-------------------------------------------------
     // System samples
 
-    public Delivery lookupSystemSampleDelivery(final long aid)
+    public CandidateSession createSystemSampleSession(final long aid, final String exitUrl)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
+        return createCandidateSession(sampleDelivery, exitUrl, null, null);
+    }
+
+    private Delivery lookupSystemSampleDelivery(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Assessment assessment = lookupSampleAssessment(aid);
         final List<Delivery> systemDemoDeliveries = deliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);
@@ -142,11 +149,6 @@ public class CandidateSessionStarter {
         return assessment;
     }
 
-    public CandidateSession createSystemSampleSession(final long aid, final String exitUrl)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery sampleDelivery = lookupSystemSampleDelivery(aid);
-        return createCandidateSession(sampleDelivery, exitUrl, null, null);
-    }
 
     //----------------------------------------------------
     // Single delivery launches (currently LTI only)
@@ -157,24 +159,17 @@ public class CandidateSessionStarter {
      * <p>
      * Access controls are checked on the {@link Delivery}.
      */
-    public CandidateSession createLinkLevelLtiCandidateSession(final User candidate, final long did,
-            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourceDid)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        /* Look up delivery */
-        final Delivery delivery = deliveryDao.requireFindById(did);
+    public CandidateSession createLinkLevelLtiCandidateSession(final LtiUser candidate,
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+            throws PrivilegeException {
+        /* Make sure this is the correct type of user */
+        Assert.notNull(candidate, "candidate");
+        if (candidate.getLtiLaunchType()!=LtiLaunchType.LINK) {
+            throw new IllegalArgumentException("Candidate LtiUser must be of type " + LtiLaunchType.LINK);
+        }
 
-        /* Ensure candidate is link-level LTI, launching the correct Delivery */
-        final UserType userType = candidate.getUserType();
-        if (userType==UserType.LTI) {
-            final LtiUser ltiCaller = (LtiUser) candidate;
-            final Delivery ltiDelivery = ltiCaller.getDelivery();
-            if (ltiDelivery==null || !delivery.getId().equals(ltiDelivery.getId())) {
-                throw new PrivilegeException(candidate, Privilege.LAUNCH_LINK_LEVEL_LTI_DELIVERY, delivery);
-            }
-        }
-        else {
-            throw new PrivilegeException(candidate, Privilege.LAUNCH_LINK_LEVEL_LTI_DELIVERY, delivery);
-        }
+        /* Extract Delivery to be launched */
+        final Delivery delivery = candidate.getDelivery();
 
         /* Finally make sure delivery is open */
         if (!delivery.isOpen()) {
@@ -182,7 +177,28 @@ public class CandidateSessionStarter {
         }
 
         /* Start the session */
-        return createCandidateSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
+        return createCandidateSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+    }
+
+    public CandidateSession createDomainLevelLtiCandidateSession(final LtiUser candidate, final LtiResource ltiResource,
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+            throws PrivilegeException {
+        Assert.notNull(candidate, "candidate");
+        Assert.notNull(ltiResource, "ltiResource");
+        if (candidate.getLtiLaunchType()!=LtiLaunchType.DOMAIN) {
+            throw new IllegalArgumentException("Candidate LtiUser must be of type " + LtiLaunchType.DOMAIN);
+        }
+
+        /* Extract Delivery to be launched from LtiResource */
+        final Delivery delivery = ltiResource.getDelivery();
+
+        /* Make sure delivery is open */
+        if (!delivery.isOpen()) {
+            throw new PrivilegeException(candidate, Privilege.LAUNCH_CLOSED_DELIVERY, delivery);
+        }
+
+        /* Start the session */
+        return createCandidateSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
     //----------------------------------------------------
@@ -194,10 +210,11 @@ public class CandidateSessionStarter {
      * NO ACCESS controls are checked on the {@link Delivery}
      */
     public CandidateSession createCandidateSession(final Delivery delivery, final String exitUrl,
-            final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
+            final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+            throws PrivilegeException {
         Assert.notNull(delivery, "delivery");
         final User candidate = identityService.getCurrentThreadUser();
-        return createCandidateSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
+        return createCandidateSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
     }
 
     /**
@@ -206,8 +223,15 @@ public class CandidateSessionStarter {
      * NO ACCESS controls are checked on the {@link User} and {@link Delivery}
      */
     public CandidateSession createCandidateSession(final User candidate, final Delivery delivery,
-            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid)
+            throws PrivilegeException {
         Assert.notNull(delivery, "delivery");
+
+        /* Make sure Delivery is runnable */
+        if (delivery.getAssessment()==null || delivery.getDeliverySettings()==null) {
+            throw new PrivilegeException(candidate, Privilege.LAUNCH_INCOMPLETE_DELIVERY, delivery);
+        }
+
         /* If the candidate already has any non-terminated sessions open for this Delivery,
          * then we shall reconnect to the (most recent) session instead of creating a new one.
          */
@@ -223,10 +247,10 @@ public class CandidateSessionStarter {
         final Assessment assessment = delivery.getAssessment();
         switch (assessment.getAssessmentType()) {
             case ASSESSMENT_ITEM:
-                return createCandidateItemSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
+                return createCandidateItemSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
 
             case ASSESSMENT_TEST:
-                return createCandidateTestSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourceDid);
+                return createCandidateTestSession(candidate, delivery, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
 
             default:
                 throw new QtiWorksLogicException("Unexpected switch case " + assessment.getAssessmentType());
@@ -234,7 +258,7 @@ public class CandidateSessionStarter {
     }
 
     private CandidateSession createCandidateItemSession(final User candidate, final Delivery delivery,
-            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid) {
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
@@ -262,7 +286,7 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.SESSION_NOT_ENDED);
         candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
-        candidateSession.setLisResultSourcedid(lisResultSourceDid);
+        candidateSession.setLisResultSourcedid(lisResultSourcedid);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
         candidateSession.setClosed(false);
@@ -289,7 +313,7 @@ public class CandidateSessionStarter {
     // Test session creation
 
     private CandidateSession createCandidateTestSession(final User candidate, final Delivery delivery,
-            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourceDid) {
+            final String exitUrl, final String lisOutcomeServiceUrl, final String lisResultSourcedid) {
         /* Set up listener to record any notifications */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
@@ -328,7 +352,7 @@ public class CandidateSessionStarter {
         candidateSession.setExitUrl(exitUrl);
         candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.SESSION_NOT_ENDED);
         candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
-        candidateSession.setLisResultSourcedid(lisResultSourceDid);
+        candidateSession.setLisResultSourcedid(lisResultSourcedid);
         candidateSession.setCandidate(candidate);
         candidateSession.setDelivery(delivery);
         candidateSession.setClosed(false);
@@ -366,4 +390,5 @@ public class CandidateSessionStarter {
         candidateSessionDao.persist(candidateSession);
         return candidateSession;
     }
+
 }

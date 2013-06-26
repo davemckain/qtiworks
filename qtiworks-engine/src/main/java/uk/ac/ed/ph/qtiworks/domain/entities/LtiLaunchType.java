@@ -31,34 +31,21 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.controller.lti;
-
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
-
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * Controller for instructor assessment management when running over LTI (domain-level launch)
+ * Encapsulates the 2 different types of LTI launches supported - domain-level launches
+ * and link-level launches.
+ * <p>
+ * See the LTI speficiation for further details
  *
  * @author David McKain
  */
-@Controller
-@RequestMapping("/resource/{lrid}")
-public class LtiInstructorAssessmentManagementController {
+public enum LtiLaunchType {
 
-    @Resource
-    private IdentityService identityService;
+  //123456
+    DOMAIN,
+    LINK,
+    ;
 
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public String resourceTopPage(final Model model) {
-        final User ltiUser = identityService.getCurrentThreadUser();
-        model.addAttribute("object", ltiUser);
-        return "ltiDebug";
-    }
 }

@@ -37,10 +37,12 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiLaunchType;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
@@ -97,7 +99,7 @@ public class LtiLaunchDecodingService {
     @Resource
     private LtiUserDao ltiUserDao;
 
-    public LtiLaunchResult extractLtiLaunchData(final HttpServletRequest request)
+    public LtiLaunchResult extractLtiLaunchData(final HttpServletRequest request, final LtiLaunchType ltiLaunchType)
             throws IOException {
         /* Log OAuth parameters for debugging purposes */
         final OAuthMessage oauthMessage = OAuthServlet.getMessage(request, null);
@@ -126,19 +128,24 @@ public class LtiLaunchDecodingService {
         }
 
         /* Extract/create LtiUser for this launch */
-        LtiUser ltiUser = null;
         try {
-            /* We first check to see if the consumer key matches a domain-level launch */
-            final LtiDomain ltiDomain = ltiDomainDao.findByConsumerKey(consumerKey);
-            if (ltiDomain!=null) {
-                ltiUser = handleDomainLaunch(oauthMessage, ltiLaunchData, ltiDomain);
-            }
-            else {
-                /* If not a domain-level launch, now check for resource-level launch (attached to a Delivery) */
-                final Delivery delivery = lookupDelivery(consumerKey);
-                if (delivery!=null) {
-                    ltiUser = handleLinkLaunch(oauthMessage, ltiLaunchData, delivery);
-                }
+            switch (ltiLaunchType) {
+                case DOMAIN:
+                    final LtiDomain ltiDomain = ltiDomainDao.findByConsumerKey(consumerKey);
+                    if (ltiDomain==null) {
+                        return new LtiLaunchResult(ltiLaunchData, SC_NOT_FOUND, "Your Tool Consumer has not been registered with this instance of QTIWorks");
+                    }
+                    return new LtiLaunchResult(ltiLaunchData, handleDomainLaunch(oauthMessage, ltiLaunchData, ltiDomain));
+
+                case LINK:
+                    final Delivery delivery = lookupDelivery(consumerKey);
+                    if (delivery==null) {
+                        return new LtiLaunchResult(ltiLaunchData, SC_NOT_FOUND, "This LTI link-level launch sent by your Tool Consumer was not recognised");
+                    }
+                    return new LtiLaunchResult(ltiLaunchData, handleLinkLaunch(oauthMessage, ltiLaunchData, delivery));
+
+                default:
+                    throw new QtiWorksLogicException("Unexpected switch case " + ltiLaunchType);
             }
         }
         catch (final OAuthProblemException e) {
@@ -157,10 +164,6 @@ public class LtiLaunchDecodingService {
             logger.warn("OAuth message validation resulted in URISyntaxException", e);
             return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Your LTI tool consumer sent QTIWorks a bad OAuth message.");
         }
-        if (ltiUser==null) {
-            return new LtiLaunchResult(ltiLaunchData, SC_NOT_FOUND, "The LTI launch sent by your tool consumer doesn't correspond to a resource in this instance of QTIWorks.");
-        }
-        return new LtiLaunchResult(ltiLaunchData, ltiUser);
     }
 
     private LtiUser handleDomainLaunch(final OAuthMessage oauthMessage, final LtiLaunchData ltiLaunchData, final LtiDomain ltiDomain)
@@ -235,18 +238,16 @@ public class LtiLaunchDecodingService {
         return result;
     }
 
-
     private LtiUser obtainLinkLevelLtiUser(final Delivery delivery, final LtiLaunchData ltiLaunchData) {
-        final UserRole userRole = mapLtiRole(ltiLaunchData);
         final String userId = ltiLaunchData.getUserId();
         LtiUser result = null;
         if (userId!=null) {
             /* Try for a user having the provided user_id and role (in the context of this Delivery) */
-            result = ltiUserDao.findByDeliveryLtiUserIdAndUserRole(delivery, userId, userRole);
+            result = ltiUserDao.findByDeliveryAndLtiUserId(delivery, userId);
         }
         if (result==null) {
             /* No user found, or no user_id provided */
-            result = createLinkLevelLtiUser(delivery, ltiLaunchData, userRole);
+            result = createLinkLevelLtiUser(delivery, ltiLaunchData);
         }
         return result;
     }
@@ -268,6 +269,7 @@ public class LtiLaunchDecodingService {
         /* Create user */
         final LtiUser ltiUser = new LtiUser();
         ltiUser.setUserRole(userRole);
+        ltiUser.setLtiLaunchType(LtiLaunchType.DOMAIN);
         ltiUser.setDelivery(null); /* (Not a link-level launch) */
         ltiUser.setLtiDomain(ltiDomain);
         ltiUser.setLogicalKey(logicalKey);
@@ -280,23 +282,24 @@ public class LtiLaunchDecodingService {
         return ltiUser;
     }
 
-    private LtiUser createLinkLevelLtiUser(final Delivery delivery, final LtiLaunchData ltiLaunchData, final UserRole userRole) {
+    private LtiUser createLinkLevelLtiUser(final Delivery delivery, final LtiLaunchData ltiLaunchData) {
         /* Create suitable logical key */
         final String logicalKey;
         final String userId = ltiLaunchData.getUserId();
         if (userId!=null && userId.length() < DomainConstants.LTI_TOKEN_LENGTH) {
             /* The following key will be unique for a particular Delivery, role and TC */
-            logicalKey = "link/" + delivery.getId() + "/" + userRole + "/" + userId;
+            logicalKey = "link/" + delivery.getId() + "/" + userId;
         }
         else {
             /* No user_id specified or too long, so we'll have to synthesise something unique */
-            logicalKey = "link/" + delivery.getId() + "/" + userRole + "-" + Thread.currentThread().getId()
+            logicalKey = "link/" + delivery.getId() + "-" + Thread.currentThread().getId()
                     + "-" + requestTimestampContext.getCurrentRequestTimestamp().getTime();
         }
 
         /* Create user */
         final LtiUser ltiUser = new LtiUser();
-        ltiUser.setUserRole(userRole);
+        ltiUser.setUserRole(UserRole.CANDIDATE); /* (These launches will always be candidate launches) */
+        ltiUser.setLtiLaunchType(LtiLaunchType.LINK);
         ltiUser.setDelivery(delivery);
         ltiUser.setLtiDomain(null); /* (Not a domain-level launch) */
         ltiUser.setLogicalKey(logicalKey);

@@ -22,6 +22,9 @@ CREATE TABLE lti_domains (
 CREATE SEQUENCE lti_domain_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
 
 -- Link lti_users to lti_domains and deliveries
+ALTER TABLE lti_users ADD lti_launch_type VARCHAR(6);
+UPDATE lti_users SET lti_launch_type = 'LINK';
+ALTER TABLE lti_users ALTER lti_launch_type SET NOT NULL;
 ALTER TABLE lti_users ADD did BIGINT REFERENCES deliveries(did);
 ALTER TABLE lti_users ADD ldid BIGINT REFERENCES lti_domains(ldid);
 ALTER TABLE lti_users ALTER logical_key SET TYPE VARCHAR(300);
