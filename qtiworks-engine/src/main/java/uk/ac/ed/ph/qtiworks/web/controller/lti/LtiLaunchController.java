@@ -45,6 +45,7 @@ import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchDecodingService;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchResult;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchService;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,9 +83,9 @@ import dave.LtiResultsTest;
  * @author David McKain
  */
 @Controller
-public class LtiController {
+public class LtiLaunchController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LtiController.class);
+    private static final Logger logger = LoggerFactory.getLogger(LtiLaunchController.class);
 
     @Resource
     private CandidateSessionStarter candidateSessionStarter;
@@ -98,7 +99,7 @@ public class LtiController {
     @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
     public String ltiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response,
             @PathVariable final long did)
-            throws  PrivilegeException, DomainEntityNotFoundException, IOException {
+            throws PrivilegeException, DomainEntityNotFoundException, IOException {
         /* Decode LTI launch request, and bail out on error */
         final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request);
         if (ltiLaunchResult.isError()) {
@@ -143,9 +144,11 @@ public class LtiController {
         /* Extract/create the corresponding LtiResource for this launch */
         final LtiResource ltiResource = ltiLaunchService.provideLtiResource(ltiLaunchResult);
 
-        /* TEMP! Debug the result */
-        model.addAttribute("object", ltiResource);
-        return "ltiDebug";
+        /* Authenticate this user */
+        LtiResourceAuthenticationFilter.authenticatUserForResource(request.getSession(), ltiResource, ltiUser);
+
+        /* Forward to resource MVC */
+        return "redirect:/lti/resource/" + ltiResource.getId();
     }
 
     /** LTI debugging and diagnostic help */

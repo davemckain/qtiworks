@@ -31,39 +31,34 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.services.base;
+package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 
-import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * {@link ThreadLocal} storing details about the current {@link User} and {@link LtiResource}
- * (when accessing QTIWorks via a domain-level launch on a particular resource)
+ * Controller for instructor assessment management when running over LTI (domain-level launch)
  *
  * @author David McKain
  */
-@Service
-public final class IdentityService {
+@Controller
+public class LtiInstructorAssessmentManagementController {
 
-    private final ThreadLocal<User> currentUserThreadLocal = new ThreadLocal<User>();
-    private final ThreadLocal<LtiResource> currentLtiResourceThreadLocal = new ThreadLocal<LtiResource>();
+    @Resource
+    private IdentityService identityService;
 
-    public User getCurrentThreadUser() {
-        return currentUserThreadLocal.get();
-    }
-
-    public void setCurrentThreadUser(final User user) {
-        currentUserThreadLocal.set(user);
-    }
-
-
-    public LtiResource getCurrentThreadLtiResource() {
-        return currentLtiResourceThreadLocal.get();
-    }
-
-    public void setCurrentThreadLtiResource(final LtiResource ltiResource) {
-        currentLtiResourceThreadLocal.set(ltiResource);
+    @RequestMapping(value="/resource/{lrid}", method=RequestMethod.GET)
+    public String ltiLinkLevelLaunch(@PathVariable final long lrid, final Model model) {
+        final User ltiUser = identityService.getCurrentThreadUser();
+        model.addAttribute("object", ltiUser);
+        return "ltiDebug";
     }
 }
