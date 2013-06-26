@@ -7,7 +7,7 @@ LTI diagnostic
 
 Model:
 
-ltiLaunchResult
+object - Object to be dumped
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -15,7 +15,7 @@ ltiLaunchResult
 
   <h2>LTI Diagnostic information</h2>
 
-  <pre>${utils:dumpObject(ltiLaunchResult)}</pre>
+  <pre>${utils:dumpObject(object)}</pre>
 
 </page:page>
 

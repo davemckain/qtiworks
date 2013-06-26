@@ -71,6 +71,8 @@ import net.oauth.server.OAuthServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * FIXME: Document this type
@@ -78,6 +80,7 @@ import org.springframework.stereotype.Service;
  * @author David McKain
  */
 @Service
+@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 public class LtiLaunchDecodingService {
 
     private static final Logger logger = LoggerFactory.getLogger(LtiLaunchDecodingService.class);
@@ -122,6 +125,7 @@ public class LtiLaunchDecodingService {
             return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Unsupported LTI message type " + ltiLaunchData.getLtiMessageType());
         }
 
+        /* Extract/create LtiUser for this launch */
         LtiUser ltiUser = null;
         try {
             /* We first check to see if the consumer key matches a domain-level launch */

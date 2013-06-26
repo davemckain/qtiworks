@@ -31,28 +31,38 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.domain.entities;
+package uk.ac.ed.ph.qtiworks.services.dao;
+
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Encapsulates the various types of {@link Delivery}
+ * DAO implementation for the {@link LtiResource} entity.
  *
  * @author David McKain
  */
-public enum DeliveryType {
+@Repository
+@Transactional(readOnly=true, propagation=Propagation.SUPPORTS)
+public class LtiResourceDao extends GenericDao<LtiResource> {
 
-  //123456789012345
+    @PersistenceContext
+    private EntityManager em;
 
-    /** Explicitly-created delivery (by system user) */
-    USER_CREATED,
+    public LtiResourceDao() {
+        super(LtiResource.class);
+    }
 
-    /** Delivery created by LTI resource link */
-    LTI_RESOURCE,
-
-    /** Transient delivery used for trying things out only */
-    USER_TRANSIENT,
-
-    /** Demo delivery bootstrapped into the system */
-    SYSTEM_DEMO,
-    ;
-
+    public LtiResource findByConsumerKeyAndResourceLinkId(final String consumerKey, final String resourceLinkId) {
+        final TypedQuery<LtiResource> query = em.createNamedQuery("LtiResource.findByConsumerKeyAndResourceLinkId", LtiResource.class);
+        query.setParameter("consumerKey", consumerKey);
+        query.setParameter("resourceLinkId", resourceLinkId);
+        return extractNullableFindResult(query);
+    }
 }

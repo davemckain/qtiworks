@@ -181,6 +181,18 @@ public final class StringUtilities {
         return string!=null ? string : "";
     }
 
+    /**
+     * Convenience method that returns a default value if the provided String is null. This
+     * doesn't do anything that can't be trivially expressed by the ?: operator, but can be
+     * more readable in some cases.
+     *
+     * @param string
+     * @return same string if it is non-empty, otherwise null.
+     */
+    public static String defaultIfNull(final String string, final String defaultValue) {
+        return string!=null ? string : defaultValue;
+    }
+
     //------------------------------------------------------------------------
 
     /**

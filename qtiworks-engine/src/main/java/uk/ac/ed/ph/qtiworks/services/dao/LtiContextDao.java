@@ -59,7 +59,7 @@ public class LtiContextDao extends GenericDao<LtiContext> {
         super(LtiContext.class);
     }
 
-    public LtiContext findByLtiConsumerKey(final String consumerKey, final String contextId) {
+    public LtiContext findByConsumerKeyAndContextId(final String consumerKey, final String contextId) {
         final TypedQuery<LtiContext> query = em.createNamedQuery("LtiContext.findByConsumerKeyAndContextId", LtiContext.class);
         query.setParameter("consumerKey", consumerKey);
         query.setParameter("contextId", contextId);

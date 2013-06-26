@@ -33,6 +33,8 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
+
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 import java.util.Date;
@@ -89,14 +91,19 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="ldid", updatable=false)
     private LtiDomain ltiDomain;
 
-    /** Corresponds to the (recommended) LTI <code>context_id</code> parameter */
+    /**
+     * Corresponds to the LTI <code>context_id</code> parameter.
+     * <p>
+     * (While this parameter is recommended, we only create instances of {@link LtiContext}
+     * if it is provided, so it will always be present here.)
+     */
     @Basic(optional=false)
-    @Column(name="context_id", updatable=false)
+    @Column(name="context_id", updatable=false, length=DomainConstants.LTI_TOKEN_LENGTH)
     private String contextId;
 
     /** Corresponds to the (recommended) LTI <code>context_label</code> parameter */
     @Basic(optional=true)
-    @Column(name="context_label", updatable=false)
+    @Column(name="context_label", updatable=false, length=DomainConstants.LTI_TOKEN_LENGTH)
     private String contextLabel;
 
     /** Corresponds to the (recommended) LTI <code>context_title</code> parameter */

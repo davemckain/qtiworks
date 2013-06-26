@@ -98,6 +98,12 @@ public final class LtiLaunchData implements Serializable {
     /** Corresponds to <code>context_id</code>. Recommended */
     private String contextId;
 
+    /** Corresponds to <code>context_label</code>. Recommended */
+    private String contextLabel;
+
+    /** Corresponds to <code>context_title</code>. Recommended */
+    private String contextTitle;
+
     /** Corresponds to <code>launch_presentation_return_url</code>. Recommended. */
     private String launchPresentationReturnUrl;
 
@@ -244,6 +250,24 @@ public final class LtiLaunchData implements Serializable {
 
     public void setContextId(final String contextId) {
         this.contextId = contextId;
+    }
+
+
+    public String getContextLabel() {
+        return contextLabel;
+    }
+
+    public void setContextLabel(final String contextLabel) {
+        this.contextLabel = contextLabel;
+    }
+
+
+    public String getContextTitle() {
+        return contextTitle;
+    }
+
+    public void setContextTitle(final String contextTitle) {
+        this.contextTitle = contextTitle;
     }
 
 

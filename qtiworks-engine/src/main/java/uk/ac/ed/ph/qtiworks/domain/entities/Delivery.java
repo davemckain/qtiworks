@@ -137,7 +137,7 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     private Assessment assessment;
 
     /** {@link DeliverySettings} chosen for this Delivery */
-    @ManyToOne(optional=false, fetch=FetchType.EAGER)
+    @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="dsid")
     private DeliverySettings deliverySettings;
 
@@ -160,7 +160,7 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     private boolean open;
 
     /**
-     * (For standalone single resource link only)
+     * (For link-level launches only)
      *
      * LTI enabled?
      */

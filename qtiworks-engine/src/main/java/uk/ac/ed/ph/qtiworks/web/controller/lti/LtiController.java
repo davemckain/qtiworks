@@ -36,12 +36,15 @@ package uk.ac.ed.ph.qtiworks.web.controller.lti;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchDecodingService;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchResult;
+import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,8 +92,11 @@ public class LtiController {
     @Resource
     private LtiLaunchDecodingService ltiLaunchDecodingService;
 
+    @Resource
+    private LtiLaunchService ltiLaunchService;
+
     @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
-    public String ltiLaunch(final HttpServletRequest request, final HttpServletResponse response,
+    public String ltiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response,
             @PathVariable final long did)
             throws  PrivilegeException, DomainEntityNotFoundException, IOException {
         /* Decode LTI launch request, and bail out on error */
@@ -113,11 +119,40 @@ public class LtiController {
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 
+    @RequestMapping(value="/domainlaunch", method=RequestMethod.POST)
+    public String ltiDomainLevelLaunch(final HttpServletRequest request, final HttpServletResponse response,
+            final Model model)
+            throws IOException {
+        /* Decode LTI launch request, and bail out on error */
+        final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request);
+        if (ltiLaunchResult.isError()) {
+            response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
+            return null;
+        }
+
+        /* Extract relevant data */
+        final LtiUser ltiUser = ltiLaunchResult.getLtiUser();
+
+        /* Make sure this is a domain launch */
+        final LtiDomain ltiDomain = ltiUser.getLtiDomain();
+        if (ltiDomain==null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The tool consumer has attempted a domain-level launch using a link-level key");
+            return null;
+        }
+
+        /* Extract/create the corresponding LtiResource for this launch */
+        final LtiResource ltiResource = ltiLaunchService.provideLtiResource(ltiLaunchResult);
+
+        /* TEMP! Debug the result */
+        model.addAttribute("object", ltiResource);
+        return "ltiDebug";
+    }
+
     /** LTI debugging and diagnostic help */
     @RequestMapping(value="/debug", method=RequestMethod.POST)
     public String ltiDebug(final HttpServletRequest httpRequest, final Model model) throws IOException {
         final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(httpRequest);
-        model.addAttribute("ltiLaunchResult", ltiLaunchResult);
+        model.addAttribute("object", ltiLaunchResult);
         return "ltiDebug";
     }
 

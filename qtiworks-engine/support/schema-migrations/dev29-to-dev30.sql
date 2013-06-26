@@ -49,6 +49,10 @@ CREATE TABLE lti_resources (
 );
 CREATE SEQUENCE lti_resource_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
 
+-- Change deliveries table to allow lazy association to assessments & delivery_settings
+ALTER TABLE deliveries ALTER aid DROP NOT NULL;
+ALTER TABLE deliveries ALTER dsid DROP NOT NULL;
+
 -- Add references to lti_contexts table
 ALTER TABLE assessments ADD owner_lcid BIGINT REFERENCES lti_contexts(lcid);
 ALTER TABLE delivery_settings ADD owner_lcid BIGINT REFERENCES lti_contexts(lcid);

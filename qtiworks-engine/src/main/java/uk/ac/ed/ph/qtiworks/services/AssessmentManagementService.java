@@ -841,7 +841,6 @@ public class AssessmentManagementService {
             default:
                 throw new QtiLogicException("Unexpected switch case " + assessmentType);
         }
-
     }
 
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {

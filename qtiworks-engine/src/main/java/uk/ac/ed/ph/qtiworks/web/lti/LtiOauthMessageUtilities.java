@@ -72,6 +72,8 @@ public final class LtiOauthMessageUtilities {
         result.setLisPersonNameGiven(oauthMessage.getParameter("lis_person_name_given")); /* Recommended but possibly suppressed */
         result.setLisPersonContactEmailPrimary(oauthMessage.getParameter("lis_person_contact_email_primary")); /* Recommended but possibly suppressed */
         result.setContextId(oauthMessage.getParameter("context_id")); /* Recommended */
+        result.setContextLabel(oauthMessage.getParameter("context_label")); /* Recommended */
+        result.setContextTitle(oauthMessage.getParameter("context_title")); /* Recommended */
         result.setLaunchPresentationReturnUrl(oauthMessage.getParameter("launch_presentation_return_url")); /* Recommended */
         result.setToolConsumerInfoProductFamilyCode(oauthMessage.getParameter("tool_consumer_info_product_family_code")); /* Optional but recommended */
         result.setToolConsumerInfoVersion(oauthMessage.getParameter("tool_consumer_info_version")); /* Optional but recommended */

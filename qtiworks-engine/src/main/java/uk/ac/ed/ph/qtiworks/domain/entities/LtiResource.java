@@ -50,6 +50,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -65,6 +67,13 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name="lti_resources")
 @SequenceGenerator(name="ltiResourceSequence", sequenceName="lti_resource_sequence", initialValue=1, allocationSize=1)
+@NamedQueries({
+    @NamedQuery(name="LtiResource.findByConsumerKeyAndResourceLinkId",
+            query="SELECT lr"
+                + "  FROM LtiResource lr"
+                + "  WHERE lr.ltiDomain.consumerKey = :consumerKey"
+                + "    AND lr.resourceLinkId = :resourceLinkId")
+})
 public class LtiResource implements BaseEntity, TimestampedOnCreation {
 
     private static final long serialVersionUID = -5661266580944124938L;
@@ -80,17 +89,17 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     private Date creationTime;
 
     /** {@link User} who created this */
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="creator_uid", updatable=false)
     private User creatorUser;
 
     /** {@link LtiDomain} in which this resource exists */
-    @ManyToOne(optional=false, fetch=FetchType.LAZY)
+    @ManyToOne(optional=false, fetch=FetchType.EAGER)
     @JoinColumn(name="ldid", updatable=false)
     private LtiDomain ltiDomain;
 
     /** {@link LtiContext} for this resource, if provided */
-    @ManyToOne(optional=true, fetch=FetchType.LAZY)
+    @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="lcid", updatable=false)
     private LtiContext ltiContext;
 
@@ -110,6 +119,7 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     @Column(name="resource_link_description", updatable=false)
     private String resourceLinkDescription;
 
+    /** {@link Delivery} matched to this resource */
     @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="did")
     private Delivery delivery;
