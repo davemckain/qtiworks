@@ -165,7 +165,7 @@ public class AssessmentReportingService {
      */
     public DeliveryCandidateSummaryReport buildDeliveryCandidateSummaryReport(final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+        final Delivery delivery = assessmentManagementService.lookupOwnDelivery(did);
         return buildDeliveryCandidateSummaryReport(delivery);
     }
 
@@ -265,7 +265,7 @@ public class AssessmentReportingService {
         Assert.notNull(outputStream, "outputStream");
 
         /* Look up sessions */
-        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+        final Delivery delivery = assessmentManagementService.lookupOwnDelivery(did);
         final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(delivery);
 
         /* Create ZIP builder */

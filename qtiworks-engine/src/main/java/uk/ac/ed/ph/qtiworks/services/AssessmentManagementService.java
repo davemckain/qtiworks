@@ -148,17 +148,6 @@ public class AssessmentManagementService {
         return result;
     }
 
-    /**
-     * Looks up the {@link Assessment} having the given ID (aid) and checks that
-     * the caller may access it.
-     */
-    public Assessment lookupAssessment(final long aid)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final Assessment result = assessmentDao.requireFindById(aid);
-        ensureCallerMayAccess(result);
-        return result;
-    }
-
     //-------------------------------------------------
 
     /**
@@ -262,7 +251,7 @@ public class AssessmentManagementService {
 
         /* Look up Assessment */
         final Assessment assessment = assessmentDao.requireFindById(aid);
-        ensureCallerMayChange(assessment);
+        ensureCallerOwns(assessment);
 
         /* Make changes */
         assessment.setName(command.getName().trim());
@@ -287,7 +276,7 @@ public class AssessmentManagementService {
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
         Assert.notNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
-        ensureCallerMayChange(assessment);
+        ensureCallerOwns(assessment);
         final AssessmentPackage oldPackage = assessment.getSelectedAssessmentPackage();
 
         /* Upload data into a new sandbox */
@@ -333,7 +322,7 @@ public class AssessmentManagementService {
 
     public AssessmentObjectValidationResult<?> validateAssessment(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = lookupAssessment(aid);
+        final Assessment assessment = lookupOwnAssessment(aid);
         return validateAssessment(assessment);
     }
 
@@ -359,19 +348,6 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
 
-    /**
-     * TODO: Currently only permitting people to see either public Assessments, or
-     * their own Assessments.
-     */
-    private User ensureCallerMayAccess(final Assessment assessment)
-            throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
-        if (!assessment.isPublic() && !assessment.getOwnerUser().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.VIEW_ASSESSMENT, assessment);
-        }
-        return caller;
-    }
-
     private User ensureCallerOwns(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
@@ -379,11 +355,6 @@ public class AssessmentManagementService {
             throw new PrivilegeException(caller, Privilege.OWN_ASSESSMENT, assessment);
         }
         return caller;
-    }
-
-    private User ensureCallerMayChange(final Assessment assessment)
-            throws PrivilegeException {
-        return ensureCallerOwns(assessment);
     }
 
     /**
@@ -432,11 +403,6 @@ public class AssessmentManagementService {
             throw new PrivilegeException(caller, Privilege.OWN_DELIVERY_SETTINGS, deliverySettings);
         }
         return caller;
-    }
-
-    private User ensureCallerMayChange(final DeliverySettings deliverySettings)
-            throws PrivilegeException {
-        return ensureCallerOwns(deliverySettings);
     }
 
     private User ensureCallerMayCreateDeliverySettings() throws PrivilegeException {
@@ -491,7 +457,7 @@ public class AssessmentManagementService {
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Check caller privileges */
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
-        ensureCallerMayChange(itemDeliverySettings);
+        ensureCallerOwns(itemDeliverySettings);
 
         /* Validate template */
         validateItemDeliverySettingsTemplate(template);
@@ -580,7 +546,7 @@ public class AssessmentManagementService {
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Check caller privileges */
         final TestDeliverySettings testDeliverySettings = lookupTestDeliverySettings(dsid);
-        ensureCallerMayChange(testDeliverySettings);
+        ensureCallerOwns(testDeliverySettings);
 
         /* Validate template */
         validateTestDeliverySettingsTemplate(template);
@@ -630,13 +596,6 @@ public class AssessmentManagementService {
     // CRUD for Delivery
     // (access controls are governed by owning Assessment)
 
-    public Delivery lookupDelivery(final long did)
-            throws DomainEntityNotFoundException, PrivilegeException {
-        final Delivery delivery = deliveryDao.requireFindById(did);
-        ensureCallerMayAccess(delivery.getAssessment());
-        return delivery;
-    }
-
     public Delivery lookupOwnDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Delivery delivery = deliveryDao.requireFindById(did);
@@ -649,8 +608,8 @@ public class AssessmentManagementService {
     public Delivery createDelivery(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Look up Assessment and check caller and change it */
-        final Assessment assessment = lookupAssessment(aid);
-        ensureCallerMayChange(assessment);
+        final Assessment assessment = lookupOwnAssessment(aid);
+        ensureCallerOwns(assessment);
 
         /* Get first DeliverySettings (creating if required) */
         final DeliverySettings deliverySettings = requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
@@ -674,8 +633,8 @@ public class AssessmentManagementService {
         validateDeliveryTemplate(template);
 
         /* Look up Assessment and check caller and change it */
-        final Assessment assessment = lookupAssessment(aid);
-        ensureCallerMayChange(assessment);
+        final Assessment assessment = lookupOwnAssessment(aid);
+        ensureCallerOwns(assessment);
 
         /* Look up settings and check privileges */
         final long dsid = template.getDsid();
@@ -730,7 +689,7 @@ public class AssessmentManagementService {
         /* Look up delivery and check privileges */
         final Delivery delivery = lookupOwnDelivery(did);
         final Assessment assessment = delivery.getAssessment();
-        ensureCallerMayChange(assessment);
+        ensureCallerOwns(assessment);
 
         /* Look up settings and check privileges */
         final long dsid = template.getDsid();
@@ -778,8 +737,8 @@ public class AssessmentManagementService {
         Assert.notNull(deliverySettings, "deliverySettings");
         ensureCompatible(deliverySettings, assessment);
 
-        /* Make sure caller is allowed to run this Assessment */
-        ensureCallerMayAccess(assessment);
+        /* Check access rights */
+        ensureCallerOwns(assessment);
 
         /* Create demo Delivery */
         final Delivery delivery = new Delivery();
