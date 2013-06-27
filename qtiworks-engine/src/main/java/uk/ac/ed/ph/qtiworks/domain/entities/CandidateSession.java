@@ -146,6 +146,11 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="uid")
     private User candidate;
 
+    /** Is this session running in author mode? (I.e. providing debugging information) */
+    @Basic(optional=false)
+    @Column(name="author_mode")
+    private boolean authorMode;
+
     /**
      * Flag to indicate whether session has been closed.
      * Once closed, a result will have been recorded and the item/test state
@@ -282,6 +287,15 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public boolean isAuthorMode() {
+        return authorMode;
+    }
+
+    public void setAuthorMode(final boolean authorMode) {
+        this.authorMode = authorMode;
+    }
+
+
     public boolean isClosed() {
         return closed;
     }
@@ -343,6 +357,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
                 + "(xid=" + xid
                 + ",sessionToken=" + sessionToken
                 + ",exitUrl=" + exitUrl
+                + ",authorMode=" + authorMode
                 + ",closed=" + closed
                 + ",exploded=" + exploded
                 + ",terminated=" + terminated

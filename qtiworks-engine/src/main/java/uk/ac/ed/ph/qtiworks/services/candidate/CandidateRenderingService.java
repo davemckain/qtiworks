@@ -44,7 +44,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingRequest;
@@ -703,12 +702,11 @@ public class CandidateRenderingService {
             final AbstractRenderingRequest<P> renderingRequest, final P renderingOptions) {
         final Delivery delivery = candidateSession.getDelivery();
         final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
-        final DeliverySettings deliverySettings = delivery.getDeliverySettings();
 
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));
         renderingRequest.setAssessmentResourceUri(assessmentPackageFileService.createAssessmentObjectUri(assessmentPackage));
-        renderingRequest.setAuthorMode(deliverySettings.isAuthorMode());
+        renderingRequest.setAuthorMode(candidateSession.isAuthorMode());
         renderingRequest.setValidated(assessmentPackage.isValidated());
         renderingRequest.setLaunchable(assessmentPackage.isLaunchable());
         renderingRequest.setErrorCount(assessmentPackage.getErrorCount());
@@ -760,8 +758,7 @@ public class CandidateRenderingService {
 
     private void ensureCallerMayAccessAuthorInfo(final CandidateSession candidateSession)
             throws CandidateForbiddenException {
-        final DeliverySettings deliverySettings = candidateSession.getDelivery().getDeliverySettings();
-        if (!deliverySettings.isAuthorMode()) {
+        if (!candidateSession.isAuthorMode()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_AUTHOR_INFO);
         }
     }

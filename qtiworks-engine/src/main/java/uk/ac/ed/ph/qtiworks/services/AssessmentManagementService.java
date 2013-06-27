@@ -471,7 +471,6 @@ public class AssessmentManagementService {
     }
 
     private void mergeItemDeliverySettings(final ItemDeliverySettingsTemplate template, final ItemDeliverySettings target) {
-        target.setAuthorMode(template.isAuthorMode());
         target.setTitle(template.getTitle().trim());
         target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setAllowEnd(template.isAllowEnd());
@@ -487,7 +486,6 @@ public class AssessmentManagementService {
     }
 
     public void mergeItemDeliverySettings(final ItemDeliverySettings template, final ItemDeliverySettingsTemplate target) {
-        target.setAuthorMode(template.isAuthorMode());
         target.setTitle(template.getTitle());
         target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setAllowEnd(template.isAllowEnd());
@@ -560,13 +558,11 @@ public class AssessmentManagementService {
     }
 
     private void mergeTestDeliverySettings(final TestDeliverySettingsTemplate template, final TestDeliverySettings target) {
-        target.setAuthorMode(template.isAuthorMode());
         target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setTitle(template.getTitle().trim());
     }
 
     public void mergeTestDeliverySettings(final TestDeliverySettings template, final TestDeliverySettingsTemplate target) {
-        target.setAuthorMode(template.isAuthorMode());
         target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
         target.setTitle(template.getTitle());
     }
@@ -804,7 +800,6 @@ public class AssessmentManagementService {
 
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
-        template.setAuthorMode(true);
         template.setTitle("Item Delivery Settings");
         template.setAllowEnd(true);
         template.setAllowHardResetWhenEnded(true);
@@ -820,7 +815,6 @@ public class AssessmentManagementService {
 
     public TestDeliverySettingsTemplate createTestDeliverySettingsTemplate() {
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
-        template.setAuthorMode(true);
         template.setTitle("Test Delivery Settings");
         return template;
     }

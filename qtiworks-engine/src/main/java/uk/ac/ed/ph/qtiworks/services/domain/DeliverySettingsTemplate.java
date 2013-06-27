@@ -56,8 +56,6 @@ public abstract class DeliverySettingsTemplate {
     @Size(min=1)
     private String title;
 
-    private boolean authorMode;
-
     @Min(0)
     private int templateProcessingLimit;
 
@@ -81,15 +79,6 @@ public abstract class DeliverySettingsTemplate {
 
     public final void setTitle(final String title) {
         this.title = title;
-    }
-
-
-    public final boolean isAuthorMode() {
-        return authorMode;
-    }
-
-    public final void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
     }
 
 

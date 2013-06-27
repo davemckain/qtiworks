@@ -364,13 +364,11 @@ public class SampleResourceImporter {
     private ItemDeliverySettings createBaseItemDeliverySettings() {
         final ItemDeliverySettings settings = new ItemDeliverySettings();
         settings.setMaxAttempts(Integer.valueOf(0));
-        settings.setAuthorMode(true);
         return settings;
     }
 
     private TestDeliverySettings createBaseTestDeliverySettings() {
         final TestDeliverySettings settings = new TestDeliverySettings();
-        settings.setAuthorMode(true);
         return settings;
     }
 

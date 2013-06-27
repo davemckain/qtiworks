@@ -34,29 +34,6 @@ testDeliverySettingsTemplate - form backing template
   </fieldset>
 
   <fieldset>
-    <legend>Display Controls</legend>
-    <div class="stdFormRow">
-      <div class="grid_4">
-        <label for="authorMode">Author Mode?</label>
-      </div>
-      <div class="grid_3">
-        <div class="booleanButtons">
-          <form:radiobutton path="authorMode" value="true" /> Yes
-          <form:radiobutton path="authorMode" value="false" /> No
-        </div>
-      </div>
-      <div class="grid_5">
-        <aside>
-          If 'Yes', additional debugging information will be shown while
-          the assessment is being delivered, assisting question authors.
-          It will also be possible to access the assessment source, result
-          and state XML.
-        </aside>
-      </div>
-    </div>
-    <div class="clear"></div>
-  </fieldset>
-  <fieldset>
     <legend>Advanced Controls</legend>
     <div class="stdFormRow">
       <div class="grid_4">

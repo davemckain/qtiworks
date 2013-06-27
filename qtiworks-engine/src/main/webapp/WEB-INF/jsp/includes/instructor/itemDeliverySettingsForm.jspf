@@ -34,7 +34,7 @@ itemDeliverySettingsTemplate - form backing template
   </fieldset>
 
   <fieldset>
-    <legend>Display Controls</legend>
+    <legend>Basic Controls</legend>
     <div class="stdFormRow">
       <div class="grid_2">
         <label for="prompt">Prompt:</label>
@@ -61,26 +61,6 @@ itemDeliverySettingsTemplate - form backing template
         <aside>
           Specify the maximum number of attempts allowed, using 0 to indicate that
           there should be no limit.
-        </aside>
-      </div>
-    </div>
-    <div class="clear"></div>
-    <div class="stdFormRow">
-      <div class="grid_4">
-        <label for="authorMode">Author Mode?</label>
-      </div>
-      <div class="grid_3">
-        <div class="booleanButtons">
-          <form:radiobutton path="authorMode" value="true" /> Yes
-          <form:radiobutton path="authorMode" value="false" /> No
-        </div>
-      </div>
-      <div class="grid_5">
-        <aside>
-          If 'Yes', additional debugging information will be shown while
-          the item is being delivered, assisting question authors.
-          It will also be possible to access the assessment source, result
-          and state XML.
         </aside>
       </div>
     </div>

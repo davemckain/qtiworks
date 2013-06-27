@@ -294,7 +294,7 @@ public class InstructorAssessmentManagementController {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
 
-        return runDelivery(aid, demoDelivery);
+        return runDelivery(aid, demoDelivery, true);
     }
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
@@ -304,12 +304,13 @@ public class InstructorAssessmentManagementController {
         final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
 
-        return runDelivery(aid, demoDelivery);
+        return runDelivery(aid, demoDelivery, true);
     }
 
-    private String runDelivery(final long aid, final Delivery delivery) throws PrivilegeException {
+    private String runDelivery(final long aid, final Delivery delivery, final boolean authorMode)
+            throws PrivilegeException {
         final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl, null, null);
+        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, authorMode, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 
@@ -336,12 +337,13 @@ public class InstructorAssessmentManagementController {
         return "showDelivery";
     }
 
+    /** FIXME: Support trying out with authorMode turned off */
     @RequestMapping(value="/delivery/{did}/try", method=RequestMethod.POST)
     public String tryOwnDelivery(final @PathVariable long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupOwnDelivery(did);
         final String exitUrl = instructorRouter.buildWithinContextUrl("/delivery/" + did);
-        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, exitUrl, null, null);
+        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, true, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 

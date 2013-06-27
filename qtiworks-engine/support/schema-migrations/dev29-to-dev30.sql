@@ -1,5 +1,11 @@
 BEGIN WORK;
 
+-- Move 'author_mode' flag from delivery_settings to candidate_sessions
+ALTER TABLE delivery_settings DROP author_mode;
+ALTER TABLE candidate_sessions ADD author_mode BOOLEAN;
+UPDATE candidate_sessions SET author_mode = FALSE;
+ALTER TABLE candidate_sessions ALTER author_mode SET NOT NULL;
+
 -- Changes to base users table
 ALTER TABLE users ADD user_role VARCHAR(10);
 UPDATE users SET user_role=user_type;

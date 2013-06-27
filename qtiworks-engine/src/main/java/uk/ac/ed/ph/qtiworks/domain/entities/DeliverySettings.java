@@ -150,14 +150,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     // Settings common to both items and tests
 
     /**
-     * Author mode includes additional debugging information in the rendering,
-     * as well as the ability to view the assessment source(s), result and state.
-     */
-    @Basic(optional=false)
-    @Column(name="author_mode")
-    private boolean authorMode;
-
-    /**
      * If specified, overrides the default number of times that template processing
      * rules should be run on a particular item before reverting to default values.
      * (This is to accommodate <code>templateConstraint</code>.)
@@ -249,15 +241,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     }
 
     //------------------------------------------------------------
-
-    public boolean isAuthorMode() {
-        return authorMode;
-    }
-
-    public void setAuthorMode(final boolean authorMode) {
-        this.authorMode = authorMode;
-    }
-
 
     public int getTemplateProcessingLimit() {
         return templateProcessingLimit;
