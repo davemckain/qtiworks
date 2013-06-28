@@ -82,11 +82,17 @@ import javax.persistence.Version;
 @Table(name="assessments")
 @SequenceGenerator(name="assessmentSequence", sequenceName="assessment_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
-    @NamedQuery(name="Assessment.getForOwner",
+    @NamedQuery(name="Assessment.getForOwnerUser",
             query="SELECT a, ap"
                 + "  FROM Assessment a"
                 + "  LEFT JOIN a.selectedAssessmentPackage ap"
                 + "  WHERE a.ownerUser = :user"
+                + "  ORDER BY a.creationTime"),
+    @NamedQuery(name="Assessment.getForOwnerLtiContext",
+            query="SELECT a, ap"
+                + "  FROM Assessment a"
+                + "  LEFT JOIN a.selectedAssessmentPackage ap"
+                + "  WHERE a.ownerLtiContext = :ltiContext"
                 + "  ORDER BY a.creationTime"),
     @NamedQuery(name="Assessment.getForSampleCategory",
             query="SELECT a, ap"

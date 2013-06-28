@@ -546,7 +546,7 @@ public class AssessmentManagementService {
 
         /* Create Delivery template with reasonable defaults */
         final DeliveryTemplate template = new DeliveryTemplate();
-        final long existingDeliveryCount = assessmentDataService.countCallerDeliveries(assessment);
+        final long existingDeliveryCount = assessmentDataService.countUserCreatedDeliveries(assessment);
         template.setTitle("Delivery #" + (existingDeliveryCount+1));
         template.setDsid(null);
         template.setOpen(false);

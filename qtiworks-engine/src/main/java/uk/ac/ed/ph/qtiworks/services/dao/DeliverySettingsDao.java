@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -65,37 +66,49 @@ public class DeliverySettingsDao extends GenericDao<DeliverySettings> {
         super(DeliverySettings.class);
     }
 
-    public long countForOwnerAndType(final User ownerUser, final AssessmentObjectType assessmentType) {
-        final Query query = em.createNamedQuery("DeliverySettings.countForOwnerAndType");
-        query.setParameter("user", ownerUser);
-        query.setParameter("assessmentType", assessmentType);
-        return extractCountResult(query);
-    }
-
     public List<DeliverySettings> getAllPublicSettingsForType(final AssessmentObjectType assessmentType) {
         final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getAllPublicSettingsForType", DeliverySettings.class);
         query.setParameter("assessmentType", assessmentType);
         return query.getResultList();
     }
 
-    public List<DeliverySettings> getForOwner(final User user) {
-        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwner", DeliverySettings.class);
+    public List<DeliverySettings> getForOwnerUser(final User user) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerUser", DeliverySettings.class);
         query.setParameter("user", user);
         return query.getResultList();
     }
 
-    public List<DeliverySettings> getForOwnerAndType(final User user, final AssessmentObjectType assessmentType) {
-        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerAndType", DeliverySettings.class);
+    public List<DeliverySettings> getForOwnerUserAndType(final User user, final AssessmentObjectType assessmentType) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerUserAndType", DeliverySettings.class);
         query.setParameter("user", user);
         query.setParameter("assessmentType", assessmentType);
         return query.getResultList();
     }
 
-    public DeliverySettings getFirstForOwner(final User user, final AssessmentObjectType assessmentType) {
-        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerAndType", DeliverySettings.class);
-        query.setParameter("user", user);
+    public long countForOwnerUserAndType(final User ownerUser, final AssessmentObjectType assessmentType) {
+        final Query query = em.createNamedQuery("DeliverySettings.countForOwnerUserAndType");
+        query.setParameter("user", ownerUser);
         query.setParameter("assessmentType", assessmentType);
-        query.setMaxResults(1);
-        return extractNullableFindResult(query);
+        return extractCountResult(query);
+    }
+
+    public List<DeliverySettings> getForOwnerLtiContext(final LtiContext ltiContext) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerLtiContext", DeliverySettings.class);
+        query.setParameter("ltiContext", ltiContext);
+        return query.getResultList();
+    }
+
+    public List<DeliverySettings> getForOwnerLtiContextAndType(final LtiContext ltiContext, final AssessmentObjectType assessmentType) {
+        final TypedQuery<DeliverySettings> query = em.createNamedQuery("DeliverySettings.getForOwnerLtiContextAndType", DeliverySettings.class);
+        query.setParameter("ltiContext", ltiContext);
+        query.setParameter("assessmentType", assessmentType);
+        return query.getResultList();
+    }
+
+    public long countForOwnerLtiContextAndType(final LtiContext ltiContext, final AssessmentObjectType assessmentType) {
+        final Query query = em.createNamedQuery("DeliverySettings.countForOwnerLtiContextAndType");
+        query.setParameter("ltiContext", ltiContext);
+        query.setParameter("assessmentType", assessmentType);
+        return extractCountResult(query);
     }
 }

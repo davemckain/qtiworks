@@ -82,22 +82,38 @@ import org.hibernate.annotations.Type;
                 + "  WHERE ds.isPublic IS TRUE"
                 + "  AND ds.assessmentType = :assessmentType"
                 + "  ORDER BY creationTime, id"),
-    @NamedQuery(name="DeliverySettings.getForOwner",
+    @NamedQuery(name="DeliverySettings.getForOwnerUser",
             query="SELECT ds"
                 + "  FROM DeliverySettings ds"
                 + "  WHERE ds.ownerUser = :user"
                 + "  ORDER BY creationTime, dsid"),
-    @NamedQuery(name="DeliverySettings.getForOwnerAndType",
+    @NamedQuery(name="DeliverySettings.getForOwnerUserAndType",
             query="SELECT ds"
                 + "  FROM DeliverySettings ds"
                 + "  WHERE ds.ownerUser = :user"
                 + "  AND ds.assessmentType = :assessmentType"
                 + "  ORDER BY creationTime, dsid"),
-    @NamedQuery(name="DeliverySettings.countForOwnerAndType",
+    @NamedQuery(name="DeliverySettings.countForOwnerUserAndType",
             query="SELECT COUNT(ds)"
                 + "  FROM DeliverySettings ds"
                 + "  WHERE ds.ownerUser = :user"
-                + "  AND ds.assessmentType = :assessmentType")
+                + "  AND ds.assessmentType = :assessmentType"),
+    @NamedQuery(name="DeliverySettings.getForOwnerLtiContext",
+            query="SELECT ds"
+                + "  FROM DeliverySettings ds"
+                + "  WHERE ds.ownerLtiContext = :ltiContext"
+                + "  ORDER BY creationTime, dsid"),
+    @NamedQuery(name="DeliverySettings.getForOwnerLtiContextAndType",
+            query="SELECT ds"
+                + "  FROM DeliverySettings ds"
+                + "  WHERE ds.ownerLtiContext = :ltiContext"
+                + "  AND ds.assessmentType = :assessmentType"
+                + "  ORDER BY creationTime, dsid"),
+    @NamedQuery(name="DeliverySettings.countForOwnerLtiContextAndType",
+            query="SELECT COUNT(ds)"
+                + "  FROM DeliverySettings ds"
+                + "  WHERE ds.ownerLtiContext = :ltiContext"
+                + "  AND ds.assessmentType = :assessmentType"),
 })
 public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 

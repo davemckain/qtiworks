@@ -204,7 +204,7 @@ public class SampleResourceImporter {
 
     private Map<DeliveryStyle, DeliverySettings> importDeliverySettings(final SystemUser sampleOwner) {
         final Map<String, DeliverySettings> deliverySettingsByTitleMap = new HashMap<String, DeliverySettings>();
-        for (final DeliverySettings existingOptions : deliverySettingsDao.getForOwner(sampleOwner)) {
+        for (final DeliverySettings existingOptions : deliverySettingsDao.getForOwnerUser(sampleOwner)) {
             deliverySettingsByTitleMap.put(existingOptions.getTitle(), existingOptions);
         }
 
@@ -373,7 +373,7 @@ public class SampleResourceImporter {
     }
 
     private Map<String, Assessment> getImportedSampleAssessments(final SystemUser sampleOwner) {
-        final List<AssessmentAndPackage> samples = assessmentDao.getForOwner(sampleOwner);
+        final List<AssessmentAndPackage> samples = assessmentDao.getForOwnerUser(sampleOwner);
         final Map<String, Assessment> result = new HashMap<String, Assessment>();
         for (final AssessmentAndPackage sample : samples) {
             final AssessmentPackage assessmentPackage = sample.getAssessmentPackage();

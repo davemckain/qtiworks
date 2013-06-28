@@ -104,7 +104,7 @@ public class InstructorAssessmentManagementController {
     /** Lists all Assignments owned by the caller */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listOwnAssessments(final Model model) {
-        final List<AssessmentAndPackage> assessments = assessmentDataService.getCallerAssessments();
+        final List<AssessmentAndPackage> assessments = assessmentDataService.getCallerUserAssessments();
         model.addAttribute(assessments);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentListRouting(assessments));
         return "listAssessments";
@@ -124,7 +124,7 @@ public class InstructorAssessmentManagementController {
         model.addAttribute("assessment", assessment);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
-        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerDeliverySettingsForType(assessment.getAssessmentType()));
+        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerUserDeliverySettingsForType(assessment.getAssessmentType()));
     }
 
     //------------------------------------------------------
@@ -321,7 +321,7 @@ public class InstructorAssessmentManagementController {
     public String listDeliveries(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
-        final List<Delivery> deliveries = assessmentDataService.getCallerDeliveries(assessment);
+        final List<Delivery> deliveries = assessmentDataService.getUserCreatedDeliveries(assessment);
         model.addAttribute(assessment);
         model.addAttribute(deliveries);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
@@ -420,7 +420,7 @@ public class InstructorAssessmentManagementController {
         model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
-        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));
+        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerUserDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));
     }
 
     //------------------------------------------------------
@@ -428,7 +428,7 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
     public String listOwnDeliverySettings(final Model model) {
-        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerDeliverySettings();
+        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerUserDeliverySettings();
         model.addAttribute("deliverySettingsList", deliverySettingsList);
         model.addAttribute("deliverySettingsRouting", instructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
         return "listDeliverySettings";
@@ -436,7 +436,7 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/itemdeliverysettings/create", method=RequestMethod.GET)
     public String showCreateItemDeliverySettingsForm(final Model model) {
-        final long existingSettingsCount = assessmentDataService.countCallerDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
+        final long existingSettingsCount = assessmentDataService.countCallerUserDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
         final ItemDeliverySettingsTemplate template = assessmentDataService.createItemDeliverySettingsTemplate();
         template.setTitle("Item Delivery Settings #" + (existingSettingsCount+1));
 
@@ -504,7 +504,7 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/testdeliverysettings/create", method=RequestMethod.GET)
     public String showCreateTestDeliverySettingsForm(final Model model) {
-        final long existingOptionCount = assessmentDataService.countCallerDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
+        final long existingOptionCount = assessmentDataService.countCallerUserDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
         final TestDeliverySettingsTemplate template = assessmentDataService.createTestDeliverySettingsTemplate();
         template.setTitle("Test Delivery Settings #" + (existingOptionCount+1));
 

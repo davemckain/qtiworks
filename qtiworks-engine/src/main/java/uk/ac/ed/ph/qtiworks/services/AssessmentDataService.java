@@ -41,6 +41,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
@@ -123,10 +125,16 @@ public class AssessmentDataService {
 
     //-------------------------------------------------
 
-    public List<AssessmentAndPackage> getCallerAssessments() {
+    public List<AssessmentAndPackage> getCallerUserAssessments() {
         final User currentUser = identityService.getCurrentThreadUser();
-        return assessmentDao.getForOwner(currentUser);
+        return assessmentDao.getForOwnerUser(currentUser);
     }
+
+    public List<AssessmentAndPackage> getCallerLtiContextAssessments() {
+        return assessmentDao.getForOwnerLtiContext(ensureLtiContext());
+    }
+
+    //-------------------------------------------------
 
     /**
      * Retrieves the selected {@link AssessmentPackage} for the given {@link Assessment}, making
@@ -160,26 +168,46 @@ public class AssessmentDataService {
 
     //-------------------------------------------------
 
-    public List<Delivery> getCallerDeliveries(final Assessment assessment) {
+    public List<Delivery> getUserCreatedDeliveries(final Assessment assessment) {
         return deliveryDao.getForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
     }
 
-    public long countCallerDeliveries(final Assessment assessment) {
+    public long countUserCreatedDeliveries(final Assessment assessment) {
         return deliveryDao.countForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
     }
 
     //-------------------------------------------------
 
-    public long countCallerDeliverySettings(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.countForOwnerAndType(identityService.getCurrentThreadUser(), assessmentType);
+    public List<DeliverySettings> getCallerUserDeliverySettings() {
+        return deliverySettingsDao.getForOwnerUser(identityService.getCurrentThreadUser());
     }
 
-    public List<DeliverySettings> getCallerDeliverySettings() {
-        return deliverySettingsDao.getForOwner(identityService.getCurrentThreadUser());
+    public List<DeliverySettings> getCallerUserDeliverySettingsForType(final AssessmentObjectType assessmentType) {
+        return deliverySettingsDao.getForOwnerUserAndType(identityService.getCurrentThreadUser(), assessmentType);
     }
 
-    public List<DeliverySettings> getCallerDeliverySettingsForType(final AssessmentObjectType assessmentType) {
-        return deliverySettingsDao.getForOwnerAndType(identityService.getCurrentThreadUser(), assessmentType);
+    public long countCallerUserDeliverySettings(final AssessmentObjectType assessmentType) {
+        return deliverySettingsDao.countForOwnerUserAndType(identityService.getCurrentThreadUser(), assessmentType);
+    }
+
+    public List<DeliverySettings> getCallerLtiContextDeliverySettings() {
+        return deliverySettingsDao.getForOwnerLtiContext(ensureLtiContext());
+    }
+
+    public List<DeliverySettings> getCallerLtiContextDeliverySettingsForType(final AssessmentObjectType assessmentType) {
+        return deliverySettingsDao.getForOwnerLtiContextAndType(ensureLtiContext(), assessmentType);
+    }
+
+    public long countCallerLtiContextDeliverySettings(final AssessmentObjectType assessmentType) {
+        return deliverySettingsDao.countForOwnerLtiContextAndType(ensureLtiContext(), assessmentType);
+    }
+
+    private LtiContext ensureLtiContext() {
+        final LtiResource ltiResource = identityService.getCurrentThreadLtiResource();
+        if (ltiResource==null) {
+            throw new QtiWorksLogicException("Expected non-null LtiResource from IdentityService");
+        }
+        return ltiResource.getLtiContext();
     }
 
     //-------------------------------------------------

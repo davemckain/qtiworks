@@ -35,6 +35,7 @@ package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.SampleCategory;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
@@ -66,9 +67,15 @@ public class AssessmentDao extends GenericDao<Assessment> {
         super(Assessment.class);
     }
 
-    public List<AssessmentAndPackage> getForOwner(final User user) {
-        final Query query = em.createNamedQuery("Assessment.getForOwner");
+    public List<AssessmentAndPackage> getForOwnerUser(final User user) {
+        final Query query = em.createNamedQuery("Assessment.getForOwnerUser");
         query.setParameter("user", user);
+        return wrapResult(query.getResultList());
+    }
+
+    public List<AssessmentAndPackage> getForOwnerLtiContext(final LtiContext ltiContext) {
+        final Query query = em.createNamedQuery("Assessment.getForOwnerLtiContext");
+        query.setParameter("ltiContext", ltiContext);
         return wrapResult(query.getResultList());
     }
 

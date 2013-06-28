@@ -213,13 +213,13 @@ public class DataDeletionService {
     public void resetUser(final User user) {
         Assert.notNull(user, "user");
 
-        for (final AssessmentAndPackage item : assessmentDao.getForOwner(user)) {
+        for (final AssessmentAndPackage item : assessmentDao.getForOwnerUser(user)) {
             deleteAssessment(item.getAssessment());
         }
         for (final CandidateSession candidateSession : candidateSessionDao.getForCandidate(user)) {
             deleteCandidateSession(candidateSession);
         }
-        for (final DeliverySettings deliverySettings : deliverySettingsDao.getForOwner(user)) {
+        for (final DeliverySettings deliverySettings : deliverySettingsDao.getForOwnerUser(user)) {
             deliverySettingsDao.remove(deliverySettings);
         }
         if (!filespaceManager.deleteAssessmentPackageSandboxes(user)) {
