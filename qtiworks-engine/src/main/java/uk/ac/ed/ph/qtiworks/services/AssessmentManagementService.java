@@ -45,6 +45,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
@@ -139,13 +141,32 @@ public class AssessmentManagementService {
 
     /**
      * Looks up the {@link Assessment} having the given ID (aid) and checks that
-     * the caller owns it.
+     * the caller may manage it.
      */
-    public Assessment lookupOwnAssessment(final long aid)
+    public Assessment lookupAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Assessment result = assessmentDao.requireFindById(aid);
-        ensureCallerOwns(result);
+        ensureCallerMayManage(result);
         return result;
+    }
+
+    private User ensureCallerMayManage(final Assessment assessment)
+            throws PrivilegeException {
+        final User caller = identityService.getCurrentThreadUser();
+        final LtiResource ltiResource = identityService.getCurrentThreadLtiResource();
+        if (ltiResource!=null) {
+            /* Manager access is shared with all instructors in the LTI context */
+            final LtiContext ltiContext = ltiResource.getLtiContext();
+            final LtiContext assessmentLtiContext = assessment.getOwnerLtiContext();
+            if (!caller.isInstructor() || assessmentLtiContext==null || !ltiContext.equals(assessmentLtiContext)) {
+                throw new PrivilegeException(caller, Privilege.MANAGE_ASSESSMENT, assessment);
+            }
+        }
+        else if (!assessment.getOwnerUser().equals(caller)) {
+            /* If not LTI context, then assessments are private to owner */
+            throw new PrivilegeException(caller, Privilege.MANAGE_ASSESSMENT, assessment);
+        }
+        return caller;
     }
 
     //-------------------------------------------------
@@ -221,6 +242,19 @@ public class AssessmentManagementService {
     }
 
     /**
+     * We are currently allowing INSTRUCTOR and ANONYMOUS (demo)
+     * users to create assignments.
+     */
+    private User ensureCallerMayCreateAssessment() throws PrivilegeException {
+        final User caller = identityService.getCurrentThreadUser();
+        final UserRole userRole = caller.getUserRole();
+        if (!(userRole==UserRole.ANONYMOUS || userRole==UserRole.INSTRUCTOR)) {
+            throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
+        }
+        return caller;
+    }
+
+    /**
      * Deletes the {@link Assessment} having the given aid and owned by the caller.
      *
      * NOTE: This deletes ALL associated data, including candidate data. Use with care!
@@ -228,8 +262,7 @@ public class AssessmentManagementService {
     public void deleteAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
         /* Look up assessment and check permissions */
-        final Assessment assessment = assessmentDao.requireFindById(aid);
-        ensureCallerOwns(assessment);
+        final Assessment assessment = lookupAssessment(aid);
 
         /* Now delete it and all associated data */
         dataDeletionService.deleteAssessment(assessment);
@@ -251,7 +284,7 @@ public class AssessmentManagementService {
 
         /* Look up Assessment */
         final Assessment assessment = assessmentDao.requireFindById(aid);
-        ensureCallerOwns(assessment);
+        ensureCallerMayManage(assessment);
 
         /* Make changes */
         assessment.setName(command.getName().trim());
@@ -276,7 +309,7 @@ public class AssessmentManagementService {
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
         Assert.notNull(multipartFile, "multipartFile");
         final Assessment assessment = assessmentDao.requireFindById(aid);
-        ensureCallerOwns(assessment);
+        ensureCallerMayManage(assessment);
         final AssessmentPackage oldPackage = assessment.getSelectedAssessmentPackage();
 
         /* Upload data into a new sandbox */
@@ -318,29 +351,8 @@ public class AssessmentManagementService {
 
     public AssessmentObjectValidationResult<?> validateAssessment(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Assessment assessment = lookupOwnAssessment(aid);
+        final Assessment assessment = lookupAssessment(aid);
         return assessmentDataService.validateAssessment(assessment);
-    }
-
-    private User ensureCallerOwns(final Assessment assessment)
-            throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
-        if (!assessment.getOwnerUser().equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.OWN_ASSESSMENT, assessment);
-        }
-        return caller;
-    }
-
-    /**
-     * NB: Currently allowing INSTRUCTOR and ANONYMOUS (demo) users to create assignments.
-     */
-    private User ensureCallerMayCreateAssessment() throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
-        final UserRole userRole = caller.getUserRole();
-        if (!(userRole==UserRole.ANONYMOUS || userRole==UserRole.INSTRUCTOR)) {
-            throw new PrivilegeException(caller, Privilege.CREATE_ASSESSMENT);
-        }
-        return caller;
     }
 
     //-------------------------------------------------
@@ -349,32 +361,33 @@ public class AssessmentManagementService {
     public DeliverySettings lookupDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
-        ensureCallerMayAccess(deliverySettings);
+        ensureCallerMayManage(deliverySettings);
         return deliverySettings;
     }
 
     public DeliverySettings lookupAndMatchDeliverySettings(final long dsid, final Assessment assessment)
             throws DomainEntityNotFoundException, PrivilegeException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
-        ensureCallerMayAccess(deliverySettings);
+        ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, assessment);
         return deliverySettings;
     }
 
-    private User ensureCallerMayAccess(final DeliverySettings deliverySettings)
+    private User ensureCallerMayManage(final DeliverySettings deliverySettings)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
-        if (!deliverySettings.isPublic() && !caller.equals(deliverySettings.getOwnerUser())) {
-            throw new PrivilegeException(caller, Privilege.ACCESS_DELIVERY_SETTINGS, deliverySettings);
+        final LtiResource ltiResource = identityService.getCurrentThreadLtiResource();
+        if (ltiResource!=null) {
+            /* Manager access is shared with all instructors in the LTI context */
+            final LtiContext ltiContext = ltiResource.getLtiContext();
+            final LtiContext dsLtiContext = deliverySettings.getOwnerLtiContext();
+            if (!caller.isInstructor() || dsLtiContext==null || !ltiContext.equals(dsLtiContext)) {
+                throw new PrivilegeException(caller, Privilege.MANAGE_DELIVERY_SETTINGS, deliverySettings);
+            }
         }
-        return caller;
-    }
-
-    private User ensureCallerOwns(final DeliverySettings deliverySettings)
-            throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
-        if (!caller.equals(deliverySettings.getOwnerUser())) {
-            throw new PrivilegeException(caller, Privilege.OWN_DELIVERY_SETTINGS, deliverySettings);
+        else if (!deliverySettings.getOwnerUser().equals(caller)) {
+            /* If not LTI context, then assessments are private to owner */
+            throw new PrivilegeException(caller, Privilege.MANAGE_DELIVERY_SETTINGS, deliverySettings);
         }
         return caller;
     }
@@ -393,7 +406,7 @@ public class AssessmentManagementService {
     public ItemDeliverySettings lookupItemDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
-        ensureCallerMayAccess(deliverySettings);
+        ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, AssessmentObjectType.ASSESSMENT_ITEM);
 
         return (ItemDeliverySettings) deliverySettings;
@@ -431,7 +444,7 @@ public class AssessmentManagementService {
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Check caller privileges */
         final ItemDeliverySettings itemDeliverySettings = lookupItemDeliverySettings(dsid);
-        ensureCallerOwns(itemDeliverySettings);
+        ensureCallerMayManage(itemDeliverySettings);
 
         /* Validate template */
         validateItemDeliverySettingsTemplate(template);
@@ -450,7 +463,7 @@ public class AssessmentManagementService {
     public TestDeliverySettings lookupTestDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
-        ensureCallerMayAccess(deliverySettings);
+        ensureCallerMayManage(deliverySettings);
         ensureCompatible(deliverySettings, AssessmentObjectType.ASSESSMENT_TEST);
 
         return (TestDeliverySettings) deliverySettings;
@@ -488,7 +501,7 @@ public class AssessmentManagementService {
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Check caller privileges */
         final TestDeliverySettings testDeliverySettings = lookupTestDeliverySettings(dsid);
-        ensureCallerOwns(testDeliverySettings);
+        ensureCallerMayManage(testDeliverySettings);
 
         /* Validate template */
         validateTestDeliverySettingsTemplate(template);
@@ -507,7 +520,7 @@ public class AssessmentManagementService {
             throws DomainEntityNotFoundException, PrivilegeException {
         /* Look up entity and check permissions */
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
-        ensureCallerOwns(deliverySettings);
+        ensureCallerMayManage(deliverySettings);
 
         /* Update any Deliveries using these settings so that they revert to defaults */
         final List<Delivery> deliveriesUsingSettings = deliveryDao.getUsingSettings(deliverySettings);
@@ -529,10 +542,10 @@ public class AssessmentManagementService {
     // CRUD for Delivery
     // (access controls are governed by owning Assessment)
 
-    public Delivery lookupOwnDelivery(final long did)
+    public Delivery lookupDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
         final Delivery delivery = deliveryDao.requireFindById(did);
-        ensureCallerOwns(delivery.getAssessment());
+        ensureCallerMayManage(delivery.getAssessment());
         return delivery;
     }
 
@@ -541,8 +554,8 @@ public class AssessmentManagementService {
     public Delivery createDelivery(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Look up Assessment and check privs */
-        final Assessment assessment = lookupOwnAssessment(aid);
-        ensureCallerOwns(assessment);
+        final Assessment assessment = lookupAssessment(aid);
+        ensureCallerMayManage(assessment);
 
         /* Create Delivery template with reasonable defaults */
         final DeliveryTemplate template = new DeliveryTemplate();
@@ -563,8 +576,8 @@ public class AssessmentManagementService {
         validateDeliveryTemplate(template);
 
         /* Look up Assessment and check caller and change it */
-        final Assessment assessment = lookupOwnAssessment(aid);
-        ensureCallerOwns(assessment);
+        final Assessment assessment = lookupAssessment(aid);
+        ensureCallerMayManage(assessment);
 
         /* Look up settings and check privileges */
         final Long dsid = template.getDsid();
@@ -602,7 +615,7 @@ public class AssessmentManagementService {
         /* Look up assessment and check permissions */
         final Delivery delivery = deliveryDao.requireFindById(did);
         final Assessment assessment = delivery.getAssessment();
-        ensureCallerOwns(assessment);
+        ensureCallerMayManage(assessment);
 
         /* Now delete it and all associated data */
         dataDeletionService.deleteDelivery(delivery);
@@ -619,9 +632,9 @@ public class AssessmentManagementService {
         validateDeliveryTemplate(template);
 
         /* Look up delivery and check privileges */
-        final Delivery delivery = lookupOwnDelivery(did);
+        final Delivery delivery = lookupDelivery(did);
         final Assessment assessment = delivery.getAssessment();
-        ensureCallerOwns(assessment);
+        ensureCallerMayManage(assessment);
 
         /* Look up settings and check privileges */
         final Long dsid = template.getDsid();
@@ -657,7 +670,7 @@ public class AssessmentManagementService {
         }
 
         /* Check access rights */
-        ensureCallerOwns(assessment);
+        ensureCallerMayManage(assessment);
 
         /* Create demo Delivery */
         final Delivery delivery = new Delivery();

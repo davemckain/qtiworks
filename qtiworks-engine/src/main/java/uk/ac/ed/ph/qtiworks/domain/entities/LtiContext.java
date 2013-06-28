@@ -215,4 +215,15 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
                 + ",fallbackResourceLinkIk=" + fallbackResourceLinkId
                 + ")";
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof LtiContext)) {
+            return false;
+        }
+        final LtiContext other = (LtiContext) obj;
+        return ObjectUtilities.nullSafeEquals(ltiDomain, other.ltiDomain)
+                && ObjectUtilities.nullSafeEquals(contextId, other.contextId)
+                && ObjectUtilities.nullSafeEquals(fallbackResourceLinkId, other.fallbackResourceLinkId);
+    }
 }

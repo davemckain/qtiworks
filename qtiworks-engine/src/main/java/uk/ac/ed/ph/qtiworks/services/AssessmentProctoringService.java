@@ -92,7 +92,7 @@ public class AssessmentProctoringService {
 
     public int terminateCandidateSessionsForDelivery(final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final Delivery delivery = assessmentManagementService.lookupOwnDelivery(did);
+        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
         int terminatedCount = 0;
         for (final CandidateSession candidateSession : candidateSessionDao.getForDelivery(delivery)) {
             if (!candidateSession.isTerminated()) {

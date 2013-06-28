@@ -155,4 +155,13 @@ public class LtiDomain implements BaseEntity, TimestampedOnCreation {
                 + ",disabled=" + disabled
                 + ")";
     }
+
+    @Override
+    public final boolean equals(final Object obj) {
+        if (!(obj instanceof LtiDomain)) {
+            return false;
+        }
+        final LtiDomain other = (LtiDomain) obj;
+        return ObjectUtilities.nullSafeEquals(consumerKey, other.consumerKey);
+    }
 }

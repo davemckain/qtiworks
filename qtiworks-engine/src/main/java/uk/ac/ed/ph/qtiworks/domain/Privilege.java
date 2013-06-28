@@ -50,20 +50,14 @@ public enum Privilege {
     USER_CANDIDATE,
     USER_ANONYMOUS,
 
-    OWN_ASSESSMENT,
     CREATE_ASSESSMENT,
-    VIEW_ASSESSMENT,
+    MANAGE_ASSESSMENT,
+
+    CREATE_DELIVERY_SETTINGS,
+    MANAGE_DELIVERY_SETTINGS,
 
     /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
     MATCH_DELIVERY_SETTINGS,
-
-    ACCESS_DELIVERY_SETTINGS,
-
-    /** FIXME: Rename this! */
-    OWN_DELIVERY_SETTINGS,
-
-    /** FIXME: Rename this! */
-    CREATE_DELIVERY_SETTINGS,
 
     LAUNCH_ASSESSMENT_AS_SAMPLE,
     LAUNCH_CLOSED_DELIVERY,
