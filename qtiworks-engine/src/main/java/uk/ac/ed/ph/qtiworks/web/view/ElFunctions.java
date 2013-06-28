@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.view;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
@@ -115,5 +116,12 @@ public final class ElFunctions {
             case ASSESSMENT_TEST: return "Test";
             default: return "";
         }
+    }
+
+    //-------------------------------------------------
+
+    public static String formatLtiResourceTitle(final LtiResource ltiResource) {
+        final String title = ltiResource.getResourceLinkTitle();
+        return title!=null ? title : "QTIWorks Assessment";
     }
 }

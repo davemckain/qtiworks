@@ -31,13 +31,15 @@
  * QTItools is (c) 2008, University of Southampton.
  * MathAssessEngine is (c) 2010, University of Edinburgh.
  */
-package uk.ac.ed.ph.qtiworks.web.controller.instructor;
+package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
@@ -52,14 +54,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Router for the Instructor MVC
+ * Router for the LTI Instructor MVC
  *
  * @author David McKain
  */
 @Service
-public class InstructorRouter {
+public class LtiInstructorRouter {
 
     public static final String FLASH = "flashMessage";
+
+    @Resource
+    private IdentityService identityService;
 
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
@@ -68,7 +73,8 @@ public class InstructorRouter {
     private String contextPath;
 
     public String buildWithinContextUrl(final String actionUrl) {
-        return "/web/instructor" + actionUrl;
+        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
+        return "/lti/resource/" + currentLtiResource.getId() + actionUrl;
     }
 
     public String buildWebUrl(final String actionUrl) {
@@ -80,14 +86,15 @@ public class InstructorRouter {
     }
 
     public void addFlashMessage(final RedirectAttributes redirectAttributes, final String message) {
-        redirectAttributes.addFlashAttribute(InstructorRouter.FLASH, message);
+        redirectAttributes.addFlashAttribute(LtiInstructorRouter.FLASH, message);
     }
 
     public Map<String, String> buildPrimaryRouting() {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
-        primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
+        primaryRouting.put("resourceDashboard", buildWebUrl(""));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
         primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
+        primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
         primaryRouting.put("createItemDeliverySettings", buildWebUrl("/itemdeliverysettings/create"));
         primaryRouting.put("createTestDeliverySettings", buildWebUrl("/testdeliverysettings/create"));
         return primaryRouting;
@@ -114,8 +121,6 @@ public class InstructorRouter {
         result.put("validate", buildWebUrl("/assessment/" + aid + "/validate"));
         result.put("delete", buildWebUrl("/assessment/" + aid + "/delete"));
         result.put("try", buildWebUrl("/assessment/" + aid + "/try"));
-        result.put("deliveries", buildWebUrl("/assessment/" + aid + "/deliveries"));
-        result.put("createDelivery", buildWebUrl("/assessment/" + aid + "/deliveries/create"));
         return result;
     }
 

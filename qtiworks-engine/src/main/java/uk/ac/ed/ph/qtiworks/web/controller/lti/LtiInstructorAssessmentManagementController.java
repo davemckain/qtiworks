@@ -34,12 +34,17 @@
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
+
+import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -53,12 +58,37 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class LtiInstructorAssessmentManagementController {
 
     @Resource
+    private LtiInstructorRouter ltiInstructorRouter;
+
+    @Resource
     private IdentityService identityService;
+
+    @Resource
+    private AssessmentDataService assessmentDataService;
+
+    //------------------------------------------------------
+
+    @ModelAttribute
+    public void setupPrimaryRouting(final Model model) {
+        model.addAttribute("ltiResource", identityService.ensureCurrentThreadLtiResource());
+        model.addAttribute("primaryRouting", ltiInstructorRouter.buildPrimaryRouting());
+    }
+
+    //------------------------------------------------------
 
     @RequestMapping(value="", method=RequestMethod.GET)
     public String resourceTopPage(final Model model) {
         final User ltiUser = identityService.getCurrentThreadUser();
-        model.addAttribute("object", ltiUser);
-        return "ltiDebug";
+        model.addAttribute("ltiUser", ltiUser);
+        return "resource";
+    }
+
+    /** Lists all Assignments in this LTI context */
+    @RequestMapping(value="/assessments", method=RequestMethod.GET)
+    public String listContextAssessments(final Model model) {
+        final List<AssessmentAndPackage> assessments = assessmentDataService.getCallerLtiContextAssessments();
+        model.addAttribute(assessments);
+        model.addAttribute("assessmentRouting", ltiInstructorRouter.buildAssessmentListRouting(assessments));
+        return "listAssessments";
     }
 }

@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services.base;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
@@ -65,5 +66,14 @@ public final class IdentityService {
 
     public void setCurrentThreadLtiResource(final LtiResource ltiResource) {
         currentLtiResourceThreadLocal.set(ltiResource);
+    }
+
+
+    public LtiResource ensureCurrentThreadLtiResource() {
+        final LtiResource result = getCurrentThreadLtiResource();
+        if (result==null) {
+            throw new QtiWorksLogicException("Expected current LtiResource to be set for current Thread");
+        }
+        return result;
     }
 }

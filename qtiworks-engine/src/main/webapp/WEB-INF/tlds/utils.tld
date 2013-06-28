@@ -70,11 +70,19 @@ All Rights Reserved.
     )</function-signature>
   </function>
   <function>
-    <description>Assessmnet type formatting</description>
+    <description>Assessment type formatting</description>
     <name>formatAssessmentType</name>
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String formatAssessmentType(
       uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType
+    )</function-signature>
+  </function>
+  <function>
+    <description>LTIResource title formatting</description>
+    <name>formatLtiResourceTitle</name>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
+    <function-signature>String formatLtiResourceTitle(
+      uk.ac.ed.ph.qtiworks.domain.entities.LtiResource
     )</function-signature>
   </function>
 

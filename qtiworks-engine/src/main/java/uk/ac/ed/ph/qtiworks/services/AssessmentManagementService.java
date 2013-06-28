@@ -543,7 +543,7 @@ public class AssessmentManagementService {
 
     public void selectCurrentLtiResourceAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
-        final LtiResource currentLtiResource = ensureLtiResource();
+        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
         final Assessment assessment = lookupAssessment(aid);
 
         final Delivery delivery = currentLtiResource.getDelivery();
@@ -553,14 +553,6 @@ public class AssessmentManagementService {
         logger.debug("Assessment for LTI Delivery #{} has been set to #{}", delivery.getId(), assessment.getId());
         auditLogger.recordEvent("Assessment for LTI Delivery #" + delivery.getId()
                 + " has been set to #" + assessment.getId());
-    }
-
-    private LtiResource ensureLtiResource() {
-        final LtiResource ltiResource = identityService.getCurrentThreadLtiResource();
-        if (ltiResource==null) {
-            throw new QtiWorksLogicException("Expected non-null LtiResource from IdentityService");
-        }
-        return ltiResource;
     }
 
     //-------------------------------------------------

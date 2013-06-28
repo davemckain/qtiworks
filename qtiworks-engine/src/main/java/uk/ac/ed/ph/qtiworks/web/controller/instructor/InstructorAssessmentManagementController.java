@@ -101,6 +101,13 @@ public class InstructorAssessmentManagementController {
 
     //------------------------------------------------------
 
+    @ModelAttribute
+    public void setupPrimaryRouting(final Model model) {
+        model.addAttribute("instructorAssessmentRouting", instructorRouter.buildPrimaryRouting());
+    }
+
+    //------------------------------------------------------
+
     /** Lists all Assignments owned by the caller */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listOwnAssessments(final Model model) {
@@ -108,11 +115,6 @@ public class InstructorAssessmentManagementController {
         model.addAttribute(assessments);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentListRouting(assessments));
         return "listAssessments";
-    }
-
-    @ModelAttribute
-    public void setupPrimaryRouting(final Model model) {
-        model.addAttribute("instructorAssessmentRouting", instructorRouter.buildPrimaryRouting());
     }
 
     private void setupModelForAssessment(final long aid, final Model model)

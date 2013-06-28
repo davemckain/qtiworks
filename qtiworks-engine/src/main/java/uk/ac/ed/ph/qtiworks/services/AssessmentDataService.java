@@ -203,10 +203,7 @@ public class AssessmentDataService {
     }
 
     private LtiContext ensureLtiContext() {
-        final LtiResource ltiResource = identityService.getCurrentThreadLtiResource();
-        if (ltiResource==null) {
-            throw new QtiWorksLogicException("Expected non-null LtiResource from IdentityService");
-        }
+        final LtiResource ltiResource = identityService.ensureCurrentThreadLtiResource();
         return ltiResource.getLtiContext();
     }
 
