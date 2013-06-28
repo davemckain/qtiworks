@@ -10,7 +10,7 @@ Model:
 delivery
 assessment
 assessmentRouting (action -> URL)
-instructorAssessmentRouting (action -> URL)
+primaryRouting (action -> URL)
 deliveryRouting (action -> URL)
 deliveryCandidateSummaryReport
 candidateSessionListRouting (xid -> action -> URL)
@@ -21,7 +21,7 @@ candidateSessionListRouting (xid -> action -> URL)
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
     <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a> &#xbb;
     <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
     <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a>

@@ -10,7 +10,7 @@ Model:
 validationResult (AssessmentObjectValidationResult)
 assessment
 assessmentRouting (action -> URL)
-instructorAssessmentRouting (action -> URL)
+primaryRouting (action -> URL)
 
 --%>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
@@ -19,7 +19,7 @@ instructorAssessmentRouting (action -> URL)
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
     <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a>
   </nav>
   <h2>Assessment Validation Status</h2>

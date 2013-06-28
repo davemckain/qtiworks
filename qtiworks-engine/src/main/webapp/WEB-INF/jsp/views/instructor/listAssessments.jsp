@@ -9,7 +9,7 @@ Model:
 
 assessmentAndPackageList
 assessmentRouting (aid -> action -> URL)
-instructorAssessmentRouting (action -> URL)
+primaryRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -75,7 +75,7 @@ instructorAssessmentRouting (action -> URL)
 
   <h4>Actions</h4>
   <ul class="menu">
-    <li><a href="${utils:escapeLink(instructorAssessmentRouting['uploadAssessment'])}">Upload a new assessment</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a></li>
   </ul>
 
 </page:page>

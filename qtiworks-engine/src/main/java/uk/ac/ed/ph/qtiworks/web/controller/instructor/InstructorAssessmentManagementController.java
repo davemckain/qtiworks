@@ -103,7 +103,7 @@ public class InstructorAssessmentManagementController {
 
     @ModelAttribute
     public void setupPrimaryRouting(final Model model) {
-        model.addAttribute("instructorAssessmentRouting", instructorRouter.buildPrimaryRouting());
+        model.addAttribute("primaryRouting", instructorRouter.buildPrimaryRouting());
     }
 
     //------------------------------------------------------

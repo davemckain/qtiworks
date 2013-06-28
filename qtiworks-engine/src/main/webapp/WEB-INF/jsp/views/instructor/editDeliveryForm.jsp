@@ -13,7 +13,7 @@ deliverySettingsList
 assessment
 assessmentRouting (action -> URL)
 deliveryRouting (action -> URL)
-instructorAssessmentRouting (action -> URL)
+primaryRouting (action -> URL)
 primaryRouting
 
 --%>
@@ -22,7 +22,7 @@ primaryRouting
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(instructorAssessmentRouting['listAssessments'])}">Your assessments</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
     <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a> &#xbb;
     <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
     <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a>
@@ -108,7 +108,7 @@ primaryRouting
             </c:forEach>
           </ul>
           <p>
-          <a href="${utils:escapeLink(instructorAssessmentRouting['listDeliverySettings'])}">(You can create additional settings to choose from.)</a></p>
+          <a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}">(You can create additional settings to choose from.)</a></p>
         </div>
       </div>
       <div class="clear"></div>

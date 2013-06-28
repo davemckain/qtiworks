@@ -9,7 +9,7 @@ Model:
 
 deliverySettingsList
 deliverySettingsRouting: dsid -> action -> URL
-instructorAssessmentRouting
+primaryRouting
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -74,8 +74,8 @@ instructorAssessmentRouting
 
   <h4>Actions</h4>
   <ul>
-    <li><a href="${utils:escapeLink(instructorAssessmentRouting['createItemDeliverySettings'])}">Create new Item Delivery Settings</a></li>
-    <li><a href="${utils:escapeLink(instructorAssessmentRouting['createTestDeliverySettings'])}">Create new Test Delivery Settings</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['createItemDeliverySettings'])}">Create new Item Delivery Settings</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['createTestDeliverySettings'])}">Create new Test Delivery Settings</a></li>
   </ul>
 
 </page:page>
