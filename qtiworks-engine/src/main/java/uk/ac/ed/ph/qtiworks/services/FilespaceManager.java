@@ -101,8 +101,7 @@ public final class FilespaceManager {
 
     public File createAssessmentPackageSandbox(final User owner) {
         Assert.notNull(owner, "owner");
-        final String filespaceUri = getAssessmentPackageSandboxBaseUri()
-                + "/" + owner.getBusinessKey()
+        final String filespaceUri = getAssessmentPackageSandboxBaseUri(owner)
                 + "/" + createUniqueRequestComponent();
         return ensureCreateDirectory(filespaceUri);
     }
@@ -115,8 +114,17 @@ public final class FilespaceManager {
         return recursivelyDeleteDirectory(new File(assessmentPackage.getSandboxPath()));
     }
 
+    public boolean deleteAssessmentPackageSandboxes(final User owner) {
+        return recursivelyDeleteDirectory(getAssessmentPackageSandboxBaseUri(owner));
+    }
+
     public boolean deleteAllAssessmentPackages() {
         return recursivelyDeleteDirectory(getAssessmentPackageSandboxBaseUri());
+    }
+
+    private String getAssessmentPackageSandboxBaseUri(final User owner) {
+        return getAssessmentPackageSandboxBaseUri()
+            + "/" + owner.getBusinessKey();
     }
 
     private String getAssessmentPackageSandboxBaseUri() {

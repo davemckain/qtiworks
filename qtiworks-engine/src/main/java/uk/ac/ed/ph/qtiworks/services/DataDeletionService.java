@@ -222,6 +222,9 @@ public class DataDeletionService {
         for (final DeliverySettings deliverySettings : deliverySettingsDao.getForOwner(user)) {
             deliverySettingsDao.remove(deliverySettings);
         }
+        if (!filespaceManager.deleteAssessmentPackageSandboxes(user)) {
+            logger.error("Failed to delete AssessmentPackage sandboxes for user {}", user);
+        }
     }
 
     /**
