@@ -539,6 +539,31 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
+    // Delivery manipulation (in domain-level LTI)
+
+    public void selectCurrentLtiResourceAssessment(final long aid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        final LtiResource currentLtiResource = ensureLtiResource();
+        final Assessment assessment = lookupAssessment(aid);
+
+        final Delivery delivery = currentLtiResource.getDelivery();
+        delivery.setAssessment(assessment);
+        deliveryDao.update(delivery);
+
+        logger.debug("Assessment for LTI Delivery #{} has been set to #{}", delivery.getId(), assessment.getId());
+        auditLogger.recordEvent("Assessment for LTI Delivery #" + delivery.getId()
+                + " has been set to #" + assessment.getId());
+    }
+
+    private LtiResource ensureLtiResource() {
+        final LtiResource ltiResource = identityService.getCurrentThreadLtiResource();
+        if (ltiResource==null) {
+            throw new QtiWorksLogicException("Expected non-null LtiResource from IdentityService");
+        }
+        return ltiResource;
+    }
+
+    //-------------------------------------------------
     // CRUD for Delivery
     // (access controls are governed by owning Assessment)
 
