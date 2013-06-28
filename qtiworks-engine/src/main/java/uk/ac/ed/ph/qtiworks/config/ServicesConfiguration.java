@@ -78,7 +78,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  * @author David McKain
  */
 @Configuration
-@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.rendering", "uk.ac.ed.ph.qtiworks.services", "uk.ac.ed.ph.qtiworks.web.lti"})
+@ComponentScan(basePackages={"uk.ac.ed.ph.qtiworks.rendering", "uk.ac.ed.ph.qtiworks.services"})
 @EnableTransactionManagement
 public class ServicesConfiguration {
 
