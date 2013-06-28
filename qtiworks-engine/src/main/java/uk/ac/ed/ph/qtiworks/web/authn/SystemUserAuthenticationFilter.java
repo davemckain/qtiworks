@@ -73,12 +73,12 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     private static final Logger logger = LoggerFactory.getLogger(SystemUserAuthenticationFilter.class);
 
     /** Name of request Attribute that will contain the underlying {@link SystemUser} identity of the client */
-    public static final String USER_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.currentUser";
+    public static final String SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.systemUser";
 
     protected IdentityService identityService;
     protected UserDao userDao;
     protected SystemUserDao systemUserDao;
-    protected AbstractSystemUserAuthenticator abstractInstructorAuthenticator;
+    protected AbstractSystemUserAuthenticator abstractSystemUserAuthenticator;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
@@ -92,12 +92,12 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
         final String fakeLoginName = qtiWorksDeploymentSettings.getFakeLoginName();
         if (StringUtilities.isNullOrBlank(fakeLoginName)) {
             /* Use standard form authentication */
-            abstractInstructorAuthenticator = new SystemUserFormAuthenticator(webApplicationContext, filterConfig);
+            abstractSystemUserAuthenticator = new SystemUserFormAuthenticator(webApplicationContext, filterConfig);
         }
         else {
             /* Use fake authentication */
             logger.warn("Fake authentication is being enabled and attached to user {}. This should not be used in production deployments!", fakeLoginName);
-            abstractInstructorAuthenticator = new SystemUserFakeAuthenticator(webApplicationContext, fakeLoginName);
+            abstractSystemUserAuthenticator = new SystemUserFakeAuthenticator(webApplicationContext, fakeLoginName);
         }
     }
 
@@ -105,18 +105,18 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     protected void doFilterAuthentication(final HttpServletRequest request, final HttpServletResponse response,
             final FilterChain chain, final HttpSession session) throws IOException, ServletException {
         /* Try to extract existing authenticated User Object from Session */
-        SystemUser currentUser = (SystemUser) session.getAttribute(USER_IDENTITY_ATTRIBUTE_NAME);
+        SystemUser currentUser = (SystemUser) session.getAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME);
         logger.trace("Extracted SystemUser from Session: {}", currentUser);
         if (currentUser==null) {
             /* If there are no User details, we ask subclass to do whatever is required to
              * authenticate
              */
-            currentUser = abstractInstructorAuthenticator.doAuthentication(request, response);
+            currentUser = abstractSystemUserAuthenticator.doAuthentication(request, response);
             if (currentUser!=null) {
                 /* Store back into Session so that we can avoid later lookups, and allow things
                  * further down the chain to access
                  */
-                session.setAttribute(USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
+                session.setAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
             }
             else {
                 /* Not authenticated. Subclass will have Response Object set up to ensure the right
@@ -127,7 +127,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
         }
 
         /* Store identity as request attributes for convenience */
-        request.setAttribute(USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
+        request.setAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
 
         /* Then continue with the next link in the chain, passing the wrapped request so that
          * the next handler in the chain doesn't can pull out authentication details as normal.
