@@ -114,9 +114,6 @@ public class AssessmentManagementService {
     private AssessmentDataService assessmentDataService;
 
     @Resource
-    private EntityGraphService entityGraphService;
-
-    @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
 
     @Resource
@@ -330,7 +327,7 @@ public class AssessmentManagementService {
     }
 
     public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
-        final AssessmentPackage currentAssessmentPackage = entityGraphService.ensureSelectedAssessmentPackage(assessment);
+        final AssessmentPackage currentAssessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(assessment);
         return validateAssessmentPackage(currentAssessmentPackage);
     }
 
@@ -575,7 +572,7 @@ public class AssessmentManagementService {
 
         /* Create Delivery template with reasonable defaults */
         final DeliveryTemplate template = new DeliveryTemplate();
-        final long existingDeliveryCount = entityGraphService.countCallerDeliveries(assessment);
+        final long existingDeliveryCount = assessmentDataService.countCallerDeliveries(assessment);
         template.setTitle("Delivery #" + (existingDeliveryCount+1));
         template.setDsid(null);
         template.setOpen(false);

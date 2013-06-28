@@ -76,7 +76,7 @@ public final class FilespaceManager {
     private RequestTimestampContext requestTimestampContext;
 
     @Resource
-    private EntityGraphService entityGraphService;
+    private AssessmentDataService assessmentDataService;
 
     private File filesystemBaseDirectory;
 
@@ -161,7 +161,7 @@ public final class FilespaceManager {
     }
 
     private String getCandidateSessionUploadBaseUri(final Delivery delivery) {
-        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = getCandidateUploadBaseUri()
@@ -207,7 +207,7 @@ public final class FilespaceManager {
     }
 
     private final String getCandidateSessionStoreBaseUri(final Delivery delivery) {
-        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
         final String folderBaseUri = getCandidateSessionStoreBaseUri()
                 + "/assessment" + assessment.getId()

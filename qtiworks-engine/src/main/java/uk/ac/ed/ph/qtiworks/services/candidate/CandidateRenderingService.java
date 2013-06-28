@@ -62,7 +62,6 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
-import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
@@ -117,9 +116,6 @@ public class CandidateRenderingService {
 
     @Resource
     private QtiSerializer qtiSerializer;
-
-    @Resource
-    private EntityGraphService entityGraphService;
 
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
@@ -546,7 +542,7 @@ public class CandidateRenderingService {
 
         /* Make sure requested file is whitelisted for access */
         final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(delivery);
         String resultingFileHref = null;
         for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
             final URI fileUri = assessmentPackageFileService.createAssessmentFileUri(assessmentPackage, safeFileHref);
@@ -579,7 +575,7 @@ public class CandidateRenderingService {
         Assert.notNull(outputStreamer, "outputStreamer");
         ensureCallerMayAccessAuthorInfo(candidateSession);
         final Delivery itemDelivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(itemDelivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(itemDelivery);
 
         /* Forbid results if the candidate session is closed */
         ensureSessionNotTerminated(candidateSession);
@@ -668,7 +664,7 @@ public class CandidateRenderingService {
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
         /* Validate package */
-        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(candidateSession.getDelivery());
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(candidateSession.getDelivery());
         return assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
     }
 
@@ -705,7 +701,7 @@ public class CandidateRenderingService {
     private <P extends AbstractRenderingOptions> void initRenderingRequest(final CandidateSession candidateSession,
             final AbstractRenderingRequest<P> renderingRequest, final P renderingOptions) {
         final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = entityGraphService.ensureCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(delivery);
 
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));

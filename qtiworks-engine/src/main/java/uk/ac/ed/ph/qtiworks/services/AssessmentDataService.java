@@ -33,14 +33,22 @@
  */
 package uk.ac.ed.ph.qtiworks.services;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
+import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 
@@ -48,6 +56,10 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+
+import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -59,13 +71,86 @@ import org.springframework.transaction.annotation.Transactional;
  * <p>
  * This is NO checking of {@link Privilege}s at this level.
  *
- * FIXME: Merge this with {@link EntityGraphService}
- *
  * @author David McKain
  */
 @Service
 @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 public class AssessmentDataService {
+
+    @Resource
+    private IdentityService identityService;
+
+    @Resource
+    private DeliveryDao deliveryDao;
+
+    @Resource
+    private DeliverySettingsDao deliverySettingsDao;
+
+    @Resource
+    private AssessmentDao assessmentDao;
+
+    //-------------------------------------------------
+
+    public List<AssessmentAndPackage> getCallerAssessments() {
+        final User currentUser = identityService.getCurrentThreadUser();
+        return assessmentDao.getForOwner(currentUser);
+    }
+
+    /**
+     * Retrieves the selected {@link AssessmentPackage} for the given {@link Assessment}, making
+     * sure that something is set.
+     * <p>
+     * This will return a non-null result.
+     *
+     * @throws QtiWorksLogicException if no selected {@link AssessmentPackage}
+     */
+    public AssessmentPackage ensureSelectedAssessmentPackage(final Assessment assessment) {
+        Assert.notNull(assessment, "assessment");
+        final AssessmentPackage result = assessment.getSelectedAssessmentPackage();
+        if (result==null) {
+            throw new QtiWorksLogicException("Expected to always find at least 1 AssessmentPackage associated with an Assessment. Check the JPA-QL query and the logic in this class");
+        }
+        return result;
+    }
+
+    /**
+     * Retrieves the selected {@link AssessmentPackage} for the given {@link Delivery},
+     * making sure that something is set.
+     * <p>
+     * This will return a non-null result.
+     *
+     * @throws QtiWorksLogicException if no selected {@link AssessmentPackage}
+     */
+    public AssessmentPackage ensureCurrentAssessmentPackage(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+        return ensureSelectedAssessmentPackage(delivery.getAssessment());
+    }
+
+    //-------------------------------------------------
+
+    public List<Delivery> getCallerDeliveries(final Assessment assessment) {
+        return deliveryDao.getForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
+    }
+
+    public long countCallerDeliveries(final Assessment assessment) {
+        return deliveryDao.countForAssessmentAndType(assessment, DeliveryType.USER_CREATED);
+    }
+
+    //-------------------------------------------------
+
+    public long countCallerDeliverySettings(final AssessmentObjectType assessmentType) {
+        return deliverySettingsDao.countForOwnerAndType(identityService.getCurrentThreadUser(), assessmentType);
+    }
+
+    public List<DeliverySettings> getCallerDeliverySettings() {
+        return deliverySettingsDao.getForOwner(identityService.getCurrentThreadUser());
+    }
+
+    public List<DeliverySettings> getCallerDeliverySettingsForType(final AssessmentObjectType assessmentType) {
+        return deliverySettingsDao.getForOwnerAndType(identityService.getCurrentThreadUser(), assessmentType);
+    }
+
+    //-------------------------------------------------
 
     public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();

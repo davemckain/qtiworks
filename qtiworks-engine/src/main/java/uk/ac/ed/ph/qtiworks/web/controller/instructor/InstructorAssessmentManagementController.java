@@ -46,7 +46,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -92,9 +91,6 @@ public class InstructorAssessmentManagementController {
     private InstructorRouter instructorRouter;
 
     @Resource
-    private EntityGraphService entityGraphService;
-
-    @Resource
     private AssessmentDataService assessmentDataService;
 
     @Resource
@@ -108,7 +104,7 @@ public class InstructorAssessmentManagementController {
     /** Lists all Assignments owned by the caller */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listOwnAssessments(final Model model) {
-        final List<AssessmentAndPackage> assessments = entityGraphService.getCallerAssessments();
+        final List<AssessmentAndPackage> assessments = assessmentDataService.getCallerAssessments();
         model.addAttribute(assessments);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentListRouting(assessments));
         return "listAssessments";
@@ -127,8 +123,8 @@ public class InstructorAssessmentManagementController {
     private void setupModelForAssessment(final Assessment assessment, final Model model) {
         model.addAttribute("assessment", assessment);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
-        model.addAttribute("assessmentPackage", entityGraphService.ensureSelectedAssessmentPackage(assessment));
-        model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(assessment.getAssessmentType()));
+        model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
+        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerDeliverySettingsForType(assessment.getAssessmentType()));
     }
 
     //------------------------------------------------------
@@ -325,7 +321,7 @@ public class InstructorAssessmentManagementController {
     public String listDeliveries(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
-        final List<Delivery> deliveries = entityGraphService.getCallerDeliveries(assessment);
+        final List<Delivery> deliveries = assessmentDataService.getCallerDeliveries(assessment);
         model.addAttribute(assessment);
         model.addAttribute(deliveries);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
@@ -421,10 +417,10 @@ public class InstructorAssessmentManagementController {
         final Assessment assessment = delivery.getAssessment();
         model.addAttribute(delivery);
         model.addAttribute(assessment);
-        model.addAttribute("assessmentPackage", entityGraphService.ensureSelectedAssessmentPackage(assessment));
+        model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
-        model.addAttribute("deliverySettingsList", entityGraphService.getCallerDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));
+        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));
     }
 
     //------------------------------------------------------
@@ -432,7 +428,7 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
     public String listOwnDeliverySettings(final Model model) {
-        final List<DeliverySettings> deliverySettingsList = entityGraphService.getCallerDeliverySettings();
+        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerDeliverySettings();
         model.addAttribute("deliverySettingsList", deliverySettingsList);
         model.addAttribute("deliverySettingsRouting", instructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
         return "listDeliverySettings";
@@ -440,7 +436,7 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/itemdeliverysettings/create", method=RequestMethod.GET)
     public String showCreateItemDeliverySettingsForm(final Model model) {
-        final long existingSettingsCount = entityGraphService.countCallerDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
+        final long existingSettingsCount = assessmentDataService.countCallerDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
         final ItemDeliverySettingsTemplate template = assessmentDataService.createItemDeliverySettingsTemplate();
         template.setTitle("Item Delivery Settings #" + (existingSettingsCount+1));
 
@@ -508,7 +504,7 @@ public class InstructorAssessmentManagementController {
 
     @RequestMapping(value="/testdeliverysettings/create", method=RequestMethod.GET)
     public String showCreateTestDeliverySettingsForm(final Model model) {
-        final long existingOptionCount = entityGraphService.countCallerDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
+        final long existingOptionCount = assessmentDataService.countCallerDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
         final TestDeliverySettingsTemplate template = assessmentDataService.createTestDeliverySettingsTemplate();
         template.setTitle("Test Delivery Settings #" + (existingOptionCount+1));
 

@@ -40,9 +40,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -86,7 +86,7 @@ public class AnonymousStandaloneRunner {
     private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
-    private EntityGraphService entityGraphService;
+    private AssessmentDataService assessmentDataService;
 
     @Resource
     private DeliverySettingsDao deliverySettingsDao;
@@ -118,7 +118,7 @@ public class AnonymousStandaloneRunner {
         try {
             final Assessment assessment = assessmentManagementService.importAssessment(command.getFile());
             final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessment);
-            final AssessmentPackage assessmentPackage = entityGraphService.ensureSelectedAssessmentPackage(assessment);
+            final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(assessment);
             if (!assessmentPackage.isLaunchable()) {
                 /* Assessment isn't launchable */
                 model.addAttribute("validationResult", validationResult);
