@@ -158,7 +158,6 @@ public final class FilespaceManager {
 
         final String folderUri = getCandidateUploadBaseUri()
                 + "/assessment" + assessment.getId()
-                + "/package" + assessmentPackage.getId()
                 + "/delivery" + delivery.getId();
         return folderUri;
     }
@@ -204,7 +203,6 @@ public final class FilespaceManager {
         final Assessment assessment = assessmentPackage.getAssessment();
         final String folderBaseUri = getCandidateSessionStoreBaseUri()
                 + "/assessment" + assessment.getId()
-                + "/package" + assessmentPackage.getId()
                 + "/delivery" + delivery.getId();
         return folderBaseUri;
     }
