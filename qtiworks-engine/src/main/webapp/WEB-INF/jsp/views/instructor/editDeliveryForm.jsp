@@ -86,8 +86,14 @@ primaryRouting
           <div class="workflowStep">4<span class="required">*</span></div>
         </div>
         <div class="grid_11">
-          Select delivery settings:
+          Select Delivery Settings:
           <ul class="dsSelector">
+            <li>
+              <input type="radio" id="dsdefault" name="dsid" value=""${empty deliveryTemplate.dsid ? ' checked="checked"' : ''} />
+              <label for="dsdefault" class="dsTitle">
+                QTIWorks default Delivery Settings
+              </label>
+            </li>
             <c:forEach var="ds" items="${deliverySettingsList}">
               <c:set var="checked" value="${deliveryTemplate.dsid==ds.id}"/>
               <li>

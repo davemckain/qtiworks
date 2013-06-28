@@ -565,7 +565,7 @@ public class AssessmentManagementService {
     @ToRefactor
     public Delivery createDelivery(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        /* Look up Assessment and check caller and change it */
+        /* Look up Assessment and check privs */
         final Assessment assessment = lookupOwnAssessment(aid);
         ensureCallerOwns(assessment);
 
@@ -650,10 +650,7 @@ public class AssessmentManagementService {
 
         /* Look up settings and check privileges */
         final Long dsid = template.getDsid();
-        DeliverySettings deliverySettings = null;
-        if (dsid!=null) {
-            deliverySettings = lookupAndMatchDeliverySettings(dsid.longValue(), assessment);
-        }
+        final DeliverySettings deliverySettings = (dsid!=null) ? lookupAndMatchDeliverySettings(dsid.longValue(), assessment) : null;
 
         /* Update data */
         delivery.setOpen(template.isOpen());

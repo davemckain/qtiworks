@@ -45,7 +45,17 @@ instructorAssessmentRouting (action -> URL)
   <div class="grid_4">
     <div class="infoBox">
       <div class="cat">Delivery Settings used</div>
-      <div class="value">${fn:escapeXml(delivery.deliverySettings.title)}</div>
+      <div class="value">
+        <c:set var="deliverySettings" value="${delivery.deliverySettings}"/>
+        <c:choose>
+          <c:when test="${!empty deliverySettings}">
+            ${fn:escapeXml(deliverySettings.title)}
+          </c:when>
+          <c:otherwise>
+            (Default Delivery Settings)
+          </c:otherwise>
+        </c:choose>
+      </div>
     </div>
   </div>
 
