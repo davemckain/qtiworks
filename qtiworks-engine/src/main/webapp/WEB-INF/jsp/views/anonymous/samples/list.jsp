@@ -22,8 +22,7 @@ sampleAssessmentMap (SampleCategory -> List<AssessmentAndPackage>)
 
   <div class="hints">
     <p>
-      Here are a selection of example QTI assessment items that showcase many of the things you can do with QTI.
-      (We shall add some tests once we QTIWorks fully supports them.)
+      Here are a selection of example QTI assessments that showcase many of the things you can do with QTI.
     </p>
   </div>
 
