@@ -60,7 +60,10 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 
 /**
- * FIXME: Document this!
+ * Represents an LTI resource, created when an instructor does a domain-level LTI launch
+ * on a resource within her Tool Consumer.
+ * <p>
+ * This wraps itself around a {@link Delivery}.
  *
  * @author David McKain
  */
@@ -68,10 +71,10 @@ import org.hibernate.annotations.Type;
 @Table(name="lti_resources")
 @SequenceGenerator(name="ltiResourceSequence", sequenceName="lti_resource_sequence", initialValue=1, allocationSize=1)
 @NamedQueries({
-    @NamedQuery(name="LtiResource.findByConsumerKeyAndResourceLinkId",
+    @NamedQuery(name="LtiResource.findByLtiDomainAndResourceLinkId",
             query="SELECT lr"
                 + "  FROM LtiResource lr"
-                + "  WHERE lr.ltiDomain.consumerKey = :consumerKey"
+                + "  WHERE lr.ltiContext.ltiDomain = :ltiDomain"
                 + "    AND lr.resourceLinkId = :resourceLinkId")
 })
 public class LtiResource implements BaseEntity, TimestampedOnCreation {
@@ -93,13 +96,8 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="creator_uid", updatable=false)
     private User creatorUser;
 
-    /** {@link LtiDomain} in which this resource exists */
+    /** {@link LtiContext} for this resource */
     @ManyToOne(optional=false, fetch=FetchType.EAGER)
-    @JoinColumn(name="ldid", updatable=false)
-    private LtiDomain ltiDomain;
-
-    /** {@link LtiContext} for this resource, if provided */
-    @ManyToOne(optional=true, fetch=FetchType.EAGER)
     @JoinColumn(name="lcid", updatable=false)
     private LtiContext ltiContext;
 
@@ -154,15 +152,6 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
 
     public void setCreatorUser(final User creatorUser) {
         this.creatorUser = creatorUser;
-    }
-
-
-    public LtiDomain getLtiDomain() {
-        return ltiDomain;
-    }
-
-    public void setLtiDomain(final LtiDomain ltiDomain) {
-        this.ltiDomain = ltiDomain;
     }
 
 

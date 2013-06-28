@@ -107,36 +107,51 @@ public class LtiLaunchService {
             throw new IllegalArgumentException("LTI launch is not a domain-level link");
         }
 
-        /* Extract/create LtiContext (if context_id has been provided) */
+        /* Extract/create LtiContext */
         final LtiContext ltiContext = provideLtiContext(ltiDomain, ltiLaunchData);
 
         /* Now extract/create LtiResource */
-        return provideLtiResource(ltiDomain, ltiContext, ltiLaunchData, ltiUser);
+        return provideLtiResource(ltiContext, ltiLaunchData, ltiUser);
     }
 
     private LtiContext provideLtiContext(final LtiDomain ltiDomain, final LtiLaunchData ltiLaunchData) {
-        final String contextId = ltiLaunchData.getContextId();
-        if (contextId==null) {
-            return null;
-        }
         final String consumerKey = ltiDomain.getConsumerKey();
-        LtiContext ltiContext = ltiContextDao.findByConsumerKeyAndContextId(consumerKey, contextId);
-        if (ltiContext==null) {
-            ltiContext = new LtiContext();
-            ltiContext.setLtiDomain(ltiDomain);
-            ltiContext.setContextId(contextId); /* FIXME: What should we do if this is too long to fit the column? */
-            ltiContext.setContextLabel(ServiceUtilities.trimString(ltiLaunchData.getContextLabel(), DomainConstants.LTI_TOKEN_LENGTH));
-            ltiContext.setContextTitle(ltiLaunchData.getContextTitle());
-            ltiContextDao.persist(ltiContext);
-            logger.info("Created new LtiContext {}", ltiContext);
+        final String contextId = ltiLaunchData.getContextId();
+        LtiContext ltiContext;
+        if (contextId!=null) {
+            /* TP has sent context info (which is great) */
+            ltiContext = ltiContextDao.findByConsumerKeyAndContextId(consumerKey, contextId);
+            if (ltiContext==null) {
+                ltiContext = new LtiContext();
+                ltiContext.setLtiDomain(ltiDomain);
+                ltiContext.setContextId(contextId); /* FIXME: What should we do if this is too long to fit the column? */
+                ltiContext.setContextLabel(ServiceUtilities.trimString(ltiLaunchData.getContextLabel(), DomainConstants.LTI_TOKEN_LENGTH));
+                ltiContext.setContextTitle(ltiLaunchData.getContextTitle());
+                ltiContextDao.persist(ltiContext);
+                logger.info("Created new LtiContext {}", ltiContext);
+            }
+        }
+        else {
+            /* TP hasn't sent context info, so we'll create a fake resource-specific context
+             * just to keep the ownership model intact.
+             */
+            final String resourceLinkId = ltiLaunchData.getResourceLinkId();
+            ltiContext = ltiContextDao.findByConsumerKeyAndFallbackResourceLinkId(consumerKey, resourceLinkId);
+            if (ltiContext==null) {
+                ltiContext = new LtiContext();
+                ltiContext.setLtiDomain(ltiDomain);
+                ltiContext.setFallbackResourceLinkId(resourceLinkId);  /* FIXME: What if too long for the column? */
+                ltiContextDao.persist(ltiContext);
+                logger.info("Created new (fake) LtiContext {}", ltiContext);
+            }
         }
         return ltiContext;
     }
 
-    private LtiResource provideLtiResource(final LtiDomain ltiDomain, final LtiContext ltiContext, final LtiLaunchData ltiLaunchData, final LtiUser ltiUser) {
+    private LtiResource provideLtiResource(final LtiContext ltiContext, final LtiLaunchData ltiLaunchData, final LtiUser ltiUser) {
         final String resourceLinkId = ltiLaunchData.getResourceLinkId();
-        final String consumerKey = ltiDomain.getConsumerKey();
-        LtiResource ltiResource = ltiResourceDao.findByConsumerKeyAndResourceLinkId(consumerKey, resourceLinkId);
+        final LtiDomain ltiDomain = ltiContext.getLtiDomain();
+        LtiResource ltiResource = ltiResourceDao.findByLtiDomainAndResourceLinkId(ltiDomain, resourceLinkId);
         if (ltiResource==null) {
             if (!ltiUser.isInstructor()) {
                 return null;
@@ -149,10 +164,9 @@ public class LtiLaunchService {
             logger.info("Created new Delivery for LTI resource: {}", delivery);
 
             ltiResource = new LtiResource();
-            ltiResource.setLtiDomain(ltiDomain);
-            ltiResource.setLtiContext(ltiContext); /* (May be null if context info is not provided) */
+            ltiResource.setLtiContext(ltiContext);
             ltiResource.setCreatorUser(ltiUser);
-            ltiResource.setResourceLinkId(resourceLinkId);
+            ltiResource.setResourceLinkId(resourceLinkId); /* FIXME: What if too long for the column? */
             ltiResource.setResourceLinkTitle(ltiLaunchData.getResourceLinkTitle());
             ltiResource.setResourceLinkDescription(ltiLaunchData.getResourceLinkDescription());
             ltiResource.setDelivery(delivery);

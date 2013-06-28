@@ -57,8 +57,6 @@ import org.hibernate.annotations.Type;
  * This treats <code>lis_given_name</code> as <code>firstName</code>
  * and <code>lis_family_name</code> as <code>lastName</code>.
  *
- * FIXME: Need to sort out constraints on LTI-specified columns.
- *
  * @author David McKain
  */
 @Entity

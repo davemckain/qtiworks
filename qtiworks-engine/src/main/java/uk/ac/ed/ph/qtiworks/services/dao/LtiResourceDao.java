@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services.dao;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 
 import javax.persistence.EntityManager;
@@ -59,9 +60,9 @@ public class LtiResourceDao extends GenericDao<LtiResource> {
         super(LtiResource.class);
     }
 
-    public LtiResource findByConsumerKeyAndResourceLinkId(final String consumerKey, final String resourceLinkId) {
-        final TypedQuery<LtiResource> query = em.createNamedQuery("LtiResource.findByConsumerKeyAndResourceLinkId", LtiResource.class);
-        query.setParameter("consumerKey", consumerKey);
+    public LtiResource findByLtiDomainAndResourceLinkId(final LtiDomain ltiDomain, final String resourceLinkId) {
+        final TypedQuery<LtiResource> query = em.createNamedQuery("LtiResource.findByLtiDomainAndResourceLinkId", LtiResource.class);
+        query.setParameter("ltiDomain", ltiDomain);
         query.setParameter("resourceLinkId", resourceLinkId);
         return extractNullableFindResult(query);
     }

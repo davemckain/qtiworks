@@ -58,7 +58,15 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.Type;
 
 /**
- * FIXME: Document this!
+ * Encapsulates an LTI "context". (C.f. a "course" within a VLE).
+ * <p>
+ * This is used to establish "group" ownership of resources created for the data created for a
+ * particular LTI resource.
+ * <p>
+ * Context information is recommended but not mandatory in LTI. When not present, we create a "fake"
+ * context based on the <code>resource_link_id</code> to enable the ownership model to work correctly.
+ * This means that data created within a particular resource link in this context is visible only
+ * to that resource, but it's better than nothing.
  *
  * @author David McKain
  */
@@ -70,7 +78,12 @@ import org.hibernate.annotations.Type;
             query="SELECT lc"
                 + "  FROM LtiContext lc"
                 + "  WHERE lc.ltiDomain.consumerKey = :consumerKey"
-                + "    AND lc.contextId = :contextId")
+                + "    AND lc.contextId = :contextId"),
+    @NamedQuery(name="LtiContext.findByConsumerKeyAndFallbackResourceLinkId",
+            query="SELECT lc"
+                + "  FROM LtiContext lc"
+                + "  WHERE lc.ltiDomain.consumerKey = :consumerKey"
+                + "    AND lc.fallbackResourceLinkId = :fallbackResourceLinkId")
 })
 public class LtiContext implements BaseEntity, TimestampedOnCreation {
 
@@ -94,10 +107,9 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
     /**
      * Corresponds to the LTI <code>context_id</code> parameter.
      * <p>
-     * (While this parameter is recommended, we only create instances of {@link LtiContext}
-     * if it is provided, so it will always be present here.)
+     * This parameter is recommended but not mandatory in LTI.
      */
-    @Basic(optional=false)
+    @Basic(optional=true)
     @Column(name="context_id", updatable=false, length=DomainConstants.LTI_TOKEN_LENGTH)
     private String contextId;
 
@@ -112,6 +124,15 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
     @Column(name="context_title", updatable=false)
     @Type(type="org.hibernate.type.TextType")
     private String contextTitle;
+
+    /**
+     * Artificial ID used when no <code>context_id</code is set. This is made from the LTI
+     * <code>resource_link_id</code>, so narrows the context to a single resource. This is not
+     * particularly useful for users, but keeps the ownership model working.
+     */
+    @Basic(optional=true)
+    @Column(name="fallback_resource_link_id", updatable=false, length=DomainConstants.LTI_TOKEN_LENGTH)
+    private String fallbackResourceLinkId;
 
     //------------------------------------------------------------
 
@@ -172,6 +193,16 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
         this.contextTitle = contextTitle;
     }
 
+
+
+    public String getFallbackResourceLinkId() {
+        return fallbackResourceLinkId;
+    }
+
+    public void setFallbackResourceLinkId(final String fallbackResourceLinkId) {
+        this.fallbackResourceLinkId = fallbackResourceLinkId;
+    }
+
     //------------------------------------------------------------
 
     @Override
@@ -181,6 +212,7 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
                 + ",contextId=" + contextId
                 + ",contextLabel=" + contextLabel
                 + ",contextTitle=" + contextTitle
+                + ",fallbackResourceLinkIk=" + fallbackResourceLinkId
                 + ")";
     }
 }

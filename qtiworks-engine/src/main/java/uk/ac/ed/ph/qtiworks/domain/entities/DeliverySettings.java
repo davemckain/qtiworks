@@ -111,6 +111,11 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Column(name="dsid")
     private Long dsid;
 
+    @Basic(optional=false)
+    @Column(name="creation_time", updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
+
     /** Item or Test? */
     @Basic(optional=false)
     @Column(name="type", updatable=false, length=15)
@@ -122,14 +127,10 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @JoinColumn(name="owner_uid", updatable=false)
     private User ownerUser;
 
+    /** {@link LtiContext} owning these {@link DeliverySettings}, if appropriate */
     @ManyToOne(optional=true, fetch=FetchType.LAZY)
     @JoinColumn(name="owner_lcid", updatable=false)
     private LtiContext ownerLtiContext;
-
-    @Basic(optional=false)
-    @Column(name="creation_time", updatable=false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationTime;
 
     /** Owner's title, must be unique within those created by owner */
     @NotNull

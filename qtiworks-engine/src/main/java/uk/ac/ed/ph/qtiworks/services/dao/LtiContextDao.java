@@ -65,4 +65,11 @@ public class LtiContextDao extends GenericDao<LtiContext> {
         query.setParameter("contextId", contextId);
         return extractNullableFindResult(query);
     }
+
+    public LtiContext findByConsumerKeyAndFallbackResourceLinkId(final String consumerKey, final String fallbackResourceLinkId) {
+        final TypedQuery<LtiContext> query = em.createNamedQuery("LtiContext.findByConsumerKeyAndFallbackResourceLinkId", LtiContext.class);
+        query.setParameter("consumerKey", consumerKey);
+        query.setParameter("fallbackResourceLinkId", fallbackResourceLinkId);
+        return extractNullableFindResult(query);
+    }
 }

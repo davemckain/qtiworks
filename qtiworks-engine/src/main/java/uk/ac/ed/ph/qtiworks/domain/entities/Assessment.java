@@ -108,6 +108,11 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Column(name="lock_version")
     private Long version;
 
+    @Basic(optional=false)
+    @Column(name="creation_time", updatable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date creationTime;
+
     /**
      * Total number of {@link AssessmentPackage}s uploaded for this Assessment.
      * (This may be larger than the size of {@link #assessmentPackages})
@@ -116,16 +121,12 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @Column(name="package_import_version")
     private Long packageImportVersion;
 
-    @Basic(optional=false)
-    @Column(name="creation_time", updatable=false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationTime;
-
     /** {@link User} who owns this Assessment */
     @ManyToOne(optional=false, fetch=FetchType.LAZY)
     @JoinColumn(name="owner_uid", updatable=false)
     private User ownerUser;
 
+    /** {@link LtiContext} owning this Assessment, if appropriate */
     @ManyToOne(optional=true, fetch=FetchType.LAZY)
     @JoinColumn(name="owner_lcid", updatable=false)
     private LtiContext ownerLtiContext;
