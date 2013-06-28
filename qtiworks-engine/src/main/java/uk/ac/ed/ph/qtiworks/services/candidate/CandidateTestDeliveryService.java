@@ -44,7 +44,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
-import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
+import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
@@ -107,7 +107,7 @@ public class CandidateTestDeliveryService {
     private CandidateSessionCloser candidateSessionCloser;
 
     @Resource
-    private CandidateDataServices candidateDataServices;
+    private CandidateDataService candidateDataService;
 
     @Resource
     private CandidateUploadService candidateUploadService;
@@ -174,8 +174,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* FIXME: Next wodge of code has some cut & paste! */
@@ -285,7 +285,7 @@ public class CandidateTestDeliveryService {
         }
 
         /* Record resulting event */
-        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ITEM_EVENT, candidateItemEventType, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
@@ -296,7 +296,7 @@ public class CandidateTestDeliveryService {
         }
 
         /* Record current result state */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         /* Save any change to session state */
         candidateSessionDao.update(candidateSession);
@@ -319,8 +319,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         try {
@@ -338,12 +338,12 @@ public class CandidateTestDeliveryService {
         }
 
         /* Record and log event */
-        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_MENU, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -362,8 +362,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         try {
@@ -380,12 +380,12 @@ public class CandidateTestDeliveryService {
         }
 
         /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SELECT_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         /* Record current result state */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -402,8 +402,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
@@ -427,12 +427,12 @@ public class CandidateTestDeliveryService {
         testSessionController.advanceItemLinear(requestTimestamp);
 
         /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.FINISH_ITEM, null, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         /* Record current result state */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -449,8 +449,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
@@ -478,11 +478,11 @@ public class CandidateTestDeliveryService {
             candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
         }
         else {
-            candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+            candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
         }
 
         /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.END_TEST_PART, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
@@ -504,8 +504,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
@@ -516,7 +516,7 @@ public class CandidateTestDeliveryService {
         }
 
         /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.REVIEW_TEST_PART, null, null, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
@@ -536,8 +536,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
@@ -557,12 +557,12 @@ public class CandidateTestDeliveryService {
         }
 
         /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.REVIEW_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         /* Record current result state */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -583,8 +583,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Make sure caller may do this */
@@ -604,12 +604,12 @@ public class CandidateTestDeliveryService {
         }
 
         /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.SOLUTION_ITEM, null, itemKey, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         /* Record current result state */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -630,8 +630,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Perform action */
@@ -670,12 +670,12 @@ public class CandidateTestDeliveryService {
         }
 
         /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 eventType, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         /* Record current result state (possibly final) */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }
@@ -696,8 +696,8 @@ public class CandidateTestDeliveryService {
 
         /* Get current JQTI state and create JQTI controller */
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
-        final TestSessionController testSessionController = candidateDataServices.createTestSessionController(mostRecentEvent, notificationRecorder);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
+        final TestSessionController testSessionController = candidateDataService.createTestSessionController(mostRecentEvent, notificationRecorder);
         final TestSessionState testSessionState = testSessionController.getTestSessionState();
 
         /* Perform action */
@@ -718,12 +718,12 @@ public class CandidateTestDeliveryService {
         candidateSessionDao.update(candidateSession);
 
         /* Record and log event */
-        final CandidateEvent candidateTestEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.EXIT_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateTestEvent);
 
         /* Record current result state (final) */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         return candidateSession;
     }

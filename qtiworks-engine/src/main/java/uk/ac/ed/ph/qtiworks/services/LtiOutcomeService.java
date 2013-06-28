@@ -138,7 +138,7 @@ public class LtiOutcomeService {
     //-------------------------------------------------
 
     /**
-     * Called by {@link ScheduledServices} to attempt to send all queued outcomes deemed OK
+     * Called by {@link ScheduledService} to attempt to send all queued outcomes deemed OK
      * to send next, taking into account retry/failure logic.
      */
     public int sendNextQueuedLtiOutcomes() {

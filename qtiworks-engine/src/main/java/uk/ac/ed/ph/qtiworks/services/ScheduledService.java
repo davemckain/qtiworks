@@ -54,14 +54,14 @@ import org.springframework.stereotype.Service;
 @Service
 @EnableScheduling
 @Profile(QtiWorksProfiles.WEBAPP)
-public class ScheduledServices {
+public class ScheduledService {
 
     public static final int ANONYMOUS_USER_KEEP_HOURS = 24;
 
     /** One minute (in milliseconds) */
     private static final long ONE_MINUTE = 1000L * 60;
 
-    private static final Logger logger = LoggerFactory.getLogger(ScheduledServices.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScheduledService.class);
 
     @Resource
     private DataDeletionService dataDeletionService;

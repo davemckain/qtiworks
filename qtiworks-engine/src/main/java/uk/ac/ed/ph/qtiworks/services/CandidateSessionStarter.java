@@ -109,7 +109,7 @@ public class CandidateSessionStarter {
     private CandidateSessionCloser candidateSessionCloser;
 
     @Resource
-    private CandidateDataServices candidateDataServices;
+    private CandidateDataService candidateDataService;
 
     @Resource
     private AssessmentDao assessmentDao;
@@ -269,7 +269,7 @@ public class CandidateSessionStarter {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Create fresh JQTI+ state Object and try to create controller */
-        final ItemSessionController itemSessionController = candidateDataServices.createNewItemSessionStateAndController(candidate, delivery, notificationRecorder);
+        final ItemSessionController itemSessionController = candidateDataService.createNewItemSessionStateAndController(candidate, delivery, notificationRecorder);
         if (itemSessionController==null) {
             return handleStartupExplosion(delivery, candidate, exitUrl);
         }
@@ -305,11 +305,11 @@ public class CandidateSessionStarter {
         }
 
         /* Record and log event */
-        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateItemEvent(candidateSession, CandidateItemEventType.ENTER, itemSessionState, notificationRecorder);
+        final CandidateEvent candidateEvent = candidateDataService.recordCandidateItemEvent(candidateSession, CandidateItemEventType.ENTER, itemSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state */
-        candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
 
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());
@@ -326,7 +326,7 @@ public class CandidateSessionStarter {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Create fresh JQTI+ state & controller for it */
-        final TestSessionController testSessionController = candidateDataServices.createNewTestSessionStateAndController(candidate, delivery, notificationRecorder);
+        final TestSessionController testSessionController = candidateDataService.createNewTestSessionStateAndController(candidate, delivery, notificationRecorder);
         if (testSessionController==null) {
             return handleStartupExplosion(delivery, candidate, exitUrl);
         }
@@ -373,12 +373,12 @@ public class CandidateSessionStarter {
         }
 
         /* Record and log event */
-        final CandidateEvent candidateEvent = candidateDataServices.recordCandidateTestEvent(candidateSession,
+        final CandidateEvent candidateEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
                 CandidateTestEventType.ENTER_TEST, testSessionState, notificationRecorder);
         candidateAuditLogger.logCandidateEvent(candidateEvent);
 
         /* Record current result state */
-        candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         auditLogger.recordEvent("Created and initialised new CandidateSession #" + candidateSession.getId()
                 + " on Delivery #" + delivery.getId());

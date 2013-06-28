@@ -92,7 +92,7 @@ public class AssessmentReportingService {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
-    private CandidateDataServices candidateDataServices;
+    private CandidateDataService candidateDataService;
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
@@ -153,7 +153,7 @@ public class AssessmentReportingService {
                 otherOutcomeValues);
 
         /* read assessmentResult XML */
-        final String assessmentResultXml = candidateDataServices.readResultFile(candidateSession);
+        final String assessmentResultXml = candidateDataService.readResultFile(candidateSession);
 
         auditLogger.recordEvent("Generated summary report for CandidateSession #" + candidateSession.getId());
         return new CandidateSessionSummaryReport(summaryMetadata, data, assessmentResultXml);
@@ -283,7 +283,7 @@ public class AssessmentReportingService {
 
     private void addAssessmentReport(final ZipOutputStream zipOutputStream, final CandidateSession candidateSession)
             throws IOException {
-        final File assessmentResultFile = candidateDataServices.getResultFile(candidateSession);
+        final File assessmentResultFile = candidateDataService.getResultFile(candidateSession);
         if (!assessmentResultFile.exists()) {
             throw new QtiWorksLogicException("Expected result file " + assessmentResultFile + " to exist after session is closed");
         }

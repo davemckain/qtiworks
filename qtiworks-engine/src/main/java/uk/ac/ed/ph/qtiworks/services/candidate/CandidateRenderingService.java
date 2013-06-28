@@ -61,7 +61,7 @@ import uk.ac.ed.ph.qtiworks.rendering.TestRenderingRequest;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
-import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
+import uk.ac.ed.ph.qtiworks.services.CandidateDataService;
 import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
 import uk.ac.ed.ph.qtiworks.services.FilespaceManager;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
@@ -131,7 +131,7 @@ public class CandidateRenderingService {
     private AssessmentDataService assessmentDataService;
 
     @Resource
-    private CandidateDataServices candidateDataServices;
+    private CandidateDataService candidateDataService;
 
     @Resource
     private AssessmentRenderer assessmentRenderer;
@@ -203,10 +203,10 @@ public class CandidateRenderingService {
         }
         else {
             /* Look up most recent event */
-            final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+            final CandidateEvent latestEvent = candidateDataService.getMostRecentEvent(candidateSession);
 
             /* Load the ItemSessionState */
-            final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(latestEvent);
+            final ItemSessionState itemSessionState = candidateDataService.loadItemSessionState(latestEvent);
 
             /* Touch the session's duration state if appropriate */
             if (itemSessionState.isEntered() && !itemSessionState.isEnded() && !itemSessionState.isSuspended()) {
@@ -294,10 +294,10 @@ public class CandidateRenderingService {
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateEvent latestEvent = candidateDataService.getMostRecentEvent(candidateSession);
 
         /* Load the ItemSessionState */
-        final ItemSessionState itemSessionState = candidateDataServices.loadItemSessionState(latestEvent);
+        final ItemSessionState itemSessionState = candidateDataService.loadItemSessionState(latestEvent);
 
         /* Create temporary file to hold the output before it gets streamed */
         final File resultFile = filespaceManager.createTempFile();
@@ -394,10 +394,10 @@ public class CandidateRenderingService {
         }
         else {
             /* Look up most recent event */
-            final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+            final CandidateEvent latestEvent = candidateDataService.getMostRecentEvent(candidateSession);
 
             /* Load the TestSessionState and create a TestSessionController */
-            final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(latestEvent);
+            final TestSessionState testSessionState = candidateDataService.loadTestSessionState(latestEvent);
             final TestSessionController testSessionController = createTestSessionController(candidateSession, testSessionState);
 
             /* Touch the session's duration state if appropriate */
@@ -477,10 +477,10 @@ public class CandidateRenderingService {
         Assert.notNull(outputStreamer, "outputStreamer");
 
         /* Look up most recent event */
-        final CandidateEvent latestEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateEvent latestEvent = candidateDataService.getMostRecentEvent(candidateSession);
 
         /* Load the TestSessionState and create a TestSessionController */
-        final TestSessionState testSessionState = candidateDataServices.loadTestSessionState(latestEvent);
+        final TestSessionState testSessionState = candidateDataService.loadTestSessionState(latestEvent);
         final TestSessionController testSessionController = createTestSessionController(candidateSession, testSessionState);
 
         /* Create temporary file to hold the output before it gets streamed */
@@ -610,10 +610,10 @@ public class CandidateRenderingService {
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
         /* Get most recent event */
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
 
         /* Generate result Object from current state */
-        final File sessionStateFile = candidateDataServices.ensureSessionStateFile(mostRecentEvent);
+        final File sessionStateFile = candidateDataService.ensureSessionStateFile(mostRecentEvent);
 
         /* Send result */
         assessmentPackageFileService.streamFile(sessionStateFile, "application/xml",
@@ -640,10 +640,10 @@ public class CandidateRenderingService {
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
         /* Get most recent event */
-        final CandidateEvent mostRecentEvent = candidateDataServices.getMostRecentEvent(candidateSession);
+        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
 
         /* Generate result Object from current state */
-        final AssessmentResult assessmentResult = candidateDataServices.computeAssessmentResult(mostRecentEvent);
+        final AssessmentResult assessmentResult = candidateDataService.computeAssessmentResult(mostRecentEvent);
 
         /* Send result */
         qtiSerializer.serializeJqtiObject(assessmentResult, outputStream);
@@ -676,13 +676,13 @@ public class CandidateRenderingService {
 
     private ItemSessionController createItemSessionController(final CandidateSession candidateSession, final ItemSessionState itemSessionState) {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        return candidateDataServices.createItemSessionController(candidateSession,
+        return candidateDataService.createItemSessionController(candidateSession,
                 itemSessionState, notificationRecorder);
     }
 
     private TestSessionController createTestSessionController(final CandidateSession candidateSession, final TestSessionState testSessionState) {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        return candidateDataServices.createTestSessionController(candidateSession,
+        return candidateDataService.createTestSessionController(candidateSession,
                 testSessionState, notificationRecorder);
     }
 

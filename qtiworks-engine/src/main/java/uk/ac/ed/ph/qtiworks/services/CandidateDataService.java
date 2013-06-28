@@ -117,7 +117,7 @@ import org.w3c.dom.Document;
  */
 @Service
 @Transactional(propagation=Propagation.SUPPORTS)
-public class CandidateDataServices {
+public class CandidateDataService {
 
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;

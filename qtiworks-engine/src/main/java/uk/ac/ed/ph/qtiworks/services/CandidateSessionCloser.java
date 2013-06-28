@@ -77,7 +77,7 @@ public class CandidateSessionCloser {
     private AuditLogger auditLogger;
 
     @Resource
-    private CandidateDataServices candidateDataServices;
+    private CandidateDataService candidateDataService;
 
     @Resource
     private LtiOutcomeService ltiOutcomeService;
@@ -88,12 +88,12 @@ public class CandidateSessionCloser {
     //-------------------------------------------------
 
     public void closeCandidateItemSession(final CandidateSession candidateSession, final ItemSessionController itemSessionController) {
-        final AssessmentResult assessmentResult = candidateDataServices.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordItemAssessmentResult(candidateSession, itemSessionController);
         closeCandidateSession(candidateSession, assessmentResult);
     }
 
     public void closeCandidateTestSession(final CandidateSession candidateSession, final TestSessionController testSessionController) {
-        final AssessmentResult assessmentResult = candidateDataServices.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
+        final AssessmentResult assessmentResult = candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
         closeCandidateSession(candidateSession, assessmentResult);
     }
 
