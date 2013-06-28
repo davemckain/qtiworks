@@ -71,6 +71,7 @@ import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -535,19 +536,22 @@ public class AssessmentManagementService {
             throws DomainEntityNotFoundException, PrivilegeException {
         /* Look up entity and check permissions */
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
-        final User caller = ensureCallerOwns(deliverySettings);
+        ensureCallerOwns(deliverySettings);
 
-        /* Make sure settings aren't being used */
-        if (deliveryDao.countUsingSettings(deliverySettings) > 0) {
-            throw new PrivilegeException(caller, deliverySettings, Privilege.DELETE_USED_DELIVERY_SETTINGS);
+        /* Update any Deliveries using these settings so that they revert to defaults */
+        final List<Delivery> deliveriesUsingSettings = deliveryDao.getUsingSettings(deliverySettings);
+        final int deliveriesAffected = deliveriesUsingSettings.size();
+        for (final Delivery delivery : deliveriesUsingSettings) {
+            delivery.setDeliverySettings(null);
+            deliveryDao.update(delivery);
         }
 
-        /* Delete entity */
+        /* Delete DS entity */
         deliverySettingsDao.remove(deliverySettings);
 
         /* Log what happened */
-        logger.debug("Deleted DeliverySettings #{}", deliverySettings.getId());
-        auditLogger.recordEvent("Deleted DeliverySettings #" + deliverySettings.getId());
+        logger.debug("Deleted DeliverySettings #{}, affecting {} Delivery/ies", deliverySettings.getId(), deliveriesAffected);
+        auditLogger.recordEvent("Deleted DeliverySettings #" + deliverySettings.getId() + ", affecting " + deliveriesAffected + "Delivery/ies");
     }
 
     //-------------------------------------------------
