@@ -316,37 +316,11 @@ public class AssessmentManagementService {
         return assessment;
     }
 
-    //-------------------------------------------------
-    // Validation
-    // (These methods arguably belong somewhere as, we're not doing any permission checking here)
-
     public AssessmentObjectValidationResult<?> validateAssessment(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = lookupOwnAssessment(aid);
-        return validateAssessment(assessment);
+        return assessmentDataService.validateAssessment(assessment);
     }
-
-    public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
-        final AssessmentPackage currentAssessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(assessment);
-        return validateAssessmentPackage(currentAssessmentPackage);
-    }
-
-    public AssessmentObjectValidationResult<?> validateAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        /* Run the validation process */
-        final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
-
-        /* Persist results */
-        assessmentPackage.setValidated(true);
-        assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
-        assessmentPackage.setErrorCount(validationResult.getErrors().size());
-        assessmentPackage.setWarningCount(validationResult.getWarnings().size());
-        assessmentPackage.setValid(validationResult.isValid());
-        assessmentPackageDao.update(assessmentPackage);
-
-        return validationResult;
-    }
-
-    //-------------------------------------------------
 
     private User ensureCallerOwns(final Assessment assessment)
             throws PrivilegeException {

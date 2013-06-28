@@ -39,7 +39,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
-import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
@@ -75,7 +75,7 @@ public class ManagerServices {
     private DataDeletionService dataDeletionService;
 
     @Resource
-    private AssessmentManagementService assessmentManagementService;
+    private AssessmentDataService assessmentDataService;
 
     @Resource
     private SystemUserDao instructorUserDao;
@@ -199,7 +199,7 @@ public class ManagerServices {
 
     public void validateAllAssessmentPackages() {
     	for (final AssessmentPackage assessmentPackage : assessmentPackageDao.getAll()) {
-    		assessmentManagementService.validateAssessmentPackage(assessmentPackage);
+    		assessmentDataService.validateAssessmentPackage(assessmentPackage);
     	}
     }
 

@@ -117,7 +117,7 @@ public class AnonymousStandaloneRunner {
         }
         try {
             final Assessment assessment = assessmentManagementService.importAssessment(command.getFile());
-            final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(assessment);
+            final AssessmentObjectValidationResult<?> validationResult = assessmentDataService.validateAssessment(assessment);
             final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(assessment);
             if (!assessmentPackage.isLaunchable()) {
                 /* Assessment isn't launchable */

@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
+import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
@@ -56,6 +57,7 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
 
@@ -78,6 +80,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class AssessmentDataService {
 
     @Resource
+    private AssessmentPackageFileService assessmentPackageFileService;
+
+    @Resource
     private IdentityService identityService;
 
     @Resource
@@ -88,6 +93,33 @@ public class AssessmentDataService {
 
     @Resource
     private AssessmentDao assessmentDao;
+
+    @Resource
+    private AssessmentPackageDao assessmentPackageDao;
+
+    //-------------------------------------------------
+    // Validation
+    // (These methods arguably belong somewhere as, we're not doing any permission checking here)
+
+    public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
+        final AssessmentPackage currentAssessmentPackage = ensureSelectedAssessmentPackage(assessment);
+        return validateAssessmentPackage(currentAssessmentPackage);
+    }
+
+    public AssessmentObjectValidationResult<?> validateAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        /* Run the validation process */
+        final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
+
+        /* Persist results */
+        assessmentPackage.setValidated(true);
+        assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
+        assessmentPackage.setErrorCount(validationResult.getErrors().size());
+        assessmentPackage.setWarningCount(validationResult.getWarnings().size());
+        assessmentPackage.setValid(validationResult.isValid());
+        assessmentPackageDao.update(assessmentPackage);
+
+        return validationResult;
+    }
 
     //-------------------------------------------------
 
