@@ -56,6 +56,7 @@ public enum Privilege {
 
     /** Actual type of {@link DeliverySettings} must be compatible with their expected user */
     MATCH_DELIVERY_SETTINGS,
+
     ACCESS_DELIVERY_SETTINGS,
 
     /** FIXME: Rename this! */

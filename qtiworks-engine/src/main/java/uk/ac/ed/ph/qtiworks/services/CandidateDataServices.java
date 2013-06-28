@@ -132,7 +132,7 @@ public class CandidateDataServices {
     private FilespaceManager filespaceManager;
 
     @Resource
-    private AssessmentManagementService assessmentManagementService;
+    private AssessmentDataService assessmentDataService;
 
     @Resource
     private AssessmentObjectManagementService assessmentObjectManagementService;
@@ -203,16 +203,6 @@ public class CandidateDataServices {
         }
     }
 
-    public DeliverySettings getEffectiveDeliverySettings(final User candidate, final Delivery delivery) {
-        Assert.notNull(candidate, "candidate");
-        Assert.notNull(delivery, "delivery");
-        DeliverySettings result = delivery.getDeliverySettings();
-        if (result==null) {
-            result = assessmentManagementService.createDefaultDeliverySettings(candidate, delivery.getAssessment().getAssessmentType());
-        }
-        return result;
-    }
-
     //----------------------------------------------------
     // Item methods
 
@@ -267,7 +257,7 @@ public class CandidateDataServices {
      * @param notificationRecorder
      * @return
      */
-    public ItemSessionController createNewItemSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
+    public ItemSessionController createNewItemSessionStateAndController(final User candidate, final Delivery delivery, final NotificationRecorder notificationRecorder) {
         ensureItemDelivery(delivery);
 
         /* Resolve the underlying JQTI+ object */
@@ -281,7 +271,7 @@ public class CandidateDataServices {
         final ItemSessionState itemSessionState = new ItemSessionState();
 
         /* Create config for ItemSessionController */
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         itemSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(itemDeliverySettings));
         itemSessionControllerSettings.setMaxAttempts(itemDeliverySettings.getMaxAttempts());
@@ -300,27 +290,22 @@ public class CandidateDataServices {
      * and wraps it in a {@link ItemSessionController}.
      * <p>
      * It is assumed that the item was runnable, so this will never return null.
-     *
-     * @param delivery
-     * @param notificationRecorder
      */
     public ItemSessionController createItemSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
-        final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
         final ItemSessionState itemSessionState = loadItemSessionState(candidateEvent);
-        return createItemSessionController(delivery, itemSessionState, notificationRecorder);
+        return createItemSessionController(candidateEvent.getCandidateSession(), itemSessionState, notificationRecorder);
     }
 
     /**
      * Wraps the given {@link ItemSessionState} in a {@link ItemSessionController}.
      * <p>
      * It is assumed that the item was runnable, so this will never return null.
-     *
-     * @param delivery
-     * @param notificationRecorder
      */
-    public ItemSessionController createItemSessionController(final Delivery delivery,
+    public ItemSessionController createItemSessionController(final CandidateSession candidateSession,
             final ItemSessionState itemSessionState,  final NotificationRecorder notificationRecorder) {
+        final User candidate = candidateSession.getCandidate();
+        final Delivery delivery = candidateSession.getDelivery();
         ensureItemDelivery(delivery);
         Assert.notNull(itemSessionState, "itemSessionState");
 
@@ -332,7 +317,7 @@ public class CandidateDataServices {
         }
 
         /* Create config for ItemSessionController */
-        final ItemDeliverySettings itemDeliverySettings = getEffectiveDeliverySettings(candidate, delivery);
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         itemSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(itemDeliverySettings));
         itemSessionControllerSettings.setMaxAttempts(itemDeliverySettings.getMaxAttempts());
@@ -408,12 +393,8 @@ public class CandidateDataServices {
      * <p>
      * This will return null if the test can't be started because its {@link TestProcessingMap}
      * can't be created, e.g. if its XML can't be parsed.
-     *
-     * @param delivery
-     * @param notificationRecorder
-     * @return
      */
-    public TestSessionController createNewTestSessionStateAndController(final Delivery delivery, final NotificationRecorder notificationRecorder) {
+    public TestSessionController createNewTestSessionStateAndController(final User candidate, final Delivery delivery, final NotificationRecorder notificationRecorder) {
         ensureTestDelivery(delivery);
 
         /* Resolve the underlying JQTI+ object */
@@ -434,7 +415,7 @@ public class CandidateDataServices {
         final TestSessionState testSessionState = new TestSessionState(testPlan);
 
         /* Create config for TestSessionController */
-        final DeliverySettings testDeliverySettings = delivery.getDeliverySettings();
+        final DeliverySettings testDeliverySettings = assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
         testSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(testDeliverySettings));
 
@@ -452,27 +433,22 @@ public class CandidateDataServices {
      * and wraps it in a {@link TestSessionController}.
      * <p>
      * It is assumed that the test was runnable, so this will never return null.
-     *
-     * @param delivery
-     * @param notificationRecorder
      */
     public TestSessionController createTestSessionController(final CandidateEvent candidateEvent,
             final NotificationRecorder notificationRecorder) {
-        final Delivery delivery = candidateEvent.getCandidateSession().getDelivery();
         final TestSessionState testSessionState = loadTestSessionState(candidateEvent);
-        return createTestSessionController(delivery, testSessionState, notificationRecorder);
+        return createTestSessionController(candidateEvent.getCandidateSession(), testSessionState, notificationRecorder);
     }
 
     /**
      * Wraps the given {@link TestSessionState} in a {@link TestSessionController}.
      * <p>
      * It is assumed that the test was runnable, so this will never return null.
-     *
-     * @param delivery
-     * @param notificationRecorder
      */
-    public TestSessionController createTestSessionController(final Delivery delivery,
+    public TestSessionController createTestSessionController(final CandidateSession candidateSession,
             final TestSessionState testSessionState,  final NotificationRecorder notificationRecorder) {
+        final User candidate = candidateSession.getCandidate();
+        final Delivery delivery = candidateSession.getDelivery();
         ensureTestDelivery(delivery);
         Assert.notNull(testSessionState, "testSessionState");
 
@@ -484,7 +460,7 @@ public class CandidateDataServices {
         }
 
         /* Create config for TestSessionController */
-        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) delivery.getDeliverySettings();
+        final TestDeliverySettings testDeliverySettings = (TestDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         final TestSessionControllerSettings testSessionControllerSettings = new TestSessionControllerSettings();
         testSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(testDeliverySettings));
 

@@ -43,6 +43,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.EntityGraphService;
@@ -92,6 +93,9 @@ public class InstructorAssessmentManagementController {
 
     @Resource
     private EntityGraphService entityGraphService;
+
+    @Resource
+    private AssessmentDataService assessmentDataService;
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
@@ -371,12 +375,13 @@ public class InstructorAssessmentManagementController {
     public String showEditDeliveryForm(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupOwnDelivery(did);
+        final DeliverySettings deliverySettings = delivery.getDeliverySettings();
 
         final DeliveryTemplate template = new DeliveryTemplate();
         template.setTitle(delivery.getTitle());
         template.setOpen(delivery.isOpen());
         template.setLtiEnabled(delivery.isLtiEnabled());
-        template.setDsid(delivery.getDeliverySettings().getId());
+        template.setDsid(deliverySettings!=null ? deliverySettings.getId() : null);
 
         model.addAttribute(template);
         setupModelForDelivery(delivery, model);
@@ -436,7 +441,7 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/itemdeliverysettings/create", method=RequestMethod.GET)
     public String showCreateItemDeliverySettingsForm(final Model model) {
         final long existingSettingsCount = entityGraphService.countCallerDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
-        final ItemDeliverySettingsTemplate template = assessmentManagementService.createItemDeliverySettingsTemplate();
+        final ItemDeliverySettingsTemplate template = assessmentDataService.createItemDeliverySettingsTemplate();
         template.setTitle("Item Delivery Settings #" + (existingSettingsCount+1));
 
         model.addAttribute(template);
@@ -471,7 +476,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
-        assessmentManagementService.mergeItemDeliverySettings(itemDeliverySettings, template);
+        assessmentDataService.mergeItemDeliverySettings(itemDeliverySettings, template);
 
         model.addAttribute(itemDeliverySettings);
         model.addAttribute(template);
@@ -504,7 +509,7 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/testdeliverysettings/create", method=RequestMethod.GET)
     public String showCreateTestDeliverySettingsForm(final Model model) {
         final long existingOptionCount = entityGraphService.countCallerDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
-        final TestDeliverySettingsTemplate template = assessmentManagementService.createTestDeliverySettingsTemplate();
+        final TestDeliverySettingsTemplate template = assessmentDataService.createTestDeliverySettingsTemplate();
         template.setTitle("Test Delivery Settings #" + (existingOptionCount+1));
 
         model.addAttribute(template);
@@ -539,7 +544,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final TestDeliverySettings testDeliverySettings = assessmentManagementService.lookupTestDeliverySettings(dsid);
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
-        assessmentManagementService.mergeTestDeliverySettings(testDeliverySettings, template);
+        assessmentDataService.mergeTestDeliverySettings(testDeliverySettings, template);
 
         model.addAttribute(testDeliverySettings);
         model.addAttribute(template);

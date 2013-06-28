@@ -269,7 +269,7 @@ public class CandidateSessionStarter {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Create fresh JQTI+ state Object and try to create controller */
-        final ItemSessionController itemSessionController = candidateDataServices.createNewItemSessionStateAndController(delivery, notificationRecorder);
+        final ItemSessionController itemSessionController = candidateDataServices.createNewItemSessionStateAndController(candidate, delivery, notificationRecorder);
         if (itemSessionController==null) {
             return handleStartupExplosion(delivery, candidate, exitUrl);
         }
@@ -326,7 +326,7 @@ public class CandidateSessionStarter {
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
 
         /* Create fresh JQTI+ state & controller for it */
-        final TestSessionController testSessionController = candidateDataServices.createNewTestSessionStateAndController(delivery, notificationRecorder);
+        final TestSessionController testSessionController = candidateDataServices.createNewTestSessionStateAndController(candidate, delivery, notificationRecorder);
         if (testSessionController==null) {
             return handleStartupExplosion(delivery, candidate, exitUrl);
         }

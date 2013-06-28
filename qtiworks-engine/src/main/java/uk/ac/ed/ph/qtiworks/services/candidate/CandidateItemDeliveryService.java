@@ -44,6 +44,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ResponseLegality;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionCloser;
@@ -97,6 +99,9 @@ public class CandidateItemDeliveryService {
 
     @Resource
     private RequestTimestampContext requestTimestampContext;
+
+    @Resource
+    private AssessmentDataService assessmentDataService;
 
     @Resource
     private CandidateAuditLogger candidateAuditLogger;
@@ -188,7 +193,9 @@ public class CandidateItemDeliveryService {
         }
 
         /* Make sure candidate may comment (if set) */
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) candidateSession.getDelivery().getDeliverySettings();
+        final User candidate = candidateSession.getCandidate();
+        final Delivery delivery = candidateSession.getDelivery();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (candidateComment!=null && !itemDeliverySettings.isAllowCandidateComment()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SUBMIT_COMMENT);
             return null;
@@ -353,8 +360,9 @@ public class CandidateItemDeliveryService {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
 
         /* Check this is allowed in current state */
+        final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (itemSessionState.isEnded()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.END_SESSION_WHEN_ENDED);
             return null;
@@ -414,8 +422,9 @@ public class CandidateItemDeliveryService {
         final ItemSessionController itemSessionController = candidateDataServices.createItemSessionController(mostRecentEvent, notificationRecorder);
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
 
+        final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowHardResetWhenOpen()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.HARD_RESET_SESSION_WHEN_INTERACTING);
             return null;
@@ -481,8 +490,9 @@ public class CandidateItemDeliveryService {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
 
         /* Make sure caller may reset the session */
+        final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSoftResetWhenOpen()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOFT_RESET_SESSION_WHEN_INTERACTING);
             return null;
@@ -545,8 +555,9 @@ public class CandidateItemDeliveryService {
         final ItemSessionState itemSessionState = itemSessionController.getItemSessionState();
 
         /* Make sure caller may do this */
+        final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
         if (!itemSessionState.isEnded() && !itemDeliverySettings.isAllowSolutionWhenOpen()) {
             candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.SOLUTION_WHEN_INTERACTING);
             return null;

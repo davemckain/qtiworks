@@ -45,6 +45,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.AbstractRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.AssessmentRenderer;
@@ -57,6 +58,7 @@ import uk.ac.ed.ph.qtiworks.rendering.TestAuthorViewRenderingRequest;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingMode;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingOptions;
 import uk.ac.ed.ph.qtiworks.rendering.TestRenderingRequest;
+import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentPackageFileService;
 import uk.ac.ed.ph.qtiworks.services.CandidateAuditLogger;
 import uk.ac.ed.ph.qtiworks.services.CandidateDataServices;
@@ -124,6 +126,9 @@ public class CandidateRenderingService {
 
     @Resource
     private FilespaceManager filespaceManager;
+
+    @Resource
+    private AssessmentDataService assessmentDataService;
 
     @Resource
     private CandidateDataServices candidateDataServices;
@@ -219,8 +224,9 @@ public class CandidateRenderingService {
             final ItemRenderingOptions renderingOptions, final StreamResult result) {
         final CandidateItemEventType itemEventType = candidateEvent.getItemEventType();
         final CandidateSession candidateSession = candidateEvent.getCandidateSession();
+        final User candidate = candidateSession.getCandidate();
         final Delivery delivery = candidateSession.getDelivery();
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) assessmentDataService.getEffectiveDeliverySettings(candidate, delivery);
 
         /* Create and partially configure rendering request */
         final ItemRenderingRequest renderingRequest = new ItemRenderingRequest();
@@ -669,16 +675,14 @@ public class CandidateRenderingService {
     //----------------------------------------------------
 
     private ItemSessionController createItemSessionController(final CandidateSession candidateSession, final ItemSessionState itemSessionState) {
-        final Delivery delivery = candidateSession.getDelivery();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        return candidateDataServices.createItemSessionController(delivery,
+        return candidateDataServices.createItemSessionController(candidateSession,
                 itemSessionState, notificationRecorder);
     }
 
     private TestSessionController createTestSessionController(final CandidateSession candidateSession, final TestSessionState testSessionState) {
-        final Delivery delivery = candidateSession.getDelivery();
         final NotificationRecorder notificationRecorder = new NotificationRecorder(NotificationLevel.INFO);
-        return candidateDataServices.createTestSessionController(delivery,
+        return candidateDataServices.createTestSessionController(candidateSession,
                 testSessionState, notificationRecorder);
     }
 

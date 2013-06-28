@@ -63,7 +63,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 
-import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
@@ -109,6 +108,9 @@ public class AssessmentManagementService {
 
     @Resource
     private Validator jsr303Validator;
+
+    @Resource
+    private AssessmentDataService assessmentDataService;
 
     @Resource
     private EntityGraphService entityGraphService;
@@ -436,7 +438,7 @@ public class AssessmentManagementService {
         /* Create and persist new options from template */
         final ItemDeliverySettings result = new ItemDeliverySettings();
         result.setOwnerUser(caller);
-        mergeItemDeliverySettings(template, result);
+        assessmentDataService.mergeItemDeliverySettings(template, result);
         deliverySettingsDao.persist(result);
 
         auditLogger.recordEvent("Created ItemDeliverySettings #" + result.getId());
@@ -463,41 +465,11 @@ public class AssessmentManagementService {
         validateItemDeliverySettingsTemplate(template);
 
         /* Merge template into options and update */
-        mergeItemDeliverySettings(template, itemDeliverySettings);
+        assessmentDataService.mergeItemDeliverySettings(template, itemDeliverySettings);
         deliverySettingsDao.update(itemDeliverySettings);
 
         auditLogger.recordEvent("Updated ItemDeliverySettings #" + itemDeliverySettings.getId());
         return itemDeliverySettings;
-    }
-
-    private void mergeItemDeliverySettings(final ItemDeliverySettingsTemplate template, final ItemDeliverySettings target) {
-        target.setTitle(template.getTitle().trim());
-        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
-        target.setAllowEnd(template.isAllowEnd());
-        target.setAllowHardResetWhenEnded(template.isAllowHardResetWhenEnded());
-        target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
-        target.setAllowSoftResetWhenEnded(template.isAllowSoftResetWhenEnded());
-        target.setAllowSoftResetWhenOpen(template.isAllowSoftResetWhenOpen());
-        target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
-        target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
-        target.setAllowCandidateComment(template.isAllowCandidateComment());
-        target.setMaxAttempts(template.getMaxAttempts());
-        target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
-    }
-
-    public void mergeItemDeliverySettings(final ItemDeliverySettings template, final ItemDeliverySettingsTemplate target) {
-        target.setTitle(template.getTitle());
-        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
-        target.setAllowEnd(template.isAllowEnd());
-        target.setAllowHardResetWhenEnded(template.isAllowHardResetWhenEnded());
-        target.setAllowHardResetWhenOpen(template.isAllowHardResetWhenOpen());
-        target.setAllowSoftResetWhenEnded(template.isAllowSoftResetWhenEnded());
-        target.setAllowSoftResetWhenOpen(template.isAllowSoftResetWhenOpen());
-        target.setAllowSolutionWhenEnded(template.isAllowSolutionWhenEnded());
-        target.setAllowSolutionWhenOpen(template.isAllowSolutionWhenOpen());
-        target.setAllowCandidateComment(template.isAllowCandidateComment());
-        target.setMaxAttempts(template.getMaxAttempts());
-        target.setPrompt(StringUtilities.nullIfEmpty(template.getPrompt()));
     }
 
     //-------------------------------------------------
@@ -523,7 +495,7 @@ public class AssessmentManagementService {
         /* Create and persist new options from template */
         final TestDeliverySettings result = new TestDeliverySettings();
         result.setOwnerUser(caller);
-        mergeTestDeliverySettings(template, result);
+        assessmentDataService.mergeTestDeliverySettings(template, result);
         deliverySettingsDao.persist(result);
 
         auditLogger.recordEvent("Created TestDeliverySettings #" + result.getId());
@@ -550,21 +522,11 @@ public class AssessmentManagementService {
         validateTestDeliverySettingsTemplate(template);
 
         /* Merge template into options and update */
-        mergeTestDeliverySettings(template, testDeliverySettings);
+        assessmentDataService.mergeTestDeliverySettings(template, testDeliverySettings);
         deliverySettingsDao.update(testDeliverySettings);
 
         auditLogger.recordEvent("Updated TestDeliverySettings #" + testDeliverySettings.getId());
         return testDeliverySettings;
-    }
-
-    private void mergeTestDeliverySettings(final TestDeliverySettingsTemplate template, final TestDeliverySettings target) {
-        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
-        target.setTitle(template.getTitle().trim());
-    }
-
-    public void mergeTestDeliverySettings(final TestDeliverySettings template, final TestDeliverySettingsTemplate target) {
-        target.setTemplateProcessingLimit(template.getTemplateProcessingLimit());
-        target.setTitle(template.getTitle());
     }
 
     //-------------------------------------------------
@@ -660,7 +622,6 @@ public class AssessmentManagementService {
      *
      * NOTE: This deletes ALL associated data, including candidate data. Use with care!
      */
-    @Transactional(propagation=Propagation.REQUIRED)
     public Assessment deleteDelivery(final long did)
             throws DomainEntityNotFoundException, PrivilegeException {
         /* Look up assessment and check permissions */
@@ -719,7 +680,9 @@ public class AssessmentManagementService {
     public Delivery createDemoDelivery(final Assessment assessment, final DeliverySettings deliverySettings)
             throws PrivilegeException {
         Assert.notNull(assessment, "assessment");
-        ensureCompatible(deliverySettings, assessment);
+        if (deliverySettings!=null) {
+            ensureCompatible(deliverySettings, assessment);
+        }
 
         /* Check access rights */
         ensureCallerOwns(assessment);
@@ -736,60 +699,6 @@ public class AssessmentManagementService {
         /* That's it! */
         auditLogger.recordEvent("Created demo Delivery #" + delivery.getId() + " for Assessment #" + assessment.getId());
         return delivery;
-    }
-
-    public DeliverySettings createDefaultDeliverySettings(final User assessmentRunner, final AssessmentObjectType assessmentType) {
-        switch (assessmentType) {
-            case ASSESSMENT_ITEM: {
-                final ItemDeliverySettingsTemplate template = createItemDeliverySettingsTemplate();
-                final ItemDeliverySettings itemDeliverySettings = new ItemDeliverySettings();
-                mergeItemDeliverySettings(template, itemDeliverySettings);
-                itemDeliverySettings.setTitle("Default item delivery settings");
-                if (assessmentRunner.getUserRole()==UserRole.INSTRUCTOR) {
-                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of. default 'delivery settings'."
-                            + " You probably want to create and use your own settings here.");
-                }
-                else {
-                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'."
-                            + " You can create and use your settings when logged into QTIWorks"
-                            + " via its LTI instructor connector or with an explicit QTIWorks system account.");
-                }
-                return itemDeliverySettings;
-            }
-
-            case ASSESSMENT_TEST: {
-                final TestDeliverySettingsTemplate template = createTestDeliverySettingsTemplate();
-                final TestDeliverySettings testDeliverySettings = new TestDeliverySettings();
-                mergeTestDeliverySettings(template, testDeliverySettings);
-                testDeliverySettings.setTitle("Default test delivery settings");
-
-                return testDeliverySettings;
-            }
-
-            default:
-                throw new QtiLogicException("Unexpected switch case " + assessmentType);
-        }
-    }
-
-    public ItemDeliverySettingsTemplate createItemDeliverySettingsTemplate() {
-        final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
-        template.setTitle("Item Delivery Settings");
-        template.setAllowEnd(true);
-        template.setAllowHardResetWhenEnded(true);
-        template.setAllowHardResetWhenOpen(true);
-        template.setAllowSoftResetWhenEnded(true);
-        template.setAllowSoftResetWhenOpen(true);
-        template.setAllowSolutionWhenEnded(true);
-        template.setAllowSolutionWhenOpen(true);
-        template.setMaxAttempts(0);
-        template.setPrompt(null);
-        return template;
-    }
-
-    public TestDeliverySettingsTemplate createTestDeliverySettingsTemplate() {
-        final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
-        template.setTitle("Test Delivery Settings");
-        return template;
     }
 
     //-------------------------------------------------
