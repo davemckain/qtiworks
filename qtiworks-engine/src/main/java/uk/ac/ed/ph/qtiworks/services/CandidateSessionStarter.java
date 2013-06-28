@@ -233,7 +233,7 @@ public class CandidateSessionStarter {
         Assert.notNull(delivery, "delivery");
 
         /* Make sure Delivery is runnable */
-        if (delivery.getAssessment()==null || delivery.getDeliverySettings()==null) {
+        if (delivery.getAssessment()==null) {
             throw new PrivilegeException(candidate, Privilege.LAUNCH_INCOMPLETE_DELIVERY, delivery);
         }
 

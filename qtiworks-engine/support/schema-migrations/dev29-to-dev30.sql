@@ -61,8 +61,14 @@ CREATE SEQUENCE lti_resource_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO
 -- Change deliveries table to allow lazy association to assessments & delivery_settings
 ALTER TABLE deliveries ALTER aid DROP NOT NULL;
 ALTER TABLE deliveries ALTER dsid DROP NOT NULL;
+DELETE FROM item_delivery_settings WHERE dsid IN (SELECT dsid FROM delivery_settings WHERE owner_uid IN (SELECT uid FROM users WHERE user_type='ANONYMOUS'));
+DELETE FROM test_delivery_settings WHERE dsid IN (SELECT dsid FROM delivery_settings WHERE owner_uid IN (SELECT uid FROM users WHERE user_type='ANONYMOUS'));
+DELETE FROM delivery_settings WHERE owner_uid IN (SELECT uid FROM users WHERE user_type='ANONYMOUS');
 
--- Add references to lti_contexts table
+-- We never really used default delivery settings for assessments
+ALTER TABLE assessments DROP default_dsid;
+
+-- Add references to lti_contexts table to assessments & delivery_settings
 ALTER TABLE assessments ADD owner_lcid BIGINT REFERENCES lti_contexts(lcid);
 ALTER TABLE delivery_settings ADD owner_lcid BIGINT REFERENCES lti_contexts(lcid);
 

@@ -124,8 +124,7 @@ public class AnonymousStandaloneRunner {
                 model.addAttribute("validationResult", validationResult);
                 return "standalonerunner/invalidUpload";
             }
-            final DeliverySettings deliverySettings = assessmentManagementService.requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
-            final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
+            final Delivery delivery = assessmentManagementService.createDemoDelivery(assessment, null);
             final String exitUrl = "/web/anonymous/standalonerunner";
             final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, true, exitUrl, null, null);
 

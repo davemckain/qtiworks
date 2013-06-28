@@ -49,7 +49,7 @@ import org.hibernate.validator.constraints.NotBlank;
  */
 public final class DeliveryTemplate {
 
-    private long dsid;
+    private Long dsid;
 
     @NotNull
     @NotBlank
@@ -61,11 +61,11 @@ public final class DeliveryTemplate {
     private boolean ltiEnabled;
 
 
-    public long getDsid() {
+    public Long getDsid() {
         return dsid;
     }
 
-    public void setDsid(final long dsid) {
+    public void setDsid(final Long dsid) {
         this.dsid = dsid;
     }
 

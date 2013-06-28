@@ -468,8 +468,6 @@ public class SampleResourceImporter {
 
         /* Create default delivery settings */
         final DeliverySettings deliverySettings = deliverySettingsMap.get(qtiSampleAssessment.getDeliveryStyle());
-        assessment.setDefaultDeliverySettings(deliverySettings);
-        assessmentDao.update(assessment);
 
         /* Create a Delivery using these options (if there isn't one already) */
         final List<Delivery> demoDeliveries = deliveryDao.getForAssessmentAndType(assessment, DeliveryType.SYSTEM_DEMO);

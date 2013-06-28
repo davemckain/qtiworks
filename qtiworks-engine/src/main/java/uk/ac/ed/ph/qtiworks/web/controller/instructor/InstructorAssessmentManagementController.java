@@ -292,7 +292,7 @@ public class InstructorAssessmentManagementController {
     public String tryAssessment(final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupOwnAssessment(aid);
-        final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment);
+        final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, null);
 
         return runDelivery(aid, demoDelivery, true);
     }

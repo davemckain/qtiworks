@@ -48,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.mathassess.GlueValueBinder;
 import uk.ac.ed.ph.qtiworks.mathassess.MathAssessConstants;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
@@ -131,6 +132,9 @@ public class CandidateDataServices {
     private FilespaceManager filespaceManager;
 
     @Resource
+    private AssessmentManagementService assessmentManagementService;
+
+    @Resource
     private AssessmentObjectManagementService assessmentObjectManagementService;
 
     @Resource
@@ -197,6 +201,16 @@ public class CandidateDataServices {
             default:
                 throw new QtiWorksLogicException("Unexpected switch case " + assessmentType);
         }
+    }
+
+    public DeliverySettings getEffectiveDeliverySettings(final User candidate, final Delivery delivery) {
+        Assert.notNull(candidate, "candidate");
+        Assert.notNull(delivery, "delivery");
+        DeliverySettings result = delivery.getDeliverySettings();
+        if (result==null) {
+            result = assessmentManagementService.createDefaultDeliverySettings(candidate, delivery.getAssessment().getAssessmentType());
+        }
+        return result;
     }
 
     //----------------------------------------------------
@@ -318,7 +332,7 @@ public class CandidateDataServices {
         }
 
         /* Create config for ItemSessionController */
-        final ItemDeliverySettings itemDeliverySettings = (ItemDeliverySettings) delivery.getDeliverySettings();
+        final ItemDeliverySettings itemDeliverySettings = getEffectiveDeliverySettings(candidate, delivery);
         final ItemSessionControllerSettings itemSessionControllerSettings = new ItemSessionControllerSettings();
         itemSessionControllerSettings.setTemplateProcessingLimit(computeTemplateProcessingLimit(itemDeliverySettings));
         itemSessionControllerSettings.setMaxAttempts(itemDeliverySettings.getMaxAttempts());

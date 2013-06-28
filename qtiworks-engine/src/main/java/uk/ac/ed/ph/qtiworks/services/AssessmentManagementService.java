@@ -607,19 +607,16 @@ public class AssessmentManagementService {
         final Assessment assessment = lookupOwnAssessment(aid);
         ensureCallerOwns(assessment);
 
-        /* Get first DeliverySettings (creating if required) */
-        final DeliverySettings deliverySettings = requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
-
         /* Create Delivery template with reasonable defaults */
         final DeliveryTemplate template = new DeliveryTemplate();
         final long existingDeliveryCount = entityGraphService.countCallerDeliveries(assessment);
         template.setTitle("Delivery #" + (existingDeliveryCount+1));
-        template.setDsid(deliverySettings.getId());
+        template.setDsid(null);
         template.setOpen(false);
         template.setLtiEnabled(false);
 
         /* Create and return new entity */
-        return createDelivery(assessment, deliverySettings, template);
+        return createDelivery(assessment, null, template);
     }
 
     @ToRefactor
@@ -633,8 +630,11 @@ public class AssessmentManagementService {
         ensureCallerOwns(assessment);
 
         /* Look up settings and check privileges */
-        final long dsid = template.getDsid();
-        final DeliverySettings deliverySettings = lookupAndMatchDeliverySettings(dsid, assessment);
+        final Long dsid = template.getDsid();
+        DeliverySettings deliverySettings = null;
+        if (dsid!=null) {
+            deliverySettings = lookupAndMatchDeliverySettings(dsid.longValue(), assessment);
+        }
 
         /* Create and return new entity */
         return createDelivery(assessment, deliverySettings, template);
@@ -688,8 +688,11 @@ public class AssessmentManagementService {
         ensureCallerOwns(assessment);
 
         /* Look up settings and check privileges */
-        final long dsid = template.getDsid();
-        final DeliverySettings deliverySettings = lookupAndMatchDeliverySettings(dsid, assessment);
+        final Long dsid = template.getDsid();
+        DeliverySettings deliverySettings = null;
+        if (dsid!=null) {
+            deliverySettings = lookupAndMatchDeliverySettings(dsid.longValue(), assessment);
+        }
 
         /* Update data */
         delivery.setOpen(template.isOpen());
@@ -713,24 +716,9 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // Assessment trying
 
-    public Delivery createDemoDelivery(final Assessment assessment)
-            throws PrivilegeException {
-        Assert.notNull(assessment, "assessment");
-
-        /* Select suitable delivery settings */
-        DeliverySettings deliverySettings = assessment.getDefaultDeliverySettings();
-        if (deliverySettings==null) {
-            deliverySettings = requireFirstDeliverySettingsForCaller(assessment.getAssessmentType());
-        }
-
-        /* Now create demo delivery using these options */
-        return createDemoDelivery(assessment, deliverySettings);
-    }
-
     public Delivery createDemoDelivery(final Assessment assessment, final DeliverySettings deliverySettings)
             throws PrivilegeException {
         Assert.notNull(assessment, "assessment");
-        Assert.notNull(deliverySettings, "deliverySettings");
         ensureCompatible(deliverySettings, assessment);
 
         /* Check access rights */
@@ -750,34 +738,22 @@ public class AssessmentManagementService {
         return delivery;
     }
 
-    public DeliverySettings requireFirstDeliverySettingsForCaller(final AssessmentObjectType assessmentType) {
-        /* See if there are already suitable settings created */
-        final User caller = identityService.getCurrentThreadUser();
-        final DeliverySettings firstDeliverySettings = deliverySettingsDao.getFirstForOwner(caller, assessmentType);
-        if (firstDeliverySettings!=null) {
-            return firstDeliverySettings;
-        }
-
-        /* No luck, so set up some initial settings appropriate for this assessment */
+    public DeliverySettings createDefaultDeliverySettings(final User assessmentRunner, final AssessmentObjectType assessmentType) {
         switch (assessmentType) {
             case ASSESSMENT_ITEM: {
                 final ItemDeliverySettingsTemplate template = createItemDeliverySettingsTemplate();
                 final ItemDeliverySettings itemDeliverySettings = new ItemDeliverySettings();
                 mergeItemDeliverySettings(template, itemDeliverySettings);
-                itemDeliverySettings.setOwnerUser(caller);
                 itemDeliverySettings.setTitle("Default item delivery settings");
-                if (caller.getUserRole()==UserRole.INSTRUCTOR) {
-                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
-                            + " we have created for you. Feel free to tweak these defaults, or create and use as many of your own sets"
-                            + " of options as you please. This bit of text you are reading now is a default 'prompt' for the item,"
-                            + " which you can edit or remove to suit.");
+                if (assessmentRunner.getUserRole()==UserRole.INSTRUCTOR) {
+                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of. default 'delivery settings'."
+                            + " You probably want to create and use your own settings here.");
                 }
                 else {
-                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'"
-                            + " we have created for you. You will be able to change and edit these settings to suit if you have a QTIWorks account.");
+                    itemDeliverySettings.setPrompt("This assessment item is being delivered using a set of default 'delivery settings'."
+                            + " You can create and use your settings when logged into QTIWorks"
+                            + " via its LTI instructor connector or with an explicit QTIWorks system account.");
                 }
-                deliverySettingsDao.persist(itemDeliverySettings);
-                auditLogger.recordEvent("Created default ItemDeliverySettings for this user");
                 return itemDeliverySettings;
             }
 
@@ -785,11 +761,8 @@ public class AssessmentManagementService {
                 final TestDeliverySettingsTemplate template = createTestDeliverySettingsTemplate();
                 final TestDeliverySettings testDeliverySettings = new TestDeliverySettings();
                 mergeTestDeliverySettings(template, testDeliverySettings);
-                testDeliverySettings.setOwnerUser(caller);
                 testDeliverySettings.setTitle("Default test delivery settings");
 
-                deliverySettingsDao.persist(testDeliverySettings);
-                auditLogger.recordEvent("Created default TestDeliverySettings for this user");
                 return testDeliverySettings;
             }
 
