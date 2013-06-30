@@ -63,7 +63,11 @@ import javax.persistence.TemporalType;
     @NamedQuery(name="LtiDomain.findByConsumerKey",
             query="SELECT ld"
                 + "  FROM LtiDomain ld"
-                + "  WHERE ld.consumerKey = :consumerKey")
+                + "  WHERE ld.consumerKey = :consumerKey"),
+    @NamedQuery(name="LtiDomain.getAll",
+            query="SELECT ld"
+                + "  FROM LtiDomain ld"
+                + "  ORDER BY ld.ldid")
 })
 public class LtiDomain implements BaseEntity, TimestampedOnCreation {
 

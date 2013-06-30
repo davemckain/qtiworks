@@ -75,7 +75,9 @@ public final class QtiWorksEngineManager {
     	actionMap.put("reimportSamples", new ReimportSamplesAction());
     	actionMap.put("updateSamples", new UpdateSamplesAction());
     	actionMap.put("generateSecret", new GenerateSecretAction());
-    	actionMap.put("recordLtiDomain", new RecordLtiDomainAction());
+    	actionMap.put("registerLtiDomain", new RegisterLtiDomainAction());
+    	actionMap.put("importLtiDomains", new ImportLtiDomainsAction());
+    	actionMap.put("exportLtiDomains", new ExportLtiDomainsAction());
     	actionMap.put("deleteUsers", new DeleteUsersAction());
     	actionMap.put("resetUsers", new ResetUsersAction());
     	actionMap.put("purgeAnonymousData", new PurgeAnonymousDataAction());

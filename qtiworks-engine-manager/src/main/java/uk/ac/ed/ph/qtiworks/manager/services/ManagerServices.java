@@ -34,8 +34,10 @@
 package uk.ac.ed.ph.qtiworks.manager.services;
 
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
+import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
@@ -44,8 +46,11 @@ import uk.ac.ed.ph.qtiworks.services.DataDeletionService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
 import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
+
+import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.util.List;
 
@@ -65,6 +70,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 public class ManagerServices {
+
+	public static final int LTI_SHARED_SECRET_MIN_LENGTH = 8;
 
     private static final Logger logger = LoggerFactory.getLogger(ManagerServices.class);
 
@@ -88,6 +95,9 @@ public class ManagerServices {
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
+
+    @Resource
+    private LtiDomainDao ltiDomainDao;
 
     public SystemUser ensureInternalSystemUser(final UserRole userRole,
             final String loginName, final String firstName, final String lastName) {
@@ -184,6 +194,51 @@ public class ManagerServices {
 			}
 		}
 		return user;
+    }
+
+    //-------------------------------------------------
+
+    public boolean createOrUpdateLtiDomain(final String consumerKey, final String sharedSecret) {
+    	Assert.notNull(consumerKey, "consumerKey");
+    	Assert.notNull(sharedSecret, "consumerSecret");
+
+    	/* Validate key & secret */
+    	if (consumerKey.length() > DomainConstants.LTI_TOKEN_LENGTH) {
+    		logger.error("Consumer key {} must not be longer than {} characters", DomainConstants.LTI_TOKEN_LENGTH, consumerKey);
+    		return false;
+    	}
+    	if (consumerKey.matches("[^\\w-\\.]")) {
+    		logger.error("Consumer key {} must contain only alphanumeric characters, '.' and '.'", consumerKey);
+    		return false;
+    	}
+    	if (sharedSecret.length() < LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length() > DomainConstants.LTI_SECRET_LENGTH) {
+    		logger.error("Shared secret {} must not be between {} and {} characters", new Object[] { sharedSecret, LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_TOKEN_LENGTH });
+    		return false;
+    	}
+    	if (sharedSecret.matches("[^\\w-\\.]")) {
+    		logger.error("Shared secret {} must contain only alphanumeric characters, '.' and '.'", sharedSecret);
+    		return false;
+    	}
+
+    	/* Create/update LtiDomain entity as appropriate */
+        LtiDomain ltiDomain = ltiDomainDao.findByConsumerKey(consumerKey);
+        if (ltiDomain!=null) {
+        	/* Already registered - update secret if required */
+        	if (!sharedSecret.equals(ltiDomain.getConsumerSecret())) {
+        		ltiDomain.setConsumerSecret(sharedSecret);
+        		ltiDomainDao.update(ltiDomain);
+        		logger.info("Updated LTI domain data for consumer key {} and shared secret {}", consumerKey, sharedSecret);
+        	}
+        }
+        else {
+        	/* New domain */
+        	ltiDomain = new LtiDomain();
+        	ltiDomain.setConsumerKey(consumerKey);
+        	ltiDomain.setConsumerSecret(sharedSecret);
+    		ltiDomainDao.persist(ltiDomain);
+    		logger.info("Added new LTI domain for consumer key {} and shared secret {}", consumerKey, sharedSecret);
+        }
+        return true;
     }
 
     //-------------------------------------------------

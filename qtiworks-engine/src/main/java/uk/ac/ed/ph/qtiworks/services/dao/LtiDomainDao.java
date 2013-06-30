@@ -35,6 +35,8 @@ package uk.ac.ed.ph.qtiworks.services.dao;
 
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -63,5 +65,10 @@ public class LtiDomainDao extends GenericDao<LtiDomain> {
         final TypedQuery<LtiDomain> query = em.createNamedQuery("LtiDomain.findByConsumerKey", LtiDomain.class);
         query.setParameter("consumerKey", consumerKey);
         return extractNullableFindResult(query);
+    }
+
+    public List<LtiDomain> getAll() {
+        final TypedQuery<LtiDomain> query = em.createNamedQuery("LtiDomain.getAll", LtiDomain.class);
+        return query.getResultList();
     }
 }

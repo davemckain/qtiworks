@@ -33,55 +33,38 @@
  */
 package uk.ac.ed.ph.qtiworks.manager;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
-import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Records a new LTI domain, generating a shared secret for it.
+ * Exports all LTI domain data
  *
  * @author David McKain
  */
-public final class RecordLtiDomainAction extends ManagerAction {
-
-	private static final Logger logger = LoggerFactory.getLogger(RecordLtiDomainAction.class);
+public final class ExportLtiDomainsAction extends ManagerAction {
 
 	@Override
 	public String getActionSummary() {
-		return "Records a new LTI domain and outputs a shared secret for it";
+		return "Exports all registered LTI domain data to STDOUT in CSV format";
 	}
 
-    @Override
-    public String getActionParameterSummary() {
-        return "<tcDomainName>";
-    }
-
-    @Override
-    public String validateParameters(final List<String> parameters) {
-        if (parameters.size()!=1) {
-            return "Required parameter: <tool consumer domain name>";
-        }
-        return null;
-    }
-
 	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
+	public void run(final ApplicationContext applicationContext, final List<String> parameters) throws IOException {
 	    final LtiDomainDao ltiDomainDao = applicationContext.getBean(LtiDomainDao.class);
-
-	    final String tcDomainName = parameters.get(0);
-	    final String sharedSecret = ServiceUtilities.createRandomAlphanumericToken(DomainConstants.LTI_SECRET_LENGTH);
-	    final LtiDomain ltiDomain = new LtiDomain();
-	    ltiDomain.setConsumerKey(tcDomainName);
-	    ltiDomain.setConsumerSecret(sharedSecret);
-
-	    ltiDomainDao.persist(ltiDomain);
-	    logger.info("Stored new LTI domain. Consumer key is {}. Shared secret is {}", tcDomainName, sharedSecret);
+	    final List<LtiDomain> ltiDomains = ltiDomainDao.getAll();
+	    final PrintWriter printWriter = new PrintWriter(System.out);
+	    for (final LtiDomain ltiDomain : ltiDomains) {
+	    	printWriter.write(ltiDomain.getConsumerKey());
+	    	printWriter.write(',');
+	    	printWriter.write(ltiDomain.getConsumerSecret());
+	    	printWriter.println();
+	    }
+	    printWriter.close();
     }
 }
