@@ -108,7 +108,7 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     @Lob
     @Type(type="org.hibernate.type.TextType")
     @Basic(optional=true)
-    @Column(name="resource_link_title", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false)
+    @Column(name="resource_link_title", updatable=false)
     private String resourceLinkTitle;
 
     @Lob
@@ -116,6 +116,26 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=true)
     @Column(name="resource_link_description", updatable=false)
     private String resourceLinkDescription;
+
+    @Basic(optional=true)
+    @Column(name="tool_consumer_info_product_family_code", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false)
+    private String toolConsumerInfoProductFamilyCode;
+
+    @Basic(optional=true)
+    @Column(name="tool_consumer_info_version", length=DomainConstants.LTI_TOKEN_LENGTH, updatable=false)
+    private String toolConsumerInfoVersion;
+
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="tool_consumer_instance_name", updatable=false)
+    private String toolConsumerInstanceName;
+
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Basic(optional=true)
+    @Column(name="tool_consumer_instance_description", updatable=false)
+    private String toolConsumerInstanceDescription;
 
     /** {@link Delivery} matched to this resource */
     @ManyToOne(optional=true, fetch=FetchType.EAGER)
@@ -191,6 +211,42 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    public String getToolConsumerInfoProductFamilyCode() {
+        return toolConsumerInfoProductFamilyCode;
+    }
+
+    public void setToolConsumerInfoProductFamilyCode(final String toolConsumerInfoProductFamilyCode) {
+        this.toolConsumerInfoProductFamilyCode = toolConsumerInfoProductFamilyCode;
+    }
+
+
+    public String getToolConsumerInfoVersion() {
+        return toolConsumerInfoVersion;
+    }
+
+    public void setToolConsumerInfoVersion(final String toolConsumerInfoVersion) {
+        this.toolConsumerInfoVersion = toolConsumerInfoVersion;
+    }
+
+
+    public String getToolConsumerInstanceName() {
+        return toolConsumerInstanceName;
+    }
+
+    public void setToolConsumerInstanceName(final String toolConsumerInstanceName) {
+        this.toolConsumerInstanceName = toolConsumerInstanceName;
+    }
+
+
+    public String getToolConsumerInstanceDescription() {
+        return toolConsumerInstanceDescription;
+    }
+
+    public void setToolConsumerInstanceDescription(final String toolConsumerInstanceDescription) {
+        this.toolConsumerInstanceDescription = toolConsumerInstanceDescription;
+    }
+
+
     @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public Delivery getDelivery() {
         return delivery;
@@ -209,6 +265,10 @@ public class LtiResource implements BaseEntity, TimestampedOnCreation {
                 + ",resourceLinkId=" + resourceLinkId
                 + ",resourceLinkTitle=" + resourceLinkTitle
                 + ",resourceLinkDescription=" + resourceLinkDescription
+                + ",toolConsumerInfoProductFamilyCode=" + toolConsumerInfoProductFamilyCode
+                + ",toolConsumerInfoVersion=" + toolConsumerInfoVersion
+                + ",toolConsumerInstanceName=" + toolConsumerInstanceName
+                + ",toolConsumerInstanceDescription=" + toolConsumerInstanceDescription
                 + ")";
     }
 }

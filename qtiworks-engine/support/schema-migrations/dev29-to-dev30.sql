@@ -53,8 +53,12 @@ CREATE TABLE lti_resources (
   creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   lcid BIGINT NOT NULL REFERENCES lti_contexts(lcid),
   resource_link_id VARCHAR(256) NOT NULL,
-  resource_link_title TEXT NOT NULL,
-  resource_link_description TEXT NOT NULL
+  resource_link_title TEXT,
+  resource_link_description TEXT,
+  tool_consumer_info_product_family_code VARCHAR(256),
+  tool_consumer_info_version VARCHAR(256),
+  tool_consumer_instance_name TEXT,
+  tool_consumer_instance_description TEXT
 );
 CREATE SEQUENCE lti_resource_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
 

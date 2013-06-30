@@ -275,8 +275,8 @@ public class LtiLaunchDecodingService {
         ltiUser.setLogicalKey(logicalKey);
         ltiUser.setFirstName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameGiven(), "Name", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
         ltiUser.setLastName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameFamily(), "Not Provided", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
-        ltiUser.setEmailAddress(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonContactEmailPrimary(), null, DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
-        ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, null, DomainConstants.LTI_TOKEN_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
+        ltiUser.setEmailAddress(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonContactEmailPrimary(), DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
+        ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, DomainConstants.LTI_TOKEN_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
         ltiUser.setLisFullName(trimLisPersonFullName(ltiLaunchData.getLisPersonNameFull())); /* (May be null) */
         ltiUserDao.persist(ltiUser);
         return ltiUser;
@@ -305,8 +305,8 @@ public class LtiLaunchDecodingService {
         ltiUser.setLogicalKey(logicalKey);
         ltiUser.setFirstName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameGiven(), "Name", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
         ltiUser.setLastName(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonNameFamily(), "Not Provided", DomainConstants.USER_NAME_COMPONENT_MAX_LENGTH));
-        ltiUser.setEmailAddress(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonContactEmailPrimary(), null, DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
-        ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, null, DomainConstants.LTI_TOKEN_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
+        ltiUser.setEmailAddress(ServiceUtilities.safelyTrimString(ltiLaunchData.getLisPersonContactEmailPrimary(), DomainConstants.USER_EMAIL_ADDRESS_MAX_LENGTH));
+        ltiUser.setLtiUserId(ServiceUtilities.safelyTrimString(userId, DomainConstants.LTI_TOKEN_LENGTH)); /* (May be null, trimmed if too long, so not necessarily unique) */
         ltiUser.setLisFullName(trimLisPersonFullName(ltiLaunchData.getLisPersonNameFull())); /* (May be null) */
         ltiUserDao.persist(ltiUser);
         return ltiUser;

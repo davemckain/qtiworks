@@ -116,6 +116,12 @@ public final class LtiLaunchData implements Serializable {
     /** Corresponds to <code>tool_consumer_instance_guid</code>. Recommended. */
     private String toolConsumerInstanceGuid;
 
+    /** Corresponds to <code>tool_consumer_instance_name</code>. Recommended. */
+    private String toolConsumerInstanceName;
+
+    /** Corresponds to <code>tool_consumer_instance_description</code>. Optional. */
+    private String toolConsumerInstanceDescription;
+
     //-------------------------------------------------------------
     // Results
 
@@ -304,6 +310,24 @@ public final class LtiLaunchData implements Serializable {
 
     public void setToolConsumerInstanceGuid(final String toolConsumerInstanceGuid) {
         this.toolConsumerInstanceGuid = toolConsumerInstanceGuid;
+    }
+
+
+    public String getToolConsumerInstanceName() {
+        return toolConsumerInstanceName;
+    }
+
+    public void setToolConsumerInstanceName(final String toolConsumerInstanceName) {
+        this.toolConsumerInstanceName = toolConsumerInstanceName;
+    }
+
+
+    public String getToolConsumerInstanceDescription() {
+        return toolConsumerInstanceDescription;
+    }
+
+    public void setToolConsumerInstanceDescription(final String toolConsumerInstanceDescription) {
+        this.toolConsumerInstanceDescription = toolConsumerInstanceDescription;
     }
 
 

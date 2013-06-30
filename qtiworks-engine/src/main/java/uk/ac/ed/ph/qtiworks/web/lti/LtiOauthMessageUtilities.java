@@ -78,6 +78,8 @@ public final class LtiOauthMessageUtilities {
         result.setToolConsumerInfoProductFamilyCode(oauthMessage.getParameter("tool_consumer_info_product_family_code")); /* Optional but recommended */
         result.setToolConsumerInfoVersion(oauthMessage.getParameter("tool_consumer_info_version")); /* Optional but recommended */
         result.setToolConsumerInstanceGuid(oauthMessage.getParameter("tool_consumer_instance_guid")); /* Optional but recommended */
+        result.setToolConsumerInstanceName(oauthMessage.getParameter("tool_consumer_instance_name")); /* Recommended */
+        result.setToolConsumerInstanceDescription(oauthMessage.getParameter("tool_consumer_instance_description")); /* Optional */
         /* Result reporting parameters */
         result.setLisResultSourcedid(oauthMessage.getParameter("lis_result_sourcedid"));
         result.setLisOutcomeServiceUrl(oauthMessage.getParameter("lis_outcome_service_url"));

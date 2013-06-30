@@ -169,6 +169,10 @@ public class LtiLaunchService {
             ltiResource.setResourceLinkId(resourceLinkId); /* FIXME: What if too long for the column? */
             ltiResource.setResourceLinkTitle(ltiLaunchData.getResourceLinkTitle());
             ltiResource.setResourceLinkDescription(ltiLaunchData.getResourceLinkDescription());
+            ltiResource.setToolConsumerInfoProductFamilyCode(ServiceUtilities.safelyTrimString(ltiLaunchData.getToolConsumerInfoProductFamilyCode(), DomainConstants.LTI_TOKEN_LENGTH));
+            ltiResource.setToolConsumerInfoVersion(ServiceUtilities.safelyTrimString(ltiLaunchData.getToolConsumerInfoVersion(), DomainConstants.LTI_TOKEN_LENGTH));
+            ltiResource.setToolConsumerInstanceName(ltiLaunchData.getToolConsumerInstanceName());
+            ltiResource.setToolConsumerInstanceDescription(ltiLaunchData.getToolConsumerInstanceDescription());
             ltiResource.setDelivery(delivery);
             ltiResourceDao.persist(ltiResource);
             logger.info("Created new LtiResource {}", ltiResource);
