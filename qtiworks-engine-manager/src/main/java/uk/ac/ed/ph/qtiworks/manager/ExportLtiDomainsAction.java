@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.manager;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.services.dao.LtiDomainDao;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -55,7 +54,7 @@ public final class ExportLtiDomainsAction extends ManagerAction {
 	}
 
 	@Override
-	public void run(final ApplicationContext applicationContext, final List<String> parameters) throws IOException {
+	public void run(final ApplicationContext applicationContext, final List<String> parameters) {
 	    final LtiDomainDao ltiDomainDao = applicationContext.getBean(LtiDomainDao.class);
 	    final List<LtiDomain> ltiDomains = ltiDomainDao.getAll();
 	    final PrintWriter printWriter = new PrintWriter(System.out);

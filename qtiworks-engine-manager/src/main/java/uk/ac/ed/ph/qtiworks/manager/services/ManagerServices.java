@@ -207,16 +207,16 @@ public class ManagerServices {
     		logger.error("Consumer key {} must not be longer than {} characters", DomainConstants.LTI_TOKEN_LENGTH, consumerKey);
     		return false;
     	}
-    	if (consumerKey.matches("[^\\w-\\.]")) {
-    		logger.error("Consumer key {} must contain only alphanumeric characters, '.' and '.'", consumerKey);
+    	if (!consumerKey.matches("[\\w-\\./]+")) {
+    		logger.error("Consumer key {} must contain only alphanumeric characters, '-', '/' and '.'", consumerKey);
     		return false;
     	}
     	if (sharedSecret.length() < LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length() > DomainConstants.LTI_SECRET_LENGTH) {
     		logger.error("Shared secret {} must not be between {} and {} characters", new Object[] { sharedSecret, LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_TOKEN_LENGTH });
     		return false;
     	}
-    	if (sharedSecret.matches("[^\\w-\\.]")) {
-    		logger.error("Shared secret {} must contain only alphanumeric characters, '.' and '.'", sharedSecret);
+    	if (!sharedSecret.matches("[\\w-\\.]+")) {
+    		logger.error("Shared secret {} must contain only alphanumeric characters, '-' and '.'", sharedSecret);
     		return false;
     	}
 
