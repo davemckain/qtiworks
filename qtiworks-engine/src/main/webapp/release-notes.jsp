@@ -12,6 +12,14 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV30 [Development] (01/07/2013)</h3>
+  <p>
+    This work-in-progress release adds in enough functionality for testing out the
+    new domain-level LTI launches. I've released it now so that partners can start
+    setting up their VLEs to use the new LTI instructor role functionality, which
+    should appear in the next developer snapshot.
+  </p>
+
   <h3>1.0-DEV29 [Development] (03/06/2013)</h3>
   <p>
     This continues the work of the last 2 snapshots, adding in a new author
