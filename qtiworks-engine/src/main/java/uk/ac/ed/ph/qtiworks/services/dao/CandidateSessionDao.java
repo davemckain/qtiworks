@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services.dao;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -67,6 +69,12 @@ public class CandidateSessionDao extends GenericDao<CandidateSession> {
         final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getForCandidate", CandidateSession.class);
         query.setParameter("candidate", candidate);
         return query.getResultList();
+    }
+
+    public long countRunningForAssessment(final Assessment assessment) {
+        final Query query = em.createNamedQuery("CandidateSession.countRunningForAssessment");
+        query.setParameter("assessment", assessment);
+        return extractCountResult(query);
     }
 
     public List<CandidateSession> getForDelivery(final Delivery delivery) {

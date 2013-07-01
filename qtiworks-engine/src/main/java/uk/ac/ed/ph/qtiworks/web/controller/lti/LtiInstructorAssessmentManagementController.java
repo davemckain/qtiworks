@@ -40,12 +40,15 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
+
+import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
 
@@ -82,6 +85,9 @@ public class LtiInstructorAssessmentManagementController {
     @Resource
     private AssessmentManagementService assessmentManagementService;
 
+    @Resource
+    private CandidateSessionDao candidateSessionDao;
+
     //------------------------------------------------------
 
     @ModelAttribute
@@ -94,7 +100,7 @@ public class LtiInstructorAssessmentManagementController {
     //------------------------------------------------------
 
     @RequestMapping(value="", method=RequestMethod.GET)
-    public String resourceTopPage(final Model model) {
+    public String resourceTopPage() {
         return "resource";
     }
 
@@ -148,9 +154,7 @@ public class LtiInstructorAssessmentManagementController {
 
     //------------------------------------------------------
 
-    /**
-     * Shows the Assessment having the given ID (aid)
-     */
+    /** Shows the Assessment having the given ID (aid) */
     @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
     public String showAssessment(@PathVariable final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -169,5 +173,24 @@ public class LtiInstructorAssessmentManagementController {
         model.addAttribute("assessmentRouting", ltiInstructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
         model.addAttribute("deliverySettingsList", assessmentDataService.getCallerLtiContextDeliverySettingsForType(assessment.getAssessmentType()));
+        model.addAttribute("assessmentRunningSessionCount", candidateSessionDao.countRunningForAssessment(assessment));
+    }
+
+    @RequestMapping(value="/assessment/{aid}/delete", method=RequestMethod.POST)
+    public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        assessmentManagementService.deleteAssessment(aid);
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully deleted");
+        return ltiInstructorRouter.buildInstructorRedirect("/assessments");
+    }
+
+    /** TODO: For performance, we should cache the validation result */
+    @RequestMapping(value="/assessment/{aid}/validate", method=RequestMethod.GET)
+    public String validateAssessment(final @PathVariable long aid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
+        model.addAttribute("validationResult", validationResult);
+        setupModelForAssessment(aid, model);
+        return "validationResult";
     }
 }

@@ -41,10 +41,8 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -99,7 +97,7 @@ import javax.persistence.Version;
                 + "  FROM Assessment a"
                 + "  LEFT JOIN a.selectedAssessmentPackage ap"
                 + "  WHERE a.sampleCategory = :sampleCategory"
-                + "  ORDER BY a.creationTime"),
+                + "  ORDER BY a.creationTime")
 })
 public class Assessment implements BaseEntity, TimestampedOnCreation {
 
@@ -192,10 +190,12 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @OrderBy("apid")
     private List<AssessmentPackage> assessmentPackages;
 
-    /** (Currently used for cascading deletion only) */
-    @SuppressWarnings("unused")
-    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
-    private Set<Delivery> deliveries;
+    /**
+     * All {@link Delivery} entities created for this {@link Assessment}, ordered by ID (did).
+     */
+    @OneToMany(mappedBy="assessment", fetch=FetchType.LAZY)
+    @OrderBy("did")
+    private List<Delivery> deliveries;
 
     //------------------------------------------------------------
 
@@ -316,6 +316,14 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
             assessmentPackages = new ArrayList<AssessmentPackage>();
         }
         return assessmentPackages;
+    }
+
+
+    public List<Delivery> getDeliveries() {
+        if (deliveries==null) {
+            deliveries = new ArrayList<Delivery>();
+        }
+        return deliveries;
     }
 
     //------------------------------------------------------------

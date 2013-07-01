@@ -5,24 +5,26 @@ All Rights Reserved
 
 Shows information about a particular Assessment
 
-Model:
+Additional model attrs:
 
 ltiResource
 assessment
 assessmentPackage (most recent)
+assessmentRunningSessionCount
 deliverySettingsList (List<DeliverySettings> - possibly empty)
-primaryRouting (action -> URL)
 assessmentRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Assessment details">
+<page:ltipage title="Assessment details">
 
   <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}"><c:out value="${utils:formatLtiResourceTitle(ltiResource)}"/></a></li> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
     <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
   </nav>
   <h2>Assessment '${fn:escapeXml(assessment.name)}'</h2>
+
+  Running sessions: ${assessmentRunningSessionCount}
 
   <div class="grid_6">
     <div class="infoBox">
@@ -135,9 +137,10 @@ assessmentRouting (action -> URL)
         </c:choose>
       </li>
     </c:if>
-    <li><a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Manage deliveries of this Assessment</a></li>
-    <li><page:postLink path="${assessmentRouting['delete']}"
-      confirm="Are you sure? This will delete the Assessment and all associated Deliveries and Candidate Data"
-      title="Delete Assessment"/></li>
+    <li>
+      <page:postLink path="${assessmentRouting['delete']}"
+      confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${assessmentRunningSessionCount} candidate(s) running this Assessment."
+        title="Delete Assessment"/>
+    </li>
   </ul>
-</page:page>
+</page:ltipage>

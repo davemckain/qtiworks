@@ -179,8 +179,14 @@ public class DataDeletionService {
             assessmentPackageDao.update(assessmentPackage);
         }
 
-        /* Delete Assessment, taking advantage of cascading into Deliveries etc. */
-        assessmentDao.remove(assessment); /* (This will cascade into Deliveries) */
+        /* Delete Deliveries */
+        final List<Delivery> deliveries = assessment.getDeliveries();
+        for (final Delivery delivery : deliveries) {
+            deleteDelivery(delivery);
+        }
+
+        /* Delete Assessment entity */
+        assessmentDao.remove(assessment);
 
         /* Finally delete each AssessmentPackage */
         for (final AssessmentPackage assessmentPackage : assessmentPackages) {
