@@ -49,7 +49,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Router for the Instructor MVC
@@ -58,8 +57,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @Service
 public class InstructorRouter {
-
-    public static final String FLASH = "flashMessage";
 
     @Resource
     private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
@@ -77,10 +74,6 @@ public class InstructorRouter {
 
     public String buildInstructorRedirect(final String actionUrl) {
         return "redirect:" + buildWithinContextUrl(actionUrl);
-    }
-
-    public void addFlashMessage(final RedirectAttributes redirectAttributes, final String message) {
-        redirectAttributes.addFlashAttribute(InstructorRouter.FLASH, message);
     }
 
     public Map<String, String> buildPrimaryRouting() {

@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryMetadata;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
+import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
@@ -105,7 +106,7 @@ public class InstructorAssessmentReportingController {
     public String terminateAllCandidateSessions(final RedirectAttributes redirectAttributes, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final int terminated = assessmentProctoringService.terminateCandidateSessionsForDelivery(did);
-        instructorRouter.addFlashMessage(redirectAttributes, "Terminated " + terminated + " candidate session" + (terminated!=1 ? "s" : ""));
+        GlobalRouter.addFlashMessage(redirectAttributes, "Terminated " + terminated + " candidate session" + (terminated!=1 ? "s" : ""));
         return instructorRouter.buildInstructorRedirect("/delivery/" + did + "/candidate-sessions");
     }
 
@@ -183,7 +184,7 @@ public class InstructorAssessmentReportingController {
     public String terminateCandidateSession(@PathVariable final long xid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentProctoringService.terminateCandidateSession(xid);
-        instructorRouter.addFlashMessage(redirectAttributes, "Terminated Candidate Session #" + xid);
+        GlobalRouter.addFlashMessage(redirectAttributes, "Terminated Candidate Session #" + xid);
         return instructorRouter.buildCandidateSessionRouting(xid).get("show");
     }
 

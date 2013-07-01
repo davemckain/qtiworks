@@ -37,14 +37,20 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 /**
  * Global webapp router.
- *
- * FIXME: Refactor this if/when it takes shape.
  *
  * @author David McKain
  */
 public final class GlobalRouter {
+
+    public static final String FLASH = "flashMessage";
+
+    public static void addFlashMessage(final RedirectAttributes redirectAttributes, final String message) {
+        redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, message);
+    }
 
     public static String buildSessionStartRedirect(final CandidateSession candidateSession) {
         final boolean isItem = candidateSession.getDelivery().getAssessment().getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM;

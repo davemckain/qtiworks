@@ -164,7 +164,7 @@ public class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        instructorRouter.addFlashMessage(redirectAttributes, "Assessment successfully created");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully created");
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
@@ -211,7 +211,7 @@ public class InstructorAssessmentManagementController {
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
         }
-        instructorRouter.addFlashMessage(redirectAttributes, "Assessment successfully edited");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully edited");
         return instructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
 
@@ -262,7 +262,7 @@ public class InstructorAssessmentManagementController {
             /* This could only happen if there's some kind of race condition */
             throw QtiWorksRuntimeException.unexpectedException(e);
         }
-        instructorRouter.addFlashMessage(redirectAttributes, "Assessment package content successfully replaced");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment package content successfully replaced");
         return instructorRouter.buildInstructorRedirect("/assessment/{aid}");
     }
 
@@ -272,7 +272,7 @@ public class InstructorAssessmentManagementController {
     public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentManagementService.deleteAssessment(aid);
-        instructorRouter.addFlashMessage(redirectAttributes, "Assessment successfully deleted");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully deleted");
         return instructorRouter.buildInstructorRedirect("/assessments");
     }
 
@@ -355,7 +355,7 @@ public class InstructorAssessmentManagementController {
     public String createDelivery(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.createDelivery(aid);
-        instructorRouter.addFlashMessage(redirectAttributes, "Delivery successfully created");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Delivery successfully created");
         return instructorRouter.buildInstructorRedirect("/delivery/" + delivery.getId().longValue());
     }
 
@@ -364,7 +364,7 @@ public class InstructorAssessmentManagementController {
     public String deleteDelivery(final @PathVariable long did, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.deleteDelivery(did);
-        redirectAttributes.addFlashAttribute(InstructorRouter.FLASH, "Delivery has been deleted");
+        redirectAttributes.addFlashAttribute(GlobalRouter.FLASH, "Delivery has been deleted");
         return instructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId() + "/deliveries");
     }
 
@@ -406,7 +406,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show */
-        instructorRouter.addFlashMessage(redirectAttributes, "Delivery successfully edited");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Delivery successfully edited");
         return instructorRouter.buildInstructorRedirect("/delivery/" + did);
     }
 
@@ -465,7 +465,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Go back to list */
-        instructorRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully created");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully created");
         return instructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
@@ -500,7 +500,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show/edit with a flash message */
-        instructorRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully changed");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully changed");
         return instructorRouter.buildInstructorRedirect("/itemdeliverysettings/" + dsid);
     }
 
@@ -533,7 +533,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Go back to list */
-        instructorRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully created");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully created");
         return instructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
@@ -569,7 +569,7 @@ public class InstructorAssessmentManagementController {
         }
 
         /* Return to show/edit with a flash message */
-        instructorRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
+        GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
         return instructorRouter.buildInstructorRedirect("/testdeliverysettings/" + dsid);
     }
 
