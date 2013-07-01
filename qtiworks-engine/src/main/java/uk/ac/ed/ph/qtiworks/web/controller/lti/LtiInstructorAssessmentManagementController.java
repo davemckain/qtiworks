@@ -33,18 +33,26 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
+import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
+import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
@@ -57,11 +65,13 @@ import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -84,6 +94,9 @@ public class LtiInstructorAssessmentManagementController {
 
     @Resource
     private AssessmentManagementService assessmentManagementService;
+
+    @Resource
+    private CandidateSessionStarter candidateSessionStarter;
 
     @Resource
     private CandidateSessionDao candidateSessionDao;
@@ -176,6 +189,98 @@ public class LtiInstructorAssessmentManagementController {
         model.addAttribute("assessmentRunningSessionCount", candidateSessionDao.countRunningForAssessment(assessment));
     }
 
+    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
+    public String showEditAssessmentForm(@PathVariable final long aid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+
+        final UpdateAssessmentCommand command = new UpdateAssessmentCommand();
+        command.setName(assessment.getName());
+        command.setTitle(assessment.getTitle());
+        model.addAttribute(command);
+
+        setupModelForAssessment(assessment, model);
+        return "editAssessmentForm";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.POST)
+    public String handleEditAssessmentForm(@PathVariable final long aid, final Model model,
+            final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute UpdateAssessmentCommand command, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            setupModelForAssessment(aid, model);
+            return "editAssessmentForm";
+        }
+        try {
+            assessmentManagementService.updateAssessment(aid, command);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully edited");
+        return ltiInstructorRouter.buildInstructorRedirect("/assessment/" + aid);
+    }
+
+    @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.GET)
+    public String showUpdateAssessmentPackageForm(final @PathVariable long aid,
+            final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        model.addAttribute(new UploadAssessmentPackageCommand());
+        setupModelForAssessment(aid, model);
+        return "updateAssessmentPackageForm";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.POST)
+    public String handleUploadAssessmentPackageForm(final @PathVariable long aid,
+            final Model model, final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Make sure something was submitted */
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            setupModelForAssessment(aid, model);
+            return "updateAssessmentPackageForm";
+        }
+
+        /* Attempt to import the package */
+        final MultipartFile uploadFile = command.getFile();
+        try {
+            assessmentManagementService.replaceAssessmentPackage(aid, uploadFile);
+        }
+        catch (final AssessmentPackageFileImportException e) {
+            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+            failure.registerErrors(result, "assessmentPackageUpload");
+            setupModelForAssessment(aid, model);
+            return "updateAssessmentPackageForm";
+        }
+        catch (final AssessmentStateException e) {
+            final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
+            failure.registerErrors(result, "assessmentPackageUpload");
+            setupModelForAssessment(aid, model);
+            return "updateAssessmentPackageForm";
+        }
+        try {
+            assessmentManagementService.validateAssessment(aid);
+        }
+        catch (final DomainEntityNotFoundException e) {
+            /* This could only happen if there's some kind of race condition */
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment package content successfully replaced");
+        return ltiInstructorRouter.buildInstructorRedirect("/assessment/{aid}");
+    }
+
+    @RequestMapping(value="/assessment/{aid}/validate", method=RequestMethod.GET)
+    public String validateAssessment(final @PathVariable long aid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
+        model.addAttribute("validationResult", validationResult);
+        setupModelForAssessment(aid, model);
+        return "validationResult";
+    }
+
     @RequestMapping(value="/assessment/{aid}/delete", method=RequestMethod.POST)
     public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -184,13 +289,27 @@ public class LtiInstructorAssessmentManagementController {
         return ltiInstructorRouter.buildInstructorRedirect("/assessments");
     }
 
-    /** TODO: For performance, we should cache the validation result */
-    @RequestMapping(value="/assessment/{aid}/validate", method=RequestMethod.GET)
-    public String validateAssessment(final @PathVariable long aid, final Model model)
+    @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
+    public String tryAssessment(final @PathVariable long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
-        final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
-        model.addAttribute("validationResult", validationResult);
-        setupModelForAssessment(aid, model);
-        return "validationResult";
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, null);
+        return runDelivery(aid, demoDelivery, true);
+    }
+
+    @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
+    public String tryAssessment(final @PathVariable long aid, final @PathVariable long dsid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
+        final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
+        return runDelivery(aid, demoDelivery, true);
+    }
+
+    private String runDelivery(final long aid, final Delivery delivery, final boolean authorMode)
+            throws PrivilegeException {
+        final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, authorMode, exitUrl, null, null);
+        return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 }

@@ -24,12 +24,14 @@ assessmentRouting (action -> URL)
   </nav>
   <h2>Assessment '${fn:escapeXml(assessment.name)}'</h2>
 
-  Running sessions: ${assessmentRunningSessionCount}
-
   <div class="grid_6">
     <div class="infoBox">
       <div class="cat">Title</div>
-      <div class="value">${fn:escapeXml(assessment.title)}</div>
+      <div class="value">
+        <a href="${utils:escapeLink(assessmentRouting['edit'])}">
+          ${fn:escapeXml(assessment.title)}
+        </a>
+      </div>
     </div>
   </div>
 
