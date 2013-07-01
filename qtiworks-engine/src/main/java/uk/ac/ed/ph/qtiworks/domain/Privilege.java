@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.User;
  */
 public enum Privilege {
 
+    USER_ACCOUNT_ENABLED,
     USER_INSTRUCTOR,
     USER_CANDIDATE,
     USER_ANONYMOUS,

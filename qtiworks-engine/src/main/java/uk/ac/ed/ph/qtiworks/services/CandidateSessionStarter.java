@@ -230,7 +230,13 @@ public class CandidateSessionStarter {
             final boolean authorMode, final String exitUrl, final String lisOutcomeServiceUrl,
             final String lisResultSourcedid)
             throws PrivilegeException {
+        Assert.notNull(candidate, "candidate");
         Assert.notNull(delivery, "delivery");
+
+        /* Make sure Candidate's account is not disabled */
+        if (candidate.isLoginDisabled()) {
+            throw new PrivilegeException(candidate, Privilege.USER_ACCOUNT_ENABLED, delivery);
+        }
 
         /* Make sure Delivery is runnable */
         if (delivery.getAssessment()==null) {
