@@ -51,7 +51,9 @@ CREATE SEQUENCE lti_context_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO 
 CREATE TABLE lti_resources (
   lrid BIGINT PRIMARY KEY NOT NULL,
   creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  creator_uid BIGINT NOT NULL REFERENCES users(uid),
   lcid BIGINT NOT NULL REFERENCES lti_contexts(lcid),
+  did BIGINT REFERENCES deliveries(did),
   resource_link_id VARCHAR(256) NOT NULL,
   resource_link_title TEXT,
   resource_link_description TEXT,
