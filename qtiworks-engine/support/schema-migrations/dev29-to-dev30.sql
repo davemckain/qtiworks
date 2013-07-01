@@ -33,7 +33,7 @@ UPDATE lti_users SET lti_launch_type = 'LINK';
 ALTER TABLE lti_users ALTER lti_launch_type SET NOT NULL;
 ALTER TABLE lti_users ADD did BIGINT REFERENCES deliveries(did);
 ALTER TABLE lti_users ADD ldid BIGINT REFERENCES lti_domains(ldid);
-ALTER TABLE lti_users ALTER logical_key SET TYPE VARCHAR(300);
+ALTER TABLE lti_users ALTER logical_key SET DATA TYPE VARCHAR(300);
 
 -- Add lti_contexts table and sequence
 CREATE TABLE lti_contexts (
