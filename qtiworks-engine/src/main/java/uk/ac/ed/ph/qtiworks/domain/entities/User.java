@@ -234,6 +234,7 @@ public class User implements BaseEntity, TimestampedOnCreation {
                 + ",firstName=" + firstName
                 + ",lastName=" + lastName
                 + ",emailAddress=" + emailAddress
+                + ",loginDisabled=" + loginDisabled
                 + ")";
     }
 

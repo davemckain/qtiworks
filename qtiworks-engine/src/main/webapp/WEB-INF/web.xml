@@ -54,6 +54,10 @@ QTIWorks Delivery Engine web deployment descriptor
       <param-name>formLoginJspPath</param-name>
       <param-value>/WEB-INF/jsp/login/systemUserLogin.jsp</param-value>
     </init-param>
+    <init-param>
+      <param-name>allowedRoles</param-name>
+      <param-value>INSTRUCTOR</param-value>
+    </init-param>
   </filter>
   <filter-mapping>
     <filter-name>SystemUserAuthenticationFilter</filter-name>

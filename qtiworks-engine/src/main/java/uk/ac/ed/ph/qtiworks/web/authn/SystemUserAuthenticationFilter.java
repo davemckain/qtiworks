@@ -36,13 +36,18 @@ package uk.ac.ed.ph.qtiworks.web.authn;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.SystemUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
+import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.SystemUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
+import uk.ac.ed.ph.qtiworks.web.WebUtilities;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -72,6 +77,8 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
 
     private static final Logger logger = LoggerFactory.getLogger(SystemUserAuthenticationFilter.class);
 
+    public static final String ALLOWED_ROLES_INIT_PARAM_NAME = "allowedRoles";
+
     /** Name of request Attribute that will contain the underlying {@link SystemUser} identity of the client */
     public static final String SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME = "qtiworks.web.authn.systemUser";
 
@@ -79,6 +86,7 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
     protected UserDao userDao;
     protected SystemUserDao systemUserDao;
     protected AbstractSystemUserAuthenticator abstractSystemUserAuthenticator;
+    protected EnumSet<UserRole> allowedRoles;
 
     @Override
     protected void initWithApplicationContext(final FilterConfig filterConfig, final WebApplicationContext webApplicationContext)
@@ -86,6 +94,9 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
         identityService = webApplicationContext.getBean(IdentityService.class);
         userDao = webApplicationContext.getBean(UserDao.class);
         systemUserDao = webApplicationContext.getBean(SystemUserDao.class);
+
+        /* Check configuration to find out what roles are allowed */
+        allowedRoles = parseAllowedRoles(WebUtilities.getRequiredInitParameter(filterConfig, ALLOWED_ROLES_INIT_PARAM_NAME));
 
         /* Decide whether to do fake or form authentication */
         final QtiWorksDeploymentSettings qtiWorksDeploymentSettings = webApplicationContext.getBean(QtiWorksDeploymentSettings.class);
@@ -120,9 +131,17 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
             }
         }
 
+        System.out.println("GOT " + currentUser);
+
         /* Make sure account is available */
         if (currentUser.isLoginDisabled()) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
+            return;
+        }
+
+        /* Make sure user role is acceptable */
+        if (!allowedRoles.contains(currentUser.getUserRole())) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have the required system role to access this resource");
             return;
         }
 
@@ -146,5 +165,21 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
             /* Ensure we clear state afterwards for consistency */
             identityService.setCurrentThreadUser(null);
         }
+    }
+
+    private EnumSet<UserRole> parseAllowedRoles(final String allowedRolesString)
+            throws ServletException {
+        final String[] allowedRolesStrings = allowedRolesString.split("\\s+");
+        final List<UserRole> result = new ArrayList<UserRole>(allowedRolesStrings.length);
+        try {
+            for (final String allowedRoleString : allowedRolesStrings) {
+                result.add(UserRole.valueOf(allowedRoleString));
+            }
+        }
+        catch (final IllegalArgumentException e) {
+            throw new ServletException("Value of <init-param/> " + ALLOWED_ROLES_INIT_PARAM_NAME
+                    + " must be a space-separated list of UserRole enumeration constants");
+        }
+        return EnumSet.copyOf(result);
     }
 }
