@@ -86,6 +86,12 @@ public final class AnonymousAuthenticationFilter extends AbstractWebAuthenticati
             logger.debug("Created AnonymousUser {} for his/her session", anonymousUser);
         }
 
+        /* Make sure account is available (slightly pathological here) */
+        if (anonymousUser.isLoginDisabled()) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
+            return;
+        }
+
         identityService.setCurrentThreadUser(anonymousUser);
         try {
             chain.doFilter(request, response);

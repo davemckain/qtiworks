@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Base delegate class for authenticating {@link SystemUser}
+ * Base delegate class for authenticating a {@link SystemUser}
  *
  * @see SystemUserAuthenticationFilter
  *
@@ -61,7 +61,7 @@ public abstract class AbstractSystemUserAuthenticator {
 
     /**
      * Subclasses should fill in to "do" the actual authentication work. Return a non-null
-     * {@link SystemUser} if authorisation succeeds, otherwise set up the {@link HttpServletResponse} as
+     * {@link SystemUser} if authentication succeeds, otherwise set up the {@link HttpServletResponse} as
      * appropriate (e.g. redirect to login page) and return null.
      *
      * @param request

@@ -112,19 +112,24 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
              * authenticate
              */
             currentUser = abstractSystemUserAuthenticator.doAuthentication(request, response);
-            if (currentUser!=null) {
-                /* Store back into Session so that we can avoid later lookups, and allow things
-                 * further down the chain to access
-                 */
-                session.setAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
-            }
-            else {
-                /* Not authenticated. Subclass will have Response Object set up to ensure the right
-                 * thing happens next so we return now.
+            if (currentUser==null) {
+                /* Not authenticated. Subclass will have set the Response Object up to ensure the
+                 * correct thing happens next so we return now.
                  */
                 return;
             }
         }
+
+        /* Make sure account is available */
+        if (currentUser.isLoginDisabled()) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
+            return;
+        }
+
+        /* Store back into Session so that we can avoid later lookups, and allow things
+         * further down the chain to access
+         */
+        session.setAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
 
         /* Store identity as request attributes for convenience */
         request.setAttribute(SYSTEM_USER_IDENTITY_ATTRIBUTE_NAME, currentUser);
