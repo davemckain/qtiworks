@@ -36,7 +36,9 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 
 import java.util.Date;
 
@@ -202,18 +204,22 @@ public class User implements BaseEntity, TimestampedOnCreation {
 
     //------------------------------------------------------------
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public boolean isInstructor() {
         return userRole==UserRole.INSTRUCTOR;
     }
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public boolean isAnonymous() {
         return userRole==UserRole.ANONYMOUS;
     }
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public boolean isCandidate() {
         return userRole==UserRole.CANDIDATE;
     }
 
+    @BeanToStringOptions(PropertyOptions.IGNORE_PROPERTY)
     public boolean isSysAdmin() {
         return userType==UserType.SYSTEM && ((SystemUser) this).isSysAdmin();
     }
