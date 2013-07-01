@@ -166,6 +166,6 @@ public class LtiDomain implements BaseEntity, TimestampedOnCreation {
             return false;
         }
         final LtiDomain other = (LtiDomain) obj;
-        return ObjectUtilities.nullSafeEquals(consumerKey, other.consumerKey);
+        return ObjectUtilities.nullSafeEquals(consumerKey, other.getConsumerKey());
     }
 }

@@ -13,11 +13,16 @@ assessmentRouting (aid -> action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="LTI Diagnostics">
+<page:ltipage title="LTI Diagnostics">
 
-  <h2><c:out value="${utils:formatLtiResourceTitle(ltiResource)}"/></a></h2>
+  <p>Content goes here</p>
+
+  <ul>
+    <li><a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a></li>
+  </ul>
 
   <h3>Congratulations!</h3>
+
 
   <p>
     If you are seeing this then you have managed to launch the QTIWorks
@@ -42,5 +47,5 @@ assessmentRouting (aid -> action -> URL)
   <h4>This LTI domain</h4>
   <pre>${utils:dumpObject(ltiResource.ltiContext.ltiDomain)}</pre>
 
-</page:page>
+</page:ltipage>
 

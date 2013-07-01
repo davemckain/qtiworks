@@ -14,3 +14,4 @@ All Rights Reserved
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="page" tagdir="/WEB-INF/tags/page" %>
+<%@ taglib prefix="ltipage" tagdir="/WEB-INF/tags/ltipage" %>

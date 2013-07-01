@@ -206,6 +206,11 @@ public class AssessmentManagementService {
             assessment.setAssessmentType(assessmentPackage.getAssessmentType());
             assessment.setOwnerUser(caller);
 
+            final LtiResource currentLtiResource = identityService.getCurrentThreadLtiResource();
+            if (currentLtiResource!=null) {
+                assessment.setOwnerLtiContext(currentLtiResource.getLtiContext());
+            }
+
             final String fileName = multipartFile.getOriginalFilename();
             String assessmentName;
             if (StringUtilities.isNullOrBlank(fileName)) {
@@ -420,10 +425,17 @@ public class AssessmentManagementService {
         /* Validate template */
         validateItemDeliverySettingsTemplate(template);
 
-        /* Create and persist new options from template */
+        /* Create and persist new settings from template */
         final ItemDeliverySettings result = new ItemDeliverySettings();
-        result.setOwnerUser(caller);
         assessmentDataService.mergeItemDeliverySettings(template, result);
+
+        /* Set ownership and LTI context (if specified) */
+        result.setOwnerUser(caller);
+        final LtiResource currentLtiResource = identityService.getCurrentThreadLtiResource();
+        if (currentLtiResource!=null) {
+            result.setOwnerLtiContext(currentLtiResource.getLtiContext());
+        }
+
         deliverySettingsDao.persist(result);
 
         auditLogger.recordEvent("Created ItemDeliverySettings #" + result.getId());
@@ -477,10 +489,16 @@ public class AssessmentManagementService {
         /* Validate template */
         validateTestDeliverySettingsTemplate(template);
 
-        /* Create and persist new options from template */
+        /* Create and persist new settings from template */
         final TestDeliverySettings result = new TestDeliverySettings();
-        result.setOwnerUser(caller);
         assessmentDataService.mergeTestDeliverySettings(template, result);
+
+        /* Set ownership LTI context (if specified) */
+        result.setOwnerUser(caller);
+        final LtiResource currentLtiResource = identityService.getCurrentThreadLtiResource();
+        if (currentLtiResource!=null) {
+            result.setOwnerLtiContext(currentLtiResource.getLtiContext());
+        }
         deliverySettingsDao.persist(result);
 
         auditLogger.recordEvent("Created TestDeliverySettings #" + result.getId());

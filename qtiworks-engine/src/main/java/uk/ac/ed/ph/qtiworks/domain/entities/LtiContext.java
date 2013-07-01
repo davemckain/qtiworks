@@ -212,7 +212,7 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
                 + ",contextId=" + contextId
                 + ",contextLabel=" + contextLabel
                 + ",contextTitle=" + contextTitle
-                + ",fallbackResourceLinkIk=" + fallbackResourceLinkId
+                + ",fallbackResourceLinkId=" + fallbackResourceLinkId
                 + ")";
     }
 
@@ -222,8 +222,8 @@ public class LtiContext implements BaseEntity, TimestampedOnCreation {
             return false;
         }
         final LtiContext other = (LtiContext) obj;
-        return ObjectUtilities.nullSafeEquals(ltiDomain, other.ltiDomain)
-                && ObjectUtilities.nullSafeEquals(contextId, other.contextId)
-                && ObjectUtilities.nullSafeEquals(fallbackResourceLinkId, other.fallbackResourceLinkId);
+        return ObjectUtilities.nullSafeEquals(getLtiDomain(), other.getLtiDomain())
+                && ObjectUtilities.nullSafeEquals(contextId, other.getContextId())
+                && ObjectUtilities.nullSafeEquals(fallbackResourceLinkId, other.getFallbackResourceLinkId());
     }
 }

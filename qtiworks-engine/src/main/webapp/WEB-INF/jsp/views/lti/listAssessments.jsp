@@ -5,21 +5,28 @@ All Rights Reserved
 
 Lists Assessments in current LTI context
 
-Model:
+Additional Model attrs:
 
-ltiResource
 assessmentAndPackageList
-primaryRouting (action -> URL)
 assessmentRouting (aid -> action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Assessment library">
+<page:ltipage title="Assessment library">
 
   <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}"><c:out value="${utils:formatLtiResourceTitle(ltiResource)}"/></a></li>
+    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
   </nav>
   <h2>Assessment library</h2>
+
+  <p class="hints">
+    The assessment library lets you browse and manage the Assessments you have
+    uploaded into <c:out value="${utils:formatLtiContextTitle(ltiContext)}"/>
+  </p>
+
+  <ul class="menu">
+    <li><a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a></li>
+  </ul>
 
   <c:choose>
     <c:when test="${!empty assessmentAndPackageList}">
@@ -73,11 +80,5 @@ assessmentRouting (aid -> action -> URL)
       <p>You have not uploaded any assessments yet.</p>
     </c:otherwise>
   </c:choose>
-
-  <h4>Actions</h4>
-  <ul class="menu">
-    <li><a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a></li>
-  </ul>
-
-</page:page>
+</page:ltipage>
 

@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.view;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 
@@ -120,8 +121,13 @@ public final class ElFunctions {
 
     //-------------------------------------------------
 
+    public static String formatLtiContextTitle(final LtiContext ltiContext) {
+        final String title = ltiContext.getContextTitle();
+        return title!=null ? title : "This Course";
+    }
+
     public static String formatLtiResourceTitle(final LtiResource ltiResource) {
         final String title = ltiResource.getResourceLinkTitle();
-        return title!=null ? title : "QTIWorks Assessment";
+        return title!=null ? title : "This Launch";
     }
 }
