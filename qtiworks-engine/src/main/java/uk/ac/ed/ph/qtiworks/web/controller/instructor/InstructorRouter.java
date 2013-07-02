@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
@@ -41,6 +40,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -81,8 +82,8 @@ public class InstructorRouter {
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
         primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
-        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/itemdeliverysettings/create"));
-        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/testdeliverysettings/create"));
+        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/create-for-item"));
+        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/create-for-test"));
         return primaryRouting;
     }
 
@@ -150,20 +151,9 @@ public class InstructorRouter {
         final long dsid = deliverySettings.getId().longValue();
         final Map<String, String> result = new HashMap<String, String>();
 
-        String showEditPath;
-        switch (deliverySettings.getAssessmentType()) {
-            case ASSESSMENT_ITEM:
-                showEditPath = "/itemdeliverysettings/" + dsid;
-                break;
-
-            case ASSESSMENT_TEST:
-                showEditPath = "/testdeliverysettings/" + dsid;
-                break;
-
-            default:
-                throw new QtiWorksLogicException("Unexpected switch case " + deliverySettings.getAssessmentType());
-        }
-        result.put("showOrEdit", buildWebUrl(showEditPath));
+        final String itemOrTestString = deliverySettings.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "item" : "test";
+        result.put("showOrEdit", buildWebUrl("/deliverysettings/" + dsid + "/for-" + itemOrTestString));
+        result.put("delete", buildWebUrl("/deliverysettings/" + dsid + "/delete"));
         return result;
     }
 

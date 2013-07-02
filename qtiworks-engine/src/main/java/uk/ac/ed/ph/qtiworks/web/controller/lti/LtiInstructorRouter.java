@@ -33,11 +33,9 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
-import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
@@ -147,35 +145,6 @@ public class LtiInstructorRouter {
         result.put("candidateResultsZip", buildWebUrl("/delivery/candidate-results-" + did + ".zip"));
         result.put("terminateAllSessions", buildWebUrl("/delivery/" + did + "/terminate-all-sessions"));
         result.put("ltiLaunch", qtiWorksDeploymentSettings.getBaseUrl() + "/lti/linklaunch");
-        return result;
-    }
-
-    public Map<Long, Map<String, String>> buildDeliverySettingsListRouting(final List<DeliverySettings> deliverySettingsList) {
-        final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
-        for (final DeliverySettings deliverySettings : deliverySettingsList) {
-            result.put(deliverySettings.getId(), buildDeliverySettingsRouting(deliverySettings));
-        }
-        return result;
-    }
-
-    public Map<String, String> buildDeliverySettingsRouting(final DeliverySettings deliverySettings) {
-        final long dsid = deliverySettings.getId().longValue();
-        final Map<String, String> result = new HashMap<String, String>();
-
-        String showEditPath;
-        switch (deliverySettings.getAssessmentType()) {
-            case ASSESSMENT_ITEM:
-                showEditPath = "/itemdeliverysettings/" + dsid;
-                break;
-
-            case ASSESSMENT_TEST:
-                showEditPath = "/testdeliverysettings/" + dsid;
-                break;
-
-            default:
-                throw new QtiWorksLogicException("Unexpected switch case " + deliverySettings.getAssessmentType());
-        }
-        result.put("showOrEdit", buildWebUrl(showEditPath));
         return result;
     }
 

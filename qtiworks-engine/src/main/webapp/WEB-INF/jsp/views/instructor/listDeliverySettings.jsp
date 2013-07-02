@@ -8,7 +8,7 @@ Lists ItemDeliverySettings owned by caller
 Model:
 
 deliverySettingsList
-deliverySettingsRouting: dsid -> action -> URL
+deliverySettingsListRouting: dsid -> action -> URL
 primaryRouting
 
 --%>
@@ -48,7 +48,7 @@ primaryRouting
               </td>
               <td>
                 <h4>
-                  <a href="${utils:escapeLink(deliverySettingsRouting[deliverySettings.id]['showOrEdit'])}">
+                  <a href="${utils:escapeLink(deliverySettingsListRouting[deliverySettings.id]['showOrEdit'])}">
                     <c:out value="${deliverySettings.title}"/>
                   </a>
                 </h4>

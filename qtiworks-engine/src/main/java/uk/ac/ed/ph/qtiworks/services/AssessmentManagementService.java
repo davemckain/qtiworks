@@ -534,7 +534,14 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
 
-    public void deleteDeliverySettings(final long dsid)
+    /**
+     * Safely deletes the {@link DeliverySettings} having the given ID (dsid), updating any
+     * existing {@link Delivery} entities using it so that they use default (i.e. null)
+     * {@link DeliverySettings}.
+     *
+     * @return the number of {@link Delivery} entities changed by this action
+     */
+    public int deleteDeliverySettings(final long dsid)
             throws DomainEntityNotFoundException, PrivilegeException {
         /* Look up entity and check permissions */
         final DeliverySettings deliverySettings = deliverySettingsDao.requireFindById(dsid);
@@ -554,6 +561,7 @@ public class AssessmentManagementService {
         /* Log what happened */
         logger.debug("Deleted DeliverySettings #{}, affecting {} Delivery/ies", deliverySettings.getId(), deliveriesAffected);
         auditLogger.recordEvent("Deleted DeliverySettings #" + deliverySettings.getId() + ", affecting " + deliveriesAffected + "Delivery/ies");
+        return deliveriesAffected;
     }
 
     //-------------------------------------------------
