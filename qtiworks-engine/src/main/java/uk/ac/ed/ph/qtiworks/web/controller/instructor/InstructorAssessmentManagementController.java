@@ -217,7 +217,7 @@ public class InstructorAssessmentManagementController {
     //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.GET)
-    public String showUpdateAssessmentPackageForm(final @PathVariable long aid,
+    public String showUploadAssessmentPackageForm(final @PathVariable long aid,
             final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         model.addAttribute(new UploadAssessmentPackageCommand());
@@ -587,7 +587,7 @@ public class InstructorAssessmentManagementController {
 
         /* Return to show/edit with a flash message */
         GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
-        return instructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-item");
+        return instructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-test");
     }
 
     private void setupModelForDeliverySettings(final long dsid, final Model model)

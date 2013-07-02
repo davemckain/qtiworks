@@ -33,14 +33,15 @@
  */
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
-import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
+
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Router for the LTI Instructor MVC
@@ -59,13 +59,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Service
 public class LtiInstructorRouter {
 
-    public static final String FLASH = "flashMessage";
-
     @Resource
     private IdentityService identityService;
-
-    @Resource
-    private QtiWorksDeploymentSettings qtiWorksDeploymentSettings;
 
     @Resource
     private String contextPath;
@@ -83,18 +78,14 @@ public class LtiInstructorRouter {
         return "redirect:" + buildWithinContextUrl(actionUrl);
     }
 
-    public void addFlashMessage(final RedirectAttributes redirectAttributes, final String message) {
-        redirectAttributes.addFlashAttribute(LtiInstructorRouter.FLASH, message);
-    }
-
     public Map<String, String> buildPrimaryRouting() {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("resourceDashboard", buildWebUrl(""));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
-        primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
-        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/itemdeliverysettings/create"));
-        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/testdeliverysettings/create"));
+        primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
+        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/create-for-item"));
+        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/create-for-test"));
         return primaryRouting;
     }
 
@@ -122,29 +113,21 @@ public class LtiInstructorRouter {
         return result;
     }
 
-    public Map<Long, Map<String, String>> buildDeliveryListRouting(final List<Delivery> deliveries) {
+    public Map<Long, Map<String, String>> buildDeliverySettingsListRouting(final List<DeliverySettings> deliverySettingsList) {
         final Map<Long, Map<String, String>> result = new HashMap<Long, Map<String, String>>();
-        for (final Delivery delivery : deliveries) {
-            result.put(delivery.getId(), buildDeliveryRouting(delivery));
+        for (final DeliverySettings deliverySettings : deliverySettingsList) {
+            result.put(deliverySettings.getId(), buildDeliverySettingsRouting(deliverySettings));
         }
         return result;
     }
 
-    public Map<String, String> buildDeliveryRouting(final Delivery delivery) {
-        return buildDeliveryRouting(delivery.getId().longValue());
-    }
-
-    public Map<String, String> buildDeliveryRouting(final long did) {
+    public Map<String, String> buildDeliverySettingsRouting(final DeliverySettings deliverySettings) {
+        final long dsid = deliverySettings.getId().longValue();
         final Map<String, String> result = new HashMap<String, String>();
-        result.put("show", buildWebUrl("/delivery/" + did));
-        result.put("edit", buildWebUrl("/delivery/" + did + "/edit"));
-        result.put("delete", buildWebUrl("/delivery/" + did + "/delete"));
-        result.put("try", buildWebUrl("/delivery/" + did + "/try"));
-        result.put("candidateSessions", buildWebUrl("/delivery/" + did + "/candidate-sessions"));
-        result.put("candidateSummaryReportCsv", buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
-        result.put("candidateResultsZip", buildWebUrl("/delivery/candidate-results-" + did + ".zip"));
-        result.put("terminateAllSessions", buildWebUrl("/delivery/" + did + "/terminate-all-sessions"));
-        result.put("ltiLaunch", qtiWorksDeploymentSettings.getBaseUrl() + "/lti/linklaunch");
+
+        final String itemOrTestString = deliverySettings.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "item" : "test";
+        result.put("showOrEdit", buildWebUrl("/deliverysettings/" + dsid + "/for-" + itemOrTestString));
+        result.put("delete", buildWebUrl("/deliverysettings/" + dsid + "/delete"));
         return result;
     }
 

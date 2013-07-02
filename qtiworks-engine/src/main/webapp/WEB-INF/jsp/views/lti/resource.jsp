@@ -19,6 +19,7 @@ assessmentRouting (aid -> action -> URL)
 
   <ul>
     <li><a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}">Delivery Settings manager</a></li>
   </ul>
 
   <h3>Congratulations!</h3>

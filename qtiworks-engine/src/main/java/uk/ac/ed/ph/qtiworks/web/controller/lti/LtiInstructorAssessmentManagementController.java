@@ -41,6 +41,8 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
@@ -52,10 +54,13 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
+import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
+import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
+import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
@@ -224,7 +229,7 @@ public class LtiInstructorAssessmentManagementController {
     }
 
     @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.GET)
-    public String showUpdateAssessmentPackageForm(final @PathVariable long aid,
+    public String showUploadAssessmentPackageForm(final @PathVariable long aid,
             final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         model.addAttribute(new UploadAssessmentPackageCommand());
@@ -311,5 +316,185 @@ public class LtiInstructorAssessmentManagementController {
         final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, authorMode, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
+    }
+
+    //------------------------------------------------------
+    // Management of DeliverySettings (and subtypes)
+
+    @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
+    public String listOwnDeliverySettings(final Model model) {
+        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerUserDeliverySettings();
+        model.addAttribute("deliverySettingsList", deliverySettingsList);
+        model.addAttribute("deliverySettingsListRouting", ltiInstructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
+        return "listDeliverySettings";
+    }
+
+    @RequestMapping(value="/deliverysettings/create-for-item", method=RequestMethod.GET)
+    public String showCreateItemDeliverySettingsForm(final Model model) {
+        final long existingSettingsCount = assessmentDataService.countCallerUserDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
+        final ItemDeliverySettingsTemplate template = assessmentDataService.createItemDeliverySettingsTemplate();
+        template.setTitle("Item Delivery Settings #" + (existingSettingsCount+1));
+
+        model.addAttribute(template);
+        return "createItemDeliverySettingsForm";
+    }
+
+    @RequestMapping(value="/deliverysettings/create-for-test", method=RequestMethod.GET)
+    public String showCreateTestDeliverySettingsForm(final Model model) {
+        final long existingOptionCount = assessmentDataService.countCallerUserDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
+        final TestDeliverySettingsTemplate template = assessmentDataService.createTestDeliverySettingsTemplate();
+        template.setTitle("Test Delivery Settings #" + (existingOptionCount+1));
+
+        model.addAttribute(template);
+        return "createTestDeliverySettingsForm";
+    }
+
+    @RequestMapping(value="/deliverysettings/create-for-item", method=RequestMethod.POST)
+    public String handleCreateItemDeliverySettingsForm(final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute ItemDeliverySettingsTemplate template,
+            final BindingResult result)
+            throws PrivilegeException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            return "createItemDeliverySettingsForm";
+        }
+
+        /* Try to create new entity */
+        try {
+            assessmentManagementService.createItemDeliverySettings(template);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+
+        /* Go back to list */
+        GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully created");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+    }
+
+    @RequestMapping(value="/deliverysettings/create-for-test", method=RequestMethod.POST)
+    public String handleCreateTestDeliverySettingsForm(final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute TestDeliverySettingsTemplate template,
+            final BindingResult result)
+            throws PrivilegeException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            return "createTestDeliverySettingsForm";
+        }
+
+        /* Try to create new entity */
+        try {
+            assessmentManagementService.createTestDeliverySettings(template);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+
+        /* Go back to list */
+        GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully created");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+    }
+
+    @RequestMapping(value="/deliverysettings/{dsid}/delete", method=RequestMethod.POST)
+    public String deleteDeliverySettings(@PathVariable final long dsid, final RedirectAttributes redirectAttributes)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Delete settings and update any Deliveries using them */
+        final int deliveriesAffected = assessmentManagementService.deleteDeliverySettings(dsid);
+
+        /* Redirect back to list of settings */
+        final StringBuilder flashMessageBuilder = new StringBuilder("Delivery Settings deleted.");
+        if (deliveriesAffected>0) {
+            if (deliveriesAffected==1) {
+                flashMessageBuilder.append(" One Delivery was using these settings and has been updated to use default settings.");
+            }
+            else {
+                flashMessageBuilder.append(" ")
+                    .append(deliveriesAffected)
+                    .append(" Deliveries were using these settings and have been updated to use default settings.");
+            }
+        }
+        GlobalRouter.addFlashMessage(redirectAttributes, flashMessageBuilder.toString());
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+    }
+
+    @RequestMapping(value="/deliverysettings/{dsid}/for-item", method=RequestMethod.GET)
+    public String showEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
+        final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
+        assessmentDataService.mergeItemDeliverySettings(itemDeliverySettings, template);
+
+        setupModelForDeliverySettings(itemDeliverySettings, model);
+        model.addAttribute(template);
+        return "editItemDeliverySettingsForm";
+    }
+
+    @RequestMapping(value="/deliverysettings/{dsid}/for-test", method=RequestMethod.GET)
+    public String showEditTestDeliverySettingsForm(@PathVariable final long dsid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final TestDeliverySettings testDeliverySettings = assessmentManagementService.lookupTestDeliverySettings(dsid);
+        final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
+        assessmentDataService.mergeTestDeliverySettings(testDeliverySettings, template);
+
+        setupModelForDeliverySettings(testDeliverySettings, model);
+        model.addAttribute(template);
+        return "editTestDeliverySettingsForm";
+    }
+
+    @RequestMapping(value="/deliverysettings/{dsid}/for-item", method=RequestMethod.POST)
+    public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model, final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute ItemDeliverySettingsTemplate template, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            setupModelForDeliverySettings(dsid, model);
+            return "editItemDeliverySettingsForm";
+        }
+
+        /* Perform update */
+        try {
+            assessmentManagementService.updateItemDeliverySettings(dsid, template);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+
+        /* Return to show/edit with a flash message */
+        GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully changed");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-item");
+    }
+
+    @RequestMapping(value="/deliverysettings/{dsid}/for-test", method=RequestMethod.POST)
+    public String handleEditTestDeliverySettingsForm(@PathVariable final long dsid,
+            final Model model, final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute TestDeliverySettingsTemplate template, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (result.hasErrors()) {
+            setupModelForDeliverySettings(dsid, model);
+            return "editTestDeliverySettingsForm";
+        }
+
+        /* Perform update */
+        try {
+            assessmentManagementService.updateTestDeliverySettings(dsid, template);
+        }
+        catch (final BindException e) {
+            throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
+        }
+
+        /* Return to show/edit with a flash message */
+        GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-test");
+    }
+
+    private void setupModelForDeliverySettings(final long dsid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        setupModelForDeliverySettings(assessmentManagementService.lookupDeliverySettings(dsid), model);
+    }
+
+    private void setupModelForDeliverySettings(final DeliverySettings deliverySettings, final Model model) {
+        model.addAttribute("deliverySettings", deliverySettings);
+        model.addAttribute("deliverySettingsRouting", ltiInstructorRouter.buildDeliverySettingsRouting(deliverySettings));
     }
 }

@@ -11,7 +11,7 @@ testDeliverySettingsTemplate - form backing template
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Create new Test Delivery Settings">
+<page:ltipage title="Create new Test Delivery Settings">
 
   <nav class="breadcrumbs">
     <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
@@ -25,4 +25,4 @@ testDeliverySettingsTemplate - form backing template
 
   <%@ include file="/WEB-INF/jsp/includes/instructor/testDeliverySettingsForm.jspf" %>
 
-</page:page>
+</page:ltipage>

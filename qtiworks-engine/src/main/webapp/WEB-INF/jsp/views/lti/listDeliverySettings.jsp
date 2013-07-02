@@ -3,22 +3,21 @@
 Copyright (c) 2012-2013, The University of Edinburgh.
 All Rights Reserved
 
-Lists DeliverySettings owned by caller
+Lists DeliverySettings associated with LTI context
 
-Model:
+Additional Model attrs:
 
 deliverySettingsList
 deliverySettingsListRouting: dsid -> action -> URL
-primaryRouting
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Your Delivery Settings">
+<page:ltipage title="Delivery Settings manager">
 
   <nav class="breadcrumbs">
-    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
   </nav>
-  <h2>Your Delivery Settings</h2>
+  <h2>Delivery Settings manager</h2>
 
   <div class="hints">
     <p>
@@ -74,9 +73,9 @@ primaryRouting
 
   <h4>Actions</h4>
   <ul>
-    <li><a href="${utils:escapeLink(primaryRouting['createItemDeliverySettings'])}">Create new Item Delivery Settings</a></li>
-    <li><a href="${utils:escapeLink(primaryRouting['createTestDeliverySettings'])}">Create new Test Delivery Settings</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['createTestDeliverySettings'])}">Create new Delivery Settings for running an Assessment Test</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['createItemDeliverySettings'])}">Create new Delivery Settings for running a single Assessment Item</a></li>
   </ul>
 
-</page:page>
+</page:ltipage>
 

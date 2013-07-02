@@ -11,11 +11,11 @@ itemDeliverySettingsTemplate - form backing template
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Create new Item Delivery Settings">
+<page:ltipage title="Create new Item Delivery Settings">
 
   <nav class="breadcrumbs">
-    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}">Your Delivery Settings</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}">Delivery Settings manager</a> &#xbb;
   </nav>
   <h2>Create Item Delivery Settings</h2>
 
@@ -25,4 +25,4 @@ itemDeliverySettingsTemplate - form backing template
 
   <%@ include file="/WEB-INF/jsp/includes/instructor/itemDeliverySettingsForm.jspf" %>
 
-</page:page>
+</page:ltipage>
