@@ -40,6 +40,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.dao.AnonymousUserDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
@@ -47,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.dao.LtiResourceDao;
 import uk.ac.ed.ph.qtiworks.services.dao.UserDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 
@@ -108,6 +110,9 @@ public class DataDeletionService {
     private AssessmentDao assessmentDao;
 
     @Resource
+    private LtiResourceDao ltiResourceDao;
+
+    @Resource
     private AnonymousUserDao anonymousUserDao;
 
     @Resource
@@ -144,7 +149,7 @@ public class DataDeletionService {
         }
 
         /* Delete entities, taking advantage of cascading */
-        deliveryDao.remove(delivery); /* (This will cascade) */
+        deliveryDao.remove(delivery); /* (This will cascade into CandidateSession entities) */
     }
 
     public void deleteAssessmentPackage(final AssessmentPackage assessmentPackage) {
@@ -169,7 +174,7 @@ public class DataDeletionService {
 
         /* NB: The ordering is important here due to the bi-directional relationship
          * between Assessment and AssessmentPackage. Don't try to optimise this away
-         * without testing!
+         * without testing! Similarly with Deliveries and Assessments!
          */
 
         /* Unlink Assessment from each AssessmentPackage */
@@ -179,10 +184,12 @@ public class DataDeletionService {
             assessmentPackageDao.update(assessmentPackage);
         }
 
-        /* Delete Deliveries */
+        /* Unlink Assessment from attached Deliveries. */
         final List<Delivery> deliveries = assessment.getDeliveries();
         for (final Delivery delivery : deliveries) {
-            deleteDelivery(delivery);
+            delivery.setAssessment(null);
+            deliveryDao.update(delivery);
+
         }
 
         /* Delete Assessment entity */
@@ -192,6 +199,31 @@ public class DataDeletionService {
         for (final AssessmentPackage assessmentPackage : assessmentPackages) {
             deleteAssessmentPackage(assessmentPackage);
         }
+
+        /* Then delete the Deliveries enumerated above.
+         * (We excluding any LTI_RESOURCE Deliveries, as these ones have the Assessment attached
+         * to the Delivery.)
+         */
+        for (final Delivery delivery : deliveries) {
+            if (delivery.getDeliveryType()!=DeliveryType.LTI_RESOURCE) {
+                delivery.setAssessment(assessment); /* (Need to do this temporarily for FilespaceManager) */
+                deleteDelivery(delivery);
+                delivery.setAssessment(null);
+            }
+        }
+    }
+
+    public void deleteLtiResource(final LtiResource ltiResource) {
+        Assert.notNull(ltiResource, "ltiResource");
+
+        /* Delete Delivery matched to this entity */
+        final Delivery delivery = ltiResource.getDelivery();
+        if (delivery!=null) {
+            deleteDelivery(delivery);
+        }
+
+        /* Delete LTIResource entity */
+        ltiResourceDao.remove(ltiResource);
     }
 
     /**
