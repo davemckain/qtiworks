@@ -33,7 +33,7 @@ deliverySettingsListRouting: dsid -> action -> URL
       <table class="assessmentList">
         <thead>
           <tr>
-            <th></th>
+            <th colspan="2"></th>
             <th>Details</th>
             <th>For</th>
             <th>Created</th>
@@ -41,13 +41,19 @@ deliverySettingsListRouting: dsid -> action -> URL
         </thead>
         <tbody>
           <c:forEach var="deliverySettings" items="${deliverySettingsList}" varStatus="loopStatus">
+            <c:set var="deliverySettingsRouting" value="${deliverySettingsListRouting[deliverySettings.id]}"/>
             <tr>
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
+              <td align="center" class="launch">
+                <form action="${deliverySettingsRouting['select']}" method="post">
+                  <button type="submit" class="playButton">Use these DeliverySettings</button>
+                </form>
+              </td>
               <td>
                 <h4>
-                  <a href="${utils:escapeLink(deliverySettingsListRouting[deliverySettings.id]['showOrEdit'])}">
+                  <a href="${utils:escapeLink(deliverySettingsRouting['showOrEdit'])}">
                     <c:out value="${deliverySettings.title}"/>
                   </a>
                 </h4>
@@ -78,4 +84,3 @@ deliverySettingsListRouting: dsid -> action -> URL
   </ul>
 
 </page:ltipage>
-

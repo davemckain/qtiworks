@@ -338,11 +338,7 @@ public class AssessmentManagementService {
         }
 
         /* Terminate any outstanding CandidateSessions on this Assessment */
-        final List<CandidateSession> nonTerminatedCandidateSessions = candidateSessionDao.getNonTerminatedForAssessment(assessment);
-        for (final CandidateSession candidateSession : nonTerminatedCandidateSessions) {
-            candidateSession.setTerminated(true);
-            candidateSessionDao.update(candidateSession);
-        }
+        final int terminatedSessions = terminateCandidateSessions(assessment);
 
         /* Join Assessment to new package */
         final long newPackageVersion = assessment.getPackageImportVersion().longValue() + 1;
@@ -367,8 +363,11 @@ public class AssessmentManagementService {
             dataDeletionService.deleteAssessmentPackage(oldPackage);
         }
 
-        logger.debug("Updated Assessment #{} to have package #{}", assessment.getId(), newAssessmentPackage.getId());
-        auditLogger.recordEvent("Updated Assessment #" + assessment.getId() + " with AssessmentPackage #" + newAssessmentPackage.getId());
+        logger.debug("Updated Assessment #{} to have package #{}, terminating {} CandidateSession(s)",
+                new Object[] { assessment.getId(), newAssessmentPackage.getId(), terminatedSessions });
+        auditLogger.recordEvent("Updated Assessment #" + assessment.getId()
+                + " with AssessmentPackage #" + newAssessmentPackage.getId()
+                + ", terminating " + terminatedSessions + " session(s)");
         return assessment;
     }
 
@@ -583,20 +582,57 @@ public class AssessmentManagementService {
     }
 
     //-------------------------------------------------
-    // Delivery manipulation (in domain-level LTI)
+    // LTIResource configuration
 
+    /**
+     * Selects the {@link Assessment} to be associated with the current {@link LtiResource}
+     * (when appropriate).
+     * <p>
+     * Any {@link CandidateSession}s running on the existing {@link Assessment} (if used) will
+     * be terminated in the process.
+     *
+     * @param aid ID (aid) of the {@link Assessment} to select.
+     */
     public void selectCurrentLtiResourceAssessment(final long aid)
             throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up and check access on requested Assessment */
         final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
-        final Assessment assessment = lookupAssessment(aid);
+        final Assessment newAssessment = lookupAssessment(aid);
 
+        /* Terminate any candidate sessions on the currently Associated assessment (if appropriate) */
         final Delivery delivery = currentLtiResource.getDelivery();
-        delivery.setAssessment(assessment);
+        final Assessment oldAssessment = delivery.getAssessment();
+        int terminatedSessions = 0;
+        if (oldAssessment!=null) {
+            terminatedSessions = terminateCandidateSessions(oldAssessment);
+        }
+
+        /* Set up link between Delivery and Assessment */
+        delivery.setAssessment(newAssessment);
         deliveryDao.update(delivery);
 
-        logger.debug("Assessment for LTI Delivery #{} has been set to #{}", delivery.getId(), assessment.getId());
+        logger.debug("Assessment for LTI Delivery #{} has been set to #{}, terminating {} CandidateSession(s) associated to the original Assessment",
+                new Object[] { delivery.getId(), newAssessment.getId(), terminatedSessions });
         auditLogger.recordEvent("Assessment for LTI Delivery #" + delivery.getId()
-                + " has been set to #" + assessment.getId());
+                + " has been set to #" + newAssessment.getId()
+                + ", terminating " + terminatedSessions
+                + " CandidateSession(s) associated to the original Assessment");
+    }
+
+    public void selectCurrentLtiResourceDeliverySettings(final long dsid)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        /* Look up and check access on requested Delivery Settings */
+        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
+        final Delivery delivery = currentLtiResource.getDelivery();
+        final DeliverySettings deliverySettings = lookupDeliverySettings(dsid);
+
+        /* Set up link between Delivery and DeliverySettings */
+        delivery.setDeliverySettings(deliverySettings);
+        deliveryDao.update(delivery);
+
+        logger.debug("DeliverySettings for LTI Delivery #{} have been set to #{}", delivery.getId(), deliverySettings.getId());
+        auditLogger.recordEvent("DeliverySettings for LTI Delivery #" + delivery.getId()
+                + " have been set to #" + deliverySettings.getId());
     }
 
     //-------------------------------------------------
@@ -749,6 +785,15 @@ public class AssessmentManagementService {
 
     //-------------------------------------------------
     // Internal helpers
+
+    private int terminateCandidateSessions(final Assessment assessment) {
+        final List<CandidateSession> nonTerminatedCandidateSessions = candidateSessionDao.getNonTerminatedForAssessment(assessment);
+        for (final CandidateSession candidateSession : nonTerminatedCandidateSessions) {
+            candidateSession.setTerminated(true);
+            candidateSessionDao.update(candidateSession);
+        }
+        return nonTerminatedCandidateSessions.size();
+    }
 
     private void ensureCompatible(final DeliverySettings deliverySettings, final Assessment assessment)
             throws PrivilegeException {

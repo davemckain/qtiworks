@@ -105,6 +105,7 @@ public class LtiInstructorRouter {
     public Map<String, String> buildAssessmentRouting(final long aid) {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", buildWebUrl("/assessment/" + aid));
+        result.put("select", buildWebUrl("/assessment/" + aid + "/select"));
         result.put("edit", buildWebUrl("/assessment/" + aid + "/edit"));
         result.put("replace", buildWebUrl("/assessment/" + aid + "/replace"));
         result.put("validate", buildWebUrl("/assessment/" + aid + "/validate"));
@@ -126,8 +127,9 @@ public class LtiInstructorRouter {
         final Map<String, String> result = new HashMap<String, String>();
 
         final String itemOrTestString = deliverySettings.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "item" : "test";
-        result.put("showOrEdit", buildWebUrl("/deliverysettings/" + dsid + "/for-" + itemOrTestString));
         result.put("delete", buildWebUrl("/deliverysettings/" + dsid + "/delete"));
+        result.put("select", buildWebUrl("/deliverysettings/" + dsid + "/select"));
+        result.put("showOrEdit", buildWebUrl("/deliverysettings/" + dsid + "/for-" + itemOrTestString));
         return result;
     }
 

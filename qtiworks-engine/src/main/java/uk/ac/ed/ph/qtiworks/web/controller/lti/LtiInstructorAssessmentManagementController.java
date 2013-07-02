@@ -118,16 +118,18 @@ public class LtiInstructorAssessmentManagementController {
         return "resource";
     }
 
+    //------------------------------------------------------
+    // Assessment management
+
     /** Lists all Assignments in this LTI context */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listContextAssessments(final Model model) {
         final List<AssessmentAndPackage> assessments = assessmentDataService.getCallerLtiContextAssessments();
         model.addAttribute(assessments);
-        model.addAttribute("assessmentRouting", ltiInstructorRouter.buildAssessmentListRouting(assessments));
+        model.addAttribute("assessmentListRouting", ltiInstructorRouter.buildAssessmentListRouting(assessments));
         return "listAssessments";
     }
 
-    //------------------------------------------------------
 
     @RequestMapping(value="/assessments/upload", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
@@ -166,8 +168,6 @@ public class LtiInstructorAssessmentManagementController {
         return ltiInstructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
     }
 
-    //------------------------------------------------------
-
     /** Shows the Assessment having the given ID (aid) */
     @RequestMapping(value="/assessment/{aid}", method=RequestMethod.GET)
     public String showAssessment(@PathVariable final long aid, final Model model)
@@ -187,6 +187,13 @@ public class LtiInstructorAssessmentManagementController {
         model.addAttribute("assessmentStatusReport", assessmentDataService.getAssessmentStatusReport(assessment));
         model.addAttribute("assessmentRouting", ltiInstructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliverySettingsList", assessmentDataService.getCallerLtiContextDeliverySettingsForType(assessment.getAssessmentType()));
+    }
+
+    @RequestMapping(value="/assessment/{aid}/select", method=RequestMethod.POST)
+    public String selectAssessment(@PathVariable final long aid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        assessmentManagementService.selectCurrentLtiResourceAssessment(aid);
+        return ltiInstructorRouter.buildInstructorRedirect("/");
     }
 
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
@@ -388,6 +395,13 @@ public class LtiInstructorAssessmentManagementController {
         /* Go back to list */
         GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully created");
         return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+    }
+
+    @RequestMapping(value="/deliverysettings/{dsid}/select", method=RequestMethod.POST)
+    public String selectDeliverySettings(@PathVariable final long dsid)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        assessmentManagementService.selectCurrentLtiResourceDeliverySettings(dsid);
+        return ltiInstructorRouter.buildInstructorRedirect("/");
     }
 
     @RequestMapping(value="/deliverysettings/{dsid}/delete", method=RequestMethod.POST)
