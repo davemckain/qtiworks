@@ -41,6 +41,7 @@ import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
@@ -55,6 +56,7 @@ import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -135,6 +137,9 @@ public class AssessmentManagementService {
 
     @Resource
     private DeliverySettingsDao deliverySettingsDao;
+
+    @Resource
+    private CandidateSessionDao candidateSessionDao;
 
     //-------------------------------------------------
     // Assessment access
@@ -261,7 +266,7 @@ public class AssessmentManagementService {
 
     /**
      * Deletes the {@link Assessment} having the given aid and owned by the caller.
-     *
+     * <p>
      * NOTE: This deletes ALL associated data, including candidate data. Use with care!
      */
     public void deleteAssessment(final long aid)
@@ -277,7 +282,10 @@ public class AssessmentManagementService {
         auditLogger.recordEvent("Deleted Assessment #" + assessment.getId());
     }
 
-    public Assessment updateAssessment(final long aid, final UpdateAssessmentCommand command)
+    /**
+     * Updates the basic metadata/properties for the {@link Assessment} having the given ID (aid).
+     */
+    public Assessment updateAssessmentProperties(final long aid, final UpdateAssessmentCommand command)
             throws BindException, DomainEntityNotFoundException, PrivilegeException {
         /* Validate data */
         Assert.notNull(command, "command");
@@ -303,8 +311,11 @@ public class AssessmentManagementService {
      * the given {@link Assessment}. Any existing {@link AssessmentPackage}s
      * will be deleted.
      * <p>
+     * Any non-terminated {@link CandidateSession}s running on the {@link Assessment} will
+     * be terminated.
+     * <p>
      * The new {@link AssessmentPackage} must be of the same type as the
-     * {@link Assessment}. I.e. it is not possible to replace an itme with
+     * {@link Assessment}. I.e. it is not possible to replace an item with
      * a test, or a test with an item.
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
@@ -324,6 +335,13 @@ public class AssessmentManagementService {
         if (newAssessmentPackage.getAssessmentType()!=assessment.getAssessmentType()) {
             throw new AssessmentStateException(APSFailureReason.CANNOT_CHANGE_ASSESSMENT_TYPE,
                     assessment.getAssessmentType(), newAssessmentPackage.getAssessmentType());
+        }
+
+        /* Terminate any outstanding CandidateSessions on this Assessment */
+        final List<CandidateSession> nonTerminatedCandidateSessions = candidateSessionDao.getNonTerminatedForAssessment(assessment);
+        for (final CandidateSession candidateSession : nonTerminatedCandidateSessions) {
+            candidateSession.setTerminated(true);
+            candidateSessionDao.update(candidateSession);
         }
 
         /* Join Assessment to new package */

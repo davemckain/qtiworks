@@ -15,7 +15,7 @@ assessmentRouting (action -> URL)
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
-<c:set var="runningCandidateSessionCount" value="${assessmentStatusReport.runningCandidateSessionCount}" scope="request"/>
+<c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
 <page:ltipage title="Assessment details">
 
   <nav class="breadcrumbs">
@@ -116,7 +116,7 @@ assessmentRouting (action -> URL)
 
   <ul>
     <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
-    <li><a href="${utils:escapeLink(assessmentRouting['upload'])}">Replace Assessment Package Content</a></li>
+    <li><a href="${utils:escapeLink(assessmentRouting['replace'])}">Replace Assessment Package Content</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
     <c:if test="${assessmentPackage.launchable}">
       <li>
@@ -141,7 +141,7 @@ assessmentRouting (action -> URL)
     </c:if>
     <li>
       <page:postLink path="${assessmentRouting['delete']}"
-        confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${runningCandidateSessionCount} candidate sessions(s) running on this Assessment."
+        confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedCandidateSessionCount} candidate sessions(s) running on this Assessment."
         title="Delete Assessment"/>
     </li>
   </ul>

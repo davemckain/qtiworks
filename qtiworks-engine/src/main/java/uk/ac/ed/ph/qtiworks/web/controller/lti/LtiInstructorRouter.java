@@ -106,7 +106,7 @@ public class LtiInstructorRouter {
         final Map<String, String> result = new HashMap<String, String>();
         result.put("show", buildWebUrl("/assessment/" + aid));
         result.put("edit", buildWebUrl("/assessment/" + aid + "/edit"));
-        result.put("upload", buildWebUrl("/assessment/" + aid + "/upload"));
+        result.put("replace", buildWebUrl("/assessment/" + aid + "/replace"));
         result.put("validate", buildWebUrl("/assessment/" + aid + "/validate"));
         result.put("delete", buildWebUrl("/assessment/" + aid + "/delete"));
         result.put("try", buildWebUrl("/assessment/" + aid + "/try"));

@@ -205,7 +205,7 @@ public class InstructorAssessmentManagementController {
             return "editAssessmentForm";
         }
         try {
-            assessmentManagementService.updateAssessment(aid, command);
+            assessmentManagementService.updateAssessmentProperties(aid, command);
         }
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");

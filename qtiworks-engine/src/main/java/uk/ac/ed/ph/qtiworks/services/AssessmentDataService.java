@@ -117,10 +117,10 @@ public class AssessmentDataService {
 
     public AssessmentStatusReport getAssessmentStatusReport(final Assessment assessment) {
         final AssessmentPackage assessmentPackage = ensureSelectedAssessmentPackage(assessment);
-        final long runningCandidateSessionCount = candidateSessionDao.countRunningForAssessment(assessment);
-        return new AssessmentStatusReport(assessment, assessmentPackage, runningCandidateSessionCount);
+        final long nonTerminatedCandidateSessionCount = candidateSessionDao.countNonTerminatedForAssessment(assessment);
+        final long nonTerminatedCandidateRoleSessionCount = candidateSessionDao.countNonTerminatedCandidateRoleForAssessment(assessment);
+        return new AssessmentStatusReport(assessment, assessmentPackage, nonTerminatedCandidateSessionCount, nonTerminatedCandidateRoleSessionCount);
     }
-
 
     //-------------------------------------------------
 
