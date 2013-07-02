@@ -131,8 +131,6 @@ public final class SystemUserAuthenticationFilter extends AbstractWebAuthenticat
             }
         }
 
-        System.out.println("GOT " + currentUser);
-
         /* Make sure account is available */
         if (currentUser.isLoginDisabled()) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Your account is currently disabled");
