@@ -5,16 +5,18 @@ All Rights Reserved
 
 Shows information about a particular Assessment
 
-Model:
+Additional model attrs:
+
 
 assessment
-assessmentPackage (most recent)
+assessmentStatusReport
 deliverySettingsList (List<DeliverySettings> - possibly empty)
 assessmentRouting (action -> URL)
-primaryRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
+<c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
+<c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
 <page:page title="Assessment details">
 
   <nav class="breadcrumbs">
@@ -26,7 +28,11 @@ primaryRouting (action -> URL)
   <div class="grid_6">
     <div class="infoBox">
       <div class="cat">Title</div>
-      <div class="value">${fn:escapeXml(assessment.title)}</div>
+      <div class="value">
+        <a href="${utils:escapeLink(assessmentRouting['edit'])}">
+          ${fn:escapeXml(assessment.title)}
+        </a>
+      </div>
     </div>
   </div>
 
@@ -111,7 +117,7 @@ primaryRouting (action -> URL)
 
   <ul>
     <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
-    <li><a href="${utils:escapeLink(assessmentRouting['upload'])}">Replace Assessment Package Content</a></li>
+    <li><a href="${utils:escapeLink(assessmentRouting['replace'])}">Replace Assessment Package Content</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
     <c:if test="${assessmentPackage.launchable}">
       <li>
@@ -135,8 +141,10 @@ primaryRouting (action -> URL)
       </li>
     </c:if>
     <li><a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Manage deliveries of this Assessment</a></li>
-    <li><page:postLink path="${assessmentRouting['delete']}"
-      confirm="Are you sure? This will delete the Assessment and all associated Deliveries and Candidate Data"
-      title="Delete Assessment"/></li>
+    <li>
+      <page:postLink path="${assessmentRouting['delete']}"
+        confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedCandidateSessionCount} candidate sessions(s) running on this Assessment."
+        title="Delete Assessment"/>
+    </li>
   </ul>
 </page:page>

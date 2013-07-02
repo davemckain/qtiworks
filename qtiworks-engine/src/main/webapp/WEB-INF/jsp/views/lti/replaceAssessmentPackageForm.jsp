@@ -49,7 +49,8 @@ primaryRouting (action -> URL)
     </p>
   </c:if>
 
-  <form:form method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand">
+  <form:form method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand"
+    onsubmit="return ${nonTerminatedCandidateRoleSessionCount}==0 || confirm('Are you sure? The will terminate ${nonTerminatedCandidateRoleSessionCount} running candidate session(s).')">
 
     <%-- Show any form validation errors discovered --%>
     <form:errors element="div" cssClass="formErrors" path="*"/>

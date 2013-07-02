@@ -6,11 +6,15 @@ All Rights Reserved
 Model:
 
 assessment
+assessmentStatusReport
 assessmentRouting (action -> URL)
 primaryRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
+<c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
+<c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
+<c:set var="nonTerminatedCandidateRoleSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateRoleSessionCount}" scope="request"/>
 <page:page title="Replace Assessment Package Content">
 
   <nav class="breadcrumbs">
@@ -30,8 +34,23 @@ primaryRouting (action -> URL)
       All of the existing assessment metadata (e.g. name and title) will be kept around.
     </p>
   </div>
+  <c:if test="${nonTerminatedCandidateRoleSessionCount>0}">
+    <p class="warningMessage">
+      <c:choose>
+        <c:when test="${nonTerminatedCandidateRoleSessionCount>1}">
+          There are ${nonTerminatedCandidateRoleSessionCount} candidate sessions running on this Assessment.
+          These will be terminated if you continue replacing the Assessment Package content.
+        </c:when>
+        <c:otherwise>
+          There is ${nonTerminatedCandidateRoleSessionCount} candidate session running on this Assessment.
+          This will be terminated if you continue replacing the Assessment Package content.
+        </c:otherwise>
+      </c:choose>
+    </p>
+  </c:if>
 
-  <form:form method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand">
+  <form:form method="post" acceptCharset="UTF-8" enctype="multipart/form-data" commandName="uploadAssessmentPackageCommand"
+    onsubmit="return ${nonTerminatedCandidateRoleSessionCount}==0 || confirm('Are you sure? The will terminate ${nonTerminatedCandidateRoleSessionCount} running candidate session(s).')">
 
     <%-- Show any form validation errors discovered --%>
     <form:errors element="div" cssClass="formErrors" path="*"/>

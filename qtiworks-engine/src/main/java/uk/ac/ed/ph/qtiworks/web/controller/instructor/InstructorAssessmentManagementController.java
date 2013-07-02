@@ -123,8 +123,8 @@ public class InstructorAssessmentManagementController {
 
     private void setupModelForAssessment(final Assessment assessment, final Model model) {
         model.addAttribute("assessment", assessment);
+        model.addAttribute("assessmentStatusReport", assessmentDataService.getAssessmentStatusReport(assessment));
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
-        model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
         model.addAttribute("deliverySettingsList", assessmentDataService.getCallerUserDeliverySettingsForType(assessment.getAssessmentType()));
     }
 
@@ -216,17 +216,17 @@ public class InstructorAssessmentManagementController {
 
     //------------------------------------------------------
 
-    @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.GET)
-    public String showUploadAssessmentPackageForm(final @PathVariable long aid,
+    @RequestMapping(value="/assessment/{aid}/replace", method=RequestMethod.GET)
+    public String showReplaceAssessmentPackageForm(final @PathVariable long aid,
             final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         model.addAttribute(new UploadAssessmentPackageCommand());
         setupModelForAssessment(aid, model);
-        return "updateAssessmentPackageForm";
+        return "replaceAssessmentPackageForm";
     }
 
-    @RequestMapping(value="/assessment/{aid}/upload", method=RequestMethod.POST)
-    public String handleUploadAssessmentPackageForm(final @PathVariable long aid,
+    @RequestMapping(value="/assessment/{aid}/replace", method=RequestMethod.POST)
+    public String handleReplaceAssessmentPackageForm(final @PathVariable long aid,
             final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -234,7 +234,7 @@ public class InstructorAssessmentManagementController {
         /* Validate command Object */
         if (result.hasErrors()) {
             setupModelForAssessment(aid, model);
-            return "updateAssessmentPackageForm";
+            return "replaceAssessmentPackageForm";
         }
 
         /* Attempt to import the package */
@@ -246,13 +246,13 @@ public class InstructorAssessmentManagementController {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
             setupModelForAssessment(aid, model);
-            return "updateAssessmentPackageForm";
+            return "replaceAssessmentPackageForm";
         }
         catch (final AssessmentStateException e) {
             final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
             setupModelForAssessment(aid, model);
-            return "updateAssessmentPackageForm";
+            return "replaceAssessmentPackageForm";
         }
         try {
             assessmentManagementService.validateAssessment(aid);
