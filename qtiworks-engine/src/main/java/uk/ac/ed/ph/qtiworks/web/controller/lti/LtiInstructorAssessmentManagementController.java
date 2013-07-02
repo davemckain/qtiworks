@@ -47,7 +47,6 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
-import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -102,9 +101,6 @@ public class LtiInstructorAssessmentManagementController {
 
     @Resource
     private CandidateSessionStarter candidateSessionStarter;
-
-    @Resource
-    private CandidateSessionDao candidateSessionDao;
 
     //------------------------------------------------------
 
@@ -188,10 +184,9 @@ public class LtiInstructorAssessmentManagementController {
 
     private void setupModelForAssessment(final Assessment assessment, final Model model) {
         model.addAttribute("assessment", assessment);
+        model.addAttribute("assessmentStatusReport", assessmentDataService.getAssessmentStatusReport(assessment));
         model.addAttribute("assessmentRouting", ltiInstructorRouter.buildAssessmentRouting(assessment));
-        model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
         model.addAttribute("deliverySettingsList", assessmentDataService.getCallerLtiContextDeliverySettingsForType(assessment.getAssessmentType()));
-        model.addAttribute("assessmentRunningSessionCount", candidateSessionDao.countRunningForAssessment(assessment));
     }
 
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)

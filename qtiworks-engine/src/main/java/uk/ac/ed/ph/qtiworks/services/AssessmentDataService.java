@@ -49,9 +49,11 @@ import uk.ac.ed.ph.qtiworks.domain.entities.UserRole;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 
@@ -99,29 +101,8 @@ public class AssessmentDataService {
     @Resource
     private AssessmentPackageDao assessmentPackageDao;
 
-    //-------------------------------------------------
-    // Validation
-    // (These methods arguably belong somewhere as, we're not doing any permission checking here)
-
-    public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
-        final AssessmentPackage currentAssessmentPackage = ensureSelectedAssessmentPackage(assessment);
-        return validateAssessmentPackage(currentAssessmentPackage);
-    }
-
-    public AssessmentObjectValidationResult<?> validateAssessmentPackage(final AssessmentPackage assessmentPackage) {
-        /* Run the validation process */
-        final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
-
-        /* Persist results */
-        assessmentPackage.setValidated(true);
-        assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
-        assessmentPackage.setErrorCount(validationResult.getErrors().size());
-        assessmentPackage.setWarningCount(validationResult.getWarnings().size());
-        assessmentPackage.setValid(validationResult.isValid());
-        assessmentPackageDao.update(assessmentPackage);
-
-        return validationResult;
-    }
+    @Resource
+    private CandidateSessionDao candidateSessionDao;
 
     //-------------------------------------------------
 
@@ -133,6 +114,13 @@ public class AssessmentDataService {
     public List<AssessmentAndPackage> getCallerLtiContextAssessments() {
         return assessmentDao.getForOwnerLtiContext(ensureLtiContext());
     }
+
+    public AssessmentStatusReport getAssessmentStatusReport(final Assessment assessment) {
+        final AssessmentPackage assessmentPackage = ensureSelectedAssessmentPackage(assessment);
+        final long runningCandidateSessionCount = candidateSessionDao.countRunningForAssessment(assessment);
+        return new AssessmentStatusReport(assessment, assessmentPackage, runningCandidateSessionCount);
+    }
+
 
     //-------------------------------------------------
 
@@ -161,9 +149,33 @@ public class AssessmentDataService {
      *
      * @throws QtiWorksLogicException if no selected {@link AssessmentPackage}
      */
-    public AssessmentPackage ensureCurrentAssessmentPackage(final Delivery delivery) {
+    public AssessmentPackage ensureSelectedAssessmentPackage(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
         return ensureSelectedAssessmentPackage(delivery.getAssessment());
+    }
+
+    //-------------------------------------------------
+    // Validation
+    // (These methods arguably belong somewhere as, we're not doing any permission checking here)
+
+    public AssessmentObjectValidationResult<?> validateAssessment(final Assessment assessment) {
+        final AssessmentPackage currentAssessmentPackage = ensureSelectedAssessmentPackage(assessment);
+        return validateAssessmentPackage(currentAssessmentPackage);
+    }
+
+    public AssessmentObjectValidationResult<?> validateAssessmentPackage(final AssessmentPackage assessmentPackage) {
+        /* Run the validation process */
+        final AssessmentObjectValidationResult<?> validationResult = assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
+
+        /* Persist results */
+        assessmentPackage.setValidated(true);
+        assessmentPackage.setLaunchable(validationResult.getResolvedAssessmentObject().getRootNodeLookup().wasSuccessful());
+        assessmentPackage.setErrorCount(validationResult.getErrors().size());
+        assessmentPackage.setWarningCount(validationResult.getWarnings().size());
+        assessmentPackage.setValid(validationResult.isValid());
+        assessmentPackageDao.update(assessmentPackage);
+
+        return validationResult;
     }
 
     //-------------------------------------------------

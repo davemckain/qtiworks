@@ -542,7 +542,7 @@ public class CandidateRenderingService {
 
         /* Make sure requested file is whitelisted for access */
         final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(delivery);
         String resultingFileHref = null;
         for (final String safeFileHref : assessmentPackage.getSafeFileHrefs()) {
             final URI fileUri = assessmentPackageFileService.createAssessmentFileUri(assessmentPackage, safeFileHref);
@@ -575,7 +575,7 @@ public class CandidateRenderingService {
         Assert.notNull(outputStreamer, "outputStreamer");
         ensureCallerMayAccessAuthorInfo(candidateSession);
         final Delivery itemDelivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(itemDelivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(itemDelivery);
 
         /* Forbid results if the candidate session is closed */
         ensureSessionNotTerminated(candidateSession);
@@ -664,7 +664,7 @@ public class CandidateRenderingService {
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
         /* Validate package */
-        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(candidateSession.getDelivery());
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(candidateSession.getDelivery());
         return assessmentPackageFileService.loadAndValidateAssessment(assessmentPackage);
     }
 
@@ -701,7 +701,7 @@ public class CandidateRenderingService {
     private <P extends AbstractRenderingOptions> void initRenderingRequest(final CandidateSession candidateSession,
             final AbstractRenderingRequest<P> renderingRequest, final P renderingOptions) {
         final Delivery delivery = candidateSession.getDelivery();
-        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(delivery);
 
         renderingRequest.setRenderingOptions(renderingOptions);
         renderingRequest.setAssessmentResourceLocator(assessmentPackageFileService.createResolvingResourceLocator(assessmentPackage));

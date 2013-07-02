@@ -84,7 +84,6 @@ import org.hibernate.annotations.Type;
             query="SELECT COUNT(x)"
                 + "  FROM CandidateSession x"
                 + "  WHERE x.delivery.assessment = :assessment"
-                + "    AND x.candidate.userRole = 'CANDIDATE'"
                 + "    AND x.terminated IS FALSE"),
     @NamedQuery(name="CandidateSession.getForDelivery",
             query="SELECT x"

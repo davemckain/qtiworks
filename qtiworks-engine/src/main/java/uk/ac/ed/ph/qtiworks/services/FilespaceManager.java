@@ -161,7 +161,7 @@ public final class FilespaceManager {
     }
 
     private String getCandidateSessionUploadBaseUri(final Delivery delivery) {
-        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
 
         final String folderUri = getCandidateUploadBaseUri()
@@ -207,7 +207,7 @@ public final class FilespaceManager {
     }
 
     private final String getCandidateSessionStoreBaseUri(final Delivery delivery) {
-        final AssessmentPackage assessmentPackage = assessmentDataService.ensureCurrentAssessmentPackage(delivery);
+        final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(delivery);
         final Assessment assessment = assessmentPackage.getAssessment();
         final String folderBaseUri = getCandidateSessionStoreBaseUri()
                 + "/assessment" + assessment.getId()

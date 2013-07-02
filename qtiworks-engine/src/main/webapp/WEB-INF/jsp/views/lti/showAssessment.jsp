@@ -7,15 +7,15 @@ Shows information about a particular Assessment
 
 Additional model attrs:
 
-ltiResource
 assessment
-assessmentPackage (most recent)
-assessmentRunningSessionCount
+assessmentStatusReport
 deliverySettingsList (List<DeliverySettings> - possibly empty)
 assessmentRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
+<c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
+<c:set var="runningCandidateSessionCount" value="${assessmentStatusReport.runningCandidateSessionCount}" scope="request"/>
 <page:ltipage title="Assessment details">
 
   <nav class="breadcrumbs">
@@ -141,7 +141,7 @@ assessmentRouting (action -> URL)
     </c:if>
     <li>
       <page:postLink path="${assessmentRouting['delete']}"
-      confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${assessmentRunningSessionCount} candidate(s) running this Assessment."
+        confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${runningCandidateSessionCount} candidate sessions(s) running on this Assessment."
         title="Delete Assessment"/>
     </li>
   </ul>
