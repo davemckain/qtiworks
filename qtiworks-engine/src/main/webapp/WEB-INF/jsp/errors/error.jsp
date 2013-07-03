@@ -46,7 +46,7 @@ exception
   <c:if test="${!empty exception}">
     <c:set var="ex" value="${exception}"/>
     <%-- Unwind Exceptions trapped by Spring --%>
-    <c:if test="${ex.class.name == 'org.springframework.web.util.NestedServletException'}">
+    <c:if test="${ex['class'].name == 'org.springframework.web.util.NestedServletException'}">
       <c:set var="ex" value="${ex.cause}"/>
     </c:if>
     <%-- Show Exception --%>

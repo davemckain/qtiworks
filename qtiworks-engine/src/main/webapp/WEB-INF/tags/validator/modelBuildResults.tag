@@ -48,7 +48,7 @@ All Rights Reserved
           <div class="details">
             <p>
               This XML was expected to be a QTI ${qtiXmlInterpretationException.requiredResultClass.simpleName}
-              but it was actually a ${qtiXmlInterpretationException.rootNode.class.simpleName}.
+              but it was actually a ${qtiXmlInterpretationException.rootNode['class'].simpleName}.
             </p>
           </div>
         </div>
