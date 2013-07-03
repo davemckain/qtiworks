@@ -8,7 +8,6 @@ Validator service submission form
 Model attributes:
 
 standaloneRunCommand
-itemDeliverySettingsList
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>

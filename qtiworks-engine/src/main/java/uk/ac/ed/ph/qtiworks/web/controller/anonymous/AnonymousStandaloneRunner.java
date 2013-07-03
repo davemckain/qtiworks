@@ -39,23 +39,18 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
-import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.StandaloneRunCommand;
 
-import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
-
-import java.util.List;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -87,15 +82,6 @@ public class AnonymousStandaloneRunner {
 
     @Resource
     private AssessmentDataService assessmentDataService;
-
-    @Resource
-    private DeliverySettingsDao deliverySettingsDao;
-
-    @ModelAttribute
-    public void setupDeliverySettings(final Model model) {
-        final List<DeliverySettings> deliverySettingsList = deliverySettingsDao.getAllPublicSettingsForType(AssessmentObjectType.ASSESSMENT_ITEM);
-        model.addAttribute("itemDeliverySettingsList", deliverySettingsList);
-    }
 
     //--------------------------------------------------------------------
 
