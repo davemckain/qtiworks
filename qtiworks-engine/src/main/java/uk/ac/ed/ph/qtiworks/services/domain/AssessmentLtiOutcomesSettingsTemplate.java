@@ -33,46 +33,59 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
-import org.hibernate.validator.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
- * Command Object containing the bits of an {@link Assessment} that can
- * be directly updated.
+ * Template for setting LTI outcomes settings on an {@link Assessment} entity.
  *
  * @author David McKain
  */
-public final class UpdateAssessmentCommand {
+public final class AssessmentLtiOutcomesSettingsTemplate {
 
     @NotNull
-    @NotBlank
-    @Size(min=1, max=DomainConstants.ASSESSMENT_NAME_MAX_LENGTH)
-    private String name;
+    private String resultOutcomeIdentifier;
 
     @NotNull
-    @NotBlank
-    @Size(min=1, max=DomainConstants.ASSESSMENT_TITLE_MAX_LENGTH)
-    private String title;
+    private Double resultMinimum;
 
-    public String getName() {
-        return name;
+    @NotNull
+    private Double resultMaximum;
+
+
+    public String getResultOutcomeIdentifier() {
+        return resultOutcomeIdentifier;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setResultOutcomeIdentifier(final String resultOutcomeIdentifier) {
+        this.resultOutcomeIdentifier = resultOutcomeIdentifier;
     }
 
 
-    public String getTitle() {
-        return title;
+    public Double getResultMinimum() {
+        return resultMinimum;
     }
 
-    public void setTitle(final String title) {
-        this.title = title;
+    public void setResultMinimum(final Double resultMinimum) {
+        this.resultMinimum = resultMinimum;
     }
+
+
+    public Double getResultMaximum() {
+        return resultMaximum;
+    }
+
+    public void setResultMaximum(final Double resultMaximum) {
+        this.resultMaximum = resultMaximum;
+    }
+
+
+    @Override
+    public String toString() {
+        return ObjectUtilities.beanToString(this);
+    }
+
 }

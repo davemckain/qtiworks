@@ -61,6 +61,11 @@ import uk.ac.ed.ph.jqtiplus.exception.QtiLogicException;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
+import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
+import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
@@ -176,6 +181,40 @@ public class AssessmentDataService {
         assessmentPackageDao.update(assessmentPackage);
 
         return validationResult;
+    }
+
+    //-------------------------------------------------
+
+    public List<OutcomeDeclaration> getOutcomeVariableDeclarations(final Assessment assessment) {
+        Assert.notNull(assessment, "assessment");
+        final AssessmentPackage assessmentPackage = ensureSelectedAssessmentPackage(assessment);
+        return getOutcomeVariableDeclarations(assessmentPackage);
+    }
+
+    public List<OutcomeDeclaration> getOutcomeVariableDeclarations(final AssessmentPackage assessmentPackage) {
+        Assert.notNull(assessmentPackage, "assessmentPackage");
+        List<OutcomeDeclaration> result = null;
+        switch (assessmentPackage.getAssessmentType()) {
+            case ASSESSMENT_ITEM:
+                final ResolvedAssessmentItem resolvedAssessmentItem = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
+                final AssessmentItem assessmentItem = resolvedAssessmentItem.getItemLookup().extractIfSuccessful();
+                if (assessmentItem!=null) {
+                    result = assessmentItem.getOutcomeDeclarations();
+                }
+                break;
+
+            case ASSESSMENT_TEST:
+                final ResolvedAssessmentTest resolvedAssessmentTest = assessmentPackageFileService.loadAndResolveAssessmentObject(assessmentPackage);
+                final AssessmentTest assessmentTest = resolvedAssessmentTest.getTestLookup().extractIfSuccessful();
+                if (assessmentTest!=null) {
+                    result = assessmentTest.getOutcomeDeclarations();
+                }
+                break;
+
+            default:
+                throw new QtiWorksLogicException("Unexpected switch case " + assessmentPackage.getAssessmentType());
+        }
+        return result;
     }
 
     //-------------------------------------------------

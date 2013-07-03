@@ -59,6 +59,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
@@ -70,6 +71,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
@@ -310,6 +312,50 @@ public class AssessmentManagementService {
         /* Make changes */
         assessment.setName(command.getName().trim());
         assessment.setTitle(command.getTitle().trim());
+        assessmentDao.update(assessment);
+        return assessment;
+    }
+
+    /**
+     * Updates the LTI outcomes settings for the {@link Assessment} having the given ID (aid).
+     */
+    public Assessment updateAssessmentLtiOutcomesSettings(final long aid, final AssessmentLtiOutcomesSettingsTemplate template)
+            throws BindException, DomainEntityNotFoundException, PrivilegeException {
+        /* Validate data */
+        Assert.notNull(template, "template");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "assessmentLtiOutcomesSettingsTemplate");
+        jsr303Validator.validate(template, errors);
+        if (errors.hasErrors()) {
+            throw new BindException(errors);
+        }
+
+        /* Look up Assessment */
+        final Assessment assessment = assessmentDao.requireFindById(aid);
+        ensureCallerMayManage(assessment);
+
+        /* Perform further validation by checking that the outcomeVariable matches one declared in the Assessment XML */
+        final String resultOutcomeIdentifier = template.getResultOutcomeIdentifier();
+        final List<OutcomeDeclaration> outcomeVariableDeclarations = assessmentDataService.getOutcomeVariableDeclarations(assessment);
+        if (outcomeVariableDeclarations==null) {
+            errors.reject("assessmentLtiOutcomesSettingsTemplate.invalid", resultOutcomeIdentifier);
+            throw new BindException(errors);
+        }
+        boolean found = false;
+        for (final OutcomeDeclaration outcomeDeclaration : outcomeVariableDeclarations) {
+            if (resultOutcomeIdentifier.equals(outcomeDeclaration.getIdentifier().toString())) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            errors.reject("assessmentLtiOutcomesSettingsTemplate.notFound", resultOutcomeIdentifier);
+            throw new BindException(errors);
+        }
+
+        /* Finally record the changes */
+        assessment.setLtiResultOutcomeIdentifier(template.getResultOutcomeIdentifier());
+        assessment.setLtiResultMinimum(template.getResultMinimum());
+        assessment.setLtiResultMaximum(template.getResultMaximum());
         assessmentDao.update(assessment);
         return assessment;
     }
