@@ -37,6 +37,9 @@ import uk.ac.ed.ph.qtiworks.domain.entities.ItemDeliverySettings;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 /**
  * Template for creating/editing an {@link ItemDeliverySettings} entity
  *
@@ -45,7 +48,11 @@ import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 public final class ItemDeliverySettingsTemplate extends DeliverySettingsTemplate {
 
     private String prompt;
-    private int maxAttempts;
+
+    @NotNull
+    @Min(value=0)
+    private Integer maxAttempts;
+
     private boolean allowEnd;
     private boolean allowSoftResetWhenOpen;
     private boolean allowSoftResetWhenEnded;

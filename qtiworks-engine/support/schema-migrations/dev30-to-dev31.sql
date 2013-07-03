@@ -17,4 +17,8 @@ ALTER TABLE delivery_settings ADD lock_version BIGINT;
 UPDATE delivery_settings SET lock_version = 1;
 ALTER TABLE delivery_settings ALTER lock_version SET NOT NULL;
 
+-- The template_processing_limit column should be optional
+ALTER TABLE delivery_settings ALTER template_processing_limit DROP NOT NULL;
+UPDATE delivery_settings SET template_processing_limit = NULL WHERE template_processing_limit <= 0;
+
 COMMIT WORK;

@@ -334,8 +334,13 @@ public class CandidateDataService {
      * to a default value if they make no sense.
      */
     public int computeTemplateProcessingLimit(final DeliverySettings deliverySettings) {
-        final int requestedLimit = deliverySettings.getTemplateProcessingLimit();
-        return requestedLimit > 0 ? requestedLimit : JqtiPlus.DEFAULT_TEMPLATE_PROCESSING_LIMIT;
+        final Integer requestedLimit = deliverySettings.getTemplateProcessingLimit();
+        if (requestedLimit==null) {
+            /* Not specified, so use default */
+            return JqtiPlus.DEFAULT_TEMPLATE_PROCESSING_LIMIT;
+        }
+        final int requestedLimitIntValue = requestedLimit.intValue();
+        return requestedLimitIntValue > 0 ? requestedLimitIntValue : JqtiPlus.DEFAULT_TEMPLATE_PROCESSING_LIMIT;
     }
 
     public ItemSessionState computeCurrentItemSessionState(final CandidateSession candidateSession)  {

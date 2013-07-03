@@ -36,7 +36,6 @@ package uk.ac.ed.ph.qtiworks.services.domain;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -56,8 +55,7 @@ public abstract class DeliverySettingsTemplate {
     @Size(min=1)
     private String title;
 
-    @Min(0)
-    private int templateProcessingLimit;
+    private Integer templateProcessingLimit;
 
     //------------------------------------------------------------
 
@@ -82,11 +80,11 @@ public abstract class DeliverySettingsTemplate {
     }
 
 
-    public int getTemplateProcessingLimit() {
+    public Integer getTemplateProcessingLimit() {
         return templateProcessingLimit;
     }
 
-    public void setTemplateProcessingLimit(final int templateProcessingLimit) {
+    public void setTemplateProcessingLimit(final Integer templateProcessingLimit) {
         this.templateProcessingLimit = templateProcessingLimit;
     }
 

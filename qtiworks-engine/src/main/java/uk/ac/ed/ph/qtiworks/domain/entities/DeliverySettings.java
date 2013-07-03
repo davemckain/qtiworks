@@ -178,9 +178,9 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
      * If non-positive then the {@link JqtiPlus#DEFAULT_TEMPLATE_PROCESSING_LIMIT}
      * is used instead.
      */
-    @Basic(optional=false)
+    @Basic(optional=true)
     @Column(name="template_processing_limit")
-    private int templateProcessingLimit;
+    private Integer templateProcessingLimit;
 
     //------------------------------------------------------------
 
@@ -272,12 +272,12 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
 
     //------------------------------------------------------------
 
-    public int getTemplateProcessingLimit() {
+    public Integer getTemplateProcessingLimit() {
         return templateProcessingLimit;
     }
 
 
-    public void setTemplateProcessingLimit(final int templateProcessingLimit) {
+    public void setTemplateProcessingLimit(final Integer templateProcessingLimit) {
         this.templateProcessingLimit = templateProcessingLimit;
     }
 
@@ -291,6 +291,7 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
                 + ",assessmentType=" + assessmentType
                 + ",title=" + title
                 + ",isPublic=" + isPublic
+                + ",templateProcessingLimit=" + templateProcessingLimit
                 + ")";
     }
 }
