@@ -61,7 +61,6 @@ import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
-import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
@@ -118,16 +117,17 @@ public class InstructorAssessmentManagementController {
         return "listAssessments";
     }
 
-    private void setupModelForAssessment(final long aid, final Model model)
+    private Assessment setupModelForAssessment(final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
-        setupModelForAssessment(assessmentManagementService.lookupAssessment(aid), model);
+        return setupModelForAssessment(assessmentManagementService.lookupAssessment(aid), model);
     }
 
-    private void setupModelForAssessment(final Assessment assessment, final Model model) {
+    private Assessment setupModelForAssessment(final Assessment assessment, final Model model) {
         model.addAttribute("assessment", assessment);
         model.addAttribute("assessmentStatusReport", assessmentDataService.getAssessmentStatusReport(assessment));
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliverySettingsList", assessmentDataService.getCallerUserDeliverySettingsForType(assessment.getAssessmentType()));
+        return assessment;
     }
 
     //------------------------------------------------------
@@ -301,18 +301,44 @@ public class InstructorAssessmentManagementController {
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
 
-    @RequestMapping(value="/assessment/{aid}/result-settings", method=RequestMethod.GET)
-    public String showOutcomeDeclarationsChooser(final @PathVariable long aid, final Model model)
+    @RequestMapping(value="/assessment/{aid}/outcomes-settings", method=RequestMethod.GET)
+    public String showSetLtiOutcomesForm(final @PathVariable long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-        final List<OutcomeDeclaration> outcomeDeclarations = assessmentDataService.getOutcomeVariableDeclarations(assessment);
 
         final AssessmentLtiOutcomesSettingsTemplate template = new AssessmentLtiOutcomesSettingsTemplate();
+        template.setResultOutcomeIdentifier(assessment.getLtiResultOutcomeIdentifier());
+        template.setResultMaximum(assessment.getLtiResultMaximum());
+        template.setResultMinimum(assessment.getLtiResultMinimum());
 
         setupModelForAssessment(assessment, model);
-        model.addAttribute("outcomeDeclarationList", outcomeDeclarations);
+        model.addAttribute("outcomeDeclarationList", assessmentDataService.getOutcomeVariableDeclarations(assessment));
         model.addAttribute(template);
-        return "outcomeDeclarationChooser";
+        return "assessmentOutcomesSettingsForm";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/outcomes-settings", method=RequestMethod.POST)
+    public String handleSetLtiOutcomesForm(final @PathVariable long aid, final Model model,
+            final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute AssessmentLtiOutcomesSettingsTemplate template, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (!result.hasErrors()) {
+            try {
+                assessmentManagementService.updateAssessmentLtiOutcomesSettings(aid, template);
+            }
+            catch (final BindException e) {
+                result.addAllErrors(e);
+            }
+        }
+        if (result.hasErrors()) {
+            final Assessment assessment = setupModelForAssessment(aid, model);
+            model.addAttribute("outcomeDeclarationList", assessmentDataService.getOutcomeVariableDeclarations(assessment));
+            return "assessmentOutcomesSettingsForm";
+        }
+        /* Successful */
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment LTI outcomes settings saved successfully");
+        return instructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
 
     //------------------------------------------------------

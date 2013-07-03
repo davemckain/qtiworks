@@ -321,7 +321,7 @@ public class AssessmentManagementService {
      */
     public Assessment updateAssessmentLtiOutcomesSettings(final long aid, final AssessmentLtiOutcomesSettingsTemplate template)
             throws BindException, DomainEntityNotFoundException, PrivilegeException {
-        /* Validate data */
+        /* Perform basic validation on data */
         Assert.notNull(template, "template");
         final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "assessmentLtiOutcomesSettingsTemplate");
         jsr303Validator.validate(template, errors);

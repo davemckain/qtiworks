@@ -110,6 +110,7 @@ public class InstructorRouter {
         result.put("try", buildWebUrl("/assessment/" + aid + "/try"));
         result.put("deliveries", buildWebUrl("/assessment/" + aid + "/deliveries"));
         result.put("createDelivery", buildWebUrl("/assessment/" + aid + "/deliveries/create"));
+        result.put("outcomesSettings", buildWebUrl("/assessment/" + aid + "/outcomes-settings"));
         return result;
     }
 

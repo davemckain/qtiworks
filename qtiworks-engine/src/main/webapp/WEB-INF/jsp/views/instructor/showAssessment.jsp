@@ -140,6 +140,7 @@ assessmentRouting (action -> URL)
         </c:choose>
       </li>
     </c:if>
+    <li><a href="${utils:escapeLink(assessmentRouting['outcomesSettings'])}">Specify LTI outcomes reporting settings for this Assessment</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Manage deliveries of this Assessment</a></li>
     <li>
       <page:postLink path="${assessmentRouting['delete']}"
