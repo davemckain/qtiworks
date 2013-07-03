@@ -46,7 +46,6 @@ import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentMetadataTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -91,7 +90,7 @@ public class LtiInstructorAssessmentManagementController {
     private LtiInstructorRouter ltiInstructorRouter;
 
     @Resource
-    private IdentityService identityService;
+    private LtiInstructorModelHelper ltiInstructorModelHelper;
 
     @Resource
     private AssessmentDataService assessmentDataService;
@@ -106,15 +105,14 @@ public class LtiInstructorAssessmentManagementController {
 
     @ModelAttribute
     public void setupModel(final Model model) {
-        model.addAttribute("ltiUser", identityService.getCurrentThreadUser());
-        model.addAttribute("ltiResource", identityService.ensureCurrentThreadLtiResource());
-        model.addAttribute("primaryRouting", ltiInstructorRouter.buildPrimaryRouting());
+        ltiInstructorModelHelper.setupModel(model);
     }
 
     //------------------------------------------------------
 
     @RequestMapping(value="", method=RequestMethod.GET)
-    public String resourceTopPage() {
+    public String resourceTopPage(final Model model) {
+        ltiInstructorModelHelper.setupModel(model);
         return "resource";
     }
 
@@ -166,20 +164,8 @@ public class LtiInstructorAssessmentManagementController {
     public String showAssessment(@PathVariable final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-        setupModelForAssessment(assessment, model);
+        ltiInstructorModelHelper.setupModelForAssessment(assessment, model);
         return "showAssessment";
-    }
-
-    private void setupModelForAssessment(final long aid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        setupModelForAssessment(assessmentManagementService.lookupAssessment(aid), model);
-    }
-
-    private void setupModelForAssessment(final Assessment assessment, final Model model) {
-        model.addAttribute("assessment", assessment);
-        model.addAttribute("assessmentStatusReport", assessmentDataService.getAssessmentStatusReport(assessment));
-        model.addAttribute("assessmentRouting", ltiInstructorRouter.buildAssessmentRouting(assessment));
-        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerLtiContextDeliverySettingsForType(assessment.getAssessmentType()));
     }
 
     @RequestMapping(value="/assessment/{aid}/select", method=RequestMethod.POST)
@@ -199,7 +185,7 @@ public class LtiInstructorAssessmentManagementController {
         template.setTitle(assessment.getTitle());
         model.addAttribute(template);
 
-        setupModelForAssessment(assessment, model);
+        ltiInstructorModelHelper.setupModelForAssessment(assessment, model);
         return "editAssessmentForm";
     }
 
@@ -210,7 +196,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForAssessment(aid, model);
+            ltiInstructorModelHelper.setupModelForAssessment(aid, model);
             return "editAssessmentForm";
         }
         try {
@@ -228,7 +214,7 @@ public class LtiInstructorAssessmentManagementController {
             final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         model.addAttribute(new UploadAssessmentPackageCommand());
-        setupModelForAssessment(aid, model);
+        ltiInstructorModelHelper.setupModelForAssessment(aid, model);
         return "replaceAssessmentPackageForm";
     }
 
@@ -240,7 +226,7 @@ public class LtiInstructorAssessmentManagementController {
         /* Make sure something was submitted */
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForAssessment(aid, model);
+            ltiInstructorModelHelper.setupModelForAssessment(aid, model);
             return "replaceAssessmentPackageForm";
         }
 
@@ -252,13 +238,13 @@ public class LtiInstructorAssessmentManagementController {
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            setupModelForAssessment(aid, model);
+            ltiInstructorModelHelper.setupModelForAssessment(aid, model);
             return "replaceAssessmentPackageForm";
         }
         catch (final AssessmentStateException e) {
             final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            setupModelForAssessment(aid, model);
+            ltiInstructorModelHelper.setupModelForAssessment(aid, model);
             return "replaceAssessmentPackageForm";
         }
         try {
@@ -277,7 +263,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
         model.addAttribute("validationResult", validationResult);
-        setupModelForAssessment(aid, model);
+        ltiInstructorModelHelper.setupModelForAssessment(aid, model);
         return "validationResult";
     }
 
@@ -426,7 +412,7 @@ public class LtiInstructorAssessmentManagementController {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
         assessmentDataService.mergeItemDeliverySettings(itemDeliverySettings, template);
 
-        setupModelForDeliverySettings(itemDeliverySettings, model);
+        ltiInstructorModelHelper.setupModelForDeliverySettings(itemDeliverySettings, model);
         model.addAttribute(template);
         return "editItemDeliverySettingsForm";
     }
@@ -438,7 +424,7 @@ public class LtiInstructorAssessmentManagementController {
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
         assessmentDataService.mergeTestDeliverySettings(testDeliverySettings, template);
 
-        setupModelForDeliverySettings(testDeliverySettings, model);
+        ltiInstructorModelHelper.setupModelForDeliverySettings(testDeliverySettings, model);
         model.addAttribute(template);
         return "editTestDeliverySettingsForm";
     }
@@ -449,7 +435,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForDeliverySettings(dsid, model);
+            ltiInstructorModelHelper.setupModelForDeliverySettings(dsid, model);
             return "editItemDeliverySettingsForm";
         }
 
@@ -473,7 +459,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForDeliverySettings(dsid, model);
+            ltiInstructorModelHelper.setupModelForDeliverySettings(dsid, model);
             return "editTestDeliverySettingsForm";
         }
 
@@ -490,13 +476,4 @@ public class LtiInstructorAssessmentManagementController {
         return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-test");
     }
 
-    private void setupModelForDeliverySettings(final long dsid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        setupModelForDeliverySettings(assessmentManagementService.lookupDeliverySettings(dsid), model);
-    }
-
-    private void setupModelForDeliverySettings(final DeliverySettings deliverySettings, final Model model) {
-        model.addAttribute("deliverySettings", deliverySettings);
-        model.addAttribute("deliverySettingsRouting", ltiInstructorRouter.buildDeliverySettingsRouting(deliverySettings));
-    }
 }

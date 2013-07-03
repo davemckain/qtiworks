@@ -91,6 +91,9 @@ public class InstructorAssessmentManagementController {
     private InstructorRouter instructorRouter;
 
     @Resource
+    private InstructorModelHelper instructorModelHelper;
+
+    @Resource
     private AssessmentDataService assessmentDataService;
 
     @Resource
@@ -103,7 +106,7 @@ public class InstructorAssessmentManagementController {
 
     @ModelAttribute
     public void setupPrimaryRouting(final Model model) {
-        model.addAttribute("primaryRouting", instructorRouter.buildPrimaryRouting());
+        instructorModelHelper.setupModel(model);
     }
 
     //------------------------------------------------------
@@ -112,22 +115,11 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listOwnAssessments(final Model model) {
         final List<AssessmentAndPackage> assessments = assessmentDataService.getCallerUserAssessments();
+
+        instructorModelHelper.setupModel(model);
         model.addAttribute(assessments);
         model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentListRouting(assessments));
         return "listAssessments";
-    }
-
-    private Assessment setupModelForAssessment(final long aid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        return setupModelForAssessment(assessmentManagementService.lookupAssessment(aid), model);
-    }
-
-    private Assessment setupModelForAssessment(final Assessment assessment, final Model model) {
-        model.addAttribute("assessment", assessment);
-        model.addAttribute("assessmentStatusReport", assessmentDataService.getAssessmentStatusReport(assessment));
-        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
-        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerUserDeliverySettingsForType(assessment.getAssessmentType()));
-        return assessment;
     }
 
     //------------------------------------------------------
@@ -170,7 +162,7 @@ public class InstructorAssessmentManagementController {
     public String showAssessment(@PathVariable final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
-        setupModelForAssessment(assessment, model);
+        instructorModelHelper.setupModelForAssessment(assessment, model);
         return "showAssessment";
     }
 
@@ -184,7 +176,7 @@ public class InstructorAssessmentManagementController {
         template.setTitle(assessment.getTitle());
         model.addAttribute(template);
 
-        setupModelForAssessment(assessment, model);
+        instructorModelHelper.setupModelForAssessment(assessment, model);
         return "editAssessmentForm";
     }
 
@@ -195,7 +187,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForAssessment(aid, model);
+            instructorModelHelper.setupModelForAssessment(aid, model);
             return "editAssessmentForm";
         }
         try {
@@ -213,7 +205,7 @@ public class InstructorAssessmentManagementController {
             final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         model.addAttribute(new UploadAssessmentPackageCommand());
-        setupModelForAssessment(aid, model);
+        instructorModelHelper.setupModelForAssessment(aid, model);
         return "replaceAssessmentPackageForm";
     }
 
@@ -225,7 +217,7 @@ public class InstructorAssessmentManagementController {
         /* Make sure something was submitted */
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForAssessment(aid, model);
+            instructorModelHelper.setupModelForAssessment(aid, model);
             return "replaceAssessmentPackageForm";
         }
 
@@ -237,13 +229,13 @@ public class InstructorAssessmentManagementController {
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            setupModelForAssessment(aid, model);
+            instructorModelHelper.setupModelForAssessment(aid, model);
             return "replaceAssessmentPackageForm";
         }
         catch (final AssessmentStateException e) {
             final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            setupModelForAssessment(aid, model);
+            instructorModelHelper.setupModelForAssessment(aid, model);
             return "replaceAssessmentPackageForm";
         }
         try {
@@ -271,7 +263,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
         model.addAttribute("validationResult", validationResult);
-        setupModelForAssessment(aid, model);
+        instructorModelHelper.setupModelForAssessment(aid, model);
         return "validationResult";
     }
 
@@ -311,7 +303,7 @@ public class InstructorAssessmentManagementController {
         template.setResultMaximum(assessment.getLtiResultMaximum());
         template.setResultMinimum(assessment.getLtiResultMinimum());
 
-        setupModelForAssessment(assessment, model);
+        instructorModelHelper.setupModelForAssessment(assessment, model);
         model.addAttribute("outcomeDeclarationList", assessmentDataService.getOutcomeVariableDeclarations(assessment));
         model.addAttribute(template);
         return "assessmentOutcomesSettingsForm";
@@ -332,7 +324,7 @@ public class InstructorAssessmentManagementController {
             }
         }
         if (result.hasErrors()) {
-            final Assessment assessment = setupModelForAssessment(aid, model);
+            final Assessment assessment = instructorModelHelper.setupModelForAssessment(aid, model);
             model.addAttribute("outcomeDeclarationList", assessmentDataService.getOutcomeVariableDeclarations(assessment));
             return "assessmentOutcomesSettingsForm";
         }
@@ -360,7 +352,7 @@ public class InstructorAssessmentManagementController {
     public String showOwnDelivery(final Model model, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = assessmentManagementService.lookupDelivery(did);
-        setupModelForDelivery(delivery, model);
+        instructorModelHelper.setupModelForDelivery(delivery, model);
         return "showDelivery";
     }
 
@@ -404,7 +396,7 @@ public class InstructorAssessmentManagementController {
         template.setDsid(deliverySettings!=null ? deliverySettings.getId() : null);
 
         model.addAttribute(template);
-        setupModelForDelivery(delivery, model);
+        instructorModelHelper.setupModelForDelivery(delivery, model);
         return "editDeliveryForm";
     }
 
@@ -414,7 +406,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForDelivery(did, model);
+            instructorModelHelper.setupModelForDelivery(did, model);
             return "editDeliveryForm";
         }
 
@@ -429,21 +421,6 @@ public class InstructorAssessmentManagementController {
         /* Return to show */
         GlobalRouter.addFlashMessage(redirectAttributes, "Delivery successfully edited");
         return instructorRouter.buildInstructorRedirect("/delivery/" + did);
-    }
-
-    public void setupModelForDelivery(final long did, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        setupModelForDelivery(assessmentManagementService.lookupDelivery(did), model);
-    }
-
-    public void setupModelForDelivery(final Delivery delivery, final Model model) {
-        final Assessment assessment = delivery.getAssessment();
-        model.addAttribute(delivery);
-        model.addAttribute(assessment);
-        model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
-        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
-        model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
-        model.addAttribute("deliverySettingsList", assessmentDataService.getCallerUserDeliverySettingsForType(delivery.getAssessment().getAssessmentType()));
     }
 
     //------------------------------------------------------
@@ -552,7 +529,7 @@ public class InstructorAssessmentManagementController {
         final ItemDeliverySettingsTemplate template = new ItemDeliverySettingsTemplate();
         assessmentDataService.mergeItemDeliverySettings(itemDeliverySettings, template);
 
-        setupModelForDeliverySettings(itemDeliverySettings, model);
+        instructorModelHelper.setupModelForDeliverySettings(itemDeliverySettings, model);
         model.addAttribute(template);
         return "editItemDeliverySettingsForm";
     }
@@ -564,7 +541,7 @@ public class InstructorAssessmentManagementController {
         final TestDeliverySettingsTemplate template = new TestDeliverySettingsTemplate();
         assessmentDataService.mergeTestDeliverySettings(testDeliverySettings, template);
 
-        setupModelForDeliverySettings(testDeliverySettings, model);
+        instructorModelHelper.setupModelForDeliverySettings(testDeliverySettings, model);
         model.addAttribute(template);
         return "editTestDeliverySettingsForm";
     }
@@ -575,7 +552,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForDeliverySettings(dsid, model);
+            instructorModelHelper.setupModelForDeliverySettings(dsid, model);
             return "editItemDeliverySettingsForm";
         }
 
@@ -599,7 +576,7 @@ public class InstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            setupModelForDeliverySettings(dsid, model);
+            instructorModelHelper.setupModelForDeliverySettings(dsid, model);
             return "editTestDeliverySettingsForm";
         }
 
@@ -614,15 +591,5 @@ public class InstructorAssessmentManagementController {
         /* Return to show/edit with a flash message */
         GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
         return instructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-test");
-    }
-
-    private void setupModelForDeliverySettings(final long dsid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        setupModelForDeliverySettings(assessmentManagementService.lookupDeliverySettings(dsid), model);
-    }
-
-    private void setupModelForDeliverySettings(final DeliverySettings deliverySettings, final Model model) {
-        model.addAttribute("deliverySettings", deliverySettings);
-        model.addAttribute("deliverySettingsRouting", instructorRouter.buildDeliverySettingsRouting(deliverySettings));
     }
 }

@@ -36,8 +36,6 @@ package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.services.AssessmentProctoringService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
@@ -74,29 +72,31 @@ import com.csvreader.CsvWriter;
 public class InstructorAssessmentReportingController {
 
     @Resource
+    private InstructorRouter instructorRouter;
+
+    @Resource
+    private InstructorModelHelper instructorModelHelper;
+
+    @Resource
     private AssessmentProctoringService assessmentProctoringService;
 
     @Resource
     private AssessmentReportingService assessmentReportingService;
 
-    @Resource
-    private InstructorAssessmentManagementController instructorAssessmentManagementController;
-
-    @Resource
-    private InstructorRouter instructorRouter;
-
     //------------------------------------------------------
 
     @ModelAttribute
     public void setupPrimaryRouting(final Model model) {
-        instructorAssessmentManagementController.setupPrimaryRouting(model);
+        model.addAttribute("primaryRouting", instructorRouter.buildPrimaryRouting());
     }
+
+    //------------------------------------------------------
 
     @RequestMapping(value="/delivery/{did}/candidate-sessions", method=RequestMethod.GET)
     public String showDeliveryCandidateSummaryReport(@PathVariable final long did, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final DeliveryCandidateSummaryReport report = assessmentReportingService.buildDeliveryCandidateSummaryReport(did);
-        instructorAssessmentManagementController.setupModelForDelivery(did, model);
+        instructorModelHelper.setupModelForDelivery(did, model);
         model.addAttribute(report);
         model.addAttribute("candidateSessionListRouting", instructorRouter.buildCandidateSessionListRouting(report));
         return "deliveryCandidateSummaryReport";
@@ -176,7 +176,7 @@ public class InstructorAssessmentReportingController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final CandidateSessionSummaryReport candidateSessionSummaryReport = assessmentReportingService.buildCandidateSessionSummaryReport(xid);
         model.addAttribute(candidateSessionSummaryReport);
-        setupModelForCandidateSession(xid, model);
+        instructorModelHelper.setupModelForCandidateSession(xid, model);
         return "showCandidateSession";
     }
 
@@ -187,23 +187,4 @@ public class InstructorAssessmentReportingController {
         GlobalRouter.addFlashMessage(redirectAttributes, "Terminated Candidate Session #" + xid);
         return instructorRouter.buildCandidateSessionRouting(xid).get("show");
     }
-
-    //------------------------------------------------------
-
-    public void setupModelForCandidateSession(final long xid, final Model model)
-            throws PrivilegeException, DomainEntityNotFoundException {
-        setupModelForCandidateSession(assessmentReportingService.lookupCandidateSession(xid), model);
-    }
-
-    public void setupModelForCandidateSession(final CandidateSession candidateSession, final Model model) {
-        final Delivery delivery = candidateSession.getDelivery();
-        final Assessment assessment = delivery.getAssessment();
-        model.addAttribute(candidateSession);
-        model.addAttribute(delivery);
-        model.addAttribute(assessment);
-        model.addAttribute("candidateSessionRouting", instructorRouter.buildCandidateSessionRouting(candidateSession.getId()));
-        model.addAttribute("deliveryRouting", instructorRouter.buildDeliveryRouting(delivery));
-        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentRouting(assessment));
-    }
-
 }
