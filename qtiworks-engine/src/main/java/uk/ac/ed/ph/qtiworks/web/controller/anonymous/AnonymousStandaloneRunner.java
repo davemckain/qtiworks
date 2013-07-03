@@ -116,7 +116,7 @@ public class AnonymousStandaloneRunner {
             return "standalonerunner/uploadForm";
         }
         try {
-            final Assessment assessment = assessmentManagementService.importAssessment(command.getFile());
+            final Assessment assessment = assessmentManagementService.importAssessment(command.getFile(), false);
             final AssessmentObjectValidationResult<?> validationResult = assessmentDataService.validateAssessment(assessment);
             final AssessmentPackage assessmentPackage = assessmentDataService.ensureSelectedAssessmentPackage(assessment);
             if (!assessmentPackage.isLaunchable()) {

@@ -147,22 +147,15 @@ public class LtiInstructorAssessmentManagementController {
             return "uploadAssessmentForm";
         }
 
-        /* Attempt to import the package */
+        /* Attempt to import and validate the package */
         Assessment assessment;
         try {
-            assessment = assessmentManagementService.importAssessment(command.getFile());
+            assessment = assessmentManagementService.importAssessment(command.getFile(), true);
         }
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
             return "uploadAssessmentForm";
-        }
-        try {
-            assessmentManagementService.validateAssessment(assessment.getId().longValue());
-        }
-        catch (final DomainEntityNotFoundException e) {
-            /* This could only happen if there's some kind of race condition */
-            throw QtiWorksRuntimeException.unexpectedException(e);
         }
         GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully created");
         return ltiInstructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());

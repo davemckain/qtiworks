@@ -180,20 +180,23 @@ public class AssessmentManagementService {
      * Creates and persists a new {@link Assessment} and initial {@link AssessmentPackage}
      * from the data provided by the given {@link InputStream} and having the given content type.
      * <p>
-     * Callers will want to call {@link #validateAssessment(Assessment)} before trying to run
-     * this new {@link Assessment}.
+     * Validation can be invoked immediately, otherwise callers will want to call
+     * {@link #validateAssessment(Assessment)} at a later point, certainly before
+     * trying to run this new {@link Assessment}.
      * <p>
      * Success post-conditions:
      * - a new {@link AssessmentPackage} is persisted, and its data is safely stored in a sandbox
      *
      * @param multipartFile data to be imported
+     * @param validate whether to validate the resulting {@link AssessmentPackage} immediately.
+     *
+     * @return newly created {@link Assessment} entity
      *
      * @throws PrivilegeException if the caller is not allowed to perform this action
      * @throws AssessmentPackageFileImportException
-     * @throws QtiWorksRuntimeException
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
-    public Assessment importAssessment(final MultipartFile multipartFile)
+    public Assessment importAssessment(final MultipartFile multipartFile, final boolean validate)
             throws PrivilegeException, AssessmentPackageFileImportException {
         Assert.notNull(multipartFile, "multipartFile");
         final User caller = ensureCallerMayCreateAssessment();
@@ -202,9 +205,14 @@ public class AssessmentManagementService {
         final AssessmentPackage assessmentPackage = importPackageFiles(multipartFile);
         final Assessment assessment;
         try {
-            /* Persist new package (before linking to Assessment) */
+            /* Persist new AssessmentPackage (before linking to Assessment) */
             assessmentPackage.setImportVersion(Long.valueOf(1L));
             assessmentPackageDao.persist(assessmentPackage);
+
+            /* Maybe validate AssessmentPackage */
+            if (validate) {
+                assessmentDataService.validateAssessmentPackage(assessmentPackage);
+            }
 
             /* Create resulting Assessment entity */
             assessment = new Assessment();
