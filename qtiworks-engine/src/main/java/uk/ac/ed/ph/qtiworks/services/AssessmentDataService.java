@@ -67,7 +67,9 @@ import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentItem;
 import uk.ac.ed.ph.jqtiplus.resolution.ResolvedAssessmentTest;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
+import uk.ac.ed.ph.jqtiplus.value.Signature;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -213,6 +215,19 @@ public class AssessmentDataService {
 
             default:
                 throw new QtiWorksLogicException("Unexpected switch case " + assessmentPackage.getAssessmentType());
+        }
+        return filterSingleFloatOutcomeDeclarations(result);
+    }
+
+    private List<OutcomeDeclaration> filterSingleFloatOutcomeDeclarations(final List<OutcomeDeclaration> outcomeDeclarations) {
+        if (outcomeDeclarations==null) {
+            return null;
+        }
+        final List<OutcomeDeclaration> result = new ArrayList<OutcomeDeclaration>(outcomeDeclarations.size());
+        for (final OutcomeDeclaration outcomeDeclaration : outcomeDeclarations) {
+            if (outcomeDeclaration.hasSignature(Signature.SINGLE_FLOAT)) {
+                result.add(outcomeDeclaration);
+            }
         }
         return result;
     }

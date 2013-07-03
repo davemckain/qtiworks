@@ -47,6 +47,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentMetadataTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -60,6 +61,7 @@ import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
+import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
 import java.util.List;
@@ -129,6 +131,7 @@ public class InstructorAssessmentManagementController {
     }
 
     //------------------------------------------------------
+    // Assessment management
 
     @RequestMapping(value="/assessments/upload", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
@@ -171,8 +174,6 @@ public class InstructorAssessmentManagementController {
         return "showAssessment";
     }
 
-    //------------------------------------------------------
-
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.GET)
     public String showEditAssessmentForm(@PathVariable final long aid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -206,8 +207,6 @@ public class InstructorAssessmentManagementController {
         GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully edited");
         return instructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
-
-    //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/replace", method=RequestMethod.GET)
     public String showReplaceAssessmentPackageForm(final @PathVariable long aid,
@@ -258,8 +257,6 @@ public class InstructorAssessmentManagementController {
         return instructorRouter.buildInstructorRedirect("/assessment/{aid}");
     }
 
-    //------------------------------------------------------
-
     @RequestMapping(value="/assessment/{aid}/delete", method=RequestMethod.POST)
     public String deleteAssessment(final @PathVariable long aid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -267,8 +264,6 @@ public class InstructorAssessmentManagementController {
         GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully deleted");
         return instructorRouter.buildInstructorRedirect("/assessments");
     }
-
-    //------------------------------------------------------
 
     /** TODO: For performance, we should cache the validation result */
     @RequestMapping(value="/assessment/{aid}/validate", method=RequestMethod.GET)
@@ -279,8 +274,6 @@ public class InstructorAssessmentManagementController {
         setupModelForAssessment(aid, model);
         return "validationResult";
     }
-
-    //------------------------------------------------------
 
     @RequestMapping(value="/assessment/{aid}/try", method=RequestMethod.POST)
     public String tryAssessment(final @PathVariable long aid)
@@ -306,6 +299,20 @@ public class InstructorAssessmentManagementController {
         final String exitUrl = instructorRouter.buildWithinContextUrl("/assessment/" + aid);
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, authorMode, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
+    }
+
+    @RequestMapping(value="/assessment/{aid}/result-settings", method=RequestMethod.GET)
+    public String showOutcomeDeclarationsChooser(final @PathVariable long aid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+        final List<OutcomeDeclaration> outcomeDeclarations = assessmentDataService.getOutcomeVariableDeclarations(assessment);
+
+        final AssessmentLtiOutcomesSettingsTemplate template = new AssessmentLtiOutcomesSettingsTemplate();
+
+        setupModelForAssessment(assessment, model);
+        model.addAttribute("outcomeDeclarationList", outcomeDeclarations);
+        model.addAttribute(template);
+        return "outcomeDeclarationChooser";
     }
 
     //------------------------------------------------------
