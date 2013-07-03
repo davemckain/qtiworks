@@ -48,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentMetadataTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
@@ -55,7 +56,6 @@ import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureR
 import uk.ac.ed.ph.qtiworks.services.domain.EnumerableClientFailure;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 
@@ -194,10 +194,10 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
 
-        final UpdateAssessmentCommand command = new UpdateAssessmentCommand();
-        command.setName(assessment.getName());
-        command.setTitle(assessment.getTitle());
-        model.addAttribute(command);
+        final AssessmentMetadataTemplate template = new AssessmentMetadataTemplate();
+        template.setName(assessment.getName());
+        template.setTitle(assessment.getTitle());
+        model.addAttribute(template);
 
         setupModelForAssessment(assessment, model);
         return "editAssessmentForm";
@@ -206,7 +206,7 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.POST)
     public String handleEditAssessmentForm(@PathVariable final long aid, final Model model,
             final RedirectAttributes redirectAttributes,
-            final @Valid @ModelAttribute UpdateAssessmentCommand command, final BindingResult result)
+            final @Valid @ModelAttribute AssessmentMetadataTemplate template, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Validate command Object */
         if (result.hasErrors()) {
@@ -214,7 +214,7 @@ public class LtiInstructorAssessmentManagementController {
             return "editAssessmentForm";
         }
         try {
-            assessmentManagementService.updateAssessmentProperties(aid, command);
+            assessmentManagementService.updateAssessmentMetadata(aid, template);
         }
         catch (final BindException e) {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");

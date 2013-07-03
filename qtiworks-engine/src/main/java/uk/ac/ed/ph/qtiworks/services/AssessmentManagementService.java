@@ -60,13 +60,13 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentMetadataTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStateException.APSFailureReason;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
-import uk.ac.ed.ph.qtiworks.services.domain.UpdateAssessmentCommand;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
@@ -295,12 +295,12 @@ public class AssessmentManagementService {
     /**
      * Updates the basic metadata/properties for the {@link Assessment} having the given ID (aid).
      */
-    public Assessment updateAssessmentProperties(final long aid, final UpdateAssessmentCommand command)
+    public Assessment updateAssessmentMetadata(final long aid, final AssessmentMetadataTemplate template)
             throws BindException, DomainEntityNotFoundException, PrivilegeException {
         /* Validate data */
-        Assert.notNull(command, "command");
-        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(command, "updateAssessmentCommand");
-        jsr303Validator.validate(command, errors);
+        Assert.notNull(template, "command");
+        final BeanPropertyBindingResult errors = new BeanPropertyBindingResult(template, "assessmentMetadataTemplate");
+        jsr303Validator.validate(template, errors);
         if (errors.hasErrors()) {
             throw new BindException(errors);
         }
@@ -310,8 +310,8 @@ public class AssessmentManagementService {
         ensureCallerMayManage(assessment);
 
         /* Make changes */
-        assessment.setName(command.getName().trim());
-        assessment.setTitle(command.getTitle().trim());
+        assessment.setName(template.getName().trim());
+        assessment.setTitle(template.getTitle().trim());
         assessmentDao.update(assessment);
         return assessment;
     }

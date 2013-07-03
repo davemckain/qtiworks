@@ -28,7 +28,7 @@ primaryRouting (action -> URL)
     </p>
   </div>
 
-  <form:form method="post" acceptCharset="UTF-8" commandName="updateAssessmentCommand">
+  <form:form method="post" acceptCharset="UTF-8" commandName="assessmentMetadataTemplate">
 
     <%-- Show any form validation errors discovered --%>
     <form:errors element="div" cssClass="formErrors" path="*"/>

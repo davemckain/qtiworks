@@ -42,12 +42,11 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 
 /**
- * Command Object containing the bits of an {@link Assessment} that can
- * be directly updated.
+ * Template for the basic metadata within an {@link Assessment}
  *
  * @author David McKain
  */
-public final class UpdateAssessmentCommand {
+public final class AssessmentMetadataTemplate {
 
     @NotNull
     @NotBlank
