@@ -63,6 +63,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -126,6 +127,10 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="did")
     private Long did;
 
+    @Version
+    @Column(name="lock_version")
+    private Long version;
+
     @Basic(optional=false)
     @Column(name="creation_time", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -188,20 +193,6 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Column(name="lti_consumer_secret", length=DomainConstants.LTI_SECRET_LENGTH, updatable=false, unique=false)
     private String ltiConsumerSecret;
 
-    @Basic(optional=true)
-    @Lob
-    @Type(type="org.hibernate.type.TextType")
-    @Column(name="lti_result_outcome_identifier")
-    private String ltiResultOutcomeIdentifier;
-
-    @Basic(optional=true)
-    @Column(name="lti_result_minimum")
-    private Double ltiResultMinimum;
-
-    @Basic(optional=true)
-    @Column(name="lti_result_maximum")
-    private Double ltiResultMaximum;
-
     /** (Currently used for cascading deletion only - upgrade if required) */
     @SuppressWarnings("unused")
     @OneToMany(mappedBy="delivery", cascade=CascadeType.REMOVE)
@@ -217,6 +208,15 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Override
     public void setId(final Long id) {
         this.did = id;
+    }
+
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(final Long version) {
+        this.version = version;
     }
 
 
@@ -304,33 +304,6 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
         this.ltiConsumerSecret = ltiConsumerSecret;
     }
 
-
-    public String getLtiResultOutcomeIdentifier() {
-        return ltiResultOutcomeIdentifier;
-    }
-
-    public void setLtiResultOutcomeIdentifier(final String ltiResultOutcomeIdentifier) {
-        this.ltiResultOutcomeIdentifier = ltiResultOutcomeIdentifier;
-    }
-
-
-    public Double getLtiResultMinimum() {
-        return ltiResultMinimum;
-    }
-
-    public void setLtiResultMinimum(final Double ltiResultMinimum) {
-        this.ltiResultMinimum = ltiResultMinimum;
-    }
-
-
-    public Double getLtiResultMaximum() {
-        return ltiResultMaximum;
-    }
-
-    public void setLtiResultMaximum(final Double ltiResultMaximum) {
-        this.ltiResultMaximum = ltiResultMaximum;
-    }
-
     //------------------------------------------------------------
 
     @Override
@@ -342,9 +315,7 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
                 + ",ltiEnabled=" + ltiEnabled
                 + ",ltiConsumerKeyToken=" + ltiConsumerKeyToken
                 + ",ltiConsumerSecret=" + ltiConsumerSecret
-                + ",ltiResultOutcomeIdentifier=" + ltiResultOutcomeIdentifier
-                + ",ltiResultMinimum=" + ltiResultMinimum
-                + ",ltiResultMaximum=" + ltiResultMaximum
+
                 + ")";
     }
 }

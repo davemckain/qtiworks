@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.ItemSessionControl;
@@ -208,12 +207,5 @@ public class ItemDeliverySettings extends DeliverySettings implements BaseEntity
 
     public void setAllowCandidateComment(final boolean allowCandidateComment) {
         this.allowCandidateComment = allowCandidateComment;
-    }
-
-    //------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
     }
 }

@@ -60,6 +60,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -127,6 +128,10 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Column(name="dsid")
     private Long dsid;
 
+    @Version
+    @Column(name="lock_version")
+    private Long version;
+
     @Basic(optional=false)
     @Column(name="creation_time", updatable=false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -161,7 +166,6 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=false)
     @Column(name="public")
     private boolean isPublic;
-
 
     //------------------------------------------------------------
     // Settings common to both items and tests
@@ -199,6 +203,15 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     @Override
     public void setId(final Long id) {
         this.dsid = id;
+    }
+
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(final Long version) {
+        this.version = version;
     }
 
 
@@ -274,6 +287,10 @@ public class DeliverySettings implements BaseEntity, TimestampedOnCreation {
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(dsid=" + dsid
+                + ",version=" + version
+                + ",assessmentType=" + assessmentType
+                + ",title=" + title
+                + ",isPublic=" + isPublic
                 + ")";
     }
 }

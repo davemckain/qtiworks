@@ -33,7 +33,6 @@
  */
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
-import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
@@ -63,10 +62,4 @@ public class TestDeliverySettings extends DeliverySettings implements BaseEntity
 
     /* Additional stuff can be added here if required */
 
-    //------------------------------------------------------------
-
-    @Override
-    public String toString() {
-        return ObjectUtilities.beanToString(this);
-    }
 }

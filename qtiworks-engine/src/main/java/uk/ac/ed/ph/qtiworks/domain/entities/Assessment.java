@@ -51,6 +51,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -62,6 +63,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+
+import org.hibernate.annotations.Type;
 
 /**
  * Represents an assessment within the system. This entity contains the basic data about
@@ -197,6 +200,29 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
     @OrderBy("did")
     private List<Delivery> deliveries;
 
+    /** Identifier of the QTI outcome variable to use when returning scores (via LTI) */
+    @Basic(optional=true)
+    @Lob
+    @Type(type="org.hibernate.type.TextType")
+    @Column(name="lti_result_outcome_identifier")
+    private String ltiResultOutcomeIdentifier;
+
+    /**
+     * Minimum value for the result outcome variable.
+     * Will always be set if {@link #ltiResultOutcomeIdentifier} is not null.
+     */
+    @Basic(optional=true)
+    @Column(name="lti_result_minimum")
+    private Double ltiResultMinimum;
+
+    /**
+     * Maximum value for the result outcome variable.
+     * Will always be set if {@link #ltiResultOutcomeIdentifier} is not null.
+     */
+    @Basic(optional=true)
+    @Column(name="lti_result_maximum")
+    private Double ltiResultMaximum;
+
     //------------------------------------------------------------
 
     @Override
@@ -326,13 +352,48 @@ public class Assessment implements BaseEntity, TimestampedOnCreation {
         return deliveries;
     }
 
+
+    public String getLtiResultOutcomeIdentifier() {
+        return ltiResultOutcomeIdentifier;
+    }
+
+    public void setLtiResultOutcomeIdentifier(final String ltiResultOutcomeIdentifier) {
+        this.ltiResultOutcomeIdentifier = ltiResultOutcomeIdentifier;
+    }
+
+
+    public Double getLtiResultMinimum() {
+        return ltiResultMinimum;
+    }
+
+    public void setLtiResultMinimum(final Double ltiResultMinimum) {
+        this.ltiResultMinimum = ltiResultMinimum;
+    }
+
+
+    public Double getLtiResultMaximum() {
+        return ltiResultMaximum;
+    }
+
+    public void setLtiResultMaximum(final Double ltiResultMaximum) {
+        this.ltiResultMaximum = ltiResultMaximum;
+    }
+
     //------------------------------------------------------------
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(aid=" + aid
+                + ",version=" + version
                 + ",name=" + name
+                + ",title=" + title
+                + ",assessmentType=" + assessmentType
+                + ",isPublic=" + isPublic
+                + ",packageImportVersion=" + packageImportVersion
+                + ",ltiResultOutcomeIdentifier=" + ltiResultOutcomeIdentifier
+                + ",ltiResultMinimum=" + ltiResultMinimum
+                + ",ltiResultMaximum=" + ltiResultMaximum
                 + ")";
     }
 }

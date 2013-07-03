@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
@@ -112,7 +113,8 @@ public class CandidateSessionCloser {
             return;
         }
         /* Make sure LTI Tool Consumer has decided we can actually send results */
-        if (delivery.getLtiResultOutcomeIdentifier()==null) {
+        final Assessment assessment = delivery.getAssessment();
+        if (assessment.getLtiResultOutcomeIdentifier()==null) {
             recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.NO_OUTCOME_IDENTIFIER,
                     "No result outcome variable set for Delivery #" + delivery.getId());
             return;
@@ -132,11 +134,11 @@ public class CandidateSessionCloser {
             return;
         }
         /* Make sure specified outcome variable exists in the assessmentResult */
-        final OutcomeVariable resultOutcomeVariable = extractResultOutcomeVariable(assessmentResult, delivery);
+        final OutcomeVariable resultOutcomeVariable = extractResultOutcomeVariable(assessmentResult, assessment);
         if (resultOutcomeVariable==null) {
             recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.BAD_OUTCOME_IDENTIFIER,
                     "Failed to extract outcomeVariable with identifier "
-                    + delivery.getLtiResultOutcomeIdentifier()
+                    + assessment.getLtiResultOutcomeIdentifier()
                     + " from assessmentResult for CandidateSession #"
                     + candidateSession.getId());
             return;
@@ -145,7 +147,7 @@ public class CandidateSessionCloser {
         if (!resultOutcomeVariable.hasSignature(Signature.SINGLE_FLOAT)) {
             recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.SCORE_NOT_SINGLE_FLOAT,
                     "OutcomeVariable with identifier "
-                    + delivery.getLtiResultOutcomeIdentifier()
+                    + assessment.getLtiResultOutcomeIdentifier()
                     + " in assessmentResult for CandidateSession #"
                     + candidateSession.getId()
                     + " is not a single float");
@@ -153,7 +155,7 @@ public class CandidateSessionCloser {
         }
         /* Make sure result outcomeVariable can be normalized correctly */
         final double rawScore = ((FloatValue) resultOutcomeVariable.getComputedValue()).doubleValue();
-        final Double normalizedScore = computeNormalizedScore(resultOutcomeVariable, rawScore, delivery);
+        final Double normalizedScore = computeNormalizedScore(resultOutcomeVariable, rawScore, assessment);
         if (normalizedScore==null) {
             recordLtiRecordingSkipped(candidateSession,
                     CandidateOutcomeReportingStatus.NO_NORMALIZATION,
@@ -175,7 +177,7 @@ public class CandidateSessionCloser {
         ltiOutcomeService.queueLtiResult(candidateSession, normalizedScore);
     }
 
-    private Double computeNormalizedScore(final OutcomeVariable outcomeVariable, final double rawScore, final Delivery delivery) {
+    private Double computeNormalizedScore(final OutcomeVariable outcomeVariable, final double rawScore, final Assessment assessment) {
         final Double normalMaximum = outcomeVariable.getNormalMaximum();
         Double result = null;
         if (normalMaximum!=null) {
@@ -189,8 +191,8 @@ public class CandidateSessionCloser {
             }
         }
         else {
-            final Double ltiResultMinimum = delivery.getLtiResultMinimum();
-            final Double ltiResultMaximum = delivery.getLtiResultMaximum();
+            final Double ltiResultMinimum = assessment.getLtiResultMinimum();
+            final Double ltiResultMaximum = assessment.getLtiResultMaximum();
             if (ltiResultMaximum!=null && ltiResultMinimum!=null) {
                 result = (rawScore - ltiResultMinimum) / (ltiResultMaximum - ltiResultMinimum);
             }
@@ -198,11 +200,11 @@ public class CandidateSessionCloser {
         return result;
     }
 
-    private OutcomeVariable extractResultOutcomeVariable(final AssessmentResult assessmentResult, final Delivery delivery) {
-        final AssessmentObjectType assessmentType = delivery.getAssessment().getAssessmentType();
+    private OutcomeVariable extractResultOutcomeVariable(final AssessmentResult assessmentResult, final Assessment assessment) {
+        final AssessmentObjectType assessmentType = assessment.getAssessmentType();
         final Identifier resultOutcomeIdentifier;
         try {
-            resultOutcomeIdentifier = Identifier.parseString(delivery.getLtiResultOutcomeIdentifier());
+            resultOutcomeIdentifier = Identifier.parseString(assessment.getLtiResultOutcomeIdentifier());
         }
         catch (final QtiParseException e) {
             return null;
