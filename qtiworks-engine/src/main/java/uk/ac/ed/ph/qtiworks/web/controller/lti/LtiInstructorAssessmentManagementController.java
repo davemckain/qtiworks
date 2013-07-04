@@ -113,13 +113,13 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="", method=RequestMethod.GET)
     public String resourceTopPage(final Model model) {
         ltiInstructorModelHelper.setupModel(model);
-        return "resource";
+        return "instructor/resource";
     }
 
     @RequestMapping(value="/debug", method=RequestMethod.GET)
     public String diagnosticsPage(final Model model) {
         ltiInstructorModelHelper.setupModel(model);
-        return "debug";
+        return "instructor/debug";
     }
 
     //------------------------------------------------------
@@ -131,14 +131,14 @@ public class LtiInstructorAssessmentManagementController {
         final List<AssessmentAndPackage> assessments = assessmentDataService.getCallerLtiContextAssessments();
         model.addAttribute(assessments);
         model.addAttribute("assessmentListRouting", ltiInstructorRouter.buildAssessmentListRouting(assessments));
-        return "listAssessments";
+        return "instructor/listAssessments";
     }
 
 
     @RequestMapping(value="/assessments/upload", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
         model.addAttribute(new UploadAssessmentPackageCommand());
-        return "uploadAssessmentForm";
+        return "instructor/uploadAssessmentForm";
     }
 
     @RequestMapping(value="/assessments/upload", method=RequestMethod.POST)
@@ -148,7 +148,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            return "uploadAssessmentForm";
+            return "instructor/uploadAssessmentForm";
         }
 
         /* Attempt to import and validate the package */
@@ -159,7 +159,7 @@ public class LtiInstructorAssessmentManagementController {
         catch (final AssessmentPackageFileImportException e) {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
-            return "uploadAssessmentForm";
+            return "instructor/uploadAssessmentForm";
         }
         GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully created");
         return ltiInstructorRouter.buildInstructorRedirect("/assessment/" + assessment.getId());
@@ -171,7 +171,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         ltiInstructorModelHelper.setupModelForAssessment(assessment, model);
-        return "showAssessment";
+        return "instructor/showAssessment";
     }
 
     @RequestMapping(value="/assessment/{aid}/select", method=RequestMethod.POST)
@@ -192,7 +192,7 @@ public class LtiInstructorAssessmentManagementController {
         model.addAttribute(template);
 
         ltiInstructorModelHelper.setupModelForAssessment(assessment, model);
-        return "editAssessmentForm";
+        return "instructor/editAssessmentForm";
     }
 
     @RequestMapping(value="/assessment/{aid}/edit", method=RequestMethod.POST)
@@ -203,7 +203,7 @@ public class LtiInstructorAssessmentManagementController {
         /* Validate command Object */
         if (result.hasErrors()) {
             ltiInstructorModelHelper.setupModelForAssessment(aid, model);
-            return "editAssessmentForm";
+            return "instructor/editAssessmentForm";
         }
         try {
             assessmentManagementService.updateAssessmentMetadata(aid, template);
@@ -221,7 +221,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         model.addAttribute(new UploadAssessmentPackageCommand());
         ltiInstructorModelHelper.setupModelForAssessment(aid, model);
-        return "replaceAssessmentPackageForm";
+        return "instructor/replaceAssessmentPackageForm";
     }
 
     @RequestMapping(value="/assessment/{aid}/replace", method=RequestMethod.POST)
@@ -233,7 +233,7 @@ public class LtiInstructorAssessmentManagementController {
         /* Validate command Object */
         if (result.hasErrors()) {
             ltiInstructorModelHelper.setupModelForAssessment(aid, model);
-            return "replaceAssessmentPackageForm";
+            return "instructor/replaceAssessmentPackageForm";
         }
 
         /* Attempt to import the package */
@@ -245,13 +245,13 @@ public class LtiInstructorAssessmentManagementController {
             final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
             ltiInstructorModelHelper.setupModelForAssessment(aid, model);
-            return "replaceAssessmentPackageForm";
+            return "instructor/replaceAssessmentPackageForm";
         }
         catch (final AssessmentStateException e) {
             final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
             failure.registerErrors(result, "assessmentPackageUpload");
             ltiInstructorModelHelper.setupModelForAssessment(aid, model);
-            return "replaceAssessmentPackageForm";
+            return "instructor/replaceAssessmentPackageForm";
         }
         try {
             assessmentManagementService.validateAssessment(aid);
@@ -270,7 +270,7 @@ public class LtiInstructorAssessmentManagementController {
         final AssessmentObjectValidationResult<?> validationResult = assessmentManagementService.validateAssessment(aid);
         model.addAttribute("validationResult", validationResult);
         ltiInstructorModelHelper.setupModelForAssessment(aid, model);
-        return "validationResult";
+        return "instructor/validationResult";
     }
 
     @RequestMapping(value="/assessment/{aid}/delete", method=RequestMethod.POST)
@@ -313,7 +313,7 @@ public class LtiInstructorAssessmentManagementController {
         final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerUserDeliverySettings();
         model.addAttribute("deliverySettingsList", deliverySettingsList);
         model.addAttribute("deliverySettingsListRouting", ltiInstructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
-        return "listDeliverySettings";
+        return "instructor/listDeliverySettings";
     }
 
     @RequestMapping(value="/deliverysettings/create-for-item", method=RequestMethod.GET)
@@ -323,7 +323,7 @@ public class LtiInstructorAssessmentManagementController {
         template.setTitle("Item Delivery Settings #" + (existingSettingsCount+1));
 
         model.addAttribute(template);
-        return "createItemDeliverySettingsForm";
+        return "instructor/createItemDeliverySettingsForm";
     }
 
     @RequestMapping(value="/deliverysettings/create-for-test", method=RequestMethod.GET)
@@ -333,7 +333,7 @@ public class LtiInstructorAssessmentManagementController {
         template.setTitle("Test Delivery Settings #" + (existingOptionCount+1));
 
         model.addAttribute(template);
-        return "createTestDeliverySettingsForm";
+        return "instructor/createTestDeliverySettingsForm";
     }
 
     @RequestMapping(value="/deliverysettings/create-for-item", method=RequestMethod.POST)
@@ -343,7 +343,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            return "createItemDeliverySettingsForm";
+            return "instructor/createItemDeliverySettingsForm";
         }
 
         /* Try to create new entity */
@@ -366,7 +366,7 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException {
         /* Validate command Object */
         if (result.hasErrors()) {
-            return "createTestDeliverySettingsForm";
+            return "instructor/createTestDeliverySettingsForm";
         }
 
         /* Try to create new entity */
@@ -420,7 +420,7 @@ public class LtiInstructorAssessmentManagementController {
 
         ltiInstructorModelHelper.setupModelForDeliverySettings(itemDeliverySettings, model);
         model.addAttribute(template);
-        return "editItemDeliverySettingsForm";
+        return "instructor/editItemDeliverySettingsForm";
     }
 
     @RequestMapping(value="/deliverysettings/{dsid}/for-test", method=RequestMethod.GET)
@@ -432,7 +432,7 @@ public class LtiInstructorAssessmentManagementController {
 
         ltiInstructorModelHelper.setupModelForDeliverySettings(testDeliverySettings, model);
         model.addAttribute(template);
-        return "editTestDeliverySettingsForm";
+        return "instructor/editTestDeliverySettingsForm";
     }
 
     @RequestMapping(value="/deliverysettings/{dsid}/for-item", method=RequestMethod.POST)
@@ -442,7 +442,7 @@ public class LtiInstructorAssessmentManagementController {
         /* Validate command Object */
         if (result.hasErrors()) {
             ltiInstructorModelHelper.setupModelForDeliverySettings(dsid, model);
-            return "editItemDeliverySettingsForm";
+            return "instructor/editItemDeliverySettingsForm";
         }
 
         /* Perform update */
@@ -466,7 +466,7 @@ public class LtiInstructorAssessmentManagementController {
         /* Validate command Object */
         if (result.hasErrors()) {
             ltiInstructorModelHelper.setupModelForDeliverySettings(dsid, model);
-            return "editTestDeliverySettingsForm";
+            return "instructor/editTestDeliverySettingsForm";
         }
 
         /* Perform update */
