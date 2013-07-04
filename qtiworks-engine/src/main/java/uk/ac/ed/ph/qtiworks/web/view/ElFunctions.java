@@ -96,19 +96,19 @@ public final class ElFunctions {
     }
 
     public static String formatTime(final Date time) {
-        return ViewUtilities.getTimeFormat().format(time);
+        return time!=null ? ViewUtilities.getTimeFormat().format(time) : "";
     }
 
     public static String formatDate(final Date time) {
-        return ViewUtilities.getDateFormat().format(time);
+        return time!=null ? ViewUtilities.getDateFormat().format(time) : "";
     }
 
     public static String formatDateAndTime(final Date time) {
-        return ViewUtilities.getDateAndTimeFormat().format(time);
+        return time!=null ? ViewUtilities.getDateAndTimeFormat().format(time) : "";
     }
 
     public static String formatDayDateAndTime(final Date time) {
-        return ViewUtilities.getDayDateAndTimeFormat().format(time);
+        return time!=null ? ViewUtilities.getDayDateAndTimeFormat().format(time) : "";
     }
 
     public static String formatAssessmentType(final AssessmentObjectType assessmentType) {

@@ -82,6 +82,8 @@ public class LtiInstructorRouter {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("resourceDashboard", buildWebUrl(""));
         primaryRouting.put("debug", buildWebUrl("/debug"));
+        primaryRouting.put("try", buildWebUrl("/try"));
+        primaryRouting.put("toggleAvailability", buildWebUrl("/toggle-availability"));
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
         primaryRouting.put("uploadAndUseAssessment", buildWebUrl("/assessments/upload-and-use"));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
@@ -101,6 +103,9 @@ public class LtiInstructorRouter {
     }
 
     public Map<String, String> buildAssessmentRouting(final Assessment assessment) {
+        if (assessment==null) {
+            return new HashMap<String, String>();
+        }
         return buildAssessmentRouting(assessment.getId().longValue());
     }
 
@@ -125,9 +130,11 @@ public class LtiInstructorRouter {
     }
 
     public Map<String, String> buildDeliverySettingsRouting(final DeliverySettings deliverySettings) {
-        final long dsid = deliverySettings.getId().longValue();
         final Map<String, String> result = new HashMap<String, String>();
-
+        if (deliverySettings==null) {
+            return result;
+        }
+        final long dsid = deliverySettings.getId().longValue();
         final String itemOrTestString = deliverySettings.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "item" : "test";
         result.put("delete", buildWebUrl("/deliverysettings/" + dsid + "/delete"));
         result.put("select", buildWebUrl("/deliverysettings/" + dsid + "/select"));

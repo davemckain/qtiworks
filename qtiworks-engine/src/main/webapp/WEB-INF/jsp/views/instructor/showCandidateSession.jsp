@@ -62,7 +62,7 @@ primaryRouting (action -> URL)
 
   <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
   <c:set var="otherOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.otherOutcomeIdentifiers)}"/>
-  <table class="assessmentList">
+  <table class="listTable">
     <thead>
       <tr>
         <th>Outcome Identifier</th>

@@ -31,7 +31,7 @@ primaryRouting
 
   <c:choose>
     <c:when test="${!empty deliverySettingsList}">
-      <table class="assessmentList">
+      <table class="listTable">
         <thead>
           <tr>
             <th></th>

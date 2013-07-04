@@ -13,10 +13,6 @@ a:link, a:visited {
   color: #66455e;
 }
 
-h3 {
-  border-bottom: 1px solid #ccdbf0;
-}
-
 .flashMessage {
   background-color: #ffffcc;
   margin: 0.5em 0;
@@ -36,6 +32,18 @@ h3 {
   background: url(images/error.png) 5px center no-repeat;
   font-weight: bold;
   padding-left: 24px;
+}
+
+.hints {
+  font-style: italic;
+}
+
+aside {
+  font-style: italic;
+}
+
+.center {
+  text-align: center;
 }
 
 /* ========== Home Page ========== */
@@ -140,7 +148,79 @@ h3 {
 }
 
 .ltipage .actionHeader h2 {
-  font-size: 1.5em;
+  font-size: 1.7em;
+  border-bottom: 2px solid #ccdbf0;
+  margin-bottom: 0.3em;
+}
+
+.ltipage .actionHeader {
+  margin-bottom: 2em;
+}
+
+/* ========== LTI info (new) ========== */
+
+.dashboardRow {
+  border: 2px solid #ccbdf0;
+  border-radius: 1em;
+  padding: 0.5em;
+  margin-bottom: 1em;
+  background: url(images/bluegradient.png) left top repeat-x;
+}
+
+.dashboardRow .name {
+  font-size: smaller;
+}
+
+.dashboardRow .value {
+  font-weight: bold;
+  font-size: 1.3em;
+}
+
+.dashboardRow .details {
+  font-style: italic;
+  font-size: 0.7em;
+}
+
+.trafficLight {
+  width: 40px;
+  height: 40px;
+  margin: 1em 10px;
+  border-radius: 12px;
+}
+
+.trafficLight.green {
+  background: #00ff00 linear-gradient(to bottom, #00ff00, #99ff99);
+}
+
+.trafficLight.amber {
+  background: #ff9900 linear-gradient(to bottom, #ff9900, #ffcc99);
+}
+
+.trafficLight.red {
+  background: #ff0000 linear-gradient(to bottom, #ff0000, #ff6666);
+}
+
+/* ========== Newer instructor mode stylings (done for LTI) ========== */
+
+ul.menu ul {
+  margin: 0;
+}
+
+.playButton {
+  font-family: 'Open Sans', sans-serif;
+  height: 40px;
+  line-height: 40px;
+}
+
+.playButton:before {
+  content: '\25b6';
+  color: #99ff99;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+h3 {
+  margin-top: 1em;
 }
 
 /* ========== Footer ========== */
@@ -214,19 +294,6 @@ div.sampleList .launch {
   height: 40px;
 }
 
-.launch .playButton {
-  font-family: 'Open Sans', sans-serif;
-  height: 40px;
-  line-height: 40px;
-}
-
-.launch .playButton:before {
-  content: '\25b6';
-  color: #99ff99;
-  font-size: 20px;
-  line-height: 20px;
-}
-
 /* ========== Box Launch Buttons ========== */
 
 .boxes {
@@ -236,15 +303,19 @@ div.sampleList .launch {
 .box {
   background: white url(images/bluegradient.png) repeat-x top center;
   border: 1px solid #ccdbf0;
-  padding: 1em;
   border-radius: 0.5em;
   text-align: center;
 }
 
 .box a.boxButton {
+  padding: 1em;
   display: block;
   color: black;
   text-decoration: none;
+}
+
+.box:hover {
+  border: 1px solid #c80042;
 }
 
 .box .boxButton h3 {
@@ -256,7 +327,7 @@ div.sampleList .launch {
 
 .box .boxButton h3:after {
   display: block;
-  font-size: 100px;
+  font-size: 75px;
   color: #2466bf;
 }
 
@@ -454,15 +525,7 @@ li.infoSummary {
   cursor: pointer;
 }
 
-/* ========== General Stylings ========== */
-
-.hints {
-  font-style: italic;
-}
-
-aside {
-  font-style: italic;
-}
+/* ========== Delivery Settings selector ========== */
 
 ul.dsSelector {
   list-style: none;
@@ -526,28 +589,28 @@ form.deliverySettings .stdFormRow {
 
 /* ========== Instructor Assessment List ========== */
 
-table.assessmentList {
+table.listTable {
   width: 100%;
   margin-bottom: 2em;
   margin-top: 1em;
+  border: 5px solid #ccdbf0;
+  border-collapse: separate;
+  border-radius: 1em;
 }
 
-table.assessmentList th {
+table.listTable th {
   background: url(images/bluegradient.png) left top repeat-x;
 }
 
-table.assessmentList th,
-table.assessmentList td {
-  padding: 0.3em;
-  border: 1px solid #ccdbf0;
+table.listTable th,
+table.listTable td {
+  padding: 0.6em 0.3em;
+  border-top: 1px solid #ccdbf0;
+  border-bottom: 1px solid #ccdbf0;
   vertical-align: middle;
 }
 
-td.center {
-  text-align: center;
-}
-
-table.assessmentList td h4 {
+table.listTable td h4 {
   font-size: 1.2em;
   margin: 0;
 }

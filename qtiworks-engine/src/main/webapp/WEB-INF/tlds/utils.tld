@@ -63,6 +63,14 @@ All Rights Reserved.
   </function>
   <function>
     <description>Date formatting</description>
+    <name>formatDateAndTime</name>
+    <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
+    <function-signature>String formatDateAndTime(
+      java.util.Date
+    )</function-signature>
+  </function>
+  <function>
+    <description>Date formatting</description>
     <name>formatDayDateAndTime</name>
     <function-class>uk.ac.ed.ph.qtiworks.web.view.ElFunctions</function-class>
     <function-signature>String formatDayDateAndTime(

@@ -17,11 +17,13 @@ assessmentRouting (action -> URL)
 <c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
 <page:ltipage title="Assessment details">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
-  </nav>
-  <h2>Assessment '${fn:escapeXml(assessment.name)}'</h2>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
+    </nav>
+    <h2>Assessment ${fn:escapeXml(assessment.name)}</h2>
+  </header>
 
   <div class="grid_6">
     <div class="infoBox">
@@ -111,9 +113,9 @@ assessmentRouting (action -> URL)
 
   <div class="clear"></div>
 
-  <h4>Actions</h4>
+  <h3>Actions</h3>
 
-  <ul>
+  <ul class="menu">
     <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['replace'])}">Replace Assessment Package Content</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['validate'])}">Show validation status</a></li>
@@ -121,7 +123,7 @@ assessmentRouting (action -> URL)
       <li>
         <c:choose>
           <c:when test="${!empty deliverySettingsList}">
-            Try out using:
+            Try out using Delivery Settings:
             <ul>
               <c:forEach var="deliverySettings" items="${deliverySettingsList}">
                 <li>

@@ -22,7 +22,7 @@ primaryRouting (action -> URL)
 
   <c:choose>
     <c:when test="${!empty assessmentAndPackageList}">
-      <table class="assessmentList">
+      <table class="listTable">
         <thead>
           <tr>
             <th colspan="2"></th>

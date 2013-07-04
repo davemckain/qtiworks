@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.TestDeliverySettings;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
+import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentMetadataTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
@@ -61,9 +62,11 @@ import uk.ac.ed.ph.qtiworks.web.domain.UploadAssessmentPackageCommand;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -93,6 +96,9 @@ public class LtiInstructorAssessmentManagementController {
     private LtiInstructorModelHelper ltiInstructorModelHelper;
 
     @Resource
+    private IdentityService identityService;
+
+    @Resource
     private AssessmentDataService assessmentDataService;
 
     @Resource
@@ -113,13 +119,46 @@ public class LtiInstructorAssessmentManagementController {
     @RequestMapping(value="", method=RequestMethod.GET)
     public String resourceTopPage(final Model model) {
         ltiInstructorModelHelper.setupModel(model);
-        return "instructor/resource";
+        final Assessment thisAssessment = identityService.getCurrentThreadLtiResource().getDelivery().getAssessment();
+        if (thisAssessment==null) {
+            return "instructor/initialSetup";
+        }
+        return "instructor/resourceDashboard";
     }
 
     @RequestMapping(value="/debug", method=RequestMethod.GET)
     public String diagnosticsPage(final Model model) {
         ltiInstructorModelHelper.setupModel(model);
         return "instructor/debug";
+    }
+
+    @RequestMapping(value="/try", method=RequestMethod.POST)
+    public String tryThisAssessment(final HttpServletResponse response)
+            throws PrivilegeException, IOException {
+        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final Assessment thisAssessment = thisDelivery.getAssessment();
+        final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings();
+        if (thisAssessment==null) {
+            /* Assessment hasn't been matched to this resource yet */
+            response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, "An Assessment has not been selected for this resource yet");
+            return null;
+        }
+        final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(thisAssessment, theseDeliverySettings);
+        final String exitUrl = ltiInstructorRouter.buildWithinContextUrl(""); /* (Back to dashboard) */
+        return runDelivery(demoDelivery, true, exitUrl);
+    }
+
+    @RequestMapping(value="/toggle-availability", method=RequestMethod.POST)
+    public String toggleThisDeliveryOpenStatus()
+            throws PrivilegeException {
+        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        try {
+            assessmentManagementService.setDeliveryOpenStatus(thisDelivery.getId(), !thisDelivery.isOpen());
+        }
+        catch (final DomainEntityNotFoundException e) {
+            throw QtiWorksRuntimeException.unexpectedException(e);
+        }
+        return ltiInstructorRouter.buildInstructorRedirect(""); /* Return immediately to dashboard */
     }
 
     //------------------------------------------------------
@@ -310,7 +349,8 @@ public class LtiInstructorAssessmentManagementController {
             throws PrivilegeException, DomainEntityNotFoundException {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, null);
-        return runDelivery(aid, demoDelivery, true);
+        final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        return runDelivery(demoDelivery, true, exitUrl);
     }
 
     @RequestMapping(value="/assessment/{aid}/try/{dsid}", method=RequestMethod.POST)
@@ -319,12 +359,12 @@ public class LtiInstructorAssessmentManagementController {
         final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
         final DeliverySettings deliverySettings = assessmentManagementService.lookupAndMatchDeliverySettings(dsid, assessment);
         final Delivery demoDelivery = assessmentManagementService.createDemoDelivery(assessment, deliverySettings);
-        return runDelivery(aid, demoDelivery, true);
+        final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
+        return runDelivery(demoDelivery, true, exitUrl);
     }
 
-    private String runDelivery(final long aid, final Delivery delivery, final boolean authorMode)
+    private String runDelivery(final Delivery delivery, final boolean authorMode, final String exitUrl)
             throws PrivilegeException {
-        final String exitUrl = ltiInstructorRouter.buildWithinContextUrl("/assessment/" + aid);
         final CandidateSession candidateSession = candidateSessionStarter.createCandidateSession(delivery, authorMode, exitUrl, null, null);
         return GlobalRouter.buildSessionStartRedirect(candidateSession);
     }
@@ -479,7 +519,7 @@ public class LtiInstructorAssessmentManagementController {
 
         /* Return to show/edit with a flash message */
         GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully changed");
-        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-item");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
     @RequestMapping(value="/deliverysettings/{dsid}/for-test", method=RequestMethod.POST)
@@ -503,7 +543,7 @@ public class LtiInstructorAssessmentManagementController {
 
         /* Return to show/edit with a flash message */
         GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
-        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/" + dsid + "/for-test");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
 }

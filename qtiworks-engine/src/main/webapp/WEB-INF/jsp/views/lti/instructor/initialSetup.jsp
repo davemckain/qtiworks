@@ -3,18 +3,13 @@
 Copyright (c) 2012-2013, The University of Edinburgh.
 All Rights Reserved
 
-Top page for managing LTI resources (after domain-level launch)
-
-Model:
-
-ltiUser
-primaryRouting (action -> URL)
-assessmentRouting (aid -> action -> URL)
+Initial set-up page for an LTI resource
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:ltipage title="Assessment Launcher - Getting Started">
 
+  <%-- No Assessment selected yet, so do cheapo "Wizard" thingy --%>
   <header class="grid_12 actionHeader">
     <h2>This Assessment Launch: Getting started</h2>
     <p class="hints">
@@ -28,7 +23,7 @@ assessmentRouting (aid -> action -> URL)
     <div class="grid_6">
       <div class="box">
         <a href="${utils:escapeLink(primaryRouting['uploadAndUseAssessment'])}" class="boxButton assessments" title="Run">
-          <h3>Upload an Assessment</h3>
+          <h3>Upload New Assessment</h3>
           <div>Upload a new Assessment to use for this launch.</div>
         </a>
       </div>
@@ -37,21 +32,15 @@ assessmentRouting (aid -> action -> URL)
     <div class="grid_6">
       <div class="box">
         <a href="${utils:escapeLink(primaryRouting['listAssessments'])}" class="boxButton assessments" title="Samples">
-          <h3>Browse Assessment Library</h3>
+          <h3>Choose From Existing Assessments</h3>
           <div>
-            Browse the Assessments you've uploaded into QTIWorks for this course
-            already uploaded here for <c:out value="${utils:formatLtiContextTitle(ltiContext)}"/>.
+            Browse the Assessments you've uploaded into QTIWorks for
+            <c:out value="${utils:formatLtiContextTitle(ltiContext)}"/>.
           </div>
         </a>
       </div>
     </div>
   </div>
-
-  <ul style="display:none">
-    <li><a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a></li>
-    <li><a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}">Delivery Settings manager</a></li>
-    <li><a href="${utils:escapeLink(primaryRouting['debug'])}">Diagnostics</a></li>
-  </ul>
 
 </page:ltipage>
 

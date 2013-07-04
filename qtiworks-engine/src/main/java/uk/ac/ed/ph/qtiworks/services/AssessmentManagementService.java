@@ -73,7 +73,6 @@ import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.node.AssessmentObjectType;
 import uk.ac.ed.ph.jqtiplus.node.outcome.declaration.OutcomeDeclaration;
 import uk.ac.ed.ph.jqtiplus.validation.AssessmentObjectValidationResult;
-import uk.ac.ed.ph.jqtiplus.xperimental.ToRefactor;
 
 import java.io.File;
 import java.io.InputStream;
@@ -313,6 +312,8 @@ public class AssessmentManagementService {
         assessment.setName(template.getName().trim());
         assessment.setTitle(template.getTitle().trim());
         assessmentDao.update(assessment);
+
+        auditLogger.recordEvent("Metadata updated for Assessment #" + aid);
         return assessment;
     }
 
@@ -357,6 +358,8 @@ public class AssessmentManagementService {
         assessment.setLtiResultMinimum(template.getResultMinimum());
         assessment.setLtiResultMaximum(template.getResultMaximum());
         assessmentDao.update(assessment);
+
+        auditLogger.recordEvent("LTI outcomes information updated for Assessment #" + aid);
         return assessment;
     }
 
@@ -666,16 +669,33 @@ public class AssessmentManagementService {
             terminatedSessions = terminateCandidateSessions(oldAssessment);
         }
 
+        /* Clear DeliverySettings if we've changed from Item to Test, or Test to Item */
+        boolean resetDeliverySettings = false;
+        if (oldAssessment!=null && oldAssessment.getAssessmentType()!=newAssessment.getAssessmentType()) {
+            delivery.setDeliverySettings(null);
+            resetDeliverySettings = true;
+        }
+
         /* Set up link between Delivery and Assessment */
         delivery.setAssessment(newAssessment);
         deliveryDao.update(delivery);
 
-        logger.debug("Assessment for LTI Delivery #{} has been set to #{}, terminating {} CandidateSession(s) associated to the original Assessment",
-                new Object[] { delivery.getId(), newAssessment.getId(), terminatedSessions });
-        auditLogger.recordEvent("Assessment for LTI Delivery #" + delivery.getId()
-                + " has been set to #" + newAssessment.getId()
-                + ", terminating " + terminatedSessions
-                + " CandidateSession(s) associated to the original Assessment");
+        /* Build up message */
+        final StringBuilder messageBuilder = new StringBuilder("Assessment for LTI Delivery #")
+            .append(delivery.getId())
+            .append(" has been set to #")
+            .append(newAssessment.getId())
+            .append('.');
+        if (terminatedSessions>0) {
+            messageBuilder.append(' ')
+                .append(terminatedSessions)
+                .append(" CandidateSession(s) associate to the original Assessment were terminated.");
+        }
+        if (resetDeliverySettings) {
+            messageBuilder.append(" The DeliverySettings for this Assessment were reset to null due to the assessment type being changed");
+        }
+        logger.debug(messageBuilder.toString());
+        auditLogger.recordEvent(messageBuilder.toString());
     }
 
     public void selectCurrentLtiResourceDeliverySettings(final long dsid)
@@ -684,6 +704,12 @@ public class AssessmentManagementService {
         final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
         final Delivery delivery = currentLtiResource.getDelivery();
         final DeliverySettings deliverySettings = lookupDeliverySettings(dsid);
+
+        /* Make sure new DeliverySettings are compatible with the assessment */
+        final Assessment assessment = delivery.getAssessment();
+        if (assessment!=null) {
+            ensureCompatible(deliverySettings, assessment);
+        }
 
         /* Set up link between Delivery and DeliverySettings */
         delivery.setDeliverySettings(deliverySettings);
@@ -706,7 +732,6 @@ public class AssessmentManagementService {
     }
 
     /** Creates a new {@link Delivery} for the given Assignment using reasonable default values */
-    @ToRefactor
     public Delivery createDelivery(final long aid)
             throws PrivilegeException, DomainEntityNotFoundException {
         /* Look up Assessment and check privs */
@@ -722,10 +747,11 @@ public class AssessmentManagementService {
         template.setLtiEnabled(false);
 
         /* Create and return new entity */
-        return createDelivery(assessment, null, template);
+        final Delivery result = createDelivery(assessment, null, template);
+        auditLogger.recordEvent("Created Delivery #" + result.getId() + " for Assessment #" + aid + " without template");
+        return result;
     }
 
-    @ToRefactor
     public Delivery createDelivery(final long aid, final DeliveryTemplate template)
             throws PrivilegeException, DomainEntityNotFoundException, BindException {
         /* Validate template */
@@ -743,7 +769,9 @@ public class AssessmentManagementService {
         }
 
         /* Create and return new entity */
-        return createDelivery(assessment, deliverySettings, template);
+        final Delivery result = createDelivery(assessment, deliverySettings, template);
+        auditLogger.recordEvent("Created Delivery #" + result.getId() + " for Assessment #" + aid + " using template");
+        return result;
     }
 
     private Delivery createDelivery(final Assessment assessment,
@@ -802,6 +830,23 @@ public class AssessmentManagementService {
         delivery.setLtiEnabled(template.isLtiEnabled());
         delivery.setDeliverySettings(deliverySettings);
         deliveryDao.update(delivery);
+
+        auditLogger.recordEvent("Properties updated for Delivery #" + delivery.getId());
+        return delivery;
+    }
+
+    public Delivery setDeliveryOpenStatus(final long did, final boolean open)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Look up delivery and check privileges */
+        final Delivery delivery = lookupDelivery(did);
+        final Assessment assessment = delivery.getAssessment();
+        ensureCallerMayManage(assessment);
+
+        /* Update */
+        delivery.setOpen(open);
+        deliveryDao.update(delivery);
+
+        auditLogger.recordEvent("Set open status for Delivery #" + delivery.getId() + " to " + open);
         return delivery;
     }
 

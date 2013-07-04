@@ -43,7 +43,7 @@ candidateSessionListRouting (xid -> action -> URL)
       <c:set var="candidateSessionSummaryMetadata" value="${deliveryCandidateSummaryReport.candidateSessionSummaryMetadata}"/>
       <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
       <c:set var="rowCount" value="${fn:length(deliveryCandidateSummaryReport.rows)}"/>
-      <table class="assessmentList">
+      <table class="listTable">
         <thead>
           <tr>
             <th colspan="3">Session</th>

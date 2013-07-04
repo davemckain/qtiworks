@@ -36,9 +36,11 @@ package uk.ac.ed.ph.qtiworks.web.controller.lti;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
+import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliverySettings;
+import uk.ac.ed.ph.qtiworks.domain.entities.LtiResource;
 import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
@@ -79,9 +81,20 @@ public class LtiInstructorModelHelper {
 
     @ModelAttribute
     public void setupModel(final Model model) {
-        model.addAttribute("ltiUser", identityService.getCurrentThreadUser());
-        model.addAttribute("ltiResource", identityService.ensureCurrentThreadLtiResource());
+        final LtiResource ltiResource = identityService.ensureCurrentThreadLtiResource();
+        final Delivery thisDelivery = ltiResource.getDelivery();
+        final Assessment thisAssessment = thisDelivery.getAssessment();
+        final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings();
+        final AssessmentPackage thisAssessmentPackage = thisAssessment!=null ? assessmentDataService.ensureSelectedAssessmentPackage(thisAssessment) : null;
+        model.addAttribute("thisLtiUser", identityService.getCurrentThreadUser());
+        model.addAttribute("thisLtiResource", ltiResource);
+        model.addAttribute("thisDelivery", thisDelivery);
+        model.addAttribute("thisAssessment", thisAssessment);
+        model.addAttribute("thisAssessmentPackage", thisAssessmentPackage);
+        model.addAttribute("theseDeliverySettings", theseDeliverySettings);
         model.addAttribute("primaryRouting", ltiInstructorRouter.buildPrimaryRouting());
+        model.addAttribute("thisAssessmentRouting", ltiInstructorRouter.buildAssessmentRouting(thisAssessment));
+        model.addAttribute("theseDeliverySettingsRouting", ltiInstructorRouter.buildDeliverySettingsRouting(theseDeliverySettings));
     }
 
     //------------------------------------------------------

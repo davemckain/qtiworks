@@ -7,7 +7,7 @@ Top page for managing LTI resources (after domain-level launch)
 
 Model:
 
-ltiUser
+thisLtiUser
 primaryRouting (action -> URL)
 assessmentRouting (aid -> action -> URL)
 
@@ -21,25 +21,19 @@ assessmentRouting (aid -> action -> URL)
   <h2>LTI resource diagnostic information</h2>
 
   <h3>This LTI user</h3>
-  <pre>${utils:dumpObject(ltiUser)}</pre>
+  <pre>${utils:dumpObject(thisLtiUser)}</pre>
 
   <h3>This LTI resource</h3>
-  <pre>${utils:dumpObject(ltiResource)}</pre>
+  <pre>${utils:dumpObject(thisLtiResource)}</pre>
 
   <h3>This LTI context</h3>
-  <pre>${utils:dumpObject(ltiResource.ltiContext)}</pre>
+  <pre>${utils:dumpObject(ltiContext)}</pre>
 
   <h3>This LTI domain</h3>
-  <pre>${utils:dumpObject(ltiResource.ltiContext.ltiDomain)}</pre>
+  <pre>${utils:dumpObject(ltiDomain)}</pre>
 
   <h3>This Delivery</h3>
-  <pre>${utils:dumpObject(ltiResource.delivery)}</pre>
-
-  <h3>Selected Assessment</h3>
-  <pre>${utils:dumpObject(ltiResource.delivery.assessment)}</pre>
-
-  <h3>Selected Delivery Settings</h3>
-  <pre>${utils:dumpObject(ltiResource.delivery.deliverySettings)}</pre>
+  <pre>${utils:dumpObject(thisDelivery)}</pre>
 
 </page:ltipage>
 

@@ -14,27 +14,29 @@ deliverySettingsListRouting: dsid -> action -> URL
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:ltipage title="Delivery Settings manager">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
-  </nav>
-  <h2>Delivery Settings manager</h2>
-
-  <div class="hints">
-    <p>
-      "Delivery Settings" are reusable sets of options for specifying how your assessmnts should
-      be delivered. You can use this to control things that fall outside the scope of QTI, such as
-      whether candidates can request a solution,
-      how many attempts should be allowed, etc.
-    </p>
-  </div>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
+    </nav>
+    <h2>Delivery Settings manager</h2>
+    <div class="hints">
+      <p>
+        "Delivery Settings" are reusable sets of options for specifying how your assessmnts should
+        be delivered. You can use this to control things that fall outside the scope of QTI, such as
+        whether candidates can request a solution,
+        how many attempts should be allowed, etc.
+      </p>
+    </div>
+  </header>
 
   <c:choose>
     <c:when test="${!empty deliverySettingsList}">
-      <table class="assessmentList">
+      <table class="listTable">
         <thead>
           <tr>
-            <th colspan="2"></th>
-            <th>Details</th>
+            <th></th>
+            <th>Actions</th>
+            <th>Name</th>
             <th>For</th>
             <th>Created</th>
           </tr>
@@ -47,9 +49,9 @@ deliverySettingsListRouting: dsid -> action -> URL
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
               <td align="center" class="launch">
-                <form action="${deliverySettingsRouting['select']}" method="post">
-                  <button type="submit" class="playButton">Use these DeliverySettings</button>
-                </form>
+                <c:if test="${empty thisAssessment || thisAssessment.assessmentType==deliverySettings.assessmentType}">
+                  <page:buttonLink path="${deliverySettingsRouting['select']}" title="Use these Delivery Settings"/>
+                </c:if>
               </td>
               <td>
                 <h4>
@@ -58,14 +60,14 @@ deliverySettingsListRouting: dsid -> action -> URL
                   </a>
                 </h4>
                 <c:if test="${deliverySettings['class'].simpleName=='ItemDeliverySettings' && !empty deliverySettings.prompt}">
-                  <span class="title">"${fn:escapeXml(utils:trimSentence(deliverySettings.prompt, 200))}"</span>
+                  <span class="title">"${fn:escapeXml(utils:trimSentence(deliverySettings.prompt, 50))}"</span>
                 </c:if>
               </td>
               <td align="center">
                 ${utils:formatAssessmentType(deliverySettings.assessmentType)}
               </td>
               <td class="center">
-                <c:out value="${utils:formatDayDateAndTime(deliverySettings.creationTime)}"/>
+                <c:out value="${utils:formatDateAndTime(deliverySettings.creationTime)}"/>
               </td>
             </tr>
           </c:forEach>

@@ -15,18 +15,19 @@ primaryRouting (action -> URL)
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:ltipage title="Edit Assessment properties">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a>
-  </nav>
-  <h2>Edit Assessment Properties</h2>
-
-  <div class="hints">
-    <p>
-      This page lets you change certain properties about your assessment.
-    </p>
-  </div>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(assessment.name)}</a>
+    </nav>
+    <h2>Edit Assessment Properties</h2>
+    <div class="hints">
+      <p>
+        This page lets you change certain properties about your assessment.
+      </p>
+    </div>
+  </header>
 
   <form:form method="post" acceptCharset="UTF-8" commandName="assessmentMetadataTemplate">
 

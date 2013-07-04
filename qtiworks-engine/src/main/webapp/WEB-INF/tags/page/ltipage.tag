@@ -5,10 +5,14 @@ All Rights Reserved
 
 Skeleton for an LTI instructor-role page
 
-Model:
+Core Model:
 
-ltiUser
-ltiResource
+thisLtiUser
+thisLtiResource
+thisDelivery
+thisAssessment
+thisAssessmentPackage
+theseDeliverySettings
 primaryRouting (action -> URL)
 
 --%>
@@ -23,7 +27,7 @@ primaryRouting (action -> URL)
 <jsp:useBean id="now" class="java.util.Date"/>
 
 <%-- Add additional data to model --%>
-<c:set var="ltiContext" value="${ltiResource.ltiContext}" scope="request"/>
+<c:set var="ltiContext" value="${thisLtiResource.ltiContext}" scope="request"/>
 <c:set var="ltiDomain" value="${ltiContext.ltiDomain}" scope="request"/>
 
 <%-- Extract config beans stashed in ServletContext during AppContext setup --%>
@@ -54,7 +58,7 @@ primaryRouting (action -> URL)
         <h2>
           <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">
             <c:out value="${utils:formatLtiContextTitle(ltiContext)}"/>:
-            <c:out value="${utils:formatLtiResourceTitle(ltiResource)}"/>
+            <c:out value="${utils:formatLtiResourceTitle(thisLtiResource)}"/>
           </a>
         </h2>
       </header>
