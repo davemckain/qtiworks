@@ -35,7 +35,11 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
 
 import uk.ac.ed.ph.qtiworks.domain.DomainConstants;
 
+import uk.ac.ed.ph.jqtiplus.internal.util.BeanToStringOptions;
+import uk.ac.ed.ph.jqtiplus.internal.util.DumpMode;
+import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
+import uk.ac.ed.ph.jqtiplus.internal.util.PropertyOptions;
 
 import java.util.Date;
 
@@ -130,6 +134,8 @@ public class LtiDomain implements BaseEntity, TimestampedOnCreation {
     }
 
 
+    @ObjectDumperOptions(DumpMode.IGNORE)
+    @BeanToStringOptions(PropertyOptions.HIDE_VALUE)
     public String getConsumerSecret() {
         return consumerSecret;
     }
@@ -155,7 +161,6 @@ public class LtiDomain implements BaseEntity, TimestampedOnCreation {
         return getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(this))
                 + "(ldid=" + ldid
                 + ",consumerKey=" + consumerKey
-                + ",consumerSecret=" + consumerSecret
                 + ",disabled=" + disabled
                 + ")";
     }

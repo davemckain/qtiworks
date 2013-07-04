@@ -78,9 +78,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import dave.LtiResultsTest;
 
 /**
- * Controller for browsing and trying the public samples
- * <p>
- * THIS IS WORK IN PROGRESS AND SUBJECT TO CHANGE!
+ * Controller handling LTI launches
+ *
+ * FIXME: Remove fake result service
  *
  * @author David McKain
  */
@@ -200,7 +200,7 @@ public class LtiLaunchController {
     /** TEMPORARY! Fake result service */
     @RequestMapping(value="/test", method=RequestMethod.POST)
     @ResponseBody
-    public String ltiTest(final HttpServletRequest httpRequest) {
+    public String ltiTemporaryResults(final HttpServletRequest httpRequest) {
         try {
             final OAuthMessage message = OAuthServlet.getMessage(httpRequest, null);
             System.out.println("Got " + message);

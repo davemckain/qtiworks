@@ -43,6 +43,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentDataService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
 
 import javax.annotation.Resource;
 
@@ -92,9 +93,10 @@ public class LtiInstructorModelHelper {
 
     public Assessment setupModelForAssessment(final Assessment assessment, final Model model) {
         setupModel(model);
+        final AssessmentStatusReport assessmentStatusReport = assessmentDataService.getAssessmentStatusReport(assessment);
         model.addAttribute("assessment", assessment);
-        model.addAttribute("assessmentPackage", assessmentDataService.ensureSelectedAssessmentPackage(assessment));
-        model.addAttribute("assessmentStatusReport", assessmentDataService.getAssessmentStatusReport(assessment));
+        model.addAttribute("assessmentStatusReport", assessmentStatusReport);
+        model.addAttribute("assessmentPackage", assessmentStatusReport.getAssessmentPackage());
         model.addAttribute("assessmentRouting", ltiInstructorRouter.buildAssessmentRouting(assessment));
         model.addAttribute("deliverySettingsList", assessmentDataService.getCallerUserDeliverySettingsForType(assessment.getAssessmentType()));
         return assessment;

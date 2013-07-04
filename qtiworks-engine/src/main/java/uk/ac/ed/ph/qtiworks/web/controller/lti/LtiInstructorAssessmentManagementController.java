@@ -116,6 +116,12 @@ public class LtiInstructorAssessmentManagementController {
         return "resource";
     }
 
+    @RequestMapping(value="/debug", method=RequestMethod.GET)
+    public String diagnosticsPage(final Model model) {
+        ltiInstructorModelHelper.setupModel(model);
+        return "debug";
+    }
+
     //------------------------------------------------------
     // Assessment management
 

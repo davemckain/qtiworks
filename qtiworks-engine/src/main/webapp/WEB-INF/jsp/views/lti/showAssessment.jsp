@@ -14,7 +14,6 @@ assessmentRouting (action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
 <c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
 <page:ltipage title="Assessment details">
 

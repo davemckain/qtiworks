@@ -20,33 +20,8 @@ assessmentRouting (aid -> action -> URL)
   <ul>
     <li><a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a></li>
     <li><a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}">Delivery Settings manager</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['debug'])}">Diagnostics</a></li>
   </ul>
-
-  <h3>Congratulations!</h3>
-
-
-  <p>
-    If you are seeing this then you have managed to launch the QTIWorks
-    instructor interface for managing and delivering an assessment here.
-  </p>
-  <p>
-    The interface is still being built and will appear shortly. In the
-    mean time, please enjoy the diagnostic information below.
-  </p>
-
-  <h3>LTI Diagnostic information</h3>
-
-  <h4>This LTI user</h4>
-  <pre>${utils:dumpObject(ltiUser)}</pre>
-
-  <h4>This LTI resource</h4>
-  <pre>${utils:dumpObject(ltiResource)}</pre>
-
-  <h4>This LTI context</h4>
-  <pre>${utils:dumpObject(ltiResource.ltiContext)}</pre>
-
-  <h4>This LTI domain</h4>
-  <pre>${utils:dumpObject(ltiResource.ltiContext.ltiDomain)}</pre>
 
 </page:ltipage>
 
