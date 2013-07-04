@@ -34,7 +34,6 @@
 package uk.ac.ed.ph.qtiworks.web.controller.instructor;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
-import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
@@ -214,36 +213,24 @@ public class InstructorAssessmentManagementController {
             final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
-        /* Make sure something was submitted */
-        /* Validate command Object */
+        if (!result.hasErrors()) {
+            /* Attempt to import the package */
+            final MultipartFile uploadFile = command.getFile();
+            try {
+                assessmentManagementService.replaceAssessmentPackage(aid, uploadFile, true);
+            }
+            catch (final AssessmentPackageFileImportException e) {
+                final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+                failure.registerErrors(result, "assessmentPackageUpload");
+            }
+            catch (final AssessmentStateException e) {
+                final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
+                failure.registerErrors(result, "assessmentPackageUpload");
+            }
+        }
         if (result.hasErrors()) {
             instructorModelHelper.setupModelForAssessment(aid, model);
             return "replaceAssessmentPackageForm";
-        }
-
-        /* Attempt to import the package */
-        final MultipartFile uploadFile = command.getFile();
-        try {
-            assessmentManagementService.replaceAssessmentPackage(aid, uploadFile);
-        }
-        catch (final AssessmentPackageFileImportException e) {
-            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(result, "assessmentPackageUpload");
-            instructorModelHelper.setupModelForAssessment(aid, model);
-            return "replaceAssessmentPackageForm";
-        }
-        catch (final AssessmentStateException e) {
-            final EnumerableClientFailure<APSFailureReason> failure = e.getFailure();
-            failure.registerErrors(result, "assessmentPackageUpload");
-            instructorModelHelper.setupModelForAssessment(aid, model);
-            return "replaceAssessmentPackageForm";
-        }
-        try {
-            assessmentManagementService.validateAssessment(aid);
-        }
-        catch (final DomainEntityNotFoundException e) {
-            /* This could only happen if there's some kind of race condition */
-            throw QtiWorksRuntimeException.unexpectedException(e);
         }
         GlobalRouter.addFlashMessage(redirectAttributes, "Assessment package content successfully replaced");
         return instructorRouter.buildInstructorRedirect("/assessment/{aid}");

@@ -374,7 +374,7 @@ public class AssessmentManagementService {
      */
     @Transactional(propagation=Propagation.REQUIRES_NEW)
     public Assessment replaceAssessmentPackage(final long aid,
-            final MultipartFile multipartFile)
+            final MultipartFile multipartFile, final boolean validate)
             throws AssessmentStateException, PrivilegeException,
             AssessmentPackageFileImportException, DomainEntityNotFoundException {
         Assert.notNull(multipartFile, "multipartFile");
@@ -410,6 +410,11 @@ public class AssessmentManagementService {
             logger.warn("Failed to update state of AssessmentPackage {} after file replacement - deleting new sandbox", e);
             deleteAssessmentPackageSandbox(newAssessmentPackage);
             throw new QtiWorksRuntimeException("Failed to update AssessmentPackage entity " + assessment, e);
+        }
+
+        /* Maybe validate new AssessmentPackage */
+        if (validate) {
+            assessmentDataService.validateAssessmentPackage(newAssessmentPackage);
         }
 
         /* Finally delete the old package (if applicable) */
