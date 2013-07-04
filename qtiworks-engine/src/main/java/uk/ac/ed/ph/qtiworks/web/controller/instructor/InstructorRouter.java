@@ -66,7 +66,7 @@ public class InstructorRouter {
     private String contextPath;
 
     public String buildWithinContextUrl(final String actionUrl) {
-        return "/web/instructor" + actionUrl;
+        return "/instructor" + actionUrl;
     }
 
     public String buildWebUrl(final String actionUrl) {
@@ -79,6 +79,7 @@ public class InstructorRouter {
 
     public Map<String, String> buildPrimaryRouting() {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
+        primaryRouting.put("dashboard", buildWebUrl(""));
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
         primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));

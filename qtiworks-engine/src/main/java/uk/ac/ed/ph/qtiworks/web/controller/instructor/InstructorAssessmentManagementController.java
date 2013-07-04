@@ -104,11 +104,17 @@ public class InstructorAssessmentManagementController {
     //------------------------------------------------------
 
     @ModelAttribute
-    public void setupPrimaryRouting(final Model model) {
+    public void setupModel(final Model model) {
         instructorModelHelper.setupModel(model);
     }
 
     //------------------------------------------------------
+
+    /** Instructor dashboard */
+    @RequestMapping(value="", method=RequestMethod.GET)
+    public String instructorDashboard() {
+        return "dashboard";
+    }
 
     /** Lists all Assignments owned by the caller */
     @RequestMapping(value="/assessments", method=RequestMethod.GET)

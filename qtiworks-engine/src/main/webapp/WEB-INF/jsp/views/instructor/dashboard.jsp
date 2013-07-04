@@ -9,15 +9,10 @@ All Rights Reserved
 
   <h2>QTIWorks Dashboard</h2>
 
-  <div class="hints">
-    This is where most of the "real" functionality of QTIWorks will build up. Things will be rather disorganised
-    at first, so please be patient for a while!
-  </div>
-
   <div class="boxes">
     <div class="grid_6">
       <div class="box">
-        <a href="${utils:internalLink(pageContext, '/web/instructor/assessments')}" class="boxButton assessments" title="Run">
+        <a href="${utils:escapeLink(primaryRouting['listAssessments'])}" class="boxButton assessments" title="Manage Assessments">
           <h3>Manage Assessments</h3>
           <div>Upload, manage and deliver your Assessments</div>
         </a>
@@ -26,7 +21,7 @@ All Rights Reserved
 
     <div class="grid_6">
       <div class="box">
-        <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}" class="boxButton deliverysettings" title="Samples">
+        <a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}" class="boxButton deliverysettings" title="Manage Delivery Settings">
           <h3>Manage Delivery Settings</h3>
           <div>Manage your delivery settings</div>
         </a>

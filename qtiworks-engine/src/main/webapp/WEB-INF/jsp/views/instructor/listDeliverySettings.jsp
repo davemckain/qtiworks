@@ -16,7 +16,7 @@ primaryRouting
 <page:page title="Your Delivery Settings">
 
   <nav class="breadcrumbs">
-    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
   </nav>
   <h2>Your Delivery Settings</h2>
 

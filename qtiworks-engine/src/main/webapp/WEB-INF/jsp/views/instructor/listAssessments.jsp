@@ -16,7 +16,7 @@ primaryRouting (action -> URL)
 <page:page title="Your Assessments">
 
   <nav class="breadcrumbs">
-    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
   </nav>
   <h2>Your Assessments</h2>
 
