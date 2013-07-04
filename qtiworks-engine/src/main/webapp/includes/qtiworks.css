@@ -7,7 +7,6 @@ All Rights Reserved
 
 body {
   font-family: 'Open Sans', sans-serif;
-  x-background: white url(images/headergradient.png) repeat-x top center;
 }
 
 a:link, a:visited {
@@ -18,7 +17,55 @@ h3 {
   border-bottom: 1px solid #ccdbf0;
 }
 
-/* ========== Header ========== */
+.flashMessage {
+  background-color: #ffffcc;
+  margin: 0.5em 0;
+  padding: 0.5em;
+  border: 1px solid #999999;
+  border-radius: 0.5em;
+}
+
+.errorMessage {
+  color: red;
+  font-weight: bold;
+  background: url(images/exclamation.png) 5px center no-repeat;
+  padding-left: 24px;
+}
+
+.warningMessage {
+  background: url(images/error.png) 5px center no-repeat;
+  font-weight: bold;
+  padding-left: 24px;
+}
+
+/* ========== Home Page ========== */
+
+.homepage header {
+  margin-bottom: 1.5em;
+}
+
+.homepage header h1 {
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 80px;
+  line-height: 120px;
+  letter-spacing: -0.05em;
+  background: url(images/bigcog.png) left center no-repeat;
+  padding-left: 80px;
+}
+
+.homepage .intro {
+  font-size: 1.62em;
+  font-style: italic;
+  font-weight: bold;
+  color: #cd1753;
+  margin: 1.0em 0;
+}
+
+.homepage footer {
+  border-top: none;
+}
+
+/* ========== Old Sub-page Page Header ========== */
 
 .page header {
   margin: 0.7em 0;
@@ -44,69 +91,57 @@ h3 {
   color: #66455e;
 }
 
-.flashMessage {
-  background-color: #ffffcc;
-  margin: 0.5em 0;
-  padding: 0.5em;
-  border: 1px solid #999999;
-  border-radius: 0.5em;
-}
-
-.errorMessage {
-  color: red;
-  font-weight: bold;
-  background: url(images/exclamation.png) 5px center no-repeat;
-  padding-left: 24px;
-}
-
-.warningMessage {
-  background: url(images/error.png) 5px center no-repeat;
-  font-weight: bold;
-  padding-left: 24px;
-}
-
 /* ========== LTI Instructor Mode header ========== */
 
-.ltipage header {
-  margin: 25px 0;
+.ltipage header.pageHeader {
   font-family: 'Ubuntu', sans-serif;
-  background: url(images/smallcog.png) left center no-repeat;
-  padding-left: 52px;
+  background: url(images/bigcog.png) left top no-repeat;
+  height: 80px;
+  margin: 15px 0 25px 0;
+  padding: 0 0 15px 80px;
+  x-border-bottom: 1px solid #ccdbf0;
 }
 
-.ltipage header h1 {
+.ltipage header.pageHeader h1 {
   margin: 0;
-  font-size: 25px;
-  line-height: 25px;
-  letter-spacing: -0.05em;
+  padding: 3px 0 0 0;
+  height: 48px;
+  font-size: 45px;
+  line-height: 45px;
+  letter-spacing: -0.08em;
 }
 
-.ltipage header h2 {
+.ltipage header.pageHeader h2 {
   margin: 0;
-  font-weight: normal;
-  font-size: 18px;
+  padding: 0;
+  height: 20px;
+  font-size: 20px;
   line-height: 20px;
+  font-weight: normal;
 }
 
-.ltipage header a:link, header a:visited {
+.ltipage header.pageHeader a:link,
+.ltipage header.pageHeader a:visited {
   color: inherit;
   text-decoration: none;
   vertical-align: middle;
 }
 
-.ltipage header a:hover {
+.ltipage header.pageHeader a:hover {
   color: #66455e;
 }
 
 .ltiContextWarning {
-  border: 1px solid red;
+  border: 1px solid #c80042;
   border-radius: 0.5em;
   padding: 0.5em;
   background: #ffffcc url(images/exclamation.png) 5px center no-repeat;
   padding-left: 28px;
 }
 
-
+.ltipage .actionHeader h2 {
+  font-size: 1.5em;
+}
 
 /* ========== Footer ========== */
 
@@ -190,33 +225,6 @@ div.sampleList .launch {
   color: #99ff99;
   font-size: 20px;
   line-height: 20px;
-}
-
-/* ========== Home Page ========== */
-
-.homepage header {
-  margin-bottom: 1.5em;
-}
-
-.homepage header h1 {
-  font-family: 'Ubuntu', sans-serif;
-  font-size: 80px;
-  line-height: 120px;
-  letter-spacing: -0.05em;
-  background: url(images/bigcog.png) left center no-repeat;
-  padding-left: 80px;
-}
-
-.homepage .intro {
-  font-size: 1.62em;
-  font-style: italic;
-  font-weight: bold;
-  color: #cd1753;
-  margin: 1.0em 0;
-}
-
-.homepage footer {
-  border-top: none;
 }
 
 /* ========== Box Launch Buttons ========== */

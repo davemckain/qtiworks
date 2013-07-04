@@ -9,17 +9,18 @@ Instructor upload assessment package form
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:ltipage title="Upload New Assessment">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
-  </nav>
-  <h2>Upload Assessment</h2>
+  <header class="xgrid_12 actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
+    </nav>
+    <h2>Upload Assessment</h2>
+  </header>
 
   <div class="hints">
     <p>
-      You can upload a new stored assessment item or test here. We will generate
+      You can upload a new QTI Assessment Item or Test here. We will generate
       an initial name and title for your assessment using the name of the file
-      you upload and the 'title' attribute in the QTI XML.  You can
+      you upload and the 'title' attribute in the QTI XML. You can
       subsequently change these details to suit.
     </p>
     <p>

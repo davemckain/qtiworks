@@ -49,11 +49,11 @@ primaryRouting (action -> URL)
   </head>
   <body class="<c:out value='${cssClass}' default='ltipage'/>">
     <div class="container_12">
-      <header>
+      <header class="pageHeader">
         <h1>QTIWorks Assessment Launch</h1>
         <h2>
           <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">
-            <c:out value="${utils:formatLtiContextTitle(ltiContext)}"/> -
+            <c:out value="${utils:formatLtiContextTitle(ltiContext)}"/>:
             <c:out value="${utils:formatLtiResourceTitle(ltiResource)}"/>
           </a>
         </h2>

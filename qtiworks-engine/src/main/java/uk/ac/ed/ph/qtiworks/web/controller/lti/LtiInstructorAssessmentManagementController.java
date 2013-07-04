@@ -34,6 +34,7 @@
 package uk.ac.ed.ph.qtiworks.web.controller.lti;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
+import uk.ac.ed.ph.qtiworks.QtiWorksRuntimeException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
@@ -133,6 +134,41 @@ public class LtiInstructorAssessmentManagementController {
         return "instructor/listAssessments";
     }
 
+    @RequestMapping(value="/assessments/upload-and-use", method=RequestMethod.GET)
+    public String showUploadAndUseAssessmentForm(final Model model) {
+        model.addAttribute(new UploadAssessmentPackageCommand());
+        return "instructor/uploadAndUseAssessmentForm";
+    }
+
+    @RequestMapping(value="/assessments/upload-and-use", method=RequestMethod.POST)
+    public String handleUploadAndUseAssessmentForm(final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute UploadAssessmentPackageCommand command,
+            final BindingResult result)
+            throws PrivilegeException {
+        Assessment assessment = null;
+        if (!result.hasErrors()) {
+            try {
+                /* No binding errors, so attempt to import and validate the package */
+                assessment = assessmentManagementService.importAssessment(command.getFile(), true);
+
+                /* Use this assessment */
+                assessmentManagementService.selectCurrentLtiResourceAssessment(assessment.getId());
+            }
+            catch (final AssessmentPackageFileImportException e) {
+                final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+                failure.registerErrors(result, "assessmentPackageUpload");
+            }
+            catch (final DomainEntityNotFoundException e) {
+                throw new QtiWorksRuntimeException("New assessment disappeared immediately?");
+            }
+        }
+        if (result.hasErrors()) {
+            /* Return to form if any binding/service errors */
+            return "instructor/uploadAndUseAssessmentForm";
+        }
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully created for immediate use");
+        return ltiInstructorRouter.buildInstructorRedirect(""); /* Return immediately to dashboard */
+    }
 
     @RequestMapping(value="/assessments/upload", method=RequestMethod.GET)
     public String showUploadAssessmentForm(final Model model) {
@@ -145,19 +181,20 @@ public class LtiInstructorAssessmentManagementController {
             final @Valid @ModelAttribute UploadAssessmentPackageCommand command,
             final BindingResult result)
             throws PrivilegeException {
-        /* Validate command Object */
+        Assessment assessment = null;
+        if (!result.hasErrors()) {
+            /* No binding errors, so attempt to import and validate the package */
+            try {
+                assessment = assessmentManagementService.importAssessment(command.getFile(), true);
+            }
+            catch (final AssessmentPackageFileImportException e) {
+                final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
+                failure.registerErrors(result, "assessmentPackageUpload");
+                return "instructor/uploadAssessmentForm";
+            }
+        }
         if (result.hasErrors()) {
-            return "instructor/uploadAssessmentForm";
-        }
-
-        /* Attempt to import and validate the package */
-        Assessment assessment;
-        try {
-            assessment = assessmentManagementService.importAssessment(command.getFile(), true);
-        }
-        catch (final AssessmentPackageFileImportException e) {
-            final EnumerableClientFailure<APFIFailureReason> failure = e.getFailure();
-            failure.registerErrors(result, "assessmentPackageUpload");
+            /* Return to form if any binding/service errors */
             return "instructor/uploadAssessmentForm";
         }
         GlobalRouter.addFlashMessage(redirectAttributes, "Assessment successfully created");

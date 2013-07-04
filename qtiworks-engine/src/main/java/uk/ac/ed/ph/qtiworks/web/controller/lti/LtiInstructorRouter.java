@@ -83,6 +83,7 @@ public class LtiInstructorRouter {
         primaryRouting.put("resourceDashboard", buildWebUrl(""));
         primaryRouting.put("debug", buildWebUrl("/debug"));
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
+        primaryRouting.put("uploadAndUseAssessment", buildWebUrl("/assessments/upload-and-use"));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
         primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
         primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/create-for-item"));
