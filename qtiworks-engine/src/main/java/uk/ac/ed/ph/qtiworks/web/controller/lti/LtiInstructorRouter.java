@@ -82,8 +82,8 @@ public class LtiInstructorRouter {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("resourceDashboard", buildWebUrl(""));
         primaryRouting.put("debug", buildWebUrl("/debug"));
-        primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
+        primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
         primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
         primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/create-for-item"));
         primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/create-for-test"));
