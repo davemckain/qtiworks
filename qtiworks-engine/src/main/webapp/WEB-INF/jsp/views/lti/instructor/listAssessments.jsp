@@ -8,7 +8,7 @@ Lists Assessments in current LTI context
 Additional Model attrs:
 
 assessmentAndPackageList
-listTableRouting (aid -> action -> URL)
+assessmentListRouting (aid -> action -> URL)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
@@ -48,7 +48,7 @@ listTableRouting (aid -> action -> URL)
           <c:forEach var="assessmentAndPackage" items="${assessmentAndPackageList}" varStatus="loopStatus">
             <c:set var="assessment" value="${assessmentAndPackage.assessment}"/>
             <c:set var="assessmentPackage" value="${assessmentAndPackage.assessmentPackage}"/>
-            <c:set var="assessmentRouting" value="${listTableRouting[assessment.id]}"/>
+            <c:set var="assessmentRouting" value="${assessmentListRouting[assessment.id]}"/>
             <tr>
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>

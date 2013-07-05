@@ -13,14 +13,16 @@ assessmentRouting (action -> URL)
 --%>
 <%@ taglib prefix="validator" tagdir="/WEB-INF/tags/validator" %>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Validation result">
+<page:ltipage title="Validation result">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">This Assessment launch</a></li> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a>
-  </nav>
-  <h2>Assessment Validation Status</h2>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
+      <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment ${fn:escapeXml(assessment.name)}</a>
+    </nav>
+    <h2>Validation Report</h2>
+  </header>
 
   <c:set var="assessmentType" value="${validationResult.resolvedAssessmentObject.type}"/>
   <div class="validationResult">
@@ -37,4 +39,4 @@ assessmentRouting (action -> URL)
     </c:choose>
   </div>
 
-</page:page>
+</page:ltipage>
