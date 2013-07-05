@@ -373,16 +373,29 @@ public class LtiInstructorAssessmentManagementController {
     // Management of DeliverySettings (and subtypes)
 
     @RequestMapping(value="/deliverysettings", method=RequestMethod.GET)
-    public String listOwnDeliverySettings(final Model model) {
-        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerUserDeliverySettings();
-        model.addAttribute("deliverySettingsList", deliverySettingsList);
-        model.addAttribute("deliverySettingsListRouting", ltiInstructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
-        return "instructor/listDeliverySettings";
+    public String deliverySettingsManager() {
+        return "instructor/deliverySettingsManager";
     }
 
-    @RequestMapping(value="/deliverysettings/create-for-item", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/item", method=RequestMethod.GET)
+    public String listContextItemDeliverySettings(final Model model) {
+        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerLtiContextDeliverySettingsForType(AssessmentObjectType.ASSESSMENT_ITEM);
+        model.addAttribute("deliverySettingsList", deliverySettingsList);
+        model.addAttribute("deliverySettingsListRouting", ltiInstructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
+        return "instructor/listItemDeliverySettings";
+    }
+
+    @RequestMapping(value="/deliverysettings/test", method=RequestMethod.GET)
+    public String listContextTestDeliverySettings(final Model model) {
+        final List<DeliverySettings> deliverySettingsList = assessmentDataService.getCallerLtiContextDeliverySettingsForType(AssessmentObjectType.ASSESSMENT_TEST);
+        model.addAttribute("deliverySettingsList", deliverySettingsList);
+        model.addAttribute("deliverySettingsListRouting", ltiInstructorRouter.buildDeliverySettingsListRouting(deliverySettingsList));
+        return "instructor/listTestDeliverySettings";
+    }
+
+    @RequestMapping(value="/deliverysettings/item/create", method=RequestMethod.GET)
     public String showCreateItemDeliverySettingsForm(final Model model) {
-        final long existingSettingsCount = assessmentDataService.countCallerUserDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
+        final long existingSettingsCount = assessmentDataService.countCallerLtiContextDeliverySettings(AssessmentObjectType.ASSESSMENT_ITEM);
         final ItemDeliverySettingsTemplate template = assessmentDataService.createItemDeliverySettingsTemplate();
         template.setTitle("Item Delivery Settings #" + (existingSettingsCount+1));
 
@@ -390,9 +403,9 @@ public class LtiInstructorAssessmentManagementController {
         return "instructor/createItemDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliverysettings/create-for-test", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/test/create", method=RequestMethod.GET)
     public String showCreateTestDeliverySettingsForm(final Model model) {
-        final long existingOptionCount = assessmentDataService.countCallerUserDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
+        final long existingOptionCount = assessmentDataService.countCallerLtiContextDeliverySettings(AssessmentObjectType.ASSESSMENT_TEST);
         final TestDeliverySettingsTemplate template = assessmentDataService.createTestDeliverySettingsTemplate();
         template.setTitle("Test Delivery Settings #" + (existingOptionCount+1));
 
@@ -400,7 +413,7 @@ public class LtiInstructorAssessmentManagementController {
         return "instructor/createTestDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliverysettings/create-for-item", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/item/create", method=RequestMethod.POST)
     public String handleCreateItemDeliverySettingsForm(final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute ItemDeliverySettingsTemplate template,
             final BindingResult result)
@@ -420,10 +433,10 @@ public class LtiInstructorAssessmentManagementController {
 
         /* Go back to list */
         GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully created");
-        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/item");
     }
 
-    @RequestMapping(value="/deliverysettings/create-for-test", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/test/create", method=RequestMethod.POST)
     public String handleCreateTestDeliverySettingsForm(final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute TestDeliverySettingsTemplate template,
             final BindingResult result)
@@ -443,7 +456,7 @@ public class LtiInstructorAssessmentManagementController {
 
         /* Go back to list */
         GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully created");
-        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/test");
     }
 
     @RequestMapping(value="/deliverysettings/{dsid}/select", method=RequestMethod.POST)
@@ -475,7 +488,7 @@ public class LtiInstructorAssessmentManagementController {
         return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
     }
 
-    @RequestMapping(value="/deliverysettings/{dsid}/for-item", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.GET)
     public String showEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final ItemDeliverySettings itemDeliverySettings = assessmentManagementService.lookupItemDeliverySettings(dsid);
@@ -487,7 +500,7 @@ public class LtiInstructorAssessmentManagementController {
         return "instructor/editItemDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliverysettings/{dsid}/for-test", method=RequestMethod.GET)
+    @RequestMapping(value="/deliverysettings/test/{dsid}", method=RequestMethod.GET)
     public String showEditTestDeliverySettingsForm(@PathVariable final long dsid, final Model model)
             throws PrivilegeException, DomainEntityNotFoundException {
         final TestDeliverySettings testDeliverySettings = assessmentManagementService.lookupTestDeliverySettings(dsid);
@@ -499,7 +512,7 @@ public class LtiInstructorAssessmentManagementController {
         return "instructor/editTestDeliverySettingsForm";
     }
 
-    @RequestMapping(value="/deliverysettings/{dsid}/for-item", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/item/{dsid}", method=RequestMethod.POST)
     public String handleEditItemDeliverySettingsForm(@PathVariable final long dsid, final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute ItemDeliverySettingsTemplate template, final BindingResult result)
             throws PrivilegeException, DomainEntityNotFoundException {
@@ -517,12 +530,11 @@ public class LtiInstructorAssessmentManagementController {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
         }
 
-        /* Return to show/edit with a flash message */
         GlobalRouter.addFlashMessage(redirectAttributes, "Item Delivery Settings successfully changed");
-        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/item");
     }
 
-    @RequestMapping(value="/deliverysettings/{dsid}/for-test", method=RequestMethod.POST)
+    @RequestMapping(value="/deliverysettings/test/{dsid}", method=RequestMethod.POST)
     public String handleEditTestDeliverySettingsForm(@PathVariable final long dsid,
             final Model model, final RedirectAttributes redirectAttributes,
             final @Valid @ModelAttribute TestDeliverySettingsTemplate template, final BindingResult result)
@@ -541,9 +553,8 @@ public class LtiInstructorAssessmentManagementController {
             throw new QtiWorksLogicException("Top layer validation is currently same as service layer in this case, so this Exception should not happen");
         }
 
-        /* Return to show/edit with a flash message */
         GlobalRouter.addFlashMessage(redirectAttributes, "Test Delivery Settings successfully changed");
-        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings");
+        return ltiInstructorRouter.buildInstructorRedirect("/deliverysettings/test");
     }
 
 }

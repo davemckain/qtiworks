@@ -87,9 +87,11 @@ public class LtiInstructorRouter {
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
         primaryRouting.put("uploadAndUseAssessment", buildWebUrl("/assessments/upload-and-use"));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
-        primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));
-        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/create-for-item"));
-        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/create-for-test"));
+        primaryRouting.put("deliverySettingsManager", buildWebUrl("/deliverysettings"));
+        primaryRouting.put("listItemDeliverySettings", buildWebUrl("/deliverysettings/item"));
+        primaryRouting.put("listTestDeliverySettings", buildWebUrl("/deliverysettings/test"));
+        primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/item/create"));
+        primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/test/create"));
         return primaryRouting;
     }
 
@@ -136,9 +138,9 @@ public class LtiInstructorRouter {
         }
         final long dsid = deliverySettings.getId().longValue();
         final String itemOrTestString = deliverySettings.getAssessmentType()==AssessmentObjectType.ASSESSMENT_ITEM ? "item" : "test";
+        result.put("showOrEdit", buildWebUrl("/deliverysettings/" + itemOrTestString + "/" + dsid));
         result.put("delete", buildWebUrl("/deliverysettings/" + dsid + "/delete"));
         result.put("select", buildWebUrl("/deliverysettings/" + dsid + "/select"));
-        result.put("showOrEdit", buildWebUrl("/deliverysettings/" + dsid + "/for-" + itemOrTestString));
         return result;
     }
 

@@ -110,7 +110,7 @@ LTI resource dashboard (after domain-level launch)
       </div>
     </div>
     <div class="grid_2">
-      <a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}">Manage / Select</a>
+      <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Manage / Select</a>
     </div>
     <div class="clear"></div>
   </div>
@@ -149,7 +149,7 @@ LTI resource dashboard (after domain-level launch)
   <h3>Random Stuff</h3>
   <ul>
     <li><a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a></li>
-    <li><a href="${utils:escapeLink(primaryRouting['listDeliverySettings'])}">Delivery Settings manager</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings manager</a></li>
     <li><a href="${utils:escapeLink(primaryRouting['debug'])}">Diagnostics</a></li>
   </ul>
 

@@ -13,15 +13,19 @@ testDeliverySettingsTemplate - form backing template
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <page:ltipage title="Create new Test Delivery Settings">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:internalLink(pageContext, '/instructor/')}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:internalLink(pageContext, '/web/instructor/deliverysettings')}">Your Delivery Settings</a> &#xbb;
-  </nav>
-  <h2>Create Test Delivery Settings</h2>
-
-  <div class="hints">
-    This form lets you create a new set of Delivery Settings to use with deliveries of Assessment Tests.
-  </div>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
+    <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Test Delivery Settings</a> &#xbb;
+    </nav>
+    <h2>Create Test Delivery Settings</h2>
+    <div class="hints">
+      <p>
+        This form lets you create a new set of Delivery Settings to use with deliveries of Assessment Tests.
+      </p>
+    </div>
+  </header>
 
   <%@ include file="/WEB-INF/jsp/includes/instructor/testDeliverySettingsForm.jspf" %>
 
