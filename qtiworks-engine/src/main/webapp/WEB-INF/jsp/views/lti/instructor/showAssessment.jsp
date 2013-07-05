@@ -5,13 +5,6 @@ All Rights Reserved
 
 Shows information about a particular Assessment
 
-Additional model attrs:
-
-assessment
-assessmentStatusReport
-deliverySettingsList (List<DeliverySettings> - possibly empty)
-assessmentRouting (action -> URL)
-
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
@@ -113,8 +106,25 @@ assessmentRouting (action -> URL)
 
   <div class="clear"></div>
 
-  <h3>Actions</h3>
+  <div class="grid_12">
+    <div class="infoBox">
+      <div class="cat">LTI Outcomes Settings</div>
+      <div class="value">
+        <c:choose>
+          <c:when test="${!empty assessment.ltiResultOutcomeIdentifier}">
+          Reporting variable <code>${assessment.ltiResultOutcomeIdentifier}</code>
+          with range [${assessment.ltiResultMinimum}..${assessment.ltiResultMaximum}]
+          </c:when>
+          <c:otherwise>
+            Not set up
+          </c:otherwise>
+        </c:choose>
+      </div>
+    </div>
+  </div>
 
+
+  <h3>Actions</h3>
   <ul class="menu">
     <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
     <li><a href="${utils:escapeLink(assessmentRouting['replace'])}">Replace Assessment Package Content</a></li>
@@ -140,6 +150,7 @@ assessmentRouting (action -> URL)
         </c:choose>
       </li>
     </c:if>
+    <li><a href="${utils:escapeLink(assessmentRouting['outcomesSettings'])}">Specify LTI outcomes reporting settings for this Assessment</a></li>
     <li>
       <page:postLink path="${assessmentRouting['delete']}"
         confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedCandidateSessionCount} candidate sessions(s) running on this Assessment."

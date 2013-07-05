@@ -118,8 +118,9 @@ public class LtiInstructorRouter {
         result.put("edit", buildWebUrl("/assessment/" + aid + "/edit"));
         result.put("replace", buildWebUrl("/assessment/" + aid + "/replace"));
         result.put("validate", buildWebUrl("/assessment/" + aid + "/validate"));
-        result.put("delete", buildWebUrl("/assessment/" + aid + "/delete"));
         result.put("try", buildWebUrl("/assessment/" + aid + "/try"));
+        result.put("outcomesSettings", buildWebUrl("/assessment/" + aid + "/outcomes-settings"));
+        result.put("delete", buildWebUrl("/assessment/" + aid + "/delete"));
         return result;
     }
 

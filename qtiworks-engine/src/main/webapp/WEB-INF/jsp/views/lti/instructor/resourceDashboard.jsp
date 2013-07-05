@@ -143,6 +143,36 @@ LTI resource dashboard (after domain-level launch)
     </div>
     <div class="clear"></div>
   </div>
+  <div class="dashboardRow">
+    <div class="grid_1">
+      <c:choose>
+        <c:when test="${!empty thisAssessment.ltiResultOutcomeIdentifier}">
+          <div class="trafficLight green">&#xa0;</div>
+        </c:when>
+        <c:otherwise>
+          <div class="trafficLight red">&#xa0;</div>
+        </c:otherwise>
+      </c:choose>
+    </div>
+    <div class="grid_8">
+      <div class="name">LTI Outcomes Reporting Setup:</div>
+      <div class="value">
+        <c:choose>
+          <c:when test="${!empty thisAssessment.ltiResultOutcomeIdentifier}">
+            Reporting variable <code>${thisAssessment.ltiResultOutcomeIdentifier}</code>
+            with range [${thisAssessment.ltiResultMinimum}..${thisAssessment.ltiResultMaximum}]
+          </c:when>
+          <c:otherwise>
+            Not set up. LTI outcomes will not be sent back until this is set up.
+          </c:otherwise>
+        </c:choose>
+      </div>
+    </div>
+    <div class="grid_2">
+      <a href="${thisAssessmentRouting['outcomesSettings']}">Set up</a>
+    </div>
+    <div class="clear"></div>
+  </div>
 
   <div class="clear"></div>
 

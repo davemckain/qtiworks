@@ -48,6 +48,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
+import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentMetadataTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentPackageFileImportException.APFIFailureReason;
@@ -334,6 +335,46 @@ public class LtiInstructorAssessmentManagementController {
         model.addAttribute("validationResult", validationResult);
         ltiInstructorModelHelper.setupModelForAssessment(aid, model);
         return "instructor/validationResult";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/outcomes-settings", method=RequestMethod.GET)
+    public String showSetLtiOutcomesForm(final @PathVariable long aid, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Assessment assessment = assessmentManagementService.lookupAssessment(aid);
+
+        final AssessmentLtiOutcomesSettingsTemplate template = new AssessmentLtiOutcomesSettingsTemplate();
+        template.setResultOutcomeIdentifier(assessment.getLtiResultOutcomeIdentifier());
+        template.setResultMaximum(assessment.getLtiResultMaximum());
+        template.setResultMinimum(assessment.getLtiResultMinimum());
+
+        ltiInstructorModelHelper.setupModelForAssessment(assessment, model);
+        model.addAttribute("outcomeDeclarationList", assessmentDataService.getOutcomeVariableDeclarations(assessment));
+        model.addAttribute(template);
+        return "instructor/assessmentOutcomesSettingsForm";
+    }
+
+    @RequestMapping(value="/assessment/{aid}/outcomes-settings", method=RequestMethod.POST)
+    public String handleSetLtiOutcomesForm(final @PathVariable long aid, final Model model,
+            final RedirectAttributes redirectAttributes,
+            final @Valid @ModelAttribute AssessmentLtiOutcomesSettingsTemplate template, final BindingResult result)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        /* Validate command Object */
+        if (!result.hasErrors()) {
+            try {
+                assessmentManagementService.updateAssessmentLtiOutcomesSettings(aid, template);
+            }
+            catch (final BindException e) {
+                result.addAllErrors(e);
+            }
+        }
+        if (result.hasErrors()) {
+            final Assessment assessment = ltiInstructorModelHelper.setupModelForAssessment(aid, model);
+            model.addAttribute("outcomeDeclarationList", assessmentDataService.getOutcomeVariableDeclarations(assessment));
+            return "instructor/assessmentOutcomesSettingsForm";
+        }
+        /* Successful */
+        GlobalRouter.addFlashMessage(redirectAttributes, "Assessment LTI outcomes settings saved successfully");
+        return ltiInstructorRouter.buildInstructorRedirect("/assessment/" + aid);
     }
 
     @RequestMapping(value="/assessment/{aid}/delete", method=RequestMethod.POST)
