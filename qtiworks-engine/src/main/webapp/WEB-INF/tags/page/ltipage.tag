@@ -10,7 +10,9 @@ Core Model:
 thisLtiUser
 thisLtiResource
 thisDelivery
+thisDeliveryStatusReport
 thisAssessment
+thisAssessmentStatusReport
 thisAssessmentPackage
 theseDeliverySettings
 primaryRouting (action -> URL)

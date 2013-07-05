@@ -49,7 +49,8 @@ assessmentListRouting (aid -> action -> URL)
             <c:set var="assessment" value="${assessmentAndPackage.assessment}"/>
             <c:set var="assessmentPackage" value="${assessmentAndPackage.assessmentPackage}"/>
             <c:set var="assessmentRouting" value="${assessmentListRouting[assessment.id]}"/>
-            <tr>
+            <c:set var="isSelectedAssessment" value="${!empty thisAssessment && thisAssessment.id==assessment.id}"/>
+            <tr class="${isSelectedAssessment ? 'selected' : ''}">
               <td align="center">
                 <div class="workflowStep">${loopStatus.index + 1}</div>
               </td>
@@ -59,7 +60,17 @@ assessmentListRouting (aid -> action -> URL)
                 </c:if>
               </td>
               <td align="center">
-                <page:buttonLink path="${assessmentRouting['select']}" title="Select for this launch"/>
+                <c:choose>
+                  <c:when test="${!isSelectedAssessment}">
+                    <page:buttonLink path="${assessmentRouting['select']}" title="Select for this launch"
+                    confirmCondition="${thisDeliveryStatusReport.sessionCount>0}"
+                    confirm="Are you sure? Selecting a different assessment would terminate ${thisDeliveryStatusReport.nonTerminatedSessionCount} candidate session(s) currently running on this launch, and delete the gathered data for all ${thisDeliveryStatusReport.sessionCount} session(s) launched so far"
+                    />
+                  </c:when>
+                  <c:otherwise>
+                    Selected for this launch
+                  </c:otherwise>
+                </c:choose>
               </td>
               <td>
                 <h4><a href="${utils:escapeLink(assessmentRouting['show'])}"><c:out value="${assessment.name}"/></a></h4>

@@ -57,6 +57,7 @@ import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentDao;
 import uk.ac.ed.ph.qtiworks.services.dao.AssessmentPackageDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
+import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentLtiOutcomesSettingsTemplate;
@@ -142,6 +143,9 @@ public class AssessmentManagementService {
     @Resource
     private CandidateSessionDao candidateSessionDao;
 
+    @Resource
+    private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
+
     //-------------------------------------------------
     // Assessment access
 
@@ -156,7 +160,7 @@ public class AssessmentManagementService {
         return result;
     }
 
-    private User ensureCallerMayManage(final Assessment assessment)
+    public User ensureCallerMayManage(final Assessment assessment)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
         final LtiResource ltiResource = identityService.getCurrentThreadLtiResource();
@@ -394,8 +398,10 @@ public class AssessmentManagementService {
                     assessment.getAssessmentType(), newAssessmentPackage.getAssessmentType());
         }
 
-        /* Terminate any outstanding CandidateSessions on this Assessment */
-        final int terminatedSessions = terminateCandidateSessions(assessment);
+        /* Terminate any outstanding CandidateSessions on this Assessment, deleting any recorded
+         * outcome values as the corresponding variables may have compeltely changed.
+         */
+        final int terminatedSessions = terminateCandidateSessions(assessment, true);
 
         /* Join Assessment to new package */
         final long newPackageVersion = assessment.getPackageImportVersion().longValue() + 1;
@@ -661,12 +667,15 @@ public class AssessmentManagementService {
         final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
         final Assessment newAssessment = lookupAssessment(aid);
 
-        /* Terminate any candidate sessions on the currently Associated assessment (if appropriate) */
+        /* Terminate any candidate sessions on the currently Associated assessment (if appropriate),
+         * deleting any recording outcome values too as the variables will have completely changed
+         * and will confuse the scoreboard.
+         */
         final Delivery delivery = currentLtiResource.getDelivery();
         final Assessment oldAssessment = delivery.getAssessment();
         int terminatedSessions = 0;
         if (oldAssessment!=null) {
-            terminatedSessions = terminateCandidateSessions(oldAssessment);
+            terminatedSessions = terminateCandidateSessions(oldAssessment, true);
         }
 
         /* Clear DeliverySettings if we've changed from Item to Test, or Test to Item */
@@ -890,11 +899,14 @@ public class AssessmentManagementService {
     //-------------------------------------------------
     // Internal helpers
 
-    private int terminateCandidateSessions(final Assessment assessment) {
+    private int terminateCandidateSessions(final Assessment assessment, final boolean deleteOutcomes) {
         final List<CandidateSession> nonTerminatedCandidateSessions = candidateSessionDao.getNonTerminatedForAssessment(assessment);
         for (final CandidateSession candidateSession : nonTerminatedCandidateSessions) {
             candidateSession.setTerminated(true);
             candidateSessionDao.update(candidateSession);
+            if (deleteOutcomes) {
+                candidateSessionOutcomeDao.deleteForCandidateSession(candidateSession);
+            }
         }
         return nonTerminatedCandidateSessions.size();
     }

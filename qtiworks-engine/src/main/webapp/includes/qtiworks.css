@@ -615,6 +615,10 @@ table.listTable td h4 {
   margin: 0;
 }
 
+.listTable tr.selected {
+  background-color: #ccdbf0;
+}
+
 /* ========== Instructor Assessment Info ========== */
 
 .infoBox {

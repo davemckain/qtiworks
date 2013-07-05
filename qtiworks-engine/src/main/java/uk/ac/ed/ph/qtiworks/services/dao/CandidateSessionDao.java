@@ -71,6 +71,30 @@ public class CandidateSessionDao extends GenericDao<CandidateSession> {
         return query.getResultList();
     }
 
+    public long countForDelivery(final Delivery delivery) {
+        final Query query = em.createNamedQuery("CandidateSession.countForDelivery");
+        query.setParameter("delivery", delivery);
+        return extractCountResult(query);
+    }
+
+    public long countNonTerminatedForDelivery(final Delivery delivery) {
+        final Query query = em.createNamedQuery("CandidateSession.countNonTerminatedForDelivery");
+        query.setParameter("delivery", delivery);
+        return extractCountResult(query);
+    }
+
+    public long countForAssessment(final Assessment assessment) {
+        final Query query = em.createNamedQuery("CandidateSession.countForAssessment");
+        query.setParameter("assessment", assessment);
+        return extractCountResult(query);
+    }
+
+    public long countCandidateRoleForAssessment(final Assessment assessment) {
+        final Query query = em.createNamedQuery("CandidateSession.countCandidateRoleForAssessment");
+        query.setParameter("assessment", assessment);
+        return extractCountResult(query);
+    }
+
     public List<CandidateSession> getNonTerminatedForAssessment(final Assessment assessment) {
         final TypedQuery<CandidateSession> query = em.createNamedQuery("CandidateSession.getNonTerminatedForAssessment", CandidateSession.class);
         query.setParameter("assessment", assessment);

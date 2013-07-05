@@ -33,59 +33,39 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
-import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.AssessmentPackage;
+import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 /**
- * Composes various useful pieces of information about an {@link Assessment} together.
+ * Composes various useful pieces of status information about a {@link Delivery}
+ * together.
  *
  * @author David McKain
  */
-public final class AssessmentStatusReport {
+public final class DeliveryStatusReport {
 
-    private final Assessment assessment;
-    private final AssessmentPackage assessmentPackage;
+    private final Delivery delivery;
     private final long sessionCount;
-    private final long candidateRoleSessionCount;
     private final long nonTerminatedSessionCount;
-    private final long nonTerminatedCandidateRoleSessionCount;
 
-    public AssessmentStatusReport(final Assessment assessment, final AssessmentPackage assessmentPackage,
-            final long sessionCount, final long candidateRoleSessionCount,
-            final long nonTerminatedSessionCount,
-            final long nonTerminatedCandidateRoleSessionCount) {
-        this.assessment = assessment;
-        this.assessmentPackage = assessmentPackage;
+    public DeliveryStatusReport(final Delivery delivery,
+            final long sessionCount, final long nonTerminatedSessionCount) {
+        this.delivery = delivery;
         this.sessionCount = sessionCount;
-        this.candidateRoleSessionCount = candidateRoleSessionCount;
         this.nonTerminatedSessionCount = nonTerminatedSessionCount;
-        this.nonTerminatedCandidateRoleSessionCount = nonTerminatedCandidateRoleSessionCount;
     }
 
-    public Assessment getAssessment() {
-        return assessment;
-    }
-
-    public AssessmentPackage getAssessmentPackage() {
-        return assessmentPackage;
+    public Delivery getDelivery() {
+        return delivery;
     }
 
     public long getSessionCount() {
         return sessionCount;
     }
 
-    public long getCandidateRoleSessionCount() {
-        return candidateRoleSessionCount;
-    }
-
     public long getNonTerminatedSessionCount() {
         return nonTerminatedSessionCount;
-    }
-
-    public long getNonTerminatedCandidateRoleSessionCount() {
-        return nonTerminatedCandidateRoleSessionCount;
     }
 
     @Override

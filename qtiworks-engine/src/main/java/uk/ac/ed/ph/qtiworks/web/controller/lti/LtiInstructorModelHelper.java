@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
+import uk.ac.ed.ph.qtiworks.services.domain.DeliveryStatusReport;
 
 import javax.annotation.Resource;
 
@@ -85,11 +86,15 @@ public class LtiInstructorModelHelper {
         final Delivery thisDelivery = ltiResource.getDelivery();
         final Assessment thisAssessment = thisDelivery.getAssessment();
         final DeliverySettings theseDeliverySettings = thisDelivery.getDeliverySettings();
-        final AssessmentPackage thisAssessmentPackage = thisAssessment!=null ? assessmentDataService.ensureSelectedAssessmentPackage(thisAssessment) : null;
+        final AssessmentStatusReport thisAssessmentStatusReport = thisAssessment!=null ? assessmentDataService.getAssessmentStatusReport(thisAssessment) : null;
+        final DeliveryStatusReport thisDeliveryStatusReport = assessmentDataService.getDeliveryStatusReport(thisDelivery);
+        final AssessmentPackage thisAssessmentPackage = thisAssessment!=null ? thisAssessmentStatusReport.getAssessmentPackage() : null;
         model.addAttribute("thisLtiUser", identityService.getCurrentThreadUser());
         model.addAttribute("thisLtiResource", ltiResource);
         model.addAttribute("thisDelivery", thisDelivery);
+        model.addAttribute("thisDeliveryStatusReport", thisDeliveryStatusReport);
         model.addAttribute("thisAssessment", thisAssessment);
+        model.addAttribute("thisAssessmentStatusReport", thisAssessmentStatusReport);
         model.addAttribute("thisAssessmentPackage", thisAssessmentPackage);
         model.addAttribute("theseDeliverySettings", theseDeliverySettings);
         model.addAttribute("primaryRouting", ltiInstructorRouter.buildPrimaryRouting());

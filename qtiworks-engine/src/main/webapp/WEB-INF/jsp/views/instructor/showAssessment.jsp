@@ -16,7 +16,7 @@ assessmentRouting (action -> URL)
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
-<c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
+<c:set var="nonTerminatedSessionCount" value="${assessmentStatusReport.nonTerminatedSessionCount}" scope="request"/>
 <page:page title="Assessment details">
 
   <nav class="breadcrumbs">
@@ -144,7 +144,7 @@ assessmentRouting (action -> URL)
     <li><a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Manage deliveries of this Assessment</a></li>
     <li>
       <page:postLink path="${assessmentRouting['delete']}"
-        confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedCandidateSessionCount} candidate sessions(s) running on this Assessment."
+        confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedSessionCount} candidate sessions(s) running on this Assessment."
         title="Delete Assessment"/>
     </li>
   </ul>

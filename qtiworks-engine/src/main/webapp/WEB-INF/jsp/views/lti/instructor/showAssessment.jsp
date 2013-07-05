@@ -7,7 +7,7 @@ Shows information about a particular Assessment
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
+<c:set var="nonTerminatedSessionCount" value="${assessmentStatusReport.nonTerminatedSessionCount}" scope="request"/>
 <page:ltipage title="Assessment details">
 
   <header class="actionHeader">
@@ -123,7 +123,6 @@ Shows information about a particular Assessment
     </div>
   </div>
 
-
   <h3>Actions</h3>
   <ul class="menu">
     <li><a href="${utils:escapeLink(assessmentRouting['edit'])}">Edit Assessment properties</a></li>
@@ -153,7 +152,7 @@ Shows information about a particular Assessment
     <li><a href="${utils:escapeLink(assessmentRouting['outcomesSettings'])}">Specify LTI outcomes reporting settings for this Assessment</a></li>
     <li>
       <page:postLink path="${assessmentRouting['delete']}"
-        confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedCandidateSessionCount} candidate sessions(s) running on this Assessment."
+        confirm="Are you sure? This will permanently delete the Assessment and all data gathered about it. There are currently ${nonTerminatedSessionCount} candidate sessions(s) running on this Assessment."
         title="Delete Assessment"/>
     </li>
   </ul>

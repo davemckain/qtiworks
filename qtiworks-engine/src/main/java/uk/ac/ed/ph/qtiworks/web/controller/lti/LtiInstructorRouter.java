@@ -79,6 +79,9 @@ public class LtiInstructorRouter {
     }
 
     public Map<String, String> buildPrimaryRouting() {
+        final LtiResource currentLtiResource = identityService.ensureCurrentThreadLtiResource();
+        final Long lrid = currentLtiResource.getId();
+
         final Map<String, String> primaryRouting = new HashMap<String, String>();
         primaryRouting.put("resourceDashboard", buildWebUrl(""));
         primaryRouting.put("debug", buildWebUrl("/debug"));
@@ -92,6 +95,11 @@ public class LtiInstructorRouter {
         primaryRouting.put("listTestDeliverySettings", buildWebUrl("/deliverysettings/test"));
         primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/item/create"));
         primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/test/create"));
+        primaryRouting.put("listCandidateSessions", buildWebUrl("/candidate-sessions"));
+        primaryRouting.put("candidateSessions", buildWebUrl("/candidate-sessions"));
+        primaryRouting.put("candidateSummaryReportCsv", buildWebUrl("/candidate-summary-report-" + lrid + ".csv"));
+        primaryRouting.put("candidateResultsZip", buildWebUrl("/candidate-results-" + lrid + ".zip"));
+        primaryRouting.put("terminateAllSessions", buildWebUrl("/terminate-all-sessions"));
         return primaryRouting;
     }
 

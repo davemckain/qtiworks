@@ -13,7 +13,6 @@ primaryRouting (action -> URL)
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
 <c:set var="assessmentPackage" value="${assessmentStatusReport.assessmentPackage}" scope="request"/>
-<c:set var="nonTerminatedCandidateSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateSessionCount}" scope="request"/>
 <c:set var="nonTerminatedCandidateRoleSessionCount" value="${assessmentStatusReport.nonTerminatedCandidateRoleSessionCount}" scope="request"/>
 <page:page title="Replace Assessment Package Content">
 

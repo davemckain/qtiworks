@@ -15,8 +15,7 @@ deliverySettingsList - form backing template
     <table class="listTable">
       <thead>
         <tr>
-          <th></th>
-          <th>Actions</th>
+          <th colspan="2"></th>
           <th>Name</th>
           <th>Created</th>
         </tr>
@@ -24,13 +23,21 @@ deliverySettingsList - form backing template
       <tbody>
         <c:forEach var="deliverySettings" items="${deliverySettingsList}" varStatus="loopStatus">
           <c:set var="deliverySettingsRouting" value="${deliverySettingsListRouting[deliverySettings.id]}"/>
-          <tr>
+          <c:set var="areBeingUsed" value="${!empty thisAssessment && !empty theseDeliverySettings && theseDeliverySettings.id==deliverySettings.id}"/>
+          <tr class="${areBeingUsed ? 'selected' : ''}">
             <td align="center">
               <div class="workflowStep">${loopStatus.index + 1}</div>
             </td>
             <td align="center" class="launch">
-              <c:if test="${empty thisAssessment || thisAssessment.assessmentType==deliverySettings.assessmentType}">
-                <page:buttonLink path="${deliverySettingsRouting['select']}" title="Use these Delivery Settings"/>
+              <c:if test="${!empty thisAssessment && thisAssessment.assessmentType==deliverySettings.assessmentType}">
+                <c:choose>
+                  <c:when test="${!empty theseDeliverySettings && theseDeliverySettings.id==deliverySettings.id}">
+                    Using these Delivery Settings
+                  </c:when>
+                  <c:otherwise>
+                    <page:buttonLink path="${deliverySettingsRouting['select']}" title="Use these Delivery Settings"/>
+                  </c:otherwise>
+                </c:choose>
               </c:if>
             </td>
             <td>

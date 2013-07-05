@@ -19,7 +19,7 @@ itemDeliverySettingsTemplate - form backing template
     <nav class="breadcrumbs">
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings Manager</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Item Delivery Settings</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Item Delivery Settings</a> &#xbb;
     </nav>
     <h2>${fn:escapeXml(deliverySettings.title)}</h2>
     <div class="hints">

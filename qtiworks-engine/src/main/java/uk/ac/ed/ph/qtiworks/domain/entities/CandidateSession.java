@@ -80,12 +80,30 @@ import org.hibernate.annotations.Type;
                 + "  FROM CandidateSession x"
                 + "  WHERE x.candidate = :candidate"
                 + "  ORDER BY x.id"),
+    @NamedQuery(name="CandidateSession.countForDelivery",
+            query="SELECT COUNT(x)"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.delivery = :delivery"),
+    @NamedQuery(name="CandidateSession.countNonTerminatedForDelivery",
+            query="SELECT COUNT(x)"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.delivery = :delivery"
+                + "    AND x.terminated IS FALSE"),
     @NamedQuery(name="CandidateSession.getNonTerminatedForAssessment",
             query="SELECT x"
                 + "  FROM CandidateSession x"
                 + "  WHERE x.delivery.assessment = :assessment"
                 + "    AND x.terminated IS FALSE"
                 + "  ORDER BY x.id"),
+    @NamedQuery(name="CandidateSession.countForAssessment",
+            query="SELECT COUNT(x)"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.delivery.assessment = :assessment"),
+    @NamedQuery(name="CandidateSession.countCandidateRoleForAssessment",
+            query="SELECT COUNT(x)"
+                + "  FROM CandidateSession x"
+                + "  WHERE x.delivery.assessment = :assessment"
+                + "    AND x.candidate.userRole = 'CANDIDATE'"),
     @NamedQuery(name="CandidateSession.countNonTerminatedForAssessment",
             query="SELECT COUNT(x)"
                 + "  FROM CandidateSession x"

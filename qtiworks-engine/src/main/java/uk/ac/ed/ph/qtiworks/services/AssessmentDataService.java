@@ -54,6 +54,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.DeliveryDao;
 import uk.ac.ed.ph.qtiworks.services.dao.DeliverySettingsDao;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentAndPackage;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
+import uk.ac.ed.ph.qtiworks.services.domain.DeliveryStatusReport;
 import uk.ac.ed.ph.qtiworks.services.domain.ItemDeliverySettingsTemplate;
 import uk.ac.ed.ph.qtiworks.services.domain.TestDeliverySettingsTemplate;
 
@@ -124,9 +125,19 @@ public class AssessmentDataService {
 
     public AssessmentStatusReport getAssessmentStatusReport(final Assessment assessment) {
         final AssessmentPackage assessmentPackage = ensureSelectedAssessmentPackage(assessment);
-        final long nonTerminatedCandidateSessionCount = candidateSessionDao.countNonTerminatedForAssessment(assessment);
+        final long sessionCount = candidateSessionDao.countForAssessment(assessment);
+        final long candidateRoleSessionCount = candidateSessionDao.countCandidateRoleForAssessment(assessment);
+        final long nonTerminatedSessionCount = candidateSessionDao.countNonTerminatedForAssessment(assessment);
         final long nonTerminatedCandidateRoleSessionCount = candidateSessionDao.countNonTerminatedCandidateRoleForAssessment(assessment);
-        return new AssessmentStatusReport(assessment, assessmentPackage, nonTerminatedCandidateSessionCount, nonTerminatedCandidateRoleSessionCount);
+        return new AssessmentStatusReport(assessment, assessmentPackage,
+                sessionCount, candidateRoleSessionCount,
+                nonTerminatedSessionCount, nonTerminatedCandidateRoleSessionCount);
+    }
+
+    public DeliveryStatusReport getDeliveryStatusReport(final Delivery delivery) {
+        final long sessionCount = candidateSessionDao.countForDelivery(delivery);
+        final long nonTerminatedSessionCount = candidateSessionDao.countNonTerminatedForDelivery(delivery);
+        return new DeliveryStatusReport(delivery, sessionCount, nonTerminatedSessionCount);
     }
 
     //-------------------------------------------------

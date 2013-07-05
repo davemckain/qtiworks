@@ -35,14 +35,12 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.DomainEntityNotFoundException;
-import uk.ac.ed.ph.qtiworks.domain.Privilege;
 import uk.ac.ed.ph.qtiworks.domain.PrivilegeException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSessionOutcome;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
-import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionOutcomeDao;
 import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryData;
@@ -51,6 +49,7 @@ import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryCandidateSummaryReport;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
+import uk.ac.ed.ph.jqtiplus.internal.util.StringUtilities;
 import uk.ac.ed.ph.jqtiplus.value.BaseType;
 import uk.ac.ed.ph.jqtiplus.value.Cardinality;
 
@@ -86,9 +85,6 @@ public class AssessmentReportingService {
     private AuditLogger auditLogger;
 
     @Resource
-    private IdentityService identityService;
-
-    @Resource
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
@@ -103,7 +99,7 @@ public class AssessmentReportingService {
     public CandidateSession lookupCandidateSession(final long xid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
-        ensureCallerOwnsAssessment(candidateSession);
+        assessmentManagementService.ensureCallerMayManage(candidateSession.getDelivery().getAssessment());
         return candidateSession;
     }
 
@@ -213,14 +209,14 @@ public class AssessmentReportingService {
             final Map<String, String> numericOutcomesForSession = numericOutcomesBySessionIdMap.get(candidateSession.getId());
             if (numericOutcomesForSession!=null) {
                 for (final String outcomeIdentifier : numericOutcomeIdentifiers) {
-                    numericOutcomeValues.add(numericOutcomesForSession.get(outcomeIdentifier));
+                    numericOutcomeValues.add(StringUtilities.emptyIfNull(numericOutcomesForSession.get(outcomeIdentifier)));
                 }
             }
             final List<String> otherOutcomeValues = new ArrayList<String>();
             final Map<String, String> otherOutcomesForSession = otherOutcomesBySessionIdMap.get(candidateSession.getId());
             if (otherOutcomesForSession!=null) {
                 for (final String outcomeIdentifier : otherOutcomeIdentifiers) {
-                    otherOutcomeValues.add(otherOutcomesForSession.get(outcomeIdentifier));
+                    otherOutcomeValues.add(StringUtilities.emptyIfNull(otherOutcomesForSession.get(outcomeIdentifier)));
                 }
             }
             final User candidate = candidateSession.getCandidate();
@@ -239,16 +235,6 @@ public class AssessmentReportingService {
 
         auditLogger.recordEvent("Generated candidate summary report for Delivery #" + delivery.getId());
         return new DeliveryCandidateSummaryReport(summaryMetadata, rows);
-    }
-
-    private User ensureCallerOwnsAssessment(final CandidateSession candidateSession)
-            throws PrivilegeException {
-        final User caller = identityService.getCurrentThreadUser();
-        final User assessmentOwner = candidateSession.getDelivery().getAssessment().getOwnerUser();
-        if (!assessmentOwner.equals(caller)) {
-            throw new PrivilegeException(caller, Privilege.MANAGE_ASSESSMENT, candidateSession);
-        }
-        return caller;
     }
 
     //-------------------------------------------------

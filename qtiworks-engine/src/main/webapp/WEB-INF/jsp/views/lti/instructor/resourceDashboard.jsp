@@ -110,7 +110,17 @@ LTI resource dashboard (after domain-level launch)
       </div>
     </div>
     <div class="grid_2">
-      <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Manage / Select</a>
+      <c:choose>
+        <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_ITEM'}">
+          <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Manage / Select</a>
+        </c:when>
+        <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_TEST'}">
+          <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Manage / Select</a>
+        </c:when>
+        <c:otherwise>
+          <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Manage / Select</a>
+        </c:otherwise>
+      </c:choose>
     </div>
     <div class="clear"></div>
   </div>
@@ -180,6 +190,7 @@ LTI resource dashboard (after domain-level launch)
   <ul>
     <li><a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a></li>
     <li><a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings manager</a></li>
+    <li><a href="${utils:escapeLink(primaryRouting['listCandidateSessions'])}">Candidate sessions</a></li>
     <li><a href="${utils:escapeLink(primaryRouting['debug'])}">Diagnostics</a></li>
   </ul>
 
