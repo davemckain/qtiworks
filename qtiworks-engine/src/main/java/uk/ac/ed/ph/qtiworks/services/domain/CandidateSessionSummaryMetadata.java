@@ -50,16 +50,25 @@ public final class CandidateSessionSummaryMetadata implements Serializable {
 
     private static final long serialVersionUID = -8351979121069561828L;
 
+    /** Name of LTI result outcome identifier (if specified) */
+    private final String ltiResultOutcomeIdentifier;
+
     /** List of names of numeric outcome variables (having single cardinality) */
     private final ImmutableList<String> numericOutcomeIdentifiers;
 
     /** List of names of other outcome variables */
     private final ImmutableList<String> otherOutcomeIdentifiers;
 
-    public CandidateSessionSummaryMetadata(final Collection<String> numericOutcomeIdentifiers,
+    public CandidateSessionSummaryMetadata(final String ltiResultOutcomeIdentifier,
+            final Collection<String> numericOutcomeIdentifiers,
             final Collection<String> otherOutcomeIdentifiers) {
+        this.ltiResultOutcomeIdentifier = ltiResultOutcomeIdentifier;
         this.numericOutcomeIdentifiers = ImmutableList.<String>copyOf(numericOutcomeIdentifiers);
         this.otherOutcomeIdentifiers = ImmutableList.<String>copyOf(otherOutcomeIdentifiers);
+    }
+
+    public String getLtiResultOutcomeIdentifier() {
+        return ltiResultOutcomeIdentifier;
     }
 
     public List<String> getNumericOutcomeIdentifiers() {

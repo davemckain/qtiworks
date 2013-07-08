@@ -63,6 +63,9 @@ public final class CandidateSessionSummaryData implements Serializable {
     private final boolean sessionTerminated;
     private final boolean sessionExploded;
 
+    /** Value of LTI result outcome variable (if specified, null if not specified) */
+    private final String ltiResultOutcomeValue;
+
     /** List of all numeric outcome values (having single cardinality) */
     private final ImmutableList<String> numericOutcomeValues;
 
@@ -72,6 +75,7 @@ public final class CandidateSessionSummaryData implements Serializable {
     public CandidateSessionSummaryData(final long sessionId, final Date launchTime, final String firstName,
             final String lastName, final String emailAddress,
             final boolean sessionClosed, final boolean sessionTerminated, final boolean sessionExploded,
+            final String ltiResultOutcomeValue,
             final Collection<String> numericOutcomeValues, final Collection<String> otherOutcomeValues) {
         Assert.notNull(numericOutcomeValues, "numericOutcomeValues");
         Assert.notNull(otherOutcomeValues, "otherOutcomesValues");
@@ -83,6 +87,7 @@ public final class CandidateSessionSummaryData implements Serializable {
         this.sessionClosed = sessionClosed;
         this.sessionTerminated = sessionTerminated;
         this.sessionExploded = sessionExploded;
+        this.ltiResultOutcomeValue = ltiResultOutcomeValue;
         this.otherOutcomeValues = ImmutableList.<String>copyOf(otherOutcomeValues);
         this.numericOutcomeValues = ImmutableList.<String>copyOf(numericOutcomeValues);
     }
@@ -130,6 +135,10 @@ public final class CandidateSessionSummaryData implements Serializable {
             return "Terminated";
         }
         return "In Progress";
+    }
+
+    public String getLtiResultOutcomeValue() {
+        return ltiResultOutcomeValue;
     }
 
     public List<String> getNumericOutcomeValues() {

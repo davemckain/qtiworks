@@ -135,7 +135,20 @@ public class AssessmentReportingService {
                 otherOutcomeValues.add(outcomeValue);
             }
         }
-        final CandidateSessionSummaryMetadata summaryMetadata = new CandidateSessionSummaryMetadata(numericOutcomeIdentifiers, otherOutcomeIdentifiers);
+
+        /* Extract LTI result (if specified, before normalisation) */
+        final String ltiResultOutcomeIdentifier = candidateSession.getDelivery().getAssessment().getLtiResultOutcomeIdentifier();
+        String ltiResultOutcomeValue = null;
+        if (ltiResultOutcomeIdentifier!=null) {
+            for (final CandidateSessionOutcome candidateSessionOutcome : candidateSessionOutcomes) {
+                if (ltiResultOutcomeIdentifier.equals(candidateSessionOutcome.getOutcomeIdentifier())) {
+                    ltiResultOutcomeValue = candidateSessionOutcome.getStringValue();
+                    break;
+                }
+            }
+        }
+
+        final CandidateSessionSummaryMetadata summaryMetadata = new CandidateSessionSummaryMetadata(ltiResultOutcomeIdentifier, numericOutcomeIdentifiers, otherOutcomeIdentifiers);
         final User candidate = candidateSession.getCandidate();
         final CandidateSessionSummaryData data = new CandidateSessionSummaryData(candidateSession.getId().longValue(),
                 candidateSession.getCreationTime(),
@@ -145,6 +158,7 @@ public class AssessmentReportingService {
                 candidateSession.isClosed(),
                 candidateSession.isTerminated(),
                 candidateSession.isExploded(),
+                ltiResultOutcomeValue,
                 numericOutcomeValues,
                 otherOutcomeValues);
 
@@ -199,7 +213,9 @@ public class AssessmentReportingService {
                 otherOutcomesForSession.put(outcomeIdentifier, outcomeValue);
             }
         }
-        final CandidateSessionSummaryMetadata summaryMetadata = new CandidateSessionSummaryMetadata(numericOutcomeIdentifiers, otherOutcomeIdentifiers);
+
+        final String ltiResultOutcomeIdentifier = delivery.getAssessment().getLtiResultOutcomeIdentifier();
+        final CandidateSessionSummaryMetadata summaryMetadata = new CandidateSessionSummaryMetadata(ltiResultOutcomeIdentifier, numericOutcomeIdentifiers, otherOutcomeIdentifiers);
 
         /* Now build report for each session */
         final List<CandidateSessionSummaryData> rows = new ArrayList<CandidateSessionSummaryData>();
@@ -219,6 +235,10 @@ public class AssessmentReportingService {
                     otherOutcomeValues.add(StringUtilities.emptyIfNull(otherOutcomesForSession.get(outcomeIdentifier)));
                 }
             }
+            String ltiResultOutcomeValue = null;
+            if (ltiResultOutcomeIdentifier!=null && numericOutcomesForSession!=null) {
+                ltiResultOutcomeValue = numericOutcomesForSession.get(ltiResultOutcomeIdentifier);
+            }
             final User candidate = candidateSession.getCandidate();
             final CandidateSessionSummaryData row = new CandidateSessionSummaryData(candidateSession.getId().longValue(),
                     candidateSession.getCreationTime(),
@@ -228,6 +248,7 @@ public class AssessmentReportingService {
                     candidateSession.isClosed(),
                     candidateSession.isTerminated(),
                     candidateSession.isExploded(),
+                    ltiResultOutcomeValue,
                     numericOutcomeValues,
                     otherOutcomeValues);
             rows.add(row);
