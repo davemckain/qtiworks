@@ -627,9 +627,8 @@ public final class TestSessionController extends TestProcessingController {
 	 * <p>
 	 * Postcondition: If the {@link TestPart} has {@link SubmissionMode#SIMULTANEOUS} then
 	 * any uncommitted responses will be committed, then Response Processing and Outcome Processing will be run.
-	 * All item and assessment section states in testPart
-	 * will be ended if they haven't done so already, current test state will be marked as ended,
-	 * current item will be cleared.
+	 * All item and assessment section states within the testPart will be ended if that hasn't
+	 * happened already; current test state will be marked as ended; current item will be cleared.
 	 *
 	 * @param timestamp timestamp for this operation, which must not be null
 	 *
