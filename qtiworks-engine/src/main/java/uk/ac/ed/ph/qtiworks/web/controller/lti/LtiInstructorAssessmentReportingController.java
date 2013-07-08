@@ -196,6 +196,6 @@ public class LtiInstructorAssessmentReportingController {
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentProctoringService.terminateCandidateSession(xid);
         GlobalRouter.addFlashMessage(redirectAttributes, "Terminated Candidate Session #" + xid);
-        return ltiInstructorRouter.buildCandidateSessionRouting(xid).get("show");
+        return ltiInstructorRouter.buildInstructorRedirect("/candidate-session/" + xid);
     }
 }

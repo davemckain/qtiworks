@@ -5,34 +5,25 @@ All Rights Reserved
 
 Shows a single CandidateSession, with some summary data
 
-Model:
+Additional model data:
 
-candidateSessionSummaryReport
 candidateSession
-delivery
-assessment
-candidateSessionRouting (action -> URL)
-deliveryRouting (action -> URL)
-assessmentRouting (action -> URL)
-primaryRouting (action -> URL)
+candidateSessionSummaryReport
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:page title="Candidate Session details">
+<c:set var="candidateSessionSummaryMetadata" value="${candidateSessionSummaryReport.candidateSessionSummaryMetadata}"/>
+<c:set var="candidateSessionSummaryData" value="${candidateSessionSummaryReport.candidateSessionSummaryData}"/>
+<c:set var="assessmentResultXml" value="${candidateSessionSummaryReport.assessmentResultXml}"/>
+<page:ltipage title="Candidate Session details">
 
-  <nav class="breadcrumbs">
-    <a href="${utils:escapeLink(primaryRouting['dashboard'])}">QTIWorks Dashboard</a> &#xbb;
-    <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Your assessments</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['show'])}">Assessment '${fn:escapeXml(assessment.name)}'</a> &#xbb;
-    <a href="${utils:escapeLink(assessmentRouting['deliveries'])}">Assessment Deliveries</a> &#xbb;
-    <a href="${utils:escapeLink(deliveryRouting['show'])}">Delivery '${fn:escapeXml(delivery.title)}'</a> &#xbb;
-    <a href="${utils:escapeLink(deliveryRouting['candidateSessions'])}">Candidate Reports &amp; Proctoring</a> &#xbb;
-  </nav>
-  <h2>Candidate Session #${candidateSession.id}</h2>
-
-  <c:set var="candidateSessionSummaryMetadata" value="${candidateSessionSummaryReport.candidateSessionSummaryMetadata}"/>
-  <c:set var="candidateSessionSummaryData" value="${candidateSessionSummaryReport.candidateSessionSummaryData}"/>
-  <c:set var="assessmentResultXml" value="${candidateSessionSummaryReport.assessmentResultXml}"/>
+  <header class="actionHeader">
+    <nav class="breadcrumbs">
+      <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
+      <a href="${utils:escapeLink(primaryRouting['listCandidateSessions'])}">Candidate Session Reports &amp; Proctoring</a> &#xbb;
+    </nav>
+    <h2>Candidate Session #${candidateSession.id}</h2>
+  </header>
 
   <div class="grid_4">
     <div class="infoBox">
@@ -57,11 +48,25 @@ primaryRouting (action -> URL)
 
   <div class="clear"></div>
 
-  <h4>Outcome Variables</h4>
+  <h4>Actions</h4>
+  <ul class="menu">
+    <li>
+      <c:choose>
+        <c:when test="${!candidateSessionSummaryData.sessionTerminated}">
+          <page:postLink path="${utils:escapeLink(candidateSessionRouting['terminate'])}" title="Terminate this Candidate Session"/>
+        </c:when>
+        <c:otherwise>
+          Terminate Candidate Session (already terminated)
+        </c:otherwise>
+      </c:choose>
+    </li>
+  </ul>
+
+  <h3>Outcome Variables</h3>
 
   <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
   <c:set var="otherOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.otherOutcomeIdentifiers)}"/>
-  <table class="listTable">
+  <table class="cellTable">
     <thead>
       <tr>
         <th>Outcome Identifier</th>
@@ -93,25 +98,11 @@ primaryRouting (action -> URL)
     </body>
   </table>
 
-  <h4>Actions</h4>
-  <ul>
-    <li>
-      <c:choose>
-        <c:when test="${!candidateSessionSummaryData.sessionTerminated}">
-          <page:postLink path="${utils:escapeLink(candidateSessionRouting['terminate'])}" title="Terminate this Candidate Session"/>
-        </c:when>
-        <c:otherwise>
-          Terminate Candidate Session (already terminated)
-        </c:otherwise>
-      </c:choose>
-    </li>
-  </ul>
-
   <c:if test="${!empty assessmentResultXml}">
-    <h4>QTI assessmentResult XML</h4>
+    <h3>QTI assessmentResult XML</h3>
 
     <script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     <pre class="xmlSource prettyprint">${fn:escapeXml(assessmentResultXml)}</pre>
   </c:if>
 
-</page:page>
+</page:ltipage>

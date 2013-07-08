@@ -185,6 +185,6 @@ public class InstructorAssessmentReportingController {
             throws PrivilegeException, DomainEntityNotFoundException {
         assessmentProctoringService.terminateCandidateSession(xid);
         GlobalRouter.addFlashMessage(redirectAttributes, "Terminated Candidate Session #" + xid);
-        return instructorRouter.buildCandidateSessionRouting(xid).get("show");
+        return instructorRouter.buildInstructorRedirect("/candidate-session/" + xid);
     }
 }

@@ -223,6 +223,66 @@ h3 {
   margin-top: 1em;
 }
 
+table.cellTable {
+  width: 100%;
+  margin-bottom: 2em;
+  margin-top: 1em;
+  border: 5px solid #ccdbf0;
+  border-collapse: separate;
+  border-radius: 1em;
+}
+
+table.cellTable th {
+  background: url(images/bluegradient.png) left top repeat-x;
+}
+
+table.cellTable th,
+table.cellTable td {
+  padding: 0.6em 0.3em;
+  border: 1px solid #ccdbf0;
+  vertical-align: middle;
+}
+
+table.cellTable td h4 {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.cellTable tr.selected {
+  background-color: #ccdbf0;
+}
+
+
+table.listTable {
+  width: 100%;
+  margin-bottom: 2em;
+  margin-top: 1em;
+  border: 5px solid #ccdbf0;
+  border-collapse: separate;
+  border-radius: 1em;
+}
+
+table.listTable th {
+  background: url(images/bluegradient.png) left top repeat-x;
+}
+
+table.listTable th,
+table.listTable td {
+  padding: 0.6em 0.3em;
+  border-top: 1px solid #ccdbf0;
+  border-bottom: 1px solid #ccdbf0;
+  vertical-align: middle;
+}
+
+table.listTable td h4 {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.listTable tr.selected {
+  background-color: #ccdbf0;
+}
+
 /* ========== Footer ========== */
 
 footer {
@@ -585,38 +645,6 @@ form.deliverySettings fieldset legend {
 form.deliverySettings .stdFormRow {
   line-height: inherit;
   margin: 0.5em 0;
-}
-
-/* ========== Instructor Assessment List ========== */
-
-table.listTable {
-  width: 100%;
-  margin-bottom: 2em;
-  margin-top: 1em;
-  border: 5px solid #ccdbf0;
-  border-collapse: separate;
-  border-radius: 1em;
-}
-
-table.listTable th {
-  background: url(images/bluegradient.png) left top repeat-x;
-}
-
-table.listTable th,
-table.listTable td {
-  padding: 0.6em 0.3em;
-  border-top: 1px solid #ccdbf0;
-  border-bottom: 1px solid #ccdbf0;
-  vertical-align: middle;
-}
-
-table.listTable td h4 {
-  font-size: 1.2em;
-  margin: 0;
-}
-
-.listTable tr.selected {
-  background-color: #ccdbf0;
 }
 
 /* ========== Instructor Assessment Info ========== */

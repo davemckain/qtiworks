@@ -46,6 +46,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.AssessmentReportingService;
 import uk.ac.ed.ph.qtiworks.services.base.IdentityService;
 import uk.ac.ed.ph.qtiworks.services.domain.AssessmentStatusReport;
+import uk.ac.ed.ph.qtiworks.services.domain.CandidateSessionSummaryReport;
 import uk.ac.ed.ph.qtiworks.services.domain.DeliveryStatusReport;
 
 import javax.annotation.Resource;
@@ -141,12 +142,14 @@ public class LtiInstructorModelHelper {
         return setupModelForCandidateSession(assessmentReportingService.lookupCandidateSession(xid), model);
     }
 
-    public CandidateSession setupModelForCandidateSession(final CandidateSession candidateSession, final Model model) {
+    public CandidateSession setupModelForCandidateSession(final CandidateSession candidateSession, final Model model)
+            throws PrivilegeException, DomainEntityNotFoundException {
         final Delivery delivery = candidateSession.getDelivery();
         final Assessment assessment = delivery.getAssessment();
-
         setupModelForAssessment(assessment, model);
-        model.addAttribute(delivery);
+
+        final CandidateSessionSummaryReport candidateSessionSummaryReport = assessmentReportingService.buildCandidateSessionSummaryReport(candidateSession.getId());
+        model.addAttribute(candidateSessionSummaryReport);
         model.addAttribute(candidateSession);
         model.addAttribute("candidateSessionRouting", ltiInstructorRouter.buildCandidateSessionRouting(candidateSession.getId()));
         return candidateSession;

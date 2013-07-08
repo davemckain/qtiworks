@@ -96,7 +96,6 @@ public class LtiInstructorRouter {
         primaryRouting.put("createItemDeliverySettings", buildWebUrl("/deliverysettings/item/create"));
         primaryRouting.put("createTestDeliverySettings", buildWebUrl("/deliverysettings/test/create"));
         primaryRouting.put("listCandidateSessions", buildWebUrl("/candidate-sessions"));
-        primaryRouting.put("candidateSessions", buildWebUrl("/candidate-sessions"));
         primaryRouting.put("candidateSummaryReportCsv", buildWebUrl("/candidate-summary-report-" + lrid + ".csv"));
         primaryRouting.put("candidateResultsZip", buildWebUrl("/candidate-results-" + lrid + ".zip"));
         primaryRouting.put("terminateAllSessions", buildWebUrl("/terminate-all-sessions"));
