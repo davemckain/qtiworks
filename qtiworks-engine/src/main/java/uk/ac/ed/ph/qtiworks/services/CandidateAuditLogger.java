@@ -37,6 +37,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidatePrivilege;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateSessionTerminatedException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +112,12 @@ public class CandidateAuditLogger {
             throws CandidateForbiddenException {
         logSessionAction(candidateSession, "forbid=" + privilege);
         throw new CandidateForbiddenException(candidateSession, privilege);
+    }
+
+    public void logTerminated(final CandidateSession candidateSession)
+            throws CandidateSessionTerminatedException {
+        logSessionAction(candidateSession, "forbid=terminated");
+        throw new CandidateSessionTerminatedException(candidateSession);
     }
 
     public void logExplosion(final CandidateSession candidateSession) {

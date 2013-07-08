@@ -147,10 +147,11 @@ public class CandidateItemDeliveryService {
         return candidateSession;
     }
 
-    private void ensureSessionNotTerminated(final CandidateSession candidateSession) throws CandidateForbiddenException {
+    private void ensureSessionNotTerminated(final CandidateSession candidateSession)
+            throws CandidateSessionTerminatedException {
         if (candidateSession.isTerminated()) {
-            /* No access when session has been is closed */
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_TERMINATED_SESSION);
+            /* No access when session has been terminated */
+            candidateAuditLogger.logTerminated(candidateSession);
         }
     }
 
@@ -161,7 +162,7 @@ public class CandidateItemDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
@@ -169,14 +170,12 @@ public class CandidateItemDeliveryService {
     /**
      * @param candidateComment optional candidate comment, or null if no comment has been sent
      * @return
-     *
-     * @throws CandidateForbiddenException
      */
     public CandidateSession handleResponses(final CandidateSession candidateSession,
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -343,13 +342,13 @@ public class CandidateItemDeliveryService {
      * into ended state.
      */
     public CandidateSession endCandidateSession(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return endCandidateSession(candidateSession);
     }
 
     public CandidateSession endCandidateSession(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -406,13 +405,13 @@ public class CandidateItemDeliveryService {
      * @see ItemSessionController#resetItemSessionHard(Date, boolean)
      */
     public CandidateSession resetCandidateSessionHard(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return resetCandidateSessionHard(candidateSession);
     }
 
     public CandidateSession resetCandidateSessionHard(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -473,13 +472,13 @@ public class CandidateItemDeliveryService {
      * @see ItemSessionController#resetItemSessionSoft(Date, boolean)
      */
     public CandidateSession resetCandidateSessionSoft(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return resetCandidateSessionSoft(candidateSession);
     }
 
     public CandidateSession resetCandidateSessionSoft(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -538,13 +537,13 @@ public class CandidateItemDeliveryService {
      * already been closed (and if this is allowed).
      */
     public CandidateSession requestSolution(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return requestSolution(candidateSession);
     }
 
     public CandidateSession requestSolution(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -608,13 +607,13 @@ public class CandidateItemDeliveryService {
      * interacting or closed states.
      */
     public CandidateSession exitCandidateSession(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateItemSession(xid, sessionToken);
         return exitCandidateSession(candidateSession);
     }
 
     public CandidateSession exitCandidateSession(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 

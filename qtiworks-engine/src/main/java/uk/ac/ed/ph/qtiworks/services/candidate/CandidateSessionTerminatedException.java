@@ -35,36 +35,28 @@ package uk.ac.ed.ph.qtiworks.services.candidate;
 
 import uk.ac.ed.ph.qtiworks.domain.NotAllowedException;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
-import uk.ac.ed.ph.qtiworks.domain.entities.User;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Concrete "not allowed" {@link Exception} thrown when a candidate {@link User} does
- * not have an appropriate {@link CandidatePrivilege} on a {@link CandidateSession}
+ * Exception thrown when trying to perform an operation on a terminated {@link CandidateSession}
  *
  * @author David McKain
  */
 @ResponseStatus(value=HttpStatus.FORBIDDEN)
-public final class CandidateForbiddenException extends NotAllowedException {
+public final class CandidateSessionTerminatedException extends NotAllowedException {
 
     private static final long serialVersionUID = 963799679125087234L;
 
     private final CandidateSession candidateSession;
-    private final CandidatePrivilege privilege;
 
-    public CandidateForbiddenException(final CandidateSession candidateSession, final CandidatePrivilege privilege) {
-        super("Candidate does not have privilege " + privilege + " on CandidateSession xid=" + candidateSession);
+    public CandidateSessionTerminatedException(final CandidateSession candidateSession) {
+        super("CandidateSession xid=" + candidateSession + " has been terminated");
         this.candidateSession = candidateSession;
-        this.privilege = privilege;
     }
 
     public CandidateSession getCandidateSession() {
         return candidateSession;
-    }
-
-    public CandidatePrivilege getCandidatePrivilege() {
-        return privilege;
     }
 }

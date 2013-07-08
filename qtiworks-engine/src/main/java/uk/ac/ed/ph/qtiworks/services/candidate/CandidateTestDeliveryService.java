@@ -145,10 +145,11 @@ public class CandidateTestDeliveryService {
         return candidateSession;
     }
 
-    private void ensureSessionNotTerminated(final CandidateSession candidateSession) throws CandidateForbiddenException {
+    private void ensureSessionNotTerminated(final CandidateSession candidateSession)
+            throws CandidateSessionTerminatedException {
         if (candidateSession.isTerminated()) {
-            /* No access when session has been is closed */
-            candidateAuditLogger.logAndForbid(candidateSession, CandidatePrivilege.ACCESS_TERMINATED_SESSION);
+            /* No access when session has been terminated */
+            candidateAuditLogger.logTerminated(candidateSession);
         }
     }
 
@@ -159,7 +160,7 @@ public class CandidateTestDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return handleResponses(candidateSession, stringResponseMap, fileResponseMap, candidateComment);
     }
@@ -168,7 +169,7 @@ public class CandidateTestDeliveryService {
             final Map<Identifier, StringResponseData> stringResponseMap,
             final Map<Identifier, MultipartFile> fileResponseMap,
             final String candidateComment)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -307,13 +308,13 @@ public class CandidateTestDeliveryService {
     // Navigation
 
     public CandidateSession selectNavigationMenu(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return selectNavigationMenu(candidateSession);
     }
 
     public CandidateSession selectNavigationMenu(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -349,13 +350,13 @@ public class CandidateTestDeliveryService {
     }
 
     public CandidateSession selectNonlinearItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return selectNonlinearItem(candidateSession, itemKey);
     }
 
     public CandidateSession selectNonlinearItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "key");
         ensureSessionNotTerminated(candidateSession);
@@ -391,13 +392,13 @@ public class CandidateTestDeliveryService {
     }
 
     public CandidateSession finishLinearItem(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return finishLinearItem(candidateSession);
     }
 
     public CandidateSession finishLinearItem(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current JQTI state and create JQTI controller */
@@ -438,13 +439,13 @@ public class CandidateTestDeliveryService {
     }
 
     public CandidateSession endCurrentTestPart(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return endCurrentTestPart(candidateSession);
     }
 
     public CandidateSession endCurrentTestPart(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current JQTI state and create JQTI controller */
@@ -493,13 +494,13 @@ public class CandidateTestDeliveryService {
     // Review
 
     public CandidateSession reviewTestPart(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return reviewTestPart(candidateSession);
     }
 
     public CandidateSession reviewTestPart(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
 
         /* Get current JQTI state and create JQTI controller */
@@ -524,13 +525,13 @@ public class CandidateTestDeliveryService {
     }
 
     public CandidateSession reviewItem(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return reviewItem(candidateSession, itemKey);
     }
 
     public CandidateSession reviewItem(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "itemKey");
 
@@ -571,13 +572,13 @@ public class CandidateTestDeliveryService {
     // Solution request
 
     public CandidateSession requestSolution(final long xid, final String sessionToken, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return requestSolution(candidateSession, itemKey);
     }
 
     public CandidateSession requestSolution(final CandidateSession candidateSession, final TestPlanNodeKey itemKey)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         Assert.notNull(itemKey, "itemKey");
 
@@ -618,13 +619,13 @@ public class CandidateTestDeliveryService {
     // Advance TestPart
 
     public CandidateSession advanceTestPart(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return advanceTestPart(candidateSession);
     }
 
     public CandidateSession advanceTestPart(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 
@@ -684,13 +685,13 @@ public class CandidateTestDeliveryService {
     // Exit (multi-part) test
 
     public CandidateSession exitTest(final long xid, final String sessionToken)
-            throws CandidateForbiddenException, DomainEntityNotFoundException {
+            throws CandidateForbiddenException, DomainEntityNotFoundException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = lookupCandidateTestSession(xid, sessionToken);
         return exitTest(candidateSession);
     }
 
     public CandidateSession exitTest(final CandidateSession candidateSession)
-            throws CandidateForbiddenException {
+            throws CandidateForbiddenException, CandidateSessionTerminatedException {
         Assert.notNull(candidateSession, "candidateSession");
         ensureSessionNotTerminated(candidateSession);
 

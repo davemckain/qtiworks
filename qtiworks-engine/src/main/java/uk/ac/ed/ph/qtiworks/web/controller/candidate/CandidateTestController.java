@@ -44,6 +44,7 @@ import uk.ac.ed.ph.qtiworks.services.AssessmentManagementService;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateForbiddenException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateRenderingService;
+import uk.ac.ed.ph.qtiworks.services.candidate.CandidateSessionTerminatedException;
 import uk.ac.ed.ph.qtiworks.services.candidate.CandidateTestDeliveryService;
 import uk.ac.ed.ph.qtiworks.web.CacheableWebOutputStreamer;
 import uk.ac.ed.ph.qtiworks.web.NonCacheableWebOutputStreamer;
@@ -67,6 +68,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -145,6 +147,14 @@ public class CandidateTestController {
     }
 
     //----------------------------------------------------
+
+    @ExceptionHandler(CandidateSessionTerminatedException.class)
+    public String handleTerminatedSession(final CandidateSessionTerminatedException e) {
+        final CandidateSession candidateSession = e.getCandidateSession();
+        return redirectToRenderSession(candidateSession);
+    }
+
+    //----------------------------------------------------
     // Response handling
 
     /**
@@ -153,7 +163,7 @@ public class CandidateTestController {
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/response", method=RequestMethod.POST)
     public String handleResponses(final HttpServletRequest request, @PathVariable final long xid,
             @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         /* First need to extract responses */
         final Map<Identifier, StringResponseData> stringResponseMap = extractStringResponseData(request);
 
@@ -248,7 +258,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/test-part-navigation", method=RequestMethod.POST)
     public String showNavigationMenu(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         candidateTestDeliveryService.selectNavigationMenu(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -260,7 +270,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/select-item/{key}", method=RequestMethod.POST)
     public String selectNonlinearItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         candidateTestDeliveryService.selectNonlinearItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
@@ -272,7 +282,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/finish-item", method=RequestMethod.POST)
     public String finishLinearItem(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         candidateTestDeliveryService.finishLinearItem(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -284,7 +294,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/end-test-part", method=RequestMethod.POST)
     public String endCurrentTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         candidateTestDeliveryService.endCurrentTestPart(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -296,7 +306,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/review-test-part", method=RequestMethod.POST)
     public String reviewTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         candidateTestDeliveryService.reviewTestPart(xid, sessionToken);
 
         /* Redirect to rendering of current session state */
@@ -308,7 +318,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/review-item/{key}", method=RequestMethod.POST)
     public String reviewItem(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         candidateTestDeliveryService.reviewItem(xid, sessionToken, TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
@@ -320,7 +330,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/item-solution/{key}", method=RequestMethod.POST)
     public String showItemSolution(@PathVariable final long xid, @PathVariable final String sessionToken, @PathVariable final String key)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         candidateTestDeliveryService.requestSolution(xid, sessionToken, TestPlanNodeKey.fromString(key));
 
         /* Redirect to rendering of current session state */
@@ -332,7 +342,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/advance-test-part", method=RequestMethod.POST)
     public String advanceTestPart(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = candidateTestDeliveryService.advanceTestPart(xid, sessionToken);
         String redirect;
         if (candidateSession.isTerminated()) {
@@ -355,7 +365,7 @@ public class CandidateTestController {
      */
     @RequestMapping(value="/testsession/{xid}/{sessionToken}/exit-test", method=RequestMethod.POST)
     public String exitTest(@PathVariable final long xid, @PathVariable final String sessionToken)
-            throws DomainEntityNotFoundException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         final CandidateSession candidateSession = candidateTestDeliveryService.exitTest(xid, sessionToken);
         String redirect = redirectToExitUrl(candidateSession.getExitUrl());
         if (redirect==null) {
@@ -388,7 +398,7 @@ public class CandidateTestController {
     public void streamPackageSource(@PathVariable final long xid,
             @PathVariable final String sessionToken,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException {
+            throws DomainEntityNotFoundException, IOException, CandidateForbiddenException, CandidateSessionTerminatedException {
         final String resourceEtag = ServiceUtilities.computeSha1Digest(request.getRequestURI());
         final String requestEtag = request.getHeader("If-None-Match");
         if (resourceEtag.equals(requestEtag)) {
@@ -402,7 +412,6 @@ public class CandidateTestController {
 
     /**
      * Serves the given (white-listed) file in the given {@link AssessmentPackage}
-     * @throws CandidateForbiddenException
      *
      * @see AssessmentManagementService#streamPackageSource(AssessmentPackage, java.io.OutputStream)
      */
@@ -410,7 +419,7 @@ public class CandidateTestController {
     public void streamPackageFile(@PathVariable final long xid, @PathVariable final String sessionToken,
             @RequestParam("href") final String href,
             final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, DomainEntityNotFoundException, CandidateForbiddenException {
+            throws IOException, DomainEntityNotFoundException, CandidateForbiddenException, CandidateSessionTerminatedException {
         final String resourceUniqueTag = request.getRequestURI() + "/" + href;
         final String resourceEtag = ServiceUtilities.computeSha1Digest(resourceUniqueTag);
         final String requestEtag = request.getHeader("If-None-Match");
@@ -433,6 +442,10 @@ public class CandidateTestController {
 
     //----------------------------------------------------
     // Redirections
+
+    private String redirectToRenderSession(final CandidateSession candidateSession) {
+        return redirectToRenderSession(candidateSession.getId(), candidateSession.getSessionToken());
+    }
 
     private String redirectToRenderSession(final long xid, final String sessionToken) {
         return "redirect:/candidate/testsession/" + xid + "/" + sessionToken;

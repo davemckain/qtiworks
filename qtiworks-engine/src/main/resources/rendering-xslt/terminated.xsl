@@ -29,7 +29,7 @@ Input document: doesn't matter
       </head>
       <body class="qtiworks">
         <p>
-          This assessment is now completed.
+          This assessment is now closed and you can no longer interact with it.
         </p>
       </body>
     </html>
