@@ -38,6 +38,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 
@@ -106,8 +107,9 @@ public class CandidateSessionCloser {
 
     private void maybeScheduleLtiOutcomes(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         /* First check a number of pre-conditions for actually recording LTI outcomes */
+        System.out.println("MAYBE: " + candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
-        if (!delivery.isLtiEnabled()) {
+        if (delivery.getDeliveryType()!=DeliveryType.LTI_RESOURCE && !delivery.isLtiEnabled()) {
             recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.LTI_DISABLED,
                     "LTI is not enabled for CandidateSession #" + candidateSession.getId());
             return;

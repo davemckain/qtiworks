@@ -474,13 +474,8 @@ public class CandidateTestDeliveryService {
         final Date requestTimestamp = requestTimestampContext.getCurrentRequestTimestamp();
         testSessionController.endCurrentTestPart(requestTimestamp);
 
-        /* Close session (if test has ended) or record partial result */
-        if (testSessionState.isEnded()) {
-            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
-        }
-        else {
-            candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
-        }
+        /* Record partial result */
+        candidateDataService.computeAndRecordTestAssessmentResult(candidateSession, testSessionController);
 
         /* Record and log event */
         final CandidateEvent candidateTestEvent = candidateDataService.recordCandidateTestEvent(candidateSession,
@@ -655,7 +650,9 @@ public class CandidateTestDeliveryService {
             eventType = CandidateTestEventType.ADVANCE_TEST_PART;
         }
         else {
-            /* No more test parts */
+            /* No more test parts. First of all, close the session and report any results */
+            candidateSessionCloser.closeCandidateTestSession(candidateSession, testSessionController);
+
             /* For single part tests, we terminate the test completely now as the test feedback was shown with the testPart feedback.
              * For multi-part tests, we shall keep the test open so that the test feedback can be viewed.
              */
