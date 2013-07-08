@@ -90,8 +90,8 @@ public final class FilespaceManager {
     public File createTempFile() {
         final String tmpFolderUri = filesystemBaseDirectory.toURI().toString()
                 + "/tmp";
-        final File candidateItemSessionFolder = ensureCreateDirectory(tmpFolderUri);
-        return new File(candidateItemSessionFolder, createUniqueRequestComponent());
+        final File tmpFolder = ensureCreateDirectory(tmpFolderUri);
+        return new File(tmpFolder, createUniqueRequestComponent());
     }
 
     //-------------------------------------------------

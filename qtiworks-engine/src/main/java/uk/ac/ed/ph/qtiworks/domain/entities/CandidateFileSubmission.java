@@ -118,7 +118,7 @@ public class CandidateFileSubmission implements BaseEntity, TimestampedOnCreatio
         return candidateSession;
     }
 
-    public void setCandidateItemSession(final CandidateSession candidateSession) {
+    public void setCandidateSession(final CandidateSession candidateSession) {
         this.candidateSession = candidateSession;
     }
 

@@ -82,7 +82,7 @@ public class CandidateUploadService {
 
         /* Create and persist submission */
         final CandidateFileSubmission result = new CandidateFileSubmission();
-        result.setCandidateItemSession(candidateSession);
+        result.setCandidateSession(candidateSession);
         result.setContentType(multipartFile.getContentType());
         result.setFileName(multipartFile.getOriginalFilename());
         result.setStoredFilePath(uploadFile.getAbsolutePath());
