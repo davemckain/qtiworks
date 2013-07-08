@@ -158,6 +158,7 @@ public class AssessmentReportingService {
                 candidateSession.isClosed(),
                 candidateSession.isTerminated(),
                 candidateSession.isExploded(),
+                candidateSession.getCandidateOutcomeReportingStatus(),
                 ltiResultOutcomeValue,
                 numericOutcomeValues,
                 otherOutcomeValues);
@@ -248,6 +249,7 @@ public class AssessmentReportingService {
                     candidateSession.isClosed(),
                     candidateSession.isTerminated(),
                     candidateSession.isExploded(),
+                    candidateSession.getCandidateOutcomeReportingStatus(),
                     ltiResultOutcomeValue,
                     numericOutcomeValues,
                     otherOutcomeValues);

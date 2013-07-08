@@ -33,6 +33,7 @@
  */
 package uk.ac.ed.ph.qtiworks.services.domain;
 
+import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
@@ -63,6 +64,9 @@ public final class CandidateSessionSummaryData implements Serializable {
     private final boolean sessionTerminated;
     private final boolean sessionExploded;
 
+    /** Current {@link CandidateOutcomeReportingStatus} if LTI result reporting is supported, null otherwise */
+    private final CandidateOutcomeReportingStatus candidateOutcomeReportingStatus;
+
     /** Value of LTI result outcome variable (if specified, null if not specified) */
     private final String ltiResultOutcomeValue;
 
@@ -75,6 +79,7 @@ public final class CandidateSessionSummaryData implements Serializable {
     public CandidateSessionSummaryData(final long sessionId, final Date launchTime, final String firstName,
             final String lastName, final String emailAddress,
             final boolean sessionClosed, final boolean sessionTerminated, final boolean sessionExploded,
+            final CandidateOutcomeReportingStatus candidateOutcomeReportingStatus,
             final String ltiResultOutcomeValue,
             final Collection<String> numericOutcomeValues, final Collection<String> otherOutcomeValues) {
         Assert.notNull(numericOutcomeValues, "numericOutcomeValues");
@@ -87,6 +92,7 @@ public final class CandidateSessionSummaryData implements Serializable {
         this.sessionClosed = sessionClosed;
         this.sessionTerminated = sessionTerminated;
         this.sessionExploded = sessionExploded;
+        this.candidateOutcomeReportingStatus = candidateOutcomeReportingStatus;
         this.ltiResultOutcomeValue = ltiResultOutcomeValue;
         this.otherOutcomeValues = ImmutableList.<String>copyOf(otherOutcomeValues);
         this.numericOutcomeValues = ImmutableList.<String>copyOf(numericOutcomeValues);
@@ -122,6 +128,10 @@ public final class CandidateSessionSummaryData implements Serializable {
 
     public boolean isSessionExploded() {
         return sessionExploded;
+    }
+
+    public CandidateOutcomeReportingStatus getCandidateOutcomeReportingStatus() {
+        return candidateOutcomeReportingStatus;
     }
 
     public String getSessionStatus() {

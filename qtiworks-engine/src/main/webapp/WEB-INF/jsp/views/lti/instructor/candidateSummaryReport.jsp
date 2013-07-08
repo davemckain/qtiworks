@@ -43,7 +43,7 @@ candidateSessionListRouting (xid -> action -> URL)
             <th colspan="3">Session</th>
             <th colspan="3">Candidate</th>
             <c:if test="${!empty candidateSessionSummaryMetadata.ltiResultOutcomeIdentifier}">
-              <th>LTI result variable value</th>
+              <th colspan="2">LTI results</th>
             </c:if>
           </tr>
           <tr>
@@ -57,10 +57,11 @@ candidateSessionListRouting (xid -> action -> URL)
               <c:when test="${rowCount > 0}">
                 <c:choose>
                   <c:when test="${!empty candidateSessionSummaryMetadata.ltiResultOutcomeIdentifier}">
-                    <th>${candidateSessionSummaryMetadata.ltiResultOutcomeIdentifier}</th>
+                    <th>${candidateSessionSummaryMetadata.ltiResultOutcomeIdentifier} Value</th>
+                    <th>Reporting Status</th>
                   </c:when>
                   <c:otherwise>
-                    <th></th>
+                    <th colspan="2"></th>
                   </c:otherwise>
                 </c:choose>
               </c:when>
@@ -86,9 +87,11 @@ candidateSessionListRouting (xid -> action -> URL)
                   <c:choose>
                     <c:when test="${!empty row.ltiResultOutcomeValue}">
                       <td align="center"><c:out value="${row.ltiResultOutcomeValue}"/></td>
+                      <td align="center">${row.candidateOutcomeReportingStatus}</td>
                     </c:when>
                     <c:otherwise>
                       <td align="center">(Not Available)</td>
+                      <td align="center">(Not Applicable)</td>
                     </c:otherwise>
                   </c:choose>
                 </tr>
