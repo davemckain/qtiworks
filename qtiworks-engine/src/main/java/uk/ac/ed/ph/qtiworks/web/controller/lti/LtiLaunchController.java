@@ -50,44 +50,24 @@ import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchService;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.oauth.OAuthAccessor;
-import net.oauth.OAuthConsumer;
-import net.oauth.OAuthException;
-import net.oauth.OAuthMessage;
-import net.oauth.OAuthServiceProvider;
-import net.oauth.OAuthValidator;
-import net.oauth.SimpleOAuthValidator;
-import net.oauth.server.OAuthServlet;
-
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import dave.LtiResultsTest;
 
 /**
  * Controller handling LTI launches
- *
- * FIXME: Remove fake result service
  *
  * @author David McKain
  */
 @Controller
 public class LtiLaunchController {
-
-    private static final Logger logger = LoggerFactory.getLogger(LtiLaunchController.class);
 
     @Resource
     private CandidateSessionStarter candidateSessionStarter;
@@ -201,39 +181,5 @@ public class LtiLaunchController {
         final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(httpRequest, LtiLaunchType.DOMAIN);
         model.addAttribute("object", ltiLaunchResult);
         return "ltiDebug";
-    }
-
-    /** TEMPORARY! Fake result service */
-    @RequestMapping(value="/test", method=RequestMethod.POST)
-    @ResponseBody
-    public String ltiTemporaryResults(final HttpServletRequest httpRequest) {
-        try {
-            final OAuthMessage message = OAuthServlet.getMessage(httpRequest, null);
-            System.out.println("Got " + message);
-
-            /* Note hard-coded UTF-8 here, since we're sending XML */
-            final InputStream messageBodyStream = message.getBodyAsStream();
-            final String messageBody = IOUtils.toString(messageBodyStream, "UTF-8");
-            System.out.println("Message body is " + messageBody);
-
-            /* Let's check but not enforce validity */
-            final String consumerKey = message.getConsumerKey();
-            final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
-            final OAuthConsumer consumer = new OAuthConsumer(null, consumerKey, LtiResultsTest.SECRET, serviceProvider);
-            final OAuthAccessor accessor = new OAuthAccessor(consumer);
-            final OAuthValidator oAuthValidator = new SimpleOAuthValidator();
-            try {
-                oAuthValidator.validateMessage(message, accessor);
-            }
-            catch (final OAuthException e) {
-                System.out.println("GOT EXCEPTION DURING VALIDATION " + e);
-            }
-
-            return "Success";
-        }
-        catch (final Exception e) {
-            logger.error("Intercepted", e);
-            return "Failure";
-        }
     }
 }
