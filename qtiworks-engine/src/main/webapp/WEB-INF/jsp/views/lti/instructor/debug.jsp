@@ -24,6 +24,10 @@ assessmentRouting (aid -> action -> URL)
 
   <h3>This Delivery</h3>
   <pre>${utils:dumpObject(thisDelivery)}</pre>
+  <pre>${utils:dumpObject(thisDeliveryStatusReport)}</pre>
+
+  <h3>This Assessment</h3>
+  <pre>${utils:dumpObject(thisAssessmentStatusReport)}</pre>
 
   <h3>This LTI Resource</h3>
   <pre>${utils:dumpObject(thisLtiResource)}</pre>

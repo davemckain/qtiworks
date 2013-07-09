@@ -25,10 +25,8 @@ LTI resource dashboard (after domain-level launch)
       <div class="name">Selected Assessment:</div>
       <div class="value">
         <a href="${utils:escapeLink(thisAssessmentRouting['show'])}">
-          <span class="details">
-            <c:out value="${thisAssessment.name}"/>
-          </span>
           <c:out value="${thisAssessment.title}"/>
+          (<c:out value="${thisAssessment.name}"/>)
         </a>
       </div>
     </div>
@@ -143,7 +141,7 @@ LTI resource dashboard (after domain-level launch)
             Yes - candidates may currently launch this assessment
           </c:when>
           <c:otherwise>
-            No - change once you're ready to let candidates launch this assessment
+            No - candidates cannot currently launch this assessment
           </c:otherwise>
         </c:choose>
       </div>
@@ -169,7 +167,7 @@ LTI resource dashboard (after domain-level launch)
       <div class="value">
         <c:choose>
           <c:when test="${!empty thisAssessment.ltiResultOutcomeIdentifier}">
-            Reporting variable <code>${thisAssessment.ltiResultOutcomeIdentifier}</code>
+            Reporting outcome <code>${thisAssessment.ltiResultOutcomeIdentifier}</code>
             with range [${thisAssessment.ltiResultMinimum}..${thisAssessment.ltiResultMaximum}]
           </c:when>
           <c:otherwise>
@@ -183,16 +181,26 @@ LTI resource dashboard (after domain-level launch)
     </div>
     <div class="clear"></div>
   </div>
-
+  <div class="dashboardRow">
+    <div class="grid_1">
+      <div class="trafficLight green">&#xa0;</div>
+    </div>
+    <div class="grid_8">
+      <div class="name">Candidate Session Reporting &amp; Proctoring:</div>
+      <div class="value">
+        ${thisDeliveryStatusReport.nonTerminatedSessionCount}
+        session${thisDeliveryStatusReport.nonTerminatedSessionCount==1?'s':''}
+        currently running out of ${thisDeliveryStatusReport.sessionCount} total.
+      </div>
+    </div>
+    <div class="grid_2">
+      <a href="${primaryRouting['listCandidateSessions']}">Show candidate sessions</a>
+    </div>
+    <div class="clear"></div>
+  </div>
   <div class="clear"></div>
 
-  <h3>Random Stuff</h3>
-  <ul>
-    <li><a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment library</a></li>
-    <li><a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Delivery Settings manager</a></li>
-    <li><a href="${utils:escapeLink(primaryRouting['listCandidateSessions'])}">Candidate sessions</a></li>
-    <li><a href="${utils:escapeLink(primaryRouting['debug'])}">Diagnostics</a></li>
-  </ul>
+  <a href="${utils:escapeLink(primaryRouting['debug'])}">Show developer diagnostic information</a>
 
 </page:ltipage>
 
