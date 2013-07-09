@@ -101,7 +101,7 @@ public class LtiLaunchController {
     /** Domain-level LTI launch */
     @RequestMapping(value="/domainlaunch", method=RequestMethod.POST)
     public String ltiDomainLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, PrivilegeException {
+            throws IOException {
         /* Decode LTI launch request, and bail out on error */
         final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request, LtiLaunchType.DOMAIN);
         if (ltiLaunchResult.isError()) {
@@ -141,9 +141,15 @@ public class LtiLaunchController {
             final String lisResultSourcedid = ltiLaunchData.getLisResultSourcedid();
 
             /* Start/reuse candidate session */
-            final CandidateSession candidateSession = candidateSessionStarter.createDomainLevelLtiCandidateSession(ltiUser,
-                    ltiResource, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
-            return GlobalRouter.buildSessionStartRedirect(candidateSession);
+            try {
+                final CandidateSession candidateSession = candidateSessionStarter.createDomainLevelLtiCandidateSession(ltiUser,
+                        ltiResource, exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+                return GlobalRouter.buildSessionStartRedirect(candidateSession);
+            }
+            catch (final PrivilegeException e) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "This assessment is not currently available to you");
+                return null;
+            }
         }
         else {
             throw new QtiWorksLogicException("Unexpected LTI userRole " + userRole);
