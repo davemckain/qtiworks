@@ -94,6 +94,7 @@ import uk.ac.ed.ph.jqtiplus.xmlutils.xslt.XsltStylesheetManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 
 import javax.annotation.Resource;
@@ -198,6 +199,22 @@ public class CandidateDataService {
             default:
                 throw new QtiWorksLogicException("Unexpected switch case " + assessmentType);
         }
+    }
+
+    public void streamAssessmentResult(final CandidateSession candidateSession, final OutputStream outputStream) {
+        /* Get most recent event */
+        final CandidateEvent mostRecentEvent = getMostRecentEvent(candidateSession);
+
+        /* Stream result for event */
+        streamAssessmentResult(mostRecentEvent, outputStream);
+    }
+
+    public void streamAssessmentResult(final CandidateEvent candidateEvent, final OutputStream outputStream) {
+        /* Generate result Object from current state */
+        final AssessmentResult assessmentResult = computeAssessmentResult(candidateEvent);
+
+        /* Send result */
+        qtiSerializer.serializeJqtiObject(assessmentResult, outputStream);
     }
 
     //----------------------------------------------------

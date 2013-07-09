@@ -99,6 +99,8 @@ public class AssessmentReportingService {
     @Resource
     private CandidateSessionOutcomeDao candidateSessionOutcomeDao;
 
+    //-------------------------------------------------
+
     public CandidateSession lookupCandidateSession(final long xid)
             throws DomainEntityNotFoundException, PrivilegeException {
         final CandidateSession candidateSession = candidateSessionDao.requireFindById(xid);
@@ -173,6 +175,25 @@ public class AssessmentReportingService {
         auditLogger.recordEvent("Generated summary report for CandidateSession #" + candidateSession.getId());
         return new CandidateSessionSummaryReport(summaryMetadata, data, assessmentResultXml);
     }
+
+    //-------------------------------------------------
+
+    public void streamCandidateAssessmentResult(final long xid, final OutputStream outputStream)
+            throws DomainEntityNotFoundException, PrivilegeException {
+        Assert.notNull(outputStream, "outputStream");
+        final CandidateSession candidateSession = lookupCandidateSession(xid);
+        streamCandidateAssessmentResult(candidateSession, outputStream);
+    }
+
+    public void streamCandidateAssessmentResult(final CandidateSession candidateSession, final OutputStream outputStream) {
+        Assert.notNull(candidateSession, "candidateSession");
+        Assert.notNull(outputStream, "outputStream");
+
+        candidateDataService.streamAssessmentResult(candidateSession, outputStream);
+        auditLogger.recordEvent("Streamed assessmentResult for session #" + candidateSession.getId());
+    }
+
+    //-------------------------------------------------
 
     /**
      * Generates a {@link DeliveryCandidateSummaryReport} containing summary statistics
@@ -423,4 +444,5 @@ public class AssessmentReportingService {
         zipOutputStream.finish();
         zipOutputStream.flush();
     }
+
 }

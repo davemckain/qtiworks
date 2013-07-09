@@ -139,6 +139,13 @@ public class LtiInstructorAssessmentReportingController {
         return "instructor/showCandidateSession";
     }
 
+    @RequestMapping(value="/candidate-session/{xid}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
+            throws DomainEntityNotFoundException, IOException, PrivilegeException {
+        response.setContentType("application/xml");
+        assessmentReportingService.streamCandidateAssessmentResult(xid, response.getOutputStream());
+    }
+
     @RequestMapping(value="/candidate-session/{xid}/terminate", method=RequestMethod.POST)
     public String terminateCandidateSession(@PathVariable final long xid, final RedirectAttributes redirectAttributes)
             throws PrivilegeException, DomainEntityNotFoundException {

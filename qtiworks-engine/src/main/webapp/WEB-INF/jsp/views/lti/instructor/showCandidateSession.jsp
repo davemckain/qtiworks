@@ -31,14 +31,12 @@ candidateSessionSummaryReport
       <div class="value">${fn:escapeXml(candidateSessionSummaryData.firstName)}&#xa0;${fn:escapeXml(candidateSessionSummaryData.lastName)}</div>
     </div>
   </div>
-
   <div class="grid_4">
     <div class="infoBox">
-      <div class="cat">Session Created</div>
+      <div class="cat">Session Started</div>
       <div class="value">${utils:formatDayDateAndTime(candidateSessionSummaryData.launchTime)}</div>
     </div>
   </div>
-
   <div class="grid_4">
     <div class="infoBox">
       <div class="cat">Session Status</div>
@@ -48,6 +46,32 @@ candidateSessionSummaryReport
 
   <div class="clear"></div>
 
+  <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
+    <div class="grid_4">
+      <div class="infoBox">
+        <div class="cat">LTI Result Outcome Variable (${candidateSessionSummaryMetadata.lisResultOutcomeIdentifier})</div>
+        <div class="value">${candidateSessionSummaryData.lisResultOutcomeValue}</div>
+      </div>
+    </div>
+    <div class="grid_4">
+      <div class="infoBox">
+        <div class="cat">Normalized LTI Score</div>
+        <div class="value">
+          <c:out value="${candidateSessionSummaryData.lisScore}" default="(Not Available)"/>
+        </div>
+      </div>
+    </div>
+    <div class="grid_4">
+      <div class="infoBox">
+        <div class="cat">LTI Result Return Status</div>
+        <div class="value">
+          <c:out value="${candidateSessionSummaryData.lisReportingStatusMessage}" default="(Not Available)"/>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+  </c:if>
+
   <h4>Actions</h4>
   <ul class="menu">
     <li>
@@ -56,13 +80,21 @@ candidateSessionSummaryReport
           <page:postLink path="${utils:escapeLink(candidateSessionRouting['terminate'])}" title="Terminate this Candidate Session"/>
         </c:when>
         <c:otherwise>
-          Terminate Candidate Session (already terminated)
+          Terminate Candidate Session [already terminated]
         </c:otherwise>
       </c:choose>
     </li>
+    <li>
+      <form action="${utils:escapeLink(candidateSessionRouting['result'])}" method="get" class="postLink showXmlInDialog" title="assessmentResult XML">
+        <input type="submit" value="View assessmentResult XML"/>
+      </form>
+    </li>
+    <li>
+      <a href="${utils:escapeLink(candidateSessionRouting['result'])}">Download assessmentResult XML</a>
+    </li>
   </ul>
 
-  <h3>Outcome Variables</h3>
+  <h3>All Outcome Variables</h3>
 
   <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
   <c:set var="otherOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.otherOutcomeIdentifiers)}"/>
@@ -97,12 +129,4 @@ candidateSessionSummaryReport
       </c:if>
     </body>
   </table>
-
-  <c:if test="${!empty assessmentResultXml}">
-    <h3>QTI assessmentResult XML</h3>
-
-    <script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
-    <pre class="xmlSource prettyprint">${fn:escapeXml(assessmentResultXml)}</pre>
-  </c:if>
-
 </page:ltipage>

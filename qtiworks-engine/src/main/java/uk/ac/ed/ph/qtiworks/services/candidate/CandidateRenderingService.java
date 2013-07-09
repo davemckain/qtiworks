@@ -67,12 +67,10 @@ import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.domain.OutputStreamer;
 
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
-import uk.ac.ed.ph.jqtiplus.node.result.AssessmentResult;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationLevel;
 import uk.ac.ed.ph.jqtiplus.notification.NotificationRecorder;
 import uk.ac.ed.ph.jqtiplus.running.ItemSessionController;
 import uk.ac.ed.ph.jqtiplus.running.TestSessionController;
-import uk.ac.ed.ph.jqtiplus.serialization.QtiSerializer;
 import uk.ac.ed.ph.jqtiplus.state.ItemSessionState;
 import uk.ac.ed.ph.jqtiplus.state.TestPlanNodeKey;
 import uk.ac.ed.ph.jqtiplus.state.TestSessionState;
@@ -113,9 +111,6 @@ public class CandidateRenderingService {
 
     @Resource
     private CandidateAuditLogger candidateAuditLogger;
-
-    @Resource
-    private QtiSerializer qtiSerializer;
 
     @Resource
     private AssessmentPackageFileService assessmentPackageFileService;
@@ -635,15 +630,11 @@ public class CandidateRenderingService {
         /* Make sure candidate can access authoring info */
         ensureCallerMayAccessAuthorInfo(candidateSession);
 
-        /* Get most recent event */
-        final CandidateEvent mostRecentEvent = candidateDataService.getMostRecentEvent(candidateSession);
-
-        /* Generate result Object from current state */
-        final AssessmentResult assessmentResult = candidateDataService.computeAssessmentResult(mostRecentEvent);
-
-        /* Send result */
-        qtiSerializer.serializeJqtiObject(assessmentResult, outputStream);
+        /* Log action */
         candidateAuditLogger.logAction(candidateSession, "ACCESS_RESULT");
+
+        /* Stream data */
+        candidateDataService.streamAssessmentResult(candidateSession, outputStream);
     }
 
     //----------------------------------------------------
