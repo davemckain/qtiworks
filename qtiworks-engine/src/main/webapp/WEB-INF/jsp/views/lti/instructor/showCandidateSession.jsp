@@ -43,9 +43,7 @@ candidateSessionSummaryReport
       <div class="value">${fn:escapeXml(candidateSessionSummaryData.sessionStatusMessage)}</div>
     </div>
   </div>
-
   <div class="clear"></div>
-
   <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
     <div class="grid_4">
       <div class="infoBox">

@@ -21,7 +21,7 @@ candidateSessionListRouting (xid -> action -> URL)
     <h2>Candidate Session Reports &amp; Proctoring</h2>
     <div class="hints">
       <p>
-        This shows you a summary report of all candidate attempts made on this delivery,
+        This shows you a summary report of all candidate attempts made on this assessment,
         showing you the state of the session and the value of the LTI result outcome variable (if set up).
       </p>
       <p>
@@ -53,23 +53,18 @@ candidateSessionListRouting (xid -> action -> URL)
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email Address</th>
-            <c:choose>
-              <c:when test="${rowCount > 0}">
-                <c:choose>
-                  <c:when test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
-                    <th>${candidateSessionSummaryMetadata.lisResultOutcomeIdentifier} Value</th>
-                    <th>Normalized Score</th>
-                    <th>Reporting Status</th>
-                  </c:when>
-                  <c:otherwise>
-                    <th colspan="3"></th>
-                  </c:otherwise>
-                </c:choose>
-              </c:when>
-              <c:otherwise>
-                <th>(Will appear when first candidate session is started)</th>
-              </c:otherwise>
-            </c:choose>
+            <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
+              <c:choose>
+                <c:when test="${rowCount > 0}">
+                  <th>${candidateSessionSummaryMetadata.lisResultOutcomeIdentifier} Value</th>
+                  <th>Normalized Score</th>
+                  <th>Reporting Status</th>
+                </c:when>
+                <c:otherwise>
+                  <th>(Will appear when first candidate session is started)</th>
+                </c:otherwise>
+              </c:choose>
+            </c:if>
           </tr>
         </thead>
         <tbody>
@@ -85,23 +80,25 @@ candidateSessionListRouting (xid -> action -> URL)
                   <td><c:out value="${row.firstName}"/></td>
                   <td><c:out value="${row.lastName}"/></td>
                   <td><c:out value="${row.emailAddress}"/></td>
-                  <c:choose>
-                    <c:when test="${!empty row.lisResultOutcomeValue}">
-                      <td align="center"><c:out value="${row.lisResultOutcomeValue}"/></td>
-                      <td align="center">${row.lisScore}</td>
-                      <td align="center">${row.lisReportingStatusMessage}</td>
-                    </c:when>
-                    <c:otherwise>
-                      <td align="center">(Not Available)</td>
-                      <td colspan="2" align="center">(Not Applicable)</td>
-                    </c:otherwise>
-                  </c:choose>
+                  <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
+                    <c:choose>
+                      <c:when test="${!empty row.lisResultOutcomeValue}">
+                        <td align="center"><c:out value="${row.lisResultOutcomeValue}"/></td>
+                        <td align="center">${row.lisScore}</td>
+                        <td align="center">${row.lisReportingStatusMessage}</td>
+                      </c:when>
+                      <c:otherwise>
+                        <td align="center">(Not Available)</td>
+                        <td colspan="2" align="center">(Not Applicable)</td>
+                      </c:otherwise>
+                    </c:choose>
+                  </c:if>
                 </tr>
               </c:forEach>
             </c:when>
             <c:otherwise>
               <tr>
-                <td align="center" colspan="${6 + (numericOutcomeCount > 0 ? numericOutcomeCount : 1)}">No Candidate Sessions have been started yet</td>
+                <td align="center" colspan="${6 + (!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier ? 3 : 1)}">No Candidate Sessions have been started yet</td>
               </tr>
             </c:otherwise>
           </c:choose>

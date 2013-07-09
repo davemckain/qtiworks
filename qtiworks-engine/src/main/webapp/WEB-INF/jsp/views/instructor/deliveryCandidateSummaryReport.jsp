@@ -5,13 +5,8 @@ All Rights Reserved
 
 Shows summary report of candidate sessions on a delivery
 
-Model:
+Additional model:
 
-delivery
-assessment
-assessmentRouting (action -> URL)
-primaryRouting (action -> URL)
-deliveryRouting (action -> URL)
 deliveryCandidateSummaryReport
 candidateSessionListRouting (xid -> action -> URL)
 
@@ -31,10 +26,12 @@ candidateSessionListRouting (xid -> action -> URL)
   <div class="hints">
     <p>
       This shows you a summary report of all candidate attempts made on this delivery,
-      showing you the state of the session and the final value of all (numeric) outcome variables once
-      the candidate has finished the assessment. You can download an expanded CSV version of this report
-      containing ALL outcomes variables using the link below. You can also download result XML and perform
-      basic proctoring of candidate sessions.
+      showing you the state of the session and the value of the LTI result outcome variable (if set up).
+    </p>
+    <p>
+      You may download an expanded CSV version of this report containing all
+      outcomes variables using the link below. You can also download the QTI <code>assessmentResult</code>
+      reports (in XML format) and perform basic proctoring of candidate sessions.
     </p>
   </div>
 
@@ -43,37 +40,34 @@ candidateSessionListRouting (xid -> action -> URL)
       <c:set var="candidateSessionSummaryMetadata" value="${deliveryCandidateSummaryReport.candidateSessionSummaryMetadata}"/>
       <c:set var="numericOutcomeCount" value="${fn:length(candidateSessionSummaryMetadata.numericOutcomeIdentifiers)}"/>
       <c:set var="rowCount" value="${fn:length(deliveryCandidateSummaryReport.rows)}"/>
-      <table class="listTable">
+      <table class="cellTable">
         <thead>
           <tr>
             <th colspan="3">Session</th>
             <th colspan="3">Candidate</th>
-            <th colspan="${numericOutcomeCount > 0 ? numericOutcomeCount : 1}">Numeric Outcomes</th>
+            <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
+              <th colspan="3">LTI Results</th>
+            </c:if>
           </tr>
           <tr>
             <th>Session ID</th>
             <th>Session Launch Time</th>
             <th>Session Status</th>
-            <th>Email Address</th>
             <th>First Name</th>
             <th>Last Name</th>
-            <c:choose>
-              <c:when test="${rowCount > 0}">
-                <c:choose>
-                  <c:when test="${numericOutcomeCount > 0}">
-                    <c:forEach var="outcomeIdentifier" items="${candidateSessionSummaryMetadata.numericOutcomeIdentifiers}">
-                      <th>${fn:escapeXml(outcomeIdentifier)}</th>
-                    </c:forEach>
-                  </c:when>
-                  <c:otherwise>
-                    <th></th>
-                  </c:otherwise>
-                </c:choose>
-              </c:when>
-              <c:otherwise>
-                <th>(Will appear when first candidate session is started)</th>
-              </c:otherwise>
-            </c:choose>
+            <th>Email Address</th>
+            <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
+              <c:choose>
+                <c:when test="${rowCount > 0}">
+                  <th>${candidateSessionSummaryMetadata.lisResultOutcomeIdentifier} Value</th>
+                  <th>Normalized Score</th>
+                  <th>Reporting Status</th>
+                </c:when>
+                <c:otherwise>
+                  <th>(Will appear when first candidate session is started)</th>
+                </c:otherwise>
+              </c:choose>
+            </c:if>
           </tr>
         </thead>
         <tbody>
@@ -84,27 +78,30 @@ candidateSessionListRouting (xid -> action -> URL)
                   <td align="center">
                     <a href="${utils:escapeLink(candidateSessionListRouting[row.sessionId]['show'])}">${row.sessionId}</a>
                   </td>
-                  <td align="center"><c:out value="${utils:formatDayDateAndTime(row.launchTime)}"/></td>
-                  <td align="center">${row.sessionStatus}</td>
-                  <td><c:out value="${row.emailAddress}"/></td>
+                  <td align="center"><c:out value="${utils:formatDateAndTime(row.launchTime)}"/></td>
+                  <td align="center">${row.sessionStatusMessage}</td>
                   <td><c:out value="${row.firstName}"/></td>
                   <td><c:out value="${row.lastName}"/></td>
-                  <c:choose>
-                    <c:when test="${numericOutcomeCount>0}">
-                      <c:forEach var="outcomeValue" items="${row.numericOutcomeValues}">
-                        <td align="center"><c:out value="${outcomeValue}"/></td>
-                      </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                      <td align="center">(Not Available)</td>
-                    </c:otherwise>
-                  </c:choose>
+                  <td><c:out value="${row.emailAddress}"/></td>
+                  <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
+                    <c:choose>
+                      <c:when test="${!empty row.lisResultOutcomeValue}">
+                        <td align="center"><c:out value="${row.lisResultOutcomeValue}"/></td>
+                        <td align="center">${row.lisScore}</td>
+                        <td align="center">${row.lisReportingStatusMessage}</td>
+                      </c:when>
+                      <c:otherwise>
+                        <td align="center">(Not Available)</td>
+                        <td colspan="2" align="center">(Not Applicable)</td>
+                      </c:otherwise>
+                    </c:choose>
+                  </c:if>
                 </tr>
               </c:forEach>
             </c:when>
             <c:otherwise>
               <tr>
-                <td align="center" colspan="${6 + (numericOutcomeCount > 0 ? numericOutcomeCount : 1)}">No Candidate Sessions have been started yet</td>
+                <td align="center" colspan="${6 + (!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier ? 3 : 1)}">No Candidate Sessions have been started yet</td>
               </tr>
             </c:otherwise>
           </c:choose>

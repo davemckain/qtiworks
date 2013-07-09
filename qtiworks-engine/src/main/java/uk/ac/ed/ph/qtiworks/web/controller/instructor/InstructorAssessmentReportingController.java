@@ -78,8 +78,8 @@ public class InstructorAssessmentReportingController {
     //------------------------------------------------------
 
     @ModelAttribute
-    public void setupPrimaryRouting(final Model model) {
-        model.addAttribute("primaryRouting", instructorRouter.buildPrimaryRouting());
+    public void setupModel(final Model model) {
+        instructorModelHelper.setupModel(model);
     }
 
     //------------------------------------------------------
@@ -126,6 +126,13 @@ public class InstructorAssessmentReportingController {
         model.addAttribute(candidateSessionSummaryReport);
         instructorModelHelper.setupModelForCandidateSession(xid, model);
         return "showCandidateSession";
+    }
+
+    @RequestMapping(value="/candidate-session/{xid}/result", method=RequestMethod.GET)
+    public void streamResult(final HttpServletResponse response, @PathVariable final long xid)
+            throws DomainEntityNotFoundException, IOException, PrivilegeException {
+        response.setContentType("application/xml");
+        assessmentReportingService.streamCandidateAssessmentResult(xid, response.getOutputStream());
     }
 
     @RequestMapping(value="/candidate-session/{xid}/terminate", method=RequestMethod.POST)
