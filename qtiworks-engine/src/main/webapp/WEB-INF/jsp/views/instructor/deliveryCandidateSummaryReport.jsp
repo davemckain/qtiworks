@@ -118,6 +118,7 @@ candidateSessionListRouting (xid -> action -> URL)
     <li><a href="${utils:escapeLink(deliveryRouting['candidateSummaryReportCsv'])}">Download full candidate outcome summary (CSV)</a></li>
     <li><a href="${utils:escapeLink(deliveryRouting['candidateResultsZip'])}">Download all candiate &lt;assessmentResult&gt; XML files (ZIP)</a></li>
     <li><page:postLink path="${deliveryRouting['terminateAllSessions']}" confirm="Are you sure?" title="Terminate all remaining candidate sessions on this delivery"/></li>
+    <li><page:postLink path="${deliveryRouting['deleteAllSessions']}" confirm="Are you sure? All candidate data gathered here will be permanently deleted!" title="Delete all candidate session data for this Delivery"/></li>
   </ul>
 
 </page:page>

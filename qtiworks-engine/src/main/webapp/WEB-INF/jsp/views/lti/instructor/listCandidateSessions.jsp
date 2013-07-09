@@ -114,7 +114,8 @@ candidateSessionListRouting (xid -> action -> URL)
   <ul class="menu">
     <li><a href="${utils:escapeLink(primaryRouting['candidateSummaryReportCsv'])}">Download full candidate outcome summary (CSV)</a></li>
     <li><a href="${utils:escapeLink(primaryRouting['candidateResultsZip'])}">Download all candiate &lt;assessmentResult&gt; XML files (ZIP)</a></li>
-    <li><page:postLink path="${primaryRouting['terminateAllSessions']}" confirm="Are you sure?" title="Terminate all remaining Candidate Sessions"/></li>
+    <li><page:postLink path="${primaryRouting['terminateAllSessions']}" confirm="Are you sure?" title="Terminate all running Candidate Sessions"/></li>
+    <li><page:postLink path="${primaryRouting['deleteAllSessions']}" confirm="Are you sure? All candidate data gathered here will be permanently deleted!" title="Delete all Candidate Session data"/></li>
   </ul>
 
 </page:ltipage>

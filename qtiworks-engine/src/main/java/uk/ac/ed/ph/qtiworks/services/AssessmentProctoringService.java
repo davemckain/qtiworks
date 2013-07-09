@@ -69,6 +69,9 @@ public class AssessmentProctoringService {
     private AssessmentManagementService assessmentManagementService;
 
     @Resource
+    private DataDeletionService dataDeletionService;
+
+    @Resource
     private CandidateSessionDao candidateSessionDao;
 
     public CandidateSession lookupCandidateSession(final long xid)
@@ -115,6 +118,14 @@ public class AssessmentProctoringService {
         }
     }
 
+    public int deleteCandidateSessionsForDelivery(final long did)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Delivery delivery = assessmentManagementService.lookupDelivery(did);
+        final int deletedCount = dataDeletionService.deleteCandidateSessions(delivery);
+        auditLogger.recordEvent("Deleted all " + deletedCount + " CandidateSessions for Delivery #" + did);
+        return deletedCount;
+    }
+
     private User ensureCallerMayProctor(final CandidateSession candidateSession)
             throws PrivilegeException {
         final User caller = identityService.getCurrentThreadUser();
@@ -124,5 +135,4 @@ public class AssessmentProctoringService {
         }
         return caller;
     }
-
 }

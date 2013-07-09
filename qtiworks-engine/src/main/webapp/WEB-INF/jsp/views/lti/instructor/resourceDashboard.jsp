@@ -189,7 +189,7 @@ LTI resource dashboard (after domain-level launch)
       <div class="name">Candidate Session Reporting &amp; Proctoring:</div>
       <div class="value">
         ${thisDeliveryStatusReport.nonTerminatedSessionCount}
-        session${thisDeliveryStatusReport.nonTerminatedSessionCount==1?'s':''}
+        session${thisDeliveryStatusReport.nonTerminatedSessionCount==1?'':'s'}
         currently running out of ${thisDeliveryStatusReport.sessionCount} total.
       </div>
     </div>

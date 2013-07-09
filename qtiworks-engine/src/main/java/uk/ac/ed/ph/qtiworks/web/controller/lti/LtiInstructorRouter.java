@@ -99,6 +99,7 @@ public class LtiInstructorRouter {
         primaryRouting.put("candidateSummaryReportCsv", buildWebUrl("/candidate-summary-report-" + lrid + ".csv"));
         primaryRouting.put("candidateResultsZip", buildWebUrl("/candidate-results-" + lrid + ".zip"));
         primaryRouting.put("terminateAllSessions", buildWebUrl("/terminate-all-sessions"));
+        primaryRouting.put("deleteAllSessions", buildWebUrl("/delete-all-sessions"));
         return primaryRouting;
     }
 

@@ -102,6 +102,15 @@ public class InstructorAssessmentReportingController {
         return instructorRouter.buildInstructorRedirect("/delivery/" + did + "/candidate-sessions");
     }
 
+    @RequestMapping(value="/delivery/{did}/delete-all-sessions", method=RequestMethod.POST)
+    public String deleteAllCandidateSessions(final RedirectAttributes redirectAttributes, @PathVariable final long did)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final int deletedCount = assessmentProctoringService.deleteCandidateSessionsForDelivery(did);
+
+        GlobalRouter.addFlashMessage(redirectAttributes, "Deleted " + deletedCount + " candidate session" + (deletedCount!=1 ? "s" : ""));
+        return instructorRouter.buildInstructorRedirect("/delivery/" + did + "/candidate-sessions");
+    }
+
     @RequestMapping(value="/delivery/candidate-summary-report-{did}.csv", method=RequestMethod.GET)
     public void streamDeliveryCandidateSummaryReportCsv(final HttpServletResponse response, @PathVariable final long did)
             throws PrivilegeException, DomainEntityNotFoundException, IOException {

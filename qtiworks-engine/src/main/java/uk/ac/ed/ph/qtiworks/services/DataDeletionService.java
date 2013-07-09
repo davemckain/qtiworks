@@ -137,7 +137,7 @@ public class DataDeletionService {
         candidateSessionDao.remove(candidateSession); /* (This will cascade) */
     }
 
-    public void deleteDelivery(final Delivery delivery) {
+    public int deleteCandidateSessions(final Delivery delivery) {
         Assert.notNull(delivery, "delivery");
 
         /* Delete candidate uploads & stored state information */
@@ -147,6 +147,20 @@ public class DataDeletionService {
         if (!filespaceManager.deleteCandidateSessionData(delivery)) {
             logger.error("Failed to delete stored session data for Delivery {}", delivery.getId());
         }
+
+        /* Delete each session entity, taking advantage of cascading */
+        final List<CandidateSession> candidateSessions = candidateSessionDao.getForDelivery(delivery);
+        for (final CandidateSession candidateSession : candidateSessions) {
+            candidateSessionDao.remove(candidateSession);
+        }
+        return candidateSessions.size();
+    }
+
+    public void deleteDelivery(final Delivery delivery) {
+        Assert.notNull(delivery, "delivery");
+
+        /* Delete all candidate sessions */
+        deleteCandidateSessions(delivery);
 
         /* Delete entities, taking advantage of cascading */
         deliveryDao.remove(delivery); /* (This will cascade into CandidateSession entities) */

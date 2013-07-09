@@ -42,10 +42,8 @@ import uk.ac.ed.ph.jqtiplus.node.item.AssessmentItem;
 import uk.ac.ed.ph.jqtiplus.node.test.AssessmentTest;
 
 import java.util.Date;
-import java.util.Set;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -58,7 +56,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -192,11 +189,6 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=true)
     @Column(name="lti_consumer_secret", length=DomainConstants.LTI_SECRET_LENGTH, updatable=false, unique=false)
     private String ltiConsumerSecret;
-
-    /** (Currently used for cascading deletion only - upgrade if required) */
-    @SuppressWarnings("unused")
-    @OneToMany(mappedBy="delivery", cascade=CascadeType.REMOVE)
-    private Set<CandidateSession> candidateSessions;
 
     //------------------------------------------------------------
 

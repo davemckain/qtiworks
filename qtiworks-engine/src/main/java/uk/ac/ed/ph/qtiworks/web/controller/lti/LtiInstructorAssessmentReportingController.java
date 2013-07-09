@@ -98,7 +98,7 @@ public class LtiInstructorAssessmentReportingController {
 
         model.addAttribute(report);
         model.addAttribute("candidateSessionListRouting", ltiInstructorRouter.buildCandidateSessionListRouting(report));
-        return "instructor/candidateSummaryReport";
+        return "instructor/listCandidateSessions";
     }
 
     @RequestMapping(value="/terminate-all-sessions", method=RequestMethod.POST)
@@ -108,6 +108,16 @@ public class LtiInstructorAssessmentReportingController {
         final int terminatedCount = assessmentProctoringService.terminateCandidateSessionsForDelivery(thisDelivery.getId());
 
         GlobalRouter.addFlashMessage(redirectAttributes, "Terminated " + terminatedCount + " candidate session" + (terminatedCount!=1 ? "s" : ""));
+        return ltiInstructorRouter.buildInstructorRedirect("/candidate-sessions");
+    }
+
+    @RequestMapping(value="/delete-all-sessions", method=RequestMethod.POST)
+    public String deleteAllCandidateSessions(final RedirectAttributes redirectAttributes)
+            throws PrivilegeException, DomainEntityNotFoundException {
+        final Delivery thisDelivery = identityService.getCurrentThreadLtiResource().getDelivery();
+        final int deletedCount = assessmentProctoringService.deleteCandidateSessionsForDelivery(thisDelivery.getId());
+
+        GlobalRouter.addFlashMessage(redirectAttributes, "Deleted " + deletedCount + " candidate session" + (deletedCount!=1 ? "s" : ""));
         return ltiInstructorRouter.buildInstructorRedirect("/candidate-sessions");
     }
 

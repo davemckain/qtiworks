@@ -137,6 +137,7 @@ public class InstructorRouter {
         result.put("candidateSummaryReportCsv", buildWebUrl("/delivery/candidate-summary-report-" + did + ".csv"));
         result.put("candidateResultsZip", buildWebUrl("/delivery/candidate-results-" + did + ".zip"));
         result.put("terminateAllSessions", buildWebUrl("/delivery/" + did + "/terminate-all-sessions"));
+        result.put("deleteAllSessions", buildWebUrl("/delivery/" + did + "/delete-all-sessions"));
         result.put("ltiLaunch", qtiWorksDeploymentSettings.getBaseUrl() + "/lti/linklaunch");
         return result;
     }
