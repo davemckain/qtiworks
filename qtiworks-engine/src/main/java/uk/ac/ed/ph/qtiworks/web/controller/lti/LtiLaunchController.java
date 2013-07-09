@@ -110,8 +110,7 @@ public class LtiLaunchController {
         else if (userRole==UserRole.CANDIDATE) {
             /* If user is a candidate, then we'll launch/reuse a candidate session */
             if (ltiResource==null) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "This assessment has not been set up by an instructor yet");
-                return null;
+                return "candidateLaunchError";
             }
 
             /* Extract relevant data */
@@ -127,8 +126,7 @@ public class LtiLaunchController {
                 return GlobalRouter.buildSessionStartRedirect(candidateSession);
             }
             catch (final PrivilegeException e) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "This assessment is not currently available to you");
-                return null;
+                return "candidateLaunchError";
             }
         }
         else {
@@ -139,7 +137,7 @@ public class LtiLaunchController {
     /** Link-level LTI launch (always treated as candidate) */
     @RequestMapping(value="/linklaunch", method=RequestMethod.POST)
     public String ltiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
-            throws PrivilegeException, IOException {
+            throws IOException {
         /* Decode LTI launch request, and bail out on error */
         final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request, LtiLaunchType.LINK);
         if (ltiLaunchResult.isError()) {
@@ -155,13 +153,18 @@ public class LtiLaunchController {
 
         /* Start/reuse candidate session */
         final LtiUser ltiUser = ltiLaunchResult.getLtiUser();
-        final CandidateSession candidateSession = candidateSessionStarter.createLinkLevelLtiCandidateSession(ltiUser,
-                exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
-        return GlobalRouter.buildSessionStartRedirect(candidateSession);
+        try {
+            final CandidateSession candidateSession = candidateSessionStarter.createLinkLevelLtiCandidateSession(ltiUser,
+                    exitUrl, lisOutcomeServiceUrl, lisResultSourcedid);
+            return GlobalRouter.buildSessionStartRedirect(candidateSession);
+        }
+        catch (final PrivilegeException e) {
+            return "candidateLaunchError";
+        }
     }
 
     /**
-     * Old URI for a link-level LTI launch.
+     * Older URI for a link-level LTI launch.
      * <p>
      * This is kept for backwards compatibility with existing LTI links, but should not be used
      * for new links.
@@ -169,7 +172,7 @@ public class LtiLaunchController {
     @RequestMapping(value="/launch/{did}", method=RequestMethod.POST)
     public String deprecatedLtiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response,
             @SuppressWarnings("unused") @PathVariable final long did)
-            throws PrivilegeException, IOException {
+            throws IOException {
         return ltiLinkLevelLaunch(request, response);
     }
 
