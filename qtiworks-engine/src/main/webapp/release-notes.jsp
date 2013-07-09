@@ -12,12 +12,38 @@ All Rights Reserved
   </nav>
   <h2>QTIWorks Release Notes (Development)</h2>
 
+  <h3>1.0-DEV31 [Development] (09/07/2013)</h3>
+  <p>
+    This snapshot includes a working implementation of LTI instructor role
+    functionality (via domain-level launches). It also completes amd makes
+    available the LTI result returning functionality sketched out earlier.
+  </p>
+  <p>
+    A further snapshot will tidy the way this looks a bit, before we move to
+    a beta/RC release if there are no major issues reported.
+  </p>
+  <p>
+    <strong>Note:</strong>  If you are following these development releases,
+    then you will need to run the schema migration script
+    <code>qtiworks-engine/support/schema-migrations/dev30-to-dev31.sql</code>
+    after compiling this version of the webapp. There is no need to delete
+    candidate data if upgrading from DEV30.
+  </p>
+
   <h3>1.0-DEV30 [Development] (01/07/2013)</h3>
   <p>
     This work-in-progress release adds in enough functionality for testing out the
     new domain-level LTI launches. I've released it now so that partners can start
     setting up their VLEs to use the new LTI instructor role functionality, which
     should appear in the next developer snapshot.
+  </p>
+  <p>
+    <strong>Note:</strong>  If you are following these development releases,
+    then you will need to run the schema migration script
+    <code>qtiworks-engine/support/schema-migrations/dev29-to-dev30.sql</code>
+    after compiling this version of the webapp. Then you must run the
+    <code>update</code> action in the QTIWorks Engine Manager. (Note that all
+    candidate session data needs to be deleted here.)
   </p>
 
   <h3>1.0-DEV29 [Development] (03/06/2013)</h3>
