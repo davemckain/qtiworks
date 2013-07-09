@@ -42,7 +42,6 @@ import uk.ac.ed.ph.qtiworks.domain.RequestTimestampContext;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateEvent;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateItemEventType;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateTestEventType;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
@@ -296,7 +295,6 @@ public class CandidateSessionStarter {
         final CandidateSession candidateSession = new CandidateSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
-        candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.SESSION_NOT_ENDED);
         candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
         candidateSession.setLisResultSourcedid(lisResultSourcedid);
         candidateSession.setCandidate(candidate);
@@ -364,7 +362,6 @@ public class CandidateSessionStarter {
         final CandidateSession candidateSession = new CandidateSession();
         candidateSession.setSessionToken(ServiceUtilities.createRandomAlphanumericToken(DomainConstants.CANDIDATE_SESSION_TOKEN_LENGTH));
         candidateSession.setExitUrl(exitUrl);
-        candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.SESSION_NOT_ENDED);
         candidateSession.setLisOutcomeServiceUrl(lisOutcomeServiceUrl);
         candidateSession.setLisResultSourcedid(lisResultSourcedid);
         candidateSession.setCandidate(candidate);

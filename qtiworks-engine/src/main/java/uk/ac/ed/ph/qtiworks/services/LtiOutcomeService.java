@@ -35,14 +35,15 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.config.beans.QtiWorksDeploymentSettings;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
+import uk.ac.ed.ph.qtiworks.domain.entities.LisOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiDomain;
 import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.QueuedLtiOutcome;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
+import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
@@ -95,6 +96,9 @@ public class LtiOutcomeService {
     private static final Logger logger = LoggerFactory.getLogger(LtiOutcomeService.class);
 
     @Resource
+    private AuditLogger auditLogger;
+
+    @Resource
     private CandidateSessionDao candidateSessionDao;
 
     @Resource
@@ -113,26 +117,30 @@ public class LtiOutcomeService {
     //-------------------------------------------------
 
     @Async
-    public void queueLtiResult(final CandidateSession candidateSession, final double score) {
+    public void queueLtiResult(final CandidateSession candidateSession, final double lisScore) {
         Assert.notNull(candidateSession);
-        if (score<0.0 || score>1.0) {
+        if (lisScore<0.0 || lisScore>1.0) {
             throw new IllegalArgumentException("Score must be between 0.0 and 1.0");
         }
 
-        /* Update session status to indicate results have been queued */
-        candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_SCHEDULED);
+        /* Update session status to record final score and indicate results have been queued */
+        candidateSession.setLisScore(Double.valueOf(lisScore));
+        candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_SCHEDULED);
         candidateSessionDao.update(candidateSession);
 
         /* Persist new queued outcome */
         final QueuedLtiOutcome outcome = new QueuedLtiOutcome();
         outcome.setCandidateSession(candidateSession);
-        outcome.setScore(score);
+        outcome.setScore(lisScore);
         outcome.setFailureCount(0);
         queuedLtiOutcomeDao.persist(outcome);
 
         /* (Data will be sent to TC next time the service wakes up) */
-        logger.info("Queued new LTI outcome #{} to be returned to for CandidateSession #{}" + candidateSession.getId(),
-                outcome.getId(), candidateSession.getId());
+        auditLogger.recordEvent("Queued new LTI outcome #" + outcome.getId()
+                + " containing score " + lisScore
+                + " to be returned to for CandidateSession #" + candidateSession.getId());
+        logger.info("Queued new LTI outcome #{} containing score {} to be returned to for CandidateSession #{}",
+                new Object[] { outcome.getId(), lisScore, candidateSession.getId() });
     }
 
     //-------------------------------------------------
@@ -172,9 +180,11 @@ public class LtiOutcomeService {
         final boolean successful = trySendQueuedLtiOutcome(queuedLtiOutcome);
         if (successful) {
             /* Outcome sent successfully, so remove from queue */
-            candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_SUCCESS);
+            candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_SUCCESS);
             queuedLtiOutcomeDao.remove(queuedLtiOutcome);
             candidateSessionDao.update(candidateSession);
+            auditLogger.recordEvent("Successfully sent LTI outcome #" + queuedLtiOutcome.getId()
+                    + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl());
             logger.info("Successfully sent LTI outcome #{} to LIS outcome service at {}",
                     queuedLtiOutcome.getId(), candidateSession.getLisOutcomeServiceUrl());
         }
@@ -184,16 +194,24 @@ public class LtiOutcomeService {
             if (failureCount < retryDelays.length) {
                 queuedLtiOutcome.setFailureCount(failureCount + 1);
                 queuedLtiOutcome.setRetryTime(new Date(System.currentTimeMillis() + (1000L * 60 * retryDelays[failureCount])));
-                candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
+                candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
                 queuedLtiOutcomeDao.update(queuedLtiOutcome);
                 candidateSessionDao.update(candidateSession);
+                auditLogger.recordEvent("Failure #" + (failureCount+1)
+                        + " to send LTI outcome #" + queuedLtiOutcome.getId()
+                        + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl()
+                        + ". Will try again at " + queuedLtiOutcome.getRetryTime());
                 logger.warn("Failure #{} to send LTI outcome #{} to LIS outcome service at {}. Will try again at {}",
                         new Object[] { failureCount+1, queuedLtiOutcome.getId(), candidateSession.getLisOutcomeServiceUrl(), queuedLtiOutcome.getRetryTime() });
             }
             else {
-                candidateSession.setCandidateOutcomeReportingStatus(CandidateOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
+                candidateSession.setLisOutcomeReportingStatus(LisOutcomeReportingStatus.TC_RETURN_FAIL_TERMINAL);
                 queuedLtiOutcomeDao.remove(queuedLtiOutcome);
                 candidateSessionDao.update(candidateSession);
+                auditLogger.recordEvent("Final failure #" + (failureCount+1)
+                        + " to send LTI outcome #" + queuedLtiOutcome.getId()
+                        + " to LIS outcome service at " + candidateSession.getLisOutcomeServiceUrl()
+                        + ". Outcome has been removed from queue");
                 logger.error("Final failure #{} to send LTI outcome #{} to LIS outcome service at {}. Outcome has been removed from queue",
                         new Object[] { failureCount+1, queuedLtiOutcome.getId(), candidateSession.getLisOutcomeServiceUrl() });
             }

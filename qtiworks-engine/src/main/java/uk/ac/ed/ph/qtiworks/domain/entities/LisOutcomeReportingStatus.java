@@ -34,15 +34,15 @@
 package uk.ac.ed.ph.qtiworks.domain.entities;
 
 /**
- * FIXME: Document this type
+ * Enumerates the status of reporting outcomes to the LIS result service, when supported by
+ * LTI tool consumers.
  *
  * @author David McKain
  */
-public enum CandidateOutcomeReportingStatus {
+public enum LisOutcomeReportingStatus {
 
   //1234567890123456789012
 
-    SESSION_NOT_ENDED,
     LTI_DISABLED,
     LTI_OUTCOMES_DISABLED,
     USER_NOT_REPORTABLE,

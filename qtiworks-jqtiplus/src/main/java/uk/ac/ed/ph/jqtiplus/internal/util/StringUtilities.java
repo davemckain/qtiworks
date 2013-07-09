@@ -162,7 +162,7 @@ public final class StringUtilities {
     }
 
     /**
-     * Convenience method that turns a String to null if it is blank or null.
+     * Convenience method that replaces a String with null if it is blank or null.
      *
      * @param string
      * @return same string if it is non-null and non-empty, otherwise null.
@@ -172,13 +172,17 @@ public final class StringUtilities {
     }
 
     /**
-     * Convenience method that turns a String to an empty String ("") if it is null.
+     * Convenience method that replaces a String with an empty String ("") if it is null.
      *
      * @param string
      * @return same string if it is non-empty, otherwise null.
      */
     public static String emptyIfNull(final String string) {
         return string!=null ? string : "";
+    }
+
+    public static String safeToStringEmptyIfNull(final Object object) {
+        return object!=null ? object.toString() : "";
     }
 
     /**

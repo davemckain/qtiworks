@@ -224,11 +224,6 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Column(name="lis_outcome_service_url")
     private String lisOutcomeServiceUrl;
 
-    @Basic(optional=false)
-    @Column(name="reporting_status", length=22)
-    @Enumerated(EnumType.STRING)
-    private CandidateOutcomeReportingStatus candidateOutcomeReportingStatus;
-
     /**
      * If this session was started by an LTI launch supporting the return of outcomes, then
      * the will be the <code>lis_result_sourcedid</code> to be sent when returning outcomes.
@@ -240,6 +235,30 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     @Basic(optional=true)
     @Column(name="lis_result_sourcedid")
     private String lisResultSourcedid;
+
+    /**
+     * If this session was started by an LTI launch supporting the return of outcomes, then
+     * this will be the final normalized score, calculated when the session has closed.
+     * <p>
+     * This will be null if returning of outcomes is not supported for this session, if the
+     * session is still open, or if the normalized score couldn't be computed or is out of range.
+     */
+    @Basic(optional=true)
+    @Column(name="lis_score")
+    private Double lisScore;
+
+    /**
+     * If this session was started by an LTI launch supporting the return of outcomes, then
+     * this records the status of the outcome return process.
+     * <p>
+     * This will be null if returning of outcomes is not supported for this session or if the
+     * session is still open. Otherwise it will record the current status of the outcomes return
+     * for this session.
+     */
+    @Basic(optional=true)
+    @Column(name="lis_reporting_status", length=22)
+    @Enumerated(EnumType.STRING)
+    private LisOutcomeReportingStatus lisOutcomeReportingStatus;
 
     /** (Currently used for cascading deletion only - upgrade if required) */
     @SuppressWarnings("unused")
@@ -358,15 +377,6 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
     }
 
 
-    public CandidateOutcomeReportingStatus getCandidateOutcomeReportingStatus() {
-        return candidateOutcomeReportingStatus;
-    }
-
-    public void setCandidateOutcomeReportingStatus(final CandidateOutcomeReportingStatus candidateOutcomeReportingStatus) {
-        this.candidateOutcomeReportingStatus = candidateOutcomeReportingStatus;
-    }
-
-
     public String getLisOutcomeServiceUrl() {
         return lisOutcomeServiceUrl;
     }
@@ -384,6 +394,24 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
         this.lisResultSourcedid = lisResultSourcerid;
     }
 
+
+    public Double getLisScore() {
+        return lisScore;
+    }
+
+    public void setLisScore(final Double lisScore) {
+        this.lisScore = lisScore;
+    }
+
+
+    public LisOutcomeReportingStatus getLisOutcomeReportingStatus() {
+        return lisOutcomeReportingStatus;
+    }
+
+    public void setLisOutcomeReportingStatus(final LisOutcomeReportingStatus lisOutcomeReportingStatus) {
+        this.lisOutcomeReportingStatus = lisOutcomeReportingStatus;
+    }
+
     //------------------------------------------------------------
 
     @Override
@@ -396,9 +424,10 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
                 + ",closed=" + closed
                 + ",exploded=" + exploded
                 + ",terminated=" + terminated
-                + ",candidateOutcomeReportingStatus=" + candidateOutcomeReportingStatus
                 + ",lisOutcomeServiceUrl=" + lisOutcomeServiceUrl
-                + ",lisReultSourcedid=" + lisResultSourcedid
+                + ",lisResultSourcedid=" + lisResultSourcedid
+                + ",lisScore=" + lisScore
+                + ",lisOutcomeReportingStatus=" + lisOutcomeReportingStatus
                 + ")";
     }
 }

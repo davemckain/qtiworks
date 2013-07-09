@@ -42,7 +42,7 @@ candidateSessionSummaryReport
   <div class="grid_4">
     <div class="infoBox">
       <div class="cat">Session Status</div>
-      <div class="value">${fn:escapeXml(candidateSessionSummaryData.sessionStatus)}</div>
+      <div class="value">${fn:escapeXml(candidateSessionSummaryData.sessionStatusMessage)}</div>
     </div>
   </div>
 

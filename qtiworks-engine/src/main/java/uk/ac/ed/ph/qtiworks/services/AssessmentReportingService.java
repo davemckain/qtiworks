@@ -67,10 +67,13 @@ import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.csvreader.CsvWriter;
 
 /**
  * Service for reporting on assessment deliveries and candidate sessions
@@ -158,8 +161,9 @@ public class AssessmentReportingService {
                 candidateSession.isClosed(),
                 candidateSession.isTerminated(),
                 candidateSession.isExploded(),
-                candidateSession.getCandidateOutcomeReportingStatus(),
+                candidateSession.getLisOutcomeReportingStatus(),
                 ltiResultOutcomeValue,
+                candidateSession.getLisScore(),
                 numericOutcomeValues,
                 otherOutcomeValues);
 
@@ -249,8 +253,9 @@ public class AssessmentReportingService {
                     candidateSession.isClosed(),
                     candidateSession.isTerminated(),
                     candidateSession.isExploded(),
-                    candidateSession.getCandidateOutcomeReportingStatus(),
+                    candidateSession.getLisOutcomeReportingStatus(),
                     ltiResultOutcomeValue,
+                    candidateSession.getLisScore(),
                     numericOutcomeValues,
                     otherOutcomeValues);
             rows.add(row);
@@ -261,6 +266,82 @@ public class AssessmentReportingService {
     }
 
     //-------------------------------------------------
+
+    /**
+     * Generates a UTF-8 CSV summary of all {@link CandidateSession}s for the given {@link Delivery},
+     * streaming the result to the given {@link OutputStream}
+     * <p>
+     * The stream will be flushed at the end of this; the caller is responsible for closing it.
+     *
+     * @param did ID (did) of the required {@link Delivery}
+     * @param outputStream {@link OutputStream} to send the results to, which must not be null
+     */
+    public void streamDeliveryCandidateSummaryReportCsv(final long did, final OutputStream outputStream)
+            throws PrivilegeException, DomainEntityNotFoundException, IOException {
+        Assert.notNull(outputStream, "outputStream");
+        final DeliveryCandidateSummaryReport report = buildDeliveryCandidateSummaryReport(did);
+        final CsvWriter csvWriter = new CsvWriter(outputStream, ',', Charsets.UTF_8);
+        try {
+            /* Write header */
+            final StringBuilder headerBuilder = new StringBuilder("Session ID,Email Address,First Name,Last Name,Launch Time,Session Status");
+            final CandidateSessionSummaryMetadata metadata = report.getCandidateSessionSummaryMetadata();
+            final String lisResultOutcomeIdentifier = metadata.getLisResultOutcomeIdentifier();
+            if (lisResultOutcomeIdentifier!=null) {
+                /* LTI results set up, so add in details about that */
+                headerBuilder.append(',')
+                    .append("LTI Result Variable (")
+                    .append(lisResultOutcomeIdentifier)
+                    .append("),LTI Normalized Score,LTI Result Reporting Status");
+            }
+            /* Add details about outcome variables */
+            for (final String outcomeName : metadata.getNumericOutcomeIdentifiers()) {
+                headerBuilder.append(',').append(outcomeName);
+            }
+            for (final String outcomeName : metadata.getOtherOutcomeIdentifiers()) {
+                headerBuilder.append(',').append(outcomeName);
+            }
+            csvWriter.writeComment(headerBuilder.toString());
+
+            /* Write each row */
+            for (final CandidateSessionSummaryData row : report.getRows()) {
+                csvWriter.write(Long.toString(row.getSessionId()));
+                csvWriter.write(StringUtilities.emptyIfNull(row.getEmailAddress()));
+                csvWriter.write(row.getFirstName());
+                csvWriter.write(row.getLastName());
+                csvWriter.write(row.getLaunchTime().toString());
+                csvWriter.write(row.getSessionStatusMessage());
+                if (lisResultOutcomeIdentifier!=null) {
+                    csvWriter.write(StringUtilities.emptyIfNull(row.getLisResultOutcomeValue()));
+                    csvWriter.write(StringUtilities.safeToStringEmptyIfNull(row.getLisScore()));
+                    csvWriter.write(StringUtilities.safeToStringEmptyIfNull(row.getLisOutcomeReportingStatus()));
+                }
+                writeOutcomes(csvWriter, metadata.getNumericOutcomeIdentifiers(), row.getNumericOutcomeValues());
+                writeOutcomes(csvWriter, metadata.getOtherOutcomeIdentifiers(), row.getOtherOutcomeValues());
+                csvWriter.endRecord();
+            }
+        }
+        finally {
+            csvWriter.flush();
+        }
+    }
+
+    private void writeOutcomes(final CsvWriter csvWriter, final List<String> outcomeNames, final List<String> outcomeValues)
+            throws IOException {
+        if (outcomeValues!=null) {
+            /* Outcomes have been recorded, so output them */
+            for (final String outcomeValue : outcomeValues) {
+                csvWriter.write(outcomeValue, true);
+            }
+        }
+        else {
+            /* No outcomes recorded for this candidate */
+            for (int i=0; i<outcomeNames.size(); i++) {
+                csvWriter.write("");
+            }
+        }
+    }
+
+    //-------------------------------------------------
     // Report ZIP building
 
     /**
@@ -268,6 +349,9 @@ public class AssessmentReportingService {
      * candidate sessions for the given {@link Delivery}, streaming the result to the given stream.
      * <p>
      * The stream will be flushed at the end of this; the caller is responsible for closing it.
+     *
+     * @param did ID (did) of the required {@link Delivery}
+     * @param outputStream {@link OutputStream} to send the results to, which must not be null
      */
     public void streamAssessmentReports(final long did, final OutputStream outputStream)
             throws DomainEntityNotFoundException, PrivilegeException, IOException {

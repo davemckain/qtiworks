@@ -35,10 +35,10 @@ package uk.ac.ed.ph.qtiworks.services;
 
 import uk.ac.ed.ph.qtiworks.QtiWorksLogicException;
 import uk.ac.ed.ph.qtiworks.domain.entities.Assessment;
-import uk.ac.ed.ph.qtiworks.domain.entities.CandidateOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.domain.entities.CandidateSession;
 import uk.ac.ed.ph.qtiworks.domain.entities.Delivery;
 import uk.ac.ed.ph.qtiworks.domain.entities.DeliveryType;
+import uk.ac.ed.ph.qtiworks.domain.entities.LisOutcomeReportingStatus;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
 
@@ -107,30 +107,29 @@ public class CandidateSessionCloser {
 
     private void maybeScheduleLtiOutcomes(final CandidateSession candidateSession, final AssessmentResult assessmentResult) {
         /* First check a number of pre-conditions for actually recording LTI outcomes */
-        System.out.println("MAYBE: " + candidateSession);
         final Delivery delivery = candidateSession.getDelivery();
         if (delivery.getDeliveryType()!=DeliveryType.LTI_RESOURCE && !delivery.isLtiEnabled()) {
-            recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.LTI_DISABLED,
+            recordLtiRecordingSkipped(candidateSession, LisOutcomeReportingStatus.LTI_DISABLED,
                     "LTI is not enabled for CandidateSession #" + candidateSession.getId());
             return;
         }
         /* Make sure LTI Tool Consumer has decided we can actually send results */
         final Assessment assessment = delivery.getAssessment();
         if (assessment.getLtiResultOutcomeIdentifier()==null) {
-            recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.NO_OUTCOME_IDENTIFIER,
+            recordLtiRecordingSkipped(candidateSession, LisOutcomeReportingStatus.NO_OUTCOME_IDENTIFIER,
                     "No result outcome variable set for Delivery #" + delivery.getId());
             return;
         }
         final String lisOutcomeServiceUrl = candidateSession.getLisOutcomeServiceUrl();
         if (StringUtilities.isNullOrEmpty(lisOutcomeServiceUrl)) {
-            recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.LTI_OUTCOMES_DISABLED,
+            recordLtiRecordingSkipped(candidateSession, LisOutcomeReportingStatus.LTI_OUTCOMES_DISABLED,
                     "Tool consumer did not provide an lis_outcome_service_url for CandidateSession #"
                     + candidateSession.getId());
             return;
         }
         final String lisResultSourceDid = candidateSession.getLisResultSourcedid();
         if (StringUtilities.isNullOrEmpty(lisResultSourceDid)) {
-            recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.USER_NOT_REPORTABLE,
+            recordLtiRecordingSkipped(candidateSession, LisOutcomeReportingStatus.USER_NOT_REPORTABLE,
                     "Tool consumer did not specify a lis_resource_sourcedid for CandidateSession #"
                     + candidateSession.getId());
             return;
@@ -138,7 +137,7 @@ public class CandidateSessionCloser {
         /* Make sure specified outcome variable exists in the assessmentResult */
         final OutcomeVariable resultOutcomeVariable = extractResultOutcomeVariable(assessmentResult, assessment);
         if (resultOutcomeVariable==null) {
-            recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.BAD_OUTCOME_IDENTIFIER,
+            recordLtiRecordingSkipped(candidateSession, LisOutcomeReportingStatus.BAD_OUTCOME_IDENTIFIER,
                     "Failed to extract outcomeVariable with identifier "
                     + assessment.getLtiResultOutcomeIdentifier()
                     + " from assessmentResult for CandidateSession #"
@@ -147,7 +146,7 @@ public class CandidateSessionCloser {
         }
         /* Check that outcome is a single float */
         if (!resultOutcomeVariable.hasSignature(Signature.SINGLE_FLOAT)) {
-            recordLtiRecordingSkipped(candidateSession, CandidateOutcomeReportingStatus.SCORE_NOT_SINGLE_FLOAT,
+            recordLtiRecordingSkipped(candidateSession, LisOutcomeReportingStatus.SCORE_NOT_SINGLE_FLOAT,
                     "OutcomeVariable with identifier "
                     + assessment.getLtiResultOutcomeIdentifier()
                     + " in assessmentResult for CandidateSession #"
@@ -160,7 +159,7 @@ public class CandidateSessionCloser {
         final Double normalizedScore = computeNormalizedScore(resultOutcomeVariable, rawScore, assessment);
         if (normalizedScore==null) {
             recordLtiRecordingSkipped(candidateSession,
-                    CandidateOutcomeReportingStatus.NO_NORMALIZATION,
+                    LisOutcomeReportingStatus.NO_NORMALIZATION,
                     "Not enough data specified to normalize score for CandidateSession #"
                     + candidateSession.getId());
             return;
@@ -168,14 +167,13 @@ public class CandidateSessionCloser {
         /* Make sure normalized score is within reported bounds */
         if (normalizedScore<0.0 || normalizedScore>1.0) {
             recordLtiRecordingSkipped(candidateSession,
-                    CandidateOutcomeReportingStatus.BAD_NORMALIZED_SCORE,
-                    "Not enough data specified to normalize score for CandidateSession #"
+                    LisOutcomeReportingStatus.BAD_NORMALIZED_SCORE,
+                    "Normalized score out of range for CandidateSession #"
                     + candidateSession.getId());
             return;
-
         }
 
-        /* If we got this far, then queue up the LTI result for reporting */
+        /* If we got this far, then record the final score and queue up the LTI result for reporting */
         ltiOutcomeService.queueLtiResult(candidateSession, normalizedScore);
     }
 
@@ -239,9 +237,9 @@ public class CandidateSessionCloser {
         return null;
     }
 
-    private void recordLtiRecordingSkipped(final CandidateSession candidateSession, final CandidateOutcomeReportingStatus status, final String message) {
+    private void recordLtiRecordingSkipped(final CandidateSession candidateSession, final LisOutcomeReportingStatus status, final String message) {
         auditLogger.recordEvent("LTI Outcomes recording: " + message);
-        candidateSession.setCandidateOutcomeReportingStatus(status);
+        candidateSession.setLisOutcomeReportingStatus(status);
         candidateSessionDao.update(candidateSession);
     }
 }

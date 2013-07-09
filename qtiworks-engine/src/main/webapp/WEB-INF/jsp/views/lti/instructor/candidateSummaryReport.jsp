@@ -22,12 +22,12 @@ candidateSessionListRouting (xid -> action -> URL)
     <div class="hints">
       <p>
         This shows you a summary report of all candidate attempts made on this delivery,
-        showing you the state of the session, and the raw value of the LTI result outcome variable, if set.
+        showing you the state of the session and the value of the LTI result outcome variable (if set up).
       </p>
       <p>
-        You may download an expanded CSV version of this report containing ALL
-        outcomes variables using the link below. You can also download result
-        XML and perform basic proctoring of candidate sessions.
+        You may download an expanded CSV version of this report containing all
+        outcomes variables using the link below. You can also download the QTI <code>assessmentResult</code>
+        reports (in XML format) and perform basic proctoring of candidate sessions.
       </p>
     </div>
   </header>
@@ -42,8 +42,8 @@ candidateSessionListRouting (xid -> action -> URL)
           <tr>
             <th colspan="3">Session</th>
             <th colspan="3">Candidate</th>
-            <c:if test="${!empty candidateSessionSummaryMetadata.ltiResultOutcomeIdentifier}">
-              <th colspan="2">LTI results</th>
+            <c:if test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
+              <th colspan="3">LTI Results</th>
             </c:if>
           </tr>
           <tr>
@@ -56,12 +56,13 @@ candidateSessionListRouting (xid -> action -> URL)
             <c:choose>
               <c:when test="${rowCount > 0}">
                 <c:choose>
-                  <c:when test="${!empty candidateSessionSummaryMetadata.ltiResultOutcomeIdentifier}">
-                    <th>${candidateSessionSummaryMetadata.ltiResultOutcomeIdentifier} Value</th>
+                  <c:when test="${!empty candidateSessionSummaryMetadata.lisResultOutcomeIdentifier}">
+                    <th>${candidateSessionSummaryMetadata.lisResultOutcomeIdentifier} Value</th>
+                    <th>Normalized Score</th>
                     <th>Reporting Status</th>
                   </c:when>
                   <c:otherwise>
-                    <th colspan="2"></th>
+                    <th colspan="3"></th>
                   </c:otherwise>
                 </c:choose>
               </c:when>
@@ -80,18 +81,19 @@ candidateSessionListRouting (xid -> action -> URL)
                     <a href="${utils:escapeLink(candidateSessionListRouting[row.sessionId]['show'])}">${row.sessionId}</a>
                   </td>
                   <td align="center"><c:out value="${utils:formatDateAndTime(row.launchTime)}"/></td>
-                  <td align="center">${row.sessionStatus}</td>
+                  <td align="center">${row.sessionStatusMessage}</td>
                   <td><c:out value="${row.firstName}"/></td>
                   <td><c:out value="${row.lastName}"/></td>
                   <td><c:out value="${row.emailAddress}"/></td>
                   <c:choose>
-                    <c:when test="${!empty row.ltiResultOutcomeValue}">
-                      <td align="center"><c:out value="${row.ltiResultOutcomeValue}"/></td>
-                      <td align="center">${row.candidateOutcomeReportingStatus}</td>
+                    <c:when test="${!empty row.lisResultOutcomeValue}">
+                      <td align="center"><c:out value="${row.lisResultOutcomeValue}"/></td>
+                      <td align="center">${row.lisScore}</td>
+                      <td align="center">${row.lisReportingStatusMessage}</td>
                     </c:when>
                     <c:otherwise>
                       <td align="center">(Not Available)</td>
-                      <td align="center">(Not Applicable)</td>
+                      <td colspan="2" align="center">(Not Applicable)</td>
                     </c:otherwise>
                   </c:choose>
                 </tr>
@@ -107,7 +109,7 @@ candidateSessionListRouting (xid -> action -> URL)
       </table>
     </c:when>
     <c:otherwise>
-      <p>No candidate sessions have been launched on this delivery yet.</p>
+      <p>No candidate sessions have been launched yet.</p>
     </c:otherwise>
   </c:choose>
 

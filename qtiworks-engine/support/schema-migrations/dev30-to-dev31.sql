@@ -1,5 +1,12 @@
 BEGIN WORK;
 
+-- Tweaks to LIS result recording in candidate_sessions table
+ALTER TABLE candidate_sessions ADD lis_score DOUBLE PRECISION;
+ALTER TABLE candidate_sessions ADD lis_reporting_status VARCHAR(22);
+UPDATE candidate_sessions SET lis_reporting_status = reporting_status;
+UPDATE candidate_sessions SET lis_reporting_status = NULL WHERE lis_reporting_status = 'SESSION_NOT_ENDED';
+ALTER TABLE candidate_sessions DROP reporting_status;
+
 -- Move LTI outcomes stuff from assessments to deliveries table
 -- (This was added in DEV30, but I've decided to move this for DEV31)
 ALTER TABLE assessments ADD lti_result_outcome_identifier TEXT;
