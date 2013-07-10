@@ -16,22 +16,22 @@ Top page for public functionality
   <h3>Overview</h3>
   <p>
     QTIWorks is a new open-source tool for delivering Question &amp; Test
-    Interoperability (QTI) v2.1 assessment items and tests. It is being
+    Interoperability (QTI) v2.1 assessment items and tests. It has been
     developed as part of the JISC QTIDI project as a next-generation
-    advancement of the existing QTIEngine and MathAssessEngine tools.  It will
-    support almost all of the QTI 2.1 specification, as well as the MathAssess
-    QTI extensions. A "Learning Tools Interoperability" (LTI) connector will
-    make it possible to use QTIWorks to deliver assessments within popular
+    advancement of the existing QTIEngine and MathAssessEngine tools.  It
+    supports almost all of the QTI 2.1 specification, as well as the MathAssess
+    QTI extensions. A "Learning Tools Interoperability" (LTI) v1.1 connector
+    makes it possible to use QTIWorks to deliver assessments within popular
     learning systems such as BlackBoard and Moodle.
   </p>
   <ul>
     <li><a href="http://www.imsglobal.org/question/">IMS Question &amp; Test Interoperability (QTI) Specification</a></li>
-    <li><a href="http://www.imsglobal.org/toolsinteroperability2.cfm">IMS Learning Tools Interoperability (LTI) Specification</a></li>
+    <li><a href="http://www.imsglobal.org/lti/">IMS Learning Tools Interoperability (LTI) Specification</a></li>
   </ul>
 
   <h3>Development</h3>
   <p>
-    QTIWorks is open source and released under a BSD license. The project is currently being incubated in GitHub,
+    QTIWorks is open source and released under a BSD license. The project is being incubated in GitHub,
     whence you can find the source code and development documentation.
   </p>
   <p>
@@ -49,31 +49,14 @@ Top page for public functionality
     <li><a href="https://github.com/davemckain/qtiworks">QTIWorks on GitHub</a></li>
     <li><a href="http://www.ph.ed.ac.uk">School of Physics and Astronomy at the University of Edinburgh</a></li>
     <li><a href="http://www2.ph.ed.ac.uk/MathAssessEngine">MathAssessEngine</a></li>
-    <li><a href="http://qtiengine.qtitools.org">QTIEngine</a></li>
-  </ul>
-
-  <h3>Status</h3>
-  <p>
-    QTIWorks currently supports the delivery of QTI 2.1 assessment items, covering a large subset
-    of the QTI 2.1 specification, as well as the MathAssess extensions. The LTI connector is due to be
-    developed during Q3 2012. Support for assessment tests is expected to be
-    refactored from MathAssessEngine during Q4 2012.
-  </p>
-  <p>
-    We are using a fairly rapid and iterative development cycle, with regular development releases being
-    made available. We are also intending to regularly update the QTI Support Blog with development news,
-    but sometimes that gets squeezed in favour of doing development work!
-  </p>
-  <ul>
-    <li><a href="http://qtisupport.blogspot.co.uk">QTI Support Blog</a></li>
-    <li><a href="${utils:internalLink(pageContext, '/release-notes.jsp')}">QTIWorks Release Notes</a></li>
+    <li><a href="http://www.qtitools.org">QTIEngine (and the old QTItools project)</a></li>
   </ul>
 
   <h3>Funding</h3>
   <p>
-    QTIWorks is being funded by as part of the QTI Delivery Integration
-    project, funded by JISC. We are very grateful to JISC for its support and funding for
-    this and relatated projects.
+    QTIWorks was funded by as part of the QTI Delivery Integration project,
+    funded by JISC. We are very grateful to JISC for its support and funding
+    for this and related projects.
   </p>
   <ul>
     <li><a href="http://www.jisc.ac.uk/whatwedo/programmes/elearning/assessmentandfeedback/qtidi.aspx">QTI Delivery Integration (QTIDI)</a></li>
