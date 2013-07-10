@@ -212,7 +212,7 @@ public class ManagerServices {
     		return false;
     	}
     	if (sharedSecret.length() < LTI_SHARED_SECRET_MIN_LENGTH || sharedSecret.length() > DomainConstants.LTI_SECRET_LENGTH) {
-    		logger.error("Shared secret {} must not be between {} and {} characters", new Object[] { sharedSecret, LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_TOKEN_LENGTH });
+    		logger.error("Shared secret {} must be between {} and {} characters", new Object[] { sharedSecret, LTI_SHARED_SECRET_MIN_LENGTH, DomainConstants.LTI_TOKEN_LENGTH });
     		return false;
     	}
     	if (!sharedSecret.matches("[\\w-\\.]+")) {
