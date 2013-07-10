@@ -87,6 +87,8 @@ import org.xml.sax.InputSource;
  * The actual work of this service is performed asynchronously with some basic durability
  * provided by persisting the data to be sent within the entity model.
  *
+ * FIXME: This is not working with the UoE Learn at present. I am investigating.
+ *
  * @author David McKain
  */
 @Service
@@ -94,6 +96,9 @@ import org.xml.sax.InputSource;
 public class LtiOutcomeService {
 
     private static final Logger logger = LoggerFactory.getLogger(LtiOutcomeService.class);
+
+    /** FIXME: Not sure how to set this within OAuth yet, so I've left as the apparent default */
+    private static final String ENCODING = "ISO-8859-1";
 
     @Resource
     private AuditLogger auditLogger;
@@ -260,7 +265,7 @@ public class LtiOutcomeService {
             final Map<String, String> parameters = new HashMap<String, String>();
             oauthMessage = accessor.newRequestMessage("POST",
                     lisOutcomeServiceUrl, parameters.entrySet(),
-                    new CharSequenceInputStream(poxMessage, "UTF-8"));
+                    new CharSequenceInputStream(poxMessage, ENCODING));
         }
         catch (final Exception e) {
             logger.warn("Failed to construct OAuthMessage for reporting outcomes", e);
@@ -268,13 +273,13 @@ public class LtiOutcomeService {
         }
 
         /* Send message to TC result service endpoint */
-        String resultBody;
+        String responseBody;
         try {
             logger.debug("Attempting to send OAuth message {}", oauthMessage);
             final HttpClient4 httpClient4 = new HttpClient4();
             final OAuthClient client = new OAuthClient(httpClient4);
-            final OAuthMessage result = client.invoke(oauthMessage, ParameterStyle.AUTHORIZATION_HEADER);
-            resultBody = result.readBodyAsString();
+            final OAuthMessage result = client.invoke(oauthMessage, ParameterStyle.BODY);
+            responseBody = result.readBodyAsString();
         }
         catch (final Exception e) {
             logger.warn("Failed to send OAuthMessage {}", oauthMessage, e);
@@ -282,26 +287,30 @@ public class LtiOutcomeService {
         }
 
         /* Extract status */
-        logger.debug("Received following result body from TP outcome service:\n{}", resultBody);
+        logger.debug("Received following result body from TP outcome service:\n{}", responseBody);
         final XPathFactory xPathFactory = XPathFactory.newInstance();
         final XPath xPath = xPathFactory.newXPath();
         xPath.setNamespaceContext(new PoxNamespaceContext());
         String resultStatus;
         try {
-            resultStatus = xPath.evaluate("/x:imsx_POXEnvelopeResponse/x:imsx_POXHeader/x:imsx_POXResponseHeaderInfo/x:imsx_statusInfo/x:imsx_codeMajor",  new InputSource(new StringReader(resultBody)));
+            resultStatus = xPath.evaluate("/x:imsx_POXEnvelopeResponse/x:imsx_POXHeader/x:imsx_POXResponseHeaderInfo/x:imsx_statusInfo/x:imsx_codeMajor",  new InputSource(new StringReader(responseBody)));
         }
         catch (final XPathExpressionException e) {
             throw QtiWorksLogicException.unexpectedException(e);
         }
 
         /* Expect status to be 'success' */
-        return "success".equals(resultStatus);
+        final boolean successful = "success".equals(resultStatus);
+        if (!successful) {
+            logger.warn("Outcome service returned unsccessful response. message={}, responseBody={}", oauthMessage, responseBody);
+        }
+        return successful;
     }
 
     private String buildPoxMessage(final CandidateSession candidateSession, final double normalizedScore) {
         final String messageIdentifier = "QTIWORKS_RESULT_" + ServiceUtilities.createRandomAlphanumericToken(32);
         final String lisResultSourceDid = candidateSession.getLisResultSourcedid();
-        return "<?xml version='1.0' encoding='UTF-8'?>\n"
+        return "<?xml version='1.0' encoding='" + ENCODING + "'?>\n"
                 + "<imsx_POXEnvelopeRequest xmlns='http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0'>\n"
                 + "  <imsx_POXHeader>\n"
                 + "    <imsx_POXRequestHeaderInfo>\n"
