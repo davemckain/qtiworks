@@ -1,5 +1,5 @@
 -- Schema migration script for upgrading from 1.0-M4 to 1.0-M5.
--- (This is not complete yet. It incorporates a merger of DEV26->DEV30 at present)
+-- (This is not complete yet. It incorporates a merger of DEV26->DEV31 at present)
 --
 -- NB: This has been written to work with PostgreSQL and will probably need
 -- tweaked slightly to work with other databases.
@@ -61,6 +61,10 @@ ALTER TABLE item_delivery_settings DROP allow_solution_when_closed;
 -- (DEV29 also did this for individual users' defaults, but this is probably
 -- risky so I won't do it here.)
 UPDATE delivery_settings SET author_mode = true WHERE public IS TRUE;
+
+-- The template_processing_limit column should be optional
+ALTER TABLE delivery_settings ALTER template_processing_limit DROP NOT NULL;
+UPDATE delivery_settings SET template_processing_limit = NULL WHERE template_processing_limit <= 0;
 
 -- Change to Assessment -> AssessmentPackage relationships.
 -- First change is setting selected package to be the newest one for each row in assessments
@@ -178,14 +182,13 @@ ALTER TABLE delivery_settings ADD owner_lcid BIGINT REFERENCES lti_contexts(lcid
 -- Add LTI outcomes stuff to candidate_sessions table
 ALTER TABLE candidate_sessions ADD lis_outcome_service_url TEXT;
 ALTER TABLE candidate_sessions ADD lis_result_sourcedid TEXT;
-ALTER TABLE candidate_sessions ADD reporting_status VARCHAR(22);
-UPDATE candidate_sessions SET reporting_status = 'LTI_DISABLED';
-ALTER TABLE candidate_sessions ALTER reporting_status SET NOT NULL;
+ALTER TABLE candidate_sessions ADD lis_score DOUBLE PRECISION;
+ALTER TABLE candidate_sessions ADD lis_reporting_status VARCHAR(24);
 
--- Add LTI outcomes stuff to deliveries table
-ALTER TABLE deliveries ADD lti_result_outcome_identifier TEXT;
-ALTER TABLE deliveries ADD lti_result_minimum DOUBLE PRECISION;
-ALTER TABLE deliveries ADD lti_result_maximum DOUBLE PRECISION;
+-- Add LTI outcomes stuff to assessments table
+ALTER TABLE assessments ADD lti_result_outcome_identifier TEXT;
+ALTER TABLE assessments ADD lti_result_minimum DOUBLE PRECISION;
+ALTER TABLE assessments ADD lti_result_maximum DOUBLE PRECISION;
 
 -- Add queued_lti_outcomes table
 CREATE TABLE queued_lti_outcomes (
@@ -196,5 +199,15 @@ CREATE TABLE queued_lti_outcomes (
   retry_time TIMESTAMP WITHOUT TIME ZONE,
   score DOUBLE PRECISION NOT NULL
 );
+CREATE SEQUENCE queued_lti_outcome_sequence START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
+
+-- Add lock_version columns to other tables for consistency
+ALTER TABLE deliveries ADD lock_version BIGINT;
+UPDATE deliveries SET lock_version = 1;
+ALTER TABLE deliveries ALTER lock_version SET NOT NULL;
+ALTER TABLE delivery_settings ADD lock_version BIGINT;
+UPDATE delivery_settings SET lock_version = 1;
+ALTER TABLE delivery_settings ALTER lock_version SET NOT NULL;
+
 
 COMMIT WORK;
