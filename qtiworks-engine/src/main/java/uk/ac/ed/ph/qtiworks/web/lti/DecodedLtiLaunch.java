@@ -40,26 +40,28 @@ import uk.ac.ed.ph.jqtiplus.internal.util.ObjectDumperOptions;
 import uk.ac.ed.ph.jqtiplus.internal.util.ObjectUtilities;
 
 /**
- * FIXME: Document this type
+ * Encapsulates the result of decoding an LTI launch request.
+ *
+ * @see LtiLaunchDecodingService
  *
  * @author David McKain
  */
-public final class LtiLaunchResult {
+public final class DecodedLtiLaunch {
 
     private final LtiLaunchData ltiLaunchData;
     private final int errorCode;
     private final String errorMessage;
     private final LtiUser ltiUser;
 
-    public LtiLaunchResult(final LtiLaunchData ltiLaunchData, final int errorCode, final String errorMessage) {
+    public DecodedLtiLaunch(final LtiLaunchData ltiLaunchData, final int errorCode, final String errorMessage) {
         this(ltiLaunchData, errorCode, errorMessage, null);
     }
 
-    public LtiLaunchResult(final LtiLaunchData ltiLaunchData, final LtiUser ltiUser) {
+    public DecodedLtiLaunch(final LtiLaunchData ltiLaunchData, final LtiUser ltiUser) {
         this(ltiLaunchData, 0, null, ltiUser);
     }
 
-    private LtiLaunchResult(final LtiLaunchData ltiLaunchData, final int errorCode, final String errorMessage, final LtiUser ltiUser) {
+    private DecodedLtiLaunch(final LtiLaunchData ltiLaunchData, final int errorCode, final String errorMessage, final LtiUser ltiUser) {
         this.ltiLaunchData = ltiLaunchData;
         this.errorMessage = errorMessage;
         this.errorCode = errorCode;

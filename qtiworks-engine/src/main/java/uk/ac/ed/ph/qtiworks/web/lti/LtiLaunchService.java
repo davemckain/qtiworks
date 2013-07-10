@@ -58,9 +58,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * FIXME: Document this type
+ * Handles the provision of {@link LtiResource}s when handling a domain-level LTI launch.
  *
- * FIXME: Move authentication & decoding services into here once this is kind of working?
+ * TODO: Move authentication & decoding services into here once this is kind of working?
  *
  * @author David McKain
  */
@@ -81,7 +81,7 @@ public class LtiLaunchService {
 
     /**
      * Returns the {@link LtiResource} for the given domain-level LTI launch encapsulated within
-     * the {@link LtiLaunchResult}.
+     * the {@link DecodedLtiLaunch}.
      * <p>
      * If the resource specified in the launch has never been accessed before - and if the caller
      * has {@link UserRole#INSTRUCTOR} - then the {@link LtiResource} and corresponding {@link Delivery}
@@ -96,7 +96,7 @@ public class LtiLaunchService {
      *
      * @throws IllegalArgumentException if the LTI launch is not a domain-level link.
      */
-    public LtiResource provideLtiResource(final LtiLaunchResult ltiLaunchResult) {
+    public LtiResource provideLtiResource(final DecodedLtiLaunch ltiLaunchResult) {
         Assert.notNull(ltiLaunchResult, "ltiLaunchResult");
         final LtiLaunchData ltiLaunchData = ltiLaunchResult.getLtiLaunchData();
         final LtiUser ltiUser = ltiLaunchResult.getLtiUser();

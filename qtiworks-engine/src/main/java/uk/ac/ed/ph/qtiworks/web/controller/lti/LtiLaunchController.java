@@ -45,7 +45,7 @@ import uk.ac.ed.ph.qtiworks.services.CandidateSessionStarter;
 import uk.ac.ed.ph.qtiworks.web.GlobalRouter;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchData;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchDecodingService;
-import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchResult;
+import uk.ac.ed.ph.qtiworks.web.lti.DecodedLtiLaunch;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiLaunchService;
 import uk.ac.ed.ph.qtiworks.web.lti.LtiResourceAuthenticationFilter;
 
@@ -83,7 +83,7 @@ public class LtiLaunchController {
     public String ltiDomainLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
-        final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request, LtiLaunchType.DOMAIN);
+        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request, LtiLaunchType.DOMAIN);
         if (ltiLaunchResult.isError()) {
             response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
             return null;
@@ -139,7 +139,7 @@ public class LtiLaunchController {
     public String ltiLinkLevelLaunch(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException {
         /* Decode LTI launch request, and bail out on error */
-        final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request, LtiLaunchType.LINK);
+        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(request, LtiLaunchType.LINK);
         if (ltiLaunchResult.isError()) {
             response.sendError(ltiLaunchResult.getErrorCode(), ltiLaunchResult.getErrorMessage());
             return null;
@@ -181,7 +181,7 @@ public class LtiLaunchController {
     /** LTI debugging and diagnostic help */
     @RequestMapping(value="/debug", method=RequestMethod.POST)
     public String ltiDebug(final HttpServletRequest httpRequest, final Model model) throws IOException {
-        final LtiLaunchResult ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(httpRequest, LtiLaunchType.DOMAIN);
+        final DecodedLtiLaunch ltiLaunchResult = ltiLaunchDecodingService.extractLtiLaunchData(httpRequest, LtiLaunchType.DOMAIN);
         model.addAttribute("object", ltiLaunchResult);
         return "ltiDebug";
     }

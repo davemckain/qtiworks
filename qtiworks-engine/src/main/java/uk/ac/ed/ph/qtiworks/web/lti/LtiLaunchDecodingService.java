@@ -77,7 +77,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * FIXME: Document this type
+ * Service for decoding an LTI request from an {@link HttpServletRequest}, returning an
+ * {@link DecodedLtiLaunch}.
+ * <p>
+ * This creates new {@link LtiUser}s corresponding to each request, as required.
  *
  * @author David McKain
  */
@@ -99,7 +102,7 @@ public class LtiLaunchDecodingService {
     @Resource
     private LtiUserDao ltiUserDao;
 
-    public LtiLaunchResult extractLtiLaunchData(final HttpServletRequest request, final LtiLaunchType ltiLaunchType)
+    public DecodedLtiLaunch extractLtiLaunchData(final HttpServletRequest request, final LtiLaunchType ltiLaunchType)
             throws IOException {
         /* Log OAuth parameters for debugging purposes */
         final OAuthMessage oauthMessage = OAuthServlet.getMessage(request, null);
@@ -112,19 +115,19 @@ public class LtiLaunchDecodingService {
 
         /* Extract the data we're interested in. (This is validated below) */
         final LtiLaunchData ltiLaunchData = LtiOauthMessageUtilities.extractLtiLaunchData(oauthMessage);
-        logger.debug("Extracted LTI Launch data {}", ltiLaunchData);
+        logger.info("Extracted LTI Launch data {}", ltiLaunchData);
 
         /* Make sure the OAuth consumer key has been provided */
         final String consumerKey = oauthMessage.getConsumerKey();
         if (consumerKey==null) {
             logger.warn("Consumer key missing in message {}", oauthMessage);
-            return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Bad OAuth request: consumer key is missing");
+            return new DecodedLtiLaunch(ltiLaunchData, SC_BAD_REQUEST, "Bad OAuth request: consumer key is missing");
         }
 
         /* Make sure this is a supported LTI launch message */
         if (!LtiOauthMessageUtilities.isBasicLtiLaunchRequest(ltiLaunchData)) {
             logger.warn("Unsupported LTI message type in {}", ltiLaunchData);
-            return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Unsupported LTI message type " + ltiLaunchData.getLtiMessageType());
+            return new DecodedLtiLaunch(ltiLaunchData, SC_BAD_REQUEST, "Unsupported LTI message type " + ltiLaunchData.getLtiMessageType());
         }
 
         /* Extract/create LtiUser for this launch */
@@ -133,16 +136,16 @@ public class LtiLaunchDecodingService {
                 case DOMAIN:
                     final LtiDomain ltiDomain = ltiDomainDao.findByConsumerKey(consumerKey);
                     if (ltiDomain==null) {
-                        return new LtiLaunchResult(ltiLaunchData, SC_NOT_FOUND, "Your Tool Consumer has not been registered with this instance of QTIWorks");
+                        return new DecodedLtiLaunch(ltiLaunchData, SC_NOT_FOUND, "Your Tool Consumer has not been registered with this instance of QTIWorks");
                     }
-                    return new LtiLaunchResult(ltiLaunchData, handleDomainLaunch(oauthMessage, ltiLaunchData, ltiDomain));
+                    return new DecodedLtiLaunch(ltiLaunchData, handleDomainLaunch(oauthMessage, ltiLaunchData, ltiDomain));
 
                 case LINK:
                     final Delivery delivery = lookupDelivery(consumerKey);
                     if (delivery==null) {
-                        return new LtiLaunchResult(ltiLaunchData, SC_NOT_FOUND, "This LTI link-level launch sent by your Tool Consumer was not recognised");
+                        return new DecodedLtiLaunch(ltiLaunchData, SC_NOT_FOUND, "This LTI link-level launch sent by your Tool Consumer was not recognised");
                     }
-                    return new LtiLaunchResult(ltiLaunchData, handleLinkLaunch(oauthMessage, ltiLaunchData, delivery));
+                    return new DecodedLtiLaunch(ltiLaunchData, handleLinkLaunch(oauthMessage, ltiLaunchData, delivery));
 
                 default:
                     throw new QtiWorksLogicException("Unexpected switch case " + ltiLaunchType);
@@ -152,17 +155,17 @@ public class LtiLaunchDecodingService {
             logger.warn("OAuth message validation resulted in OAuthProblemException", e);
             final String problem = e.getProblem();
             if (Problems.SIGNATURE_INVALID.equals(problem)) {
-                return new LtiLaunchResult(ltiLaunchData, SC_FORBIDDEN, "Your LTI tool consumer sent QTIWorks an incorrectly-signed OAuth message.");
+                return new DecodedLtiLaunch(ltiLaunchData, SC_FORBIDDEN, "Your LTI tool consumer sent QTIWorks an incorrectly-signed OAuth message.");
             }
-            return new LtiLaunchResult(ltiLaunchData, SC_FORBIDDEN, "Your LTI tool consumer sent QTIWorks an OAuth message that could not be accepted. The problem was '" + problem + "'.");
+            return new DecodedLtiLaunch(ltiLaunchData, SC_FORBIDDEN, "Your LTI tool consumer sent QTIWorks an OAuth message that could not be accepted. The problem was '" + problem + "'.");
         }
         catch (final OAuthException e) {
             logger.warn("OAuth message validation resulted in OAuthException", e);
-            return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Your LTI tool consumer sent QTIWorks a bad OAuth message.");
+            return new DecodedLtiLaunch(ltiLaunchData, SC_BAD_REQUEST, "Your LTI tool consumer sent QTIWorks a bad OAuth message.");
         }
         catch (final URISyntaxException e) {
             logger.warn("OAuth message validation resulted in URISyntaxException", e);
-            return new LtiLaunchResult(ltiLaunchData, SC_BAD_REQUEST, "Your LTI tool consumer sent QTIWorks a bad OAuth message.");
+            return new DecodedLtiLaunch(ltiLaunchData, SC_BAD_REQUEST, "Your LTI tool consumer sent QTIWorks a bad OAuth message.");
         }
     }
 
@@ -333,6 +336,10 @@ public class LtiLaunchDecodingService {
             for (final String role : roles) {
                 /* We're just testing LIS Context roles for now. See Appendix A.2 of the LTI spec */
                 if (role.startsWith("urn:lti:role:ims/lis/Instructor")) {
+                    return true;
+                }
+                /* (CHECK: Hmm... some VLEs don't seem to be sending URIs at all!) */
+                else if (role.equals("Instructor")) {
                     return true;
                 }
             }

@@ -41,7 +41,7 @@ package uk.ac.ed.ph.qtiworks.domain.entities;
  */
 public enum LisOutcomeReportingStatus {
 
-  //1234567890123456789012
+  //123456789012345678901234
 
     LTI_DISABLED,
     LTI_OUTCOMES_DISABLED,

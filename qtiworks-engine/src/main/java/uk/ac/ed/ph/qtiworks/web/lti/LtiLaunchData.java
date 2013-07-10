@@ -46,7 +46,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * Encapsulates the subset of the LTI launch data that are interested in.
+ * Encapsulates the subset of the LTI launch data of interest to QTIWorks.
  * <p>
  * NB: Not all LTI data is included here.
  *
