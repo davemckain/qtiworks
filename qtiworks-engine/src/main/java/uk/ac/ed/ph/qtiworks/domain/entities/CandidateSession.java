@@ -256,7 +256,7 @@ public class CandidateSession implements BaseEntity, TimestampedOnCreation {
      * for this session.
      */
     @Basic(optional=true)
-    @Column(name="lis_reporting_status", length=22)
+    @Column(name="lis_reporting_status", length=24)
     @Enumerated(EnumType.STRING)
     private LisOutcomeReportingStatus lisOutcomeReportingStatus;
 
