@@ -13,7 +13,7 @@ All Rights Reserved
   <parent>
     <groupId>uk.ac.ed.ph.qtiworks</groupId>
     <artifactId>qtiworks</artifactId>
-    <version>1.0-M4a</version>
+    <version>1.0-M4b</version>
   </parent>
   <dependencies>
     <dependency>
