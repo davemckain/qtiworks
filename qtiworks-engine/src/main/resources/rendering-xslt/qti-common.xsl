@@ -463,7 +463,7 @@ rendering.
                        qti:p|qti:pre|qti:q|qti:samp|qti:span|qti:strong|qti:var|
                        qti:dl|qti:dt|qti:dd|qti:ol|qti:ul|qti:li|
                        qti:object|qti:b|qti:big|qti:hr|qti:i|qti:small|qti:sub|qti:sup|qti:tt|
-                       qti:caption|qti:col|qti:colgroup|qti:table|qti:tbody|qti:td|qti:tfoot|qti:tr|qti:thead|
+                       qti:caption|qti:col|qti:colgroup|qti:table|qti:tbody|qti:td|qti:th|qti:tfoot|qti:tr|qti:thead|
                        qti:img|qti:a">
     <xsl:element name="{local-name()}">
       <xsl:apply-templates select="@*" mode="qti-to-xhtml"/>
