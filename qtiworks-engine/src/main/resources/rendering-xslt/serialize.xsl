@@ -22,7 +22,7 @@ hence slightly easier to debug.
   <xsl:param name="outputMethod" as="xs:string"/>
 
   <!-- (This is the HTTPS-safe version of the MathJax CDN URL -->
-  <xsl:param name="mathJaxUrl" select="'//d3eoax9i5htok0.cloudfront.net/mathjax/1.1-latest/MathJax.js?config=MML_HTMLorMML-full'" as="xs:string"/>
+  <xsl:param name="mathJaxUrl" select="'https://c328740.ssl.cf1.rackcdn.com/mathjax/2.1-latest/MathJax.js?config=MML_HTMLorMML'" as="xs:string"/>
   <xsl:param name="mathJaxConfig" as="xs:string?"/>
 
   <!-- ************************************************************ -->
