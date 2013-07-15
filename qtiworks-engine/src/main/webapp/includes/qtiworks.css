@@ -158,19 +158,14 @@ aside {
   margin-bottom: 2em;
 }
 
-/* ========== LTI info (new) ========== */
+/* ========== LTI dashboard (new) ========== */
 
 table.dashboard {
   width: 100%;
+  background: #ccdbf0 linear-gradient(to bottom, #ccdbf0, #eef3fa);
   border-collapse: separate;
-  border-radius: 1em;
-  border: 2px solid #ccbdf0;
-  background: url(images/bluegradient.png) left top repeat-x;
-  margin: 0 0 6em 0;
-}
-
-.dashboard td {
-  border-bottom: 1px solid #ccbdf0;
+  border-radius: 0.8em;
+  border: 2px solid #ccdbf0;
 }
 
 .dashboard .indicator {
@@ -213,10 +208,19 @@ table.dashboard {
 
 .dashboard .actions a {
   border-radius: 1em;
-  border: 1px solid #ccbdf0;
-  background: url(images/bluegradient.png) left top repeat-x;
+  border: 2px solid #ccdbf0;
+  background: #eef3fa;
   text-decoration: none;
   padding: 0.5em;
+}
+
+.dashboard .actions a:link,
+.dashboard .actions a:visited {
+}
+
+.dashboard .actions a:hover {
+  border: 2px solid #c80042;
+  background: #eef3fa;
 }
 
 .dashboard .actions a:before {
@@ -676,7 +680,7 @@ form.deliverySettings .stdFormRow {
 /* ========== Instructor Assessment Info ========== */
 
 .infoBox {
-  border: 2px solid #ccbdf0;
+  border: 2px solid #ccdbf0;
   padding: 0.5em;
   margin-bottom: 1em;
   background: url(images/bluegradient.png) left top repeat-x;
@@ -696,7 +700,7 @@ form.deliverySettings .stdFormRow {
 /* ========== Random ========== */
 
 pre.xmlSource {
-  border: 1px solid #ccbdf0;
+  border: 1px solid #ccdbf0;
   font-size: smaller;
   overflow-x: auto;
   background: #f7f7ff;

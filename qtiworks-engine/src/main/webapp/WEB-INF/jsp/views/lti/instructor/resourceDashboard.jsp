@@ -72,7 +72,7 @@ LTI resource dashboard (after domain-level launch)
           </div>
         </td>
         <td class="actions">
-          <page:postLink path="${primaryRouting['try']}" title="Try out"/>
+          <page:postLink path="${primaryRouting['try']}" title="Try / Debug Assessment"/>
         </td>
       </tr>
       <%-- Availability --%>
@@ -115,7 +115,7 @@ LTI resource dashboard (after domain-level launch)
           </div>
         </td>
         <td class="actions">
-          <a href="${thisAssessmentRouting['outcomesSettings']}">Set up</a>
+          <a href="${thisAssessmentRouting['outcomesSettings']}">Set up LTI outcomes</a>
         </td>
       </tr>
       <%-- Delivery Settings --%>
@@ -147,13 +147,13 @@ LTI resource dashboard (after domain-level launch)
         <td class="actions">
           <c:choose>
             <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_ITEM'}">
-              <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Manage / Select</a>
+              <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Manage / Select Delivery Settings</a>
             </c:when>
             <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_TEST'}">
-              <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Manage / Select</a>
+              <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Manage / Select Delivery Settings</a>
             </c:when>
             <c:otherwise>
-              <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Manage / Select</a>
+              <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Manage / Select Delivery Settings</a>
             </c:otherwise>
           </c:choose>
         </td>
@@ -170,13 +170,15 @@ LTI resource dashboard (after domain-level launch)
           </div>
         </td>
         <td class="actions">
-          <a href="${primaryRouting['listCandidateSessions']}">Show candidate sessions</a>
+          <a href="${primaryRouting['listCandidateSessions']}">Show / Proctor candidate sessions</a>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <a href="${utils:escapeLink(primaryRouting['debug'])}">Show developer diagnostic information</a>
+  <p style="margin-top:2em">
+    <a href="${utils:escapeLink(primaryRouting['debug'])}">Show developer diagnostic information</a>
+  </p>
 
 </page:ltipage>
 
