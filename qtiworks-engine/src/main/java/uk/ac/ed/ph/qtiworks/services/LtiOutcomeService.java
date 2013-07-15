@@ -43,6 +43,7 @@ import uk.ac.ed.ph.qtiworks.domain.entities.LtiUser;
 import uk.ac.ed.ph.qtiworks.domain.entities.QueuedLtiOutcome;
 import uk.ac.ed.ph.qtiworks.domain.entities.User;
 import uk.ac.ed.ph.qtiworks.domain.entities.UserType;
+import uk.ac.ed.ph.qtiworks.services.ScheduledService;
 import uk.ac.ed.ph.qtiworks.services.base.AuditLogger;
 import uk.ac.ed.ph.qtiworks.services.base.ServiceUtilities;
 import uk.ac.ed.ph.qtiworks.services.dao.CandidateSessionDao;
@@ -51,6 +52,7 @@ import uk.ac.ed.ph.qtiworks.services.dao.QueuedLtiOutcomeDao;
 import uk.ac.ed.ph.jqtiplus.internal.util.Assert;
 
 import java.io.StringReader;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,6 +74,7 @@ import net.oauth.ParameterStyle;
 import net.oauth.client.OAuthClient;
 import net.oauth.client.httpclient4.HttpClient4;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.input.CharSequenceInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,8 +90,6 @@ import org.xml.sax.InputSource;
  * The actual work of this service is performed asynchronously with some basic durability
  * provided by persisting the data to be sent within the entity model.
  *
- * FIXME: This is not working with the UoE Learn at present. I am investigating.
- *
  * @author David McKain
  */
 @Service
@@ -97,8 +98,7 @@ public class LtiOutcomeService {
 
     private static final Logger logger = LoggerFactory.getLogger(LtiOutcomeService.class);
 
-    /** FIXME: Not sure how to set this within OAuth yet, so I've left as the apparent default */
-    private static final String ENCODING = "ISO-8859-1";
+    private static final String ENCODING = "UTF-8";
 
     @Resource
     private AuditLogger auditLogger;
@@ -255,6 +255,9 @@ public class LtiOutcomeService {
         /* Create POX XML envelope around message */
         final String poxMessage = buildPoxMessage(candidateSession, score);
 
+        /* Compute hash for the message */
+        final String bodyHash = computeBodyHash(poxMessage);
+
         /* Wrap as OAuth message */
         final OAuthServiceProvider serviceProvider = new OAuthServiceProvider(null, null, null);
         final OAuthConsumer consumer = new OAuthConsumer(null, ltiConsumerKey, ltiConsumerSecret, serviceProvider);
@@ -263,6 +266,8 @@ public class LtiOutcomeService {
         final OAuthMessage oauthMessage;
         try {
             final Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("Content-Type", "text/xml; charset=" + ENCODING);
+            parameters.put("oauth_body_hash", bodyHash);
             oauthMessage = accessor.newRequestMessage("POST",
                     lisOutcomeServiceUrl, parameters.entrySet(),
                     new CharSequenceInputStream(poxMessage, ENCODING));
@@ -278,7 +283,7 @@ public class LtiOutcomeService {
             logger.debug("Attempting to send OAuth message {}", oauthMessage);
             final HttpClient4 httpClient4 = new HttpClient4();
             final OAuthClient client = new OAuthClient(httpClient4);
-            final OAuthMessage result = client.invoke(oauthMessage, ParameterStyle.BODY);
+            final OAuthMessage result = client.invoke(oauthMessage, ParameterStyle.AUTHORIZATION_HEADER);
             responseBody = result.readBodyAsString();
         }
         catch (final Exception e) {
@@ -307,6 +312,9 @@ public class LtiOutcomeService {
         return successful;
     }
 
+    /**
+     * Builds the appropriate POX message for sending the result back to the TC.
+     */
     private String buildPoxMessage(final CandidateSession candidateSession, final double normalizedScore) {
         final String messageIdentifier = "QTIWORKS_RESULT_" + ServiceUtilities.createRandomAlphanumericToken(32);
         final String lisResultSourceDid = candidateSession.getLisResultSourcedid();
@@ -333,13 +341,34 @@ public class LtiOutcomeService {
                 + "      </resultRecord>\n"
                 + "    </replaceResultRequest>\n"
                 + "  </imsx_POXBody>\n"
-                + "</imsx_POXEnvelopeRequest>";
+                + "</imsx_POXEnvelopeRequest>\n\n";
+    }
+
+    /**
+     * Computes the hash for the POX message body.
+     * <p>
+     * (The net.oauth library does not compute this for us!)
+     *
+     * @param poxMessage
+     * @return
+     */
+    private String computeBodyHash(final String poxMessage) {
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA1");
+            md.update(poxMessage.getBytes(ENCODING));
+        }
+        catch (final Exception e) {
+            throw new QtiWorksLogicException("Unexpected failure computing body digest");
+        }
+        final byte[] output = Base64.encodeBase64(md.digest());
+        return new String(output);
     }
 
     /**
      * Trivial implementation of {@link NamespaceContext} to handle POX messages
      */
-    private static final class PoxNamespaceContext implements NamespaceContext {
+    static final class PoxNamespaceContext implements NamespaceContext {
 
         public static final String POX_NAMESPACE_URI = "http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0";
 

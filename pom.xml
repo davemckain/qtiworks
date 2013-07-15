@@ -45,6 +45,7 @@ All Rights Reserved
     <javacsv.version>2.0</javacsv.version>
     <jackson.version>2.1.2</jackson.version>
     <commons-lang.version>3.1</commons-lang.version>
+    <commons-codec.version>1.6</commons-codec.version>
     <commons-io.version>2.3</commons-io.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
