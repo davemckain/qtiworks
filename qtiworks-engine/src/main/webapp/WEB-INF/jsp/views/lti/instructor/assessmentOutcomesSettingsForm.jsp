@@ -41,7 +41,7 @@ outcomeDeclarationList
           <legend>Outcome Variable Selection</legend>
           <div class="stdFormRow">
             <div class="grid_1">
-              <div class="workflowStep">1<span class="required">*</span></div>
+              <div class="bigStatus">1<span class="required">*</span></div>
             </div>
             <div class="grid_3">
               <label for="title">Selected outcome variable:</label>
@@ -67,7 +67,7 @@ outcomeDeclarationList
           <legend>Score normalisation</legend>
             <div class="stdFormRow">
               <div class="grid_1">
-                <div class="workflowStep">2<span class="required">*</span></div>
+                <div class="bigStatus">2<span class="required">*</span></div>
               </div>
               <div class="grid_3">
                 <label for="prompt">Minimum possible score:</label>
@@ -85,7 +85,7 @@ outcomeDeclarationList
             <div class="clear"></div>
             <div class="stdFormRow">
               <div class="grid_1">
-                <div class="workflowStep">3<span class="required">*</span></div>
+                <div class="bigStatus">3<span class="required">*</span></div>
               </div>
               <div class="grid_3">
                 <label for="prompt">Maximum possible score:</label>
@@ -100,7 +100,7 @@ outcomeDeclarationList
         <fieldset>
           <div class="stdFormRow">
             <div class="grid_1">
-              <div class="workflowStep">3<span class="required">*</span></div>
+              <div class="bigStatus">3<span class="required">*</span></div>
             </div>
             <div class="grid_3">
               <label for="submit">Hit "Save" to save these settings</label>

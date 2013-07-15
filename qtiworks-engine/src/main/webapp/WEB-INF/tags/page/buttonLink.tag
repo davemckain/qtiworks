@@ -14,11 +14,10 @@ All Rights Reserved
 <%@ attribute name="title" required="true" type="java.lang.String" %>
 <%@ attribute name="confirm" required="false" type="java.lang.String" %>
 <%@ attribute name="confirmCondition" required="false" type="java.lang.Boolean" %>
-<%@ attribute name="cssClass" required="false" type="java.lang.String" %>
 
 <c:set var="actionUrl" value="${utils:escapeLink(path)}"/>
 <form action="${actionUrl}" method="post" class="buttonLink">
-  <button type="submit" class="${cssClass ? cssClass : 'playButton'}">${fn:replace(title, ' ', '&#xa0;')}</button>
+  <button type="submit" class="buttonLink">${fn:replace(title, ' ', '&#xa0;')}</button>
 </form>
 <c:if test="${!empty confirm && confirmCondition==true}">
   <script>

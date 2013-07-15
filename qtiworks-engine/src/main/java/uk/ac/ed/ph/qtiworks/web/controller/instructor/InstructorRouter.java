@@ -79,7 +79,7 @@ public class InstructorRouter {
 
     public Map<String, String> buildPrimaryRouting() {
         final Map<String, String> primaryRouting = new HashMap<String, String>();
-        primaryRouting.put("dashboard", buildWebUrl(""));
+        primaryRouting.put("dashboard", buildWebUrl("/"));
         primaryRouting.put("uploadAssessment", buildWebUrl("/assessments/upload"));
         primaryRouting.put("listAssessments", buildWebUrl("/assessments"));
         primaryRouting.put("listDeliverySettings", buildWebUrl("/deliverysettings"));

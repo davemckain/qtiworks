@@ -15,7 +15,7 @@ Shows information about a particular Assessment
       <a href="${utils:escapeLink(primaryRouting['resourceDashboard'])}">Assessment Launch Dashboard</a> &#xbb;
       <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Assessment Library</a> &#xbb;
     </nav>
-    <h2>Assessment ${fn:escapeXml(assessment.name)}</h2>
+    <h2>${fn:escapeXml(assessment.title)} (${fn:escapeXml(assessment.name)})</h2>
   </header>
 
   <div class="grid_6">

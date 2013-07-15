@@ -120,10 +120,8 @@ public class InstructorAssessmentManagementController {
     @RequestMapping(value="/assessments", method=RequestMethod.GET)
     public String listOwnAssessments(final Model model) {
         final List<AssessmentAndPackage> assessments = assessmentDataService.getCallerUserAssessments();
-
-        instructorModelHelper.setupModel(model);
         model.addAttribute(assessments);
-        model.addAttribute("assessmentRouting", instructorRouter.buildAssessmentListRouting(assessments));
+        model.addAttribute("assessmentListRouting", instructorRouter.buildAssessmentListRouting(assessments));
         return "listAssessments";
     }
 

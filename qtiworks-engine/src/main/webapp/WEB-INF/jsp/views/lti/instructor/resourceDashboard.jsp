@@ -109,7 +109,7 @@ LTI resource dashboard (after domain-level launch)
                 with range [${thisAssessment.ltiResultMinimum}..${thisAssessment.ltiResultMaximum}]
               </c:when>
               <c:otherwise>
-                Not set up. Outcomes cannot be returned until this is set up.
+                Not set up. Outcomes cannot be returned until this is set up
               </c:otherwise>
             </c:choose>
           </div>
@@ -165,8 +165,8 @@ LTI resource dashboard (after domain-level launch)
           <div class="name">Candidate Session Reporting &amp; Proctoring:</div>
           <div class="value">
             ${thisDeliveryStatusReport.nonTerminatedSessionCount}
-            session${thisDeliveryStatusReport.nonTerminatedSessionCount==1?'':'s'}
-            currently running out of ${thisDeliveryStatusReport.sessionCount} total.
+            candidate session${thisDeliveryStatusReport.nonTerminatedSessionCount==1?'':'s'}
+            currently running out of ${thisDeliveryStatusReport.sessionCount} total
           </div>
         </td>
         <td class="actions">

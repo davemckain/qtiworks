@@ -37,7 +37,7 @@ primaryRouting
           <c:forEach var="delivery" items="${deliveryList}" varStatus="loopStatus">
             <tr>
               <td align="center">
-                <div class="workflowStep">${loopStatus.index + 1}</div>
+                <div class="bigStatus">${loopStatus.index + 1}</div>
               </td>
               <td align="center">
                 <a href="${utils:escapeLink(deliveryListRouting[delivery.id]['show'])}"><c:out value="${delivery.title}"/></a>

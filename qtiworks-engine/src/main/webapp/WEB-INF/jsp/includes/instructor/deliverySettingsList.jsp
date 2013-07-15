@@ -26,21 +26,21 @@ deliverySettingsList - form backing template
           <c:set var="areBeingUsed" value="${!empty thisAssessment && !empty theseDeliverySettings && theseDeliverySettings.id==deliverySettings.id}"/>
           <tr class="${areBeingUsed ? 'selected' : ''}">
             <td align="center">
-              <div class="workflowStep">${loopStatus.index + 1}</div>
+              <div class="bigStatus">${loopStatus.index + 1}</div>
             </td>
-            <td align="center" class="launch">
+            <td align="center" class="actions">
               <c:if test="${!empty thisAssessment && thisAssessment.assessmentType==deliverySettings.assessmentType}">
                 <c:choose>
                   <c:when test="${!empty theseDeliverySettings && theseDeliverySettings.id==deliverySettings.id}">
-                    Using these Delivery Settings
+                    Using these Delivery Settings for this launch
                   </c:when>
                   <c:otherwise>
-                    <page:buttonLink path="${deliverySettingsRouting['select']}" title="Use these Delivery Settings"/>
+                    <page:postLink path="${deliverySettingsRouting['select']}" title="Use for this launch"/>
                   </c:otherwise>
                 </c:choose>
               </c:if>
             </td>
-            <td>
+            <td align="center">
               <h4>
                 <a href="${utils:escapeLink(deliverySettingsRouting['showOrEdit'])}">
                   <c:out value="${deliverySettings.title}"/>

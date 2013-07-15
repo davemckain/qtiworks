@@ -8,7 +8,7 @@ Lists Assessments owned by caller
 Model:
 
 assessmentAndPackageList
-assessmentRouting (aid -> action -> URL)
+assessmentListRouting (aid -> action -> URL)
 primaryRouting (action -> URL)
 
 --%>
@@ -36,15 +36,14 @@ primaryRouting (action -> URL)
           <c:forEach var="assessmentAndPackage" items="${assessmentAndPackageList}" varStatus="loopStatus">
             <c:set var="assessment" value="${assessmentAndPackage.assessment}"/>
             <c:set var="assessmentPackage" value="${assessmentAndPackage.assessmentPackage}"/>
+            <c:set var="assessmentRouting" value="${assessmentListRouting[assessment.id]}"/>
             <tr>
               <td align="center">
-                <div class="workflowStep">${loopStatus.index + 1}</div>
+                <div class="bigStatus">${loopStatus.index + 1}</div>
               </td>
-              <td align="center" class="launch">
+              <td align="center" class="actions">
                 <c:if test="${assessmentPackage.launchable}">
-                  <form action="${assessmentRouting[assessment.id]['try']}" method="post">
-                    <button type="submit" class="playButton">Quick&#xa0;Try</button>
-                  </form>
+                  <page:postLink path="${assessmentRouting['try']}" title="Quick Try"/>
                 </c:if>
               </td>
               <td>

@@ -56,7 +56,7 @@ primaryRouting (action -> URL)
 
     <fieldset>
       <div class="grid_1">
-        <div class="workflowStep">1</div>
+        <div class="bigStatus">1</div>
       </div>
       <div class="grid_5">
         <label for="file">Select a Content Package ZIP file or Assessment Item XML file to upload and store:</label>
@@ -84,7 +84,7 @@ primaryRouting (action -> URL)
     <div class="clear"></div>
     <fieldset>
       <div class="grid_1">
-        <div class="workflowStep">2</div>
+        <div class="bigStatus">2</div>
       </div>
       <div class="grid_11">
         <label for="submit">Hit "Replace Assessment Package Content"</label>

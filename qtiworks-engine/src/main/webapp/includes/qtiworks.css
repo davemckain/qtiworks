@@ -206,7 +206,7 @@ table.dashboard {
   padding: 0 0.5em;
 }
 
-.dashboard .actions a {
+.actions a {
   border-radius: 1em;
   border: 2px solid #ccdbf0;
   background: #eef3fa;
@@ -214,39 +214,32 @@ table.dashboard {
   padding: 0.5em;
 }
 
-.dashboard .actions a:link,
-.dashboard .actions a:visited {
+.actions a:link,
+.actions a:visited {
 }
 
-.dashboard .actions a:hover {
+.actions a:hover {
   border: 2px solid #c80042;
   background: #eef3fa;
 }
 
-.dashboard .actions a:before {
+.actions a:before {
   content: '\25b6';
-  color: #99ff99;
-  font-size: 18px;
-  line-height: 18px;
+  color: #33cc33;
+  font-size: 1.2em;
+  line-height: 1.0em;
 }
 
-/* ========== Newer instructor mode stylings (done for LTI) ========== */
+/* ========== Misc LTI/Instructor stuff ========== */
+
+.bigStatus {
+  line-height: 40px;
+  font-size: 40px;
+  font-weight: bold;
+}
 
 ul.menu ul {
   margin: 0;
-}
-
-.playButton {
-  font-family: 'Open Sans', sans-serif;
-  height: 40px;
-  line-height: 40px;
-}
-
-.playButton:before {
-  content: '\25b6';
-  color: #99ff99;
-  font-size: 18px;
-  line-height: 18px;
 }
 
 h3 {
@@ -282,7 +275,6 @@ table.cellTable td h4 {
   background-color: #ccdbf0;
 }
 
-
 table.listTable {
   width: 100%;
   margin-bottom: 2em;
@@ -311,6 +303,13 @@ table.listTable td h4 {
 
 .listTable tr.selected {
   background-color: #ccdbf0;
+}
+
+td.plus:before {
+  content: '\271a';
+  line-height: 40px;
+  font-size: 40px;
+  font-weight: bold;
 }
 
 /* ========== Footer ========== */
@@ -382,6 +381,19 @@ div.sampleList li h4 {
 div.sampleList .launch {
   vertical-align: middle;
   height: 40px;
+}
+
+.buttonLink {
+  font-family: 'Open Sans', sans-serif;
+  height: 40px;
+  line-height: 40px;
+}
+
+.buttonLink:before {
+  content: '\25b6';
+  color: #33cc33;
+  font-size: 18px;
+  line-height: 18px;
 }
 
 /* ========== Box Launch Buttons ========== */
@@ -645,12 +657,6 @@ ul.dsSelector li div.dsPrompt {
 
 .expandy {
   width: 100%;
-}
-
-.workflowStep {
-  line-height: 40px;
-  font-size: 40px;
-  font-weight: bold;
 }
 
 fieldset {

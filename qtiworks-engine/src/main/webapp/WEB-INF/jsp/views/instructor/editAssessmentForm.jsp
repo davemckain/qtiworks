@@ -36,7 +36,7 @@ primaryRouting (action -> URL)
     <fieldset>
       <div class="stdFormRow">
         <div class="grid_1">
-          <div class="workflowStep">1<span class="required">*</span></div>
+          <div class="bigStatus">1<span class="required">*</span></div>
         </div>
         <div class="grid_2">
           <label for="title">Name:</label>
@@ -48,7 +48,7 @@ primaryRouting (action -> URL)
       <div class="clear"></div>
       <div class="stdFormRow">
         <div class="grid_1">
-          <div class="workflowStep">2<span class="required">*</span></div>
+          <div class="bigStatus">2<span class="required">*</span></div>
         </div>
         <div class="grid_2">
           <label for="title">Title:</label>
@@ -62,7 +62,7 @@ primaryRouting (action -> URL)
     <fieldset>
       <div class="stdFormRow">
         <div class="grid_1">
-          <div class="workflowStep">3</div>
+          <div class="bigStatus">3</div>
         </div>
         <div class="grid_2">
           <label for="submit">Hit "Save"</label>

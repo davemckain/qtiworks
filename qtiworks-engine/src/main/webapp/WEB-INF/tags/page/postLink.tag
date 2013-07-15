@@ -14,12 +14,13 @@ All Rights Reserved
 <%@ attribute name="path" required="true" type="java.lang.String" %>
 <%@ attribute name="title" required="true" type="java.lang.String" %>
 <%@ attribute name="confirm" required="false" type="java.lang.String" %>
+<%@ attribute name="confirmCondition" required="false" type="java.lang.Boolean" %>
 
 <c:set var="actionUrl" value="${utils:escapeLink(path)}"/>
 <form action="${actionUrl}" method="post" class="postLink">
   <input type="submit" value="${fn:escapeXml(title)}">
 </form>
-<c:if test="${!empty confirm}">
+<c:if test="${!empty confirm && confirmCondition==true}">
   <script>
     $("form[action='${actionUrl}']").submit(function() {
       return confirm('${confirm}');

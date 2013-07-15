@@ -52,19 +52,19 @@ assessmentListRouting (aid -> action -> URL)
             <c:set var="isSelectedAssessment" value="${!empty thisAssessment && thisAssessment.id==assessment.id}"/>
             <tr class="${isSelectedAssessment ? 'selected' : ''}">
               <td align="center">
-                <div class="workflowStep">${loopStatus.index + 1}</div>
+                <div class="bigStatus">${loopStatus.index + 1}</div>
               </td>
-              <td align="center">
+              <td align="center" class="actions">
                 <c:if test="${assessmentPackage.launchable}">
-                  <page:buttonLink path="${assessmentRouting['try']}" title="Quick Try"/>
+                  <page:postLink path="${assessmentRouting['try']}" title="Quick Try"/>
                 </c:if>
               </td>
-              <td align="center">
+              <td align="center" class="actions">
                 <c:choose>
                   <c:when test="${!isSelectedAssessment}">
-                    <page:buttonLink path="${assessmentRouting['select']}" title="Select for this launch"
-                    confirmCondition="${thisDeliveryStatusReport.sessionCount>0}"
-                    confirm="Are you sure? Selecting a different assessment would terminate ${thisDeliveryStatusReport.nonTerminatedSessionCount} candidate session(s) currently running on this launch, and delete the gathered data for all ${thisDeliveryStatusReport.sessionCount} session(s) launched so far"
+                    <page:postLink path="${assessmentRouting['select']}" title="Select for this launch"
+                      confirmCondition="${thisDeliveryStatusReport.sessionCount>0}"
+                      confirm="Are you sure? Selecting a different assessment would terminate ${thisDeliveryStatusReport.nonTerminatedSessionCount} candidate session(s) currently running on this launch, and delete the gathered data for all ${thisDeliveryStatusReport.sessionCount} session(s) launched so far"
                     />
                   </c:when>
                   <c:otherwise>
@@ -87,6 +87,13 @@ assessmentListRouting (aid -> action -> URL)
               </td>
             </tr>
           </c:forEach>
+          <tr>
+            <td class="plus"></td>
+            <td colspan="2" align="center" class="actions">
+              <a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a>
+            </td>
+            <td colspan="3"></td>
+          </tr>
         </tbody>
       </table>
     </c:when>
