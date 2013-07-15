@@ -7,7 +7,7 @@ LTI resource dashboard (after domain-level launch)
 
 --%>
 <%@ include file="/WEB-INF/jsp/includes/pageheader.jspf" %>
-<page:ltipage title="Assessment Launcher - Getting Started">
+<page:ltipage title="Assessment Launch Dashboard">
 
   <header class="actionHeader">
     <h2>Assessment Launch Dashboard</h2>
@@ -17,188 +17,164 @@ LTI resource dashboard (after domain-level launch)
     <p>
   </header>
 
-  <div class="dashboardRow">
-    <div class="grid_1">
-      <div class="trafficLight green">&#xa0;</div>
-    </div>
-    <div class="grid_8">
-      <div class="name">Selected Assessment:</div>
-      <div class="value">
-        <a href="${utils:escapeLink(thisAssessmentRouting['show'])}">
-          <c:out value="${thisAssessment.title}"/>
-          (<c:out value="${thisAssessment.name}"/>)
-        </a>
-      </div>
-    </div>
-    <div class="grid_2">
-      <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Select from Assessment Library</a>
-    </div>
-    <div class="clear"></div>
-  </div>
-  <div class="dashboardRow">
-    <div class="grid_1">
-      <c:choose>
-        <c:when test="${empty thisAssessment || empty thisAssessmentPackage || !thisAssessmentPackage.launchable}">
-          <div class="trafficLight red">&#xa0;</div>
-        </c:when>
-        <c:when test="${!thisAssessmentPackage.valid}">
-          <div class="trafficLight amber">&#xa0;</div>
-        </c:when>
-        <c:otherwise>
-          <div class="trafficLight green">&#xa0;</div>
-        </c:otherwise>
-      </c:choose>
-    </div>
-    <div class="grid_8">
-      <div class="name">Validation Status:</div>
-      <div class="value">
-        <a href="${utils:escapeLink(thisAssessmentRouting['validate'])}">
-          <c:choose>
-            <c:when test="${empty thisAssessment || empty thisAssessmentPackage || !thisAssessmentPackage.launchable}">
-              This Assessment cannot be run and needs fixed
-            </c:when>
-            <c:when test="${!thisAssessmentPackage.valid}">
+  <table class="dashboard">
+    <tbody>
+      <tr class="statusOk">
+        <td class="indicator"></td>
+        <td class="category">
+          <div class="name">Selected Assessment:</div>
+          <div class="value">
+            <a href="${utils:escapeLink(thisAssessmentRouting['show'])}">
+              <c:out value="${thisAssessment.title}"/>
+              (<c:out value="${thisAssessment.name}"/>)
+            </a>
+          </div>
+        </td>
+        <td class="actions">
+          <a href="${utils:escapeLink(primaryRouting['listAssessments'])}">Select / Upload From Assessment Library</a>
+        </td>
+      </tr>
+      <%-- Validation status --%>
+      <c:set var="status">
+        <c:choose>
+          <c:when test="${empty thisAssessment || empty thisAssessmentPackage || !thisAssessmentPackage.launchable}">statusError</c:when>
+          <c:when test="${!thisAssessmentPackage.valid}">statusWarning</c:when>
+          <c:otherwise>statusOk</c:otherwise>
+        </c:choose>
+      </c:set>
+      <tr class="${status}">
+        <td class="indicator"></td>
+        <td class="category">
+          <div class="name">Validation Status:</div>
+          <div class="value">
+            <a href="${utils:escapeLink(thisAssessmentRouting['validate'])}">
               <c:choose>
-                <c:when test="${thisAssessmentPackage.errorCount > 0}">
-                  ${thisAssessmentPackage.errorCount}&#xa0;validation&#xa0;
-                  ${thisAssessmentPackage.errorCount > 1 ? 'errors' : 'error'}
+                <c:when test="${empty thisAssessment || empty thisAssessmentPackage || !thisAssessmentPackage.launchable}">
+                  This Assessment cannot be run and needs fixed
                 </c:when>
-                <c:when test="${thisAssessmentPackage.warningCount > 0}">
-                  ${thisAssessmentPackage.warningCount}&#xa0;validation&#xa0;
-                  ${thisAssessmentPackage.warningCount > 1 ? 'warnings' : 'warning'}
+                <c:when test="${!thisAssessmentPackage.valid}">
+                  <c:choose>
+                    <c:when test="${thisAssessmentPackage.errorCount > 0}">
+                      ${thisAssessmentPackage.errorCount}&#xa0;validation&#xa0;
+                      ${thisAssessmentPackage.errorCount > 1 ? 'errors' : 'error'}
+                    </c:when>
+                    <c:when test="${thisAssessmentPackage.warningCount > 0}">
+                      ${thisAssessmentPackage.warningCount}&#xa0;validation&#xa0;
+                      ${thisAssessmentPackage.warningCount > 1 ? 'warnings' : 'warning'}
+                    </c:when>
+                  </c:choose>
                 </c:when>
+                <c:otherwise>
+                  All validation checks passed
+                </c:otherwise>
               </c:choose>
+            </a>
+          </div>
+        </td>
+        <td class="actions">
+          <page:postLink path="${primaryRouting['try']}" title="Try out"/>
+        </td>
+      </tr>
+      <%-- Availability --%>
+      <c:set var="status" value="${thisDelivery.open ? 'statusOk' : 'statusError'}"/>
+      <tr class="${status}">
+        <td class="indicator"></td>
+        <td class="category">
+          <div class="name">Availability to candidates:</div>
+          <div class="value">
+            <c:choose>
+              <c:when test="${thisDelivery.open}">
+                This Assessment is currently available to candidates
+              </c:when>
+              <c:otherwise>
+                You have not yet made this Assessment available to candidates
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </td>
+        <td class="actions">
+          <page:postLink path="${primaryRouting['toggleAvailability']}" title="${thisDelivery.open ? 'Make Unavailable' : 'Make Available'}"/>
+        </td>
+      </tr>
+      <%-- LTI status --%>
+      <c:set var="status" value="${empty thisAssessment.ltiResultOutcomeIdentifier ? 'statusError' : 'statusOk'}"/>
+      <tr class="${status}">
+        <td class="indicator"></td>
+        <td class="category">
+          <div class="name">LTI Outcomes Reporting Setup:</div>
+          <div class="value">
+            <c:choose>
+              <c:when test="${!empty thisAssessment.ltiResultOutcomeIdentifier}">
+                Reporting outcome <code>${thisAssessment.ltiResultOutcomeIdentifier}</code>
+                with range [${thisAssessment.ltiResultMinimum}..${thisAssessment.ltiResultMaximum}]
+              </c:when>
+              <c:otherwise>
+                Not set up. Outcomes cannot be returned until this is set up.
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </td>
+        <td class="actions">
+          <a href="${thisAssessmentRouting['outcomesSettings']}">Set up</a>
+        </td>
+      </tr>
+      <%-- Delivery Settings --%>
+      <tr class="statusOk">
+        <td class="indicator"></td>
+        <td class="category">
+          <div class="name">Delivery Settings:</div>
+          <div class="value">
+            <c:choose>
+              <c:when test="${empty theseDeliverySettings}">
+                Using default delivery settings
+                <c:choose>
+                  <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_ITEM'}">
+                    for single items
+                  </c:when>
+                  <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_TEST'}">
+                    for tests
+                  </c:when>
+                </c:choose>
+              </c:when>
+              <c:otherwise>
+                <a href="${utils:escapeLink(theseDeliverySettingsRouting['showOrEdit'])}">
+                  <c:out value="${theseDeliverySettings.title}"/>
+                </a>
+              </c:otherwise>
+            </c:choose>
+          </div>
+        </td>
+        <td class="actions">
+          <c:choose>
+            <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_ITEM'}">
+              <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Manage / Select</a>
+            </c:when>
+            <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_TEST'}">
+              <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Manage / Select</a>
             </c:when>
             <c:otherwise>
-              All validation checks passed
+              <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Manage / Select</a>
             </c:otherwise>
           </c:choose>
-        </a>
-      </div>
-    </div>
-    <div class="grid_2">
-      <page:postLink path="${primaryRouting['try']}" title="Try out"/>
-    </div>
-    <div class="clear"></div>
-  </div>
-  <div class="dashboardRow">
-    <div class="grid_1">
-      <c:choose>
-        <c:when test="${empty theseDeliverySettings}">
-          <div class="trafficLight amber">&#xa0;</div>
-        </c:when>
-        <c:otherwise>
-          <div class="trafficLight green">&#xa0;</div>
-        </c:otherwise>
-      </c:choose>
-    </div>
-    <div class="grid_8">
-      <div class="name">Delivery Settings:</div>
-      <div class="value">
-        <c:choose>
-          <c:when test="${empty theseDeliverySettings}">
-            None chosen - defaults will be used.
-          </c:when>
-          <c:otherwise>
-            <a href="${utils:escapeLink(theseDeliverySettingsRouting['showOrEdit'])}">
-              <c:out value="${theseDeliverySettings.title}"/>
-            </a>
-          </c:otherwise>
-        </c:choose>
-      </div>
-    </div>
-    <div class="grid_2">
-      <c:choose>
-        <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_ITEM'}">
-          <a href="${utils:escapeLink(primaryRouting['listItemDeliverySettings'])}">Manage / Select</a>
-        </c:when>
-        <c:when test="${!empty thisAssessment && thisAssessment.assessmentType=='ASSESSMENT_TEST'}">
-          <a href="${utils:escapeLink(primaryRouting['listTestDeliverySettings'])}">Manage / Select</a>
-        </c:when>
-        <c:otherwise>
-          <a href="${utils:escapeLink(primaryRouting['deliverySettingsManager'])}">Manage / Select</a>
-        </c:otherwise>
-      </c:choose>
-    </div>
-    <div class="clear"></div>
-  </div>
-  <div class="dashboardRow">
-    <div class="grid_1">
-      <c:choose>
-        <c:when test="${thisDelivery.open}">
-          <div class="trafficLight green">&#xa0;</div>
-        </c:when>
-        <c:otherwise>
-          <div class="trafficLight red">&#xa0;</div>
-        </c:otherwise>
-      </c:choose>
-    </div>
-    <div class="grid_8">
-      <div class="name">Currently available to candidates:</div>
-      <div class="value">
-        <c:choose>
-          <c:when test="${thisDelivery.open}">
-            Yes - candidates may currently launch this assessment
-          </c:when>
-          <c:otherwise>
-            No - candidates cannot currently launch this assessment
-          </c:otherwise>
-        </c:choose>
-      </div>
-    </div>
-    <div class="grid_2">
-      <page:postLink path="${primaryRouting['toggleAvailability']}" title="Toggle"/>
-    </div>
-    <div class="clear"></div>
-  </div>
-  <div class="dashboardRow">
-    <div class="grid_1">
-      <c:choose>
-        <c:when test="${!empty thisAssessment.ltiResultOutcomeIdentifier}">
-          <div class="trafficLight green">&#xa0;</div>
-        </c:when>
-        <c:otherwise>
-          <div class="trafficLight red">&#xa0;</div>
-        </c:otherwise>
-      </c:choose>
-    </div>
-    <div class="grid_8">
-      <div class="name">LTI Outcomes Reporting Setup:</div>
-      <div class="value">
-        <c:choose>
-          <c:when test="${!empty thisAssessment.ltiResultOutcomeIdentifier}">
-            Reporting outcome <code>${thisAssessment.ltiResultOutcomeIdentifier}</code>
-            with range [${thisAssessment.ltiResultMinimum}..${thisAssessment.ltiResultMaximum}]
-          </c:when>
-          <c:otherwise>
-            Not set up. LTI outcomes will not be sent back until this is set up.
-          </c:otherwise>
-        </c:choose>
-      </div>
-    </div>
-    <div class="grid_2">
-      <a href="${thisAssessmentRouting['outcomesSettings']}">Set up</a>
-    </div>
-    <div class="clear"></div>
-  </div>
-  <div class="dashboardRow">
-    <div class="grid_1">
-      <div class="trafficLight green">&#xa0;</div>
-    </div>
-    <div class="grid_8">
-      <div class="name">Candidate Session Reporting &amp; Proctoring:</div>
-      <div class="value">
-        ${thisDeliveryStatusReport.nonTerminatedSessionCount}
-        session${thisDeliveryStatusReport.nonTerminatedSessionCount==1?'':'s'}
-        currently running out of ${thisDeliveryStatusReport.sessionCount} total.
-      </div>
-    </div>
-    <div class="grid_2">
-      <a href="${primaryRouting['listCandidateSessions']}">Show candidate sessions</a>
-    </div>
-    <div class="clear"></div>
-  </div>
-  <div class="clear"></div>
+        </td>
+      </tr>
+      <%-- Candidate Sessions --%>
+      <tr class="statusOk">
+        <td class="indicator"></td>
+        <td class="category">
+          <div class="name">Candidate Session Reporting &amp; Proctoring:</div>
+          <div class="value">
+            ${thisDeliveryStatusReport.nonTerminatedSessionCount}
+            session${thisDeliveryStatusReport.nonTerminatedSessionCount==1?'':'s'}
+            currently running out of ${thisDeliveryStatusReport.sessionCount} total.
+          </div>
+        </td>
+        <td class="actions">
+          <a href="${primaryRouting['listCandidateSessions']}">Show candidate sessions</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
   <a href="${utils:escapeLink(primaryRouting['debug'])}">Show developer diagnostic information</a>
 

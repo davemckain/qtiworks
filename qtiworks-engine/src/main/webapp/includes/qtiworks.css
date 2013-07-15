@@ -160,45 +160,70 @@ aside {
 
 /* ========== LTI info (new) ========== */
 
-.dashboardRow {
-  border: 2px solid #ccbdf0;
+table.dashboard {
+  width: 100%;
+  border-collapse: separate;
   border-radius: 1em;
-  padding: 0.5em;
-  margin-bottom: 1em;
+  border: 2px solid #ccbdf0;
   background: url(images/bluegradient.png) left top repeat-x;
+  margin: 0 0 6em 0;
 }
 
-.dashboardRow .name {
-  font-size: smaller;
+.dashboard td {
+  border-bottom: 1px solid #ccbdf0;
 }
 
-.dashboardRow .value {
+.dashboard .indicator {
+  vertical-align: middle;
+  text-align: center;
+  padding: 0 0.2em;
   font-weight: bold;
-  font-size: 1.3em;
+  font-size: 3em;
 }
 
-.dashboardRow .details {
-  font-style: italic;
-  font-size: 0.7em;
+.dashboard .statusError .indicator:before {
+  color: red;
+  content: '\2731';
 }
 
-.trafficLight {
-  width: 40px;
-  height: 40px;
-  margin: 1em 10px;
-  border-radius: 12px;
+.dashboard .statusWarning .indicator:before {
+  color: #ff9900;
+  content: '!';
 }
 
-.trafficLight.green {
-  background: #00ff00 linear-gradient(to bottom, #00ff00, #99ff99);
+.dashboard .category {
+  vertical-align: middle;
+  padding: 1em 0;
 }
 
-.trafficLight.amber {
-  background: #ff9900 linear-gradient(to bottom, #ff9900, #ffcc99);
+.dashboard .category .name {
+  font-size: 1.0em;
 }
 
-.trafficLight.red {
-  background: #ff0000 linear-gradient(to bottom, #ff0000, #ff6666);
+.dashboard .category .value {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.dashboard .actions {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0 0.5em;
+}
+
+.dashboard .actions a {
+  border-radius: 1em;
+  border: 1px solid #ccbdf0;
+  background: url(images/bluegradient.png) left top repeat-x;
+  text-decoration: none;
+  padding: 0.5em;
+}
+
+.dashboard .actions a:before {
+  content: '\25b6';
+  color: #99ff99;
+  font-size: 18px;
+  line-height: 18px;
 }
 
 /* ========== Newer instructor mode stylings (done for LTI) ========== */

@@ -158,7 +158,7 @@ public class LtiLaunchService {
             }
             final Delivery delivery = new Delivery();
             delivery.setDeliveryType(DeliveryType.LTI_RESOURCE);
-            delivery.setOpen(true);
+            delivery.setOpen(false); /* (Require instructor to explicitly turn on when ready) */
             delivery.setTitle(StringUtilities.defaultIfNull(ltiLaunchData.getResourceLinkTitle(), "LTI Delivery " + resourceLinkId));
             deliveryDao.persist(delivery);
             logger.info("Created new Delivery for LTI resource: {}", delivery);

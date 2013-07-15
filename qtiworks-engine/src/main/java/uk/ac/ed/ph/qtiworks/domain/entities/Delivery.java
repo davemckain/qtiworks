@@ -162,16 +162,14 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     private boolean open;
 
     /**
-     * (For link-level launches only)
-     *
-     * LTI enabled?
+     * LTI enabled? (For link-level launches only)
      */
     @Basic(optional=false)
     @Column(name="lti_enabled")
     private boolean ltiEnabled;
 
     /**
-     * (For standalone single resource link only)
+     * (For link-level launches only)
      *
      * LTI consumer key "token" (if used)
      * The full key will be a string of the form <code>id-TOKEN</code> as this makes it easier to
@@ -182,7 +180,7 @@ public class Delivery implements BaseEntity, TimestampedOnCreation {
     private String ltiConsumerKeyToken;
 
     /**
-     * (For standalone single resource link only)
+     * (For link-level launches only)
      *
      * LTI consumer secret (if used)
      */
