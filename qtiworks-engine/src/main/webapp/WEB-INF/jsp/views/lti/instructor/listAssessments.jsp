@@ -28,77 +28,67 @@ assessmentListRouting (aid -> action -> URL)
     </div>
   </header>
 
-  <ul class="menu">
-    <li><a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a></li>
-  </ul>
+  <table class="listTable">
+    <thead>
+      <tr>
+        <th></th>
+        <th colspan="2">Actions</th>
+        <th>Title &amp; Assessment File Name</th>
+        <th>Assessment Type</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <c:forEach var="assessmentAndPackage" items="${assessmentAndPackageList}" varStatus="loopStatus">
+        <c:set var="assessment" value="${assessmentAndPackage.assessment}"/>
+        <c:set var="assessmentPackage" value="${assessmentAndPackage.assessmentPackage}"/>
+        <c:set var="assessmentRouting" value="${assessmentListRouting[assessment.id]}"/>
+        <c:set var="isSelectedAssessment" value="${!empty thisAssessment && thisAssessment.id==assessment.id}"/>
+        <tr class="${isSelectedAssessment ? 'selected' : ''}">
+          <td align="center">
+            <div class="bigStatus">${loopStatus.index + 1}</div>
+          </td>
+          <td align="center" class="actions">
+            <c:if test="${assessmentPackage.launchable}">
+              <page:postLink path="${assessmentRouting['try']}" title="Quick Try"/>
+            </c:if>
+          </td>
+          <td align="center" class="actions">
+            <c:choose>
+              <c:when test="${!isSelectedAssessment}">
+                <page:postLink path="${assessmentRouting['select']}" title="Select for this launch"
+                  confirmCondition="${thisDeliveryStatusReport.sessionCount>0}"
+                  confirm="Are you sure? Selecting a different assessment would terminate ${thisDeliveryStatusReport.nonTerminatedSessionCount} candidate session(s) currently running on this launch, and delete the gathered data for all ${thisDeliveryStatusReport.sessionCount} session(s) launched so far"
+                />
+              </c:when>
+              <c:otherwise>
+                Selected for this launch
+              </c:otherwise>
+            </c:choose>
+          </td>
+          <td>
+            <h4><a href="${utils:escapeLink(assessmentRouting['show'])}"><c:out value="${utils:formatAssessmentFileName(assessmentPackage)}"/></a></h4>
+            <span class="title"><c:out value="${assessmentPackage.title}"/></span>
+          </td>
+          <td class="center">
+            <c:choose>
+              <c:when test="${assessment.assessmentType=='ASSESSMENT_ITEM'}">Item</c:when>
+              <c:otherwise>Test</c:otherwise>
+            </c:choose>
+          </td>
+          <td class="center">
+            <c:out value="${utils:formatDayDateAndTime(assessment.creationTime)}"/>
+          </td>
+        </tr>
+      </c:forEach>
+      <tr>
+        <td class="plus"></td>
+        <td colspan="2" align="center" class="actions">
+          <a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a>
+        </td>
+        <td colspan="3"></td>
+      </tr>
+    </tbody>
+  </table>
 
-  <c:choose>
-    <c:when test="${!empty assessmentAndPackageList}">
-      <table class="listTable">
-        <thead>
-          <tr>
-            <th></th>
-            <th colspan="2">Actions</th>
-            <th>Name &amp; Title</th>
-            <th>Assessment Type</th>
-            <th>Created</th>
-          </tr>
-        </thead>
-        <tbody>
-          <c:forEach var="assessmentAndPackage" items="${assessmentAndPackageList}" varStatus="loopStatus">
-            <c:set var="assessment" value="${assessmentAndPackage.assessment}"/>
-            <c:set var="assessmentPackage" value="${assessmentAndPackage.assessmentPackage}"/>
-            <c:set var="assessmentRouting" value="${assessmentListRouting[assessment.id]}"/>
-            <c:set var="isSelectedAssessment" value="${!empty thisAssessment && thisAssessment.id==assessment.id}"/>
-            <tr class="${isSelectedAssessment ? 'selected' : ''}">
-              <td align="center">
-                <div class="bigStatus">${loopStatus.index + 1}</div>
-              </td>
-              <td align="center" class="actions">
-                <c:if test="${assessmentPackage.launchable}">
-                  <page:postLink path="${assessmentRouting['try']}" title="Quick Try"/>
-                </c:if>
-              </td>
-              <td align="center" class="actions">
-                <c:choose>
-                  <c:when test="${!isSelectedAssessment}">
-                    <page:postLink path="${assessmentRouting['select']}" title="Select for this launch"
-                      confirmCondition="${thisDeliveryStatusReport.sessionCount>0}"
-                      confirm="Are you sure? Selecting a different assessment would terminate ${thisDeliveryStatusReport.nonTerminatedSessionCount} candidate session(s) currently running on this launch, and delete the gathered data for all ${thisDeliveryStatusReport.sessionCount} session(s) launched so far"
-                    />
-                  </c:when>
-                  <c:otherwise>
-                    Selected for this launch
-                  </c:otherwise>
-                </c:choose>
-              </td>
-              <td>
-                <h4><a href="${utils:escapeLink(assessmentRouting['show'])}"><c:out value="${utils:formatAssessmentFileName(assessmentPackage)}"/></a></h4>
-                <span class="title"><c:out value="${assessmentPackage.title}"/></span>
-              </td>
-              <td class="center">
-                <c:choose>
-                  <c:when test="${assessment.assessmentType=='ASSESSMENT_ITEM'}">Item</c:when>
-                  <c:otherwise>Test</c:otherwise>
-                </c:choose>
-              </td>
-              <td class="center">
-                <c:out value="${utils:formatDayDateAndTime(assessment.creationTime)}"/>
-              </td>
-            </tr>
-          </c:forEach>
-          <tr>
-            <td class="plus"></td>
-            <td colspan="2" align="center" class="actions">
-              <a href="${utils:escapeLink(primaryRouting['uploadAssessment'])}">Upload a new assessment</a>
-            </td>
-            <td colspan="3"></td>
-          </tr>
-        </tbody>
-      </table>
-    </c:when>
-    <c:otherwise>
-      <p>You have not uploaded any assessments yet.</p>
-    </c:otherwise>
-  </c:choose>
 </page:ltipage>
